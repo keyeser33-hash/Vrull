@@ -57,7 +57,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 - Bucket privat `progress-photos` me rrugë `<user_id>/...` dhe RLS te `storage.objects`.
 - Datat e ditarit dhe të stërvitjes si datë lokale; kohët në UTC (§15).
 
-**Pranimi:** këshilltari i sigurisë i Supabase pa paralajmërime; një test vërteton që një përdorues tjetër nuk sheh asnjë rresht dhe asnjë foto; regjistrimi i një llogarie të re refuzohet.
+**Pranimi:** këshilltari i sigurisë i Supabase pa paralajmërime (përveç mbrojtjes nga fjalëkalimet e rrjedhura, që në planin falas nuk ekziston, SPEC §18); një test vërteton që një përdorues tjetër nuk sheh asnjë rresht dhe asnjë foto; regjistrimi i një llogarie të re refuzohet.
 
 ## TH-04 · Ruajtja lokale dhe sinkronizimi
 

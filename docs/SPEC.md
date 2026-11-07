@@ -213,6 +213,7 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - **APK jashtë Play Store:** Android kërkon leje për "instalim nga burime të panjohura" një herë.
 - **Verifikimi i zhvilluesve nga Google:** nga shtatori 2026 në disa vende dhe globalisht nga 2027, telefonat Android të certifikuar instalojnë vetëm app-e të regjistruara nga zhvillues të verifikuar. Zgjidhja për këtë app: llogaria falas "limited distribution" te Android Developer Console (vetëm email, deri në 20 pajisje), ku regjistrohen `al.traininghub.app` dhe çelësi i nënshkrimit. Pa të, instalimi mbetet i mundur me "advanced flow" ose ADB.
 - **Open Food Facts** ka mbulim të pjesshëm për produktet shqiptare; ushqimet e përdoruesit e mbulojnë boshllëkun.
+- **Mbrojtja nga fjalëkalimet e rrjedhura** (HaveIBeenPwned) është vetëm në planin Pro, ndaj këshilltari i sigurisë mban një paralajmërim për të. Rreziku është i vogël: ka një llogari të vetme, regjistrimet janë të mbyllura dhe fjalëkalimi zgjidhet nga përdoruesi. Ky është i vetmi paralajmërim i pranuar.
 - **Pauzimi i Supabase:** projekti falas pauzohet pas 7 ditësh pa aktivitet (p.sh. një pushim pa stërvitje). App-i vazhdon pa internet; projekti rikthehet nga paneli i Supabase me të dhënat të paprekura, dhe sinkronizimi rifillon vetë.
 - **Saktësia e timer-it:** prodhuesit e telefonave (Samsung, Xiaomi etj.) kufizojnë punën në sfond. Nëse njoftimi vonon edhe me alarmet e sakta, app-i kërkon përjashtimin nga optimizimi i baterisë.
 
