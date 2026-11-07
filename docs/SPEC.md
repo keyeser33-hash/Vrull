@@ -1,6 +1,6 @@
-# Training Hub · Specifikimi v1.3
+# Training Hub · Specifikimi v1.4
 
-Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar; v1.3 me detajet e Android-it nga TH-02). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
+Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar; v1.3 me detajet e Android-it nga TH-02; v1.4 me vendimet e dizajnit dhe radhën e ekraneve). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt), vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë dhe krahasimi i tri drejtimeve të dizajnit në kanavasin "Training Hub · Drejtimet e dizajnit". Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
 
 ## 1. Qëllimi
 
@@ -26,6 +26,7 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 | Q16 | Palestra nis pas 3 javësh ose më vonë. Gjithçka synohet gati atë ditë. |
 | Q17 | Rikujtues për suplementet dhe vaktet, ditët e stërvitjes dhe matjet javore. |
 | Q18 | Plani i vakteve të Jimit është shabllon që regjistrohet me një prekje. |
+| Dizajni | Drejtimi "Fokus" në të gjitha ekranet, i zgjedhur më 07.11.2026 nga tri drejtime (Tabela, Karta, Fokus). Tema OLED parazgjedhje. Ekranet ndërtohen direkt në kod sipas radhës së navigimit dhe shqyrtohen në telefon (§14, §17). |
 | Njësitë | kg, cm. Ditët e stërvitjes: e hënë, e martë, e enjte, e premte (ndryshohen te cilësimet). |
 | Gjuha | UI në shqip. Emrat e ushtrimeve mbeten në anglisht, si në PDF dhe në bibliotekë. |
 
@@ -176,10 +177,16 @@ Njoftime lokale, të planifikuara në telefon. Cilësimet mbajnë: orën e zgjim
 ## 14. Dizajni
 
 - Omal UI v2, tema OLED si parazgjedhje (light dhe dark mbeten të disponueshme). Kornizë 390 px, navigim me pesë vende poshtë, kontrolle 44 px, Inter, `tabular-nums` për numrat.
-- Ngjyra brand (amber) i përket një veprimi kryesor për ekran: "Ruaj setin", "Fillo stërvitjen", "Mbyll stërvitjen". Përdoret edhe si shenjë (fill grafikësh, nënvizimi aktiv). Asnjëherë tekst amber.
+- Ngjyra brand (amber) i përket një veprimi kryesor për ekran: "Ruaj setin", "Fillo stërvitjen", "Mbyll stërvitjen", "Regjistro <vaktin>". Përdoret edhe si shenjë (fill grafikësh, rrethi i timer-it, seti i tanishëm, nënvizimi aktiv). Asnjëherë tekst amber.
 - Gjendjet shkruhen gjithmonë me fjalë. Pa emoji dhe pa pikëçuditje në tekst.
-- Referenca nga Mobbin (Hevy, Strong, MyFitnessPal) për regjistrimin e seteve, timer-in dhe ditarin.
 - Navigimi poshtë: Sot, Programi, Ushqimi, Progresi, Trupi.
+- **Drejtimi: Fokus** (vendim 07.11.2026). U krahasuan tri drejtime me ekranet Sot, Seanca dhe Ushqimi: A · Tabela (si Hevy, Strong), B · Karta (si Bevel, MyFitnessPal), C · Fokus (si Peloton Strength+, Ladder, Tonal). Kanavasi i krahasimit: artefakti "Training Hub · Drejtimet e dizajnit". Parimi: një gjë kryesore në ekran, numra të mëdhenj, prekje të mëdha për duar të djersitura.
+  - **`panel`** (sipërfaqja që mbetet e errët në çdo temë) mban zonën kryesore: paneli "Sot", timer-in e pushimit dhe "Vakti i radhës".
+  - **Madhësitë:** kontrollet e zakonshme 44 px; butonat − dhe + të seancës 52 px; veprimi amber i ekranit 56 px, i plotë në gjerësi. Titulli kryesor 30–36 px, numri i timer-it 48 px.
+  - **Sot:** paneli me "Stërvitja N", grupet e muskujve, numrin e ushtrimeve dhe seteve, dhe figurën e trupit përpara dhe mbrapa me muskujt e ditës; rikuperimi i këtyre muskujve me fjalë ("Gati", "Pothuajse gati", "I lodhur") dhe ditët nga stërvitja e fundit; ushtrimi i parë me peshën e sugjeruar; "Fillo stërvitjen"; një rresht me kcal që mbeten dhe vaktin e radhës.
+  - **Seanca:** një ushtrim dhe një set në ekran. Sipër: shiriti i ushtrimeve të ditës dhe butoni i listës. Emri i ushtrimit, "Seti X nga Y" me intervalin, pikat e seteve (bërë, tani, pas). Timer-i si rreth i madh me −15 s, +15 s dhe Kapërce. Pesha dhe përsëritjet me − dhe + (hapi i peshës sipas pajisjes, §7), me referencën e Javës 0 ose të fazës së kaluar poshtë tyre. "Ruaj setin X". Poshtë: "Pastaj" me ushtrimin tjetër. Seti rest-pause ose drop set regjistrohet si segmente në të njëjtin ekran.
+  - **Ushqimi:** shiriti i kcal të ditës sipër; paneli "Vakti i radhës" me artikujt e planit, kcal dhe makrot, "Regjistro <vaktin>" dhe "Ndrysho"; poshtë, dita si orar vertikal me gjendjet "Regjistruar", "E radhës", "Në pritje". Suplementet shfaqen te vakti ku merren.
+  - Ekranet e tjera (Programi, Progresi, Trupi, editori, cilësimet) ndjekin të njëjtin parim dhe ndërtohen direkt në kod; shqyrtimi bëhet në telefon.
 
 ## 15. Tabelat kryesore
 
@@ -208,10 +215,20 @@ Play Store, iOS, përdorues të tjerë ose ndarje, superset-e dhe qarqe, deload 
 
 Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 
+**Radha e ekraneve (vendim 07.11.2026), pas themeleve:** sipas navigimit, një ekran në një kohë, secili bashkë me logjikën që i duhet:
+
+1. **Sot**, me seancën, timer-in dhe peshat e sugjeruara: TH-06, TH-07, TH-08, TH-09, TH-10. Ky është minimumi për ditën e parë në palestër.
+2. **Programi**, me editorin dhe videot: TH-11, TH-20.
+3. **Ushqimi**, me suplementet: TH-14, TH-15, TH-16, TH-17; pastaj rikujtuesit, TH-18.
+4. **Progresi**: TH-12, TH-13.
+5. **Trupi**: TH-05 (spike-u 3D) dhe TH-19.
+
+Spike-u 3D kalon nga hapi 2 në fund (shih §18).
+
 ## 18. Rreziqe dhe pikat e hapura
 
 - **Mospërputhje në PDF:** teksti thotë 0,5 g yndyrë/lb, ndërsa dita shembull ka 110 g për 180 lb (0,61 g/lb). Specifikimi ndjek totalet e ditës shembull, që përputhen me kaloritë (Shtojca C).
-- **Modeli 3D:** pjesët nga versioni 3.0 kanë rezolucion të lartë (rreth 10 MB për muskul) dhe duhen thjeshtuar fort; duhet kontrolluar që përputhen në pozicion me versionin 4.0.
+- **Modeli 3D:** pjesët nga versioni 3.0 kanë rezolucion të lartë (rreth 10 MB për muskul) dhe duhen thjeshtuar fort; duhet kontrolluar që përputhen në pozicion me versionin 4.0. Me radhën e ekraneve sipas navigimit, ky rrezik zbulohet i fundit. Nëse modeli nuk arrin objektivin (≤ 5 MB, rrotullim i rrjedhshëm), Trupi kalon në figurë 2D përpara dhe mbrapa, si ajo e ekranit Sot.
 - **APK jashtë Play Store:** Android kërkon leje për "instalim nga burime të panjohura" një herë.
 - **Verifikimi i zhvilluesve nga Google:** nga shtatori 2026 në disa vende dhe globalisht nga 2027, telefonat Android të certifikuar instalojnë vetëm app-e të regjistruara nga zhvillues të verifikuar. Zgjidhja për këtë app: llogaria falas "limited distribution" te Android Developer Console (vetëm email, deri në 20 pajisje), ku regjistrohen `al.traininghub.app` dhe çelësi i nënshkrimit. Pa të, instalimi mbetet i mundur me "advanced flow" ose ADB.
 - **Open Food Facts** ka mbulim të pjesshëm për produktet shqiptare; ushqimet e përdoruesit e mbulojnë boshllëkun.
