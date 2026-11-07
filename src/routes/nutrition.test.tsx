@@ -42,6 +42,8 @@ describe('Ushqimi', () => {
     await import('@/data/app-data')
     const { completeOnboarding } = await import('@/data/profile')
     await completeOnboarding(data.store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' })
+    const { ensureSupplements } = await import('@/data/supplements')
+    await ensureSupplements(data.store)
   })
   afterAll(() => vi.useRealTimers())
 
@@ -88,5 +90,28 @@ describe('Ushqimi', () => {
     expect(await screen.findByText('ditë stërvitjeje')).toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'Kalori të ditës' }).parentElement).toHaveTextContent('379 / 3.625 kcal')
     expect(screen.getByRole('button', { name: /^Para stërvitjes, 17:45/ })).toBeInTheDocument()
+  })
+
+  it('suplementet: te vakti në orar, checklist me evidencën, çaktivizimi te lista', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    expect(await screen.findByRole('button', { name: /^Para gjumit, 22:30/ })).toHaveTextContent('me pluhur proteine, zma')
+    const section = screen.getByRole('region', { name: /^Suplementet/ })
+    // Testi i mëparshëm e bëri ditën ditë stërvitjeje: shake-u shton suplementet e tij.
+    expect(section).toHaveTextContent('Suplementet · 0 nga 17')
+    const multivitamin = within(section).getByRole('checkbox', { name: /Multivitaminë/ })
+    expect(multivitamin.closest('label')).toHaveTextContent('Vetëm për mungesa')
+    await user.click(multivitamin)
+    expect(await within(section).findByText('· 1 nga 17', { exact: false })).toBeInTheDocument()
+    expect(within(section).getByRole('checkbox', { name: /Multivitaminë/ })).toBeChecked()
+
+    await user.click(within(section).getByRole('button', { name: 'Ndrysho listën' }))
+    const sheet = screen.getByRole('dialog', { name: 'Suplementet' })
+    const zma = await within(sheet).findByRole('switch', { name: /ZMA/ })
+    expect(zma.closest('label')).toHaveTextContent('E dobët pa mungesë')
+    await user.click(zma)
+    await user.click(within(sheet).getByRole('button', { name: 'Mbyll' }))
+    expect(await screen.findByRole('button', { name: /^Para gjumit, 22:30/ })).not.toHaveTextContent('zma')
+    expect(screen.getByRole('region', { name: /^Suplementet/ })).toHaveTextContent('Suplementet · 1 nga 16')
   })
 })

@@ -161,6 +161,8 @@ Lista e planit, me orarin dhe dozën, regjistrohet si checklist ditore:
 
 Kolona e evidencës shfaqet si etiketë me fjalë. Përdoruesi mund të çaktivizojë çdo suplement.
 
+**Ekrani (vendim i 07.11.2026):** te Ushqimi, nën çdo vakt të orarit dalin suplementet e tij ("me multivitaminë"); seksioni "Suplementet · 1 nga 5" ka checklist-ën e ditës sipas vakteve, me dozën dhe evidencën si etiketë; "Ndrysho listën" i aktivizon ose i çaktivizon. Shake-u para/gjatë/pas stërvitjes ndahet te vakti para dhe ai pas stërvitjes. Lista e §10 shtohet një herë për përdoruesin.
+
 ## 11. Modeli 3D i trupit
 
 - **Burimi (verifikuar 07.11.2026):** BodyParts3D, Database Center for Life Science.

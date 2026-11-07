@@ -1,9 +1,11 @@
 import { JIM_FOODS, JIM_MEALS, macrosFor, sumMacros } from '@/nutrition/jim'
 import { MEAL_LABEL, type MealKey } from '@/nutrition/meals'
 import { mealSchedule } from '@/nutrition/schedule'
+import type { Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros, nutritionTargets } from '@/nutrition/targets'
 import { localDate } from './dates'
 import { readProfile } from './profile'
+import { supplementList } from './supplements'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 
@@ -26,6 +28,14 @@ export interface TemplateLine extends Macros {
 /** done: i regjistruar; next: i radhës; todo: më vonë; missed: ora e tij kaloi pa regjistrim. */
 export type MealStatus = 'done' | 'next' | 'todo' | 'missed'
 
+export interface MealSupplement {
+  id: string
+  name: string
+  doseText: string
+  evidence: Evidence
+  taken: boolean
+}
+
 export interface MealSlot {
   meal: MealKey
   label: string
@@ -35,6 +45,8 @@ export interface MealSlot {
   totals: Macros
   template: TemplateLine[]
   templateTotals: Macros
+  /** Suplementet aktive të këtij vakti (SPEC §10). */
+  supplements: MealSupplement[]
 }
 
 export interface NutritionDay {
@@ -97,11 +109,13 @@ async function weightFor(store: LocalStore, date: string) {
 
 export async function nutritionDay(store: LocalStore, date: string, now: Date): Promise<NutritionDay> {
   const profile = await readProfile(store)
-  const [{ dayType, manual, saved }, measuredKg, entries, foods] = await Promise.all([
+  const [{ dayType, manual, saved }, measuredKg, entries, foods, supplements, supplementLogs] = await Promise.all([
     dayTypeFor(store, date, profile.trainingDays),
     weightFor(store, date),
     store.where('diary_entries', 'date', date),
     store.all('foods'),
+    supplementList(store),
+    store.where('supplement_logs', 'date', date),
   ])
   const foodNames = new Map(foods.map((food) => [food.id, String(food.name)]))
   const schedule = mealSchedule({ wakeTime: profile.wakeTime, sleepTime: profile.sleepTime, trainingTime: dayType === 'training' ? profile.trainingTime : null })
@@ -132,6 +146,15 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
       totals: sumMacros(list),
       template,
       templateTotals: sumMacros(template),
+      supplements: supplements
+        .filter((supplement) => supplement.enabled && supplement.timing.includes(meal))
+        .map((supplement) => ({
+          id: supplement.id,
+          name: supplement.name,
+          doseText: supplement.doseText,
+          evidence: supplement.evidence,
+          taken: supplementLogs.some((row) => row.supplement_id === supplement.id && row.timing === meal),
+        })),
     }
   })
 

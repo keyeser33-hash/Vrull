@@ -10,6 +10,7 @@ import { createLocalStore } from './store'
 import { supabase } from './supabase'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
+import { ensureSupplements } from './supplements'
 import { upgradeShortcutToSize } from './training'
 
 // Të dhënat e app-it: sesioni, një bazë lokale, një store për shkrimet, një sinkronizim me
@@ -140,6 +141,8 @@ export function usePendingChanges() {
 export function useDataUpgrades(ready: boolean) {
   const { userId } = useAuth()
   useEffect(() => {
-    if (ready && userId) void upgradeShortcutToSize(store).catch(() => {})
+    if (!ready || !userId) return
+    void upgradeShortcutToSize(store).catch(() => {})
+    void ensureSupplements(store).catch(() => {})
   }, [ready, userId])
 }

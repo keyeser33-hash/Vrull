@@ -6,8 +6,10 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/data/dates'
+import { setSupplementEnabled, supplementList, toggleSupplement } from '@/data/supplements'
 import { logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
 import { MEAL_OBJECT, type MealKey } from '@/nutrition/meals'
+import { EVIDENCE_LABEL } from '@/nutrition/supplements'
 import { cn } from '@/lib/cn'
 import { grams, kcal, macrosLine, relativeTime } from './nutrition-format'
 import { dateLabel } from './training-format'
@@ -53,8 +55,10 @@ export function NutritionPage() {
       <DayHeader day={day} now={now} />
       {day.next ? <NextMeal day={day} meal={day.next} now={now} onEdit={() => openMeal(day.next!.meal)} /> : <DayDone day={day} />}
       <Timeline day={day} onOpen={openMeal} />
+      <Supplements day={day} onEdit={() => setParams({ ndrysho: 'suplementet' })} />
       <MacroTotals day={day} />
       {meal ? <MealSheet date={day.date} meal={meal} onClose={() => navigate(-1)} /> : null}
+      {params.get('ndrysho') === 'suplementet' ? <SupplementsSheet onClose={() => navigate(-1)} /> : null}
     </div>
   )
 }
@@ -208,8 +212,13 @@ function Timeline({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) 
             >
               <span className="text-xs leading-4 text-muted-foreground">{meal.time}</span>
               <span aria-hidden className={cn('size-2.5 justify-self-center rounded-full', DOT[meal.status])} />
-              <span className={cn('truncate text-sm leading-5', meal.status === 'todo' || meal.status === 'missed' ? 'text-muted-foreground' : 'font-semibold')}>
-                {meal.label}
+              <span className="flex min-w-0 flex-col">
+                <span className={cn('truncate text-sm leading-5', meal.status === 'todo' || meal.status === 'missed' ? 'text-muted-foreground' : 'font-semibold')}>
+                  {meal.label}
+                </span>
+                {meal.supplements.length > 0 ? (
+                  <span className="truncate text-xs leading-4 text-muted-foreground">me {meal.supplements.map((item) => item.name.toLowerCase()).join(', ')}</span>
+                ) : null}
               </span>
               <span className={cn('rounded-full px-2 py-1 text-xs leading-4 font-medium whitespace-nowrap', BADGE[meal.status])}>{statusText(meal)}</span>
             </button>
@@ -322,5 +331,86 @@ function AddFoodLink({ meal }: { meal: MealKey }) {
       <Icon name="shto" size={20} />
       Shto ushqim
     </Link>
+  )
+}
+
+function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void }) {
+  const meals = day.meals.filter((meal) => meal.supplements.length > 0)
+  const total = meals.reduce((count, meal) => count + meal.supplements.length, 0)
+  const taken = meals.reduce((count, meal) => count + meal.supplements.filter((item) => item.taken).length, 0)
+  return (
+    <section aria-labelledby="supplements-title" className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="supplements-title" className="text-sm leading-5 font-semibold">
+          Suplementet <span className="font-normal text-muted-foreground tabular-nums">· {taken} nga {total}</span>
+        </h2>
+        <Button variant="ghost" size="sm" className="min-h-11" onClick={onEdit}>
+          Ndrysho listën
+        </Button>
+      </div>
+      {meals.length === 0 ? (
+        <p className="text-sm leading-5 text-muted-foreground">Asnjë suplement aktiv për sot.</p>
+      ) : (
+        <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+          {meals.map((meal) => (
+            <fieldset key={meal.meal} className="border-t border-border-subtle px-4 py-1 first:border-t-0">
+              <legend className="sr-only">
+                {meal.label}, {meal.time}
+              </legend>
+              <span aria-hidden className="block pt-2 text-xs leading-4 text-muted-foreground tabular-nums">
+                {meal.time} · {meal.label}
+              </span>
+              {meal.supplements.map((item) => (
+                <label key={item.id} className="flex min-h-12 cursor-pointer items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={item.taken}
+                    onChange={() => void toggleSupplement(store, { date: day.date, supplementId: item.id, meal: meal.meal })}
+                    className="size-5 shrink-0 accent-current"
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className={cn('text-base leading-6', item.taken && 'text-muted-foreground line-through')}>{item.name}</span>
+                    <span className="text-xs leading-4 text-muted-foreground">{item.doseText}</span>
+                  </span>
+                  <span className="shrink-0 rounded-full bg-secondary px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">
+                    {EVIDENCE_LABEL[item.evidence]}
+                  </span>
+                </label>
+              ))}
+            </fieldset>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function SupplementsSheet({ onClose }: { onClose: () => void }) {
+  const list = useLocalQuery(() => supplementList(store), [])
+  return (
+    <Sheet title="Suplementet" onClose={onClose}>
+      <p className="text-sm leading-5 text-muted-foreground">Ato të çaktivizuara nuk dalin te dita. Evidenca tregon sa e mbështesin studimet.</p>
+      <ul className="flex flex-col">
+        {(list ?? []).map((item) => (
+          <li key={item.id} className="border-t border-border-subtle first:border-t-0">
+            <label className="flex min-h-14 cursor-pointer items-center gap-3 py-1.5">
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="text-base leading-6">{item.name}</span>
+                <span className="text-xs leading-4 text-muted-foreground">
+                  {item.doseText} · {item.evidenceText}
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={item.enabled}
+                onChange={(event) => void setSupplementEnabled(store, item.id, event.currentTarget.checked)}
+                className="size-5 shrink-0 accent-current"
+              />
+            </label>
+          </li>
+        ))}
+      </ul>
+    </Sheet>
   )
 }
