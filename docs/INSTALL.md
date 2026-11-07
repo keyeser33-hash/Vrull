@@ -45,9 +45,11 @@ Kur rregulli të hyjë në fuqi në Shqipëri, regjistrimi bëhet një herë dhe
 
 ## 6. Si del një version i ri
 
-1. Rrit `version` te `package.json` (p.sh. `0.1.0` → `0.2.0`) dhe bëj commit.
-2. Krijo tag-un `v0.2.0` dhe shtyje: `git tag v0.2.0 && git push origin v0.2.0`.
-3. Workflow-i "APK për Android" kalon lint-in, testet dhe build-in, ndërton APK-në, verifikon nënshkrimin dhe publikon Release-in.
+1. Rrit `version` te `package.json` (p.sh. `0.1.0` → `0.2.0`) dhe bëj commit në `main`.
+2. Krijo tag-un `v0.2.0` në një nga dy mënyrat:
+   - te GitHub: **Releases → Draft a new release → Choose a tag**, shkruaj `v0.2.0`, **Create new tag on publish**, target `main`, pastaj **Publish release**;
+   - ose nga kompjuteri: `git tag v0.2.0 && git push origin v0.2.0`.
+3. Workflow-i "APK për Android" kalon lint-in, testet dhe build-in, ndërton APK-në, verifikon nënshkrimin dhe e shton te Release-i (rreth 5 minuta). Nëse Release-i nuk ekziston, e krijon vetë.
 
 Numri i versionit për Android llogaritet vetë: `major × 10000 + minor × 100 + patch` (0.2.0 → 200), prandaj `minor` dhe `patch` shkojnë deri në 99. Tag-u duhet të jetë i njëjtë me versionin te `package.json`, ndryshe ndërtimi ndalet.
 

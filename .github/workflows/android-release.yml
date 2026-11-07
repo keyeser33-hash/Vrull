@@ -110,7 +110,12 @@ jobs:
         run: |
           notes="Shkarko TrainingHub-$VERSION.apk në telefon dhe hape. Instalimi i parë dhe përditësimet: docs/INSTALL.md."
           if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            # Release-i u krijua nga faqja e GitHub-it (ajo krijon edhe tag-un): shtohet APK-ja,
+            # dhe shënimet vendosen vetëm kur janë bosh.
             gh release upload "$GITHUB_REF_NAME" out/* --clobber
+            if [ -z "$(gh release view "$GITHUB_REF_NAME" --json body --jq .body)" ]; then
+              gh release edit "$GITHUB_REF_NAME" --notes "$notes"
+            fi
           else
             gh release create "$GITHUB_REF_NAME" out/* --title "Training Hub $VERSION" --notes "$notes"
           fi
