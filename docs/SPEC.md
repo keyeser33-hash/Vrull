@@ -1,6 +1,6 @@
-# Training Hub · Specifikimi v1.1
+# Training Hub · Specifikimi v1.2
 
-Data: 07.11.2026 (v1.1 pas rishikimit të së njëjtës ditë). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
+Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar të së njëjtës ditë). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
 
 ## 1. Qëllimi
 
@@ -35,9 +35,19 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 - **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. Lejet e Android-it: njoftimet (`POST_NOTIFICATIONS`, kërkohet në stërvitjen e parë) dhe alarmet e sakta (`SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`), pa të cilat Android mund ta vonojë njoftimin e timer-it me ekran të kyçur. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo).
 - **Ruajtja lokale:** Dexie (IndexedDB). Çdo veprim shkruan fillimisht lokalisht; asnjë ekran nuk pret rrjetin.
 - **Sinkronizimi:** çdo rresht ka `id` (UUID i krijuar në telefon), `updated_at`, `deleted_at`. Dërgohen rreshtat e ndryshuar, merren ato më të reja se sinkronizimi i fundit. Konfliktet: fiton ndryshimi më i fundit (një përdorues, një telefon).
-- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot, Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret).
+- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot (rrugët `<user_id>/...`, RLS te `storage.objects`), Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret). Pasi krijohet llogaria e përdoruesit, regjistrimet e reja çaktivizohen te Auth, që askush tjetër të mos hapë llogari në projekt.
 - **3D:** three.js përmes `@react-three/fiber`. Modeli është një GLB i gjeneruar nga një skript i përsëritshëm në `tools/anatomy/` (shih §11).
 - **Varësitë:** çdo paketë e re verifikohet para instalimit (autenticiteti, mirëmbajtja, licenca).
+
+## 3a. Hyrja e parë
+
+1. Hyrja ose krijimi i llogarisë (email dhe fjalëkalim; kërkon internet vetëm këtë herë).
+2. Pesha e trupit sot (kg), e nevojshme për objektivat e ushqimit.
+3. Ditët e stërvitjes (parazgjedhje: e hënë, e martë, e enjte, e premte) dhe ora e zakonshme e stërvitjes.
+4. Ora e zgjimit dhe e gjumit, për rikujtuesit.
+5. Programi aktiv: Shortcut to Size, duke nisur nga Java 0.
+
+Çdo hap ndryshohet më vonë te cilësimet. Lejet e njoftimeve kërkohen në stërvitjen e parë, kur nevojiten, jo këtu.
 
 ## 4. Modeli i programit
 
@@ -62,6 +72,8 @@ Editori lejon krijimin, kopjimin dhe ndryshimin e çdo pjese: kopjo javën, kopj
 
 **Radha:** app-i mban një tregues "stërvitja e radhës" (blloku, java, dita). Treguesi kalon përpara vetëm kur një stërvitje mbyllet. Te menyja ka "Kapërce këtë stërvitje" për raste të veçanta; nuk ndodh vetvetiu.
 
+**Programi aktiv:** vetëm një program është aktiv. Ndërrimi i tij ruan historinë dhe treguesin e secilit program. Ndryshimet në editor për programin aktiv vlejnë nga stërvitja e radhës; seancat e kaluara nuk ndryshojnë. Pas stërvitjes së fundit programi shënohet "Përfunduar" dhe ekrani Sot ofron ta rinisë nga Faza 1 (me peshat e sugjeruara nga 1RM-të e reja) ose të zgjedhë një program tjetër.
+
 ## 5. Shortcut to Size si të dhëna
 
 Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
@@ -74,7 +86,7 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
 - **Teknika:** javët 1–2 rest-pause në setin e fundit të çdo ushtrimi (deri në dështim, 15 s pushim, vazhdo deri në dështim). Javët 3–4 drop set në setin e fundit (deri në dështim, ul te pesha e javës 1 të fazës për atë ushtrim, vazhdo deri në dështim). Teknika vlen edhe për pulpat dhe barkun, por jo për ushtrimet me kohë (Plank, Side Plank). Nëse në një javë drop set-i ushtrimi bëhet pa peshë, zbatohet rest-pause. Për ushtrimet me llastik, drop set-i bëhet me llastikun më të lehtë.
 - **Pesha mbetet e njëjtë** në të gjitha setet e një ushtrimi brenda seancës. Minimumi i intervalit duhet arritur.
 - **Ushtrimi i parë i çdo grupi** (Bench Press, Triceps Pressdown, Dumbbell Bent-Over Row, Barbell Curl, Dumbbell Shoulder Press, Squat, Romanian Deadlift) mbetet i njëjtë për 12 javët. Ndihmësit ndryshojnë sipas fazës. Ushtrimet e barkut ndryshojnë sipas javës (Shtojca B).
-- **Java 0:** stërvitjet e Fazës 1, Java 1, me 12–15 përsëritje, pa rest-pause dhe pa dështim (lër 2–3 përsëritje në rezervë, RIR 2–3). Setet: 3 për ushtrimet që në program kanë 4, 2 për të tjerat. Qëllimi: teknika dhe gjetja e peshës për 12–15. Peshat e Javës 0, me RIR-në e regjistruar, ushqejnë sugjerimet e Javës 1.
+- **Java 0:** stërvitjet e Fazës 1, Java 1, me intervalet e Javës 1 (12–15; pulpat 25–30; barku 20–30; plank-u 60 s), pa rest-pause dhe pa dështim (lër 2–3 përsëritje në rezervë, RIR 2–3). Setet: 3 për ushtrimet që në program kanë 4, 2 për të tjerat. Qëllimi: teknika dhe gjetja e peshës për 12–15. Peshat e Javës 0, me RIR-në e regjistruar, ushqejnë sugjerimet e Javës 1.
 - **Hip Thrust i barkut:** Hip Thrust, Weighted Hip Thrust dhe Smith Machine Hip Thrust te barku janë ngritje e legenit e shtrirë në shpinë me këmbët lart, për pjesën e poshtme të barkut (te versioni Smith, këmbët shtyjnë shufrën lart). Nuk janë hip thrust-i i gluteve me shufër mbi kofshë. Lidhen me `rectus_abdominis`, jo me gluteus.
 - **Emrat e njëjtë:** "Straight Arm Pulldown" dhe "Straight-Arm Pulldown" janë i njëjti ushtrim; po ashtu "Incline Cable Cable Flye" e PDF-së është "Incline Cable Flye". Historia e një ushtrimi mbetet e përbashkët në të gjitha fazat ku shfaqet.
 
@@ -105,10 +117,10 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
 ## 9. Ushqimi
 
 - **Objektivat** (Q15): nga totalet e ditës shembull të Jimit (180 lb = 81,65 kg), të shkallëzuara sipas peshës, duke përdorur mesataren 7-ditore të peshës së trupit (ose peshën e fundit kur ka më pak se 3 matje). Shih Shtojcën C. Dita llogaritet "stërvitje" nëse është ditë stërvitjeje te cilësimet ose nëse u regjistrua stërvitje atë ditë; përdoruesi e ndryshon me një prekje.
-- **Ditari:** vaktet sipas planit (Mëngjesi 1, Mëngjesi 2, Zemër mëngjesi, Dreka, Pasditja, Darka, Para gjumit, plus Para/Gjatë/Pas stërvitjes në ditë stërvitjeje). Çdo regjistrim: ushqimi, gramët, vakti, data.
+- **Ditari:** vaktet sipas planit (Mëngjesi 1, Mëngjesi 2, Snack paradite, Dreka, Snack pasdite, Darka, Para gjumit, plus Para/Gjatë/Pas stërvitjes në ditë stërvitjeje). Çdo regjistrim: ushqimi, gramët, vakti, data.
 - **Burimet e ushqimeve:**
-  - Open Food Facts për produktet me barkod (skaner në kamerë);
-  - USDA FoodData Central për ushqimet e përgjithshme, përmes Edge Function;
+  - Open Food Facts për produktet me barkod (skaner në kamerë), me User-Agent `TrainingHub/<versioni>` pa të dhëna personale;
+  - USDA FoodData Central për ushqimet e përgjithshme, përmes Edge Function që pranon vetëm kërkesa me sesion të vlefshëm;
   - ushqimet e përdoruesit (makro për 100 g) dhe recetat (përbërës me gramë, peshë totale, porcione), të ruajtura për ripërdorim.
 - **Shablloni i Jimit** (Q18): çdo vakt i planit regjistrohet me një prekje dhe pastaj ndryshohet. Listat e zëvendësimeve të PDF-së (mishrat, bulmetrat, drithërat, perimet, frutat, karbohidratet pas stërvitjes) shfaqen si alternativa për artikullin përkatës.
 - **Shënim në ekranin e objektivave:** proteina e Jimit është rreth 3,3–4,1 g/kg; studimet tregojnë se fitimi në muskul nuk rritet ndjeshëm mbi rreth 1,6–2,2 g/kg.
@@ -119,7 +131,7 @@ Lista e planit, me orarin dhe dozën, regjistrohet si checklist ditore:
 
 | Suplementi | Kur | Doza (PDF) | Evidenca |
 |---|---|---|---|
-| Protein powder | Mëngjesi 1, Pasditja, Para gjumit, shake-u i stërvitjes | 1–2 scoop | Ushqim; e mirë kur mbush objektivin |
+| Protein powder | Mëngjesi 1, Snack pasdite, Para gjumit, shake-u i stërvitjes | 1–2 scoop | Ushqim; e mirë kur mbush objektivin |
 | Creatine | Shake-u para/gjatë dhe pas stërvitjes | 1,5–5 g | E fortë |
 | Beta-alanine | Shake-u para/gjatë dhe pas stërvitjes | 1,5–3 g | Mesatare |
 | Betaine | Shake-u para/gjatë dhe pas stërvitjes | 1,5–2 g | E kufizuar |
@@ -169,7 +181,7 @@ Njoftime lokale, të planifikuara në telefon. Cilësimet mbajnë: orën e zgjim
 
 ## 15. Tabelat kryesore
 
-`programs`, `program_blocks`, `program_days`, `program_slots`, `slot_prescriptions` (JSON i tipizuar sipas §4), `exercises` (biblioteka + të përdoruesit, `video_url`, `primary_muscles`, `secondary_muscles`, `equipment`), `program_state` (treguesi i radhës), `workout_sessions`, `set_logs` (me segmente), `one_rm_overrides`, `body_measurements`, `progress_photos`, `foods` (cache + të përdoruesit), `recipes`, `recipe_items`, `meal_templates`, `diary_entries`, `nutrition_targets`, `supplements`, `supplement_logs`, `user_settings` (ditët dhe oraret e stërvitjes, zgjimi, gjumi, hapat e peshave sipas pajisjes, tema, rikujtuesit). Çdo tabelë ka `user_id`, `updated_at`, `deleted_at`, RLS.
+`programs`, `program_blocks`, `program_days`, `program_slots`, `slot_prescriptions` (JSON i tipizuar sipas §4), `exercises` (biblioteka + të përdoruesit, `video_url`, `primary_muscles`, `secondary_muscles`, `equipment`), `program_state` (treguesi i radhës), `workout_sessions`, `set_logs` (me segmente), `one_rm_overrides`, `body_measurements`, `progress_photos`, `foods` (cache + të përdoruesit), `recipes`, `recipe_items`, `meal_templates`, `diary_entries`, `nutrition_targets`, `supplements`, `supplement_logs`, `user_settings` (ditët dhe oraret e stërvitjes, zgjimi, gjumi, hapat e peshave sipas pajisjes, tema, rikujtuesit). Çdo tabelë ka `user_id`, `updated_at`, `deleted_at`, RLS. Kohët ruhen në UTC; dita e ditarit dhe e stërvitjes ruhet si datë lokale (`YYYY-MM-DD`, zona e telefonit), që një vakt pas mesnate të mos kalojë në ditën e gabuar.
 
 ## 16. Jashtë planit
 
@@ -177,7 +189,7 @@ Play Store, iOS, përdorues të tjerë ose ndarje, superset-e dhe qarqe, deload 
 
 ## 17. Radha e ndërtimit
 
-1. Themelet: skeleti i projektit, tokenat e Omal UI v2, Capacitor dhe APK nga GitHub Actions, Dexie, skema e Supabase me RLS, Auth, sinkronizimi.
+1. Themelet: skeleti i projektit, tokenat e Omal UI v2, Capacitor dhe APK nga GitHub Actions, Dexie, skema e Supabase me RLS, Auth, sinkronizimi, hyrja e parë (§3a).
 2. Spike 3D: pipeline-i i modelit dhe një shikues minimal (rrezik i hershëm).
 3. Motori i programit dhe Shortcut to Size + Java 0 si të dhëna, me teste.
 4. Regjistrimi i stërvitjes dhe timer-i me njoftim.

@@ -1,5 +1,4 @@
 // @vitest-environment node
-// @ts-expect-error: skript JavaScript pa tipa, përdoret vetëm në teste
 import { findViolations } from '../../scripts/check-design.mjs'
 
 describe('rregullat e Omal UI v2', () => {

@@ -8,6 +8,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 | TH-02 | Capacitor Android dhe APK nga GitHub Actions | TH-01 | D1 |
 | TH-03 | Skema e Supabase, RLS, Auth, Storage | – | D1 |
 | TH-04 | Ruajtja lokale dhe sinkronizimi | TH-01, TH-03 | D1 |
+| TH-22 | Hyrja e parë | TH-03, TH-04 | D1 |
 | TH-05 | Spike 3D: pipeline-i i modelit dhe shikuesi minimal | TH-01 | |
 | TH-06 | Motori i programit | TH-01 | D1 |
 | TH-07 | Shortcut to Size, Java 0 dhe biblioteka e ushtrimeve | TH-06 | D1 |
@@ -50,9 +51,11 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 ## TH-03 · Skema e Supabase, RLS, Auth, Storage
 
 - Migrime për tabelat e §15, me `user_id`, `updated_at`, `deleted_at` dhe RLS në secilën.
-- Auth me email dhe fjalëkalim; bucket privat `progress-photos`.
+- Auth me email dhe fjalëkalim; pas krijimit të llogarisë së përdoruesit, regjistrimet e reja çaktivizohen.
+- Bucket privat `progress-photos` me rrugë `<user_id>/...` dhe RLS te `storage.objects`.
+- Datat e ditarit dhe të stërvitjes si datë lokale; kohët në UTC (§15).
 
-**Pranimi:** këshilltari i sigurisë i Supabase pa paralajmërime; një test vërteton që një përdorues tjetër nuk sheh asnjë rresht.
+**Pranimi:** këshilltari i sigurisë i Supabase pa paralajmërime; një test vërteton që një përdorues tjetër nuk sheh asnjë rresht dhe asnjë foto; regjistrimi i një llogarie të re refuzohet.
 
 ## TH-04 · Ruajtja lokale dhe sinkronizimi
 
@@ -61,6 +64,13 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 - "Eksporto të dhënat" te cilësimet: JSON me të gjitha tabelat.
 
 **Pranimi:** një set i regjistruar pa internet del në Supabase kur kthehet rrjeti; teste për konfliktet dhe fshirjet; eksporti përmban çdo tabelë.
+
+## TH-22 · Hyrja e parë
+
+- Hapat e SPEC §3a: llogaria, pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi, programi aktiv.
+- Çdo vlerë ndryshohet më vonë te cilësimet.
+
+**Pranimi:** pas instalimit të ri, hyrja e parë përfundon në më pak se dy minuta dhe ekrani Sot tregon "Java 0 · Stërvitja 1"; pa internet pas hyrjes, app-i hapet direkt te Sot.
 
 ## TH-05 · Spike 3D
 
@@ -73,8 +83,9 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 - Modul TypeScript pa UI: tipat e recetave të §4 (`rep_ladder`, `timed`, `percent_1rm`, `linear`, `rpe`/`rir`), teknikat, pushimet.
 - Nga programi dhe treguesi i radhës nxjerr planin e seancës; kalimi përpara dhe "Kapërce".
+- Programi aktiv, ndërrimi i programeve me treguesin e secilit, ndryshimet që vlejnë nga stërvitja e radhës, gjendja "Përfunduar" dhe rinisja (§4).
 
-**Pranimi:** teste për çdo lloj recete dhe për kalimin ndërmjet javëve dhe blloqeve.
+**Pranimi:** teste për çdo lloj recete, për kalimin ndërmjet javëve dhe blloqeve, për fundin e programit dhe rinisjen.
 
 ## TH-07 · Shortcut to Size, Java 0, biblioteka
 
@@ -131,7 +142,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 ## TH-15 · Burimet e ushqimeve
 
-- Open Food Facts sipas barkodit (skaner) dhe kërkimit; USDA përmes Edge Function me çelësin si secret; ushqimet e përdorura ruhen lokalisht.
+- Open Food Facts sipas barkodit (skaner) dhe kërkimit, me User-Agent pa të dhëna personale; USDA përmes Edge Function me çelësin si secret, që pranon vetëm kërkesa me sesion; ushqimet e përdorura ruhen lokalisht.
 
 **Pranimi:** një produkt i skanuar dhe një ushqim i përgjithshëm shtohen në ditar; pa internet gjenden ushqimet e përdorura më parë.
 

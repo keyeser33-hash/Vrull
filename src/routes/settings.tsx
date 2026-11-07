@@ -32,7 +32,7 @@ export function SettingsPage() {
         <fieldset>
           <legend className="text-lg leading-7 font-semibold tracking-[-0.01em]">Tema</legend>
           <p className="mt-1 text-sm leading-5 text-muted-foreground">
-            OLED kursen bateri dhe lexohet më mirë në palestër.
+            OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
           </p>
           <div className="mt-4 space-y-2">
             {THEMES.map((option) => (
@@ -59,7 +59,7 @@ export function SettingsPage() {
           </div>
         </fieldset>
       </section>
-      <p className="mt-6 text-xs leading-4 text-muted-foreground">Training Hub 0.1.0</p>
+      <p className="mt-6 text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
     </>
   )
 }
