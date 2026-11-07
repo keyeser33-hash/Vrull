@@ -224,6 +224,7 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - Merr një çelës falas për USDA FoodData Central (api.data.gov) për detyrën TH-15.
 - Te paneli i Supabase: krijo llogarinë tënde (Authentication → Users → Add user, me "Auto Confirm User") dhe çaktivizo "Allow new users to sign up".
 - Shto në GitHub secret-et e nënshkrimit `TH_KEYSTORE_BASE64` dhe `TH_KEYSTORE_PASSWORD` dhe ruaj një kopje rezervë të çelësit (`docs/INSTALL.md`, pika 1). Proxy-i i sesionit nuk lejon shkrimin e secret-eve.
+- Për çdo version të ri: krijo Release-in me tag-un `vX.Y.Z` te GitHub (`docs/INSTALL.md`, pika 6). Proxy-i i sesionit nuk lejon krijimin e tag-eve; APK-në e shton workflow-i.
 - Kur rregulli i Google-it të vlejë në vendin tënd: regjistro app-in me llogarinë falas "limited distribution" (`docs/INSTALL.md`, pika 5).
 
 ## Shtojca A · Ushtrimet sipas fazës
