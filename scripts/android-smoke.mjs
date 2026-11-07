@@ -225,17 +225,18 @@ async function connect() {
     if (message.method === 'Fetch.requestPaused') {
       const { requestId, request } = message.params
       if (request.method === 'OPTIONS') {
-        void send('Fetch.fulfillRequest', { requestId, responseCode: 204, responseHeaders: cors(request) })
+        // Pa pritur: nëse app-i mbyllet ndërkohë, përgjigja thjesht nuk nevojitet më.
+        send('Fetch.fulfillRequest', { requestId, responseCode: 204, responseHeaders: cors(request) }).catch(() => {})
         return
       }
       const [status, body] = fakeResponse(request)
       report.requests.push(`${request.method} ${new URL(request.url).pathname} ${status}`)
-      void send('Fetch.fulfillRequest', {
+      send('Fetch.fulfillRequest', {
         requestId,
         responseCode: status,
         responseHeaders: [...cors(request), { name: 'Content-Type', value: 'application/json' }],
         body: Buffer.from(JSON.stringify(body)).toString('base64'),
-      })
+      }).catch(() => {})
       return
     }
     if (message.method === 'Runtime.exceptionThrown') {
