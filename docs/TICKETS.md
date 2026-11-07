@@ -1,6 +1,6 @@
 # Training Hub · Detyrat
 
-Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. Radha ndjek §17 të specifikimit. Detyrat me **D1** janë minimumi për ditën e parë në palestër.
+Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. Logjika pa UI (TH-06, TH-07, TH-10, TH-14) ndërtohet me teste përpara kodit. Radha ndjek §17 të specifikimit. Detyrat me **D1** janë minimumi për ditën e parë në palestër.
 
 | ID | Detyra | Varet nga | D1 |
 |---|---|---|---|
@@ -41,7 +41,9 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. R
 
 - Capacitor me platformën Android.
 - Workflow që ndërton APK release të nënshkruar dhe e publikon si GitHub Release në çdo tag `v*`.
-- Çelësi i nënshkrimit ruhet si secret i repo-s; udhëzim i shkurtër në `docs/INSTALL.md` për instalimin në telefon.
+- Çelësi i nënshkrimit ruhet si secret i repo-s; nëse sesioni nuk i shton dot secret-et, `docs/INSTALL.md` jep hapat për përdoruesin.
+- Manifesti deklaron `POST_NOTIFICATIONS` dhe `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`.
+- `docs/INSTALL.md`: instalimi i parë dhe përditësimet në telefon.
 
 **Pranimi:** APK-ja instalohet në telefonin e përdoruesit, hapet, dhe një version i ri instalohet mbi të vjetrin pa humbur të dhëna.
 
@@ -56,8 +58,9 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. R
 
 - Dexie me të njëjtat tabela; çdo shkrim lokal së pari.
 - Motori i sinkronizimit: dërgon rreshtat e ndryshuar, merr më të rejat, fshirje e butë, fiton ndryshimi i fundit.
+- "Eksporto të dhënat" te cilësimet: JSON me të gjitha tabelat.
 
-**Pranimi:** një set i regjistruar pa internet del në Supabase kur kthehet rrjeti; teste për konfliktet dhe fshirjet.
+**Pranimi:** një set i regjistruar pa internet del në Supabase kur kthehet rrjeti; teste për konfliktet dhe fshirjet; eksporti përmban çdo tabelë.
 
 ## TH-05 · Spike 3D
 
@@ -76,20 +79,23 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. R
 ## TH-07 · Shortcut to Size, Java 0, biblioteka
 
 - free-exercise-db si bibliotekë; ushtrimet që mungojnë shtohen me muskujt e tyre.
+- Çelësat e muskujve të çdo ushtrimi të programit sipas Shtojcës E; emrat e njëjtë bashkohen (§5).
 - Programi si të dhëna sipas §5 dhe Shtojcave A dhe B, me Java 0 në fillim.
 
-**Pranimi:** një test krahason çdo javë dhe fazë të programit me Shtojcat A dhe B, rresht për rresht.
+**Pranimi:** një test krahason çdo javë dhe fazë të programit me Shtojcat A dhe B, rresht për rresht; çdo ushtrim i programit ka çelësat e Shtojcës E; Java 0 ka setet e §5.
 
 ## TH-08 · Ekrani "Sot" dhe seanca
 
 - Karta "Stërvitja e radhës", fillimi i seancës, regjistrimi i seteve (peshë, përsëritje ose sekonda, RPE/RIR, shënim), segmentet e rest-pause dhe drop set-it.
 - Mbyllja e seancës e çon treguesin përpara; një seancë e ndërprerë vazhdon.
+- "Ndrysho ushtrimin për këtë fazë" direkt nga seanca.
 
 **Pranimi:** një seancë e plotë e Javës 0 dhe e Fazës 1 Java 3 (drop set) regjistrohet pa internet.
 
 ## TH-09 · Timer-i i pushimit
 
 - Njoftim lokal në fund të pushimit, me zë dhe dridhje; anulohet kur nis seti tjetër; 15 s për rest-pause.
+- Kërkesa e lejeve të njoftimeve dhe të alarmeve të sakta; nëse vonesa vazhdon, kërkesa për përjashtim nga optimizimi i baterisë.
 
 **Pranimi:** me ekran të kyçur, njoftimi vjen brenda 2 sekondave nga koha.
 

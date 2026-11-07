@@ -1,6 +1,6 @@
-# Training Hub · Specifikimi v1
+# Training Hub · Specifikimi v1.1
 
-Data: 07.11.2026. Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
+Data: 07.11.2026 (v1.1 pas rishikimit të së njëjtës ditë). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
 
 ## 1. Qëllimi
 
@@ -12,7 +12,7 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 |---|---|
 | Platforma | App Android i paketuar si APK me Capacitor, i instaluar jashtë Play Store. Kod web: React + Vite + TypeScript. |
 | Të dhënat | Lokale-së-pari (IndexedDB në telefon), sinkronizim me Supabase (projekti `training-hub`, Frankfurt). |
-| Q1 | Supabase në llogarinë e re, organizata `andinora94@gmail.com's Org`, ref `hxwkyhfqcadtipkpopnq`. |
+| Q1 | Supabase në llogarinë e re të përdoruesit, projekti me ref `hxwkyhfqcadtipkpopnq`. |
 | Q2, Q5 | Editor i plotë programesh që në versionin e parë. |
 | Q3 | Stërvitjet ndjekin radhën, jo kalendarin. Një ditë e humbur nuk kapërcen asnjë stërvitje. |
 | Q4 | "Java 0" para Fazës 1: teknikë dhe gjetja e peshave. Programi bëhet 13 javë. |
@@ -32,10 +32,10 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 ## 3. Platforma dhe arkitektura
 
 - **Klienti:** React + Vite + TypeScript, Tailwind v4 me tokenat e Omal UI v2 (`globals.css` i sistemit të dizajnit), komponentë shadcn.
-- **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo).
+- **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. Lejet e Android-it: njoftimet (`POST_NOTIFICATIONS`, kërkohet në stërvitjen e parë) dhe alarmet e sakta (`SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`), pa të cilat Android mund ta vonojë njoftimin e timer-it me ekran të kyçur. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo).
 - **Ruajtja lokale:** Dexie (IndexedDB). Çdo veprim shkruan fillimisht lokalisht; asnjë ekran nuk pret rrjetin.
 - **Sinkronizimi:** çdo rresht ka `id` (UUID i krijuar në telefon), `updated_at`, `deleted_at`. Dërgohen rreshtat e ndryshuar, merren ato më të reja se sinkronizimi i fundit. Konfliktet: fiton ndryshimi më i fundit (një përdorues, një telefon).
-- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim, Storage me bucket privat për fotot, Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret).
+- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot, Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret).
 - **3D:** three.js përmes `@react-three/fiber`. Modeli është një GLB i gjeneruar nga një skript i përsëritshëm në `tools/anatomy/` (shih §11).
 - **Varësitë:** çdo paketë e re verifikohet para instalimit (autenticiteti, mirëmbajtja, licenca).
 
@@ -71,23 +71,26 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
   - pulpat: 25–30, 15–20, 10–14, 6–9;
   - barku: 20–30 (vazhdo deri në dështim nëse mundesh më shumë), 15–19, 10–14, 6–9.
 - **Setet:** 4 sete për Bench Press, Dumbbell Bent-Over Row, Barbell Curl, Dumbbell Shoulder Press, shrug-et, Squat, Romanian Deadlift dhe pulpat. 3 sete për të gjitha të tjerat, përfshirë Triceps Pressdown dhe barkun.
-- **Teknika:** javët 1–2 rest-pause në setin e fundit të çdo ushtrimi (deri në dështim, 15 s pushim, vazhdo deri në dështim). Javët 3–4 drop set në setin e fundit (deri në dështim, ul te pesha e javës 1 të fazës për atë ushtrim, vazhdo deri në dështim).
+- **Teknika:** javët 1–2 rest-pause në setin e fundit të çdo ushtrimi (deri në dështim, 15 s pushim, vazhdo deri në dështim). Javët 3–4 drop set në setin e fundit (deri në dështim, ul te pesha e javës 1 të fazës për atë ushtrim, vazhdo deri në dështim). Teknika vlen edhe për pulpat dhe barkun, por jo për ushtrimet me kohë (Plank, Side Plank). Nëse në një javë drop set-i ushtrimi bëhet pa peshë, zbatohet rest-pause. Për ushtrimet me llastik, drop set-i bëhet me llastikun më të lehtë.
 - **Pesha mbetet e njëjtë** në të gjitha setet e një ushtrimi brenda seancës. Minimumi i intervalit duhet arritur.
 - **Ushtrimi i parë i çdo grupi** (Bench Press, Triceps Pressdown, Dumbbell Bent-Over Row, Barbell Curl, Dumbbell Shoulder Press, Squat, Romanian Deadlift) mbetet i njëjtë për 12 javët. Ndihmësit ndryshojnë sipas fazës. Ushtrimet e barkut ndryshojnë sipas javës (Shtojca B).
-- **Java 0:** stërvitjet e Fazës 1, Java 1, me 2–3 sete, 12–15 përsëritje, pa rest-pause dhe pa dështim (lër 2–3 përsëritje në rezervë). Qëllimi: teknika dhe gjetja e peshës për 12–15. Peshat e Javës 0 ushqejnë sugjerimet e Javës 1.
+- **Java 0:** stërvitjet e Fazës 1, Java 1, me 12–15 përsëritje, pa rest-pause dhe pa dështim (lër 2–3 përsëritje në rezervë, RIR 2–3). Setet: 3 për ushtrimet që në program kanë 4, 2 për të tjerat. Qëllimi: teknika dhe gjetja e peshës për 12–15. Peshat e Javës 0, me RIR-në e regjistruar, ushqejnë sugjerimet e Javës 1.
+- **Hip Thrust i barkut:** Hip Thrust, Weighted Hip Thrust dhe Smith Machine Hip Thrust te barku janë ngritje e legenit e shtrirë në shpinë me këmbët lart, për pjesën e poshtme të barkut (te versioni Smith, këmbët shtyjnë shufrën lart). Nuk janë hip thrust-i i gluteve me shufër mbi kofshë. Lidhen me `rectus_abdominis`, jo me gluteus.
+- **Emrat e njëjtë:** "Straight Arm Pulldown" dhe "Straight-Arm Pulldown" janë i njëjti ushtrim; po ashtu "Incline Cable Cable Flye" e PDF-së është "Incline Cable Flye". Historia e një ushtrimi mbetet e përbashkët në të gjitha fazat ku shfaqet.
 
 ## 6. Regjistrimi i stërvitjes
 
 - Ekrani i seancës tregon slotet me radhë, recetën e javës, peshën e sugjeruar dhe referencën e fazës së kaluar.
-- Për çdo set: pesha, përsëritjet (ose sekondat), RPE/RIR kur receta e kërkon, shënim. Seti i fundit me rest-pause ose drop set ka segmente (pesha dhe përsëritjet e secilit).
+- Për çdo set: pesha, përsëritjet (ose sekondat), RPE/RIR kur receta e kërkon, shënim. Te dumbbell-at regjistrohet pesha e një dumbbell-i; te ushtrimet me peshën e trupit, pesha shtesë (0 kur s'ka). Seti i fundit me rest-pause ose drop set ka segmente (pesha dhe përsëritjet e secilit).
 - Pas çdo seti nis timer-i i pushimit. Kur mbaron, vjen njoftim me zë dhe dridhje edhe me ekran të kyçur. Gjatë rest-pause, timer-i është 15 s.
 - Rekordet personale (peshë më e madhe për një numër përsëritjesh, e1RM më e lartë) shënohen në moment.
 - Seanca mund të ndërpritet dhe të vazhdohet; mbyllja e saj e çon treguesin përpara.
+- Nëse mungon pajisja, nga seanca hapet direkt "Ndrysho ushtrimin për këtë fazë" (e njëjta logjikë si në editor), pa dalë nga stërvitja.
 
 ## 7. 1RM dhe pesha e sugjeruar
 
-- **e1RM** me formulën Epley: `pesha × (1 + përsëritjet / 30)`, vetëm nga setet e drejta me 1–15 përsëritje (jo segmentet e rest-pause ose drop set-it).
-- **1RM aktuale** e një ushtrimi: më e larta nga 28 ditët e fundit. Përdoruesi mund ta vendosë me dorë; vlera e tij vlen derisa një seancë e re të japë më shumë.
+- **e1RM** me formulën Epley: `pesha × (1 + (përsëritjet + RIR) / 30)`, ku RIR = 0 kur nuk është regjistruar. Vetëm nga setet e drejta me 1–15 përsëritje (jo segmentet e rest-pause ose drop set-it, jo ushtrimet pa peshë ose me kohë).
+- **1RM aktuale** e një ushtrimi: më e larta nga 28 ditët e fundit; nëse s'ka asnjë në 28 ditë, e fundit e njohur. Përdoruesi mund ta vendosë me dorë; vlera e tij vlen derisa një seancë e re të japë më shumë.
 - **Pesha e sugjeruar** për një interval përsëritjesh: `1RM / (1 + kufiri i sipërm / 30)`, e rrumbullakosur poshtë sipas pajisjes (shufër 2,5 kg; dumbbell 2 kg; kabëll dhe makineri 5 kg; ndryshohen te cilësimet).
 - **Referenca e fazës së kaluar:** pesha dhe përsëritjet e së njëjtës javë në fazën e mëparshme, plus intervali +2,5–9 kg nga programi.
 - Për `percent_1rm`, pesha llogaritet nga 1RM aktuale. Ushtrim pa histori: pa sugjerim, me tekstin "Zgjidh peshën ku mbyll X–Y përsëritje".
@@ -97,10 +100,11 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
 - **Matjet:** pesha e trupit (çdo ditë, opsionale), % e yndyrës (me dorë), perimetrat në cm: qafa, shpatullat, gjoksi, beli, vithet, krahu (M/D), parakrahu (M/D), kofsha (M/D), pulpa (M/D).
 - **Fotot e progresit:** para, anash, mbrapa. Kompresohen në telefon dhe ruhen në bucket privat të Supabase.
 - **Grafikët:** e1RM për çdo ushtrim, volumi javor për muskul (sete), pesha e trupit me mesatare 7-ditore, perimetrat, përputhja me objektivat e ushqimit.
+- **Eksporti:** te cilësimet, "Eksporto të dhënat" nxjerr një skedar JSON me gjithçka (pa fotot). Plani falas i Supabase nuk ka backup automatik ditor, ndaj ky është rrjeti i sigurisë.
 
 ## 9. Ushqimi
 
-- **Objektivat** (Q15): nga totalet e ditës shembull të Jimit (180 lb = 81,65 kg), të shkallëzuara sipas peshës. Shih Shtojcën C. Dita llogaritet "stërvitje" nëse është ditë stërvitjeje te cilësimet ose nëse u regjistrua stërvitje atë ditë; përdoruesi e ndryshon me një prekje.
+- **Objektivat** (Q15): nga totalet e ditës shembull të Jimit (180 lb = 81,65 kg), të shkallëzuara sipas peshës, duke përdorur mesataren 7-ditore të peshës së trupit (ose peshën e fundit kur ka më pak se 3 matje). Shih Shtojcën C. Dita llogaritet "stërvitje" nëse është ditë stërvitjeje te cilësimet ose nëse u regjistrua stërvitje atë ditë; përdoruesi e ndryshon me një prekje.
 - **Ditari:** vaktet sipas planit (Mëngjesi 1, Mëngjesi 2, Zemër mëngjesi, Dreka, Pasditja, Darka, Para gjumit, plus Para/Gjatë/Pas stërvitjes në ditë stërvitjeje). Çdo regjistrim: ushqimi, gramët, vakti, data.
 - **Burimet e ushqimeve:**
   - Open Food Facts për produktet me barkod (skaner në kamerë);
@@ -131,7 +135,7 @@ Kolona e evidencës shfaqet si etiketë me fjalë. Përdoruesi mund të çaktivi
 ## 11. Modeli 3D i trupit
 
 - **Burimi (verifikuar 07.11.2026):** BodyParts3D, Database Center for Life Science.
-  - Versioni 4.0, CC BY 4.0, OBJ me 99% më pak poligone, një skedar për çdo element me emër dhe FMA ID. Mbulon muskujt kryesorë (pectoralis major, tri pjesët e deltoid, biceps, triceps, trapezius, rhomboid, teres major, infraspinatus, serratus, obliques, glutes, quadriceps, hamstrings, adductors, gastrocnemius, soleus, tibialis anterior, erector spinae).
+  - Versioni 4.0, CC BY 4.0, OBJ me 99% më pak poligone, një skedar për çdo element me emër dhe FMA ID. Mbulon muskujt kryesorë (pectoralis major, tri pjesët e deltoid, biceps, triceps, trapezius, rhomboid, teres major, infraspinatus, serratus, external oblique, glutes, quadriceps, hamstrings, adductors, gastrocnemius, soleus, tibialis anterior, erector spinae).
   - Latissimus dorsi dhe rectus abdominis mungojnë te 4.0. Merren nga versioni 3.0 (STL, CC BY-SA 2.1 Japan, pasqyra `Kevin-Mattheus-Moerman/BodyParts3D` në GitHub) dhe thjeshtohen.
 - **Pipeline-i** (`tools/anatomy/`, i përsëritshëm): zgjidh elementet sipas tabelës së muskujve (Shtojca D) → bashko majtas/djathtas sipas çelësit → thjeshto (meshoptimizer) → GLB me një nyje me emër për çdo çelës → kompresim. Objektivi: ≤ 5 MB, rrotullim i rrjedhshëm në një telefon Android mesatar.
 - **Funksionet** (Q14):
@@ -139,6 +143,7 @@ Kolona e evidencës shfaqet si etiketë me fjalë. Përdoruesi mund të çaktivi
   2. **Harta javore:** çdo muskul ngjyroset sipas seteve të javës (kryesor = 1, ndihmës = 0,5), me legjendë.
   3. **Prek muskulin:** emri në shqip dhe latinisht, funksioni me një fjali, ushtrimet e bibliotekës për të.
   4. **Gjendja e rikuperimit:** sipas orëve nga stërvitja e fundit ku muskuli ishte kryesor: < 48 orë "I lodhur", 48–72 "Pothuajse gati", > 72 "Gati". Gjendja shkruhet me fjalë, jo vetëm me ngjyrë.
+- **Muskujt e një ushtrimi:** çdo ushtrim ka listat e çelësave kryesorë dhe ndihmës. Për ushtrimet e bibliotekës nxirren nga grupet e free-exercise-db sipas Shtojcës D; për ushtrimet e Shortcut to Size vendosen saktë sipas Shtojcës E (p.sh. Dumbbell Lateral Raise theksohet vetëm te `deltoid_lateral`, jo te i gjithë deltoidi). Përdoruesi mund t'i ndryshojë.
 - **Biblioteka e ushtrimeve:** free-exercise-db (domain publik, 800+ ushtrime me muskuj kryesorë/ndihmës dhe foto) + ushtrime të përdoruesit. Ushtrimet e PDF-së që mungojnë (p.sh. Band Roundhouse Elbow, One-Arm High Cable Curl, Standing Pulldown) shtohen si ushtrime të përdoruesit me muskujt e tyre.
 - **Atribuimi** shfaqet te ekrani "Rreth": BodyParts3D, © The Database Center for Life Science, CC BY 4.0; pjesët nga versioni 3.0 nën CC BY-SA 2.1 Japan.
 
@@ -164,7 +169,7 @@ Njoftime lokale, të planifikuara në telefon. Cilësimet mbajnë: orën e zgjim
 
 ## 15. Tabelat kryesore
 
-`programs`, `program_blocks`, `program_days`, `program_slots`, `slot_prescriptions` (JSON i tipizuar sipas §4), `exercises` (biblioteka + të përdoruesit, `video_url`, `primary_muscles`, `secondary_muscles`, `equipment`), `program_state` (treguesi i radhës), `workout_sessions`, `set_logs` (me segmente), `one_rm_overrides`, `body_measurements`, `progress_photos`, `foods` (cache + të përdoruesit), `recipes`, `recipe_items`, `meal_templates`, `diary_entries`, `nutrition_targets`, `supplements`, `supplement_logs`, `reminder_settings`. Çdo tabelë ka `user_id`, `updated_at`, `deleted_at`, RLS.
+`programs`, `program_blocks`, `program_days`, `program_slots`, `slot_prescriptions` (JSON i tipizuar sipas §4), `exercises` (biblioteka + të përdoruesit, `video_url`, `primary_muscles`, `secondary_muscles`, `equipment`), `program_state` (treguesi i radhës), `workout_sessions`, `set_logs` (me segmente), `one_rm_overrides`, `body_measurements`, `progress_photos`, `foods` (cache + të përdoruesit), `recipes`, `recipe_items`, `meal_templates`, `diary_entries`, `nutrition_targets`, `supplements`, `supplement_logs`, `user_settings` (ditët dhe oraret e stërvitjes, zgjimi, gjumi, hapat e peshave sipas pajisjes, tema, rikujtuesit). Çdo tabelë ka `user_id`, `updated_at`, `deleted_at`, RLS.
 
 ## 16. Jashtë planit
 
@@ -193,6 +198,15 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - **Modeli 3D:** pjesët nga versioni 3.0 kanë rezolucion të lartë (rreth 10 MB për muskul) dhe duhen thjeshtuar fort; duhet kontrolluar që përputhen në pozicion me versionin 4.0.
 - **APK jashtë Play Store:** Android kërkon leje për "instalim nga burime të panjohura" një herë.
 - **Open Food Facts** ka mbulim të pjesshëm për produktet shqiptare; ushqimet e përdoruesit e mbulojnë boshllëkun.
+- **Pauzimi i Supabase:** projekti falas pauzohet pas 7 ditësh pa aktivitet (p.sh. një pushim pa stërvitje). App-i vazhdon pa internet; projekti rikthehet nga paneli i Supabase me të dhënat të paprekura, dhe sinkronizimi rifillon vetë.
+- **Saktësia e timer-it:** prodhuesit e telefonave (Samsung, Xiaomi etj.) kufizojnë punën në sfond. Nëse njoftimi vonon edhe me alarmet e sakta, app-i kërkon përjashtimin nga optimizimi i baterisë.
+
+## 19. Veprimet që varen nga përdoruesi
+
+- Lejo "instalimin e app-eve të panjohura" për shfletuesin ose skedarët, një herë, për APK-në.
+- Lejo njoftimet dhe alarmet e sakta kur i kërkon app-i.
+- Merr një çelës falas për USDA FoodData Central (api.data.gov) për detyrën TH-15.
+- Nëse sesioni nuk i shton dot vetë, shto në GitHub secret-et e nënshkrimit të APK-së sipas udhëzimit të TH-02.
 
 ## Shtojca A · Ushtrimet sipas fazës
 
@@ -295,3 +309,45 @@ Shembull për 80 kg: pushim 3037 kcal, 260 g P, 255 g K, 108 g Y; stërvitje 362
 | neck | sternocleidomastoid |
 
 Pjesët e deltoid në BodyParts3D: "clavicular part" = anterior, "acromial part" = lateral, "spinal part" = posterior.
+
+## Shtojca E · Muskujt e ushtrimeve të Shortcut to Size
+
+K = kryesor, N = ndihmës. Çelësat sipas Shtojcës D.
+
+| Ushtrimi | K | N |
+|---|---|---|
+| Bench Press | pectoralis_major_sternocostal | pectoralis_major_clavicular, deltoid_anterior, triceps_brachii |
+| Incline Bench Press, Incline Dumbbell Press | pectoralis_major_clavicular | deltoid_anterior, triceps_brachii, pectoralis_major_sternocostal |
+| Reverse-Grip Incline Dumbbell Press | pectoralis_major_clavicular | triceps_brachii, deltoid_anterior |
+| Incline Dumbbell Flye, Incline Cable Flye | pectoralis_major_clavicular | deltoid_anterior |
+| Dumbbell Flye | pectoralis_major_sternocostal | pectoralis_major_clavicular, deltoid_anterior |
+| Cable Crossover | pectoralis_major_sternocostal | pectoralis_minor, deltoid_anterior |
+| Close-Grip Bench Press | triceps_brachii | pectoralis_major_sternocostal, deltoid_anterior |
+| Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, One-Arm Overhead Cable Triceps Extension | triceps_brachii | – |
+| Standing Calf Raise, Leg Press Calf Raise | gastrocnemius | soleus |
+| Seated Calf Raise | soleus | gastrocnemius |
+| Dumbbell Bent-Over Row | latissimus_dorsi, rhomboid_major | trapezius, teres_major, deltoid_posterior, biceps_brachii, erector_spinae |
+| Seated Cable Row | latissimus_dorsi, rhomboid_major | trapezius, deltoid_posterior, biceps_brachii |
+| Wide-Grip Pulldown, Behind-Neck Pulldown | latissimus_dorsi | teres_major, rhomboid_major, biceps_brachii |
+| Reverse-Grip Pulldown, Standing Pulldown | latissimus_dorsi | biceps_brachii, teres_major |
+| Straight-Arm Pulldown | latissimus_dorsi | teres_major, triceps_brachii |
+| Barbell Curl | biceps_brachii | brachialis, brachioradialis |
+| Preacher Curl | biceps_brachii, brachialis | brachioradialis |
+| Dumbbell Incline Curl, Incline Cable Curl, One-Arm High Cable Curl, Behind-Back Cable Curl, Dumbbell Concentration Curl | biceps_brachii | brachialis |
+| Dumbbell Shoulder Press | deltoid_anterior, deltoid_lateral | triceps_brachii, trapezius |
+| Dumbbell Lateral Raise, One-Arm Cable Lateral Raise | deltoid_lateral | trapezius |
+| One-Arm Cable Front Raise | deltoid_anterior | pectoralis_major_clavicular |
+| High Cable Rear Delt Fly, Bent-Over Lateral Raise | deltoid_posterior | rhomboid_major, trapezius, infraspinatus |
+| Smith Machine Upright Row, Dumbbell Upright Row | deltoid_lateral, trapezius | deltoid_anterior, biceps_brachii |
+| Dumbbell Shrug, Barbell Shrug, One-Arm Smith Machine Shrug | trapezius | – |
+| Squat | rectus_femoris, vastus_lateralis, vastus_medialis, gluteus_maximus | adductor_magnus, erector_spinae, biceps_femoris |
+| Front Squat | rectus_femoris, vastus_lateralis, vastus_medialis | gluteus_maximus, erector_spinae, rectus_abdominis |
+| Leg Press, One-Leg Leg Press | rectus_femoris, vastus_lateralis, vastus_medialis | gluteus_maximus, adductor_magnus |
+| Leg Extension | rectus_femoris, vastus_lateralis, vastus_medialis | – |
+| Romanian Deadlift | biceps_femoris, semitendinosus, semimembranosus, gluteus_maximus | erector_spinae, adductor_magnus |
+| Lying Leg Curl, Seated Leg Curl | biceps_femoris, semitendinosus, semimembranosus | gastrocnemius |
+| Hip Thrust, Weighted Hip Thrust, Smith Machine Hip Thrust (barku) | rectus_abdominis | external_oblique |
+| Crunch, Weighted Crunch, Cable Crunch, Machine Crunch, Hanging Leg Raise, Plank | rectus_abdominis | external_oblique |
+| Oblique Crunch, Cable Oblique Crunch, Cable Woodchopper, Band Roundhouse Elbow | external_oblique | rectus_abdominis |
+| Dumbbell Side Bend | external_oblique | erector_spinae |
+| Side Plank | external_oblique | gluteus_medius, rectus_abdominis |
