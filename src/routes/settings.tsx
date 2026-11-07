@@ -1,9 +1,11 @@
-import { type ReactNode, useEffect, useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
+import { Choice } from '@/components/forms/choice'
 import { DayPicker } from '@/components/forms/day-picker'
 import { TimeStepper } from '@/components/forms/time-stepper'
 import { ValueStepper } from '@/components/forms/value-stepper'
 import { WEEK_DAYS } from '@/components/forms/week-days'
+import { Group, Row } from '@/components/layout/list-group'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -12,7 +14,6 @@ import { auth, scheduler, store, useAuth, useLocalQuery, usePendingChanges, useS
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
 import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
-import { cn } from '@/lib/cn'
 import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
 import { kg } from './training-format'
@@ -129,47 +130,6 @@ function AccountPanel({ onSignOut }: { onSignOut: () => void }) {
   )
 }
 
-function Group({ title, children }: { title: string; children: ReactNode }) {
-  const id = useId()
-  return (
-    <section aria-labelledby={id} className="flex flex-col">
-      <h2 id={id} className="mb-1 text-sm leading-5 font-semibold text-muted-foreground">
-        {title}
-      </h2>
-      <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">{children}</div>
-    </section>
-  )
-}
-
-/** Një rresht 56 px; `action` për veprimet e menjëhershme (pa shigjetë, nuk hap fletë). */
-function Row({
-  label,
-  value,
-  onClick,
-  disabled,
-  action,
-}: {
-  label: string
-  value?: string
-  onClick: () => void
-  disabled?: boolean
-  action?: boolean
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={value ? `${label}, ${value}` : label}
-      className="flex min-h-14 items-center gap-3 border-t border-border-subtle px-4 text-left first:border-t-0 hover:bg-accent disabled:opacity-50"
-    >
-      <span className="flex-1 text-base leading-6">{label}</span>
-      {value ? <span className="text-sm leading-5 text-muted-foreground tabular-nums">{value}</span> : null}
-      {action ? null : <Icon name="chevron-djathtas" size={16} className="text-muted-foreground" />}
-    </button>
-  )
-}
-
 /** Vetëm në telefon: përjashtimi nga optimizimi i baterisë, kur timer-i vonon me ekran të kyçur. */
 function TimerRow() {
   const [unrestricted, setUnrestricted] = useState<boolean | null>(null)
@@ -253,23 +213,7 @@ function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (the
           OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
         </legend>
         {THEMES.map((option) => (
-          <label
-            key={option}
-            className={cn(
-              'flex min-h-11 cursor-pointer items-center gap-3 rounded-md border px-3.5 text-base',
-              theme === option ? 'border-foreground bg-selected' : 'border-border hover:bg-accent',
-            )}
-          >
-            <input
-              type="radio"
-              name="theme"
-              value={option}
-              checked={theme === option}
-              onChange={() => onChoose(option)}
-              className="size-4 accent-current"
-            />
-            {THEME_LABELS[option]}
-          </label>
+          <Choice key={option} name="theme" checked={theme === option} onChange={() => onChoose(option)} label={THEME_LABELS[option]} />
         ))}
       </fieldset>
     </Sheet>

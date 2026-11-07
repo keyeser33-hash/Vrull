@@ -5,8 +5,10 @@ import { LoginPage } from '@/routes/login'
 import { OnboardingPage } from '@/routes/onboarding'
 import { BodyPage, NutritionPage, ProgressPage } from '@/routes/placeholders'
 import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
+import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
 import { SessionPage } from '@/routes/session'
 import { SettingsPage } from '@/routes/settings'
+import { SlotEditorPage } from '@/routes/slot-editor'
 import { TodayPage } from '@/routes/today'
 
 // Ekranet e app-it pas hyrjes (testet i përdorin pa portën).
@@ -19,6 +21,10 @@ export const appRoutes: RouteObject[] = [
       { path: 'programi', element: <ProgramPage /> },
       { path: 'programi/:blockId/:week/:dayId', element: <WorkoutPage /> },
       { path: 'ushtrimi/:exerciseId', element: <ExercisePage /> },
+      { path: 'programet', element: <ProgramsPage /> },
+      { path: 'programi/editori/:programId', element: <ProgramEditorPage /> },
+      { path: 'programi/editori/:programId/dita/:dayId', element: <DayEditorPage /> },
+      { path: 'programi/editori/:programId/sloti/:slotId', element: <SlotEditorPage /> },
       { path: 'ushqimi', element: <NutritionPage /> },
       { path: 'progresi', element: <ProgressPage /> },
       { path: 'trupi', element: <BodyPage /> },

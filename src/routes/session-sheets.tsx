@@ -1,12 +1,11 @@
-import { useEffect, useId, useState } from 'react'
+import { useState } from 'react'
+import { LibraryPicker } from '@/components/forms/library-picker'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
-import { inputClass } from '@/components/ui/field-styles'
 import { store } from '@/data/app-data'
 import { replaceExerciseForBlock, type TrainingSnapshot } from '@/data/training'
-import { type LibraryExercise, loadLibrary, searchLibrary } from '@/program/library'
 import type { SessionProgress } from '@/program/session-progress'
-import type { Equipment, PlannedSlot, SessionPlan } from '@/program/types'
+import type { PlannedSlot, SessionPlan } from '@/program/types'
 import { cn } from '@/lib/cn'
 import { setsText } from './training-format'
 
@@ -88,18 +87,6 @@ export function ExerciseListSheet({
   )
 }
 
-const EQUIPMENT: Record<Equipment, string> = {
-  barbell: 'Shufër',
-  ez_bar: 'Shufër EZ',
-  dumbbell: 'Dumbbell',
-  cable: 'Kabëll',
-  machine: 'Makineri',
-  bodyweight: 'Pesha e trupit',
-  kettlebell: 'Kettlebell',
-  band: 'Llastik',
-  other: 'Tjetër',
-}
-
 export function ChangeExerciseSheet({
   plan,
   slot,
@@ -111,60 +98,19 @@ export function ChangeExerciseSheet({
   exerciseName: string
   onClose: () => void
 }) {
-  const [library, setLibrary] = useState<LibraryExercise[] | null>(null)
-  const [query, setQuery] = useState('')
   const [busy, setBusy] = useState(false)
-  const searchId = useId()
-  useEffect(() => {
-    let cancelled = false
-    void loadLibrary().then((items) => {
-      if (!cancelled) setLibrary(items)
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-  const results = library ? searchLibrary(library, query).slice(0, 40) : []
   return (
     <Sheet title="Ndrysho ushtrimin" onClose={onClose}>
       <p className="text-sm leading-5 text-muted-foreground">
         Zëvendëson {exerciseName} në {plan.blockName}. Fazat e tjera dhe seancat e kaluara nuk ndryshojnë.
       </p>
-      <label htmlFor={searchId} className="text-sm leading-5 font-medium">
-        Kërko ushtrimin
-      </label>
-      <input
-        id={searchId}
-        type="search"
-        autoComplete="off"
-        value={query}
-        onChange={(event) => setQuery(event.currentTarget.value)}
-        className={cn(inputClass, 'appearance-none')}
+      <LibraryPicker
+        busy={busy}
+        onPick={(item) => {
+          setBusy(true)
+          void replaceExerciseForBlock(store, { plan, slotId: slot.slotId, library: item }).then(onClose)
+        }}
       />
-      {library === null ? (
-        <p className="text-sm leading-5 text-muted-foreground">Po ngarkohet biblioteka</p>
-      ) : results.length === 0 ? (
-        <p className="text-sm leading-5 text-muted-foreground">Asnjë ushtrim me këtë emër</p>
-      ) : (
-        <ul className="flex flex-col">
-          {results.map((item) => (
-            <li key={item.id} className="border-t border-border-subtle first:border-t-0">
-              <button
-                type="button"
-                disabled={busy}
-                className="flex min-h-12 w-full items-center gap-3 text-left"
-                onClick={() => {
-                  setBusy(true)
-                  void replaceExerciseForBlock(store, { plan, slotId: slot.slotId, library: item }).then(onClose)
-                }}
-              >
-                <span className="flex-1 text-base leading-6">{item.name}</span>
-                <span className="text-xs leading-4 text-muted-foreground">{EQUIPMENT[item.equipment]}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </Sheet>
   )
 }

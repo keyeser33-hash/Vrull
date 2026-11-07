@@ -1,4 +1,7 @@
 import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icons'
 
 // Koka e një ekrani: një h1 për faqe (Omal UI v2: 30/36, 600, -0.025em) dhe veprime opsionale.
 export function PageHeader({ title, actions }: { title: string; actions?: ReactNode }) {
@@ -17,5 +20,15 @@ export function EmptyCard({ title, children }: { title: string; children: ReactN
       <h2 className="text-lg leading-7 font-semibold tracking-[-0.01em]">{title}</h2>
       <p className="mt-1 text-sm leading-5 text-muted-foreground">{children}</p>
     </section>
+  )
+}
+
+/** Shigjeta mbrapa e ekraneve të detajit; kthehet aty nga erdhi përdoruesi. */
+export function BackButton({ label }: { label: string }) {
+  const navigate = useNavigate()
+  return (
+    <Button variant="ghost" size="icon" aria-label={label} className="-ml-3 text-foreground" onClick={() => navigate(-1)}>
+      <Icon name="chevron-majtas" size={22} />
+    </Button>
   )
 }

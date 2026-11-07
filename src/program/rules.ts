@@ -65,8 +65,9 @@ export function resolveRow<K extends keyof SlotOverride>(overrides: SlotOverride
 
 export const sameScope = (a: Scope | null, b: Scope) => a !== null && a.blockId === b.blockId && a.week === b.week
 
+/** Niveli me fjalë; null (vlera e vetë ushtrimit në ditë) vlen për gjithë programin. */
 export function describeScope(scope: Scope | null, blockNames: Record<string, string>): string {
-  if (!scope) return 'Nga ushtrimi i slotit'
+  if (!scope) return 'Për gjithë programin'
   const block = scope.blockId ? blockNames[scope.blockId] : null
   if (block && scope.week) return `Për ${block} · Java ${scope.week}`
   if (block) return `Për ${block}`

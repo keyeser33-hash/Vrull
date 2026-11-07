@@ -278,6 +278,11 @@ const heading = (page) => page.evaluate(`document.querySelector('h1')?.textConte
 const waitForHeading = (page, text) => waitFor(async () => (await heading(page)) === text, `titulli "${text}"`)
 const waitForText = (page, text) =>
   waitFor(() => page.evaluate(`document.body.innerText.includes(${JSON.stringify(text)})`), `teksti "${text}"`)
+// Programi ka si titull emrin e programit; pritet adresa dhe teksti i panelit.
+const waitForProgram = async (page) => {
+  await waitFor(async () => (await page.evaluate('location.pathname')) === '/programi', 'adresa /programi')
+  await waitForText(page, 'nga 52 stërvitje')
+}
 const click = (page, selector) => page.evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`)
 const clickButton = (page, label) =>
   page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === ${JSON.stringify(label)}).click()`)
@@ -411,9 +416,19 @@ try {
   await waitForHeading(page, 'Cilësimet')
   check('rifreskimi te /cilesimet mban faqen', true)
 
-  // 5. Butoni mbrapa: kthehet te faqja e mëparshme.
+  // 5. Butoni mbrapa: kthehet te faqja e mëparshme; editori i programit dhe fletët e tij.
   await click(page, 'a[href="/programi"]')
-  await waitForHeading(page, 'Programi')
+  await waitForProgram(page)
+  await click(page, 'a[href^="/programi/editori/"]')
+  await waitForText(page, '4 blloqe · 13 javë · 4 ditë')
+  await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Faza 1, 4 javë').click()`)
+  await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"]')`), 'fleta e bllokut')
+  screenshot('5a-editori-blloku')
+  await pressBack()
+  await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën e bllokut')
+  check('editori: mbrapa mbyll fletën e bllokut', (await page.evaluate('location.pathname')).startsWith('/programi/editori/'))
+  await pressBack()
+  await waitForProgram(page)
   await pressBack()
   await waitForHeading(page, 'Cilësimet')
   check('mbrapa kthen te faqja e mëparshme', true)

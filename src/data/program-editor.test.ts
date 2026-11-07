@@ -17,9 +17,11 @@ import {
   programEditor,
   programList,
   removeBlock,
+  removeDay,
   removeSlot,
   renameProgram,
   setRule,
+  setSlotExercise,
   startProgram,
   updateBlock,
 } from './program-editor'
@@ -321,6 +323,39 @@ describe('editori i programeve (TH-11)', () => {
     ])
     expect(after.days[0].slots[0].exerciseId).toBe(existing.id)
     expect(await store.all('exercises')).toHaveLength(2)
+  })
+
+  it('programi mban të paktën një bllok dhe një ditë', async () => {
+    const store = setup()
+    const programId = await startProgram(store, 'Prova')
+    const view = (await programEditor(store, programId))!
+    await expect(removeBlock(store, view.blocks[0].id)).rejects.toThrow('të paktën një bllok')
+    await expect(removeDay(store, view.days[0].id)).rejects.toThrow('të paktën një ditë')
+    const day = await addDay(store, programId, 'B')
+    await removeDay(store, day)
+    expect((await programEditor(store, programId))!.days.map((entry) => entry.name)).toEqual(['Dita 1'])
+  })
+
+  it('kur blloku shkurtohet, treguesi kalon te java e tij e fundit', async () => {
+    const store = setup()
+    const programId = await startProgram(store, 'Prova')
+    await switchProgram(store, programId)
+    const [state] = await store.where('program_state', 'program_id', programId)
+    await store.put('program_state', { id: state.id, week: 4 })
+    await updateBlock(store, String(state.block_id), { weeks: 2 })
+    expect(await trainingSnapshot(store)).toMatchObject({ plan: { week: 2, blockWeeks: 2 } })
+  })
+
+  it('ushtrimi i ri për një nivel vjen nga biblioteka', async () => {
+    const store = setup()
+    const programId = await startProgram(store, 'Prova')
+    const view = (await programEditor(store, programId))!
+    const slot = await addSlotFromLibrary(store, view.days[0].id, { id: 'Barbell_Squat', name: 'Barbell Squat', equipment: 'barbell', primary: ['quadriceps'], secondary: [] })
+    await setSlotExercise(store, slot, { blockId: view.blocks[0].id, week: 2 }, { id: 'Front_Squat', name: 'Front Squat', equipment: 'barbell', primary: ['quadriceps'], secondary: [] })
+    const after = (await programEditor(store, programId))!
+    const exercise = after.rules(slot, { blockId: view.blocks[0].id, week: 2 }).exerciseId.value
+    expect(after.exercises[exercise]?.name).toBe('Front Squat')
+    expect(after.days[0].slots[0].name).toBe('Barbell Squat')
   })
 
   it('kopjo programin, riemërtoje dhe fshije; programi aktiv nuk fshihet', async () => {

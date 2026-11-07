@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
+import { BackButton } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -13,8 +14,9 @@ import { MUSCLE_GROUPS } from '@/program/muscles'
 import type { DayStatus, OverviewWeek } from '@/program/overview'
 import { cn } from '@/lib/cn'
 import { embedUrl, watchUrl, youtubeId } from '@/lib/youtube'
+import { editorPath } from './editor-nav'
 import { ChangeExerciseSheet } from './session-sheets'
-import { dateLabel, kg, setsText, techniqueText } from './training-format'
+import { dateLabel, EQUIPMENT_LABEL, kg, setsText, techniqueText } from './training-format'
 
 // Programi, varianti A (vendim i 07.11.2026, referencat nga Mobbin: Equinox+, Gymshark, Centr):
 // paneli i ecurisë sipër, javët si butona, stërvitjet e javës me gjendjen me fjalë. Prej këtu
@@ -43,6 +45,9 @@ export function ProgramPage() {
       <section className="rounded-xl border border-border bg-card p-4">
         <h1 className="text-lg leading-7 font-semibold">Pa program aktiv</h1>
         <p className="mt-1 text-sm leading-5 text-muted-foreground">Programi i zgjedhur shfaqet këtu me javët dhe stërvitjet.</p>
+        <Link to="/programet" className={cn(buttonVariants({ variant: 'outline' }), 'mt-3 w-full')}>
+          Programet
+        </Link>
       </section>
     )
   }
@@ -79,6 +84,14 @@ export function ProgramPage() {
                 })}
             </div>
           ))}
+        </div>
+        <div className="mt-1 grid grid-cols-2 gap-2">
+          <Link to={editorPath(view.programId)} className={buttonVariants({ variant: 'panel' })}>
+            Ndrysho programin
+          </Link>
+          <Link to="/programet" className={buttonVariants({ variant: 'panel' })}>
+            Programet
+          </Link>
         </div>
       </section>
 
@@ -157,15 +170,6 @@ function WorkoutCard({
   )
 }
 
-function BackLink({ to, label }: { to: string | number; label: string }) {
-  const navigate = useNavigate()
-  return (
-    <Button variant="ghost" size="icon" aria-label={label} className="-ml-3 text-foreground" onClick={() => (typeof to === 'number' ? navigate(to) : navigate(to))}>
-      <Icon name="chevron-majtas" size={22} />
-    </Button>
-  )
-}
-
 /** Një stërvitje e programit, në çdo javë: ushtrimet, setet, intervali dhe teknika. */
 export function WorkoutPage() {
   const { blockId = '', week = '1', dayId = '' } = useParams()
@@ -178,7 +182,7 @@ export function WorkoutPage() {
   return (
     <div className="flex flex-col gap-4">
       <header className="flex min-h-11 items-center">
-        <BackLink to={-1} label="Kthehu te programi" />
+        <BackButton label="Kthehu te programi" />
       </header>
       <div className="flex items-start gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -211,18 +215,6 @@ export function WorkoutPage() {
       </ol>
     </div>
   )
-}
-
-const EQUIPMENT_LABEL: Record<string, string> = {
-  barbell: 'Shufër',
-  ez_bar: 'Shufër EZ',
-  dumbbell: 'Dumbbell',
-  cable: 'Kabëll',
-  machine: 'Makineri',
-  bodyweight: 'Pesha e trupit',
-  kettlebell: 'Kettlebell',
-  band: 'Llastik',
-  other: 'Tjetër',
 }
 
 /** Ekrani i një ushtrimi: muskujt, videoja, historia e shkurtër dhe ndërrimi për fazën. */
@@ -258,7 +250,7 @@ export function ExercisePage() {
   return (
     <div className="flex flex-col gap-5">
       <header className="flex min-h-11 items-center">
-        <BackLink to={-1} label="Kthehu" />
+        <BackButton label="Kthehu" />
       </header>
       <section aria-labelledby="exercise-title" className="flex gap-3 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">

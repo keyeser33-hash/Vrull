@@ -104,8 +104,16 @@ export async function addBlock(store: LocalStore, programId: string, block: { na
   return id
 }
 
+/** Emri ose javët e bllokut. Kur blloku shkurtohet, treguesi brenda tij kalon te java e fundit. */
 export async function updateBlock(store: LocalStore, blockId: string, changes: { name?: string; weeks?: number }) {
-  await store.put('program_blocks', { id: blockId, ...(changes.name ? { name: changes.name.trim() } : {}), ...(changes.weeks ? { weeks: changes.weeks } : {}) })
+  const block = await store.put('program_blocks', {
+    id: blockId,
+    ...(changes.name ? { name: changes.name.trim() } : {}),
+    ...(changes.weeks ? { weeks: changes.weeks } : {}),
+  })
+  if (!changes.weeks) return
+  const [state] = await store.where('program_state', 'program_id', String(block.program_id))
+  if (state?.block_id === blockId && Number(state.week) > changes.weeks) await store.put('program_state', { id: state.id, week: changes.weeks })
 }
 
 /** Kopje e bllokut menjëherë pas tij, me rregullat që vlejnë vetëm për të. */
@@ -129,6 +137,7 @@ export async function removeBlock(store: LocalStore, blockId: string) {
   const block = await store.get('program_blocks', blockId)
   if (!block) return
   const programId = String(block.program_id)
+  if ((await rows(store, 'program_blocks', programId)).length === 1) throw new Error('Programi duhet të ketë të paktën një bllok.')
   for (const rule of await store.where('slot_prescriptions', 'program_id', programId)) {
     if (rule.block_id === blockId) await store.remove('slot_prescriptions', rule.id)
   }
@@ -166,6 +175,7 @@ export const moveDay = (store: LocalStore, dayId: string, direction: -1 | 1) => 
 export async function removeDay(store: LocalStore, dayId: string) {
   const day = await store.get('program_days', dayId)
   if (!day) return
+  if ((await rows(store, 'program_days', String(day.program_id))).length === 1) throw new Error('Programi duhet të ketë të paktën një ditë.')
   for (const slot of await store.where('program_slots', 'day_id', dayId)) await removeSlot(store, slot.id)
   await store.remove('program_days', dayId)
   const programId = String(day.program_id)
@@ -311,6 +321,11 @@ export async function startProgram(store: LocalStore, name: string): Promise<str
   return programId
 }
 
+/** Ushtrimi i slotit në një nivel, i zgjedhur nga biblioteka. */
+export async function setSlotExercise(store: LocalStore, slotId: string, scope: RuleScope, library: LibraryExercise) {
+  await editSlot(store, slotId, scope, { exerciseId: await exerciseFromLibrary(store, library) })
+}
+
 const SHORT_REST_GROUPS = new Set(['abdominals', 'calves'])
 
 /** Ushtrim i ri në fund të ditës, nga biblioteka: 3 sete; pushim 90 s, 60 s për barkun dhe pulpat (§4). */
@@ -354,8 +369,6 @@ export interface EditorSlot {
   name: string
   sets: number
   restSeconds: number
-  /** Sa rregulla ka sloti (blloqe, javë). */
-  rules: number
 }
 
 export interface EditorDay {
@@ -401,7 +414,6 @@ export async function programEditor(store: LocalStore, programId: string): Promi
         name: exercises[slot.exerciseId]?.name ?? 'Ushtrim i panjohur',
         sets: slot.sets,
         restSeconds: slot.restSeconds,
-        rules: engine.overrides.filter((rule) => rule.slotId === slot.id).length,
       })),
     })),
     rules: (slotId, scope) => slotRules(engine, slotId, scope),

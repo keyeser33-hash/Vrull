@@ -67,7 +67,7 @@ describe('rregullat e një sloti në një nivel të editorit', () => {
 
   it('emri i nivelit me fjalë', () => {
     const names = { b1: 'Faza 1' }
-    expect(describeScope(null, names)).toBe('Nga ushtrimi i slotit')
+    expect(describeScope(null, names)).toBe('Për gjithë programin')
     expect(describeScope({ blockId: null, week: null }, names)).toBe('Për gjithë programin')
     expect(describeScope({ blockId: 'b1', week: null }, names)).toBe('Për Faza 1')
     expect(describeScope({ blockId: null, week: 2 }, names)).toBe('Për javën 2 të çdo blloku')

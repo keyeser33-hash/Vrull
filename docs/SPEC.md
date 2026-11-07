@@ -73,6 +73,15 @@ Një program përbëhet nga:
 
 Editori lejon krijimin, kopjimin dhe ndryshimin e çdo pjese: kopjo javën, kopjo bllokun, ndrysho ushtrimin e një sloti vetëm për një bllok. Zëvendësimi i një ushtrimi kur mungon pajisja bëhet këtu.
 
+**Editori (vendim i 07.11.2026, varianti A):**
+
+- Programi › Programet (lista, program i ri, programi aktiv) dhe Programi › Ndrysho programin (blloqet, ditët, kopjo, fshi). Dita ka ushtrimet me radhë; një ushtrim ka ekranin e vet.
+- Te ushtrimi zgjidhet niveli ku vlen ndryshimi: i gjithë programi, një bllok, java N e çdo blloku, ose java N e një blloku. Çdo vlerë tregon nga cili nivel vjen; fiton niveli më i saktë (blloku dhe java > blloku > java > programi). Poshtë, plani javë pas jave tregon rezultatin. "Hiq ndryshimin" e kthen vlerën te niveli më i gjerë.
+- Për gjithë programin, ushtrimi, setet dhe pushimi ruhen te vetë ushtrimi i ditës; receta, teknika dhe çdo nivel tjetër ruhen si rregulla.
+- "Kopjo javën" zëvendëson rregullat e javës së synuar me ato të javës burim. "Kopjo bllokun" e vendos kopjen menjëherë pas burimit, me rregullat e tij.
+- Ushtrimi i ri nga biblioteka: 3 sete, pushim 90 s (60 s për barkun dhe pulpat), pa recetë. Një ushtrim me të njëjtin emër ripërdoret, që historia të mbetet bashkë.
+- Programi ka të paktën një bllok dhe një ditë; programi aktiv nuk fshihet. Kur blloku shkurtohet, treguesi kalon te java e tij e fundit; kur hiqet blloku ose dita e treguesit, ai kalon te java 1 e bllokut të parë.
+
 **Radha:** app-i mban një tregues "stërvitja e radhës" (blloku, java, dita). Treguesi kalon përpara vetëm kur një stërvitje mbyllet. Te menyja ka "Kapërce këtë stërvitje" për raste të veçanta; nuk ndodh vetvetiu.
 
 **Programi aktiv:** vetëm një program është aktiv. Ndërrimi i tij ruan historinë dhe treguesin e secilit program. Ndryshimet në editor për programin aktiv vlejnë nga stërvitja e radhës; seancat e kaluara nuk ndryshojnë. Pas stërvitjes së fundit programi shënohet "Përfunduar" dhe ekrani Sot ofron ta rinisë nga Faza 1 (me peshat e sugjeruara nga 1RM-të e reja) ose të zgjedhë një program tjetër.

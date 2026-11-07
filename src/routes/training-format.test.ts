@@ -1,4 +1,4 @@
-import { clock, dateLabel, kg, setsText, targetText, techniqueText } from './training-format'
+import { clock, dateLabel, kg, setsText, targetText, techniqueLabel, techniqueText } from './training-format'
 
 describe('tekstet e stërvitjes', () => {
   it('kilogramët me presje dhjetore, pa zero të tepërta', () => {
@@ -20,6 +20,18 @@ describe('tekstet e stërvitjes', () => {
   it('setet e ushtrimit: "4 × 12–15" ose "3 × 60 s"', () => {
     expect(setsText(4, { kind: 'reps', min: 12, max: 15, beyond: false })).toBe('4 × 12–15')
     expect(setsText(3, { kind: 'timed', seconds: 60 })).toBe('3 × 60 s')
+    expect(setsText(3, { kind: 'reps', min: 0, max: null, beyond: false })).toBe('3 sete')
+    expect(setsText(1, { kind: 'reps', min: 0, max: null, beyond: false })).toBe('1 set')
+  })
+
+  it('teknika me emrin e plotë te editori', () => {
+    expect(techniqueLabel(undefined)).toBe('Asnjë')
+    expect(techniqueLabel({ type: 'none' })).toBe('Asnjë')
+    expect(techniqueLabel({ type: 'rest_pause' })).toBe('Rest-pause, 15 s')
+    expect(techniqueLabel({ type: 'rest_pause', restSeconds: 20 })).toBe('Rest-pause, 20 s')
+    expect(techniqueLabel({ type: 'drop_set' })).toBe('Drop set')
+    expect(techniqueLabel({ type: 'drop_set', percent: 70 })).toBe('Drop set, 70%')
+    expect(techniqueLabel({ type: 'to_failure' })).toBe('Deri në dështim')
   })
 
   it('teknika me fjalë', () => {
