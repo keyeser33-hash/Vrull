@@ -10,6 +10,8 @@ import {
   skipWorkout,
   startWorkout,
   switchProgram,
+  programView,
+  setExerciseVideo,
   trainingHistory,
   trainingSnapshot,
 } from './training'
@@ -263,5 +265,31 @@ describe('historia për peshat dhe rikuperimin', () => {
     ])
     expect(history.weightSteps).toMatchObject({})
     expect(history.overrides).toEqual({})
+  })
+})
+
+describe('pamja e programit dhe ushtrimet', () => {
+  it('java e parë me gjendjen e çdo stërvitjeje dhe ecuria e xhiros', async () => {
+    const { store } = await onboarded()
+    const sessionId = await startWorkout(store)
+    await finishWorkout(store, sessionId)
+    await skipWorkout(store)
+    const view = await programView(store)
+    expect(view?.programName).toBe('Shortcut to Size')
+    expect(view?.overview.weeks[0].days.map((day) => day.status)).toEqual(['done', 'skipped', 'next', 'upcoming'])
+    expect(view?.overview).toMatchObject({ currentWeek: 0, doneWorkouts: 1, totalWorkouts: 52 })
+    const plan = view!.plan(view!.overview.weeks[1].blockId, 1, view!.overview.weeks[1].days[0].dayId)
+    expect(view!.exercises[plan.slots[0].exerciseId].name).toBe('Bench Press')
+    expect(plan.slots[0].sets).toBe(4)
+  })
+
+  it('videoja e ushtrimit ruhet dhe hiqet', async () => {
+    const { store } = await onboarded()
+    const view = (await programView(store))!
+    const bench = Object.values(view.exercises).find((exercise) => exercise.name === 'Bench Press')!
+    await setExerciseVideo(store, bench.id, 'https://youtu.be/dQw4w9WgXcQ')
+    expect((await programView(store))!.exercises[bench.id].videoUrl).toBe('https://youtu.be/dQw4w9WgXcQ')
+    await setExerciseVideo(store, bench.id, null)
+    expect((await programView(store))!.exercises[bench.id].videoUrl).toBeNull()
   })
 })

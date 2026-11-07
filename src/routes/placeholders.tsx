@@ -1,16 +1,5 @@
 import { EmptyCard, PageHeader } from '@/components/layout/page'
 
-export function ProgramPage() {
-  return (
-    <>
-      <PageHeader title="Programi" />
-      <EmptyCard title="Programet e tua">
-        Shortcut to Size dhe programet që krijon në editor, me javët, ditët dhe ushtrimet.
-      </EmptyCard>
-    </>
-  )
-}
-
 export function NutritionPage() {
   return (
     <>

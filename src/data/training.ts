@@ -1,4 +1,5 @@
 import { advance, blockWeekLabel, planSession, restart } from '@/program/engine'
+import { programOverview, type ProgramOverview, type SessionMark } from '@/program/overview'
 import { type LibraryExercise, muscleKeys } from '@/program/library'
 import type { HistorySet } from '@/program/loads'
 import type { WorkedSession } from '@/program/recovery'
@@ -30,6 +31,8 @@ export interface ExerciseRecord {
   primary: string[]
   secondary: string[]
   libraryId: string | null
+  /** Link-u i YouTube që shtoi përdoruesi (SPEC §12). */
+  videoUrl: string | null
 }
 
 export interface Segment {
@@ -80,6 +83,7 @@ function toExercise(row: LocalRow): ExerciseRecord {
     primary: (row.primary_muscles as string[] | undefined) ?? [],
     secondary: (row.secondary_muscles as string[] | undefined) ?? [],
     libraryId: (row.library_id as string | null | undefined) ?? null,
+    videoUrl: (row.video_url as string | null | undefined) ?? null,
   }
 }
 
@@ -535,4 +539,42 @@ export async function trainingHistory(store: LocalStore): Promise<TrainingHistor
     overrides[String(override.exercise_id)] = { oneRmKg: Number(override.one_rm_kg), setAt: String(override.set_at) }
   }
   return { sets, worked, overrides, weightSteps: (row?.weight_steps as TrainingHistory['weightSteps'] | undefined) ?? {} }
+}
+
+export interface ProgramView {
+  programId: string
+  programName: string
+  pointer: Pointer
+  overview: ProgramOverview
+  exercises: Record<string, ExerciseRecord>
+  /** Plani i çdo stërvitjeje të programit, jo vetëm i asaj të radhës. */
+  plan: (blockId: string, week: number, dayId: string) => SessionPlan
+}
+
+/** Programi aktiv javë pas jave, për ekranin Programi. */
+export async function programView(store: LocalStore): Promise<ProgramView | null> {
+  const loaded = await activeProgram(store)
+  if (!loaded) return null
+  const sessions = await store.where('workout_sessions', 'program_id', loaded.row.id)
+  const marks: SessionMark[] = sessions.map((session) => ({
+    run: Number(session.run ?? 1),
+    blockId: String(session.block_id),
+    week: Number(session.week),
+    dayId: String(session.day_id),
+    status: session.status as SessionMark['status'],
+  }))
+  const { engine, pointer } = loaded
+  return {
+    programId: loaded.row.id,
+    programName: String(loaded.row.name),
+    pointer,
+    overview: programOverview(engine, pointer, marks),
+    exercises: loaded.exercises,
+    plan: (blockId, week, dayId) => planSession(engine, { ...pointer, blockId, week, dayId, completed: false }),
+  }
+}
+
+/** Link-u i videos së ushtrimit; null e heq. */
+export async function setExerciseVideo(store: LocalStore, exerciseId: string, url: string | null) {
+  await store.put('exercises', { id: exerciseId, video_url: url })
 }

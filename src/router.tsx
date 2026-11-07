@@ -3,7 +3,8 @@ import { AppShell } from '@/components/layout/app-shell'
 import { AppGate } from '@/routes/gate'
 import { LoginPage } from '@/routes/login'
 import { OnboardingPage } from '@/routes/onboarding'
-import { BodyPage, NutritionPage, ProgramPage, ProgressPage } from '@/routes/placeholders'
+import { BodyPage, NutritionPage, ProgressPage } from '@/routes/placeholders'
+import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
 import { SessionPage } from '@/routes/session'
 import { SettingsPage } from '@/routes/settings'
 import { TodayPage } from '@/routes/today'
@@ -16,6 +17,8 @@ export const appRoutes: RouteObject[] = [
     children: [
       { index: true, element: <TodayPage /> },
       { path: 'programi', element: <ProgramPage /> },
+      { path: 'programi/:blockId/:week/:dayId', element: <WorkoutPage /> },
+      { path: 'ushtrimi/:exerciseId', element: <ExercisePage /> },
       { path: 'ushqimi', element: <NutritionPage /> },
       { path: 'progresi', element: <ProgressPage /> },
       { path: 'trupi', element: <BodyPage /> },
