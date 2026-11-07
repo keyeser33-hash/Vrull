@@ -2,7 +2,16 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
+import type { Tone } from '@/body/model-math'
 import type { LocalStore } from '@/data/store'
+
+interface ModelProps {
+  paint: (key: string) => Tone | null
+  onPick: (key: string) => void
+  back: boolean
+  onBackChange: (back: boolean) => void
+  label: string
+}
 
 // Trupi me store të vërtetë: rikuperimi dhe volumi pas një seance, prekja e një muskuli.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
@@ -24,7 +33,32 @@ vi.mock('@/data/app-data', async () => {
   }
 })
 
+// WebGL mungon te jsdom: flamuri e zgjedh. Modeli 3D zëvendësohet me një stub që tregon ngjyrën
+// e çdo çelësi dhe e "prek" atë si muskul.
+const gl = vi.hoisted(() => ({ available: false }))
+vi.mock('@/lib/webgl', () => ({ webglAvailable: () => gl.available }))
+vi.mock('@/components/body/body-model', () => ({
+  default: ({ paint, onPick, back, onBackChange, label }: ModelProps) => (
+    <div role="img" aria-label={label}>
+      <p>{back ? 'modeli mbrapa' : 'modeli përpara'}</p>
+      {['pectoralis_major_sternocostal', 'gastrocnemius'].map((key) => (
+        <button key={key} type="button" onClick={() => onPick(key)}>
+          {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}`}
+        </button>
+      ))}
+      <button type="button" onClick={() => onBackChange(!back)}>
+        zvarrit gjysmë rrotullimi
+      </button>
+    </div>
+  ),
+}))
+
 describe('Trupi', () => {
+  beforeEach(() => {
+    gl.available = false
+    localStorage.clear()
+  })
+
   beforeAll(async () => {
     await import('@/data/app-data')
     const { completeOnboarding } = await import('@/data/profile')
@@ -63,5 +97,55 @@ describe('Trupi', () => {
     expect(sheet).toHaveTextContent('Gastrocnemius, soleus')
     expect(sheet).toHaveTextContent('Pa stërvitje të regjistruar')
     expect((await within(sheet).findAllByText(/Calf Raise/)).length).toBeGreaterThan(0)
+  })
+
+  it('pa WebGL mbetet figura 2D, edhe me 3D të ruajtur, dhe modeli nuk ofrohet', async () => {
+    localStorage.setItem('th-body-view', '3d')
+    await renderPage()
+    await screen.findByRole('group', { name: 'Rikuperimi sipas muskujve' })
+    expect(screen.queryByRole('button', { name: '3D' })).not.toBeInTheDocument()
+  })
+
+  it('modeli 3D: të njëjtat ngjyra, prekja hap muskulin, zgjedhja mbahet', async () => {
+    gl.available = true
+    const user = userEvent.setup()
+    await renderPage()
+    expect(await screen.findByRole('button', { name: '2D' })).toHaveAttribute('aria-pressed', 'true')
+    await user.click(screen.getByRole('button', { name: '3D' }))
+    const model = await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })
+    expect(within(model).getByText('pectoralis_major_sternocostal --brand 1')).toBeInTheDocument()
+    expect(within(model).getByText('gastrocnemius --panel-muted-foreground 0.35')).toBeInTheDocument()
+    expect(localStorage.getItem('th-body-view')).toBe('3d')
+
+    await user.click(screen.getByRole('button', { name: 'Volumi javor' }))
+    expect(await within(model).findByText('pectoralis_major_sternocostal --brand 0.3')).toBeInTheDocument()
+    expect(within(model).getByText('gastrocnemius pa 0')).toBeInTheDocument()
+
+    await user.click(within(model).getByText(/^gastrocnemius/))
+    expect(screen.getByRole('dialog', { name: 'Pulpat' })).toHaveTextContent('Gastrocnemius, soleus')
+  })
+
+  it('zgjedhja 3D e ruajtur hapet vetë', async () => {
+    localStorage.setItem('th-body-view', '3d')
+    gl.available = true
+    await renderPage()
+    expect(await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })).toBeInTheDocument()
+  })
+
+  it('"Shiko mbrapa" e kthen modelin; pas zvarritjes butoni ndjek anën që duket', async () => {
+    localStorage.setItem('th-body-view', '3d')
+    gl.available = true
+    const user = userEvent.setup()
+    await renderPage()
+    const model = await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })
+    expect(model).toHaveTextContent('modeli përpara')
+    await user.click(screen.getByRole('button', { name: 'Shiko mbrapa' }))
+    expect(model).toHaveTextContent('modeli mbrapa')
+    await user.click(within(model).getByRole('button', { name: 'zvarrit gjysmë rrotullimi' }))
+    expect(model).toHaveTextContent('modeli përpara')
+    expect(screen.getByRole('button', { name: 'Shiko mbrapa' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '2D' }))
+    expect(screen.queryByRole('button', { name: 'Shiko mbrapa' })).not.toBeInTheDocument()
+    expect(localStorage.getItem('th-body-view')).toBe('2d')
   })
 })

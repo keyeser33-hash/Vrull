@@ -80,10 +80,12 @@ Prova në emulator e kalon gjithë rrugën me Supabase të imituar (build-i i pr
 
 ## TH-05 · Spike 3D
 
-- `tools/anatomy/`: shkarkon BodyParts3D 4.0 (OBJ 99%) dhe latissimus dorsi + rectus abdominis nga 3.0; zgjedh elementet sipas Shtojcës D; bashkon majtas/djathtas; thjeshton; nxjerr GLB me një nyje për çdo çelës.
+- `tools/anatomy/`: merr BodyParts3D 4.0 (OBJ 99%) dhe latissimus dorsi + rectus abdominis nga 3.0, të shkarkuara me dorë nga arkivi zyrtar (adresa te koka e `build.mjs`); zgjedh elementet sipas Shtojcës D; bashkon majtas/djathtas; thjeshton; nxjerr GLB me një nyje për çdo çelës.
 - Ekran zhvillimi me modelin që rrotullohet dhe tregon emrin e muskulit të prekur.
 
 **Pranimi:** GLB ≤ 5 MB me të gjithë çelësat e Shtojcës D, pjesët e 3.0 të pozicionuara saktë, rrotullim i rrjedhshëm në telefon, atribuimi i shkruar.
+
+**Gjendja (07.11.2026, versioni 0.14.0):** GLB 1,92 MB me 34 çelësa; lats dhe rectus të kontrolluar me pamje nga përpara, mbrapa dhe anash. Në vend të ekranit të zhvillimit, modeli hyri drejt te Trupi pas zgjedhjes "2D / 3D", ku prekja e muskulit hap fletën e tij. Atribuimi: Cilësimet, "Burimet dhe licencat". Mbetet rrotullimi në telefonin e vërtetë.
 
 ## TH-06 · Motori i programit
 

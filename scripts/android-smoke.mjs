@@ -424,6 +424,45 @@ try {
   await waitFor(async () => (await page.evaluate(pendingReminders)) > 0, 'rikujtuesit e planifikuar', 30_000)
   check('rikujtuesit planifikohen pas lejes së njoftimeve', true, `${await page.evaluate(pendingReminders)} njoftime`)
 
+  // Trupi në 3D: WebView-i vizaton modelin (WebGL) dhe GLB-ja ngarkohet nga APK-ja. Emulatori vizaton
+  // me SwiftShader në CPU, ndaj koha e kuadrit shënohet vetëm për krahasim, jo si kusht.
+  await click(page, 'a[href="/trupi"]')
+  await waitFor(() => page.evaluate(`!!document.querySelector('section[aria-label="Harta e trupit"]')`), 'harta e trupit', 30_000)
+  const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
+  if (!webgl) {
+    console.log('INFO Trupi 3D: WebView-i i emulatorit nuk ka WebGL; modeli kontrollohet në telefon')
+  } else {
+    await clickButton(page, '3D')
+    await waitFor(
+      () => page.evaluate(`!!document.querySelector('[role="img"] canvas') && !document.body.innerText.includes('Po ngarkohet modeli')`),
+      'modeli 3D',
+      60_000,
+    )
+    check('Trupi: modeli 3D vizatohet nga APK-ja', !(await page.evaluate(`document.body.innerText.includes('Modeli 3D nuk u ngarkua')`)))
+    // Prekje e vërtetë me gisht mbi gjoks: fleta e muskulit hapet dhe mbetet hapur (klikimi që pason
+    // prekjen nuk duhet ta mbyllë).
+    const point = await page.evaluate(`(() => { const box = document.querySelector('[role="img"] canvas').getBoundingClientRect(); return { x: box.left + box.width * 0.45, y: box.top + box.height * 0.28 } })()`)
+    await page.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
+    await page.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await sleep(1000)
+    check('Trupi 3D: prekja e muskulit hap fletën dhe e mban hapur', await page.evaluate(`!!document.querySelector('[role="dialog"]')`), await page.evaluate('location.search'))
+    await pressBack()
+    await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën e muskulit')
+    report.model3d = await page.evaluate(`new Promise((resolve) => {
+      const frames = []
+      let last = performance.now()
+      const tick = (time) => { frames.push(time - last); last = time; if (frames.length < 40) requestAnimationFrame(tick); else resolve({ medianMs: frames.sort((a, b) => a - b)[20] }) }
+      ;[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Shiko mbrapa').click()
+      requestAnimationFrame(tick)
+    })`)
+    console.log(`INFO Trupi 3D në emulator: ${JSON.stringify(report.model3d)}`)
+    screenshot('4d-trupi-3d')
+    // Pamja kthehet te 2D, që provat e mëposhtme të mos varen nga zgjedhja.
+    await clickButton(page, '2D')
+  }
+  await click(page, 'a[href="/"]')
+  await waitForHeading(page, 'Stërvitja 1')
+
   // 4. Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
   await click(page, 'a[aria-label="Cilësimet"]')
   await waitForHeading(page, 'Cilësimet')

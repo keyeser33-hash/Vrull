@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { Group, Row } from '@/components/layout/list-group'
@@ -8,42 +8,62 @@ import { type BodyGroup, bodyView } from '@/data/body'
 import { libraryExercisesFor, LOAD_LEVELS } from '@/body/body-map'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import type { RecoveryStatus } from '@/program/recovery'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
-import { EQUIPMENT_LABEL, kg } from './training-format'
+import { webglAvailable } from '@/lib/webgl'
+import { type BodyMode, LEVEL_SWATCH, modeStyle, RECOVERY, RECOVERY_ORDER, setsText, sinceText } from './body-format'
+import { EQUIPMENT_LABEL } from './training-format'
 
-// Trupi (SPEC §11, TH-19), në figurën 2D të §18 derisa modeli 3D të kalojë objektivin. Paneli
-// tregon rikuperimin ose volumin e javës mbi figurë, me legjendë me fjalë; lista poshtë ka të njëjtat
-// vlera për çdo grup. Një grup (në listë ose në figurë) hapet në fletë (?muskuli=id).
+// Trupi (SPEC §11, TH-19). Paneli tregon rikuperimin ose volumin e javës mbi figurën 2D përpara dhe
+// mbrapa, ose mbi modelin 3D (TH-05) kur WebView-i e vizaton; zgjedhja mbahet në këtë telefon.
+// Legjenda është me fjalë dhe lista poshtë ka të njëjtat vlera për çdo grup. Një grup (në listë, në
+// figurë ose në model) hapet në fletë (?muskuli=id).
 
-type Mode = 'rikuperimi' | 'volumi'
+type View = '2d' | '3d'
 
-const RECOVERY: Record<RecoveryStatus, { label: string; range: string; fill: string; swatch: string }> = {
-  i_lodhur: { label: 'I lodhur', range: 'nën 48 orë', fill: 'fill-brand', swatch: 'bg-brand' },
-  pothuajse_gati: { label: 'Pothuajse gati', range: '48–72 orë', fill: 'fill-brand/45', swatch: 'bg-brand/45' },
-  // "Gati" mbetet i qetë, që të dallohen muskujt që duan pushim.
-  gati: { label: 'Gati', range: 'mbi 72 orë', fill: 'fill-panel-muted-foreground/35', swatch: 'bg-panel-muted-foreground/35' },
+const BodyModel = lazy(() => import('@/components/body/body-model'))
+const VIEW_KEY = 'th-body-view'
+
+function readView(): View {
+  try {
+    return window.localStorage.getItem(VIEW_KEY) === '3d' && webglAvailable() ? '3d' : '2d'
+  } catch {
+    return '2d'
+  }
 }
 
-const LEVEL_FILL = [null, 'fill-brand/30', 'fill-brand/60', 'fill-brand'] as const
-const LEVEL_SWATCH = ['bg-panel-border', 'bg-brand/30', 'bg-brand/60', 'bg-brand'] as const
+function saveView(view: View) {
+  try {
+    window.localStorage.setItem(VIEW_KEY, view)
+  } catch {
+    // Pa ruajtje (p.sh. modalitet privat) zgjedhja vlen vetëm për këtë vizitë.
+  }
+}
 
 const groupOf = (keys: string[]) => MUSCLE_GROUPS.find((group) => keys.some((key) => group.keys.includes(key)))
-const setsText = (load: number) => (load === 1 ? '1 set' : `${kg(load)} sete`)
-const sinceText = (hours: number | null) => {
-  if (hours === null) return 'Pa stërvitje të regjistruar'
-  if (hours < 24) return `Stërvitja e fundit para ${Math.max(1, hours)} orësh`
-  const days = Math.round(hours / 24)
-  return `Stërvitja e fundit para ${days === 1 ? '1 dite' : `${days} ditësh`}`
-}
-const RECOVERY_ORDER: RecoveryStatus[] = ['i_lodhur', 'pothuajse_gati', 'gati']
 
 export function BodyPage() {
   const [now] = useState(() => new Date())
   const groups = useLocalQuery(() => bodyView(store, now), [])
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const mode: Mode = params.get('pamja') === 'volumi' ? 'volumi' : 'rikuperimi'
+  const mode: BodyMode = params.get('pamja') === 'volumi' ? 'volumi' : 'rikuperimi'
+  const [view, setView] = useState<View>(readView)
+  const [back, setBack] = useState(false)
+  const choose = (next: View) => {
+    setView(next)
+    saveView(next)
+  }
+  const byId = useMemo(() => new Map((groups ?? []).map((entry) => [entry.group.id, entry])), [groups])
+  // Ngjyra e çdo çelësi te modeli 3D; funksion i ri vetëm kur ndryshojnë të dhënat ose pamja.
+  const entryOf = useCallback((keys: string[]) => byId.get(groupOf(keys)?.id ?? ''), [byId])
+  const paintKey = useCallback(
+    (key: string) => {
+      const entry = entryOf([key])
+      return entry ? modeStyle(mode, entry).tone : null
+    },
+    [entryOf, mode],
+  )
   if (!groups) {
     return (
       <div className="flex flex-col gap-5">
@@ -52,9 +72,13 @@ export function BodyPage() {
       </div>
     )
   }
-  const byId = new Map(groups.map((entry) => [entry.group.id, entry]))
   const open = (id: string) => setParams((current) => (current.set('muskuli', id), current))
-  const setMode = (next: Mode) => setParams((current) => (current.set('pamja', next), current), { replace: true })
+  const pick = (keys: string[]) => {
+    const group = groupOf(keys)
+    if (group) open(group.id)
+  }
+  const mapLabel = mode === 'volumi' ? 'Volumi i javës sipas muskujve' : 'Rikuperimi sipas muskujve'
+  const setMode = (next: BodyMode) => setParams((current) => (current.set('pamja', next), current), { replace: true })
   const opened = byId.get(params.get('muskuli') ?? '')
   const sorted = [...groups].sort((a, b) =>
     mode === 'volumi' ? b.load - a.load || a.group.name.localeCompare(b.group.name) : RECOVERY_ORDER.indexOf(a.recovery) - RECOVERY_ORDER.indexOf(b.recovery) || (a.hours ?? 1e9) - (b.hours ?? 1e9),
@@ -82,26 +106,49 @@ export function BodyPage() {
             </button>
           ))}
         </div>
-        <BodyFigure
-          primary={[]}
-          scale={2.4}
-          className="self-center"
-          label={mode === 'volumi' ? 'Volumi i javës sipas muskujve' : 'Rikuperimi sipas muskujve'}
-          paint={(keys) => {
-            const entry = byId.get(groupOf(keys)?.id ?? '')
-            if (!entry) return null
-            return mode === 'volumi' ? LEVEL_FILL[entry.level] : RECOVERY[entry.recovery].fill
-          }}
-          onPick={(keys) => {
-            const group = groupOf(keys)
-            if (group) open(group.id)
-          }}
-          pickLabel={(keys) => {
-            const entry = byId.get(groupOf(keys)?.id ?? '')
-            if (!entry) return ''
-            return `${entry.group.name}, ${mode === 'volumi' ? setsText(entry.load) : RECOVERY[entry.recovery].label}`
-          }}
-        />
+        {view === '3d' ? (
+          <Suspense fallback={<div aria-hidden className="h-[360px]" />}>
+            <BodyModel paint={paintKey} onPick={(key) => pick([key])} back={back} onBackChange={setBack} label={mapLabel} />
+          </Suspense>
+        ) : (
+          <BodyFigure
+            primary={[]}
+            scale={2.4}
+            className="self-center"
+            label={mapLabel}
+            paint={(keys) => {
+              const entry = entryOf(keys)
+              return entry ? modeStyle(mode, entry).fill : null
+            }}
+            onPick={pick}
+            pickLabel={(keys) => {
+              const entry = entryOf(keys)
+              return entry ? `${entry.group.name}, ${modeStyle(mode, entry).text}` : ''
+            }}
+          />
+        )}
+        <div className={cn('flex items-center gap-2', view === '3d' ? 'justify-between' : 'justify-end')}>
+          {view === '3d' ? (
+            <button type="button" onClick={() => setBack(!back)} className={buttonVariants({ variant: 'panel' })}>
+              {back ? 'Shiko përpara' : 'Shiko mbrapa'}
+            </button>
+          ) : null}
+          {webglAvailable() ? (
+            <div role="group" aria-label="Figura ose modeli 3D" className="flex gap-1 rounded-full bg-panel-button p-1">
+              {(['2d', '3d'] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={view === value}
+                  onClick={() => choose(value)}
+                  className={cn('h-11 min-w-12 rounded-full px-3 text-sm font-semibold', view === value ? 'bg-panel-foreground text-panel' : 'text-panel-foreground')}
+                >
+                  {value.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
         <ul aria-label="Legjenda" className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 text-xs leading-4 text-panel-muted-foreground">
           {mode === 'volumi'
             ? LOAD_LEVELS.map((level) => (
@@ -118,7 +165,7 @@ export function BodyPage() {
               ))}
         </ul>
         <p className="text-center text-xs leading-4 text-panel-muted-foreground">
-          {mode === 'volumi' ? 'Setet e kësaj jave: kryesori 1, ndihmësi 0,5.' : 'Sipas orëve nga stërvitja e fundit ku muskuli ishte kryesor.'} Prek një muskul për më shumë.
+          {mode === 'volumi' ? 'Setet e kësaj jave: kryesori 1, ndihmësi 0,5.' : 'Sipas orëve nga stërvitja e fundit ku muskuli ishte kryesor.'} {view === '3d' ? 'Zvarrit anash për ta rrotulluar, prek një muskul për më shumë.' : 'Prek një muskul për më shumë.'}
         </p>
       </section>
 
@@ -127,7 +174,7 @@ export function BodyPage() {
           <Row
             key={entry.group.id}
             label={entry.group.name}
-            value={mode === 'volumi' ? setsText(entry.load) : RECOVERY[entry.recovery].label}
+            value={modeStyle(mode, entry).text}
             detail={mode === 'volumi' ? RECOVERY[entry.recovery].label : sinceText(entry.hours)}
             onClick={() => open(entry.group.id)}
           />

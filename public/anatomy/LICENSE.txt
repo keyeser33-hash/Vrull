@@ -1,0 +1,16 @@
+body.glb: modeli 3D i muskujve te ekrani Trupi i Training Hub.
+
+Burimi:
+- BodyParts3D 4.0 (OBJ 99%, pema IS-A), © The Database Center for Life Science, CC BY 4.0.
+  https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html
+- BodyParts3D 3.0 (OBJ 99%), vetëm latissimus dorsi dhe rectus abdominis,
+  "BodyParts3D, Copyright© The Database Center for Life Science licensed by CC Attribution-Share Alike 2.1 Japan".
+  https://dbarchive.biosciencedbc.jp/data/bodyparts3d/20110915/
+
+Ndryshimet: zgjedhja e muskujve sipas çelësave të app-it, bashkimi i anës së majtë dhe të djathtë,
+zhvendosja e pjesëve të 3.0 sipas fqinjëve të tyre te 4.0, heqja e aponeurozës së external oblique
+përpara rectus abdominis, bashkimi i kulmeve të dyfishta, thjeshtimi me meshoptimizer dhe kthimi në metra me Y lart.
+Skripti: tools/anatomy/build.mjs.
+
+Licenca e këtij skedari: Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP),
+sepse përmban pjesë nga BodyParts3D 3.0. https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en

@@ -25,7 +25,7 @@ import { kg } from './training-format'
 // rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
 
 type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
-type Editor = ProfileEditor | 'tema' | 'dil' | 'matja'
+type Editor = ProfileEditor | 'tema' | 'dil' | 'matja' | 'burimet'
 const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
   value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
 
@@ -80,10 +80,15 @@ export function SettingsPage() {
 
       <DataGroup />
 
+      <Group title="Rreth app-it">
+        <Row label="Burimet dhe licencat" onClick={() => open('burimet')} />
+      </Group>
+
       <p className="text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
 
       {editor === 'dil' ? <SignOutSheet onClose={close} /> : null}
       {editor === 'matja' ? <MeasurementDaySheet onClose={close} /> : null}
+      {editor === 'burimet' ? <SourcesSheet onClose={close} /> : null}
       {editor === 'tema' ? (
         <ThemeSheet
           theme={theme}
@@ -221,6 +226,57 @@ function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (the
           <Choice key={option} name="theme" value={option} checked={theme === option} onChange={() => onChoose(option)} label={THEME_LABELS[option]} />
         ))}
       </fieldset>
+    </Sheet>
+  )
+}
+
+// Të dhënat dhe asetet nga të tjerët, me atribuimin që kërkon licenca e tyre (SPEC §11, §9).
+const SOURCES = [
+  {
+    name: 'Shortcut to Size',
+    use: 'Programi 12-javor, ushqimi dhe suplementet e ditës shembull.',
+    license: 'Jim Stoppani, Bodybuilding.com. Për përdorim personal.',
+  },
+  {
+    name: 'BodyParts3D',
+    use: 'Modeli 3D i muskujve te Trupi, i thjeshtuar për telefonin.',
+    license:
+      'BodyParts3D, © The Database Center for Life Science, CC BY 4.0 (versioni 4.0). Latissimus dorsi dhe rectus abdominis vijnë nga versioni 3.0, CC BY-SA 2.1 Japan, prandaj modeli i app-it shpërndahet me CC BY-SA 2.1 Japan.',
+  },
+  {
+    name: 'free-exercise-db',
+    use: 'Biblioteka e ushtrimeve me muskujt kryesorë dhe ndihmës.',
+    license: 'yuhonas/free-exercise-db, Unlicense (domain publik).',
+  },
+  {
+    name: 'Open Food Facts',
+    use: 'Produktet me barkod dhe vlerat e tyre ushqyese.',
+    license: 'Të dhënat nën Open Database License (ODbL), © kontribuesit e Open Food Facts.',
+  },
+  {
+    name: 'USDA FoodData Central',
+    use: 'Ushqimet e përgjithshme dhe makrot e shabllonit të Jimit.',
+    license: 'U.S. Department of Agriculture, Agricultural Research Service. Domain publik (CC0 1.0).',
+  },
+  {
+    name: 'Inter',
+    use: 'Shkronjat e app-it.',
+    license: 'Rasmus Andersson, SIL Open Font License 1.1.',
+  },
+]
+
+function SourcesSheet({ onClose }: { onClose: () => void }) {
+  return (
+    <Sheet title="Burimet dhe licencat" onClose={onClose}>
+      <ul className="flex flex-col">
+        {SOURCES.map((source) => (
+          <li key={source.name} className="flex flex-col gap-1 border-t border-border-subtle py-3 first:border-t-0 first:pt-0">
+            <span className="text-base leading-6 font-medium">{source.name}</span>
+            <span className="text-sm leading-5">{source.use}</span>
+            <span className="text-sm leading-5 text-muted-foreground">{source.license}</span>
+          </li>
+        ))}
+      </ul>
     </Sheet>
   )
 }

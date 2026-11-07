@@ -178,6 +178,19 @@ describe('cilësimet', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Eksporti nuk u krye. Provo përsëri.')
   })
 
+  it('burimet dhe licencat: modeli 3D, ushtrimet dhe ushqimet me atribuimin e tyre', async () => {
+    const user = userEvent.setup()
+    await renderSettings()
+    await user.click(row(/^Burimet dhe licencat/))
+    const sheet = screen.getByRole('dialog', { name: 'Burimet dhe licencat' })
+    expect(sheet).toHaveTextContent('BodyParts3D, © The Database Center for Life Science')
+    expect(sheet).toHaveTextContent('CC BY-SA 2.1 Japan')
+    expect(sheet).toHaveTextContent('free-exercise-db')
+    expect(sheet).toHaveTextContent('Open Food Facts')
+    expect(sheet).toHaveTextContent('Open Database License')
+    expect(sheet).toHaveTextContent('USDA FoodData Central')
+  })
+
   it('tregon versionin nga package.json', async () => {
     await renderSettings()
     expect(screen.getByText(`Training Hub ${pkg.version}`)).toBeInTheDocument()

@@ -1,0 +1,139 @@
+{
+  "_": "Çelësat e Shtojcës D dhe emrat e pjesëve te BodyParts3D 4.0 (IS-A). {s}: right/left. _v3: pjesët që mungojnë te 4.0, nga 3.0, të zhvendosura sipas pjesëve fqinje (anchors) që ekzistojnë te të dyja.",
+  "_v3": {
+    "latissimus_dorsi": {
+      "parts": [
+        "{s} latissimus dorsi"
+      ],
+      "anchors": [
+        "{s} teres major",
+        "{s} external oblique",
+        "{s} serratus anterior",
+        "{s} infraspinatus muscle"
+      ]
+    },
+    "rectus_abdominis": {
+      "parts": [
+        "{s} rectus abdominis"
+      ],
+      "anchors": [
+        "{s} external oblique"
+      ]
+    }
+  },
+  "_cuts": [
+    {
+      "part": "external_oblique",
+      "over": "rectus_abdominis"
+    }
+  ],
+  "pectoralis_major_clavicular": [
+    "clavicular part of {s} pectoralis major"
+  ],
+  "pectoralis_major_sternocostal": [
+    "sternocostal part of {s} pectoralis major",
+    "abdominal part of {s} pectoralis major"
+  ],
+  "pectoralis_minor": [
+    "{s} pectoralis minor"
+  ],
+  "deltoid_anterior": [
+    "clavicular part of {s} deltoid"
+  ],
+  "deltoid_lateral": [
+    "acromial part of {s} deltoid"
+  ],
+  "deltoid_posterior": [
+    "spinal part of {s} deltoid"
+  ],
+  "trapezius": [
+    "descending part of {s} trapezius",
+    "transverse part of {s} trapezius",
+    "ascending part of {s} trapezius"
+  ],
+  "rhomboid_major": [
+    "{s} rhomboid major"
+  ],
+  "rhomboid_minor": [
+    "{s} rhomboid minor"
+  ],
+  "teres_major": [
+    "{s} teres major"
+  ],
+  "infraspinatus": [
+    "{s} infraspinatus muscle"
+  ],
+  "erector_spinae": [
+    "{s} iliocostalis lumborum",
+    "{s} iliocostalis thoracis",
+    "{s} longissimus thoracis"
+  ],
+  "biceps_brachii": [
+    "short head of {s} biceps brachii",
+    "long head of {s} biceps brachii"
+  ],
+  "brachialis": [
+    "{s} brachialis"
+  ],
+  "brachioradialis": [
+    "{s} brachioradialis"
+  ],
+  "forearm_flexors": [
+    "{s} flexor carpi radialis",
+    "{s} flexor carpi ulnaris",
+    "{s} palmaris longus",
+    "{s} flexor digitorum superficialis"
+  ],
+  "triceps_brachii": [
+    "long head of {s} triceps brachii",
+    "medial head of {s} triceps brachii",
+    "lateral head of {s} triceps brachii"
+  ],
+  "external_oblique": [
+    "{s} external oblique"
+  ],
+  "gluteus_maximus": [
+    "{s} gluteus maximus"
+  ],
+  "gluteus_medius": [
+    "{s} gluteus medius"
+  ],
+  "tensor_fasciae_latae": [
+    "{s} tensor fasciae latae"
+  ],
+  "adductor_magnus": [
+    "{s} adductor magnus"
+  ],
+  "adductor_longus": [
+    "{s} adductor longus"
+  ],
+  "rectus_femoris": [
+    "{s} rectus femoris"
+  ],
+  "vastus_lateralis": [
+    "{s} vastus lateralis"
+  ],
+  "vastus_medialis": [
+    "{s} vastus medialis"
+  ],
+  "biceps_femoris": [
+    "long head of {s} biceps femoris",
+    "short head of {s} biceps femoris"
+  ],
+  "semitendinosus": [
+    "{s} semitendinosus"
+  ],
+  "semimembranosus": [
+    "{s} semimembranosus"
+  ],
+  "gastrocnemius": [
+    "medial head of {s} gastrocnemius",
+    "lateral head of {s} gastrocnemius"
+  ],
+  "soleus": [
+    "{s} soleus"
+  ],
+  "sternocleidomastoid": [
+    "{s} sternocleidomastoid"
+  ]
+}
