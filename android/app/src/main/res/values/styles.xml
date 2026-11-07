@@ -14,8 +14,11 @@
         <item name="android:windowBackground">@color/th_background</item>
     </style>
 
-    <!-- Nisja: sfond i zi dhe shtanga, pa ndezje të bardhë. -->
+    <!-- Nisja: sfond i zi dhe shtanga, pa ndezje të bardhë. Dritarja krijohet me këtë temë
+         (EdgeToEdge në MainActivity), prandaj edhe kjo deklaron që nuk ka shirit veprimesh. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="windowSplashScreenBackground">@color/th_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>

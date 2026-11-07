@@ -110,6 +110,13 @@ jobs:
       - name: Prova
         run: node scripts/android-smoke.mjs smoke-out apks/v1.apk apks/v2.apk
 
+      - name: Logcat dhe pamja e ekranit për diagnozë
+        if: always()
+        run: |
+          mkdir -p smoke-out
+          adb logcat -d > smoke-out/logcat.txt 2>&1 || true
+          adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 && adb shell cat /sdcard/ui.xml > smoke-out/ui.xml || true
+
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
