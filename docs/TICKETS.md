@@ -76,7 +76,7 @@ Prova reale: `src/data/sync.e2e.test.ts`, me një përdorues prove të përkohsh
 - Kontrolli në hapje, në rikthim dhe kur kthehet interneti (6 orë mes kontrolleve automatike); rreshti te Sot, "Versioni" te Cilësimet, fleta me "Çfarë ka të re" dhe "Përditëso".
 - Plugin-i native: shkarkimi me SHA-256, instalimi me `PackageInstaller` pa dritare konfirmimi pas lejes së parë; njoftimi pas përditësimit.
 
-**Pranimi:** prova në emulator e përditëson v1 → v2 nga vetë app-i, pa dritare konfirmimi, dhe refuzon një SHA-256 të gabuar; të dhënat dhe tema mbeten; vjen njoftimi "Training Hub u përditësua". Në telefon: 0.15.0 me dorë, 0.16.0 nga app-i.
+**Pranimi:** prova në emulator shkarkon me plugin-in një skedar HTTPS me SHA-256 të saktë dhe refuzon një të gabuar; e përditëson v1 → v2 nga vetë app-i, pa dritare konfirmimi, dhe refuzon një APK me SHA-256 të gabuar; të dhënat dhe tema mbeten; vjen njoftimi "Training Hub u përditësua" dhe APK-ja fshihet. Në telefon: 0.15.0 me dorë, 0.16.0 nga app-i.
 
 ## TH-22 · Hyrja e parë
 

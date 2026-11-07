@@ -1,6 +1,8 @@
 // Timer-i i pushimit (SPEC §6, TH-09). Mban vetëm kohën kur mbaron pushimi, që të mbijetojë
 // minimizimin dhe rihapjen e app-it; alarmi (njoftimi native) planifikohet për të njëjtën kohë.
 
+import { safeStorage } from './safe-storage'
+
 export interface RestState {
   endsAt: number
   totalSeconds: number
@@ -26,32 +28,6 @@ export function remainingSeconds(state: RestState | null, now: number): number {
   return state ? Math.max(0, Math.ceil((state.endsAt - now) / 1000)) : 0
 }
 
-const memory = new Map<string, string>()
-// localStorage mund të mungojë ose të hedhë gabim (p.sh. në pamje paraprake); atëherë mbahet në kujtesë.
-const fallbackStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> = {
-  getItem(key) {
-    try {
-      return window.localStorage.getItem(key)
-    } catch {
-      return memory.get(key) ?? null
-    }
-  },
-  setItem(key, value) {
-    try {
-      window.localStorage.setItem(key, value)
-    } catch {
-      memory.set(key, value)
-    }
-  },
-  removeItem(key) {
-    try {
-      window.localStorage.removeItem(key)
-    } catch {
-      memory.delete(key)
-    }
-  },
-}
-
 export function createRestTimer(options: {
   key: string
   now?: () => number
@@ -59,7 +35,7 @@ export function createRestTimer(options: {
   alarm?: RestAlarm
 }): RestTimer {
   const now = options.now ?? (() => Date.now())
-  const storage = options.storage ?? fallbackStorage
+  const storage = options.storage ?? safeStorage
   const listeners = new Set<() => void>()
   let body = ''
   let state: RestState | null = read()

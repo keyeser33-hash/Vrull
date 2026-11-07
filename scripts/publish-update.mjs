@@ -8,6 +8,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const BUCKET = 'app-releases'
+// I njëjti projekt si te src/data/supabase.ts (ky skript ekzekutohet me Node, pa Vite).
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://hxwkyhfqcadtipkpopnq.supabase.co'
 const APK_NAME = /^TrainingHub-(\d+)\.(\d+)\.(\d+)\.apk$/
 

@@ -1,6 +1,7 @@
 package al.traininghub.app;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
@@ -79,7 +80,7 @@ public class AppUpdaterPlugin extends Plugin {
             return;
         }
         worker.execute(() -> {
-            File file = new File(getContext().getCacheDir(), FILE_NAME);
+            File file = cachedApk(getContext());
             HttpURLConnection connection = null;
             try {
                 connection = (HttpURLConnection) new URL(url).openConnection();
@@ -90,26 +91,19 @@ public class AppUpdaterPlugin extends Plugin {
                 }
                 long total = connection.getContentLengthLong();
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                long done = 0;
-                long lastReport = 0;
+                long[] lastReport = { 0 };
                 try (InputStream in = connection.getInputStream(); OutputStream out = new FileOutputStream(file)) {
-                    byte[] buffer = new byte[64 * 1024];
-                    int read;
-                    while ((read = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
-                        digest.update(buffer, 0, read);
-                        done += read;
+                    copy(in, out, digest, (done) -> {
                         long now = System.currentTimeMillis();
-                        if (now - lastReport > 150) {
-                            lastReport = now;
-                            JSObject progress = new JSObject();
-                            progress.put("bytes", done);
-                            progress.put("total", total);
-                            notifyListeners("downloadProgress", progress);
-                        }
-                    }
+                        if (now - lastReport[0] < 150) return;
+                        lastReport[0] = now;
+                        JSObject progress = new JSObject();
+                        progress.put("bytes", done);
+                        progress.put("total", total);
+                        notifyListeners("downloadProgress", progress);
+                    });
                 }
-                if (!hex(digest.digest()).equals(sha256.toLowerCase(Locale.ROOT))) {
+                if (!matches(digest, sha256)) {
                     file.delete();
                     call.reject("Skedari nuk përputhet me SHA-256 e versionit", "HASH_MISMATCH");
                     return;
@@ -136,23 +130,30 @@ public class AppUpdaterPlugin extends Plugin {
         }
         worker.execute(() -> {
             File file = new File(path.startsWith("file://") ? Uri.parse(path).getPath() : path);
+            if (!file.isFile()) {
+                call.reject("Skedari i përditësimit mungon", "MISSING");
+                return;
+            }
+            PackageInstaller installer = getContext().getPackageManager().getPackageInstaller();
+            int id = -1;
             try {
-                if (!file.isFile() || !hex(hash(file)).equals(sha256.toLowerCase(Locale.ROOT))) {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                try (InputStream in = new FileInputStream(file)) {
+                    copy(in, null, digest, null);
+                }
+                if (!matches(digest, sha256)) {
                     call.reject("Skedari nuk përputhet me SHA-256 e versionit", "HASH_MISMATCH");
                     return;
                 }
-                PackageInstaller installer = getContext().getPackageManager().getPackageInstaller();
                 PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
                 params.setAppPackageName(getContext().getPackageName());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     params.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED);
                 }
-                int id = installer.createSession(params);
+                id = installer.createSession(params);
                 try (PackageInstaller.Session session = installer.openSession(id)) {
                     try (InputStream in = new FileInputStream(file); OutputStream out = session.openWrite("base.apk", 0, file.length())) {
-                        byte[] buffer = new byte[64 * 1024];
-                        int read;
-                        while ((read = in.read(buffer)) != -1) out.write(buffer, 0, read);
+                        copy(in, out, null, null);
                         session.fsync(out);
                     }
                     Intent status = new Intent(getContext(), AppUpdateReceiver.class).setAction(ACTION_STATUS);
@@ -161,19 +162,43 @@ public class AppUpdaterPlugin extends Plugin {
                 }
                 call.resolve();
             } catch (Exception e) {
+                // Një seancë e nisur por e pambyllur mban kopjen e APK-së; lirohet menjëherë.
+                if (id != -1) {
+                    try {
+                        installer.abandonSession(id);
+                    } catch (RuntimeException ignored) {
+                        // Seanca mund të jetë mbyllur tashmë.
+                    }
+                }
                 call.reject("Instalimi nuk nisi: " + e.getMessage(), "INSTALL");
             }
         });
     }
 
-    private static byte[] hash(File file) throws Exception {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        try (InputStream in = new FileInputStream(file)) {
-            byte[] buffer = new byte[64 * 1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) digest.update(buffer, 0, read);
+    /** APK-ja e shkarkuar, që AppReplacedReceiver e fshin pas përditësimit. */
+    static File cachedApk(Context context) {
+        return new File(context.getCacheDir(), FILE_NAME);
+    }
+
+    private interface Progress {
+        void done(long bytes);
+    }
+
+    /** Kopjon `in` te `out` (kur ka), duke e futur çdo copë te `digest` (kur ka) dhe duke raportuar përparimin. */
+    private static void copy(InputStream in, OutputStream out, MessageDigest digest, Progress progress) throws IOException {
+        byte[] buffer = new byte[64 * 1024];
+        long done = 0;
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            if (out != null) out.write(buffer, 0, read);
+            if (digest != null) digest.update(buffer, 0, read);
+            done += read;
+            if (progress != null) progress.done(done);
         }
-        return digest.digest();
+    }
+
+    private static boolean matches(MessageDigest digest, String sha256) {
+        return hex(digest.digest()).equals(sha256.toLowerCase(Locale.ROOT));
     }
 
     private static String hex(byte[] bytes) {

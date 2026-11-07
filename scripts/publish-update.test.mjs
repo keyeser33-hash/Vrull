@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { parseRelease } from '../src/update/updater'
 import { latestJson, releaseNotes, staleApks } from './publish-update.mjs'
 
 describe('publikimi i përditësimit brenda app-it', () => {
@@ -14,8 +15,10 @@ describe('publikimi i përditësimit brenda app-it', () => {
     ).toEqual(['Përditësimi brenda app-it: njoftimi te Sot dhe instalimi nga app-i', 'Trupi në 3D: muskujt e ushtrimit'])
   })
 
-  it('latest.json ka formën që pret app-i', () => {
-    expect(latestJson({ version: '0.15.0', sha256: 'A'.repeat(64), bytes: 1000, notes: ['x'], publishedAt: '2026-11-08T10:00:00.000Z' })).toEqual({
+  it('latest.json ka formën që pret app-i dhe parser-i i app-it e pranon', () => {
+    const json = latestJson({ version: '0.15.0', sha256: 'A'.repeat(64), bytes: 1000, notes: ['x'], publishedAt: '2026-11-08T10:00:00.000Z' })
+    expect(parseRelease(JSON.parse(JSON.stringify(json)))).toEqual(json)
+    expect(json).toEqual({
       version: '0.15.0',
       apk: 'TrainingHub-0.15.0.apk',
       sha256: 'a'.repeat(64),

@@ -10,6 +10,7 @@ import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
+import { safeStorage } from '@/lib/safe-storage'
 import { webglAvailable } from '@/lib/webgl'
 import { type BodyMode, LEVEL_SWATCH, modeStyle, RECOVERY, RECOVERY_ORDER, setsText, sinceText } from './body-format'
 import { EQUIPMENT_LABEL } from './training-format'
@@ -24,21 +25,8 @@ type View = '2d' | '3d'
 const BodyModel = lazy(() => import('@/components/body/body-model'))
 const VIEW_KEY = 'th-body-view'
 
-function readView(): View {
-  try {
-    return window.localStorage.getItem(VIEW_KEY) === '3d' && webglAvailable() ? '3d' : '2d'
-  } catch {
-    return '2d'
-  }
-}
-
-function saveView(view: View) {
-  try {
-    window.localStorage.setItem(VIEW_KEY, view)
-  } catch {
-    // Pa ruajtje (p.sh. modalitet privat) zgjedhja vlen vetëm për këtë vizitë.
-  }
-}
+const readView = (): View => (safeStorage.getItem(VIEW_KEY) === '3d' && webglAvailable() ? '3d' : '2d')
+const saveView = (view: View) => safeStorage.setItem(VIEW_KEY, view)
 
 const groupOf = (keys: string[]) => MUSCLE_GROUPS.find((group) => keys.some((key) => group.keys.includes(key)))
 

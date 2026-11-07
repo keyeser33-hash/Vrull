@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
@@ -13,21 +13,27 @@ import { FAILURE_TEXT, megabytes, percent, updateDetail } from './update-format'
 /** Rreshti te Sot: vetëm kur ka një version të ri në pritje; hap fletën (?perditesimi=1). */
 export function UpdateNotice() {
   const state = useAppUpdate()
-  const [, setParams] = useSearchParams()
-  if (!('release' in state) || !state.release) return null
+  const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
+  const release = 'release' in state ? state.release : undefined
   return (
-    <button
-      type="button"
-      onClick={() => setParams((current) => (current.set('perditesimi', '1'), current))}
-      className="flex min-h-14 items-center gap-3 rounded-xl border border-border bg-card px-4 py-2.5 text-left"
-    >
-      <Icon name="shkarko" size={22} className="shrink-0 text-muted-foreground" />
-      <span className="flex flex-1 flex-col">
-        <span className="text-base leading-6 font-medium">Versioni {state.release.version} është gati</span>
-        <span className="text-sm leading-5 text-muted-foreground">{updateDetail(state)}</span>
-      </span>
-      <Icon name="chevron-djathtas" size={20} className="shrink-0 text-muted-foreground" />
-    </button>
+    <>
+      {release ? (
+        <button
+          type="button"
+          onClick={() => setParams((current) => (current.set('perditesimi', '1'), current))}
+          className="flex min-h-14 items-center gap-3 rounded-xl border border-border bg-card px-4 py-2.5 text-left"
+        >
+          <Icon name="shkarko" size={22} className="shrink-0 text-muted-foreground" />
+          <span className="flex flex-1 flex-col">
+            <span className="text-base leading-6 font-medium">Versioni {release.version} është gati</span>
+            <span className="text-sm leading-5 text-muted-foreground">{updateDetail(state)}</span>
+          </span>
+          <Icon name="chevron-djathtas" size={20} className="shrink-0 text-muted-foreground" />
+        </button>
+      ) : null}
+      {params.get('perditesimi') ? <UpdateSheet onClose={() => navigate(-1)} /> : null}
+    </>
   )
 }
 
@@ -88,7 +94,7 @@ function UpdateStatus({ state }: { state: UpdateState }) {
           >
             <div className="h-full rounded-full bg-foreground transition-[width]" style={{ width: percent(state.progress) }} />
           </div>
-          <p className="text-sm leading-5 text-muted-foreground tabular-nums">Po shkarkohet · {percent(state.progress)}</p>
+          <p className="text-sm leading-5 text-muted-foreground tabular-nums">{updateDetail(state)}</p>
         </div>
       )
     case 'installing':
@@ -114,7 +120,7 @@ function UpdateStatus({ state }: { state: UpdateState }) {
     default:
       return (
         <>
-          <p className="text-sm leading-5 text-muted-foreground">{state.status === 'checking' ? 'Po kontrollohet' : `Ke ${__APP_VERSION__}.`}</p>
+          <p className="text-sm leading-5 text-muted-foreground">{updateDetail(state) ?? `Ke ${__APP_VERSION__}.`}</p>
           <Button variant="outline" disabled={state.status === 'checking'} onClick={() => void updater.check({ force: true })}>
             Kontrollo tani
           </Button>

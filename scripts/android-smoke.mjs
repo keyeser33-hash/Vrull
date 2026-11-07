@@ -70,6 +70,17 @@ function statusBandColor() {
 
 // Ngjyra e dritares vendoset me dy thirrje native njëra pas tjetrës (setStyle, pastaj setColor):
 // pritet deri në 5 s që rripi të marrë ngjyrën, pa pritje fikse.
+// Një thirrje plugin-i që refuzohet me qëllim: Capacitor e shkruan refuzimin si console.error në build-in
+// debug. Këto rreshta hiqen nga lista e gabimeve; çdo gabim tjetër në të njëjtën kohë mbetet.
+async function expectingRejection(fn) {
+  const before = report.errors.length
+  const value = await fn()
+  await sleep(500)
+  const added = report.errors.splice(before)
+  report.errors.push(...added.filter((text) => text !== 'Object' && !/HASH_MISMATCH|nuk përputhet/.test(text)))
+  return value
+}
+
 async function waitForBand(hex, timeout = 5000) {
   const until = Date.now() + timeout
   let color = statusBandColor()
@@ -165,6 +176,10 @@ function fakeResponse(request) {
       return [400, { code: 'invalid_credentials', error_code: 'invalid_credentials', msg: 'Invalid login credentials' }]
     }
     return [200, fakeSession()]
+  }
+  // Përditësimi brenda app-it: një version më i vjetër se ai i instaluar, pra "i fundit".
+  if (url.pathname.endsWith('/app-releases/latest.json')) {
+    return [200, { version: '0.0.1', apk: 'TrainingHub-0.0.1.apk', sha256: '0'.repeat(64), bytes: 1, notes: [], publishedAt: '2026-01-01T00:00:00Z' }]
   }
   if (url.pathname.startsWith('/rest/v1/')) {
     if (request.method === 'GET') return [200, []]
@@ -522,16 +537,35 @@ try {
   // shkarkimit; leja "Instalo app të panjohura" jepet si nga përdoruesi; AppUpdater.install e instalon
   // pa dritare konfirmimi (Android 12+). Sesioni, profili dhe tema mbeten; app-i hapet direkt te Sot.
   const shaV2 = createHash('sha256').update(readFileSync(apkV2)).digest('hex')
-  adb('push', apkV2, '/data/local/tmp/th-v2.apk')
-  adb('shell', 'run-as', PKG, 'cp', '/data/local/tmp/th-v2.apk', 'cache/perditesimi.apk')
   adb('shell', 'appops', 'set', PKG, 'REQUEST_INSTALL_PACKAGES', 'allow')
   const appDir = adb('shell', 'run-as', PKG, 'pwd')
   launch()
   page = await connect()
   await waitForHeading(page, 'Stërvitja 1')
   check('përditësimi: app-i e sheh lejen e instalimit', (await page.evaluate(`Capacitor.Plugins.AppUpdater.canInstall().then((r) => r.value)`)) === true)
-  const wrongHash = await page.evaluate(
-    `Capacitor.Plugins.AppUpdater.install({ path: '${appDir}/cache/perditesimi.apk', sha256: '${'0'.repeat(64)}' }).then(() => 'instaloi', (e) => e.code)`,
+  // Shkarkimi native me SHA-256, nga një skedar HTTPS publik që nuk ndryshon kurrë (Maven Central).
+  const PROBE = 'https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom'
+  const probe = await fetch(PROBE)
+    .then((response) => (response.ok ? response.arrayBuffer() : null))
+    .catch(() => null)
+  if (!probe) {
+    console.log('INFO përditësimi: runner-i nuk e mori skedarin e provës; shkarkimi native nuk provohet këtë herë')
+  } else {
+    const probeSha = createHash('sha256').update(Buffer.from(probe)).digest('hex')
+    const downloaded = await page.evaluate(
+      `Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${probeSha}' }).then((r) => r.path, (e) => 'GABIM ' + e.code + ' ' + e.message)`,
+    )
+    check('përditësimi: shkarkimi native me SHA-256 të saktë', downloaded.endsWith('/cache/perditesimi.apk'), downloaded)
+    const refused = await expectingRejection(() =>
+      page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${'1'.repeat(64)}' }).then(() => 'pranoi', (e) => e.code)`),
+    )
+    check('përditësimi: shkarkimi me SHA-256 të gabuar refuzohet dhe skedari fshihet', refused === 'HASH_MISMATCH', refused)
+  }
+  // APK-ja e re vendoset aty ku e lë shkarkimi, si pas një shkarkimi të vërtetë.
+  adb('push', apkV2, '/data/local/tmp/th-v2.apk')
+  adb('shell', 'run-as', PKG, 'cp', '/data/local/tmp/th-v2.apk', 'cache/perditesimi.apk')
+  const wrongHash = await expectingRejection(() =>
+    page.evaluate(`Capacitor.Plugins.AppUpdater.install({ path: '${appDir}/cache/perditesimi.apk', sha256: '${'0'.repeat(64)}' }).then(() => 'instaloi', (e) => e.code)`),
   )
   check('përditësimi: një APK që nuk përputhet me SHA-256 nuk instalohet', wrongHash === 'HASH_MISMATCH', wrongHash)
   const installStart = await page
@@ -547,6 +581,7 @@ try {
   page.close()
   const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Training Hub u përditësua'), 'njoftimi i përditësimit', 15_000).catch(() => false)
   check('pas përditësimit vjen njoftimi "Training Hub u përditësua"', replaced === true)
+  check('pas përditësimit APK-ja e shkarkuar fshihet', adb('shell', 'run-as', PKG, 'ls', 'cache').split(/\s+/).includes('perditesimi.apk') === false)
   launch()
   page = await connect()
   await page.send('Page.reload')

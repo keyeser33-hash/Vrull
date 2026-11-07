@@ -91,17 +91,38 @@ describe('përditësimi brenda app-it', () => {
     expect(ports.latest).toHaveBeenCalledTimes(3)
   })
 
-  it('pa internet nuk kontrollon; një gabim i kontrollit automatik nuk e shqetëson përdoruesin', async () => {
+  it('pa internet nuk kontrollon; "Kontrollo tani" pa internet e thotë', async () => {
     const offline = setup({ online: () => false })
     await offline.updater.check()
     expect(offline.ports.latest).not.toHaveBeenCalled()
     expect(offline.updater.getState()).toEqual({ status: 'idle' })
+    await offline.updater.check({ force: true })
+    expect(offline.updater.getState()).toEqual({ status: 'failed', reason: 'check' })
+  })
 
-    const failing = setup({ latest: async () => Promise.reject(new Error('500')) })
+  it('një gabim i kontrollit automatik nuk e shqetëson përdoruesin dhe provohet sërish pas 30 minutash', async () => {
+    const failing = setup({ latest: vi.fn(async () => Promise.reject(new Error('500'))) })
     await failing.updater.check()
     expect(failing.updater.getState()).toEqual({ status: 'idle' })
+    // Çdo rikthim në app nuk dërgon kërkesë të re menjëherë.
+    await failing.updater.check()
+    expect(failing.ports.latest).toHaveBeenCalledTimes(1)
+    failing.advance(30 * 60_000)
+    await failing.updater.check()
+    expect(failing.ports.latest).toHaveBeenCalledTimes(2)
     await failing.updater.check({ force: true })
     expect(failing.updater.getState()).toMatchObject({ status: 'failed', reason: 'check' })
+  })
+
+  it('një gabim nuk e harron versionin e ri të gjetur më parë', async () => {
+    let fail = false
+    const { updater, ports, advance } = setup({ latest: vi.fn(async () => (fail ? Promise.reject(new Error('500')) : release('0.16.0'))) })
+    await updater.check()
+    fail = true
+    advance(7 * HOUR)
+    const reopened = createUpdater(ports)
+    await reopened.check()
+    expect(reopened.getState()).toMatchObject({ status: 'available', release: { version: '0.16.0' } })
   })
 
   it('"Përditëso": shkarkon nga lidhja e firmosur me SHA-256 e pritur, tregon përparimin dhe instalon', async () => {
@@ -111,7 +132,7 @@ describe('përditësimi brenda app-it', () => {
     await updater.check()
     await updater.update()
     expect(calls).toEqual(['download https://storage/signed/TrainingHub-0.16.0.apk aaaa', 'install /cache/update.apk aaaa'])
-    expect(states).toEqual(['checking', 'available', 'downloading 0', 'downloading 0.5', 'downloading 1', 'installing'])
+    expect(states).toEqual(['checking', 'available', 'downloading 0', 'downloading 0', 'downloading 0.5', 'downloading 1', 'installing'])
   })
 
   it('pa lejen "Instalo app të panjohura" kërkon lejen, pa shkarkuar asgjë', async () => {
@@ -146,6 +167,15 @@ describe('përditësimi brenda app-it', () => {
     expect(broken.ports.downloadUrl).toHaveBeenCalledTimes(2)
   })
 
+  it('sistemi: dritarja e konfirmimit e kthen fletën te "Përditëso", që të mos ngecë po u la pa përgjigje', async () => {
+    const { updater } = setup()
+    await updater.check()
+    await updater.update()
+    expect(updater.getState()).toMatchObject({ status: 'installing' })
+    updater.onInstallStatus({ status: 'pending_user', aborted: false, message: null })
+    expect(updater.getState()).toMatchObject({ status: 'available', release: { version: '0.16.0' } })
+  })
+
   it('sistemi: anulimi kthen te "i disponueshëm", një dështim thuhet; pa përditësim në pritje injorohet', async () => {
     const { updater } = setup()
     updater.onInstallStatus({ status: 'failure', aborted: false, message: 'x' })
@@ -157,6 +187,32 @@ describe('përditësimi brenda app-it', () => {
     await updater.update()
     updater.onInstallStatus({ status: 'failure', aborted: false, message: 'INSTALL_FAILED_UPDATE_INCOMPATIBLE' })
     expect(updater.getState()).toMatchObject({ status: 'failed', reason: 'install' })
+  })
+
+  it('"Përditëso" lexon përsëri latest.json: një version në kujtesë që është hequr zëvendësohet nga i fundit', async () => {
+    let latest = release('0.16.0')
+    const { updater, calls } = setup({ latest: vi.fn(async () => latest) })
+    await updater.check()
+    latest = release('0.18.0', { sha256: 'b'.repeat(64) })
+    await updater.update()
+    expect(calls).toEqual(['download https://storage/signed/TrainingHub-0.18.0.apk bbbb', 'install /cache/update.apk bbbb'])
+  })
+
+  it('"Përditëso" kur versioni i ri është tërhequr: app-i është i fundit, pa shkarkim', async () => {
+    let latest: Release | null = release('0.16.0')
+    const { updater, calls } = setup({ latest: vi.fn(async () => latest) })
+    await updater.check()
+    latest = null
+    await updater.update()
+    expect(updater.getState()).toEqual({ status: 'current' })
+    expect(calls).toEqual([])
+  })
+
+  it('një instalim që nuk nis thuhet si dështim i instalimit, jo i shkarkimit', async () => {
+    const { updater } = setup({ install: async () => Promise.reject(new Error('INSTALL')) })
+    await updater.check()
+    await updater.update()
+    expect(updater.getState()).toMatchObject({ status: 'failed', reason: 'install', release: { version: '0.16.0' } })
   })
 
   it('pa plugin-in native (ose me gabim te leja) nuk ngec te shkarkimi', async () => {

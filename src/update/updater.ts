@@ -42,10 +42,18 @@ export interface UpdatePorts {
   download(url: string, sha256: string, onProgress: (fraction: number) => void): Promise<string>
   install(path: string, sha256: string): Promise<void>
   now(): number
-  cache: { get(): { at: number; release: Release | null } | null; set(value: { at: number; release: Release | null }): void }
+  cache: { get(): CachedCheck | null; set(value: CachedCheck): void }
+}
+
+/** Kontrolli i fundit: kur u bë dhe versioni që u gjet (null: asnjë version në bucket). */
+export interface CachedCheck {
+  at: number
+  release: Release | null
 }
 
 export const CHECK_INTERVAL_MS = 6 * 3_600_000
+/** Pas një kontrolli automatik që dështoi, tjetri vjen pas 30 minutash, jo në çdo rikthim në app. */
+export const FAILED_CHECK_RETRY_MS = 30 * 60_000
 const VERSION = /^\d+\.\d+\.\d+$/
 const SHA256 = /^[0-9a-f]{64}$/
 
@@ -82,6 +90,11 @@ export function createUpdater(ports: UpdatePorts) {
     release && compareVersions(release.version, ports.currentVersion) > 0 ? { status: 'available', release } : { status: 'current' }
   const busy = () => state.status === 'checking' || state.status === 'downloading' || state.status === 'installing'
   const pending = () => ('release' in state ? state.release : undefined)
+  const fetchRelease = async () => {
+    const release = parseRelease(await ports.latest())
+    ports.cache.set({ at: ports.now(), release })
+    return release
+  }
 
   return {
     getState: () => state,
@@ -100,21 +113,25 @@ export function createUpdater(ports: UpdatePorts) {
         if (state.status === 'idle') set(fromRelease(cached.release))
         return
       }
-      if (!ports.online()) return
+      if (!ports.online()) {
+        if (force) set({ status: 'failed', reason: 'check' })
+        return
+      }
       const before = state
       set({ status: 'checking' })
       try {
-        const release = parseRelease(await ports.latest())
-        ports.cache.set({ at: ports.now(), release })
-        set(fromRelease(release))
+        set(fromRelease(await fetchRelease()))
       } catch {
+        // Versioni i njohur mbetet; kontrolli automatik provohet sërish pas 30 minutash.
+        const release = cached?.release ?? null
+        ports.cache.set({ at: ports.now() - CHECK_INTERVAL_MS + FAILED_CHECK_RETRY_MS, release })
         // Kontrolli automatik hesht; vetëm "Kontrollo tani" e thotë.
-        set(force ? { status: 'failed', reason: 'check' } : before)
+        set(force ? { status: 'failed', reason: 'check' } : before.status === 'idle' && release ? fromRelease(release) : before)
       }
     },
 
     async update() {
-      const release = pending()
+      let release = pending()
       if (!release || busy()) return
       set({ status: 'downloading', release, progress: 0 })
       try {
@@ -122,10 +139,22 @@ export function createUpdater(ports: UpdatePorts) {
           set({ status: 'permission', release })
           return
         }
-        const url = await ports.downloadUrl(release.apk)
-        const path = await ports.download(url, release.sha256, (progress) => set({ status: 'downloading', release, progress }))
-        set({ status: 'installing', release })
-        await ports.install(path, release.sha256)
+        // latest.json përsëri: versioni në kujtesë mund të jetë hequr nga bucket-i pas dy versioneve
+        // të reja, ose të jetë tërhequr.
+        if (ports.online()) {
+          const fresh = fromRelease(await fetchRelease())
+          if (fresh.status !== 'available') {
+            set(fresh)
+            return
+          }
+          release = fresh.release
+          set({ status: 'downloading', release, progress: 0 })
+        }
+        const current = release
+        const url = await ports.downloadUrl(current.apk)
+        const path = await ports.download(url, current.sha256, (progress) => set({ status: 'downloading', release: current, progress }))
+        set({ status: 'installing', release: current })
+        await ports.install(path, current.sha256)
       } catch (error) {
         const code = (error as { code?: unknown } | null)?.code
         const reason = code === 'HASH_MISMATCH' ? 'mismatch' : state.status === 'installing' ? 'install' : 'download'
@@ -135,10 +164,16 @@ export function createUpdater(ports: UpdatePorts) {
 
     allowInstall: () => ports.openInstallSettings(),
 
-    /** Përgjigja e sistemit pas instalimit; suksesi e mbyll vetë app-in. */
+    /**
+     * Përgjigja e sistemit pas instalimit; suksesi e mbyll vetë app-in. Kur sistemi hap dritaren e
+     * konfirmimit, fleta kthehet te "Përditëso": po u la dritarja pa përgjigje (Home), ose Android-i
+     * nuk e hapi dot, nuk vjen asnjë përgjigje tjetër dhe përdoruesi duhet të mund të provojë sërish.
+     */
     onInstallStatus(event: InstallStatus) {
       if (state.status !== 'installing') return
-      if (event.status === 'failure') set(event.aborted ? { status: 'available', release: state.release } : { status: 'failed', reason: 'install', release: state.release })
+      const { release } = state
+      if (event.status === 'pending_user' || event.aborted) set({ status: 'available', release })
+      else set({ status: 'failed', reason: 'install', release })
     },
   }
 }

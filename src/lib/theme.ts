@@ -2,6 +2,7 @@
 // që çdo utility `dark:` të vlejë; blloku `.oled` te globals.css vjen i fundit dhe fiton.
 
 import { Capacitor, registerPlugin, SystemBars, SystemBarsStyle } from '@capacitor/core'
+import { safeStorage } from './safe-storage'
 
 // Plugin-i lokal i app-it: android/app/src/main/java/al/traininghub/app/WindowBackgroundPlugin.java.
 interface WindowBackgroundPlugin {
@@ -26,12 +27,8 @@ function isTheme(value: unknown): value is Theme {
 }
 
 export function readTheme(): Theme {
-  try {
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    return isTheme(saved) ? saved : DEFAULT_THEME
-  } catch {
-    return DEFAULT_THEME
-  }
+  const saved = safeStorage.getItem(STORAGE_KEY)
+  return isTheme(saved) ? saved : DEFAULT_THEME
 }
 
 export function applyTheme(theme: Theme, root: HTMLElement = document.documentElement) {
@@ -93,9 +90,6 @@ function toHex6(value: string) {
 
 export function saveTheme(theme: Theme) {
   applyTheme(theme)
-  try {
-    window.localStorage.setItem(STORAGE_KEY, theme)
-  } catch {
-    // Ruajtja mund të mungojë (p.sh. modalitet privat); tema vlen për këtë seancë.
-  }
+  // Pa ruajtje (p.sh. modalitet privat), tema vlen për këtë seancë.
+  safeStorage.setItem(STORAGE_KEY, theme)
 }

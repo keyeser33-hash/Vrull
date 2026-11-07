@@ -15,7 +15,8 @@ import androidx.core.content.ContextCompat;
 
 /**
  * Pas përditësimit (brenda app-it ose me dorë), Android-i e mbyll app-in dhe nuk e rihap. Ky
- * njoftim thotë versionin e ri dhe e hap app-in me një prekje (SPEC §3b, TH-23).
+ * njoftim thotë versionin e ri dhe e hap app-in me një prekje (SPEC §3b, TH-23). Fshin edhe APK-në
+ * e shkarkuar nga përditësimi brenda app-it.
  */
 public class AppReplacedReceiver extends BroadcastReceiver {
 
@@ -25,6 +26,8 @@ public class AppReplacedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction())) return;
+        // APK-ja e shkarkuar (rreth 30 MB) nuk duhet më.
+        AppUpdaterPlugin.cachedApk(context).delete();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
             && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             return;

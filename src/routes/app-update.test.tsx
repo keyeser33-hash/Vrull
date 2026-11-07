@@ -33,8 +33,8 @@ async function renderNotice() {
 async function renderSheet() {
   const { UpdateSheet } = await import('./app-update')
   const onClose = vi.fn()
-  render(<UpdateSheet onClose={onClose} />)
-  return { onClose, sheet: screen.getByRole('dialog') }
+  const { unmount } = render(<UpdateSheet onClose={onClose} />)
+  return { onClose, unmount, sheet: screen.getByRole('dialog') }
 }
 
 describe('përditësimi brenda app-it', () => {
@@ -52,6 +52,9 @@ describe('përditësimi brenda app-it', () => {
     const router = await renderNotice()
     await userEvent.click(screen.getByRole('button', { name: /Versioni 0\.16\.0 është gati/ }))
     expect(router.state.location.search).toBe('?perditesimi=1')
+    expect(screen.getByRole('dialog', { name: 'Versioni 0.16.0' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Mbyll' }))
+    expect(router.state.location.search).toBe('')
   })
 
   it('te Sot: shkarkimi tregon përqindjen', async () => {
@@ -84,7 +87,13 @@ describe('përditësimi brenda app-it', () => {
     fake.state = { status: 'downloading', release, progress: 0.25 }
     const first = await renderSheet()
     expect(within(first.sheet).getByRole('progressbar', { name: 'Shkarkimi' })).toHaveAttribute('aria-valuenow', '25')
+    expect(first.sheet).toHaveTextContent('Po shkarkohet · 25%')
     expect(within(first.sheet).queryByRole('button', { name: 'Përditëso' })).not.toBeInTheDocument()
+    first.unmount()
+    fake.state = { status: 'installing', release }
+    const second = await renderSheet()
+    expect(second.sheet).toHaveTextContent('Training Hub mbyllet për pak')
+    expect(within(second.sheet).queryByRole('button')).toHaveAccessibleName('Mbyll')
   })
 
   it('fleta: çdo dështim thuhet me fjalë dhe provohet përsëri', async () => {
