@@ -25,16 +25,16 @@ export const MEAL_LABEL: Record<MealKey, string> = {
   post_workout: 'Pas stërvitjes',
 }
 
-/** Emri i vaktit në një fjali: "Regjistro drekën". */
+/** Emri i shkurtër i vaktit në butonin "Regjistro …"; titulli i panelit e thotë vaktin e plotë. */
 export const MEAL_OBJECT: Record<MealKey, string> = {
-  breakfast_1: 'mëngjesin 1',
-  breakfast_2: 'mëngjesin 2',
-  snack_am: 'snack-un e paraditës',
+  breakfast_1: 'mëngjesin',
+  breakfast_2: 'mëngjesin',
+  snack_am: 'snack-un',
   lunch: 'drekën',
-  snack_pm: 'snack-un e pasdites',
+  snack_pm: 'snack-un',
   dinner: 'darkën',
-  bedtime: 'vaktin para gjumit',
-  pre_workout: 'vaktin para stërvitjes',
-  intra_workout: 'vaktin gjatë stërvitjes',
-  post_workout: 'vaktin pas stërvitjes',
+  bedtime: 'vaktin',
+  pre_workout: 'vaktin',
+  intra_workout: 'vaktin',
+  post_workout: 'vaktin',
 }

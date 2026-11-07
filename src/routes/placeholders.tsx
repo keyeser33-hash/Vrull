@@ -1,16 +1,5 @@
 import { EmptyCard, PageHeader } from '@/components/layout/page'
 
-export function NutritionPage() {
-  return (
-    <>
-      <PageHeader title="Ushqimi" />
-      <EmptyCard title="Ditari i ushqimit">
-        Vaktet sipas planit, kërkimi i ushqimeve, barkodi dhe recetat e tua.
-      </EmptyCard>
-    </>
-  )
-}
-
 export function ProgressPage() {
   return (
     <>

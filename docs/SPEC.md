@@ -135,6 +135,10 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
   - USDA FoodData Central për ushqimet e përgjithshme, përmes Edge Function që pranon vetëm kërkesa me sesion të vlefshëm;
   - ushqimet e përdoruesit (makro për 100 g) dhe recetat (përbërës me gramë, peshë totale, porcione), të ruajtura për ripërdorim.
 - **Shablloni i Jimit** (Q18): çdo vakt i planit regjistrohet me një prekje dhe pastaj ndryshohet. Listat e zëvendësimeve të PDF-së (mishrat, bulmetrat, drithërat, perimet, frutat, karbohidratet pas stërvitjes) shfaqen si alternativa për artikullin përkatës.
+- **Ekrani (vendim i 07.11.2026, sipas mockup-it C · Ushqimi):** shiriti i kcal sipër me llojin e ditës (një prekje e ndërron); paneli "Vakti i radhës" me artikujt e Jimit dhe "Regjistro <vaktin>"; dita si orar; makrot kundrejt objektivave. I radhës është vakti i parë pa regjistrim që nuk ka kaluar më shumë se 1 orë; ato që kanë kaluar dalin "Pa regjistruar".
+- **Orari:** mëngjesi 1 në zgjim, mëngjesi 2 +45 min, snack-u i paraditës +3:30, dreka +6:00, snack-u i pasdites +8:30, darka +11:30, vakti para gjumit 30 min para gjumit. Në ditë stërvitjeje: vakti para 15 min para fillimit, ai pas 90 min pas fillimit; vakti që bie nga 30 min para vaktit para stërvitjes deri 30 min pas vaktit pas saj vjen 1 orë pas vaktit pas stërvitjes, dhe vaktet pas tij zhvendosen bashkë me të (asnjë pas vaktit para gjumit).
+- **Makrot e shabllonit:** USDA FoodData Central (SR Legacy) për 100 g; Clif Bar dhe karamelet gummy nga etiketa. Salmoni merret i egër (142 kcal/100 g): me të dita bazë del rreth 3110 kcal, 267 g P, 108 g Y, sa totalet e PDF-së.
+- **Objektivat e ruajtura:** me regjistrimin e parë të ditës ose me ndryshimin e llojit të ditës, objektivat dhe pesha ruhen për atë datë dhe nuk ndryshojnë kur ndryshon pesha më vonë.
 - **Shënim në ekranin e objektivave:** proteina e Jimit është rreth 3,3–4,1 g/kg; studimet tregojnë se fitimi në muskul nuk rritet ndjeshëm mbi rreth 1,6–2,2 g/kg.
 
 ## 10. Suplementet
