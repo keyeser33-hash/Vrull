@@ -15,6 +15,8 @@ import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { ensureSupplements } from './supplements'
+import { usdaFromJson } from '@/nutrition/usda'
+import type { ExternalFood } from '@/nutrition/off'
 import { upgradeShortcutToSize } from './training'
 
 // Të dhënat e app-it: sesioni, një bazë lokale, një store për shkrimet, një sinkronizim me
@@ -153,6 +155,13 @@ export const photoRemote: PhotoRemote = {
     if (error || !data) throw error ?? new Error('Foto nuk u shkarkua')
     return data.arrayBuffer()
   },
+}
+
+/** Ushqimet e përgjithshme nga USDA, përmes funksionit `usda-search` (vetëm me sesion). */
+export async function searchUsda(query: string): Promise<ExternalFood[]> {
+  const { data, error } = await supabase.functions.invoke('usda-search', { body: { query } })
+  if (error) throw error
+  return usdaFromJson((data ?? {}) as Record<string, unknown>)
 }
 
 /** Fotot e progresit për ekranet: përmes store-it dhe bucket-it, pa thirrje direkte te Supabase. */

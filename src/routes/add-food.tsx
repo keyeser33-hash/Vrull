@@ -7,7 +7,7 @@ import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
-import { store, useLocalQuery } from '@/data/app-data'
+import { searchUsda, store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/data/dates'
 import { createCustomFood, type Food, foodById, recentFoods, saveExternalFood, searchFoods } from '@/data/foods'
 import { logFood } from '@/data/nutrition'
@@ -26,8 +26,8 @@ const per100 = (food: { kcal: number; brand?: string | null }) => [food.brand, `
 
 type Remote = { state: 'idle' } | { state: 'loading' } | { state: 'done'; foods: ExternalFood[] } | { state: 'offline' } | { state: 'error' }
 
-/** Kërkimi te Open Food Facts pasi ndalon shkrimi; pa internet thuhet qartë. */
-function useOffSearch(query: string): Remote {
+/** Kërkimi në një burim të jashtëm pasi ndalon shkrimi; pa internet thuhet qartë. */
+function useRemoteSearch(query: string, search: (query: string, signal: AbortSignal) => Promise<ExternalFood[]>): Remote {
   const [remote, setRemote] = useState<Remote>({ state: 'idle' })
   const trimmed = query.trim()
   useEffect(() => {
@@ -39,8 +39,10 @@ function useOffSearch(query: string): Remote {
         return
       }
       setRemote({ state: 'loading' })
-      offSearch(trimmed, controller.signal)
-        .then((foods) => setRemote({ state: 'done', foods }))
+      search(trimmed, controller.signal)
+        .then((foods) => {
+          if (!controller.signal.aborted) setRemote({ state: 'done', foods })
+        })
         .catch(() => {
           if (!controller.signal.aborted) setRemote({ state: navigator.onLine ? 'error' : 'offline' })
         })
@@ -49,9 +51,13 @@ function useOffSearch(query: string): Remote {
       clearTimeout(timer)
       controller.abort()
     }
+    // `search` është një funksion i qëndrueshëm i modulit.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trimmed])
   return trimmed.length < 3 ? { state: 'idle' } : remote
 }
+
+const usdaSearch = (query: string) => searchUsda(query)
 
 export function AddFoodPage() {
   const { meal = 'lunch' } = useParams() as { meal: MealKey }
@@ -62,7 +68,8 @@ export function AddFoodPage() {
   const searchId = useId()
   const recent = useLocalQuery(() => recentFoods(store), [])
   const local = useLocalQuery(() => searchFoods(store, query), [query])
-  const remote = useOffSearch(query)
+  const remote = useRemoteSearch(query, offSearch)
+  const usda = useRemoteSearch(query, usdaSearch)
   const sheet = params.get('ndrysho')
   const foodId = params.get('ushqimi')
   const open = (name: string, extra: Record<string, string> = {}) => setParams({ ndrysho: name, ...extra })
@@ -115,7 +122,8 @@ export function AddFoodPage() {
               ))}
             </Group>
           ) : null}
-          <RemoteResults remote={remote} onPick={(food) => void openExternal(food)} />
+          <RemoteResults source="Open Food Facts" remote={remote} onPick={(food) => void openExternal(food)} />
+          <RemoteResults source="USDA" remote={usda} onPick={(food) => void openExternal(food)} quiet />
         </>
       ) : recent === undefined ? (
         <div aria-hidden className="h-48 rounded-xl bg-skeleton" />
@@ -163,16 +171,18 @@ export function AddFoodPage() {
   )
 }
 
-function RemoteResults({ remote, onPick }: { remote: Remote; onPick: (food: ExternalFood) => void }) {
-  if (remote.state === 'idle') return <p className="text-sm leading-5 text-muted-foreground">Shkruaj të paktën 3 shkronja për të kërkuar te Open Food Facts.</p>
-  if (remote.state === 'loading') return <p className="text-sm leading-5 text-muted-foreground">Po kërkohet te Open Food Facts</p>
-  if (remote.state === 'offline') return <p className="text-sm leading-5 text-muted-foreground">Pa internet. Dalin vetëm ushqimet e tua.</p>
-  if (remote.state === 'error') return <p className="text-sm leading-5 text-muted-foreground">Open Food Facts nuk po përgjigjet. Provo përsëri pas pak.</p>
-  if (remote.foods.length === 0) return <p className="text-sm leading-5 text-muted-foreground">Asnjë produkt me këtë emër te Open Food Facts.</p>
+/** Rezultatet e një burimi të jashtëm. `quiet`: pa mesazhe për gjendjet (burimi i dytë). */
+function RemoteResults({ source, remote, onPick, quiet = false }: { source: string; remote: Remote; onPick: (food: ExternalFood) => void; quiet?: boolean }) {
+  const note = (text: string) => (quiet ? null : <p className="text-sm leading-5 text-muted-foreground">{text}</p>)
+  if (remote.state === 'idle') return note(`Shkruaj të paktën 3 shkronja për të kërkuar te ${source}.`)
+  if (remote.state === 'loading') return note(`Po kërkohet te ${source}`)
+  if (remote.state === 'offline') return note('Pa internet. Dalin vetëm ushqimet e tua.')
+  if (remote.state === 'error') return <p className="text-sm leading-5 text-muted-foreground">{source} nuk po përgjigjet. Provo përsëri pas pak.</p>
+  if (remote.foods.length === 0) return note(`Asnjë produkt me këtë emër te ${source}.`)
   return (
-    <Group title="Open Food Facts">
+    <Group title={source === 'USDA' ? 'USDA · ushqime të përgjithshme' : source}>
       {remote.foods.map((food) => (
-        <Row key={food.sourceId} label={food.name} detail={per100(food)} onClick={() => onPick(food)} />
+        <Row key={`${food.source}-${food.sourceId}`} label={food.name} detail={per100(food)} onClick={() => onPick(food)} />
       ))}
     </Group>
   )

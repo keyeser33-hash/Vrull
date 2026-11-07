@@ -7,7 +7,7 @@ import type { ExternalFood } from '@/nutrition/off'
 
 // Shto ushqim me store të vërtetë; Open Food Facts zëvendësohet me përgjigje të njohura.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
-const off = vi.hoisted(() => ({ search: vi.fn(), product: vi.fn() }))
+const off = vi.hoisted(() => ({ search: vi.fn(), product: vi.fn(), usda: vi.fn().mockResolvedValue([]) }))
 vi.mock('@/nutrition/off', async (original) => ({ ...(await original<object>()), offSearch: off.search, offProduct: off.product }))
 const scanner = vi.hoisted(() => ({ native: false, scan: vi.fn() }))
 vi.mock('@/lib/barcode-native', () => ({ canScanBarcode: () => scanner.native, scanBarcode: scanner.scan }))
@@ -18,6 +18,7 @@ vi.mock('@/data/app-data', async () => {
   data.store = store
   return {
     store,
+    searchUsda: off.usda,
     useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
       const [value, setValue] = useState<T>()
       useEffect(() => {
@@ -99,12 +100,15 @@ describe('Shto ushqim', () => {
   it('kërkimi: ushqimet e tua dhe Open Food Facts; produkti ruhet dhe shtohet me porcionin', async () => {
     const user = userEvent.setup()
     off.search.mockResolvedValue([NUTELLA])
+    off.usda.mockResolvedValue([{ ...NUTELLA, source: 'usda', sourceId: '171477', name: 'Hazelnuts, raw', brand: null, servingG: null, servingLabel: null }])
     await renderPage()
     await user.type(await screen.findByLabelText('Kërko ushqimin'), 'zez')
     expect(await screen.findByRole('region', { name: 'Ushqimet e tua' })).toHaveTextContent('Bukë e zezë')
     await user.type(screen.getByLabelText('Kërko ushqimin'), '{Backspace>3}nutella')
     const results = await screen.findByRole('region', { name: 'Open Food Facts' }, { timeout: 3000 })
     expect(off.search).toHaveBeenLastCalledWith('nutella', expect.any(AbortSignal))
+    expect(await screen.findByRole('region', { name: 'USDA · ushqime të përgjithshme' })).toHaveTextContent('Hazelnuts, raw')
+    expect(off.usda).toHaveBeenLastCalledWith('nutella')
     await user.click(within(results).getByRole('button', { name: /^Nutella/ }))
     const amount = await screen.findByRole('dialog', { name: 'Nutella' })
     expect(within(amount).getByLabelText('Sasia')).toHaveValue('15')
