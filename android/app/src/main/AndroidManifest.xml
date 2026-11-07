@@ -38,6 +38,10 @@
     <!-- Lejet -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Pa këtë, WebView-ja nuk e di kur bie ose kthehet rrjeti: navigator.onLine mbetet true dhe
+         ngjarja "online" nuk vjen kurrë, ndaj sinkronizimi nuk niset kur kthehet interneti.
+         Leje e zakonshme: Android-i e jep vetë, pa pyetur. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Njoftimi i timer-it të pushimit dhe rikujtuesit (Android 13+ e kërkon në stërvitjen e parë). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Alarmet e sakta, që timer-i të bjerë në kohë edhe me ekran të kyçur.
