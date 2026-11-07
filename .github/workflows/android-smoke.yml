@@ -77,6 +77,8 @@ jobs:
           echo no | "$tools/avdmanager" create avd --force -n th -k "$SYSTEM_IMAGE" -d pixel_6 \
             -p "$ANDROID_AVD_HOME/th.avd"
           "$ANDROID_HOME/emulator/emulator" -list-avds | grep -qx th
+          # Pixel 6 kërkon 6 GB për të dhënat; runner-i ka rreth 7 GB të lirë. 2 GB mjaftojnë për provën.
+          echo "disk.dataPartition.size=2G" >> "$ANDROID_AVD_HOME/th.avd/config.ini"
           nohup "$ANDROID_HOME/emulator/emulator" -avd th -no-window -no-audio -no-boot-anim \
             -no-snapshot -gpu swiftshader_indirect -camera-back none > emulator.log 2>&1 &
           # Çdo pritje ka afat, që një emulator që s'nis të mos e mbajë punën deri në fund të kohës.
