@@ -95,8 +95,14 @@ function launch() {
   adb('shell', 'am', 'start', '-W', '-n', `${PKG}/.MainActivity`)
 }
 
-function setNetwork(enabled) {
-  for (const service of ['wifi', 'data']) adb('shell', 'svc', service, enabled ? 'enable' : 'disable')
+// Mënyra e aeroplanit: e vetmja që fik edhe rrjetin virtual të emulatorit (svc wifi/data nuk mjafton).
+async function setNetwork(enabled) {
+  adb('shell', 'cmd', 'connectivity', 'airplane-mode', enabled ? 'disable' : 'enable')
+  await waitFor(
+    () => adb('shell', 'settings', 'get', 'global', 'airplane_mode_on') === (enabled ? '0' : '1'),
+    enabled ? 'rrjeti i rikthyer' : 'mënyra e aeroplanit',
+    20_000,
+  )
 }
 
 // Emulatori në CI shfaq ndonjëherë "Process system isn't responding" pas nisjes. Dritaret e
@@ -413,7 +419,7 @@ try {
   page.close()
 
   // 8. Pa internet: app-i hapet direkt te Sot.
-  setNetwork(false)
+  await setNetwork(false)
   adb('shell', 'am', 'force-stop', PKG)
   launch()
   page = await connect()
@@ -422,7 +428,7 @@ try {
   check('pa internet pas hyrjes, hapet direkt te Sot', (await page.evaluate('navigator.onLine')) === false)
   screenshot('7-sot-pa-internet')
   page.close()
-  setNetwork(true)
+  await setNetwork(true)
 
   check('asnjë gabim JavaScript', report.errors.length === 0, report.errors.join(' | '))
   report.ok = true
@@ -436,7 +442,7 @@ try {
     // Ekrani mund të mos jetë i disponueshëm nëse emulatori ka rënë.
   }
   try {
-    setNetwork(true)
+    await setNetwork(true)
   } catch {
     // Rrjeti rikthehet me emulatorin e ri.
   }
