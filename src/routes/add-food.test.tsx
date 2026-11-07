@@ -9,6 +9,8 @@ import type { ExternalFood } from '@/nutrition/off'
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
 const off = vi.hoisted(() => ({ search: vi.fn(), product: vi.fn() }))
 vi.mock('@/nutrition/off', async (original) => ({ ...(await original<object>()), offSearch: off.search, offProduct: off.product }))
+const scanner = vi.hoisted(() => ({ native: false, scan: vi.fn() }))
+vi.mock('@/lib/barcode-native', () => ({ canScanBarcode: () => scanner.native, scanBarcode: scanner.scan }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
@@ -132,5 +134,21 @@ describe('Shto ushqim', () => {
     await user.type(within(sheet).getByLabelText('Shifrat poshtë vijave'), '1234567890123{Enter}')
     await user.click(await within(sheet).findByRole('button', { name: 'Shto si ushqim të ri' }))
     expect(screen.getByRole('dialog', { name: 'Ushqim i ri' })).toBeInTheDocument()
+  })
+
+  it('skaneri në telefon: kodi i skanuar kërkohet vetë; herën e parë moduli shkarkohet', async () => {
+    const user = userEvent.setup()
+    scanner.native = true
+    off.product.mockResolvedValueOnce({ ...NUTELLA, sourceId: '5449000000996', name: 'Coca-Cola', servingG: 330, servingLabel: '1 kanoçe' })
+    scanner.scan.mockResolvedValueOnce({ state: 'installing' }).mockResolvedValueOnce({ state: 'found', code: '5449000000996' })
+    await renderPage()
+    await user.click(await screen.findByRole('button', { name: 'Kërko me barkod' }))
+    const sheet = screen.getByRole('dialog', { name: 'Barkodi' })
+    await user.click(within(sheet).getByRole('button', { name: 'Skano me kamerë' }))
+    expect(await within(sheet).findByRole('alert')).toHaveTextContent('Skaneri po shkarkohet nga Google Play')
+    await user.click(within(sheet).getByRole('button', { name: 'Skano me kamerë' }))
+    expect(await screen.findByRole('dialog', { name: 'Coca-Cola' })).toBeInTheDocument()
+    expect(off.product).toHaveBeenLastCalledWith('5449000000996')
+    scanner.native = false
   })
 })

@@ -14,6 +14,7 @@ import { logFood } from '@/data/nutrition'
 import { macrosFor } from '@/nutrition/jim'
 import { MEAL_LABEL, type MealKey } from '@/nutrition/meals'
 import { type ExternalFood, offProduct, offSearch } from '@/nutrition/off'
+import { canScanBarcode, scanBarcode } from '@/lib/barcode-native'
 import { cn } from '@/lib/cn'
 import { grams, kcal, macrosLine } from './nutrition-format'
 
@@ -303,10 +304,19 @@ function NumberInput({ label, value, onChange }: { label: string; value: string;
 
 function BarcodeSheet({ onClose, onFound, onMissing }: { onClose: () => void; onFound: (id: string) => void; onMissing: () => void }) {
   const [code, setCode] = useState('')
-  const [state, setState] = useState<'idle' | 'busy' | 'missing' | 'offline' | 'error'>('idle')
+  const [state, setState] = useState<'idle' | 'busy' | 'missing' | 'offline' | 'error' | 'installing' | 'scan-error'>('idle')
   const codeId = useId()
-  async function lookUp() {
-    const value = code.replace(/\D/g, '')
+  async function scan() {
+    setState('busy')
+    const result = await scanBarcode()
+    if (result.state === 'found') {
+      setCode(result.code)
+      return lookUp(result.code)
+    }
+    setState(result.state === 'cancelled' ? 'idle' : result.state === 'installing' ? 'installing' : 'scan-error')
+  }
+  async function lookUp(scanned?: string) {
+    const value = (scanned ?? code).replace(/\D/g, '')
     if (value.length < 8) return setState('error')
     if (!navigator.onLine) return setState('offline')
     setState('busy')
@@ -324,11 +334,19 @@ function BarcodeSheet({ onClose, onFound, onMissing }: { onClose: () => void; on
     missing: 'Ky kod nuk gjendet te Open Food Facts. Mund ta shtosh si ushqim të ri.',
     offline: 'Pa internet. Barkodi kërkohet te Open Food Facts kur të ketë lidhje.',
     error: 'Shkruaj të gjitha shifrat e barkodit (8 deri në 14).',
+    installing: 'Skaneri po shkarkohet nga Google Play. Provo përsëri pas pak, ose shkruaj shifrat.',
+    'scan-error': 'Skaneri nuk u hap. Shkruaj shifrat poshtë vijave.',
   }[state]
   return (
     <Sheet title="Barkodi" onClose={onClose}>
+      {canScanBarcode() ? (
+        <Button variant="outline" size="xl" disabled={state === 'busy'} onClick={() => void scan()}>
+          <Icon name="barkodi" size={22} />
+          Skano me kamerë
+        </Button>
+      ) : null}
       <label htmlFor={codeId} className="text-sm leading-5 font-medium">
-        Shifrat poshtë vijave
+        {canScanBarcode() ? 'Ose shkruaj shifrat poshtë vijave' : 'Shifrat poshtë vijave'}
       </label>
       <input
         id={codeId}
@@ -343,7 +361,7 @@ function BarcodeSheet({ onClose, onFound, onMissing }: { onClose: () => void; on
         className={inputClass}
       />
       {message ? (
-        <p role="alert" className={cn('text-sm leading-5', state === 'error' ? 'text-destructive' : 'text-muted-foreground')}>
+        <p role="alert" className={cn('text-sm leading-5', state === 'error' || state === 'scan-error' ? 'text-destructive' : 'text-muted-foreground')}>
           {message}
         </p>
       ) : null}
