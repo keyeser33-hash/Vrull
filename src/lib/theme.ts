@@ -57,10 +57,23 @@ function syncSystemBars(theme: Theme, background: string) {
     .catch(() => {
       // Pa plugin-in, ikonat mbeten si në nisje; tema e app-it nuk varet prej tyre.
     })
-    .then(() => (background ? WindowBackground.setColor({ color: background }) : undefined))
+    .then(() => {
+      const color = toHex6(background)
+      return color ? WindowBackground.setColor({ color }) : undefined
+    })
     .catch(() => {
       // Ngjyrë e panjohur ose plugin që mungon: dritarja mbetet e zezë si në nisje.
     })
+}
+
+// Android (Color.parseColor) pranon vetëm formën me gjashtë shifra; build-i i shkurton tokenat
+// në tre shifra kur munden (e zeza e OLED-it del me tre).
+function toHex6(value: string) {
+  if (/^#[0-9a-f]{6}$/i.test(value)) return value
+  if (/^#[0-9a-f]{3}$/i.test(value)) {
+    return `#${[...value.slice(1)].map((digit) => digit + digit).join('')}`
+  }
+  return ''
 }
 
 export function saveTheme(theme: Theme) {

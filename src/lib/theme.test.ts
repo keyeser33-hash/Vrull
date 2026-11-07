@@ -65,6 +65,13 @@ describe('shiritat e sistemit në Android', () => {
     expect(native.calls).toEqual(['setStyle', 'setColor'])
   })
 
+  it('ngjyrat e shkurtra (#000 pas minifikimit) dërgohen me gjashtë shifra', async () => {
+    native.isNative = true
+    document.documentElement.style.setProperty('--background', '#000')
+    applyTheme('oled')
+    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#000000' }))
+  })
+
   it('pa token sfondi nuk dërgon ngjyrë', async () => {
     native.isNative = true
     applyTheme('dark')
