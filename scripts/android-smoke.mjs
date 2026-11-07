@@ -599,7 +599,13 @@ try {
   if (!(codeV2 > codeV1)) screenshot('gabim-perditesimi')
   check('v2 instalohet nga app-i, pa dritare konfirmimi', codeV2 !== null && codeV2 > codeV1, `${installStart}; ${codeV1} -> ${codeV2}`)
   page.close()
-  const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Training Hub u përditësua'), 'njoftimi i përditësimit', 15_000).catch(() => false)
+  // MY_PACKAGE_REPLACED vjen kur sistemi e nis sërish procesin; në emulatorin e ngarkuar mund të vonojë.
+  const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Training Hub u përditësua'), 'njoftimi i përditësimit', 45_000).catch(() => false)
+  if (replaced !== true) {
+    // Për diagnozë: çfarë ndodhi me broadcast-in dhe procesin pas përditësimit.
+    const lines = adb('logcat', '-d', '-t', '4000').split('\n').filter((line) => /traininghub|MY_PACKAGE_REPLACED|AppReplaced|BroadcastQueue|AndroidRuntime/i.test(line))
+    writeFileSync(join(outDir, 'logcat-perditesimi.txt'), lines.join('\n'))
+  }
   check('pas përditësimit vjen njoftimi "Training Hub u përditësua"', replaced === true)
   check('pas përditësimit APK-ja e shkarkuar fshihet', adb('shell', 'run-as', PKG, 'ls', 'cache').split(/\s+/).includes('perditesimi.apk') === false)
   launch()
