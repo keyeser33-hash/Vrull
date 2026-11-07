@@ -22,6 +22,8 @@ export interface ValueStepperProps {
   variant?: 'row' | 'hero'
   invalid?: boolean
   describedBy?: string
+  /** Etiketa mbetet për lexuesin e ekranit, por nuk shfaqet (p.sh. kur fleta e ka si titull). */
+  hideLabel?: boolean
 }
 
 export function ValueStepper({
@@ -38,6 +40,7 @@ export function ValueStepper({
   variant = 'row',
   invalid,
   describedBy,
+  hideLabel,
 }: ValueStepperProps) {
   const [draft, setDraft] = useState<string | null>(null)
   const id = useId()
@@ -98,7 +101,7 @@ export function ValueStepper({
   if (hero) {
     return (
       <div className="flex flex-col items-center gap-3 tabular-nums">
-        <label htmlFor={id} className="text-sm leading-5 font-medium text-muted-foreground">
+        <label htmlFor={id} className={cn('text-sm leading-5 font-medium text-muted-foreground', hideLabel && 'sr-only')}>
           {label}
         </label>
         <div className="flex w-full items-center justify-between gap-3">

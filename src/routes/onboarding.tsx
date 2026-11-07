@@ -1,6 +1,7 @@
 import { type ReactNode, useId, useState } from 'react'
 import { BodyFigure } from '@/components/body/body-figure'
 import { DayPicker } from '@/components/forms/day-picker'
+import { TimeStepper } from '@/components/forms/time-stepper'
 import { ValueStepper } from '@/components/forms/value-stepper'
 import { WEEK_DAYS } from '@/components/forms/week-days'
 import { FocusLayout } from '@/components/layout/focus-layout'
@@ -12,7 +13,6 @@ import { completeOnboarding, DEFAULT_PROFILE, isTime, parseWeight } from '@/data
 import { firstWeek } from '@/program/schedule'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import { cn } from '@/lib/cn'
-import { addMinutes, parseTimeInput } from '@/lib/time'
 import { kg } from './training-format'
 
 // Hapat e hyrjes së parë (SPEC §3a, hapat 2–5): pesha, stërvitja, orari, programi. Varianti A
@@ -22,7 +22,6 @@ import { kg } from './training-format'
 const STEPS = 4
 const WEIGHT_STEP = 0.5
 const WEIGHT_START = 80
-const TIME_STEP = 15
 
 const STS_DAYS = [...SHORTCUT_TO_SIZE.program.days].sort((a, b) => a.position - b.position).map((day) => day.name)
 const STS_BLOCKS = [...SHORTCUT_TO_SIZE.program.blocks].sort((a, b) => a.position - b.position)
@@ -56,36 +55,6 @@ function StepTitle({ children, lead }: { children: ReactNode; lead: ReactNode })
       <h1 className="text-3xl font-semibold tracking-tight">{children}</h1>
       <p className="mt-2 text-base leading-6 text-muted-foreground">{lead}</p>
     </div>
-  )
-}
-
-function TimeStepper({
-  label,
-  short,
-  value,
-  onChange,
-}: {
-  label: string
-  /** "Ora e stërvitjes", për etiketat e butonave. */
-  short: string
-  value: string
-  onChange: (value: string) => void
-}) {
-  return (
-    <ValueStepper
-      variant="hero"
-      label={label}
-      text={value}
-      inputMode="numeric"
-      minusLabel={`${short} ${TIME_STEP} minuta më herët`}
-      plusLabel={`${short} ${TIME_STEP} minuta më vonë`}
-      onMinus={() => onChange(addMinutes(value, -TIME_STEP))}
-      onPlus={() => onChange(addMinutes(value, TIME_STEP))}
-      onCommit={(text) => {
-        const parsed = parseTimeInput(text)
-        if (parsed) onChange(parsed)
-      }}
-    />
   )
 }
 

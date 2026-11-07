@@ -1,91 +1,201 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
-import { PageHeader } from '@/components/layout/page'
+import { type ReactNode, useEffect, useId, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router'
+import { DayPicker } from '@/components/forms/day-picker'
+import { TimeStepper } from '@/components/forms/time-stepper'
+import { ValueStepper } from '@/components/forms/value-stepper'
+import { WEEK_DAYS } from '@/components/forms/week-days'
+import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
-import { auth, scheduler, useAuth, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import { Icon } from '@/components/ui/icons'
+import { auth, scheduler, store, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
 import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
-import { Icon } from '@/components/ui/icons'
 import { cn } from '@/lib/cn'
 import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
-import { ProfileSection } from './settings-profile'
+import { kg } from './training-format'
+
+// Cilësimet, varianti A i aprovuar më 07.11.2026 (referencat nga Mobbin: Tempo, Hevy, Google
+// Health): sipër paneli i llogarisë me "Dil"; poshtë grupe rreshtash me vlerën e tanishme. Një
+// rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
+
+type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
+type Editor = ProfileEditor | 'tema' | 'dil'
+const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
+  value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
+
+const shortDays = (days: number[]) =>
+  [...days]
+    .sort((a, b) => a - b)
+    .map((day) => WEEK_DAYS.find((entry) => entry.value === day)?.short)
+    .join(', ')
 
 export function SettingsPage() {
+  const profile = useLocalQuery(() => readProfile(store), [])
+  const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
   const [theme, setTheme] = useState<Theme>(readTheme)
-
-  function choose(next: Theme) {
-    setTheme(next)
-    saveTheme(next)
-  }
+  const editor = params.get('ndrysho') as Editor | null
+  const open = (name: Editor) => setParams({ ndrysho: name })
+  const close = () => navigate(-1)
 
   return (
-    <>
-      <PageHeader
-        title="Cilësimet"
-        actions={
-          <Link
-            to="/"
-            aria-label="Kthehu te Sot"
-            className={buttonVariants({ variant: 'ghost', size: 'icon' })}
-          >
-            <Icon name="mbyll" size={22} />
-          </Link>
-        }
-      />
-      <ProfileSection />
-      <section className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
-        <fieldset>
-          <legend className="text-lg leading-7 font-semibold tracking-[-0.01em]">Tema</legend>
-          <p className="mt-1 text-sm leading-5 text-muted-foreground">
-            OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
-          </p>
-          <div className="mt-4 space-y-2">
-            {THEMES.map((option) => (
-              <label
-                key={option}
-                className={cn(
-                  'flex h-11 cursor-pointer items-center gap-3 rounded-md border px-3.5 text-base',
-                  theme === option
-                    ? 'border-foreground bg-selected'
-                    : 'border-border hover:bg-accent',
-                )}
-              >
-                <input
-                  type="radio"
-                  name="theme"
-                  value={option}
-                  checked={theme === option}
-                  onChange={() => choose(option)}
-                  className="size-4 accent-current"
-                />
-                {THEME_LABELS[option]}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      </section>
-      <TimerSection />
-      <DataSection />
-      <AccountSection />
-      <p className="mt-6 text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
-    </>
+    <div className="flex flex-col gap-6">
+      <header className="flex min-h-11 items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">Cilësimet</h1>
+        <Link to="/" aria-label="Kthehu te Sot" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+          <Icon name="mbyll" size={22} />
+        </Link>
+      </header>
+
+      <AccountPanel onSignOut={() => open('dil')} />
+
+      {profile ? (
+        <>
+          <Group title="Stërvitja">
+            <Row label="Ditët e stërvitjes" value={shortDays(profile.trainingDays)} onClick={() => open('dite')} />
+            <Row label="Ora e stërvitjes" value={profile.trainingTime} onClick={() => open('ora')} />
+          </Group>
+          <Group title="Ti">
+            <Row label="Pesha e sotme" value={profile.weightKg === null ? 'Pa peshë' : `${kg(profile.weightKg)} kg`} onClick={() => open('pesha')} />
+            <Row label="Zgjimi" value={profile.wakeTime} onClick={() => open('zgjimi')} />
+            <Row label="Gjumi" value={profile.sleepTime} onClick={() => open('gjumi')} />
+          </Group>
+        </>
+      ) : (
+        <div aria-hidden className="h-72 rounded-xl bg-skeleton" />
+      )}
+
+      <Group title="App-i">
+        <Row label="Tema" value={THEME_LABELS[theme]} onClick={() => open('tema')} />
+        <TimerRow />
+      </Group>
+
+      <DataGroup />
+
+      <p className="text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
+
+      {editor === 'dil' ? <SignOutSheet onClose={close} /> : null}
+      {editor === 'tema' ? (
+        <ThemeSheet
+          theme={theme}
+          onChoose={(next) => {
+            setTheme(next)
+            saveTheme(next)
+          }}
+          onClose={close}
+        />
+      ) : null}
+      {profile && isProfileEditor(editor) ? <ProfileSheet editor={editor} profile={profile} onClose={close} /> : null}
+    </div>
   )
 }
 
-function DataSection() {
+function AccountPanel({ onSignOut }: { onSignOut: () => void }) {
+  const session = useAuth()
   const status = useSyncStatus()
   const pending = usePendingChanges()
-  const [exporting, setExporting] = useState(false)
-  const [problem, setProblem] = useState<string | null>(null)
   const [, setTick] = useState(0)
-
   // Koha relative ("para 5 min") rifreskohet vetë.
   useEffect(() => {
     const timer = setInterval(() => setTick((value) => value + 1), 30_000)
     return () => clearInterval(timer)
   }, [])
+  const initial = (session.email ?? '?').charAt(0).toUpperCase()
+  return (
+    <section aria-label="Llogaria" className="flex flex-col gap-4 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
+      <div className="flex items-center gap-3">
+        <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-panel-button text-lg font-semibold">
+          {initial}
+        </span>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="truncate text-base leading-6 font-semibold">{session.email ?? 'Pa llogari'}</span>
+          <span role="status" className="text-sm leading-5 text-panel-muted-foreground">
+            {describeSync(status)}
+          </span>
+        </div>
+        <Button variant="panel" className="shrink-0" onClick={onSignOut}>
+          Dil
+        </Button>
+      </div>
+      {pending > 0 ? (
+        <p className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
+          {pending === 1 ? '1 ndryshim pret dërgimin' : `${pending} ndryshime presin dërgimin`}
+        </p>
+      ) : null}
+    </section>
+  )
+}
+
+function Group({ title, children }: { title: string; children: ReactNode }) {
+  const id = useId()
+  return (
+    <section aria-labelledby={id} className="flex flex-col">
+      <h2 id={id} className="mb-1 text-sm leading-5 font-semibold text-muted-foreground">
+        {title}
+      </h2>
+      <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">{children}</div>
+    </section>
+  )
+}
+
+/** Një rresht 56 px; `action` për veprimet e menjëhershme (pa shigjetë, nuk hap fletë). */
+function Row({
+  label,
+  value,
+  onClick,
+  disabled,
+  action,
+}: {
+  label: string
+  value?: string
+  onClick: () => void
+  disabled?: boolean
+  action?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={value ? `${label}, ${value}` : label}
+      className="flex min-h-14 items-center gap-3 border-t border-border-subtle px-4 text-left first:border-t-0 hover:bg-accent disabled:opacity-50"
+    >
+      <span className="flex-1 text-base leading-6">{label}</span>
+      {value ? <span className="text-sm leading-5 text-muted-foreground tabular-nums">{value}</span> : null}
+      {action ? null : <Icon name="chevron-djathtas" size={16} className="text-muted-foreground" />}
+    </button>
+  )
+}
+
+/** Vetëm në telefon: përjashtimi nga optimizimi i baterisë, kur timer-i vonon me ekran të kyçur. */
+function TimerRow() {
+  const [unrestricted, setUnrestricted] = useState<boolean | null>(null)
+  useEffect(() => {
+    const check = () => void batteryUnrestricted().then(setUnrestricted)
+    check()
+    // Pas dritares së sistemit, app-i kthehet në plan të parë: gjendja lexohet përsëri.
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [])
+  if (unrestricted === null) return null
+  return (
+    <Row
+      label="Timer-i i pushimit"
+      value={unrestricted ? 'Bateria pa kufizime' : 'Hiq kufizimin e baterisë'}
+      onClick={() => void requestBatteryExemption()}
+      disabled={unrestricted}
+      action
+    />
+  )
+}
+
+function DataGroup() {
+  const status = useSyncStatus()
+  const [exporting, setExporting] = useState(false)
+  const [problem, setProblem] = useState<string | null>(null)
 
   async function exportData() {
     setExporting(true)
@@ -100,88 +210,167 @@ function DataSection() {
   }
 
   return (
-    <section aria-labelledby="data-title" className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
-      <h2 id="data-title" className="text-lg leading-7 font-semibold tracking-[-0.01em]">
-        Të dhënat
-      </h2>
-      <p role="status" className="mt-1 text-sm leading-5 text-muted-foreground">
-        {describeSync(status)}
-      </p>
-      {pending > 0 && (
-        <p className="mt-1 text-sm leading-5 text-muted-foreground tabular-nums">
-          {pending === 1 ? '1 ndryshim pret dërgimin' : `${pending} ndryshime presin dërgimin`}
-        </p>
-      )}
-      <div className="mt-4 grid gap-2">
-        <Button variant="outline" disabled={status.syncing} onClick={() => void scheduler.syncNow()}>
-          Sinkronizo tani
-        </Button>
-        <Button variant="outline" disabled={exporting} onClick={() => void exportData()}>
-          {exporting ? 'Po përgatitet' : 'Eksporto të dhënat'}
-        </Button>
-      </div>
-      <p className="mt-3 text-xs leading-4 text-muted-foreground">
+    <Group title="Të dhënat">
+      <Row label="Sinkronizo tani" action onClick={() => void scheduler.syncNow()} disabled={status.syncing} />
+      <Row label={exporting ? 'Po përgatitet' : 'Eksporto të dhënat'} action onClick={() => void exportData()} disabled={exporting} />
+      <p className="border-t border-border-subtle px-4 py-3 text-xs leading-4 text-muted-foreground">
         Kopja JSON përmban çdo tabelë, pa fotot. Ruaje diku jashtë telefonit.
       </p>
-      {problem && (
-        <p role="alert" className="mt-2 text-sm leading-5 text-destructive">
+      {problem ? (
+        <p role="alert" className="px-4 pb-3 text-sm leading-5 text-destructive">
           {problem}
         </p>
-      )}
-    </section>
+      ) : null}
+    </Group>
   )
 }
 
-/** Vetëm në telefon: nëse timer-i vonon me ekran të kyçur, përjashtimi nga optimizimi i baterisë. */
-function TimerSection() {
-  const [unrestricted, setUnrestricted] = useState<boolean | null>(null)
-  useEffect(() => {
-    const check = () => void batteryUnrestricted().then(setUnrestricted)
-    check()
-    // Pas dritares së sistemit, app-i kthehet në plan të parë: gjendja lexohet përsëri.
-    document.addEventListener('visibilitychange', check)
-    return () => document.removeEventListener('visibilitychange', check)
-  }, [])
-  if (unrestricted === null) return null
-  return (
-    <section aria-labelledby="timer-title" className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
-      <h2 id="timer-title" className="text-lg leading-7 font-semibold tracking-[-0.01em]">
-        Timer-i i pushimit
-      </h2>
-      <p className="mt-1 text-sm leading-5 text-muted-foreground">
-        {unrestricted
-          ? 'Bateria pa kufizime: njoftimi vjen në kohë edhe me ekran të kyçur.'
-          : 'Nëse njoftimi i pushimit vonon me ekran të kyçur, lejo app-in të punojë pa kufizime baterie.'}
-      </p>
-      {unrestricted ? null : (
-        <Button variant="outline" className="mt-4 w-full" onClick={() => void requestBatteryExemption()}>
-          Hiq kufizimin e baterisë
-        </Button>
-      )}
-    </section>
-  )
-}
-
-function AccountSection() {
-  const session = useAuth()
+function SignOutSheet({ onClose }: { onClose: () => void }) {
   const pending = usePendingChanges()
   return (
-    <section aria-labelledby="account-title" className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
-      <h2 id="account-title" className="text-lg leading-7 font-semibold tracking-[-0.01em]">
-        Llogaria
-      </h2>
-      {session.email ? (
-        <p className="mt-1 text-sm leading-5 text-muted-foreground">Ke hyrë si {session.email}</p>
-      ) : null}
-      {pending > 0 ? (
-        <p className="mt-1 text-sm leading-5 text-muted-foreground">
-          Ndryshimet që presin mbeten në telefon dhe dërgohen kur të hysh përsëri.
+    <Sheet title="Dil nga llogaria" onClose={onClose}>
+      <p className="text-base leading-6 text-muted-foreground">
+        Të dhënat mbeten në telefon. Për të hyrë përsëri duhet internet.
+        {pending > 0 ? ' Ndryshimet që presin dërgohen pasi të hysh.' : ''}
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant="outline" onClick={onClose}>
+          Anulo
+        </Button>
+        <Button variant="outline" onClick={() => void auth.signOut()}>
+          Dil nga llogaria
+        </Button>
+      </div>
+    </Sheet>
+  )
+}
+
+function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (theme: Theme) => void; onClose: () => void }) {
+  return (
+    <Sheet title="Tema" onClose={onClose}>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm leading-5 text-muted-foreground">
+          OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
+        </legend>
+        {THEMES.map((option) => (
+          <label
+            key={option}
+            className={cn(
+              'flex min-h-11 cursor-pointer items-center gap-3 rounded-md border px-3.5 text-base',
+              theme === option ? 'border-foreground bg-selected' : 'border-border hover:bg-accent',
+            )}
+          >
+            <input
+              type="radio"
+              name="theme"
+              value={option}
+              checked={theme === option}
+              onChange={() => onChoose(option)}
+              className="size-4 accent-current"
+            />
+            {THEME_LABELS[option]}
+          </label>
+        ))}
+      </fieldset>
+    </Sheet>
+  )
+}
+
+const SHEET_TITLES: Record<ProfileEditor, string> = {
+  dite: 'Ditët e stërvitjes',
+  ora: 'Ora e stërvitjes',
+  pesha: 'Pesha e sotme',
+  zgjimi: 'Zgjimi',
+  gjumi: 'Gjumi',
+}
+
+/** Një vlerë e profilit në fletë; ruhet vetëm me "Ruaj", që një prekje e gabuar të mos ndryshojë asgjë. */
+function ProfileSheet({ editor, profile, onClose }: { editor: ProfileEditor; profile: Profile; onClose: () => void }) {
+  const daysLabel = useId()
+  const errorId = useId()
+  const [days, setDays] = useState(profile.trainingDays)
+  const [time, setTime] = useState(
+    editor === 'ora' ? profile.trainingTime : editor === 'zgjimi' ? profile.wakeTime : profile.sleepTime,
+  )
+  const [weight, setWeight] = useState<number | null>(profile.weightKg)
+  const [weightText, setWeightText] = useState(profile.weightKg === null ? '' : kg(profile.weightKg))
+  const [problem, setProblem] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  const setWeightValue = (value: number) => {
+    const rounded = Math.round(value * 100) / 100
+    setWeight(rounded)
+    setWeightText(kg(rounded))
+    setProblem(null)
+  }
+
+  async function save() {
+    let patch: Partial<Profile>
+    if (editor === 'pesha') {
+      const value = weight === null ? null : parseWeight(String(weight))
+      if (value === null) return setProblem('Shkruaj një peshë mes 30 dhe 300 kg, p.sh. 80,5.')
+      patch = { weightKg: value }
+    } else if (editor === 'dite') {
+      if (days.length === 0) return setProblem('Zgjidh të paktën një ditë stërvitjeje.')
+      patch = { trainingDays: days }
+    } else {
+      patch = { [editor === 'ora' ? 'trainingTime' : editor === 'zgjimi' ? 'wakeTime' : 'sleepTime']: time }
+    }
+    setBusy(true)
+    try {
+      await updateProfile(store, patch)
+      onClose()
+    } catch {
+      setProblem('Ndryshimi nuk u ruajt. Provo përsëri.')
+      setBusy(false)
+    }
+  }
+
+  const title = SHEET_TITLES[editor]
+  return (
+    <Sheet title={title} onClose={onClose}>
+      {editor === 'pesha' ? (
+        <>
+          <ValueStepper
+            variant="hero"
+            hideLabel
+            label="Pesha"
+            text={weightText}
+            unit="kg"
+            placeholder="80,5"
+            inputMode="decimal"
+            minusLabel="Ul peshën me 0,5 kg"
+            plusLabel="Rrit peshën me 0,5 kg"
+            onMinus={() => setWeightValue((weight ?? 80) - 0.5)}
+            onPlus={() => setWeightValue((weight ?? 80) + 0.5)}
+            onCommit={(text) => {
+              const parsed = Number(text.trim().replace(',', '.'))
+              if (text.trim() && Number.isFinite(parsed)) setWeightValue(parsed)
+            }}
+            invalid={Boolean(problem)}
+            describedBy={problem ? errorId : undefined}
+          />
+          <p className="text-center text-sm leading-5 text-muted-foreground">Ruhet si matja e sotme. Historia e peshës shfaqet te Progresi.</p>
+        </>
+      ) : editor === 'dite' ? (
+        <div>
+          <p id={daysLabel} className="mb-1.5 text-sm leading-5 font-medium">
+            Ditët e stërvitjes
+          </p>
+          <DayPicker value={days} onChange={(next) => (setDays(next), setProblem(null))} labelledBy={daysLabel} />
+          <p className="mt-1.5 text-sm leading-5 text-muted-foreground">Radha e programit nuk ndryshon: ecën kur mbyll një stërvitje.</p>
+        </div>
+      ) : (
+        <TimeStepper label={title} short={title} value={time} onChange={setTime} hideLabel />
+      )}
+      {problem ? (
+        <p id={errorId} role="alert" className="text-sm leading-5 text-destructive">
+          {problem}
         </p>
       ) : null}
-      <Button variant="outline" className="mt-4 w-full" onClick={() => void auth.signOut()}>
-        <Icon name="dil" size={20} />
-        Dil nga llogaria
+      <Button className="w-full" disabled={busy} onClick={() => void save()}>
+        Ruaj
       </Button>
-    </section>
+    </Sheet>
   )
 }
