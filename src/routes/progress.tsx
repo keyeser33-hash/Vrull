@@ -8,7 +8,8 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { inputClass } from '@/components/ui/field-styles'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/data/dates'
-import { type MeasurementValues, measurementsOn, metricHistory, progressView, saveMeasurement } from '@/data/progress'
+import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHistory, progressView, saveMeasurement, trainingProgress } from '@/data/progress'
+import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, type MetricKey, metricByKey, movingAverage, parseMetric } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
 import { dateLabel, kg } from './training-format'
@@ -80,6 +81,8 @@ export function ProgressPage() {
           </Link>
         </div>
       </section>
+
+      <TrainingSections />
 
       {measured.length > 0 ? (
         <Group title="Trupi">
@@ -262,5 +265,108 @@ function MetricField({ metric, value, error, onChange }: { metric: Metric; value
         </p>
       ) : null}
     </div>
+  )
+}
+
+function TrainingSections() {
+  const [now] = useState(() => new Date())
+  const progress = useLocalQuery(() => trainingProgress(store, now), [])
+  if (!progress) return null
+  return (
+    <>
+      <Strength rows={progress.strength.slice(0, 8)} />
+      <Volume rows={progress.volume} />
+      <Compliance days={progress.compliance} />
+    </>
+  )
+}
+
+const KG = METRICS[0]
+
+function Strength({ rows }: { rows: StrengthRow[] }) {
+  if (rows.length === 0) {
+    return <p className="text-sm leading-5 text-muted-foreground">Forca (e1RM) del këtu pas seteve të para me peshë.</p>
+  }
+  return (
+    <Group title="Forca · e1RM">
+      {rows.map((row) => (
+        <LinkRow
+          key={row.exerciseId}
+          to={`/ushtrimi/${row.exerciseId}`}
+          label={row.name}
+          value={valueText(KG, row.latest.value)}
+          detail={row.change ? `${deltaText(KG, row.change.delta)} nga ${dayText(row.change.from.date)}` : dayText(row.latest.date)}
+        />
+      ))}
+    </Group>
+  )
+}
+
+function Volume({ rows }: { rows: VolumeRow[] }) {
+  if (rows.length === 0) return null
+  const max = Math.max(...rows.map((row) => Math.max(row.thisWeek, row.lastWeek)), 1)
+  return (
+    <section aria-labelledby="volume-title" className="flex flex-col gap-2">
+      <h2 id="volume-title" className="text-sm leading-5 font-semibold text-muted-foreground">
+        Volumi javor · sete pune
+      </h2>
+      <dl className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 tabular-nums">
+        {rows.map((row) => (
+          <div key={row.group.id} className="flex flex-col gap-1.5">
+            <div className="flex items-baseline justify-between gap-3 text-sm leading-5">
+              <dt>{row.group.name}</dt>
+              <dd className="text-muted-foreground">
+                <b className="font-semibold text-foreground">{row.thisWeek}</b> këtë javë · {row.lastWeek} e kaluara
+              </dd>
+            </div>
+            <div aria-hidden className="h-1.5 overflow-hidden rounded-full bg-chart-track">
+              <div className="h-full rounded-full bg-foreground" style={{ width: `${(row.thisWeek / max) * 100}%` }} />
+            </div>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
+const WEEKDAY = ['Die', 'Hën', 'Mar', 'Mër', 'Enj', 'Pre', 'Sht']
+
+function Compliance({ days }: { days: ComplianceDay[] }) {
+  if (days.every((day) => day.kcal === 0)) return null
+  return (
+    <section aria-labelledby="compliance-title" className="flex flex-col gap-2">
+      <h2 id="compliance-title" className="text-sm leading-5 font-semibold text-muted-foreground">
+        Ushqimi · 7 ditët e fundit
+      </h2>
+      <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
+        <ol className="relative grid h-32 grid-cols-7 items-end gap-2 border-b border-border-subtle">
+          <span aria-hidden className="pointer-events-none absolute inset-x-0 border-t border-dashed border-muted-foreground" style={{ bottom: `${(100 / 130) * 100}%` }} />
+          {days.map((day) => {
+            const percent = day.target ? Math.round((day.kcal / day.target) * 100) : null
+            return (
+              <li
+                key={day.date}
+                aria-label={`${dayText(day.date)}: ${day.kcal} kcal${percent === null ? '' : `, ${percent}% e objektivit`}`}
+                className="flex h-full flex-col justify-end"
+              >
+                <span className="rounded-t-[4px] bg-foreground" style={{ height: `${Math.min(percent ?? 0, 130) / 1.3}%`, minHeight: day.kcal > 0 ? 2 : 0 }} />
+              </li>
+            )
+          })}
+        </ol>
+        <div aria-hidden className="grid grid-cols-7 gap-2 text-center text-xs leading-4 text-muted-foreground tabular-nums">
+          {days.map((day) => {
+            const percent = day.target ? Math.round((day.kcal / day.target) * 100) : null
+            return (
+              <span key={day.date} className="flex flex-col">
+                <span className="font-medium text-foreground">{percent === null ? '–' : `${percent}%`}</span>
+                <span>{WEEKDAY[new Date(`${day.date}T12:00:00`).getDay()]}</span>
+              </span>
+            )
+          })}
+        </div>
+        <p className="text-xs leading-4 text-muted-foreground">Vija me ndërprerje është objektivi i kcal të ditës.</p>
+      </div>
+    </section>
   )
 }

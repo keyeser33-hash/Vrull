@@ -9,7 +9,9 @@ import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { programView, setExerciseVideo, trainingHistory, type ProgramView } from '@/data/training'
-import { currentOneRm, e1rm } from '@/program/loads'
+import { currentOneRm, e1rm, type HistorySet } from '@/program/loads'
+import { e1rmSeries } from '@/progress/strength'
+import { TrendChart } from '@/components/charts/trend-chart'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import type { DayStatus, OverviewWeek } from '@/program/overview'
 import { cn } from '@/lib/cn'
@@ -304,6 +306,8 @@ export function ExercisePage() {
         </dl>
       </section>
 
+      <StrengthChart history={history.sets} exerciseId={exerciseId} />
+
       {plan && slot && blockName ? (
         <Button variant="outline" className="w-full" onClick={() => open('ushtrimi')}>
           Ndrysho ushtrimin për {blockName}
@@ -385,5 +389,18 @@ function VideoSheet({ exerciseId, initial, onClose }: { exerciseId: string; init
         <Button onClick={() => void save()}>Ruaj</Button>
       </div>
     </Sheet>
+  )
+}
+
+function StrengthChart({ history, exerciseId }: { history: HistorySet[]; exerciseId: string }) {
+  const series = e1rmSeries(history, exerciseId)
+  if (series.length < 2) return null
+  return (
+    <section aria-labelledby="strength-title" className="flex flex-col gap-2">
+      <h2 id="strength-title" className="text-sm leading-5 font-semibold">
+        e1RM në kohë
+      </h2>
+      <TrendChart tone="card" line={series} label={`e1RM në kohë, ${series.length} stërvitje`} format={(value) => `${kg(value)} kg`} />
+    </section>
   )
 }

@@ -59,6 +59,7 @@ describe('Progresi', () => {
     await renderAt('/progresi')
     const panel = (await screen.findByText('Pesha · mesatarja 7-ditore')).closest('section')!
     expect(panel).toHaveTextContent('Pa peshë ende')
+    expect(await screen.findByText('Forca (e1RM) del këtu pas seteve të para me peshë.')).toBeInTheDocument()
     await user.click(within(panel).getByRole('link', { name: 'Shto matjen' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Matja' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))

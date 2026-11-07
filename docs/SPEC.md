@@ -125,6 +125,7 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
 - **Fotot e progresit:** para, anash, mbrapa. Kompresohen në telefon dhe ruhen në bucket privat të Supabase.
 - **Grafikët:** e1RM për çdo ushtrim, volumi javor për muskul (sete), pesha e trupit me mesatare 7-ditore, perimetrat, përputhja me objektivat e ushqimit.
 - **Ekrani (vendim i 07.11.2026, varianti A):** paneli i peshës me mesataren 7-ditore (një shifër pas presjes), ndryshimin në 4 javë dhe grafikun e 8 javëve (vija e mesatares, pikat e ditës); "Shto matjen" është veprimi kryesor. Poshtë, çdo matje me vlerën e fundit dhe ndryshimin; secila hap grafikun dhe historinë (lista është tabela e grafikut). Grafikët mbi panel përdorin --chart-1; mbi kartë ngjyrën e tekstit, sepse amber-i mbi sfondin e çelët ka kontrast 2:1.
+- **Forca, volumi, ushqimi (vendim i 07.11.2026):** te Progresi, "Forca · e1RM" (8 ushtrimet e fundit, me ndryshimin në 4 javë; çdo rresht hap ushtrimin me grafikun e e1RM-së), "Volumi javor" (setet e punës sipas grupit kryesor të muskujve, kjo javë dhe e kaluara) dhe "Ushqimi · 7 ditët e fundit" (kcal kundrejt objektivit të ruajtur të çdo dite, me vijën e objektivit).
 - **Eksporti:** te cilësimet, "Eksporto të dhënat" nxjerr një skedar JSON me gjithçka (pa fotot). Plani falas i Supabase nuk ka backup automatik ditor, ndaj ky është rrjeti i sigurisë.
 
 ## 9. Ushqimi
