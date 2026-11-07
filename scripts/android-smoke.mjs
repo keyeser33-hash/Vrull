@@ -1,7 +1,7 @@
 // Prova e APK-së në një Android virtual (emulator), përmes adb dhe Chrome DevTools Protocol.
 // Përdorimi: node scripts/android-smoke.mjs <dosja-e-rezultateve> <v1.apk> <v2.apk>
 // v1 dhe v2 janë build-e debug me të njëjtin çelës, v2 me version më të lartë.
-// Kontrollon: instalimi, hapja pa gabime, rifreskimi në një rrugë të brendshme, butoni mbrapa,
+// Kontrollon: instalimi, hapja pa gabime dhe pa shirit veprimesh, rifreskimi në një rrugë të brendshme, butoni mbrapa,
 // ndërrimi i temës, dhe që përditësimi v1 -> v2 i mban të dhënat.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -56,8 +56,34 @@ function isForeground() {
     .some((line) => /topResumedActivity|mResumedActivity/.test(line) && line.includes(PKG))
 }
 
+function pidOf() {
+  try {
+    return adb('shell', 'pidof', PKG)
+  } catch {
+    return ''
+  }
+}
+
 function launch() {
   adb('shell', 'am', 'start', '-W', '-n', `${PKG}/.MainActivity`)
+}
+
+// Emulatori në CI shfaq ndonjëherë "Process system isn't responding" pas nisjes. Dritaret e
+// sistemit mbyllen para çdo shtypjeje butoni, që butoni të arrijë te app-i dhe jo te dritarja.
+async function pressBack() {
+  await waitFor(() => {
+    adb('shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS')
+    return adb('shell', 'dumpsys', 'window').split('\n').some(
+      (line) => line.includes('mCurrentFocus') && line.includes(PKG),
+    )
+  }, 'app-i në fokus para butonit mbrapa', 20_000)
+  adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
+}
+
+// Shiriti i veprimeve të Android-it nuk duhet të shfaqet mbi faqe.
+function hasActionBar() {
+  adb('shell', 'uiautomator', 'dump', '/sdcard/ui.xml')
+  return adb('shell', 'cat', '/sdcard/ui.xml').includes('id/action_bar')
 }
 
 // Lidhet me WebView-në e app-it (vetëm build-et debug e lejojnë) dhe kthen një evaluate().
@@ -81,11 +107,21 @@ async function connect() {
   })
   let nextId = 0
   const pending = new Map()
+  // Çdo thirrje ka afat; kur lidhja mbyllet, thirrjet në pritje dështojnë në vend që të presin pa fund.
+  ws.onclose = () => {
+    for (const { reject, timer } of pending.values()) {
+      clearTimeout(timer)
+      reject(new Error('Lidhja me WebView u mbyll'))
+    }
+    pending.clear()
+  }
   ws.onmessage = (event) => {
     const message = JSON.parse(event.data)
     if (message.id && pending.has(message.id)) {
-      pending.get(message.id)(message)
+      const { resolve, timer } = pending.get(message.id)
+      clearTimeout(timer)
       pending.delete(message.id)
+      resolve(message)
       return
     }
     if (message.method === 'Runtime.exceptionThrown') {
@@ -99,9 +135,13 @@ async function connect() {
     }
   }
   const send = (method, params = {}) =>
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       const id = ++nextId
-      pending.set(id, resolve)
+      const timer = setTimeout(() => {
+        pending.delete(id)
+        reject(new Error(`${method} pa përgjigje`))
+      }, 10_000)
+      pending.set(id, { resolve, reject, timer })
       ws.send(JSON.stringify({ id, method, params }))
     })
   const evaluate = async (expression) => {
@@ -153,6 +193,8 @@ try {
   })()`)
   check('navigimi poshtë brenda ekranit', navInside, JSON.stringify(report.insets))
   check('pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
+  check('pa shirit veprimesh mbi faqe', !hasActionBar())
+  check('titulli "Sot" brenda ekranit', await page.evaluate(`document.querySelector('h1').getBoundingClientRect().top >= 0`))
   screenshot('1-sot-oled')
 
   // 2. Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
@@ -165,7 +207,7 @@ try {
   // 3. Butoni mbrapa: kthehet te "Sot", pastaj mbyll app-in.
   await page.evaluate(`document.querySelector('a[href="/programi"]').click()`)
   await waitForHeading(page, 'Programi')
-  adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
+  await pressBack()
   await waitForHeading(page, 'Cilësimet')
   check('mbrapa kthen te faqja e mëparshme', true)
   page.close()
@@ -182,12 +224,13 @@ try {
   check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
   await sleep(500)
   screenshot('2-cilesimet-light-v1')
-  adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
+  await pressBack()
   await waitForHeading(page, 'Sot')
+  await pressBack()
+  await waitFor(() => !isForeground(), 'app-i në sfond me butonin mbrapa', 15_000)
+  check('mbrapa në fillim të historisë e çon app-in në sfond', true)
+  check('app-i mbetet gjallë në sfond', pidOf() !== '')
   page.close()
-  adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
-  await waitFor(() => !isForeground(), 'mbyllja me butonin mbrapa', 15_000)
-  check('mbrapa në fillim të historisë mbyll app-in', true)
 
   // 5. Përditësimi v1 -> v2 mbi app-in ekzistues, pa humbur të dhënat.
   adb('install', '-r', apkV2)
