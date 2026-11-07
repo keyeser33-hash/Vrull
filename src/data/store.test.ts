@@ -99,3 +99,21 @@ describe('shkrimet lokale', () => {
     expect(changes).toEqual(['supplements', 'supplements'])
   })
 })
+
+describe('shumë rreshta njëherësh', () => {
+  it('të gjithë ruhen si të rinj, presin dërgimin, dhe njoftohet një herë', async () => {
+    const { store, db } = setup()
+    const notified: string[] = []
+    store.subscribe((table) => notified.push(table))
+    const rows = await store.insertMany('program_days', [
+      { id: '00000000-0000-4000-8000-000000000001', program_id: 'p', position: 0, name: 'A' },
+      { program_id: 'p', position: 1, name: 'B' },
+    ])
+    expect(rows.map((row) => row.name)).toEqual(['A', 'B'])
+    expect(rows[0].id).toBe('00000000-0000-4000-8000-000000000001')
+    expect(rows[1].id).toMatch(/^[0-9a-f-]{36}$/)
+    expect(await db.program_days.where('_dirty').equals(PENDING).count()).toBe(2)
+    expect(rows[1]).toMatchObject({ user_id: USER, deleted_at: null, created_at: '2026-11-30T08:00:00.000Z' })
+    expect(notified).toEqual(['program_days'])
+  })
+})

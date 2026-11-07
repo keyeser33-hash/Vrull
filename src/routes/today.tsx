@@ -3,10 +3,11 @@ import { EmptyCard, PageHeader } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
-import { nextWorkout } from '@/data/profile'
+import { trainingSnapshot } from '@/data/training'
 
 export function TodayPage() {
-  const next = useLocalQuery(() => nextWorkout(store), [])
+  const snapshot = useLocalQuery(() => trainingSnapshot(store), [])
+  const next = snapshot ? { label: `${snapshot.label} · Stërvitja ${snapshot.plan.dayNumber}`, dayName: snapshot.plan.dayName } : null
   return (
     <>
       <PageHeader

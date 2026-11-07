@@ -4,7 +4,6 @@ import {
   DEFAULT_PROFILE,
   isTime,
   localDate,
-  nextWorkout,
   parseWeight,
   readProfile,
   updateProfile,
@@ -93,7 +92,6 @@ describe('hyrja e parë', () => {
       'Këmbë, bark',
     ])
 
-    expect(await nextWorkout(store)).toEqual({ label: 'Java 0 · Stërvitja 1', dayName: 'Gjoks, triceps, pulpa' })
   })
 
   it('e përsëritur nuk dyfishon programin, cilësimet as peshën e ditës', async () => {
@@ -107,10 +105,6 @@ describe('hyrja e parë', () => {
     expect(await store.all('body_measurements')).toEqual([expect.objectContaining({ weight_kg: 81 })])
   })
 
-  it('pa program aktiv, nuk ka stërvitje të radhës', async () => {
-    const { store } = setup()
-    expect(await nextWorkout(store)).toBeNull()
-  })
 })
 
 describe('profili te cilësimet', () => {

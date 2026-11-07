@@ -9,12 +9,16 @@ type Values = Record<string, unknown> & { id?: string }
 export interface LocalStore {
   /** Krijon ose ndryshon (pjesërisht) një rresht dhe e shënon për dërgim. */
   put(table: TableName, values: Values): Promise<LocalRow>
+  /** Shumë rreshta të rinj në një transaksion, me një njoftim të vetëm (p.sh. një program i plotë). */
+  insertMany(table: TableName, rows: Values[]): Promise<LocalRow[]>
   /** Fshirje e butë: rreshti mbetet me deleted_at, që fshirja të arrijë edhe në Supabase. */
   remove(table: TableName, id: string): Promise<void>
   /** Rreshti, ose undefined kur nuk ekziston ose është fshirë. */
   get(table: TableName, id: string): Promise<LocalRow | undefined>
   all(table: TableName): Promise<LocalRow[]>
   where(table: TableName, index: string, value: unknown): Promise<LocalRow[]>
+  /** Ora e store-it (në teste, ora e provës): kohët e stërvitjes vijnë nga e njëjta orë si rreshtat. */
+  now(): Date
   /** Thirret pas çdo shkrimi; kthen funksionin që e ndal. */
   subscribe(listener: (table: TableName) => void): () => void
 }
@@ -31,7 +35,8 @@ const PROTECTED = ['user_id', 'created_at', 'updated_at', 'deleted_at', 'server_
 const visible = (row: LocalRow | undefined) => (row && row.deleted_at === null ? row : undefined)
 
 export function createLocalStore(db: LocalDatabase, options: StoreOptions): LocalStore {
-  const now = () => (options.now ?? (() => new Date()))().toISOString()
+  const clock = options.now ?? (() => new Date())
+  const now = () => clock().toISOString()
   const uuid = options.uuid ?? (() => crypto.randomUUID())
   const listeners = new Set<(table: TableName) => void>()
   const notify = (table: TableName) => listeners.forEach((listener) => listener(table))
@@ -68,6 +73,23 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
       return row
     },
 
+    async insertMany(table, values) {
+      const userId = requireUser()
+      const timestamp = now()
+      const rows: LocalRow[] = values.map((row) => ({
+        ...Object.fromEntries(Object.entries(row).filter(([key]) => !PROTECTED.includes(key))),
+        id: row.id ?? uuid(),
+        user_id: userId,
+        created_at: timestamp,
+        updated_at: timestamp,
+        deleted_at: null,
+        _dirty: PENDING,
+      }))
+      await db[table].bulkAdd(rows)
+      notify(table)
+      return rows
+    },
+
     async remove(table, id) {
       requireUser()
       const timestamp = now()
@@ -90,6 +112,8 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
         .filter((row) => row.deleted_at === null)
         .toArray()
     },
+
+    now: () => clock(),
 
     subscribe(listener) {
       listeners.add(listener)

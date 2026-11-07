@@ -52,7 +52,8 @@ describe('hapat e hyrjes së parë', () => {
     expect(await screen.findByRole('button', { name: 'Po ruhet' })).toBeDisabled()
     expect(router.state.location.pathname).toBe('/fillimi')
 
-    const { readProfile, nextWorkout } = await import('@/data/profile')
+    const { readProfile } = await import('@/data/profile')
+    const { trainingSnapshot } = await import('@/data/training')
     const store = data.store as Parameters<typeof readProfile>[0]
     await vi.waitFor(async () => expect((await store.all('user_settings'))[0]?.onboarded_at).toBeTruthy())
     expect(await readProfile(store)).toEqual({
@@ -62,7 +63,7 @@ describe('hapat e hyrjes së parë', () => {
       wakeTime: '07:00',
       sleepTime: '23:00',
     })
-    expect(await nextWorkout(store)).toMatchObject({ label: 'Java 0 · Stërvitja 1' })
+    expect(await trainingSnapshot(store)).toMatchObject({ label: 'Java 0', plan: { dayNumber: 1 } })
   })
 
   it('pesha e pavlefshme ndal hapin dhe e thotë nën fushë', async () => {
