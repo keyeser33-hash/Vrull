@@ -67,14 +67,25 @@ jobs:
         run: |
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          # avdmanager dhe emulatori duhet të kërkojnë AVD-në në të njëjtën dosje.
+          export ANDROID_AVD_HOME="$HOME/.android/avd"
+          echo "ANDROID_AVD_HOME=$ANDROID_AVD_HOME" >> "$GITHUB_ENV"
+          mkdir -p "$ANDROID_AVD_HOME"
           tools="$ANDROID_HOME/cmdline-tools/latest/bin"
           yes | "$tools/sdkmanager" --licenses > /dev/null || true
           "$tools/sdkmanager" --install emulator platform-tools "$SYSTEM_IMAGE" > /dev/null
-          echo no | "$tools/avdmanager" create avd --force -n th -k "$SYSTEM_IMAGE" -d pixel_6
+          echo no | "$tools/avdmanager" create avd --force -n th -k "$SYSTEM_IMAGE" -d pixel_6 \
+            -p "$ANDROID_AVD_HOME/th.avd"
+          "$ANDROID_HOME/emulator/emulator" -list-avds | grep -qx th
           nohup "$ANDROID_HOME/emulator/emulator" -avd th -no-window -no-audio -no-boot-anim \
             -no-snapshot -gpu swiftshader_indirect -camera-back none > emulator.log 2>&1 &
-          adb wait-for-device
-          timeout 600 bash -c 'until [ "$(adb shell getprop sys.boot_completed | tr -d "\r")" = "1" ]; do sleep 5; done'
+          # Çdo pritje ka afat, që një emulator që s'nis të mos e mbajë punën deri në fund të kohës.
+          if ! timeout 300 adb wait-for-device \
+            || ! timeout 600 bash -c 'until [ "$(adb shell getprop sys.boot_completed | tr -d "\r")" = "1" ]; do sleep 5; done'; then
+            echo "::error title=Emulatori nuk nisi::Shih emulator.log në artifact."
+            tail -50 emulator.log
+            exit 1
+          fi
           adb shell settings put global window_animation_scale 0
           adb shell settings put global transition_animation_scale 0
           adb shell settings put global animator_duration_scale 0
