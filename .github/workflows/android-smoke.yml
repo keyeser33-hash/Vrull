@@ -1,5 +1,5 @@
-# Prova e APK-së në Android virtual: instalimi, hapja, butoni mbrapa, tema,
-# dhe përditësimi v1 -> v2 pa humbur të dhënat. Nuk ka nevojë për secret-et:
+# Prova e APK-së në Android virtual: instalimi, hapja, seanca dhe timer-i me ekran të kyçur,
+# butoni mbrapa, tema, dhe përditësimi v1 -> v2 pa humbur të dhënat. Nuk ka nevojë për secret-et:
 # përdor dy build-e debug me të njëjtin çelës debug. Skripti: scripts/android-smoke.mjs.
 name: Prova e Android-it
 
@@ -13,7 +13,8 @@ on:
       - 'index.html'
       - 'src/main.tsx'
       - 'src/lib/**'
-      - 'src/components/layout/**'
+      - 'src/components/**'
+      - 'src/program/**'
       - 'src/routes/**'
       - 'src/data/**'
       - 'src/router.tsx'

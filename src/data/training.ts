@@ -169,6 +169,12 @@ export async function ensureShortcutToSize(store: LocalStore): Promise<LocalRow>
   return program
 }
 
+/** Përditësimi nga 0.2.0: Shortcut to Size që ekziston merr slotet; asnjë program i ri nuk krijohet. */
+export async function upgradeShortcutToSize(store: LocalStore) {
+  const existing = (await store.all('programs')).find((program) => program.source === 'shortcut_to_size')
+  if (existing) await ensureShortcutToSize(store)
+}
+
 /** Ushtrimet e programit, të krijuara një herë; një ushtrim me të njëjtin emër ripërdoret. */
 async function ensureExercises(store: LocalStore) {
   const existing = new Map((await store.all('exercises')).map((row) => [String(row.name).toLowerCase(), row.id]))
@@ -316,10 +322,15 @@ export interface SetInput {
 }
 
 export async function saveSet(store: LocalStore, input: SetInput) {
-  const existing = input.id ? await store.get('set_logs', input.id) : undefined
+  // Një set për seancë, slot dhe numër: një prekje e dytë ose një ekran i vonuar e ndryshon, nuk e dyfishon.
+  const existing = input.id
+    ? await store.get('set_logs', input.id)
+    : (await store.where('set_logs', 'session_id', input.sessionId)).find(
+        (row) => row.slot_id === input.slot.slotId && Number(row.set_number) === input.setNumber,
+      )
   return toSet(
     await store.put('set_logs', {
-      id: input.id,
+      id: existing?.id ?? input.id,
       session_id: input.sessionId,
       slot_id: input.slot.slotId,
       exercise_id: input.slot.exerciseId,
@@ -331,7 +342,12 @@ export async function saveSet(store: LocalStore, input: SetInput) {
       rir: input.rir ?? null,
       rpe: input.rpe ?? null,
       technique: input.technique ?? 'none',
-      segments: input.segments?.length ? input.segments.map((segment) => ({ weight_kg: segment.weightKg, reps: segment.reps })) : null,
+      segments:
+        input.segments === undefined
+          ? (existing?.segments ?? null)
+          : input.segments.length
+            ? input.segments.map((segment) => ({ weight_kg: segment.weightKg, reps: segment.reps }))
+            : null,
       notes: input.notes ?? null,
       logged_at: existing?.logged_at ?? store.now().toISOString(),
     }),

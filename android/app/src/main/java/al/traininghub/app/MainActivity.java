@@ -14,6 +14,7 @@ public class MainActivity extends BridgeActivity {
         EdgeToEdge.enable(this);
         // Plugin-et lokale regjistrohen para super.onCreate, ku krijohet ura me WebView-në.
         registerPlugin(WindowBackgroundPlugin.class);
+        registerPlugin(BatteryPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

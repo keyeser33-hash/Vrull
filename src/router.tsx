@@ -4,6 +4,7 @@ import { AppGate } from '@/routes/gate'
 import { LoginPage } from '@/routes/login'
 import { OnboardingPage } from '@/routes/onboarding'
 import { BodyPage, NutritionPage, ProgramPage, ProgressPage } from '@/routes/placeholders'
+import { SessionPage } from '@/routes/session'
 import { SettingsPage } from '@/routes/settings'
 import { TodayPage } from '@/routes/today'
 
@@ -21,6 +22,8 @@ export const appRoutes: RouteObject[] = [
       { path: 'cilesimet', element: <SettingsPage /> },
     ],
   },
+  // Seanca e stërvitjes zë gjithë ekranin, pa navigimin poshtë.
+  { path: '/seanca', element: <SessionPage /> },
 ]
 
 // E gjithë app-i: porta vendos nëse shfaqet hyrja, hapat e para apo ekranet e mësipërme.

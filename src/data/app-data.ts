@@ -10,6 +10,7 @@ import { createLocalStore } from './store'
 import { supabase } from './supabase'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
+import { upgradeShortcutToSize } from './training'
 
 // Të dhënat e app-it: sesioni, një bazë lokale, një store për shkrimet, një sinkronizim me
 // Supabase. Ekranet lexojnë dhe shkruajnë vetëm përmes `store`; asnjë ekran nuk pret rrjetin.
@@ -71,10 +72,17 @@ export function useLocalQuery<T>(query: () => Promise<T>, deps: DependencyList):
   const [value, setValue] = useState<T | undefined>(undefined)
   useEffect(() => {
     let cancelled = false
+    // Leximet mund të mbarojnë jashtë radhës: një lexim që nisi para një tjetri që u shfaq tashmë
+    // nuk e kthen ekranin pas. Leximet e reja shfaqen sapo mbarojnë, edhe kur shkrimet vijnë shpejt.
+    let started = 0
+    let shown = 0
     const run = () => {
+      const ticket = ++started
       query().then(
         (result) => {
-          if (!cancelled) setValue(() => result)
+          if (cancelled || ticket < shown) return
+          shown = ticket
+          setValue(() => result)
         },
         () => {
           // Një lexim i dështuar lë vlerën e fundit; leximi tjetër e provon përsëri.
@@ -123,4 +131,15 @@ export function usePendingChanges() {
       return total
     }, []) ?? 0
   )
+}
+
+/**
+ * Përditësimet e të dhënave lokale pas një versioni të ri, kur app-i është gati (të dhënat e
+ * serverit janë marrë): p.sh. ushtrimet e Shortcut to Size për profilet e versionit 0.2.0.
+ */
+export function useDataUpgrades(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (ready && userId) void upgradeShortcutToSize(store).catch(() => {})
+  }, [ready, userId])
 }

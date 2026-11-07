@@ -1,7 +1,9 @@
 // Komponenti i ikonave të Omal UI v2. Shtigjet jetojnë te icon-paths.ts.
-import { ICONS, type IconName } from './icon-paths'
+import { ICONS, type IconName as OmalIconName } from './icon-paths'
+import { APP_ICONS } from './icon-paths-app'
 
-export type { IconName }
+export type IconName = OmalIconName | keyof typeof APP_ICONS
+const PATHS: Record<IconName, string> = { ...ICONS, ...APP_ICONS }
 
 export function Icon({ name, size = 24, label, className = "" }: { name: IconName; size?: number; label?: string; className?: string }) {
   return (
@@ -18,7 +20,7 @@ export function Icon({ name, size = 24, label, className = "" }: { name: IconNam
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
-      dangerouslySetInnerHTML={{ __html: ICONS[name] }}
+      dangerouslySetInnerHTML={{ __html: PATHS[name] }}
     />
   );
 }

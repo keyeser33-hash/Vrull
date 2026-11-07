@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ikona e vogël e njoftimit të pushimit: një kronometër, i bardhë mbi të tejdukshme. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9,1h6v2h-6z M12,4a9,9 0,1 0,0.001 0z M12,6a7,7 0,1 1,-0.001 0z M11,8h2v5.4l3.2,1.9 -1,1.7 -4.2,-2.5z" />
+</vector>

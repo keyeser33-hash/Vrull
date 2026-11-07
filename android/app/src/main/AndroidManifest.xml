@@ -50,4 +50,7 @@
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- Dritarja e sistemit për përjashtimin nga optimizimi i baterisë, vetëm kur përdoruesi e kërkon
+         te Cilësimet (timer-i vonon me ekran të kyçur te disa prodhues). -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 </manifest>

@@ -35,7 +35,7 @@ Mos e çinstalo app-in para përditësimit. Përditësimi mban të gjitha të dh
 
 - **Njoftimet:** app-i i kërkon në stërvitjen e parë, për timer-in e pushimit. Lejoji.
 - **Alarmet e sakta:** në Android 13 e lart jepen vetë. Në Android 12, nëse app-i të dërgon te cilësimet, aktivizo **Alarmet dhe rikujtuesit**.
-- **Bateria:** nëse timer-i vonon me ekran të kyçur, te **Cilësimet → App-et → Training Hub → Bateria** zgjidh **Pa kufizime**.
+- **Bateria:** nëse timer-i vonon me ekran të kyçur, te Training Hub hap **Cilësimet → Timer-i i pushimit → Hiq kufizimin e baterisë** dhe lejoje. Ose te cilësimet e telefonit: **App-et → Training Hub → Bateria → Pa kufizime**.
 
 ## 5. Verifikimi i zhvilluesve nga Google
 

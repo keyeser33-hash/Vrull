@@ -8,6 +8,7 @@ import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
 import { Icon } from '@/components/ui/icons'
 import { cn } from '@/lib/cn'
+import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
 import { ProfileSection } from './settings-profile'
 
@@ -65,6 +66,7 @@ export function SettingsPage() {
           </div>
         </fieldset>
       </section>
+      <TimerSection />
       <DataSection />
       <AccountSection />
       <p className="mt-6 text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
@@ -125,6 +127,36 @@ function DataSection() {
         <p role="alert" className="mt-2 text-sm leading-5 text-destructive">
           {problem}
         </p>
+      )}
+    </section>
+  )
+}
+
+/** Vetëm në telefon: nëse timer-i vonon me ekran të kyçur, përjashtimi nga optimizimi i baterisë. */
+function TimerSection() {
+  const [unrestricted, setUnrestricted] = useState<boolean | null>(null)
+  useEffect(() => {
+    const check = () => void batteryUnrestricted().then(setUnrestricted)
+    check()
+    // Pas dritares së sistemit, app-i kthehet në plan të parë: gjendja lexohet përsëri.
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [])
+  if (unrestricted === null) return null
+  return (
+    <section aria-labelledby="timer-title" className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
+      <h2 id="timer-title" className="text-lg leading-7 font-semibold tracking-[-0.01em]">
+        Timer-i i pushimit
+      </h2>
+      <p className="mt-1 text-sm leading-5 text-muted-foreground">
+        {unrestricted
+          ? 'Bateria pa kufizime: njoftimi vjen në kohë edhe me ekran të kyçur.'
+          : 'Nëse njoftimi i pushimit vonon me ekran të kyçur, lejo app-in të punojë pa kufizime baterie.'}
+      </p>
+      {unrestricted ? null : (
+        <Button variant="outline" className="mt-4 w-full" onClick={() => void requestBatteryExemption()}>
+          Hiq kufizimin e baterisë
+        </Button>
       )}
     </section>
   )

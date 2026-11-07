@@ -103,6 +103,16 @@ describe('një stërvitje', () => {
     ])
   })
 
+  it('i njëjti set i ruajtur dy herë (p.sh. dy prekje) mbetet një set', async () => {
+    const { store } = await onboarded()
+    const sessionId = await startWorkout(store)
+    const [bench] = (await trainingSnapshot(store))!.plan.slots
+    await saveSet(store, { sessionId, slot: bench, setNumber: 2, weightKg: 50, reps: 12 })
+    await saveSet(store, { sessionId, slot: bench, setNumber: 2, weightKg: 52.5, reps: 11 })
+    const sets = (await trainingSnapshot(store))!.session!.sets
+    expect(sets.map((set) => [set.setNumber, set.weightKg, set.reps])).toEqual([[2, 52.5, 11]])
+  })
+
   it('setet dalin sipas kohës kur u bënë', async () => {
     const { store, advanceMinutes } = await onboarded()
     const sessionId = await startWorkout(store)
@@ -240,10 +250,11 @@ describe('historia për peshat dhe rikuperimin', () => {
       isWarmup: false,
     })
     expect(history.sets).toHaveLength(3)
-    expect(history.worked).toEqual([
+    // Radha e muskujve nuk ka rëndësi; dy setet u ruajtën në të njëjtin moment.
+    expect(history.worked.map((session) => ({ ...session, primaryKeys: [...session.primaryKeys].sort() }))).toEqual([
       {
         endedAt: '2026-12-07T17:50:00.000Z',
-        primaryKeys: ['pectoralis_major_sternocostal', 'pectoralis_major_clavicular'],
+        primaryKeys: ['pectoralis_major_clavicular', 'pectoralis_major_sternocostal'],
       },
     ])
     expect(history.weightSteps).toMatchObject({})
