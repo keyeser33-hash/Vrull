@@ -158,6 +158,8 @@ describe('cilësimet', () => {
     await user.click(row(/^Tema/))
     const sheet = screen.getByRole('dialog', { name: 'Tema' })
     expect(within(sheet).getByRole('radio', { name: 'OLED' })).toBeChecked()
+    // Prova në emulator e gjen temën sipas vlerës së radios.
+    expect(within(sheet).getByRole('radio', { name: 'E çelët' })).toHaveAttribute('value', 'light')
     await user.click(within(sheet).getByRole('radio', { name: 'E çelët' }))
     expect(document.documentElement.className).toBe('')
     expect(window.localStorage.getItem('th-theme')).toBe('light')

@@ -425,7 +425,7 @@ function TechniqueSheet({
       <fieldset className="flex flex-col gap-2">
         <legend className="sr-only">Teknika</legend>
         {TECHNIQUES.map((option) => (
-          <Choice key={option.type} name="technique" checked={type === option.type} onChange={() => setType(option.type)} label={option.label} hint={option.hint} />
+          <Choice key={option.type} name="technique" value={option.type} checked={type === option.type} onChange={() => setType(option.type)} label={option.label} hint={option.hint} />
         ))}
       </fieldset>
       {type === 'rest_pause' ? (

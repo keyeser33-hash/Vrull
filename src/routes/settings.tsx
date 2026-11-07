@@ -213,7 +213,7 @@ function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (the
           OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
         </legend>
         {THEMES.map((option) => (
-          <Choice key={option} name="theme" checked={theme === option} onChange={() => onChoose(option)} label={THEME_LABELS[option]} />
+          <Choice key={option} name="theme" value={option} checked={theme === option} onChange={() => onChoose(option)} label={THEME_LABELS[option]} />
         ))}
       </fieldset>
     </Sheet>
