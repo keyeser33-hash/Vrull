@@ -13,16 +13,6 @@ export function PageHeader({ title, actions }: { title: string; actions?: ReactN
   )
 }
 
-// Kartë për një pjesë që ende s'ka të dhëna. Teksti thotë çfarë do shfaqet aty.
-export function EmptyCard({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
-      <h2 className="text-lg leading-7 font-semibold tracking-[-0.01em]">{title}</h2>
-      <p className="mt-1 text-sm leading-5 text-muted-foreground">{children}</p>
-    </section>
-  )
-}
-
 /** Shigjeta mbrapa e ekraneve të detajit; kthehet aty nga erdhi përdoruesi. */
 export function BackButton({ label }: { label: string }) {
   const navigate = useNavigate()

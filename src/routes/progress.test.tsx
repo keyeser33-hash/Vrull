@@ -117,7 +117,9 @@ describe('Progresi', () => {
     const viewer = screen.getByRole('dialog', { name: /^Para · / })
     await user.click(within(viewer).getByRole('button', { name: 'Fshi foton' }))
     await user.click(within(viewer).getByRole('button', { name: 'Po, fshije' }))
-    expect(await within(section).findByText('Para')).toBeInTheDocument()
+    // "Para" del edhe si etiketë mbi foto: pritet që butoni i fotos të ikë, pastaj del poza bosh.
+    await waitFor(() => expect(within(section).queryByRole('button', { name: /^Para, / })).not.toBeInTheDocument())
+    expect(within(section).getByText('Para').closest('label')).not.toBeNull()
     expect(await data.store.all('progress_photos')).toEqual([])
   })
 })
