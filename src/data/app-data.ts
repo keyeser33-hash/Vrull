@@ -13,6 +13,7 @@ import { PENDING, REJECTED, TABLES } from './tables'
 import { planReminders } from '@/reminders/plan'
 import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
+import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { ensureSupplements } from './supplements'
 import { upgradeShortcutToSize } from './training'
 
@@ -141,6 +142,56 @@ export function usePendingChanges() {
  * Përditësimet e të dhënave lokale pas një versioni të ri, kur app-i është gati (të dhënat e
  * serverit janë marrë): p.sh. ushtrimet e Shortcut to Size për profilet e versionit 0.2.0.
  */
+/** Bucket-i privat i fotove (SPEC §8): çdo përdorues vetëm te dosja e tij. */
+export const photoRemote: PhotoRemote = {
+  async upload(path, data, type) {
+    const { error } = await supabase.storage.from('progress-photos').upload(path, new Blob([data], { type }), { contentType: type, upsert: true })
+    if (error) throw error
+  },
+  async download(path) {
+    const { data, error } = await supabase.storage.from('progress-photos').download(path)
+    if (error || !data) throw error ?? new Error('Foto nuk u shkarkua')
+    return data.arrayBuffer()
+  },
+}
+
+/** Fotot e progresit për ekranet: përmes store-it dhe bucket-it, pa thirrje direkte te Supabase. */
+export const photos = {
+  timeline: () => photoTimeline(store, db),
+  add: (input: { date: string; pose: Pose; data: ArrayBuffer; width: number; height: number }) => addPhoto(store, db, input),
+  remove: (id: string) => removePhoto(store, db, id),
+  data: (photo: Pick<PhotoRef, 'id' | 'storagePath'>) => photoData(db, photoRemote, photo),
+}
+
+/** Ngarkon fotot që presin: kur hapet app-i, kur kthehet interneti dhe kur shtohet një foto. */
+export function usePhotoUploader(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId) return
+    let running = false
+    const upload = () => {
+      if (running || !navigator.onLine) return
+      running = true
+      void uploadPendingPhotos(db, photoRemote)
+        .catch(() => 0)
+        .finally(() => {
+          running = false
+        })
+    }
+    upload()
+    const stop = store.subscribe((table) => {
+      if (table === 'progress_photos') upload()
+    })
+    window.addEventListener('online', upload)
+    const resume = App.addListener('resume', upload)
+    return () => {
+      stop()
+      window.removeEventListener('online', upload)
+      void resume.then((handle) => handle.remove())
+    }
+  }, [ready, userId])
+}
+
 /** Rikujtuesit e 7 ditëve të ardhshme, të planifikuar përsëri në telefon (SPEC §13). */
 export async function planRemindersNow() {
   if (!Capacitor.isNativePlatform()) return

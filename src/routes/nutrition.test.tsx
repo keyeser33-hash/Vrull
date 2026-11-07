@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -111,7 +111,8 @@ describe('Ushqimi', () => {
     expect(zma.closest('label')).toHaveTextContent('E dobët pa mungesë')
     await user.click(zma)
     await user.click(within(sheet).getByRole('button', { name: 'Mbyll' }))
-    expect(await screen.findByRole('button', { name: /^Para gjumit, 22:30/ })).not.toHaveTextContent('zma')
+    // Rreshti ekziston edhe para rifreskimit: pritet derisa ZMA të mos jetë më aty.
+    await waitFor(() => expect(screen.getByRole('button', { name: /^Para gjumit, 22:30/ })).not.toHaveTextContent('zma'))
     expect(screen.getByRole('region', { name: /^Suplementet/ })).toHaveTextContent('Suplementet · 1 nga 16')
   })
 })

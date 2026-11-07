@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { FocusLayout } from '@/components/layout/focus-layout'
 import { Button } from '@/components/ui/button'
-import { auth, scheduler, useAppPhase, useDataUpgrades, useReminderPlanner } from '@/data/app-data'
+import { auth, scheduler, useAppPhase, useDataUpgrades, usePhotoUploader, useReminderPlanner } from '@/data/app-data'
 
 // Porta e app-it: i vetmi vend që vendos rrugën sipas fazës (data/phase.ts).
 export function AppGate() {
@@ -9,6 +9,7 @@ export function AppGate() {
   const { pathname } = useLocation()
   useDataUpgrades(phase === 'ready')
   useReminderPlanner(phase === 'ready')
+  usePhotoUploader(phase === 'ready')
 
   switch (phase) {
     case 'loading':

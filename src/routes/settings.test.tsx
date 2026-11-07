@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -190,7 +190,7 @@ describe('cilësimet', () => {
     const meals = within(group).getByRole('switch', { name: /^Vaktet/ })
     expect(meals).toBeChecked()
     await user.click(meals)
-    expect(await within(group).findByRole('switch', { name: /^Vaktet/ })).not.toBeChecked()
+    await waitFor(() => expect(within(group).getByRole('switch', { name: /^Vaktet/ })).not.toBeChecked())
     expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ meals: false, supplements: true })
     await user.click(within(group).getByRole('button', { name: 'Dita e matjes, E diel' }))
     await user.click(within(screen.getByRole('dialog', { name: 'Dita e matjes' })).getByRole('radio', { name: 'E hënë' }))

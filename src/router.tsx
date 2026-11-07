@@ -6,6 +6,7 @@ import { OnboardingPage } from '@/routes/onboarding'
 import { AddFoodPage } from '@/routes/add-food'
 import { NutritionPage } from '@/routes/nutrition'
 import { BodyPage } from '@/routes/placeholders'
+import { PhotosPage } from '@/routes/photos'
 import { MeasurementPage, MetricPage, ProgressPage } from '@/routes/progress'
 import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
 import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
@@ -32,6 +33,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'ushqimi/shto/:meal', element: <AddFoodPage /> },
       { path: 'progresi', element: <ProgressPage /> },
       { path: 'progresi/matja', element: <MeasurementPage /> },
+      { path: 'progresi/fotot', element: <PhotosPage /> },
       { path: 'progresi/:metric', element: <MetricPage /> },
       { path: 'trupi', element: <BodyPage /> },
       { path: 'cilesimet', element: <SettingsPage /> },

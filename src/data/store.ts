@@ -19,6 +19,8 @@ export interface LocalStore {
   where(table: TableName, index: string, value: unknown): Promise<LocalRow[]>
   /** Ora e store-it (në teste, ora e provës): kohët e stërvitjes vijnë nga e njëjta orë si rreshtat. */
   now(): Date
+  /** Përdoruesi i hyrë (p.sh. për dosjen e tij te Storage); null pa hyrje. */
+  userId(): string | null
   /** Thirret pas çdo shkrimi; kthen funksionin që e ndal. */
   subscribe(listener: (table: TableName) => void): () => void
 }
@@ -114,6 +116,7 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
     },
 
     now: () => clock(),
+    userId: () => options.userId(),
 
     subscribe(listener) {
       listeners.add(listener)

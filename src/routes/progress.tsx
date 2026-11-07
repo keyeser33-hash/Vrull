@@ -12,6 +12,7 @@ import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHisto
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, type MetricKey, metricByKey, movingAverage, parseMetric } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
+import { PhotoSection } from './photos'
 import { dateLabel, kg } from './training-format'
 
 // Progresi, varianti A (07.11.2026; referencat nga Mobbin: Hevy, Withings, Lifesum): paneli i
@@ -81,6 +82,8 @@ export function ProgressPage() {
           </Link>
         </div>
       </section>
+
+      <PhotoSection />
 
       <TrainingSections />
 

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -9,10 +9,19 @@ const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
-  const store = createLocalStore(createDatabase(`progress-ui-${crypto.randomUUID()}`), { userId: () => '11111111-1111-4111-8111-111111111111' })
+  const photoApi = await import('@/data/photos')
+  const db = createDatabase(`progress-ui-${crypto.randomUUID()}`)
+  const store = createLocalStore(db, { userId: () => '11111111-1111-4111-8111-111111111111' })
   data.store = store
+  const remote = { upload: async () => {}, download: async () => new ArrayBuffer(0) }
   return {
     store,
+    photos: {
+      timeline: () => photoApi.photoTimeline(store, db),
+      add: (input: Parameters<typeof photoApi.addPhoto>[2]) => photoApi.addPhoto(store, db, input),
+      remove: (id: string) => photoApi.removePhoto(store, db, id),
+      data: (photo: { id: string; storagePath: string }) => photoApi.photoData(db, remote, photo),
+    },
     useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
       const [value, setValue] = useState<T>()
       useEffect(() => {
@@ -35,6 +44,8 @@ vi.mock('@/data/app-data', async () => {
   }
 })
 
+vi.mock('@/lib/image', () => ({ compressPhoto: async () => ({ data: new Uint8Array([1, 2, 3]).buffer, width: 1200, height: 1600 }) }))
+
 async function renderAt(path: string) {
   const { MeasurementPage, MetricPage, ProgressPage } = await import('./progress')
   const router = createMemoryRouter(
@@ -52,6 +63,8 @@ async function renderAt(path: string) {
 describe('Progresi', () => {
   beforeAll(async () => {
     await import('@/data/app-data')
+    URL.createObjectURL = () => 'blob:foto'
+    URL.revokeObjectURL = () => {}
   })
 
   it('pa matje: paneli e thotë dhe "Shto matjen" hap formularin; gabimi tregohet te fusha', async () => {
@@ -88,5 +101,23 @@ describe('Progresi', () => {
     const [newest] = within(history).getAllByRole('link')
     expect(newest).toHaveTextContent('80,5 kg')
     expect(newest).toHaveAttribute('href', '/progresi/matja?data=2026-12-04')
+  })
+
+  it('fotot: poza bosh ruan foton e sotme; foto hapet në fletë dhe fshihet', async () => {
+    const user = userEvent.setup()
+    await renderAt('/progresi')
+    const section = await screen.findByRole('region', { name: 'Fotot e progresit' })
+    const input = within(section).getByText('Para').closest('label')!.querySelector('input')!
+    await user.upload(input, new File(['x'], 'foto.jpg', { type: 'image/jpeg' }))
+    const photo = await within(section).findByRole('button', { name: /^Para, / })
+    // Imazhi është dekorativ (alt bosh): emri vjen nga butoni.
+    await waitFor(() => expect(photo.querySelector('img')).toHaveAttribute('src', 'blob:foto'))
+    expect(await data.store.all('progress_photos')).toEqual([expect.objectContaining({ pose: 'front', width: 1200, height: 1600, bytes: 3 })])
+    await user.click(photo)
+    const viewer = screen.getByRole('dialog', { name: /^Para · / })
+    await user.click(within(viewer).getByRole('button', { name: 'Fshi foton' }))
+    await user.click(within(viewer).getByRole('button', { name: 'Po, fshije' }))
+    expect(await within(section).findByText('Para')).toBeInTheDocument()
+    expect(await data.store.all('progress_photos')).toEqual([])
   })
 })

@@ -32,6 +32,7 @@ vi.mock('@/data/app-data', () => ({
   auth: { signOut: mock.signOut },
   useDataUpgrades: () => undefined,
   useReminderPlanner: () => undefined,
+  usePhotoUploader: () => undefined,
 }))
 
 function renderAt(path: string, phase: AppPhase) {
