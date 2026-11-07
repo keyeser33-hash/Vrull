@@ -147,7 +147,14 @@ async function connect() {
       ws.send(JSON.stringify({ id, method, params }))
     })
   const evaluate = async (expression) => {
-    const response = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
+    // userGesture: Chromium nuk i lejon "mbrapa" faqet e hapura pa veprim të përdoruesit
+    // (canGoBack del false), ndaj klikimet e provës shënohen si prekje të vërteta.
+    const response = await send('Runtime.evaluate', {
+      expression,
+      returnByValue: true,
+      awaitPromise: true,
+      userGesture: true,
+    })
     if (response.result?.exceptionDetails) throw new Error(response.result.exceptionDetails.text)
     return response.result?.result?.value
   }
