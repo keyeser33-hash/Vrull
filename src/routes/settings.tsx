@@ -5,15 +5,17 @@ import { DayPicker } from '@/components/forms/day-picker'
 import { TimeStepper } from '@/components/forms/time-stepper'
 import { ValueStepper } from '@/components/forms/value-stepper'
 import { WEEK_DAYS } from '@/components/forms/week-days'
-import { Group, Row } from '@/components/layout/list-group'
+import { Group, Row, SwitchRow } from '@/components/layout/list-group'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
-import { auth, scheduler, store, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import { auth, planRemindersNow, scheduler, store, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
+import { reminderSettings, setMeasurementDay, setReminderToggle } from '@/data/reminders'
 import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
+import { reminderPermission, type ReminderPermission, requestReminderPermission } from '@/lib/reminders-native'
 import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
 import { kg } from './training-format'
@@ -23,7 +25,7 @@ import { kg } from './training-format'
 // rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
 
 type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
-type Editor = ProfileEditor | 'tema' | 'dil'
+type Editor = ProfileEditor | 'tema' | 'dil' | 'matja'
 const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
   value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
 
@@ -74,11 +76,14 @@ export function SettingsPage() {
         <TimerRow />
       </Group>
 
+      <RemindersGroup onPickDay={() => open('matja')} />
+
       <DataGroup />
 
       <p className="text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
 
       {editor === 'dil' ? <SignOutSheet onClose={close} /> : null}
+      {editor === 'matja' ? <MeasurementDaySheet onClose={close} /> : null}
       {editor === 'tema' ? (
         <ThemeSheet
           theme={theme}
@@ -315,6 +320,75 @@ function ProfileSheet({ editor, profile, onClose }: { editor: ProfileEditor; pro
       <Button className="w-full" disabled={busy} onClick={() => void save()}>
         Ruaj
       </Button>
+    </Sheet>
+  )
+}
+
+const TOGGLES = [
+  { key: 'meals', label: 'Vaktet', detail: 'Në orën e çdo vakti, me artikujt e planit' },
+  { key: 'supplements', label: 'Suplementet', detail: 'Bashkë me vaktin ku merren' },
+  { key: 'training', label: 'Stërvitja', detail: 'Në mëngjes, stërvitja e radhës' },
+  { key: 'measurements', label: 'Matja javore', detail: 'Pesha, perimetrat dhe fotot' },
+] as const
+
+/** Rikujtuesit (SPEC §13): çka njofton telefoni, dita e matjes dhe leja e njoftimeve. */
+function RemindersGroup({ onPickDay }: { onPickDay: () => void }) {
+  const settings = useLocalQuery(() => reminderSettings(store), [])
+  const [permission, setPermission] = useState<ReminderPermission | null>(null)
+  useEffect(() => {
+    const check = () => void reminderPermission().then(setPermission)
+    check()
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [])
+  if (!settings) return null
+  const day = WEEK_DAYS.find((entry) => entry.value === settings.measurementDay)?.name ?? 'E diel'
+  return (
+    <Group title="Rikujtuesit">
+      {permission === 'prompt' || permission === 'denied' ? (
+        <Row
+          label="Lejo njoftimet"
+          detail={permission === 'denied' ? 'Lejoji te cilësimet e telefonit për Training Hub' : 'Pa leje, rikujtuesit nuk vijnë'}
+          onClick={() =>
+            void requestReminderPermission().then(async (granted) => {
+              setPermission(granted ? 'granted' : await reminderPermission())
+              if (granted) await planRemindersNow()
+            })
+          }
+          action
+        />
+      ) : null}
+      {TOGGLES.map((toggle) => (
+        <SwitchRow
+          key={toggle.key}
+          label={toggle.label}
+          detail={toggle.detail}
+          checked={settings.toggles[toggle.key]}
+          onChange={(on) => void setReminderToggle(store, toggle.key, on)}
+        />
+      ))}
+      <Row label="Dita e matjes" value={day} onClick={onPickDay} />
+    </Group>
+  )
+}
+
+function MeasurementDaySheet({ onClose }: { onClose: () => void }) {
+  const settings = useLocalQuery(() => reminderSettings(store), [])
+  return (
+    <Sheet title="Dita e matjes" onClose={onClose}>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm leading-5 text-muted-foreground">Rikujtuesi vjen në orën e zgjimit, që pesha të matet para mëngjesit.</legend>
+        {WEEK_DAYS.map((entry) => (
+          <Choice
+            key={entry.value}
+            name="measurement-day"
+            value={String(entry.value)}
+            checked={settings?.measurementDay === entry.value}
+            onChange={() => void setMeasurementDay(store, entry.value).then(onClose)}
+            label={entry.name}
+          />
+        ))}
+      </fieldset>
     </Sheet>
   )
 }

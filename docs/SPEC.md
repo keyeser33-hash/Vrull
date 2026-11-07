@@ -189,6 +189,7 @@ Njoftime lokale, të planifikuara në telefon. Cilësimet mbajnë: orën e zgjim
 - **Ditët e stërvitjes:** në mëngjes, "Sot: Java 2 · Stërvitja 3" sipas treguesit të radhës.
 - **Vaktet dhe suplementet:** sipas orarit të planit. Mëngjesi 1 në zgjim, Mëngjesi 2 30–60 min më vonë, shake-u 10–15 min para stërvitjes, molla brenda 30 min para, vakti pas stërvitjes brenda 30 min pas, shake-u dhe ZMA para gjumit. Nëse stërvitja bie afër një vakti, vakti zëvendësohet me atë para stërvitjes dhe vakti i radhës vjen 1 orë pas vaktit pas stërvitjes (rregulli i PDF-së).
 - **Matjet javore:** një herë në javë (parazgjedhje e diel në mëngjes): peshë, perimetra, foto.
+- **Planifikimi (vendim i 07.11.2026):** telefoni mban rikujtuesit e 7 ditëve të ardhshme dhe i rinovon sa herë hapet app-i ose ndryshojnë oraret, stërvitja e radhës, suplementet ose lloji i një dite. Stërvitja njofton 30 min pas zgjimit ("Sot: Faza 1 · Java 2 · Stërvitja 3" për të radhës, "Sot ke stërvitje" për ditët pas saj); matja në orën e zgjimit; çdo vakt me artikujt e planit dhe suplementet e tij. Me vaktet të fikura, suplementet vijnë më vete. Te Cilësimet: çelësat e katër llojeve, dita e matjes dhe "Lejo njoftimet" kur mungon leja.
 
 ## 14. Dizajni
 

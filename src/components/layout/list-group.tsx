@@ -75,3 +75,16 @@ export function LinkRow({ to, label, detail, value }: { to: string; label: strin
     </Link>
   )
 }
+
+/** Rresht me çelës (ndezur/fikur); i gjithë rreshti prek çelësin. */
+export function SwitchRow({ label, detail, checked, onChange }: { label: string; detail?: ReactNode; checked: boolean; onChange: (checked: boolean) => void }) {
+  return (
+    <label className={cn(rowClass, 'cursor-pointer')}>
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="text-base leading-6">{label}</span>
+        {detail ? <span className="text-xs leading-4 text-muted-foreground">{detail}</span> : null}
+      </span>
+      <input type="checkbox" role="switch" checked={checked} onChange={(event) => onChange(event.currentTarget.checked)} className="size-5 shrink-0 accent-current" />
+    </label>
+  )
+}

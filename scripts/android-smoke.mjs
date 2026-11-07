@@ -408,6 +408,10 @@ try {
   await pressBack()
   await waitForHeading(page, 'Stërvitja 1')
   check('mbrapa nga seanca kthen te Sot, me stërvitjen të hapur', await page.evaluate(`document.body.innerText.includes('Vazhdo stërvitjen')`))
+  // Pas lejes së njoftimeve (stërvitja e parë), rikujtuesit e 7 ditëve planifikohen në telefon.
+  const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
+  await waitFor(async () => (await page.evaluate(pendingReminders)) > 0, 'rikujtuesit e planifikuar', 30_000)
+  check('rikujtuesit planifikohen pas lejes së njoftimeve', true, `${await page.evaluate(pendingReminders)} njoftime`)
 
   // 4. Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
   await click(page, 'a[aria-label="Cilësimet"]')

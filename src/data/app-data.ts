@@ -10,6 +10,9 @@ import { createLocalStore } from './store'
 import { supabase } from './supabase'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
+import { planReminders } from '@/reminders/plan'
+import { scheduleReminders } from '@/lib/reminders-native'
+import { reminderInput } from './reminders'
 import { ensureSupplements } from './supplements'
 import { upgradeShortcutToSize } from './training'
 
@@ -138,6 +141,37 @@ export function usePendingChanges() {
  * Përditësimet e të dhënave lokale pas një versioni të ri, kur app-i është gati (të dhënat e
  * serverit janë marrë): p.sh. ushtrimet e Shortcut to Size për profilet e versionit 0.2.0.
  */
+/** Rikujtuesit e 7 ditëve të ardhshme, të planifikuar përsëri në telefon (SPEC §13). */
+export async function planRemindersNow() {
+  if (!Capacitor.isNativePlatform()) return
+  await scheduleReminders(planReminders(await reminderInput(store, new Date())))
+}
+
+const REMINDER_TABLES = new Set(['user_settings', 'program_state', 'workout_sessions', 'supplements', 'nutrition_targets'])
+
+/** Rinovon rikujtuesit kur hapet app-i dhe kur ndryshojnë oraret, stërvitja e radhës ose suplementet. */
+export function useReminderPlanner(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId || !Capacitor.isNativePlatform()) return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const plan = () => {
+      clearTimeout(timer)
+      timer = setTimeout(() => void planRemindersNow().catch(() => {}), 1500)
+    }
+    plan()
+    const stop = store.subscribe((table) => {
+      if (REMINDER_TABLES.has(table)) plan()
+    })
+    const resume = App.addListener('resume', plan)
+    return () => {
+      clearTimeout(timer)
+      stop()
+      void resume.then((handle) => handle.remove())
+    }
+  }, [ready, userId])
+}
+
 export function useDataUpgrades(ready: boolean) {
   const { userId } = useAuth()
   useEffect(() => {

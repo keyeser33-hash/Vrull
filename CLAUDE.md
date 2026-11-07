@@ -36,4 +36,5 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `src/lib`: logjika e përbashkët (tema, `cn`, butoni mbrapa).
 - `src/program`: logjika e programit pa UI dhe pa bazë: motori (`engine.ts`), Shortcut to Size si të dhëna, biblioteka e ushtrimeve (`library.json`, nga `tools/exercise-library/build.mjs`).
 - `src/nutrition`: logjika e ushqimit pa UI: objektivat (Shtojca C), orari i vakteve (§13), shablloni i Jimit me makrot e ushqimeve.
+- `src/reminders`: plani i rikujtuesve pa UI (§13); njoftimet në telefon: `lib/reminders-native.ts`.
 - `src/data`: baza lokale (Dexie) dhe sinkronizimi. Ekranet lexojnë dhe shkruajnë vetëm përmes `store` nga `app-data.ts`; asnjë ekran nuk thërret Supabase direkt. Programi dhe stërvitjet: `training.ts`; editori: `program-editor.ts`; ushqimi: `nutrition.ts`. Një tabelë e re: migrim i ri, `TABLES` dhe `INDEXES` te `tables.ts` (testi i krahason me migrimet), dhe version i ri te `db.ts` kur ndryshojnë indekset.

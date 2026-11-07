@@ -26,6 +26,7 @@ vi.mock('@/data/app-data', async () => {
     useAuth: () => ({ status: 'signed_in', userId: '11111111-1111-4111-8111-111111111111', email: 'une@example.com' }),
     useSyncStatus: () => ({ syncing: false, last: null }),
     usePendingChanges: () => 0,
+    planRemindersNow: async () => {},
     useLocalQuery<T>(query: () => Promise<T>) {
       const [value, setValue] = useState<T>()
       useEffect(() => {
@@ -180,5 +181,20 @@ describe('cilësimet', () => {
   it('tregon versionin nga package.json', async () => {
     await renderSettings()
     expect(screen.getByText(`Training Hub ${pkg.version}`)).toBeInTheDocument()
+  })
+
+  it('rikujtuesit: çelësat ruhen dhe dita e matjes zgjidhet në fletë', async () => {
+    const user = userEvent.setup()
+    await renderSettings()
+    const group = await screen.findByRole('region', { name: 'Rikujtuesit' })
+    const meals = within(group).getByRole('switch', { name: /^Vaktet/ })
+    expect(meals).toBeChecked()
+    await user.click(meals)
+    expect(await within(group).findByRole('switch', { name: /^Vaktet/ })).not.toBeChecked()
+    expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ meals: false, supplements: true })
+    await user.click(within(group).getByRole('button', { name: 'Dita e matjes, E diel' }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Dita e matjes' })).getByRole('radio', { name: 'E hënë' }))
+    expect(await within(group).findByRole('button', { name: 'Dita e matjes, E hënë' })).toBeInTheDocument()
+    expect((await data.store.all('user_settings'))[0].measurement_day).toBe(1)
   })
 })

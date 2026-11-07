@@ -31,6 +31,7 @@ vi.mock('@/data/app-data', () => ({
   scheduler: { syncNow: mock.syncNow },
   auth: { signOut: mock.signOut },
   useDataUpgrades: () => undefined,
+  useReminderPlanner: () => undefined,
 }))
 
 function renderAt(path: string, phase: AppPhase) {
