@@ -66,6 +66,21 @@ function syncSystemBars(theme: Theme, background: string) {
     })
 }
 
+/**
+ * Ekranet që nisin me `panel` sipër (hyrja): `panel` mbetet i errët në çdo temë, ndaj ora dhe
+ * bateria duhen të çelëta edhe në temën e çelët. false i kthen shiritat te tema.
+ */
+export function applyPanelTop(on: boolean, root: HTMLElement = document.documentElement) {
+  if (!on) {
+    applyTheme(readTheme(), root)
+    return
+  }
+  const panel = getComputedStyle(root).getPropertyValue('--panel').trim()
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta && panel) meta.setAttribute('content', panel)
+  syncSystemBars('dark', panel)
+}
+
 // Android (Color.parseColor) pranon vetëm formën me gjashtë shifra; build-i i shkurton tokenat
 // në tre shifra kur munden (e zeza e OLED-it del me tre).
 function toHex6(value: string) {

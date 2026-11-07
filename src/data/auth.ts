@@ -35,12 +35,12 @@ export function signInErrorMessage(error: AuthErrorLike): string {
   if (error.code === 'invalid_credentials' || /invalid login credentials/i.test(error.message ?? '')) {
     return 'Email-i ose fjalëkalimi nuk është i saktë.'
   }
-  if (error.code === 'email_not_confirmed') return 'Llogaria nuk është konfirmuar. Konfirmoje te paneli i Supabase.'
+  if (error.code === 'email_not_confirmed') return 'Llogaria nuk është konfirmuar ende.'
   if (error.status === 429 || error.code === 'over_request_rate_limit') {
     return 'Shumë përpjekje radhazi. Prit pak minuta dhe provo përsëri.'
   }
   if (error.name === 'AuthRetryableFetchError' || error.status === 0) return 'Hyrja kërkon internet. Lidhu dhe provo përsëri.'
-  if ((error.status ?? 0) >= 500) return 'Supabase nuk po përgjigjet. Provo përsëri pas pak.'
+  if ((error.status ?? 0) >= 500) return 'Serveri nuk po përgjigjet. Provo përsëri pas pak.'
   return 'Hyrja nuk u krye. Provo përsëri.'
 }
 

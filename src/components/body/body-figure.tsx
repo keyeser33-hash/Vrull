@@ -83,19 +83,28 @@ export function BodyFigure({
   primary,
   secondary = [],
   label,
+  scale = 1,
   className,
 }: {
   primary: string[]
   secondary?: string[]
-  /** "Muskujt e sotëm: gjoksi, tricepsi dhe pulpat" */
-  label: string
+  /** "Muskujt e sotëm: gjoksi, tricepsi dhe pulpat". Pa etiketë, figura është zbukurim. */
+  label?: string
+  /** 1 = 132 × 144 px (paneli i Sot). */
+  scale?: number
   className?: string
 }) {
   const primarySet = new Set(primary)
   const secondarySet = new Set(secondary.filter((key) => !primarySet.has(key)))
   return (
     <figure className={cn('m-0 flex flex-col items-center gap-1.5', className)}>
-      <svg viewBox="0 0 132 144" width={132} height={144} role="img" aria-label={label}>
+      <svg
+        viewBox="0 0 132 144"
+        width={132 * scale}
+        height={144 * scale}
+        className="h-auto max-h-full max-w-full"
+        {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
+      >
         <View regions={FRONT} primary={primarySet} secondary={secondarySet} />
         <g transform="translate(72 0)">
           <View regions={BACK} primary={primarySet} secondary={secondarySet} />

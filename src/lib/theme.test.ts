@@ -1,5 +1,5 @@
 import { SystemBarsStyle } from '@capacitor/core'
-import { applyTheme, DEFAULT_THEME, readTheme, saveTheme } from './theme'
+import { applyPanelTop, applyTheme, DEFAULT_THEME, readTheme, saveTheme } from './theme'
 
 // SystemBars është proxy i Capacitor-it, prandaj zëvendësohet i tëri.
 const native = vi.hoisted(() => ({
@@ -48,6 +48,18 @@ describe('shiritat e sistemit në Android', () => {
       SystemBarsStyle.Dark,
       SystemBarsStyle.Light,
     ])
+  })
+
+  it('ekranet me panel sipër (hyrja): ikona të çelëta dhe dritarja me ngjyrën e panelit, edhe në temën e çelët', async () => {
+    native.isNative = true
+    document.documentElement.style.setProperty('--panel', '#171717')
+    applyTheme('light')
+    native.setStyle.mockClear()
+    native.setColor.mockClear()
+    applyPanelTop(true)
+    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#171717' }))
+    expect(native.setStyle).toHaveBeenCalledWith({ style: SystemBarsStyle.Dark })
+    document.documentElement.style.removeProperty('--panel')
   })
 
   it('në shfletues nuk thërret plugin-in', () => {

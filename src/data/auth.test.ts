@@ -82,10 +82,10 @@ describe('mesazhet e gabimeve të hyrjes', () => {
   it.each([
     [{ code: 'invalid_credentials', status: 400 }, 'Email-i ose fjalëkalimi nuk është i saktë.'],
     [{ message: 'Invalid login credentials', status: 400 }, 'Email-i ose fjalëkalimi nuk është i saktë.'],
-    [{ code: 'email_not_confirmed', status: 400 }, 'Llogaria nuk është konfirmuar. Konfirmoje te paneli i Supabase.'],
+    [{ code: 'email_not_confirmed', status: 400 }, 'Llogaria nuk është konfirmuar ende.'],
     [{ code: 'over_request_rate_limit', status: 429 }, 'Shumë përpjekje radhazi. Prit pak minuta dhe provo përsëri.'],
     [{ name: 'AuthRetryableFetchError', status: 0 }, 'Hyrja kërkon internet. Lidhu dhe provo përsëri.'],
-    [{ status: 503 }, 'Supabase nuk po përgjigjet. Provo përsëri pas pak.'],
+    [{ status: 503 }, 'Serveri nuk po përgjigjet. Provo përsëri pas pak.'],
     [{ status: 418 }, 'Hyrja nuk u krye. Provo përsëri.'],
   ])('%o', (error, message) => {
     expect(signInErrorMessage(error)).toBe(message)

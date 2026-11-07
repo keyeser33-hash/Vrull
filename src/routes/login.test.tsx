@@ -21,10 +21,33 @@ describe('hyrja', () => {
 
   it('ka një titull, dy fusha me etiketa dhe veprimin kryesor', () => {
     renderLogin()
-    expect(screen.getByRole('heading', { level: 1, name: 'Training Hub' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Hyr' })).toBeInTheDocument()
+    expect(screen.getByText('Training Hub')).toBeInTheDocument()
     expect(screen.getByLabelText('Email')).toHaveAttribute('type', 'email')
     expect(screen.getByLabelText('Fjalëkalimi')).toHaveAttribute('type', 'password')
     expect(screen.getByRole('button', { name: 'Hyr' })).toBeInTheDocument()
+  })
+
+  it('pa fjalë teknike: asnjë përmendje e Supabase', () => {
+    renderLogin()
+    expect(document.body.textContent).not.toMatch(/supabase/i)
+  })
+
+  it('"Hyr" aktivizohet kur të dyja fushat kanë tekst', async () => {
+    renderLogin()
+    const submit = screen.getByRole('button', { name: 'Hyr' })
+    expect(submit).toBeDisabled()
+    await userEvent.type(screen.getByLabelText('Email'), 'une@example.com')
+    expect(submit).toBeDisabled()
+    await userEvent.type(screen.getByLabelText('Fjalëkalimi'), 'x')
+    expect(submit).toBeEnabled()
+  })
+
+  it('pa internet e thotë para se të provosh', () => {
+    const online = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    renderLogin()
+    expect(screen.getByText('Pa internet. Hyrja kërkon internet vetëm herën e parë.')).toBeInTheDocument()
+    online.mockRestore()
   })
 
   it('dërgon email-in dhe fjalëkalimin', async () => {

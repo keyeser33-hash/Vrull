@@ -307,12 +307,13 @@ try {
   let page = await connect()
   // Rifreskim pasi dëgjuesit janë gati, që të kapet çdo gabim i ngarkimit.
   await page.send('Page.reload')
-  await waitForHeading(page, 'Training Hub')
+  await waitForHeading(page, 'Hyr')
   check('pa sesion hapet hyrja', (await page.evaluate('location.pathname')) === '/hyrja')
   check('tema OLED si parazgjedhje', (await page.evaluate('document.documentElement.className')) === 'dark oled')
   check('pa shirit veprimesh mbi faqe', !hasActionBar())
-  const bandOled = statusBandColor()
-  check('rripi i orës në OLED është i zi', sameColor(bandOled, '#000000'), bandOled.join(','))
+  await sleep(500)
+  const bandLogin = statusBandColor()
+  check('rripi i orës te hyrja merr ngjyrën e panelit', sameColor(bandLogin, '#0B0B0B'), bandLogin.join(','))
   screenshot('1-hyrja')
 
   // 2. Hyrja: fjalëkalimi i gabuar thuhet me fjalë; pastaj hyrja e saktë.
@@ -360,6 +361,8 @@ try {
   check('navigimi poshtë brenda ekranit', navInside, JSON.stringify(report.insets))
   check('pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
   check('titulli i Sot brenda ekranit', await page.evaluate(`document.querySelector('h1').getBoundingClientRect().top >= 0`))
+  const bandOled = statusBandColor()
+  check('pas hyrjes rripi i orës kthehet te tema: i zi në OLED', sameColor(bandOled, '#000000'), bandOled.join(','))
   screenshot('4-sot-oled')
 
   // 3b. Seanca dhe timer-i i pushimit (TH-09): me ekran të kyçur, njoftimi vjen brenda 2 s nga koha.
