@@ -1,0 +1,285 @@
+@import "tailwindcss";
+
+/* Omal UI v2. Prodhuar nga Claude (AI); rishikohet nga Andi. Not yet tested in the repository.
+   Values mirror tokens.json (the canonical source); hex is the source of truth.
+   Themes: nothing = light; <html class="dark"> = dark; <html class="dark oled"> = OLED
+   (keep .dark with .oled so every dark: utility still applies; the .oled block comes last and wins).
+   Prototypes may use [data-theme="dark"] / [data-theme="oled"] instead.
+   Roles: primary = ink action, brand = amber money/seat action, accent = hover ground (shadcn). */
+
+@custom-variant dark (&:is(.dark *));
+@custom-variant oled (&:is(.oled *));
+
+:root {
+  --radius: 12px;
+
+  --background: #FAFAFA;
+  --foreground: #171717;
+  --card: #FFFFFF;
+  --card-foreground: #171717;
+  --popover: #FFFFFF;
+  --popover-foreground: #171717;
+  --muted: #F5F5F5;
+  --muted-foreground: #666666;
+  --secondary: #F0F0F0;
+  --secondary-foreground: #171717;
+  --primary: #171717;
+  --primary-hover: #333333;
+  --primary-foreground: #FFFFFF;
+  --accent: #F5F5F5;
+  --accent-foreground: #171717;
+
+  --brand: #F1A335;
+  --brand-hover: #E8952A;
+  --brand-foreground: #2A2520;
+  --brand-soft: #FEF3E2;
+  --selected: #FEF3E2;
+
+  --inverse-foreground: #FAFAFA;
+  --inverse-muted-foreground: #A3A3A3;
+  --border: #E5E5E5;
+  --border-subtle: #ECECEC;
+  --border-decorative: #B5B5B5;
+  --input: #8F8F8F;
+  --ring: #171717;
+  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.45);
+  --skeleton: #F5F5F5;
+  --link: #171717;
+  --star: #171717;
+
+  --exclusive: #FFFFFF;
+  --exclusive-soft: #171717;
+  --exclusive-border: #171717;
+  --success: #1E6B34;
+  --success-soft: #E6F4EA;
+  --warning: #7A4A06;
+  --warning-soft: #FEF3E2;
+  --destructive: #B83A3A;
+  --destructive-foreground: #FFFFFF;
+  --destructive-soft: #FBEDED;
+
+  --chart-1: #F1A335;
+  --chart-track: #E5E5E5;
+
+  /* panel: the one surface that stays dark in every theme (login hero, dark strips) */
+  --panel: #171717;
+  --panel-foreground: #FAFAFA;
+  --panel-muted-foreground: #A3A3A3;
+  --panel-border: #2A2A2A;
+  --panel-button: #6B6B6B;
+
+  --overlay: rgba(23, 23, 23, 0.45);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.10);
+  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.18);
+  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.18);
+}
+
+.dark,
+[data-theme="dark"] {
+  --background: #0F0F0F;
+  --foreground: #FAFAFA;
+  --card: #171717;
+  --card-foreground: #FAFAFA;
+  --popover: #171717;
+  --popover-foreground: #FAFAFA;
+  --muted: #141414;
+  --muted-foreground: #A3A3A3;
+  --secondary: #222222;
+  --secondary-foreground: #FAFAFA;
+  --primary: #FAFAFA;
+  --primary-hover: #E5E5E5;
+  --primary-foreground: #171717;
+  --accent: #222222;
+  --accent-foreground: #FAFAFA;
+
+  --brand: #F1A335;
+  --brand-hover: #E8952A;
+  --brand-foreground: #2A2520;
+  --brand-soft: #2B2112;
+  --selected: #2B2112;
+
+  --inverse-foreground: #0F0F0F;
+  --inverse-muted-foreground: #6B6B6B;
+  --border: #2A2A2A;
+  --border-subtle: #222222;
+  --border-decorative: #444444;
+  --input: #6B6B6B;
+  --ring: #FAFAFA;
+  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.45);
+  --skeleton: #141414;
+  --link: #FAFAFA;
+  --star: #FAFAFA;
+
+  --exclusive: #171717;
+  --exclusive-soft: #FAFAFA;
+  --exclusive-border: #FAFAFA;
+  --success: #8FD1A6;
+  --success-soft: #14301F;
+  --warning: #F2C58A;
+  --warning-soft: #2B2112;
+  --destructive: #F4978E;
+  --destructive-foreground: #171717;
+  --destructive-soft: #3A1A17;
+
+  --chart-1: #F1A335;
+  --chart-track: #2A2A2A;
+
+  --panel: #171717;
+  --panel-foreground: #FAFAFA;
+  --panel-muted-foreground: #A3A3A3;
+  --panel-border: #2A2A2A;
+  --panel-button: #6B6B6B;
+
+  --overlay: rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.6);
+  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+}
+
+.oled,
+[data-theme="oled"] {
+  --background: #000000;
+  --foreground: #F5F5F5;
+  --card: #0B0B0B;
+  --card-foreground: #F5F5F5;
+  --popover: #0B0B0B;
+  --popover-foreground: #F5F5F5;
+  --muted: #050505;
+  --muted-foreground: #A3A3A3;
+  --secondary: #1A1A1A;
+  --secondary-foreground: #F5F5F5;
+  --primary: #FAFAFA;
+  --primary-hover: #E5E5E5;
+  --primary-foreground: #171717;
+  --accent: #0F0F0F;
+  --accent-foreground: #F5F5F5;
+
+  --brand: #F1A335;
+  --brand-hover: #E8952A;
+  --brand-foreground: #2A2520;
+  --brand-soft: #1C150A;
+  --selected: #1C150A;
+
+  --inverse-foreground: #000000;
+  --inverse-muted-foreground: #555555;
+  --border: #262626;
+  --border-subtle: #1C1C1C;
+  --border-decorative: #3D3D3D;
+  --input: #666666;
+  --ring: #F5F5F5;
+  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.55);
+  --skeleton: #1E1E1E;
+  --link: #F5F5F5;
+  --star: #F5F5F5;
+
+  --exclusive: #171717;
+  --exclusive-soft: #FAFAFA;
+  --exclusive-border: #FAFAFA;
+  --success: #8FD1A6;
+  --success-soft: #0B2415;
+  --warning: #F2C58A;
+  --warning-soft: #1F1608;
+  --destructive: #F4978E;
+  --destructive-foreground: #171717;
+  --destructive-soft: #2A0F0C;
+
+  --chart-1: #F1A335;
+  --chart-track: #262626;
+
+  --panel: #0B0B0B;
+  --panel-foreground: #F5F5F5;
+  --panel-muted-foreground: #A3A3A3;
+  --panel-border: #333333;
+  --panel-button: #666666;
+
+  --overlay: rgba(0, 0, 0, 0.7);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.6);
+  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-selected: var(--selected);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-inverse-muted-foreground: var(--inverse-muted-foreground);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-decorative: var(--border-decorative);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-skeleton: var(--skeleton);
+  --color-link: var(--link);
+  --color-star: var(--star);
+  --color-exclusive: var(--exclusive);
+  --color-exclusive-soft: var(--exclusive-soft);
+  --color-exclusive-border: var(--exclusive-border);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-track: var(--chart-track);
+  --color-panel: var(--panel);
+  --color-panel-foreground: var(--panel-foreground);
+  --color-panel-muted-foreground: var(--panel-muted-foreground);
+  --color-panel-border: var(--panel-border);
+  --color-panel-button: var(--panel-button);
+  --color-overlay: var(--overlay);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* next/font: Inter({ variable: "--font-inter" }) on <html>; falls back to a Google Fonts "Inter" link. */
+  --font-sans: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-pop: var(--shadow-pop);
+  --shadow-ring-halo: var(--ring-halo);
+
+  --spacing-control-sm: 32px;
+  --spacing-control-md: 40px;
+  --spacing-control-lg: 44px;
+  --spacing-row: 56px;
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-sans antialiased; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  /* inside panel the ring follows the panel text (ink on ink would vanish in light) */
+  .panel, [data-surface="panel"] { --ring: var(--panel-foreground); }
+  /* icon accent point (icons.tsx) */
+  .ic .ac { fill: var(--brand); stroke: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+}

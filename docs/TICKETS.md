@@ -30,7 +30,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 ## TH-01 · Skeleti i projektit dhe Omal UI v2
 
-- Vite + React + TypeScript, Tailwind v4, shadcn, Vitest, ESLint.
+- Vite + React + TypeScript, Tailwind v4, variantet e butonave të Omal UI v2 (cva, si shadcn), Vitest, oxlint.
 - `globals.css` dhe `DESIGN.md` nga Omal UI v2 në repo; tema OLED si parazgjedhje; Inter; `tabular-nums`.
 - Navigimi poshtë me pesë vende: Sot, Programi, Ushqimi, Progresi, Trupi (ekrane bosh).
 - `CLAUDE.md` që tregon `docs/SPEC.md` dhe `DESIGN.md` si burime dhe rregullat e dizajnit (pa hex në komponentë, një veprim amber për ekran).

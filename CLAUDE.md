@@ -1,0 +1,33 @@
+# Training Hub
+
+App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 3D). Një përdorues, funksionon pa internet, sinkronizon me Supabase.
+
+## Burimet
+
+- `docs/SPEC.md`: e vërteta për çfarë ndërtohet. Çdo ndryshim vendimi shkruhet aty.
+- `docs/TICKETS.md`: radha e detyrave dhe kriteret e pranimit.
+- `DESIGN.md`: Omal UI v2. Lexoje para se të shkruash UI.
+
+## Komandat
+
+- `npm run dev`: serveri lokal.
+- `npm test`: Vitest (jsdom).
+- `npm run lint`: oxlint + roja e dizajnit (`scripts/check-design.mjs`).
+- `npm run build`: kontrolli i tipave + build.
+
+## Rregullat
+
+- Teksti i UI në shqip, sentence case, pa emoji dhe pa pikëçuditje. Emrat e ushtrimeve mbeten në anglisht.
+- Ngjyrat vijnë vetëm nga tokenat e `src/styles/globals.css` (kopje e pandryshuar e Omal UI v2). Asnjë hex, `rgb()` ose `text-brand` në komponentë; `npm run lint` dhe testet i kapin.
+- Përshtatja e DESIGN.md për këtë app: `brand` (amber) i përket veprimit kryesor të ekranit ("Fillo stërvitjen", "Ruaj setin", "Mbyll stërvitjen"), një për ekran. Rregullat e "Rezervo" dhe të parave te DESIGN.md nuk vlejnë këtu.
+- Çdo gjë që preket ka 44 px; ekranet kontrollohen në 390 px pa scroll anësor dhe në tri temat (OLED është parazgjedhja).
+- Lokale-së-pari: asnjë ekran nuk pret rrjetin.
+- Logjika pa UI (motori i programit, e1RM, ushqimi) ndërtohet me teste përpara kodit.
+- Çdo varësi e re verifikohet para instalimit (burimi, mirëmbajtja, licenca).
+
+## Struktura
+
+- `src/components/ui`: komponentët e Omal UI v2 (ikonat, butonat), sipas modelit shadcn (cva + `cn`). Shtohen me dorë: `npx shadcn` mos u përdor, sepse mbishkruan tokenat te `globals.css`.
+- `src/components/layout`: korniza, navigimi poshtë, kokat e faqeve.
+- `src/routes`: ekranet. `src/router.tsx`: rrugët.
+- `src/lib`: logjika e përbashkët (tema, `cn`).

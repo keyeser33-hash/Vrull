@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="sq" class="dark oled">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="black" />
+    <title>Training Hub</title>
+    <script>
+      // Tema zbatohet para vizatimit të parë, që të mos ketë dridhje drite.
+      ;(function () {
+        var theme = 'oled'
+        try {
+          var saved = window.localStorage.getItem('th-theme')
+          if (saved === 'light' || saved === 'dark' || saved === 'oled') theme = saved
+        } catch (e) {}
+        var c = document.documentElement.classList
+        c.toggle('dark', theme !== 'light')
+        c.toggle('oled', theme === 'oled')
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

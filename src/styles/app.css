@@ -1,0 +1,23 @@
+/* Shtesat e Training Hub mbi Omal UI v2. Asnjë ngjyrë këtu: ngjyrat jetojnë vetëm te globals.css. */
+@import "@fontsource-variable/inter/opsz.css";
+@import "./globals.css";
+
+:root {
+  --font-inter: "Inter Variable";
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --bottom-nav-h: 56px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+}
