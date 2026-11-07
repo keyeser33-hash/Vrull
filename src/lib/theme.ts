@@ -1,6 +1,8 @@
 // Tema e app-it: light, dark ose OLED (parazgjedhje). OLED mban edhe klasën `dark`,
 // që çdo utility `dark:` të vlejë; blloku `.oled` te globals.css vjen i fundit dhe fiton.
 
+import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core'
+
 export const THEMES = ['oled', 'dark', 'light'] as const
 export type Theme = (typeof THEMES)[number]
 
@@ -34,6 +36,18 @@ export function applyTheme(theme: Theme, root: HTMLElement = document.documentEl
   const meta = document.querySelector('meta[name="theme-color"]')
   const background = getComputedStyle(root).getPropertyValue('--background').trim()
   if (meta && background) meta.setAttribute('content', background)
+
+  syncSystemBars(theme)
+}
+
+// Në Android, ora dhe bateria lart duhet të lexohen mbi sfondin e temës:
+// ikona të çelëta mbi OLED dhe të errët, të errëta mbi temën e çelët.
+function syncSystemBars(theme: Theme) {
+  if (!Capacitor.isNativePlatform()) return
+  const style = theme === 'light' ? SystemBarsStyle.Light : SystemBarsStyle.Dark
+  SystemBars.setStyle({ style }).catch(() => {
+    // Pa plugin-in, shiritat mbeten si në nisje; tema e app-it nuk varet prej tyre.
+  })
 }
 
 export function saveTheme(theme: Theme) {

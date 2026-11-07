@@ -1,6 +1,6 @@
-# Training Hub · Specifikimi v1.2
+# Training Hub · Specifikimi v1.3
 
-Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar të së njëjtës ditë). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
+Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar; v1.3 me detajet e Android-it nga TH-02). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt) dhe vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë. Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
 
 ## 1. Qëllimi
 
@@ -32,7 +32,7 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 ## 3. Platforma dhe arkitektura
 
 - **Klienti:** React + Vite + TypeScript, Tailwind v4 me tokenat e Omal UI v2 (`globals.css` i sistemit të dizajnit), komponentë shadcn.
-- **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. Lejet e Android-it: njoftimet (`POST_NOTIFICATIONS`, kërkohet në stërvitjen e parë) dhe alarmet e sakta (`SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`), pa të cilat Android mund ta vonojë njoftimin e timer-it me ekran të kyçur. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo).
+- **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. Lejet e Android-it: njoftimet (`POST_NOTIFICATIONS`, kërkohet në stërvitjen e parë) dhe alarmet e sakta (`SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`), pa të cilat Android mund ta vonojë njoftimin e timer-it me ekran të kyçur. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo; workflow-i kontrollon gjurmën SHA-256 të certifikatës). `appId` është `al.traininghub.app` dhe nuk ndryshon më. Versioni vjen nga `package.json`; Android merr `versionCode = major × 10000 + minor × 100 + patch`. Ekrani shkon nga cepi në cep (SystemBars i Capacitor-it, `insetsHandling: native`) dhe ikonat e shiritave të sistemit ndjekin temën. Butoni mbrapa i Android-it kthen te faqja e mëparshme dhe mbyll app-in në fillim të historisë (`@capacitor/app`). Hapat për telefonin: `docs/INSTALL.md`.
 - **Ruajtja lokale:** Dexie (IndexedDB). Çdo veprim shkruan fillimisht lokalisht; asnjë ekran nuk pret rrjetin.
 - **Sinkronizimi:** çdo rresht ka `id` (UUID i krijuar në telefon), `updated_at`, `deleted_at`. Dërgohen rreshtat e ndryshuar, merren ato më të reja se sinkronizimi i fundit. Konfliktet: fiton ndryshimi më i fundit (një përdorues, një telefon).
 - **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot (rrugët `<user_id>/...`, RLS te `storage.objects`), Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret). Pasi krijohet llogaria e përdoruesit, regjistrimet e reja çaktivizohen te Auth, që askush tjetër të mos hapë llogari në projekt.
@@ -209,6 +209,7 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - **Mospërputhje në PDF:** teksti thotë 0,5 g yndyrë/lb, ndërsa dita shembull ka 110 g për 180 lb (0,61 g/lb). Specifikimi ndjek totalet e ditës shembull, që përputhen me kaloritë (Shtojca C).
 - **Modeli 3D:** pjesët nga versioni 3.0 kanë rezolucion të lartë (rreth 10 MB për muskul) dhe duhen thjeshtuar fort; duhet kontrolluar që përputhen në pozicion me versionin 4.0.
 - **APK jashtë Play Store:** Android kërkon leje për "instalim nga burime të panjohura" një herë.
+- **Verifikimi i zhvilluesve nga Google:** nga shtatori 2026 në disa vende dhe globalisht nga 2027, telefonat Android të certifikuar instalojnë vetëm app-e të regjistruara nga zhvillues të verifikuar. Zgjidhja për këtë app: llogaria falas "limited distribution" te Android Developer Console (vetëm email, deri në 20 pajisje), ku regjistrohen `al.traininghub.app` dhe çelësi i nënshkrimit. Pa të, instalimi mbetet i mundur me "advanced flow" ose ADB.
 - **Open Food Facts** ka mbulim të pjesshëm për produktet shqiptare; ushqimet e përdoruesit e mbulojnë boshllëkun.
 - **Pauzimi i Supabase:** projekti falas pauzohet pas 7 ditësh pa aktivitet (p.sh. një pushim pa stërvitje). App-i vazhdon pa internet; projekti rikthehet nga paneli i Supabase me të dhënat të paprekura, dhe sinkronizimi rifillon vetë.
 - **Saktësia e timer-it:** prodhuesit e telefonave (Samsung, Xiaomi etj.) kufizojnë punën në sfond. Nëse njoftimi vonon edhe me alarmet e sakta, app-i kërkon përjashtimin nga optimizimi i baterisë.
@@ -218,7 +219,8 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - Lejo "instalimin e app-eve të panjohura" për shfletuesin ose skedarët, një herë, për APK-në.
 - Lejo njoftimet dhe alarmet e sakta kur i kërkon app-i.
 - Merr një çelës falas për USDA FoodData Central (api.data.gov) për detyrën TH-15.
-- Nëse sesioni nuk i shton dot vetë, shto në GitHub secret-et e nënshkrimit të APK-së sipas udhëzimit të TH-02.
+- Shto në GitHub secret-et e nënshkrimit `TH_KEYSTORE_BASE64` dhe `TH_KEYSTORE_PASSWORD` dhe ruaj një kopje rezervë të çelësit (`docs/INSTALL.md`, pika 1). Proxy-i i sesionit nuk lejon shkrimin e secret-eve.
+- Kur rregulli i Google-it të vlejë në vendin tënd: regjistro app-in me llogarinë falas "limited distribution" (`docs/INSTALL.md`, pika 5).
 
 ## Shtojca A · Ushtrimet sipas fazës
 

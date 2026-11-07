@@ -1,0 +1,116 @@
+# APK-ja e nënshkruar për Android.
+# - Tag vX.Y.Z (i njëjtë me package.json): ndërton dhe e publikon si GitHub Release.
+# - "Run workflow" me dorë: ndërton dhe e lë si artifact, pa Release.
+# Udhëzimi për secret-et dhe instalimin: docs/INSTALL.md.
+name: APK për Android
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Gjurma SHA-256 e certifikatës së çelësit të vetëm të nënshkrimit. Nëse secret-et
+  # zëvendësohen me një çelës tjetër, ndërtimi ndalet: me çelës tjetër telefoni
+  # nuk e instalon përditësimin mbi app-in ekzistues.
+  TH_SIGNING_CERT_SHA256: 90a2fe2d4daed0e5c512704789217fd3642b0c136068406ecd01c0d801343b89
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Kontrollo secret-et e nënshkrimit
+        env:
+          TH_KEYSTORE_BASE64: ${{ secrets.TH_KEYSTORE_BASE64 }}
+          TH_KEYSTORE_PASSWORD: ${{ secrets.TH_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$TH_KEYSTORE_BASE64" ] || [ -z "$TH_KEYSTORE_PASSWORD" ]; then
+            echo "::error title=Mungon çelësi i nënshkrimit::Shto secret-et TH_KEYSTORE_BASE64 dhe TH_KEYSTORE_PASSWORD sipas docs/INSTALL.md."
+            exit 1
+          fi
+
+      - name: Versioni
+        id: version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::Tag-u $GITHUB_REF_NAME nuk përputhet me versionin v$version te package.json."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npx cap sync android
+
+      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Ndërto APK-në e nënshkruar
+        working-directory: android
+        env:
+          TH_KEYSTORE_BASE64: ${{ secrets.TH_KEYSTORE_BASE64 }}
+          TH_KEYSTORE_PASSWORD: ${{ secrets.TH_KEYSTORE_PASSWORD }}
+          TH_KEY_PASSWORD: ${{ secrets.TH_KEYSTORE_PASSWORD }}
+          TH_KEY_ALIAS: traininghub
+        run: |
+          export TH_KEYSTORE_PATH="$RUNNER_TEMP/traininghub-release.jks"
+          printf '%s' "$TH_KEYSTORE_BASE64" | base64 --decode > "$TH_KEYSTORE_PATH"
+          ./gradlew --no-daemon assembleRelease
+          rm -f "$TH_KEYSTORE_PATH"
+
+      - name: Verifiko nënshkrimin dhe versionin
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          build_tools=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)
+          apk=android/app/build/outputs/apk/release/app-release.apk
+          "$build_tools/apksigner" verify --verbose --print-certs "$apk" | tee signing.txt
+          grep -q "certificate SHA-256 digest: $TH_SIGNING_CERT_SHA256" signing.txt || {
+            echo "::error title=Çelës i gabuar::APK-ja nuk është nënshkruar me çelësin e Training Hub."
+            exit 1
+          }
+          "$build_tools/aapt2" dump badging "$apk" | grep "^package:" | tee badging.txt
+          grep -q "versionName='$VERSION'" badging.txt
+          mkdir -p out
+          cp "$apk" "out/TrainingHub-$VERSION.apk"
+          (cd out && sha256sum "TrainingHub-$VERSION.apk" > "TrainingHub-$VERSION.apk.sha256")
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: TrainingHub-${{ steps.version.outputs.version }}
+          path: out/
+          retention-days: 30
+
+      - name: Publiko Release-in
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          notes="Shkarko TrainingHub-$VERSION.apk në telefon dhe hape. Instalimi i parë dhe përditësimet: docs/INSTALL.md."
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" out/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" out/* --title "Training Hub $VERSION" --notes "$notes"
+          fi

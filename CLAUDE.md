@@ -14,6 +14,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `npm test`: Vitest (jsdom).
 - `npm run lint`: oxlint + roja e dizajnit (`scripts/check-design.mjs`).
 - `npm run build`: kontrolli i tipave + build.
+- `npx cap sync android`: kopjon `dist` te projekti Android (`android/`). APK-ja dhe Release-i: `docs/INSTALL.md`, pika 6.
 
 ## Rregullat
 

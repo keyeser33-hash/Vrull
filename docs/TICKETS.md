@@ -46,6 +46,8 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 - Manifesti deklaron `POST_NOTIFICATIONS` dhe `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`.
 - `docs/INSTALL.md`: instalimi i parë dhe përditësimet në telefon.
 
+- Ikonë adaptive (me variant njëngjyrësh), nisje e zezë pa ndezje të bardhë, ekran nga cepi në cep me shiritat e sistemit sipas temës, butoni mbrapa i Android-it.
+
 **Pranimi:** APK-ja instalohet në telefonin e përdoruesit, hapet, dhe një version i ri instalohet mbi të vjetrin pa humbur të dhëna.
 
 ## TH-03 · Skema e Supabase, RLS, Auth, Storage
