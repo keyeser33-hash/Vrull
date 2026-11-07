@@ -22,7 +22,7 @@ Workflow-i kontrollon gjurmën e certifikatës. Nëse dikush vendos një çelës
 2. Shkarko `TrainingHub-X.Y.Z.apk`.
 3. Hape skedarin. Herën e parë Android kërkon leje për të instaluar app-e nga ky burim: **Cilësimet → Lejo nga ky burim** (Allow from this source). Kjo bëhet vetëm një herë për shfletuesin ose për app-in e skedarëve.
 4. **Instalo**. Nëse Play Protect thotë që app-i është i panjohur, zgjidh **Më shumë detaje → Instalo gjithsesi**.
-5. Hap Training Hub nga ekrani kryesor.
+5. Hap Training Hub nga ekrani kryesor dhe hyr me email-in dhe fjalëkalimin e llogarisë që krijove te Supabase. Hyrja kërkon internet vetëm herën e parë; pastaj vendos peshën, ditët dhe orën e stërvitjes, zgjimin dhe gjumin, dhe programi nis nga Java 0.
 
 ## 3. Përditësimet
 
