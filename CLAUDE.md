@@ -15,6 +15,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `npm run lint`: oxlint + roja e dizajnit (`scripts/check-design.mjs`).
 - `npm run build`: kontrolli i tipave + build.
 - `npx cap sync android`: kopjon `dist` te projekti Android (`android/`). APK-ja dhe Release-i: `docs/INSTALL.md`, pika 6.
+- `E2E_EMAIL=… E2E_PASSWORD=… npx vitest run src/data/sync.e2e.test.ts`: sinkronizimi kundrejt Supabase të vërtetë, me një përdorues prove të përkohshëm (pa këto, prova kapërcehet).
 
 ## Rregullat
 
@@ -31,4 +32,5 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `src/components/ui`: komponentët e Omal UI v2 (ikonat, butonat), sipas modelit shadcn (cva + `cn`). Shtohen me dorë: `npx shadcn` mos u përdor, sepse mbishkruan tokenat te `globals.css`.
 - `src/components/layout`: korniza, navigimi poshtë, kokat e faqeve.
 - `src/routes`: ekranet. `src/router.tsx`: rrugët.
-- `src/lib`: logjika e përbashkët (tema, `cn`).
+- `src/lib`: logjika e përbashkët (tema, `cn`, butoni mbrapa).
+- `src/data`: baza lokale (Dexie) dhe sinkronizimi. Ekranet lexojnë dhe shkruajnë vetëm përmes `store` nga `app-data.ts`; asnjë ekran nuk thërret Supabase direkt. Një tabelë e re: migrim i ri, `TABLES` dhe `INDEXES` te `tables.ts` (testi i krahason me migrimet), dhe version i ri te `db.ts` kur ndryshojnë indekset.

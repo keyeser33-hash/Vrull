@@ -67,6 +67,8 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 **Pranimi:** një set i regjistruar pa internet del në Supabase kur kthehet rrjeti; teste për konfliktet dhe fshirjet; eksporti përmban çdo tabelë.
 
+Prova reale: `src/data/sync.e2e.test.ts`, me një përdorues prove të përkohshëm (`E2E_EMAIL`, `E2E_PASSWORD`), që fshihet pas provës.
+
 ## TH-22 · Hyrja e parë
 
 - Hapat e SPEC §3a: hyrja, pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi, programi aktiv.
