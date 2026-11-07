@@ -16,9 +16,13 @@ import {
 
 const USER = '11111111-1111-4111-8111-111111111111'
 
+// Ora lokale e telefonit, e njëjtë në çdo zonë kohore: e hënë 07.12.2026, 18:00.
+const START = new Date(2026, 11, 7, 18, 0)
+const minutesAfterStart = (minutes: number) => new Date(START.getTime() + minutes * 60_000).toISOString()
+
 function setup() {
   const db = createDatabase(`training-${crypto.randomUUID()}`)
-  let clock = new Date(2026, 11, 7, 18, 0)
+  let clock = START
   const store = createLocalStore(db, { userId: () => USER, now: () => clock })
   return { db, store, now: () => clock, advanceMinutes: (minutes: number) => (clock = new Date(clock.getTime() + minutes * 60_000)) }
 }
@@ -97,7 +101,7 @@ describe('një stërvitje', () => {
     await saveSet(store, { sessionId, slot: bench, setNumber: 1, weightKg: 47.5, reps: 13, rir: 2 })
 
     const snapshot = await trainingSnapshot(store)
-    expect(snapshot?.session).toMatchObject({ id: sessionId, startedAt: '2026-12-07T17:00:00.000Z' })
+    expect(snapshot?.session).toMatchObject({ id: sessionId, startedAt: minutesAfterStart(0) })
     expect(snapshot?.session?.sets).toEqual([
       expect.objectContaining({ slotId: bench.slotId, setNumber: 1, weightKg: 47.5, reps: 13, rir: 2, technique: 'none' }),
     ])
@@ -146,7 +150,7 @@ describe('një stërvitje', () => {
     expect(await db.workout_sessions.get(sessionId)).toMatchObject({
       status: 'completed',
       date: '2026-12-07',
-      ended_at: '2026-12-07T17:55:00.000Z',
+      ended_at: minutesAfterStart(55),
       week: 1,
       run: 1,
     })
@@ -253,7 +257,7 @@ describe('historia për peshat dhe rikuperimin', () => {
     // Radha e muskujve nuk ka rëndësi; dy setet u ruajtën në të njëjtin moment.
     expect(history.worked.map((session) => ({ ...session, primaryKeys: [...session.primaryKeys].sort() }))).toEqual([
       {
-        endedAt: '2026-12-07T17:50:00.000Z',
+        endedAt: minutesAfterStart(50),
         primaryKeys: ['pectoralis_major_clavicular', 'pectoralis_major_sternocostal'],
       },
     ])
