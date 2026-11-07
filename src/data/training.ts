@@ -198,7 +198,8 @@ async function ensureExercises(store: LocalStore) {
   return new Map(SHORTCUT_TO_SIZE.exercises.map((exercise) => [exercise.id, existing.get(exercise.name.toLowerCase())!]))
 }
 
-async function loadProgram(store: LocalStore, programId: string) {
+/** Programi si model i motorit (blloqe, ditë, slote, rregulla), edhe pa tregues: për editorin. */
+export async function programModel(store: LocalStore, programId: string) {
   const [program, blocks, days, slots, overrides, exerciseRows, [state]] = await Promise.all([
     store.get('programs', programId),
     store.where('program_blocks', 'program_id', programId),
@@ -208,7 +209,7 @@ async function loadProgram(store: LocalStore, programId: string) {
     store.all('exercises'),
     store.where('program_state', 'program_id', programId),
   ])
-  if (!program || !state?.block_id || !state.day_id || blocks.length === 0 || days.length === 0) return null
+  if (!program) return null
   const exercises = Object.fromEntries(exerciseRows.map((row) => [row.id, toExercise(row)]))
   const engine: Program = {
     id: programId,
@@ -236,6 +237,13 @@ async function loadProgram(store: LocalStore, programId: string) {
     ),
     exercises,
   }
+  return { row: program, state: state as LocalRow | undefined, engine, exercises }
+}
+
+async function loadProgram(store: LocalStore, programId: string) {
+  const model = await programModel(store, programId)
+  const state = model?.state
+  if (!model || !state?.block_id || !state.day_id || model.engine.blocks.length === 0 || model.engine.days.length === 0) return null
   const pointer: Pointer = {
     run: Number(state.run ?? 1),
     blockId: String(state.block_id),
@@ -243,7 +251,7 @@ async function loadProgram(store: LocalStore, programId: string) {
     dayId: String(state.day_id),
     completed: Boolean(state.completed_at),
   }
-  return { row: program, state, engine, pointer, exercises }
+  return { ...model, state, pointer }
 }
 
 async function activeProgram(store: LocalStore) {
@@ -436,10 +444,15 @@ export async function switchProgram(store: LocalStore, programId: string) {
   await store.put('user_settings', { id: row?.id, active_program_id: programId })
 }
 
-/** Ushtrimi i bibliotekës si ushtrim i përdoruesit, një herë për çdo ushtrim të bibliotekës. */
-async function exerciseFromLibrary(store: LocalStore, library: LibraryExercise) {
+/**
+ * Ushtrimi i bibliotekës si ushtrim i përdoruesit, një herë për çdo ushtrim të bibliotekës. Një
+ * ushtrim me të njëjtin emër (p.sh. nga Shortcut to Size) ripërdoret, që historia të mbetet bashkë.
+ */
+export async function exerciseFromLibrary(store: LocalStore, library: LibraryExercise) {
   const [existing] = await store.where('exercises', 'library_id', library.id)
   if (existing) return existing.id
+  const sameName = (await store.all('exercises')).find((row) => String(row.name).toLowerCase() === library.name.toLowerCase())
+  if (sameName) return sameName.id
   const row = await store.put('exercises', {
     library_id: library.id,
     name: library.name,

@@ -1,30 +1,16 @@
+import { resolveRow } from './rules'
 import type { ExerciseInfo, Pointer, Prescription, Program, SessionPlan, SlotOverride, Target, Technique } from './types'
 
 const byPosition = <T extends { position: number }>(a: T, b: T) => a.position - b.position
 
-/**
- * Vlera e një fushe për slotin në këtë bllok dhe javë: fiton rreshti më i saktë që e ka fushën
- * (blloku dhe java > vetëm blloku > vetëm java > i gjithë programi).
- */
+/** Vlera e një fushe për slotin në këtë bllok dhe javë (rregulli më i saktë, shih rules.ts). */
 function resolve<K extends keyof SlotOverride>(
   overrides: SlotOverride[],
   slotId: string,
   pointer: Pointer,
   field: K,
 ): NonNullable<SlotOverride[K]> | undefined {
-  let best: SlotOverride | undefined
-  let bestScore = -1
-  for (const row of overrides) {
-    if (row.slotId !== slotId || row[field] === null || row[field] === undefined) continue
-    if (row.blockId !== null && row.blockId !== pointer.blockId) continue
-    if (row.week !== null && row.week !== pointer.week) continue
-    const score = (row.blockId === null ? 0 : 2) + (row.week === null ? 0 : 1)
-    if (score > bestScore) {
-      best = row
-      bestScore = score
-    }
-  }
-  return best?.[field] as NonNullable<SlotOverride[K]> | undefined
+  return resolveRow(overrides, slotId, pointer, field)?.[field] as NonNullable<SlotOverride[K]> | undefined
 }
 
 const cycle = <T>(items: T[], week: number) => items[(week - 1) % items.length]
