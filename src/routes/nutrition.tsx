@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/data/dates'
@@ -286,6 +287,7 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
           <p className="text-sm leading-5 text-muted-foreground tabular-nums">
             {kcal(meal.totals.kcal)} kcal · {macrosLine(meal.totals)}
           </p>
+          <AddFoodLink meal={meal.meal} />
         </>
       ) : (
         <>
@@ -307,8 +309,18 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
           >
             Regjistro sipas planit
           </Button>
+          <AddFoodLink meal={meal.meal} />
         </>
       )}
     </Sheet>
+  )
+}
+
+function AddFoodLink({ meal }: { meal: MealKey }) {
+  return (
+    <Link to={`/ushqimi/shto/${meal}`} replace className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+      <Icon name="shto" size={20} />
+      Shto ushqim
+    </Link>
   )
 }

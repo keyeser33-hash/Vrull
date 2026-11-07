@@ -3,6 +3,7 @@ import { AppShell } from '@/components/layout/app-shell'
 import { AppGate } from '@/routes/gate'
 import { LoginPage } from '@/routes/login'
 import { OnboardingPage } from '@/routes/onboarding'
+import { AddFoodPage } from '@/routes/add-food'
 import { NutritionPage } from '@/routes/nutrition'
 import { BodyPage, ProgressPage } from '@/routes/placeholders'
 import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
@@ -27,6 +28,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'programi/editori/:programId/dita/:dayId', element: <DayEditorPage /> },
       { path: 'programi/editori/:programId/sloti/:slotId', element: <SlotEditorPage /> },
       { path: 'ushqimi', element: <NutritionPage /> },
+      { path: 'ushqimi/shto/:meal', element: <AddFoodPage /> },
       { path: 'progresi', element: <ProgressPage /> },
       { path: 'trupi', element: <BodyPage /> },
       { path: 'cilesimet', element: <SettingsPage /> },

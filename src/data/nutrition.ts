@@ -229,6 +229,30 @@ export async function logTemplateMeal(store: LocalStore, date: string, meal: Mea
   await store.insertMany('diary_entries', rows)
 }
 
+/** Një ushqim me gramë në një vakt; makrot llogariten nga vlerat për 100 g dhe ruhen në regjistrim. */
+export async function logFood(store: LocalStore, input: { date: string; meal: MealKey; foodId: string; grams: number }) {
+  const food = await store.get('foods', input.foodId)
+  if (!food) throw new Error('Ushqimi nuk gjendet.')
+  const profile = await readProfile(store)
+  const { dayType } = await dayTypeFor(store, input.date, profile.trainingDays)
+  await saveTargets(store, input.date, dayType, false)
+  const macros = macrosFor(
+    { kcal: Number(food.kcal), proteinG: Number(food.protein_g), carbsG: Number(food.carbs_g), fatG: Number(food.fat_g) },
+    input.grams,
+  )
+  await store.put('diary_entries', {
+    date: input.date,
+    meal: input.meal,
+    food_id: input.foodId,
+    grams: input.grams,
+    kcal: round1(macros.kcal),
+    protein_g: round1(macros.proteinG),
+    carbs_g: round1(macros.carbsG),
+    fat_g: round1(macros.fatG),
+    logged_at: store.now().toISOString(),
+  })
+}
+
 export async function removeDiaryEntry(store: LocalStore, id: string) {
   await store.remove('diary_entries', id)
 }
