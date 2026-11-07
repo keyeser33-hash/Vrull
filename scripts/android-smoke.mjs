@@ -80,10 +80,12 @@ async function pressBack() {
   adb('shell', 'input', 'keyevent', 'KEYCODE_BACK')
 }
 
-// Shiriti i veprimeve të Android-it nuk duhet të shfaqet mbi faqe.
+// Shiriti i veprimeve të Android-it nuk duhet të shfaqet mbi faqe. `action_bar_root` është
+// korniza bazë e çdo dritareje AppCompat, jo shiriti, prandaj kërkohen vetëm id-të e shiritit.
 function hasActionBar() {
   adb('shell', 'uiautomator', 'dump', '/sdcard/ui.xml')
-  return adb('shell', 'cat', '/sdcard/ui.xml').includes('id/action_bar')
+  const ui = adb('shell', 'cat', '/sdcard/ui.xml')
+  return /resource-id="[^"]*:id\/(action_bar|action_bar_container|toolbar)"/.test(ui)
 }
 
 // Lidhet me WebView-në e app-it (vetëm build-et debug e lejojnë) dhe kthen një evaluate().
