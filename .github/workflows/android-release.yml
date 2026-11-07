@@ -75,6 +75,9 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Historia dhe tag-et, për shënimet "Çfarë ka të re" të përditësimit brenda app-it.
+          fetch-depth: 0
 
       - name: Kontrollo secret-et e nënshkrimit
         env:
@@ -159,3 +162,15 @@ jobs:
             # nis përsëri këtë workflow, ndaj APK-ja nuk ndërtohet dy herë.
             gh release create "$tag" out/* --target "$GITHUB_SHA" --title "Training Hub $VERSION" --notes "$notes"
           fi
+
+      # Përditësimi brenda app-it (TH-23): APK-ja dhe latest.json te bucket-i privat app-releases i
+      # Supabase-it. Pa secret-in SUPABASE_SECRET_KEY hapi vetëm paralajmëron (docs/INSTALL.md).
+      - name: Publiko përditësimin brenda app-it
+        if: needs.plan.outputs.publish == 'true'
+        env:
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: |
+          previous=$(git tag --list 'v*' --sort=-v:refname | grep -vx "v$VERSION" | head -1 || true)
+          git log --format=%s ${previous:+"$previous..HEAD"} > notes.txt
+          node scripts/publish-update.mjs "out/TrainingHub-$VERSION.apk" "$VERSION" notes.txt

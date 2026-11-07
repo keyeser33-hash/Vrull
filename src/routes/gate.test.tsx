@@ -33,6 +33,7 @@ vi.mock('@/data/app-data', () => ({
   useDataUpgrades: () => undefined,
   useReminderPlanner: () => undefined,
   usePhotoUploader: () => undefined,
+  useUpdateChecker: () => undefined,
 }))
 
 function renderAt(path: string, phase: AppPhase) {

@@ -9,6 +9,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 | TH-03 | Skema e Supabase, RLS, Auth, Storage | – | D1 |
 | TH-04 | Ruajtja lokale dhe sinkronizimi | TH-01, TH-03 | D1 |
 | TH-22 | Hyrja e parë | TH-03, TH-04 | D1 |
+| TH-23 | Përditësimi brenda app-it | TH-02, TH-03 | |
 | TH-05 | Spike 3D: pipeline-i i modelit dhe shikuesi minimal | TH-01 | |
 | TH-06 | Motori i programit | TH-01 | D1 |
 | TH-07 | Shortcut to Size, Java 0 dhe biblioteka e ushtrimeve | TH-06 | D1 |
@@ -69,6 +70,14 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 Prova reale: `src/data/sync.e2e.test.ts`, me një përdorues prove të përkohshëm (`E2E_EMAIL`, `E2E_PASSWORD`), që fshihet pas provës.
 
+## TH-23 · Përditësimi brenda app-it
+
+- Bucket-i privat `app-releases` (vetëm lexim nga app-i); workflow-i i Release-it ngarkon APK-në dhe `latest.json` me `SUPABASE_SECRET_KEY`.
+- Kontrolli në hapje, në rikthim dhe kur kthehet interneti (6 orë mes kontrolleve automatike); rreshti te Sot, "Versioni" te Cilësimet, fleta me "Çfarë ka të re" dhe "Përditëso".
+- Plugin-i native: shkarkimi me SHA-256, instalimi me `PackageInstaller` pa dritare konfirmimi pas lejes së parë; njoftimi pas përditësimit.
+
+**Pranimi:** prova në emulator e përditëson v1 → v2 nga vetë app-i, pa dritare konfirmimi, dhe refuzon një SHA-256 të gabuar; të dhënat dhe tema mbeten; vjen njoftimi "Training Hub u përditësua". Në telefon: 0.15.0 me dorë, 0.16.0 nga app-i.
+
 ## TH-22 · Hyrja e parë
 
 - Hapat e SPEC §3a: hyrja, pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi, programi aktiv.
@@ -85,7 +94,7 @@ Prova në emulator e kalon gjithë rrugën me Supabase të imituar (build-i i pr
 
 **Pranimi:** GLB ≤ 5 MB me të gjithë çelësat e Shtojcës D, pjesët e 3.0 të pozicionuara saktë, rrotullim i rrjedhshëm në telefon, atribuimi i shkruar.
 
-**Gjendja (07.11.2026, versioni 0.14.0):** GLB 1,92 MB me 34 çelësa; lats dhe rectus të kontrolluar me pamje nga përpara, mbrapa dhe anash. Në vend të ekranit të zhvillimit, modeli hyri drejt te Trupi pas zgjedhjes "2D / 3D", ku prekja e muskulit hap fletën e tij. Atribuimi: Cilësimet, "Burimet dhe licencat". Mbetet rrotullimi në telefonin e vërtetë.
+**Gjendja (07.11.2026, versioni 0.14.0):** GLB 1,92 MB me 34 çelësa; lats dhe rectus të kontrolluar me pamje nga përpara, mbrapa dhe anash. Në vend të ekranit të zhvillimit, modeli hyri drejt te Trupi pas zgjedhjes "2D / 3D", ku prekja e muskulit hap fletën e tij. Atribuimi: Cilësimet, "Burimet dhe licencat". Rrotullimi në telefonin e përdoruesit: i rrjedhshëm (07.11.2026).
 
 ## TH-06 · Motori i programit
 

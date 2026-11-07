@@ -9,7 +9,8 @@
 // të brendshme, butoni mbrapa, tema, përditësimi v1 -> v2 pa humbur sesionin dhe të dhënat,
 // dhe hapja pa internet direkt te Sot.
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const PKG = 'al.traininghub.app'
@@ -517,10 +518,35 @@ try {
   check('app-i mbetet gjallë në sfond', pidOf() !== '')
   page.close()
 
-  // 7. Përditësimi v1 -> v2: sesioni, profili dhe tema mbeten; app-i hapet direkt te Sot.
-  adb('install', '-r', apkV2)
-  const codeV2 = versionCode()
-  check('v2 instalohet mbi v1', codeV2 !== null && codeV2 > codeV1, `${codeV1} -> ${codeV2}`)
+  // 7. Përditësimi v1 -> v2 nga vetë app-i (TH-23): APK-ja e re vendoset në cache të app-it, si pas
+  // shkarkimit; leja "Instalo app të panjohura" jepet si nga përdoruesi; AppUpdater.install e instalon
+  // pa dritare konfirmimi (Android 12+). Sesioni, profili dhe tema mbeten; app-i hapet direkt te Sot.
+  const shaV2 = createHash('sha256').update(readFileSync(apkV2)).digest('hex')
+  adb('push', apkV2, '/data/local/tmp/th-v2.apk')
+  adb('shell', 'run-as', PKG, 'cp', '/data/local/tmp/th-v2.apk', 'cache/perditesimi.apk')
+  adb('shell', 'appops', 'set', PKG, 'REQUEST_INSTALL_PACKAGES', 'allow')
+  const appDir = adb('shell', 'run-as', PKG, 'pwd')
+  launch()
+  page = await connect()
+  await waitForHeading(page, 'Stërvitja 1')
+  check('përditësimi: app-i e sheh lejen e instalimit', (await page.evaluate(`Capacitor.Plugins.AppUpdater.canInstall().then((r) => r.value)`)) === true)
+  const wrongHash = await page.evaluate(
+    `Capacitor.Plugins.AppUpdater.install({ path: '${appDir}/cache/perditesimi.apk', sha256: '${'0'.repeat(64)}' }).then(() => 'instaloi', (e) => e.code)`,
+  )
+  check('përditësimi: një APK që nuk përputhet me SHA-256 nuk instalohet', wrongHash === 'HASH_MISMATCH', wrongHash)
+  const installStart = await page
+    .evaluate(`Capacitor.Plugins.AppUpdater.install({ path: '${appDir}/cache/perditesimi.apk', sha256: '${shaV2}' }).then(() => 'nisi', (e) => e.message)`)
+    .catch(() => 'nisi')
+  let codeV2 = versionCode()
+  for (let waited = 0; waited < 90_000 && !(codeV2 > codeV1); waited += 1000) {
+    await sleep(1000)
+    codeV2 = versionCode()
+  }
+  if (!(codeV2 > codeV1)) screenshot('gabim-perditesimi')
+  check('v2 instalohet nga app-i, pa dritare konfirmimi', codeV2 !== null && codeV2 > codeV1, `${installStart}; ${codeV1} -> ${codeV2}`)
+  page.close()
+  const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Training Hub u përditësua'), 'njoftimi i përditësimit', 15_000).catch(() => false)
+  check('pas përditësimit vjen njoftimi "Training Hub u përditësua"', replaced === true)
   launch()
   page = await connect()
   await page.send('Page.reload')

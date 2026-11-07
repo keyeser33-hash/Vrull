@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -10,6 +10,7 @@ import { prepareRestNotifications } from '@/lib/rest-alarm'
 import { reference, suggestionFor } from '@/program/loads'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { recoveryFor, type GroupRecovery } from '@/program/recovery'
+import { UpdateNotice, UpdateSheet } from './app-update'
 import { dateLabel, kg, setsText, targetText, techniqueText } from './training-format'
 
 // Ekrani Sot, drejtimi C "Fokus" (SPEC §14): një panel me stërvitjen e radhës, rikuperimi i
@@ -20,6 +21,8 @@ export function TodayPage() {
   const history = useLocalQuery(() => trainingHistory(store), [])
   const trainingDays = useLocalQuery(async () => ((await store.all('user_settings'))[0]?.training_days as number[] | undefined) ?? [], [])
   const [now] = useState(() => new Date())
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -32,6 +35,7 @@ export function TodayPage() {
           </Link>
         </div>
       </header>
+      <UpdateNotice />
       {snapshot === undefined ? (
         <TodaySkeleton />
       ) : snapshot === null ? (
@@ -49,6 +53,7 @@ export function TodayPage() {
           now={now}
         />
       )}
+      {params.get('perditesimi') ? <UpdateSheet onClose={() => navigate(-1)} /> : null}
     </div>
   )
 }

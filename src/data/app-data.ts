@@ -18,6 +18,8 @@ import { ensureSupplements } from './supplements'
 import { usdaFromJson } from '@/nutrition/usda'
 import type { ExternalFood } from '@/nutrition/off'
 import { upgradeShortcutToSize } from './training'
+import { createUpdater, type Release, type UpdateState } from '@/update/updater'
+import { nativeUpdater } from '@/lib/app-updater-native'
 
 // Të dhënat e app-it: sesioni, një bazë lokale, një store për shkrimet, një sinkronizim me
 // Supabase. Ekranet lexojnë dhe shkruajnë vetëm përmes `store`; asnjë ekran nuk pret rrjetin.
@@ -238,5 +240,76 @@ export function useDataUpgrades(ready: boolean) {
     if (!ready || !userId) return
     void upgradeShortcutToSize(store).catch(() => {})
     void ensureSupplements(store).catch(() => {})
+  }, [ready, userId])
+}
+
+// Përditësimi brenda app-it (SPEC §3b, TH-23): latest.json dhe APK-ja te bucket-i privat
+// app-releases, që i ngarkon GitHub Actions. Vetëm në telefon; në shfletues mbetet "idle".
+const UPDATE_CACHE = 'th-update'
+const RELEASES = 'app-releases'
+
+export const updater = createUpdater({
+  currentVersion: __APP_VERSION__,
+  online: () => navigator.onLine,
+  async latest() {
+    const { data, error } = await supabase.storage.from(RELEASES).download('latest.json')
+    if (error) {
+      // Para versionit të parë në bucket nuk ka latest.json: s'ka përditësim.
+      if ((error as { statusCode?: string }).statusCode === '404' || /not found/i.test(error.message)) return null
+      throw error
+    }
+    return JSON.parse(await data.text())
+  },
+  async downloadUrl(apk) {
+    const { data, error } = await supabase.storage.from(RELEASES).createSignedUrl(apk, 600)
+    if (error || !data) throw error ?? new Error('Lidhja e shkarkimit mungon')
+    return data.signedUrl
+  },
+  canInstall: nativeUpdater.canInstall,
+  openInstallSettings: nativeUpdater.openInstallSettings,
+  download: nativeUpdater.download,
+  install: nativeUpdater.install,
+  now: () => Date.now(),
+  cache: {
+    get() {
+      try {
+        const value = JSON.parse(window.localStorage.getItem(UPDATE_CACHE) ?? 'null') as { at: number; release: Release | null } | null
+        return value && typeof value.at === 'number' ? value : null
+      } catch {
+        return null
+      }
+    },
+    set(value) {
+      try {
+        window.localStorage.setItem(UPDATE_CACHE, JSON.stringify(value))
+      } catch {
+        // Pa ruajtje, kontrolli bëhet përsëri herën tjetër.
+      }
+    },
+  },
+})
+
+/** Përditësimi brenda app-it vlen vetëm në telefon (APK). */
+export const updatesSupported = () => Capacitor.isNativePlatform()
+
+export function useAppUpdate(): UpdateState {
+  return useSyncExternalStore(updater.subscribe, updater.getState)
+}
+
+/** Kontrollon për version të ri kur hapet app-i, kur kthehet në plan të parë dhe kur kthehet interneti. */
+export function useUpdateChecker(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId || !Capacitor.isNativePlatform()) return
+    const check = () => void updater.check()
+    check()
+    window.addEventListener('online', check)
+    const resume = App.addListener('resume', check)
+    const status = nativeUpdater.onInstallStatus((event) => updater.onInstallStatus(event))
+    return () => {
+      window.removeEventListener('online', check)
+      void resume.then((handle) => handle.remove())
+      void status.then((handle) => handle.remove())
+    }
   }, [ready, userId])
 }

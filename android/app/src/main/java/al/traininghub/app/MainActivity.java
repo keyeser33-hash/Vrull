@@ -15,6 +15,7 @@ public class MainActivity extends BridgeActivity {
         // Plugin-et lokale regjistrohen para super.onCreate, ku krijohet ura me WebView-në.
         registerPlugin(WindowBackgroundPlugin.class);
         registerPlugin(BatteryPlugin.class);
+        registerPlugin(AppUpdaterPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

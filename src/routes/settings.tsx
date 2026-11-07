@@ -10,7 +10,7 @@ import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
-import { auth, planRemindersNow, scheduler, store, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import { auth, planRemindersNow, scheduler, store, updatesSupported, useAppUpdate, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
 import { reminderSettings, setMeasurementDay, setReminderToggle } from '@/data/reminders'
 import { shareExport } from '@/data/share-export'
@@ -18,6 +18,8 @@ import { describeSync } from '@/data/sync-status-text'
 import { reminderPermission, type ReminderPermission, requestReminderPermission } from '@/lib/reminders-native'
 import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
+import { UpdateSheet } from './app-update'
+import { versionRowDetail } from './update-format'
 import { kg } from './training-format'
 
 // Cilësimet, varianti A i aprovuar më 07.11.2026 (referencat nga Mobbin: Tempo, Hevy, Google
@@ -25,7 +27,7 @@ import { kg } from './training-format'
 // rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
 
 type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
-type Editor = ProfileEditor | 'tema' | 'dil' | 'matja' | 'burimet'
+type Editor = ProfileEditor | 'tema' | 'dil' | 'matja' | 'burimet' | 'perditesimi'
 const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
   value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
 
@@ -81,6 +83,7 @@ export function SettingsPage() {
       <DataGroup />
 
       <Group title="Rreth app-it">
+        {updatesSupported() ? <VersionRow onClick={() => open('perditesimi')} /> : null}
         <Row label="Burimet dhe licencat" onClick={() => open('burimet')} />
       </Group>
 
@@ -89,6 +92,7 @@ export function SettingsPage() {
       {editor === 'dil' ? <SignOutSheet onClose={close} /> : null}
       {editor === 'matja' ? <MeasurementDaySheet onClose={close} /> : null}
       {editor === 'burimet' ? <SourcesSheet onClose={close} /> : null}
+      {editor === 'perditesimi' ? <UpdateSheet onClose={close} /> : null}
       {editor === 'tema' ? (
         <ThemeSheet
           theme={theme}
@@ -228,6 +232,11 @@ function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (the
       </fieldset>
     </Sheet>
   )
+}
+
+function VersionRow({ onClick }: { onClick: () => void }) {
+  const state = useAppUpdate()
+  return <Row label="Versioni" value={__APP_VERSION__} detail={versionRowDetail(state) ?? undefined} onClick={onClick} />
 }
 
 // Të dhënat dhe asetet nga të tjerët, me atribuimin që kërkon licenca e tyre (SPEC §11, §9).

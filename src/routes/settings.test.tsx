@@ -11,6 +11,7 @@ const data = vi.hoisted(() => ({
   store: null as unknown as LocalStore,
   signOut: vi.fn(async () => undefined),
   syncNow: vi.fn(async () => undefined),
+  check: vi.fn(async () => undefined),
 }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
@@ -27,6 +28,9 @@ vi.mock('@/data/app-data', async () => {
     useSyncStatus: () => ({ syncing: false, last: null }),
     usePendingChanges: () => 0,
     planRemindersNow: async () => {},
+    updatesSupported: () => true,
+    useAppUpdate: () => ({ status: 'current' }),
+    updater: { check: data.check, update: vi.fn(), allowInstall: vi.fn() },
     useLocalQuery<T>(query: () => Promise<T>) {
       const [value, setValue] = useState<T>()
       useEffect(() => {
@@ -189,6 +193,15 @@ describe('cilësimet', () => {
     expect(sheet).toHaveTextContent('Open Food Facts')
     expect(sheet).toHaveTextContent('Open Database License')
     expect(sheet).toHaveTextContent('USDA FoodData Central')
+  })
+
+  it('versioni: rreshti tregon gjendjen e përditësimit dhe hap fletën me "Kontrollo tani"', async () => {
+    const user = userEvent.setup()
+    await renderSettings()
+    await user.click(row(/^Versioni/))
+    const sheet = screen.getByRole('dialog', { name: 'Përditësimi' })
+    await user.click(within(sheet).getByRole('button', { name: 'Kontrollo tani' }))
+    expect(data.check).toHaveBeenCalledWith({ force: true })
   })
 
   it('tregon versionin nga package.json', async () => {

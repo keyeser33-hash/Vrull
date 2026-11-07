@@ -16,6 +16,8 @@ vi.mock('@/data/app-data', async () => {
   data.store = store
   return {
     store,
+    useAppUpdate: () => ({ status: 'idle' }),
+    updater: {},
     useLocalQuery<T>(query: () => Promise<T>) {
       const [value, setValue] = useState<T>()
       useEffect(() => {

@@ -33,6 +33,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+        <!-- Përditësimi brenda app-it (TH-23): përgjigja e PackageInstaller-it dhe njoftimi pas përditësimit. -->
+        <receiver android:name=".AppUpdateReceiver" android:exported="false" />
+        <receiver android:name=".AppReplacedReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <!-- Skaneri i barkodit i Google Play Services (scan(), pa leje kamere); moduli shkarkohet me instalimin. -->
         <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />
     </application>
@@ -55,4 +62,9 @@
     <!-- Dritarja e sistemit për përjashtimin nga optimizimi i baterisë, vetëm kur përdoruesi e kërkon
          te Cilësimet (timer-i vonon me ekran të kyçur te disa prodhues). -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Përditësimi brenda app-it (TH-23): instalimi i APK-së së re, pasi përdoruesi lejon një herë
+         "Instalo app të panjohura" për Training Hub. Me lejen e dytë, Android 12+ e lejon app-in të
+         përditësojë veten pa dritare konfirmimi. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION" />
 </manifest>

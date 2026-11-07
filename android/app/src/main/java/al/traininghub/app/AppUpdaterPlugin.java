@@ -1,0 +1,184 @@
+package al.traininghub.app;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.pm.PackageInstaller;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import com.getcapacitor.JSObject;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Përditësimi brenda app-it (SPEC §3b, TH-23): shkarkon APK-në e re nga lidhja e firmosur e
+ * Supabase-it, verifikon SHA-256 dhe e instalon me PackageInstaller. Android-i e lejon një app të
+ * përditësojë veten pa dritare konfirmimi (Android 12+) kur ka REQUEST_INSTALL_PACKAGES, lejen
+ * "Instalo app të panjohura" dhe deklaron UPDATE_PACKAGES_WITHOUT_USER_ACTION; përndryshe del
+ * dritarja e sistemit (AppUpdateReceiver). Android-i pranon vetëm APK me të njëjtin çelës nënshkrimi.
+ */
+@CapacitorPlugin(name = "AppUpdater")
+public class AppUpdaterPlugin extends Plugin {
+
+    static final String ACTION_STATUS = "al.traininghub.app.UPDATE_STATUS";
+    private static final String FILE_NAME = "perditesimi.apk";
+    private static AppUpdaterPlugin instance;
+    private final ExecutorService worker = Executors.newSingleThreadExecutor();
+
+    @Override
+    public void load() {
+        instance = this;
+    }
+
+    /** Thirret nga AppUpdateReceiver: dritarja e sistemit u hap, ose instalimi dështoi. */
+    static void report(String status, boolean aborted, String message) {
+        AppUpdaterPlugin plugin = instance;
+        if (plugin == null) return;
+        JSObject event = new JSObject();
+        event.put("status", status);
+        event.put("aborted", aborted);
+        event.put("message", message);
+        plugin.notifyListeners("installStatus", event);
+    }
+
+    @PluginMethod
+    public void canInstall(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("value", getContext().getPackageManager().canRequestPackageInstalls());
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void openInstallSettings(PluginCall call) {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getContext().getPackageName()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(intent);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void download(PluginCall call) {
+        String url = call.getString("url");
+        String sha256 = call.getString("sha256");
+        if (url == null || !url.startsWith("https://") || sha256 == null) {
+            call.reject("Lidhje ose SHA-256 e pavlefshme", "INVALID");
+            return;
+        }
+        worker.execute(() -> {
+            File file = new File(getContext().getCacheDir(), FILE_NAME);
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setConnectTimeout(20_000);
+                connection.setReadTimeout(30_000);
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    throw new IOException("HTTP " + connection.getResponseCode());
+                }
+                long total = connection.getContentLengthLong();
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                long done = 0;
+                long lastReport = 0;
+                try (InputStream in = connection.getInputStream(); OutputStream out = new FileOutputStream(file)) {
+                    byte[] buffer = new byte[64 * 1024];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                        digest.update(buffer, 0, read);
+                        done += read;
+                        long now = System.currentTimeMillis();
+                        if (now - lastReport > 150) {
+                            lastReport = now;
+                            JSObject progress = new JSObject();
+                            progress.put("bytes", done);
+                            progress.put("total", total);
+                            notifyListeners("downloadProgress", progress);
+                        }
+                    }
+                }
+                if (!hex(digest.digest()).equals(sha256.toLowerCase(Locale.ROOT))) {
+                    file.delete();
+                    call.reject("Skedari nuk përputhet me SHA-256 e versionit", "HASH_MISMATCH");
+                    return;
+                }
+                JSObject result = new JSObject();
+                result.put("path", file.getAbsolutePath());
+                call.resolve(result);
+            } catch (Exception e) {
+                file.delete();
+                call.reject("Shkarkimi nuk u krye: " + e.getMessage(), "DOWNLOAD");
+            } finally {
+                if (connection != null) connection.disconnect();
+            }
+        });
+    }
+
+    @PluginMethod
+    public void install(PluginCall call) {
+        String path = call.getString("path");
+        String sha256 = call.getString("sha256");
+        if (path == null || sha256 == null) {
+            call.reject("Mungon skedari ose SHA-256", "INVALID");
+            return;
+        }
+        worker.execute(() -> {
+            File file = new File(path.startsWith("file://") ? Uri.parse(path).getPath() : path);
+            try {
+                if (!file.isFile() || !hex(hash(file)).equals(sha256.toLowerCase(Locale.ROOT))) {
+                    call.reject("Skedari nuk përputhet me SHA-256 e versionit", "HASH_MISMATCH");
+                    return;
+                }
+                PackageInstaller installer = getContext().getPackageManager().getPackageInstaller();
+                PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                params.setAppPackageName(getContext().getPackageName());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    params.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_NOT_REQUIRED);
+                }
+                int id = installer.createSession(params);
+                try (PackageInstaller.Session session = installer.openSession(id)) {
+                    try (InputStream in = new FileInputStream(file); OutputStream out = session.openWrite("base.apk", 0, file.length())) {
+                        byte[] buffer = new byte[64 * 1024];
+                        int read;
+                        while ((read = in.read(buffer)) != -1) out.write(buffer, 0, read);
+                        session.fsync(out);
+                    }
+                    Intent status = new Intent(getContext(), AppUpdateReceiver.class).setAction(ACTION_STATUS);
+                    int flags = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0);
+                    session.commit(PendingIntent.getBroadcast(getContext(), id, status, flags).getIntentSender());
+                }
+                call.resolve();
+            } catch (Exception e) {
+                call.reject("Instalimi nuk nisi: " + e.getMessage(), "INSTALL");
+            }
+        });
+    }
+
+    private static byte[] hash(File file) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (InputStream in = new FileInputStream(file)) {
+            byte[] buffer = new byte[64 * 1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) digest.update(buffer, 0, read);
+        }
+        return digest.digest();
+    }
+
+    private static String hex(byte[] bytes) {
+        StringBuilder out = new StringBuilder(bytes.length * 2);
+        for (byte value : bytes) out.append(String.format(Locale.ROOT, "%02x", value));
+        return out.toString();
+    }
+}

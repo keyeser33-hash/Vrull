@@ -52,6 +52,15 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 
 Pas hyrjes, para hapave, app-i merr të dhënat ekzistuese nga Supabase ("Po merren të dhënat e tua"; pa internet: "Provo përsëri"), që një instalim i ri të mos i përsërisë hapat dhe të mos krijojë një profil të dytë. Me profilin të plotësuar në telefon, app-i hapet direkt te Sot edhe pa internet. Hapi 5 krijon skeletin e Shortcut to Size (Java 0 dhe Fazat 1–3, me 4 ditët) dhe treguesin te Java 0 · Stërvitja 1; ushtrimet i shton TH-07. Dalja nga llogaria bëhet vetëm në telefon dhe nuk fshin të dhënat lokale. Porta e rrugëve: `src/routes/gate.tsx`, faza: `src/data/phase.ts`.
 
+## 3b. Përditësimi brenda app-it (vendim i 07.11.2026)
+
+- **Rruga:** APK-ja jashtë Play Store, e përditësuar nga vetë app-i. Google Play (testim i brendshëm) u la mënjanë: kushton 25 $, kërkon verifikim identiteti dhe formularët e Play Console, për një app me një përdorues.
+- **Publikimi:** pas Release-it në GitHub, workflow-i "APK për Android" ngarkon `TrainingHub-X.Y.Z.apk` dhe `latest.json` (versioni, APK-ja, SHA-256, madhësia, "Çfarë ka të re" nga titujt e commit-eve, data) te bucket-i privat `app-releases` i Supabase-it, me secret-in `SUPABASE_SECRET_KEY` (`scripts/publish-update.mjs`). Mbahen dy APK-të e fundit. App-i lexon vetëm (`select` për `authenticated`; regjistrimet janë të mbyllura).
+- **Kontrolli:** kur hapet app-i, kur kthehet në plan të parë dhe kur kthehet interneti, të shumtën një herë në 6 orë (vlera e fundit mbahet në telefon); "Kontrollo tani" te Cilësimet nuk pret. Gabimi i kontrollit automatik nuk shfaqet. `latest.json` pranohet vetëm kur APK-ja i përket versionit dhe SHA-256 ka 64 shifra hex (`src/update/updater.ts`).
+- **Ekrani:** te Sot, një rresht i qetë (jo amber) "Versioni X.Y.Z është gati" kur ka version të ri; te Cilësimet, "Versioni" me gjendjen. Të dy hapin fletën me "Çfarë ka të re", madhësinë dhe "Përditëso"; shkarkimi ka shirit përparimi, dhe çdo dështim (kontrolli, shkarkimi, skedari që nuk përputhet, instalimi) thuhet me fjalë me "Provo përsëri".
+- **Instalimi** (plugin-i `AppUpdater`): shkarkim me lidhje të firmosur 10-minutëshe, SHA-256 i verifikuar gjatë shkarkimit dhe përsëri para instalimit, `PackageInstaller` me `USER_ACTION_NOT_REQUIRED`. Herën e parë Android-i kërkon lejen "Instalo app të panjohura"; pas saj, në Android 12+ app-i e përditëson veten pa dritare konfirmimi (`REQUEST_INSTALL_PACKAGES` + `UPDATE_PACKAGES_WITHOUT_USER_ACTION`). Anulimi i dritares së sistemit e kthen fletën te "Përditëso". Pas përditësimit, njoftimi "Training Hub u përditësua" e hap app-in.
+- **Kufiri:** një ndryshim në pjesën native (plugin i ri, manifest) vjen njësoj, sepse përditësohet e gjithë APK-ja. Versioni 0.15.0, që sjell përditësuesin, instalohet me dorë një herë.
+
 ## 4. Modeli i programit
 
 Një program përbëhet nga:

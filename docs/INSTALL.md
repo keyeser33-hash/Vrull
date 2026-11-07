@@ -26,10 +26,25 @@ Workflow-i kontrollon gjurmën e certifikatës. Nëse dikush vendos një çelës
 
 ## 3. Përditësimet
 
-1. Shkarko APK-në e versionit të ri nga Releases.
-2. Hape dhe zgjidh **Përditëso** (Update).
+Nga versioni 0.15.0, përditësimet vijnë brenda app-it:
 
-Mos e çinstalo app-in para përditësimit. Përditësimi mban të gjitha të dhënat e telefonit, sepse çelësi është i njëjti dhe numri i versionit rritet.
+1. Kur ka version të ri, te **Sot** del rreshti "Versioni X.Y.Z është gati" (edhe te **Cilësimet → Versioni**). Kontrolli bëhet kur hapet app-i me internet, të shumtën një herë në 6 orë; **Kontrollo tani** nuk pret.
+2. Prek rreshtin: fleta tregon çfarë ka të re dhe madhësinë. Prek **Përditëso**.
+3. Herën e parë Android-i kërkon lejen **Instalo app të panjohura** për Training Hub: **Lejo instalimin → Lejo nga ky burim**, kthehu te app-i dhe prek përsëri **Përditëso**.
+4. App-i e shkarkon, kontrollon që skedari është ai i versionit (SHA-256) dhe e instalon. Në Android 12 e lart, pas lejes së parë, pa dritare konfirmimi. Training Hub mbyllet për pak dhe njoftimi "Training Hub u përditësua" e hap përsëri.
+
+Me dorë mbetet e mundur (p.sh. për 0.15.0, që sjell përditësuesin): shkarko APK-në e versionit të ri nga Releases, hape dhe zgjidh **Përditëso** (Update).
+
+Mos e çinstalo app-in para përditësimit. Përditësimi mban të gjitha të dhënat e telefonit, sepse çelësi është i njëjti dhe numri i versionit rritet. Android-i nuk instalon kurrë një APK me çelës tjetër mbi Training Hub.
+
+### Një herë: çelësi që publikon versionet te app-i
+
+GitHub Actions i vendos APK-në dhe `latest.json` te bucket-i privat `app-releases` i Supabase-it. Për këtë i duhet një çelës sekret i Supabase-it, që e vendos vetë, pa kaluar nga askush tjetër:
+
+1. Te Supabase: **Project Settings → API Keys → Publishable and secret API keys**. Te **Secret keys**, **Add new secret key**, me emrin `github-releases`. Kopjo vlerën (`sb_secret_…`).
+2. Te GitHub, repo-ja `training-hub`: **Settings → Secrets and variables → Actions → New repository secret**. Emri: `SUPABASE_SECRET_KEY`, vlera: çelësi i kopjuar. **Add secret**.
+
+Pa këtë secret, Release-i në GitHub del njësoj, por app-i nuk e sheh versionin e ri (hapi "Publiko përditësimin brenda app-it" vetëm paralajmëron). Nëse çelësi rrjedh, fshihet te Supabase dhe krijohet një i ri; app-i nuk ndikohet.
 
 ## 4. Lejet
 
@@ -49,7 +64,7 @@ Release-i del vetë, pa hap me dorë:
 
 1. Rritet `version` te `package.json` (p.sh. `0.3.0` → `0.4.0`) dhe bëhet commit në `main`.
 2. Workflow-i "APK për Android" e sheh që versioni nuk ka ende Release. Kalon lint-in, testet dhe build-in, ndërton APK-në, verifikon nënshkrimin, krijon tag-un `v0.4.0` dhe publikon Release-in me APK-në (rreth 6 minuta).
-3. Shkarko APK-në në telefon dhe zgjidh **Përditëso** (pika 3).
+3. Hapi i fundit vendos APK-në dhe `latest.json` te Supabase; app-i e njofton versionin e ri te Sot (pika 3).
 
 Një push te `main` pa version të ri nuk ndërton asgjë. Tag-u mund të krijohet edhe me dorë (te GitHub: **Releases → Draft a new release**, ose `git tag v0.4.0 && git push origin v0.4.0`); rezultati është i njëjtë.
 
