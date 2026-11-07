@@ -333,7 +333,9 @@ try {
   await waitForHeading(page, 'Sot')
   await waitForText(page, 'Java 0 · Stërvitja 1')
   check('hyrja e parë përfundon te Sot me "Java 0 · Stërvitja 1"', true, `${Math.round((Date.now() - started) / 1000)} s`)
-  check('shkrimet arrijnë te serveri i imituar', report.requests.some((line) => line.startsWith('POST /rest/v1/user_settings')))
+  // Sinkronizimi pret 2 s qetësi pas shkrimit të fundit, pastaj dërgon.
+  await waitFor(() => report.requests.some((line) => line.startsWith('POST /rest/v1/user_settings')), 'dërgimi i profilit', 20_000)
+  check('shkrimet arrijnë te serveri i imituar', true)
   report.insets = await page.evaluate(`(() => {
     const probe = document.createElement('div')
     probe.style.cssText = 'position:fixed;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)'
