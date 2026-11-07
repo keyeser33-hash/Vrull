@@ -95,7 +95,34 @@ describe('Trupi', () => {
     expect(within(screen.getByRole('list', { name: 'Legjenda' })).getByText(/I lodhur · nën 48 orë/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Volumi javor' }))
     await waitFor(() => expect(within(list).getAllByRole('button')[0]).toHaveAccessibleName('Gjoksi, 3 sete'))
-    expect(screen.getByRole('list', { name: 'Legjenda' })).toHaveTextContent('1–5 sete')
+    expect(screen.getByRole('list', { name: 'Legjenda' })).toHaveTextContent('Nën 10')
+    expect(within(list).getAllByRole('button')[0]).toHaveTextContent('Nën objektiv')
+
+    // Fleta: setet kundrejt objektivit dhe ndarja sipas pjesëve të grupit.
+    await user.click(within(list).getAllByRole('button')[0])
+    const sheet = screen.getByRole('dialog', { name: 'Gjoksi' })
+    expect(sheet).toHaveTextContent('Nën objektiv · 10–20')
+    const parts = within(sheet).getByRole('heading', { name: 'Pjesët këtë javë' }).nextElementSibling as HTMLElement
+    expect(within(parts).getAllByRole('listitem').map((item) => item.textContent)).toEqual([
+      'Gjoksi i sipërm1,5 sete',
+      'Gjoksi i mesëm dhe i poshtëm3 sete',
+      'Pectoralis minorPa sete',
+    ])
+    expect(sheet).not.toHaveTextContent('Pa ndarje sipas pjesëve')
+  })
+
+  it('volumi: grupi me një pjesë nuk e ndan fletën; pa sete thuhet një herë', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    const list = await screen.findByRole('region', { name: 'Muskujt' })
+    await user.click(screen.getByRole('button', { name: 'Volumi javor' }))
+    const calves = await within(list).findByRole('button', { name: 'Pulpat, Pa sete' })
+    expect(calves).toHaveTextContent('Nën objektiv')
+    expect(calves.textContent!.match(/Pa sete/g)).toHaveLength(1)
+    await user.click(within(list).getByRole('button', { name: /^Tricepsi, / }))
+    const sheet = screen.getByRole('dialog', { name: 'Tricepsi' })
+    expect(sheet).toHaveTextContent('1,5 sete')
+    expect(within(sheet).queryByRole('heading', { name: 'Pjesët këtë javë' })).not.toBeInTheDocument()
   })
 
   it('prekja e muskulit në figurë: emri latinisht, funksioni dhe ushtrimet e bibliotekës', async () => {
@@ -139,7 +166,7 @@ describe('Trupi', () => {
     expect(model).toHaveTextContent('fokusi gastrocnemius soleus · kërkesa 2')
     const chip = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
     expect(chip).toHaveTextContent('Pulpat')
-    expect(chip).toHaveTextContent('Gastroknemiusi · 0 sete')
+    expect(chip).toHaveTextContent('Gastroknemiusi · Pa sete')
     await user.click(within(chip).getByRole('button', { name: 'Më shumë për Pulpat' }))
     expect(screen.getByRole('dialog', { name: 'Pulpat' })).toHaveTextContent('Gastrocnemius, soleus')
   })

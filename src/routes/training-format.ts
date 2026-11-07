@@ -2,8 +2,11 @@ import type { Equipment, Target, Technique } from '@/program/types'
 
 // Tekstet e stërvitjes sipas DESIGN.md: presje dhjetore, data "e hënë 07.12", ora 24h.
 
-/** 47,5 · 50 · 22,25 */
-export const kg = (value: number) => String(Math.round(value * 100) / 100).replace('.', ',')
+/** Numër me presje dhjetore, deri në dy shifra: 47,5 · 50 · 22,25 · 1,5. */
+export const decimal = (value: number) => String(Math.round(value * 100) / 100).replace('.', ',')
+
+/** Pesha në kg, pa njësinë. */
+export const kg = decimal
 
 const range = (min: number, max: number | null) => (max === null ? `${min}+` : `${min}–${max}`)
 

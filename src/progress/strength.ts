@@ -1,3 +1,4 @@
+import { localDay, weekRange } from '@/lib/calendar'
 import { e1rm, type HistorySet } from '@/program/loads'
 import type { MuscleGroup } from '@/program/muscles'
 import { change, type Point } from './metrics'
@@ -13,7 +14,7 @@ export function e1rmSeries(sets: HistorySet[], exerciseId: string): Point[] {
     if (set.exerciseId !== exerciseId || set.isWarmup) continue
     const value = e1rm(set.weightKg, set.reps, set.rir)
     if (value === null) continue
-    const date = set.loggedAt.slice(0, 10)
+    const date = localDay(set.loggedAt)
     best.set(date, Math.max(best.get(date) ?? 0, value))
   }
   return [...best.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, value]) => ({ date, value: round1(value) }))
@@ -46,21 +47,16 @@ export interface VolumeRow {
   lastWeek: number
 }
 
-const pad = (value: number) => String(value).padStart(2, '0')
-const isoDate = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
-
 /** Setet e punës të kësaj jave (nga e hëna) dhe të javës së kaluar, për çdo grup muskujsh. */
 export function weeklyVolume(sets: HistorySet[], primary: Record<string, string[]>, groups: MuscleGroup[], now: Date): VolumeRow[] {
-  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7))
-  const start = isoDate(monday)
-  const previous = isoDate(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() - 7))
-  const end = isoDate(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 7))
+  const [start, end] = weekRange(now)
+  const [previous] = weekRange(now, -1)
   return groups.map((group) => {
     let thisWeek = 0
     let lastWeek = 0
     for (const set of sets) {
       if (set.isWarmup || !(primary[set.exerciseId] ?? []).some((key) => group.keys.includes(key))) continue
-      const date = set.loggedAt.slice(0, 10)
+      const date = localDay(set.loggedAt)
       if (date >= start && date < end) thisWeek++
       else if (date >= previous && date < start) lastWeek++
     }

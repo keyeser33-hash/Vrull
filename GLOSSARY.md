@@ -104,7 +104,7 @@ _Avoid_: PR, kur shkruhet për përdoruesin
 ## Trupi
 
 **Çelësi i muskulit**:
-Emri i një muskuli ose pjese muskuli sipas Shtojcës D (p.sh. `deltoid_lateral`); njësia më e vogël që theksohet.
+Emri i një muskuli ose pjese muskuli sipas Shtojcës D (p.sh. `deltoid_lateral`); njësia më e vogël që theksohet. Brenda një grupi, përdoruesi e sheh si **pjesë** ("Pjesët këtë javë").
 
 **Grupi i muskujve**:
 Një nga grupet që sheh përdoruesi (Gjoksi, Shpina, Barku…), i përbërë nga disa çelësa.
@@ -118,8 +118,12 @@ Muskul që ndihmon te një ushtrim; numërohet 0,5 për çdo set.
 _Avoid_: sekondar
 
 **Volumi javor**:
-Setet e punës të javës kalendarike për një grup muskujsh: kryesori 1, ndihmësi 0,5.
+Setet e punës të javës kalendarike për një grup muskujsh: kryesori 1, ndihmësi 0,5. Numërohet edhe për çdo pjesë; setet e një ushtrimi të shtuar nga biblioteka, që di vetëm grupin, hyjnë te grupi, por jo te pjesët.
 _Avoid_: ngarkesa, tonazhi
+
+**Objektivi javor**:
+Intervali i **Volumit javor** që synohet për një grup muskujsh: 10–20 sete. Te Trupi thuhet shkurt "objektiv" (Nën objektiv, Në objektiv, Mbi objektiv).
+_Avoid_: objektivat (u përkasin ushqimit)
 
 **Rikuperimi**:
 Gjendja e një grupi muskujsh sipas orëve nga seanca e fundit ku ishte kryesor: I lodhur (nën 48), Pothuajse gati (48–72), Gati (mbi 72).

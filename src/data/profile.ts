@@ -1,4 +1,4 @@
-import { localDate } from './dates'
+import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
 import { ensureShortcutToSize } from './training'
 

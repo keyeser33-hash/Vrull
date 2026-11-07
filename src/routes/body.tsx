@@ -6,7 +6,7 @@ import { Group, Row } from '@/components/layout/list-group'
 import { Sheet } from '@/components/layout/sheet'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type BodyGroup, bodyView } from '@/data/body'
-import { libraryExercisesFor, LOAD_LEVELS } from '@/body/body-map'
+import { libraryExercisesFor, LOAD_LEVELS, targetText, WEEKLY_TARGET } from '@/body/body-map'
 import { KEY_NAMES } from '@/body/muscle-info'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
@@ -14,7 +14,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { cn } from '@/lib/cn'
 import { safeStorage } from '@/lib/safe-storage'
 import { webglAvailable } from '@/lib/webgl'
-import { type BodyMode, LEVEL_SWATCH, modeStyle, RECOVERY, RECOVERY_ORDER, setsText, sinceText } from './body-format'
+import { type BodyMode, focusDetail, LEVEL_SWATCH, modeStyle, RECOVERY, RECOVERY_ORDER, setsText, sinceText } from './body-format'
 import { EQUIPMENT_LABEL } from './training-format'
 
 // Trupi (SPEC §11, TH-19). Paneli tregon rikuperimin ose volumin e javës mbi figurën 2D përpara dhe
@@ -114,7 +114,7 @@ export function BodyPage() {
                 focused && focus ? (
                   <FocusChip
                     title={focused.group.name}
-                    detail={`${KEY_NAMES[focus.key] ?? focused.group.name} · ${modeStyle(mode, focused).text}`}
+                    detail={focusDetail(mode, focused, focus.key, KEY_NAMES[focus.key] ?? focused.group.name)}
                     onOpen={() => open(focused.group.id)}
                     onClear={() => setFocus(null)}
                   />
@@ -180,7 +180,7 @@ export function BodyPage() {
               ))}
         </ul>
         <p className="text-center text-xs leading-4 text-panel-muted-foreground">
-          {mode === 'volumi' ? 'Setet e kësaj jave: kryesori 1, ndihmësi 0,5.' : 'Sipas orëve nga stërvitja e fundit ku muskuli ishte kryesor.'} {view === '3d' ? 'Zvarrit anash për ta rrotulluar, prek një muskul për më shumë.' : 'Prek një muskul për më shumë.'}
+          {mode === 'volumi' ? `Setet e kësaj jave: kryesori 1, ndihmësi 0,5. Objektivi: ${WEEKLY_TARGET.min}–${WEEKLY_TARGET.max} sete në javë për grup.` : 'Sipas orëve nga stërvitja e fundit ku muskuli ishte kryesor.'} {view === '3d' ? 'Zvarrit anash për ta rrotulluar, prek një muskul për më shumë.' : 'Prek një muskul për më shumë.'}
         </p>
       </section>
 
@@ -189,8 +189,8 @@ export function BodyPage() {
           <Row
             key={entry.group.id}
             label={entry.group.name}
-            value={modeStyle(mode, entry).text}
-            detail={mode === 'volumi' ? RECOVERY[entry.recovery].label : sinceText(entry.hours)}
+            value={modeStyle(mode, entry).value}
+            detail={modeStyle(mode, entry).detail}
             onClick={() => open(entry.group.id)}
           />
         ))}
@@ -227,9 +227,35 @@ function MuscleSheet({ entry, onClose }: { entry: BodyGroup; onClose: () => void
         </div>
         <div className="flex min-h-12 items-center justify-between gap-3 border-t border-border-subtle">
           <dt className="text-base leading-6">Këtë javë</dt>
-          <dd className="text-sm leading-5 text-muted-foreground">{setsText(entry.load)}</dd>
+          <dd className="text-right text-sm leading-5 text-muted-foreground">
+            <span className="block font-medium text-foreground">{setsText(entry.load)}</span>
+            {targetText(entry.load)} · {WEEKLY_TARGET.min}–{WEEKLY_TARGET.max}
+          </dd>
         </div>
       </dl>
+      {entry.parts.length > 1 ? (
+        <>
+          <h3 className="text-sm leading-5 font-semibold">Pjesët këtë javë</h3>
+          <ul className="flex flex-col tabular-nums">
+            {entry.parts.map((part) => (
+              <li key={part.key} className="flex min-h-11 items-center justify-between gap-3 border-t border-border-subtle first:border-t-0">
+                <span className="text-base leading-6">{KEY_NAMES[part.key] ?? part.key}</span>
+                <span className="text-sm leading-5 text-muted-foreground">{setsText(part.load)}</span>
+              </li>
+            ))}
+            {entry.unsplit > 0 ? (
+              <li className="flex min-h-11 items-center justify-between gap-3 border-t border-border-subtle">
+                <span className="text-base leading-6">Pa ndarje sipas pjesëve</span>
+                <span className="text-sm leading-5 text-muted-foreground">{setsText(entry.unsplit)}</span>
+              </li>
+            ) : null}
+          </ul>
+          <p className="text-xs leading-4 text-muted-foreground">
+            Një set numërohet një herë te grupi dhe te çdo pjesë që punon, ndaj pjesët nuk mblidhen.
+            {entry.unsplit > 0 ? ' Ushtrimet e shtuara nga biblioteka dinë vetëm grupin, ndaj setet e tyre nuk ndahen sipas pjesëve.' : null}
+          </p>
+        </>
+      ) : null}
       <h3 className="text-sm leading-5 font-semibold">Ushtrime nga biblioteka</h3>
       {library === null ? (
         <p className="text-sm leading-5 text-muted-foreground">Po ngarkohet biblioteka</p>

@@ -16,7 +16,7 @@ import type {
   Technique,
   Tracking,
 } from '@/program/types'
-import { localDate } from './dates'
+import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 

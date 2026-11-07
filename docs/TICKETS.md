@@ -187,7 +187,7 @@ Prova në emulator e kalon gjithë rrugën me Supabase të imituar (build-i i pr
 
 **Pranimi:** pas një seance, harta dhe gjendja e rikuperimit ndryshojnë si pritet; gjendjet shkruhen me fjalë.
 
-**Gjendja (07.11.2026):** të katër funksionet te figura 2D (0.12.0) dhe te modeli 3D (0.14.0); muskujt e ushtrimit në 3D te ekrani i ushtrimit dhe te seanca, fokusi me emrin e muskulit dhe zmadhimi me dy gishta (0.15.0). Pas tyre: volumi kundrejt intervalit javor dhe shtresat e muskujve.
+**Gjendja (08.11.2026):** të katër funksionet te figura 2D (0.12.0) dhe te modeli 3D (0.14.0); muskujt e ushtrimit në 3D te ekrani i ushtrimit dhe te seanca, fokusi me emrin e muskulit dhe zmadhimi me dy gishta (0.15.0); volumi kundrejt objektivit 10–20 sete në javë, me setet e çdo pjese të grupit (0.16.0). Pas tij: shtresat e muskujve.
 
 ## TH-20 · Videot
 

@@ -1,6 +1,6 @@
 import type { HistorySet } from '@/program/loads'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { allRecovery, libraryExercisesFor, LOAD_LEVELS, loadLevel, muscleLoad } from './body-map'
+import { allRecovery, keyLoad, libraryExercisesFor, LOAD_LEVELS, loadLevel, muscleLoad, targetText } from './body-map'
 import { KEY_NAMES, MUSCLE_INFO } from './muscle-info'
 
 let counter = 0
@@ -25,7 +25,7 @@ const set = (exerciseId: string, loggedAt: string, extra: Partial<HistorySet> = 
 const group = (id: string) => MUSCLE_GROUPS.find((entry) => entry.id === id)!
 
 describe('harta e muskujve', () => {
-  it('ngarkesa e javës: kryesori 1, ndihmësi 0,5; ngrohja dhe javët e tjera nuk numërohen', () => {
+  it('volumi i javës: kryesori 1, ndihmësi 0,5; ngrohja dhe javët e tjera nuk numërohen', () => {
     const primary = { bench: ['pectoralis_major_sternocostal'], row: ['latissimus_dorsi'] }
     const secondary = { bench: ['triceps_brachii', 'deltoid_anterior'], row: ['biceps_brachii'] }
     const sets = [
@@ -44,9 +44,43 @@ describe('harta e muskujve', () => {
     expect(load.get('pulpat')).toBe(0)
   })
 
-  it('nivelet me fjalë: 0, 1–5, 6–11, 12 e më shumë sete', () => {
-    expect([0, 0.5, 5.5, 6, 11.5, 12, 20].map(loadLevel)).toEqual([0, 1, 1, 2, 2, 3, 3])
-    expect(LOAD_LEVELS.map((level) => level.label)).toEqual(['Pa sete', '1–5 sete', '6–11 sete', '12+ sete'])
+  it('nivelet sipas objektivit javor (10–20 sete për grup): pa sete, nën, brenda, mbi', () => {
+    expect([0, 0.5, 9.5, 10, 15, 20, 20.5, 30].map(loadLevel)).toEqual([0, 1, 1, 2, 2, 2, 3, 3])
+    expect(LOAD_LEVELS.map((level) => level.label)).toEqual(['Pa sete', 'Nën 10', '10–20 · objektivi', 'Mbi 20'])
+    expect([0, 4, 12, 24].map(targetText)).toEqual(['Nën objektiv', 'Nën objektiv', 'Në objektiv', 'Mbi objektiv'])
+  })
+
+  it('volumi i javës për çdo çelës: kryesori 1, ndihmësi 0,5, pa ngrohjen dhe javët e tjera', () => {
+    const primary = { lateral: ['deltoid_lateral'], press: ['deltoid_anterior'] }
+    const secondary = { lateral: [], press: ['triceps_brachii', 'deltoid_lateral'] }
+    const sets = [
+      set('lateral', '2026-12-07T18:10:00'),
+      set('lateral', '2026-12-07T18:12:00'),
+      set('press', '2026-12-08T18:10:00'),
+      set('press', '2026-12-08T18:00:00', { isWarmup: true }),
+      set('press', '2026-12-01T18:10:00'),
+    ]
+    const load = keyLoad(sets, primary, secondary, new Date('2026-12-09T12:00:00'))
+    expect(load.get('deltoid_lateral')).toBe(2.5)
+    expect(load.get('deltoid_anterior')).toBe(1)
+    expect(load.get('triceps_brachii')).toBe(0.5)
+    expect(load.get('deltoid_posterior')).toBeUndefined()
+  })
+
+  it('java lexohet në orën e telefonit: seti i së hënës 00:30 në Tiranë (23:30 UTC e së dielës) hyn te java e re', () => {
+    vi.stubEnv('TZ', 'Europe/Tirane')
+    try {
+      const primary = { squat: ['rectus_femoris'] }
+      const loggedAt = new Date(2026, 11, 7, 0, 30).toISOString()
+      expect(loggedAt).toBe('2026-12-06T23:30:00.000Z')
+      const sundayEvening = new Date(2026, 11, 6, 21).toISOString()
+      const sets = [set('squat', loggedAt), set('squat', sundayEvening)]
+      const now = new Date(2026, 11, 9, 12)
+      expect(muscleLoad(sets, primary, {}, MUSCLE_GROUPS, now).get('kuadricepsi')).toBe(1)
+      expect(keyLoad(sets, primary, {}, now).get('rectus_femoris')).toBe(1)
+    } finally {
+      vi.unstubAllEnvs()
+    }
   })
 
   it('rikuperimi i çdo grupi sipas seancës së fundit ku ishte kryesor', () => {

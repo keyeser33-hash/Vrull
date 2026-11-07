@@ -1,7 +1,7 @@
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { change, METRICS, type Metric, type MetricKey, movingAverage, type Point } from '@/progress/metrics'
 import { type StrengthRow, strengthSummary, type VolumeRow, weeklyVolume } from '@/progress/strength'
-import { localDate } from './dates'
+import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
 import { trainingHistory } from './training'
 

@@ -13,7 +13,7 @@ export function FocusChip({ title, detail, onOpen, onClear }: { title: string; d
     >
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="truncate text-sm leading-5 font-semibold">{title}</span>
-        <span className="truncate text-xs leading-4 text-panel-foreground/80">{detail}</span>
+        <span className="line-clamp-2 text-xs leading-4 text-panel-foreground/80">{detail}</span>
       </span>
       {onOpen ? (
         <button type="button" aria-label={`Më shumë për ${title}`} onClick={onOpen} className={buttonVariants({ variant: 'on-panel' })}>

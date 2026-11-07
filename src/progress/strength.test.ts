@@ -58,4 +58,18 @@ describe('volumi javor', () => {
       ['Kuadricepsi', 0, 2],
     ])
   })
+
+  it('dita dhe java lexohen në orën e telefonit: seti i së hënës 00:30 në Tiranë mbetet i së hënës', () => {
+    vi.stubEnv('TZ', 'Europe/Tirane')
+    try {
+      const mondayNight = new Date(2026, 11, 7, 0, 30).toISOString()
+      expect(mondayNight).toBe('2026-12-06T23:30:00.000Z')
+      const sets = [set('row', mondayNight, 70, 10)]
+      expect(e1rmSeries(sets, 'row').map((point) => point.date)).toEqual(['2026-12-07'])
+      const [back] = weeklyVolume(sets, { row: ['latissimus_dorsi'] }, MUSCLE_GROUPS, new Date(2026, 11, 9, 12)).filter((row) => row.group.id === 'shpina')
+      expect([back.thisWeek, back.lastWeek]).toEqual([1, 0])
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
 })
