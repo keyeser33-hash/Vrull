@@ -45,6 +45,24 @@ function screenshot(name) {
   writeFileSync(join(outDir, `${name}.png`), png)
 }
 
+// Ngjyra e rripit të orës (lart, larg orës, ikonave dhe kamerës në mes), nga screencap i papërpunuar:
+// kokë me gjerësinë dhe lartësinë, pastaj piksela RGBA.
+function statusBandColor() {
+  const raw = execFileSync('adb', ['exec-out', 'screencap'], { maxBuffer: 64 * 1024 * 1024 })
+  const width = raw.readUInt32LE(0)
+  const height = raw.readUInt32LE(4)
+  const header = raw.length - width * height * 4
+  const x = Math.round(width * 0.35)
+  const y = 12
+  const offset = header + (y * width + x) * 4
+  return [raw[offset], raw[offset + 1], raw[offset + 2]]
+}
+
+function sameColor(actual, hex) {
+  const expected = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  return actual.every((value, i) => Math.abs(value - expected[i]) <= 4)
+}
+
 function versionCode() {
   const match = adb('shell', 'dumpsys', 'package', PKG).match(/versionCode=(\d+)/)
   return match ? Number(match[1]) : null
@@ -203,6 +221,8 @@ try {
   check('navigimi poshtë brenda ekranit', navInside, JSON.stringify(report.insets))
   check('pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
   check('pa shirit veprimesh mbi faqe', !hasActionBar())
+  const bandOled = statusBandColor()
+  check('rripi i orës në OLED është i zi', sameColor(bandOled, '#000000'), bandOled.join(','))
   check('titulli "Sot" brenda ekranit', await page.evaluate(`document.querySelector('h1').getBoundingClientRect().top >= 0`))
   screenshot('1-sot-oled')
 
@@ -233,6 +253,8 @@ try {
   check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
   await sleep(500)
   screenshot('2-cilesimet-light-v1')
+  const bandLight = statusBandColor()
+  check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#FAFAFA'), bandLight.join(','))
   await pressBack()
   await waitForHeading(page, 'Sot')
   await pressBack()
@@ -253,6 +275,8 @@ try {
   check('tema aplikohet para vizatimit', (await page.evaluate('document.documentElement.className')) === '')
   await sleep(500)
   screenshot('3-sot-light-v2')
+  const bandAfterUpdate = statusBandColor()
+  check('rripi i orës mbetet i çelët pas përditësimit', sameColor(bandAfterUpdate, '#FAFAFA'), bandAfterUpdate.join(','))
   page.close()
 
   check('asnjë gabim JavaScript', report.errors.length === 0, report.errors.join(' | '))

@@ -12,6 +12,8 @@ public class MainActivity extends BridgeActivity {
         // Thirret para super.onCreate, si te dokumentimi i Android-it. Dritarja krijohet këtu me
         // temën e nisjes, prandaj ajo deklaron vetë që nuk ka shirit veprimesh (styles.xml).
         EdgeToEdge.enable(this);
+        // Plugin-et lokale regjistrohen para super.onCreate, ku krijohet ura me WebView-në.
+        registerPlugin(WindowBackgroundPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

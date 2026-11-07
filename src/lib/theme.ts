@@ -1,7 +1,13 @@
 // Tema e app-it: light, dark ose OLED (parazgjedhje). OLED mban edhe klasën `dark`,
 // që çdo utility `dark:` të vlejë; blloku `.oled` te globals.css vjen i fundit dhe fiton.
 
-import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core'
+import { Capacitor, registerPlugin, SystemBars, SystemBarsStyle } from '@capacitor/core'
+
+// Plugin-i lokal i app-it: android/app/src/main/java/al/traininghub/app/WindowBackgroundPlugin.java.
+interface WindowBackgroundPlugin {
+  setColor(options: { color: string }): Promise<void>
+}
+const WindowBackground = registerPlugin<WindowBackgroundPlugin>('WindowBackground')
 
 export const THEMES = ['oled', 'dark', 'light'] as const
 export type Theme = (typeof THEMES)[number]
@@ -37,17 +43,24 @@ export function applyTheme(theme: Theme, root: HTMLElement = document.documentEl
   const background = getComputedStyle(root).getPropertyValue('--background').trim()
   if (meta && background) meta.setAttribute('content', background)
 
-  syncSystemBars(theme)
+  syncSystemBars(theme, background)
 }
 
-// Në Android, ora dhe bateria lart duhet të lexohen mbi sfondin e temës:
-// ikona të çelëta mbi OLED dhe të errët, të errëta mbi temën e çelët.
-function syncSystemBars(theme: Theme) {
+// Në Android, ora dhe bateria lart duhet të lexohen mbi sfondin e temës: ikona të çelëta mbi
+// OLED dhe të errët, të errëta mbi temën e çelët. Në WebView para versionit 140, Android e
+// vendos faqen poshtë shiritave dhe pas tyre duket dritarja, ndaj edhe ajo merr sfondin e temës.
+// SystemBars.setStyle e kthen dritaren në ngjyrën e nisjes, prandaj ngjyra vendoset pas tij.
+function syncSystemBars(theme: Theme, background: string) {
   if (!Capacitor.isNativePlatform()) return
   const style = theme === 'light' ? SystemBarsStyle.Light : SystemBarsStyle.Dark
-  SystemBars.setStyle({ style }).catch(() => {
-    // Pa plugin-in, shiritat mbeten si në nisje; tema e app-it nuk varet prej tyre.
-  })
+  SystemBars.setStyle({ style })
+    .catch(() => {
+      // Pa plugin-in, ikonat mbeten si në nisje; tema e app-it nuk varet prej tyre.
+    })
+    .then(() => (background ? WindowBackground.setColor({ color: background }) : undefined))
+    .catch(() => {
+      // Ngjyrë e panjohur ose plugin që mungon: dritarja mbetet e zezë si në nisje.
+    })
 }
 
 export function saveTheme(theme: Theme) {

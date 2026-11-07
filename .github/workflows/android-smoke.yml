@@ -13,6 +13,8 @@ on:
       - 'index.html'
       - 'src/main.tsx'
       - 'src/lib/theme.ts'
+      - 'src/lib/back-button.ts'
+      - 'src/components/layout/app-shell.tsx'
       - 'package.json'
       - 'scripts/android-smoke.mjs'
       - '.github/workflows/android-smoke.yml'
