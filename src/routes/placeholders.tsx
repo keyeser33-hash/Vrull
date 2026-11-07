@@ -1,16 +1,5 @@
 import { EmptyCard, PageHeader } from '@/components/layout/page'
 
-export function ProgressPage() {
-  return (
-    <>
-      <PageHeader title="Progresi" />
-      <EmptyCard title="Grafikët dhe matjet">
-        Forca për çdo ushtrim, pesha e trupit, perimetrat dhe fotot e progresit.
-      </EmptyCard>
-    </>
-  )
-}
-
 export function BodyPage() {
   return (
     <>
