@@ -329,7 +329,10 @@ try {
   // 3. Hapat e hyrjes së parë.
   await waitForHeading(page, 'Sa peshon sot?')
   screenshot('2-pesha')
+  // Fusha e peshës merr vlerën kur del fokusi, si te telefoni kur prek "Vazhdo".
+  await page.evaluate(`document.querySelector('input[inputmode="decimal"]').focus()`)
   await type(page, 'input[inputmode="decimal"]', '80,5')
+  await page.evaluate(`document.querySelector('input[inputmode="decimal"]').blur()`)
   await clickButton(page, 'Vazhdo')
   await waitForHeading(page, 'Kur stërvitesh?')
   screenshot('3-stervitja')

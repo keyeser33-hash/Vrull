@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router'
+import { ValueStepper } from '@/components/forms/value-stepper'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
@@ -536,61 +537,21 @@ function Stepper({
   minusLabel: string
   plusLabel: string
 }) {
-  const [text, setText] = useState<string | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const id = useId()
   const set = (next: number) => onChange(Math.min(max, Math.max(0, Math.round(next * 100) / 100)))
-  const commit = () => {
-    if (text === null) return
-    const parsed = Number(text.replace(',', '.'))
-    if (Number.isFinite(parsed)) set(decimals ? parsed : Math.round(parsed))
-    setText(null)
-  }
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_52px_minmax(0,112px)_52px] items-center gap-2 rounded-full border border-border bg-card py-1.5 pr-1.5 pl-5 tabular-nums">
-      <label htmlFor={id} className="text-sm leading-5 text-muted-foreground">
-        {label}
-      </label>
-      <button
-        type="button"
-        aria-label={minusLabel}
-        onClick={() => set(value - step)}
-        className="flex size-[52px] items-center justify-center rounded-full border border-input text-foreground"
-      >
-        <Icon name="hiq" size={28} />
-      </button>
-      <span className="flex items-baseline justify-center">
-        <input
-          ref={inputRef}
-          id={id}
-          inputMode={decimals ? 'decimal' : 'numeric'}
-          value={text ?? (decimals ? kg(value) : String(value))}
-          onFocus={(event) => {
-            setText(decimals ? kg(value) : String(value))
-            event.currentTarget.select()
-          }}
-          onChange={(event) => setText(event.currentTarget.value)}
-          onBlur={commit}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault()
-              commit()
-              event.currentTarget.blur()
-            }
-          }}
-          className="h-11 w-full min-w-0 bg-transparent text-right text-3xl leading-9 font-bold tracking-[-0.025em] outline-none"
-          style={{ width: `${Math.max(2, (text ?? (decimals ? kg(value) : String(value))).length) + 0.5}ch` }}
-        />
-        <span className="ml-1 text-sm font-medium text-muted-foreground">{unit}</span>
-      </span>
-      <button
-        type="button"
-        aria-label={plusLabel}
-        onClick={() => set(value + step)}
-        className="flex size-[52px] items-center justify-center rounded-full border border-input text-foreground"
-      >
-        <Icon name="shto" size={28} />
-      </button>
-    </div>
+    <ValueStepper
+      label={label}
+      text={decimals ? kg(value) : String(value)}
+      unit={unit}
+      inputMode={decimals ? 'decimal' : 'numeric'}
+      minusLabel={minusLabel}
+      plusLabel={plusLabel}
+      onMinus={() => set(value - step)}
+      onPlus={() => set(value + step)}
+      onCommit={(text) => {
+        const parsed = Number(text.replace(',', '.'))
+        if (Number.isFinite(parsed)) set(decimals ? parsed : Math.round(parsed))
+      }}
+    />
   )
 }

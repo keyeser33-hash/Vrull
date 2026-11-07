@@ -33,7 +33,7 @@ describe('hapat e hyrjes së parë', () => {
 
     expect(screen.getByText('Hapi 1 nga 4')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1, name: 'Sa peshon sot?' })).toBeInTheDocument()
-    await user.type(screen.getByLabelText('Pesha (kg)'), '80,5')
+    await user.type(screen.getByLabelText('Pesha'), '80,5')
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
 
     expect(screen.getByRole('heading', { level: 1, name: 'Kur stërvitesh?' })).toBeInTheDocument()
@@ -69,17 +69,17 @@ describe('hapat e hyrjes së parë', () => {
   it('pesha e pavlefshme ndal hapin dhe e thotë nën fushë', async () => {
     renderOnboarding()
     const user = userEvent.setup()
-    await user.type(screen.getByLabelText('Pesha (kg)'), '8')
+    await user.type(screen.getByLabelText('Pesha'), '8')
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
-    expect(screen.getByLabelText('Pesha (kg)')).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByLabelText('Pesha (kg)')).toHaveAccessibleDescription(/mes 30 dhe 300 kg/)
+    expect(screen.getByLabelText('Pesha')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('Pesha')).toHaveAccessibleDescription(/mes 30 dhe 300 kg/)
     expect(screen.getByText('Hapi 1 nga 4')).toBeInTheDocument()
   })
 
   it('pa asnjë ditë stërvitjeje nuk vazhdon; butoni mbrapa kthen te hapi i mëparshëm', async () => {
     renderOnboarding()
     const user = userEvent.setup()
-    await user.type(screen.getByLabelText('Pesha (kg)'), '80')
+    await user.type(screen.getByLabelText('Pesha'), '80')
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
     for (const day of ['E hënë', 'E martë', 'E enjte', 'E premte']) {
       await user.click(screen.getByRole('button', { name: day }))
@@ -88,6 +88,41 @@ describe('hapat e hyrjes së parë', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Zgjidh të paktën një ditë stërvitjeje.')
 
     await user.click(screen.getByRole('button', { name: 'Kthehu te hapi i mëparshëm' }))
-    expect(screen.getByLabelText('Pesha (kg)')).toHaveValue('80')
+    expect(screen.getByLabelText('Pesha')).toHaveValue('80')
+  })
+})
+
+describe('hapat e parë me − dhe +', () => {
+  it('pesha nis nga 80 kg me prekjen e parë dhe ndryshon me 0,5 kg', async () => {
+    renderOnboarding()
+    const user = userEvent.setup()
+    expect(screen.getByLabelText('Pesha')).toHaveValue('')
+    await user.click(screen.getByRole('button', { name: 'Rrit peshën me 0,5 kg' }))
+    expect(screen.getByLabelText('Pesha')).toHaveValue('80')
+    await user.click(screen.getByRole('button', { name: 'Rrit peshën me 0,5 kg' }))
+    await user.click(screen.getByRole('button', { name: 'Rrit peshën me 0,5 kg' }))
+    await user.click(screen.getByRole('button', { name: 'Ul peshën me 0,5 kg' }))
+    expect(screen.getByLabelText('Pesha')).toHaveValue('80,5')
+  })
+
+  it('ora në 24 orë, me 15 minuta; java e parë tregon stërvitjen e çdo dite', async () => {
+    renderOnboarding()
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Pesha'), '80')
+    await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
+    expect(screen.getByLabelText('Ora e zakonshme e stërvitjes')).toHaveValue('18:00')
+    await user.click(screen.getByRole('button', { name: 'Ora e stërvitjes 15 minuta më vonë' }))
+    expect(screen.getByLabelText('Ora e zakonshme e stërvitjes')).toHaveValue('18:15')
+    const week = screen.getByRole('list', { name: 'Java e parë' })
+    expect([...week.querySelectorAll('li')].map((row) => row.textContent)).toEqual([
+      'E hënëStërvitja 1 · Gjoks, triceps, pulpa',
+      'E martëStërvitja 2 · Shpinë, biceps, bark',
+      'E enjteStërvitja 3 · Shpatulla, trapez, pulpa',
+      'E premteStërvitja 4 · Këmbë, bark',
+    ])
+    const time = screen.getByLabelText('Ora e zakonshme e stërvitjes')
+    await user.clear(time)
+    await user.type(time, '1930{enter}')
+    expect(time).toHaveValue('19:30')
   })
 })
