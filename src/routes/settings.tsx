@@ -3,12 +3,13 @@ import { Link } from 'react-router'
 import { PageHeader } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
-import { scheduler, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import { auth, scheduler, useAuth, usePendingChanges, useSyncStatus } from '@/data/app-data'
 import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
 import { Icon } from '@/components/ui/icons'
 import { cn } from '@/lib/cn'
 import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
+import { ProfileSection } from './settings-profile'
 
 export function SettingsPage() {
   const [theme, setTheme] = useState<Theme>(readTheme)
@@ -32,7 +33,8 @@ export function SettingsPage() {
           </Link>
         }
       />
-      <section className="rounded-xl border border-border bg-card p-4 shadow-sm">
+      <ProfileSection />
+      <section className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
         <fieldset>
           <legend className="text-lg leading-7 font-semibold tracking-[-0.01em]">Tema</legend>
           <p className="mt-1 text-sm leading-5 text-muted-foreground">
@@ -64,6 +66,7 @@ export function SettingsPage() {
         </fieldset>
       </section>
       <DataSection />
+      <AccountSection />
       <p className="mt-6 text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
     </>
   )
@@ -123,6 +126,30 @@ function DataSection() {
           {problem}
         </p>
       )}
+    </section>
+  )
+}
+
+function AccountSection() {
+  const session = useAuth()
+  const pending = usePendingChanges()
+  return (
+    <section aria-labelledby="account-title" className="mt-4 rounded-xl border border-border bg-card p-4 shadow-sm">
+      <h2 id="account-title" className="text-lg leading-7 font-semibold tracking-[-0.01em]">
+        Llogaria
+      </h2>
+      {session.email ? (
+        <p className="mt-1 text-sm leading-5 text-muted-foreground">Ke hyrë si {session.email}</p>
+      ) : null}
+      {pending > 0 ? (
+        <p className="mt-1 text-sm leading-5 text-muted-foreground">
+          Ndryshimet që presin mbeten në telefon dhe dërgohen kur të hysh përsëri.
+        </p>
+      ) : null}
+      <Button variant="outline" className="mt-4 w-full" onClick={() => void auth.signOut()}>
+        <Icon name="dil" size={20} />
+        Dil nga llogaria
+      </Button>
     </section>
   )
 }

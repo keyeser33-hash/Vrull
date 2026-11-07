@@ -58,6 +58,8 @@ export interface SyncOptions {
 
 const MIN_UUID = '00000000-0000-0000-0000-000000000000'
 const LAST_RESULT_KEY = 'sync:last'
+// Përdoruesi për të cilin marrja e plotë ka përfunduar të paktën një herë në këtë telefon.
+const PULLED_KEY = 'sync:pulled'
 const cursorKey = (table: TableName) => `sync:cursor:${table}`
 
 const instant = (value: unknown) => Date.parse(String(value))
@@ -210,6 +212,7 @@ export function createSync(options: SyncOptions) {
       // Marrja nuk ka varësi mes tabelave: kërkesat shkojnë paralelisht, 5 njëkohësisht.
       const pulled = await inPool(TABLES, 5, pull)
       result.pulled = pulled.reduce((sum, count) => sum + count, 0)
+      await db._meta.put({ key: PULLED_KEY, value: options.userId() })
       if (result.rejected > 0) {
         result.status = 'error'
         result.error = `${result.rejected} ndryshime u refuzuan nga serveri`
@@ -229,6 +232,10 @@ export function createSync(options: SyncOptions) {
         inflight = null
       })
       return inflight
+    },
+    /** Për kë janë marrë të dhënat të paktën një herë (null kur kurrë). */
+    async pulledFor(): Promise<string | null> {
+      return ((await db._meta.get(PULLED_KEY))?.value as string | undefined) ?? null
     },
     async lastResult(): Promise<SyncResult | undefined> {
       return (await db._meta.get(LAST_RESULT_KEY))?.value as SyncResult | undefined

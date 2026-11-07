@@ -76,6 +76,8 @@ Prova reale: `src/data/sync.e2e.test.ts`, me një përdorues prove të përkohsh
 
 **Pranimi:** pas instalimit të ri, hyrja e parë përfundon në më pak se dy minuta dhe ekrani Sot tregon "Java 0 · Stërvitja 1"; pa internet pas hyrjes, app-i hapet direkt te Sot.
 
+Prova në emulator e kalon gjithë rrugën me Supabase të imituar (build-i i provës përdor `VITE_SUPABASE_URL=https://smoke.invalid`), përfshirë përditësimin v1 → v2 dhe hapjen pa internet.
+
 ## TH-05 · Spike 3D
 
 - `tools/anatomy/`: shkarkon BodyParts3D 4.0 (OBJ 99%) dhe latissimus dorsi + rectus abdominis nga 3.0; zgjedh elementet sipas Shtojcës D; bashkon majtas/djathtas; thjeshton; nxjerr GLB me një nyje për çdo çelës.

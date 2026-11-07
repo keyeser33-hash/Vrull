@@ -214,6 +214,17 @@ describe('sinkronizimi', () => {
     expect(remote.calls.filter((call) => call.op === 'upsert')).toHaveLength(1)
   })
 
+  it('shënon që të dhënat e përdoruesit janë marrë të paktën një herë', async () => {
+    const phone = device(remote)
+    expect(await phone.sync.pulledFor()).toBeNull()
+    remote.offline = true
+    await phone.sync.run()
+    expect(await phone.sync.pulledFor()).toBeNull()
+    remote.offline = false
+    await phone.sync.run()
+    expect(await phone.sync.pulledFor()).toBe(USER)
+  })
+
   it('ruan kohën dhe gjendjen e sinkronizimit të fundit', async () => {
     const phone = device(remote)
     await phone.sync.run()

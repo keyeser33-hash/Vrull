@@ -47,7 +47,9 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 4. Ora e zgjimit dhe e gjumit, për rikujtuesit.
 5. Programi aktiv: Shortcut to Size, duke nisur nga Java 0.
 
-Çdo hap ndryshohet më vonë te cilësimet. Lejet e njoftimeve kërkohen në stërvitjen e parë, kur nevojiten, jo këtu.
+Çdo hap ndryshohet më vonë te cilësimet (Profili: pesha e sotme, ditët, ora e stërvitjes, zgjimi, gjumi; Llogaria: dalja). Lejet e njoftimeve kërkohen në stërvitjen e parë, kur nevojiten, jo këtu.
+
+Pas hyrjes, para hapave, app-i merr të dhënat ekzistuese nga Supabase ("Po merren të dhënat e tua"; pa internet: "Provo përsëri"), që një instalim i ri të mos i përsërisë hapat dhe të mos krijojë një profil të dytë. Me profilin të plotësuar në telefon, app-i hapet direkt te Sot edhe pa internet. Hapi 5 krijon skeletin e Shortcut to Size (Java 0 dhe Fazat 1–3, me 4 ditët) dhe treguesin te Java 0 · Stërvitja 1; ushtrimet i shton TH-07. Dalja nga llogaria bëhet vetëm në telefon dhe nuk fshin të dhënat lokale. Porta e rrugëve: `src/routes/gate.tsx`, faza: `src/data/phase.ts`.
 
 ## 4. Modeli i programit
 

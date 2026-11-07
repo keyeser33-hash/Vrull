@@ -12,9 +12,11 @@ on:
       - 'capacitor.config.ts'
       - 'index.html'
       - 'src/main.tsx'
-      - 'src/lib/theme.ts'
-      - 'src/lib/back-button.ts'
-      - 'src/components/layout/app-shell.tsx'
+      - 'src/lib/**'
+      - 'src/components/layout/**'
+      - 'src/routes/**'
+      - 'src/data/**'
+      - 'src/router.tsx'
       - 'package.json'
       - 'scripts/android-smoke.mjs'
       - '.github/workflows/android-smoke.yml'
@@ -41,7 +43,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # Supabase i imituar: build-i i provës nuk flet kurrë me projektin e vërtetë.
       - run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://smoke.invalid
       - run: npx cap sync android
 
       - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1

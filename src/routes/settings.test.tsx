@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import pkg from '../../package.json'
-import { routes } from '@/router'
+import { appRoutes as routes } from '@/router'
 
 const share = vi.hoisted(() => ({ shareExport: vi.fn(async () => true) }))
 vi.mock('@/data/share-export', () => share)
