@@ -10,6 +10,7 @@ import {
   skipWorkout,
   startWorkout,
   switchProgram,
+  trainingHistory,
   trainingSnapshot,
 } from './training'
 
@@ -207,5 +208,45 @@ describe('"Ndrysho ushtrimin për këtë fazë"', () => {
     expect(names(await trainingSnapshot(store))?.[7]).toBe('Cable Crunch')
     for (let workout = 0; workout < 4; workout++) await skipWorkout(store)
     expect(names(await trainingSnapshot(store))?.[7]).toBe('Plank')
+  })
+})
+
+describe('historia për peshat dhe rikuperimin', () => {
+  it('setet me bllokun dhe javën e tyre; seancat e mbyllura me muskujt kryesorë', async () => {
+    const { store, advanceMinutes } = await onboarded()
+    const sessionId = await startWorkout(store)
+    const [bench, incline] = (await trainingSnapshot(store))!.plan.slots
+    await saveSet(store, { sessionId, slot: bench, setNumber: 1, weightKg: 47.5, reps: 12, rir: 3 })
+    await saveSet(store, { sessionId, slot: incline, setNumber: 1, weightKg: 30, reps: 13 })
+    advanceMinutes(50)
+    await finishWorkout(store, sessionId)
+    await skipWorkout(store)
+    const open = await startWorkout(store)
+    const [row] = (await trainingSnapshot(store))!.plan.slots
+    await saveSet(store, { sessionId: open, slot: row, setNumber: 1, weightKg: 20, reps: 12 })
+
+    const history = await trainingHistory(store)
+    expect(history.sets.find((entry) => entry.exerciseId === bench.exerciseId)).toMatchObject({
+      sessionId,
+      run: 1,
+      blockPosition: 0,
+      blockName: 'Java 0',
+      blockWeeks: 1,
+      week: 1,
+      setNumber: 1,
+      weightKg: 47.5,
+      reps: 12,
+      rir: 3,
+      isWarmup: false,
+    })
+    expect(history.sets).toHaveLength(3)
+    expect(history.worked).toEqual([
+      {
+        endedAt: '2026-12-07T17:50:00.000Z',
+        primaryKeys: ['pectoralis_major_sternocostal', 'pectoralis_major_clavicular'],
+      },
+    ])
+    expect(history.weightSteps).toMatchObject({})
+    expect(history.overrides).toEqual({})
   })
 })

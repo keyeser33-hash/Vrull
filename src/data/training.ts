@@ -1,5 +1,7 @@
 import { advance, blockWeekLabel, planSession, restart } from '@/program/engine'
 import { type LibraryExercise, muscleKeys } from '@/program/library'
+import type { HistorySet } from '@/program/loads'
+import type { WorkedSession } from '@/program/recovery'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import type {
   Block,
@@ -460,4 +462,61 @@ export async function replaceExerciseForBlock(
       exercise_id: exerciseId,
     })
   }
+}
+
+export interface TrainingHistory {
+  sets: HistorySet[]
+  worked: WorkedSession[]
+  overrides: Record<string, { oneRmKg: number; setAt: string }>
+  weightSteps: Partial<Record<Equipment, number>>
+}
+
+/** Historia e të gjitha stërvitjeve, për 1RM-në, referencat, rekordet dhe rikuperimin. */
+export async function trainingHistory(store: LocalStore): Promise<TrainingHistory> {
+  const [sessions, blocks, setRows, exerciseRows, overrideRows, row] = await Promise.all([
+    store.all('workout_sessions'),
+    store.all('program_blocks'),
+    store.all('set_logs'),
+    store.all('exercises'),
+    store.all('one_rm_overrides'),
+    settings(store),
+  ])
+  const sessionById = new Map(sessions.map((session) => [session.id, session]))
+  const blockById = new Map(blocks.map((block) => [block.id, block]))
+  const primary = new Map(exerciseRows.map((exercise) => [exercise.id, (exercise.primary_muscles as string[] | undefined) ?? []]))
+  const sets: HistorySet[] = []
+  for (const set of setRows) {
+    const session = sessionById.get(String(set.session_id))
+    if (!session) continue
+    const block = blockById.get(String(session.block_id))
+    sets.push({
+      id: set.id,
+      exerciseId: String(set.exercise_id),
+      sessionId: session.id,
+      run: Number(session.run ?? 1),
+      blockPosition: Number(block?.position ?? 0),
+      blockName: String(block?.name ?? ''),
+      blockWeeks: Number(block?.weeks ?? 1),
+      week: Number(session.week ?? 1),
+      setNumber: Number(set.set_number),
+      weightKg: numberOrNull(set.weight_kg),
+      reps: numberOrNull(set.reps),
+      rir: numberOrNull(set.rir),
+      isWarmup: Boolean(set.is_warmup),
+      loggedAt: String(set.logged_at),
+    })
+  }
+  sets.sort((a, b) => a.loggedAt.localeCompare(b.loggedAt))
+  const worked = sessions
+    .filter((session) => session.status === 'completed' && session.ended_at)
+    .sort((a, b) => String(a.ended_at).localeCompare(String(b.ended_at)))
+    .map((session) => ({
+      endedAt: String(session.ended_at),
+      primaryKeys: [...new Set(sets.filter((set) => set.sessionId === session.id).flatMap((set) => primary.get(set.exerciseId) ?? []))],
+    }))
+  const overrides: TrainingHistory['overrides'] = {}
+  for (const override of overrideRows.sort((a, b) => String(a.set_at).localeCompare(String(b.set_at)))) {
+    overrides[String(override.exercise_id)] = { oneRmKg: Number(override.one_rm_kg), setAt: String(override.set_at) }
+  }
+  return { sets, worked, overrides, weightSteps: (row?.weight_steps as TrainingHistory['weightSteps'] | undefined) ?? {} }
 }
