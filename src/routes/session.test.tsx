@@ -106,6 +106,12 @@ describe('Sot dhe seanca', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
     expect(screen.getByText('Seti 1 nga 3 · 12–15 përsëritje')).toBeInTheDocument()
     expect(screen.getByText('Zgjidh peshën ku mbyll 12–15 përsëritje')).toBeInTheDocument()
+    // Muskujt e ushtrimit hapen në fletë dhe mbyllen pa e humbur setin.
+    await user.click(screen.getByRole('button', { name: 'Muskujt e ushtrimit' }))
+    const muscles = screen.getByRole('dialog', { name: 'Muskujt e Bench Press' })
+    expect(within(muscles).getByRole('region', { name: 'Kryesorë' })).toHaveTextContent('Gjoksi i mesëm dhe i poshtëm')
+    await user.click(within(muscles).getByRole('button', { name: 'Mbyll' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     await user.click(screen.getByRole('button', { name: 'Rrit peshën me 2,5 kg' }))
     await user.click(screen.getByRole('button', { name: 'Rrit peshën me 2,5 kg' }))
     const reps = screen.getByLabelText('Përsëritjet')

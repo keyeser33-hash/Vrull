@@ -11,6 +11,7 @@ import type { PlannedSlot } from '@/program/types'
 import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { useRestTimer } from '@/lib/use-rest-timer'
+import { ExerciseMusclesSheet } from './exercise-muscles'
 import { ChangeExerciseSheet, ExerciseListSheet } from './session-sheets'
 import { clock, kg, setsText, targetText, techniqueText } from './training-format'
 
@@ -87,7 +88,7 @@ function ActiveSession({
   const progress = sessionProgress(plan, session.sets, selected)
   const elapsed = (now - Date.parse(session.startedAt)) / 1000
   const shownIndex = segment ? plan.slots.findIndex((slot) => slot.slotId === segment.slot.slotId) : progress.current
-  const openSheet = (name: 'lista' | 'ndrysho') => setParams({ [name]: '1' })
+  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt') => setParams({ [name]: '1' })
   const closeSheet = () => navigate(-1)
   const finish = () => {
     setBusy(true)
@@ -241,6 +242,7 @@ function ActiveSession({
       current={shownIndex}
       onMinimize={() => navigate('/')}
       onList={() => openSheet('lista')}
+      onMuscles={exercise ? () => openSheet('muskujt') : undefined}
     >
       <div className="flex items-end gap-3">
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -302,6 +304,7 @@ function ActiveSession({
         />
       ) : null}
       {params.has('ndrysho') ? <ChangeExerciseSheet plan={plan} slot={slot} exerciseName={exercise?.name ?? ''} onClose={closeSheet} /> : null}
+      {params.has('muskujt') && exercise ? <ExerciseMusclesSheet exercise={exercise} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 }
@@ -335,6 +338,7 @@ function SessionFrame({
   current,
   onMinimize,
   onList,
+  onMuscles,
   children,
 }: {
   heading: string
@@ -342,6 +346,8 @@ function SessionFrame({
   current: number | null
   onMinimize: () => void
   onList: () => void
+  /** Muskujt e ushtrimit të tanishëm te modeli 3D. */
+  onMuscles?: () => void
   children: React.ReactNode
 }) {
   return (
@@ -353,6 +359,11 @@ function SessionFrame({
             <Icon name="chevron-poshte" />
           </Button>
           <span className="flex-1 text-center text-sm leading-5 text-muted-foreground tabular-nums">{heading}</span>
+          {onMuscles ? (
+            <Button variant="ghost" size="icon" aria-label="Muskujt e ushtrimit" className="text-foreground" onClick={onMuscles}>
+              <Icon name="perdoruesi" />
+            </Button>
+          ) : null}
           <Button variant="ghost" size="icon" aria-label="Lista e ushtrimeve" className="text-foreground" onClick={onList}>
             <Icon name="lista" />
           </Button>

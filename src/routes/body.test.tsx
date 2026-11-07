@@ -7,9 +7,11 @@ import type { LocalStore } from '@/data/store'
 
 interface ModelProps {
   paint: (key: string) => Tone | null
-  onPick: (key: string) => void
+  onPick: (key: string | null) => void
   back: boolean
   onBackChange: (back: boolean) => void
+  focus?: string[] | null
+  overlay?: React.ReactNode
   label: string
 }
 
@@ -38,17 +40,24 @@ vi.mock('@/data/app-data', async () => {
 const gl = vi.hoisted(() => ({ available: false }))
 vi.mock('@/lib/webgl', () => ({ webglAvailable: () => gl.available }))
 vi.mock('@/components/body/body-model', () => ({
-  default: ({ paint, onPick, back, onBackChange, label }: ModelProps) => (
-    <div role="img" aria-label={label}>
-      <p>{back ? 'modeli mbrapa' : 'modeli përpara'}</p>
-      {['pectoralis_major_sternocostal', 'gastrocnemius'].map((key) => (
-        <button key={key} type="button" onClick={() => onPick(key)}>
-          {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}`}
+  default: ({ paint, onPick, back, onBackChange, focus, overlay, label }: ModelProps) => (
+    <div>
+      <div role="img" aria-label={label}>
+        <p>{back ? 'modeli mbrapa' : 'modeli përpara'}</p>
+        <p>{focus ? `fokusi ${focus.join(' ')}` : 'pa fokus'}</p>
+        {['pectoralis_major_sternocostal', 'gastrocnemius'].map((key) => (
+          <button key={key} type="button" onClick={() => onPick(key)}>
+            {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}`}
+          </button>
+        ))}
+        <button type="button" onClick={() => onPick(null)}>
+          prek jashtë trupit
         </button>
-      ))}
-      <button type="button" onClick={() => onBackChange(!back)}>
-        zvarrit gjysmë rrotullimi
-      </button>
+        <button type="button" onClick={() => onBackChange(!back)}>
+          zvarrit gjysmë rrotullimi
+        </button>
+      </div>
+      {overlay}
     </div>
   ),
 }))
@@ -121,8 +130,31 @@ describe('Trupi', () => {
     expect(await within(model).findByText('pectoralis_major_sternocostal --brand 0.3')).toBeInTheDocument()
     expect(within(model).getByText('gastrocnemius pa 0')).toBeInTheDocument()
 
+    // Prekja e muskulit: fokusi te grupi, emri i pjesës dhe "Më shumë" që hap fletën.
     await user.click(within(model).getByText(/^gastrocnemius/))
+    expect(model).toHaveTextContent('fokusi gastrocnemius soleus')
+    const chip = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
+    expect(chip).toHaveTextContent('Pulpat')
+    expect(chip).toHaveTextContent('Gastroknemiusi · 0 sete')
+    await user.click(within(chip).getByRole('button', { name: 'Më shumë për Pulpat' }))
     expect(screen.getByRole('dialog', { name: 'Pulpat' })).toHaveTextContent('Gastrocnemius, soleus')
+  })
+
+  it('modeli 3D: prekja jashtë trupit e heq fokusin', async () => {
+    localStorage.setItem('th-body-view', '3d')
+    gl.available = true
+    const user = userEvent.setup()
+    await renderPage()
+    const model = await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })
+    await user.click(within(model).getByText(/^pectoralis_major_sternocostal/))
+    expect(screen.getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('Gjoksi i mesëm dhe i poshtëm · I lodhur')
+    await user.click(within(model).getByRole('button', { name: 'prek jashtë trupit' }))
+    expect(model).toHaveTextContent('pa fokus')
+    expect(screen.queryByRole('group', { name: 'Muskuli i zgjedhur' })).not.toBeInTheDocument()
+    // Edhe "×" te emri e heq fokusin (kur modeli është zmadhuar, jashtë trupit s'ka vend bosh).
+    await user.click(within(model).getByText(/^pectoralis_major_sternocostal/))
+    await user.click(within(screen.getByRole('group', { name: 'Muskuli i zgjedhur' })).getByRole('button', { name: 'Hiq fokusin' }))
+    expect(model).toHaveTextContent('pa fokus')
   })
 
   it('zgjedhja 3D e ruajtur hapet vetë', async () => {

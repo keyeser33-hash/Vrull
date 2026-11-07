@@ -17,6 +17,7 @@ import type { DayStatus, OverviewWeek } from '@/program/overview'
 import { cn } from '@/lib/cn'
 import { embedUrl, watchUrl, youtubeId } from '@/lib/youtube'
 import { editorPath } from './editor-nav'
+import { ExerciseMusclesSheet } from './exercise-muscles'
 import { ChangeExerciseSheet } from './session-sheets'
 import { dateLabel, EQUIPMENT_LABEL, kg, setsText, techniqueText } from './training-format'
 
@@ -261,6 +262,9 @@ export function ExercisePage() {
             {exercise.name}
           </h1>
           <span className="text-sm leading-5 text-panel-muted-foreground">{musclesText(exercise.primary, exercise.secondary)}</span>
+          <button type="button" onClick={() => open('muskujt')} className={cn(buttonVariants({ variant: 'panel' }), 'mt-2 self-start')}>
+            Shiko muskujt
+          </button>
         </div>
         <BodyFigure primary={exercise.primary} secondary={exercise.secondary} label={`Muskujt e ${exercise.name}`} />
       </section>
@@ -314,6 +318,7 @@ export function ExercisePage() {
         </Button>
       ) : null}
 
+      {editor === 'muskujt' ? <ExerciseMusclesSheet exercise={exercise} onClose={() => navigate(-1)} /> : null}
       {editor === 'video' ? <VideoSheet exerciseId={exerciseId} initial={exercise.videoUrl ?? ''} onClose={() => navigate(-1)} /> : null}
       {editor === 'ushtrimi' && plan && slot ? (
         <ChangeExerciseSheet

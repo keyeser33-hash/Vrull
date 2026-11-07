@@ -455,13 +455,17 @@ try {
       60_000,
     )
     check('Trupi: modeli 3D vizatohet nga APK-ja', !(await page.evaluate(`document.body.innerText.includes('Modeli 3D nuk u ngarkua')`)))
-    // Prekje e vërtetë me gisht mbi gjoks: fleta e muskulit hapet dhe mbetet hapur (klikimi që pason
-    // prekjen nuk duhet ta mbyllë).
+    // Prekje e vërtetë me gisht mbi gjoks: muskuli fokusohet me emrin mbi model; "Më shumë" hap
+    // fletën, që mbetet hapur (klikimi që pason prekjen nuk duhet ta mbyllë).
     const point = await page.evaluate(`(() => { const box = document.querySelector('[role="img"] canvas').getBoundingClientRect(); return { x: box.left + box.width * 0.45, y: box.top + box.height * 0.28 } })()`)
     await page.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
     await page.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
     await sleep(1000)
-    check('Trupi 3D: prekja e muskulit hap fletën dhe e mban hapur', await page.evaluate(`!!document.querySelector('[role="dialog"]')`), await page.evaluate('location.search'))
+    const chip = await page.evaluate(`document.querySelector('[aria-label="Muskuli i zgjedhur"]')?.textContent ?? ''`)
+    check('Trupi 3D: prekja e muskulit e fokuson dhe tregon emrin', chip.startsWith('Gjoksi'), chip)
+    await page.evaluate(`document.querySelector('[aria-label="Muskuli i zgjedhur"] button').click()`)
+    await sleep(800)
+    check('Trupi 3D: "Më shumë" hap fletën e muskulit dhe e mban hapur', await page.evaluate(`!!document.querySelector('[role="dialog"]')`), await page.evaluate('location.search'))
     await pressBack()
     await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën e muskulit')
     report.model3d = await page.evaluate(`new Promise((resolve) => {

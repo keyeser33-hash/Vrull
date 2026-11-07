@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -93,6 +93,11 @@ describe('Programi', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
     expect(screen.getByText('Kryesorë: gjoksi. Ndihmës: shpatullat, tricepsi.')).toBeInTheDocument()
     expect(screen.getAllByText('Ende pa sete')).toHaveLength(3)
+    await user.click(screen.getByRole('button', { name: 'Shiko muskujt' }))
+    const muscles = screen.getByRole('dialog', { name: 'Muskujt e Bench Press' })
+    expect(within(muscles).getByRole('region', { name: 'Ndihmës' })).toHaveTextContent('Tricepsi')
+    await user.click(within(muscles).getByRole('button', { name: 'Mbyll' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
 
     await user.click(screen.getByRole('button', { name: 'Shto video' }))
     const sheet = screen.getByRole('dialog', { name: 'Videoja e ushtrimit' })

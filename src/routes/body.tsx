@@ -6,9 +6,11 @@ import { Sheet } from '@/components/layout/sheet'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type BodyGroup, bodyView } from '@/data/body'
 import { libraryExercisesFor, LOAD_LEVELS } from '@/body/body-map'
+import { KEY_NAMES } from '@/body/muscle-info'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { Icon } from '@/components/ui/icons'
 import { cn } from '@/lib/cn'
 import { safeStorage } from '@/lib/safe-storage'
 import { webglAvailable } from '@/lib/webgl'
@@ -38,6 +40,8 @@ export function BodyPage() {
   const mode: BodyMode = params.get('pamja') === 'volumi' ? 'volumi' : 'rikuperimi'
   const [view, setView] = useState<View>(readView)
   const [back, setBack] = useState(false)
+  // Muskuli i prekur te modeli 3D: grupi theksohet dhe kamera i afrohet.
+  const [focus, setFocus] = useState<{ id: string; key: string } | null>(null)
   const choose = (next: View) => {
     setView(next)
     saveView(next)
@@ -65,6 +69,7 @@ export function BodyPage() {
     const group = groupOf(keys)
     if (group) open(group.id)
   }
+  const focused = focus ? byId.get(focus.id) : undefined
   const mapLabel = mode === 'volumi' ? 'Volumi i javës sipas muskujve' : 'Rikuperimi sipas muskujve'
   const setMode = (next: BodyMode) => setParams((current) => (current.set('pamja', next), current), { replace: true })
   const opened = byId.get(params.get('muskuli') ?? '')
@@ -96,7 +101,27 @@ export function BodyPage() {
         </div>
         {view === '3d' ? (
           <Suspense fallback={<div aria-hidden className="h-[360px]" />}>
-            <BodyModel paint={paintKey} onPick={(key) => pick([key])} back={back} onBackChange={setBack} label={mapLabel} />
+            <BodyModel
+              paint={paintKey}
+              onPick={(key) => {
+                const group = key ? groupOf([key]) : undefined
+                setFocus(key && group ? { id: group.id, key } : null)
+              }}
+              focus={focused?.group.keys ?? null}
+              overlay={
+                focused && focus ? (
+                  <FocusChip
+                    title={focused.group.name}
+                    detail={`${KEY_NAMES[focus.key] ?? focused.group.name} · ${modeStyle(mode, focused).text}`}
+                    onOpen={() => open(focused.group.id)}
+                    onClear={() => setFocus(null)}
+                  />
+                ) : null
+              }
+              back={back}
+              onBackChange={setBack}
+              label={mapLabel}
+            />
           </Suspense>
         ) : (
           <BodyFigure
@@ -170,6 +195,28 @@ export function BodyPage() {
       </Group>
 
       {opened ? <MuscleSheet entry={opened} onClose={() => navigate(-1)} /> : null}
+    </div>
+  )
+}
+
+/** Emri i muskulit të zgjedhur mbi modelin 3D, me "Më shumë" që hap fletën e tij. */
+function FocusChip({ title, detail, onOpen, onClear }: { title: string; detail: string; onOpen: () => void; onClear: () => void }) {
+  return (
+    <div
+      role="group"
+      aria-label="Muskuli i zgjedhur"
+      className="mb-1 flex w-full max-w-[340px] items-center gap-3 rounded-2xl bg-panel-button/95 py-1.5 pr-0.5 pl-4 text-panel-foreground shadow-md"
+    >
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate text-sm leading-5 font-semibold">{title}</span>
+        <span className="truncate text-xs leading-4 text-panel-foreground/80">{detail}</span>
+      </span>
+      <button type="button" aria-label={`Më shumë për ${title}`} onClick={onOpen} className={buttonVariants({ variant: 'on-panel', size: 'default' })}>
+        Më shumë
+      </button>
+      <button type="button" aria-label="Hiq fokusin" onClick={onClear} className="flex size-11 shrink-0 items-center justify-center rounded-full text-panel-foreground">
+        <Icon name="mbyll" size={20} />
+      </button>
     </div>
   )
 }
