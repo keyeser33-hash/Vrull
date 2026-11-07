@@ -1,8 +1,8 @@
 import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { BODY_CENTER, facingAngle, focusView, MAX_DISTANCE, zoomed } from '@/body/model-focus'
-import { blendOver, hexToRgb, nearestAngle, type Tone } from '@/body/model-math'
+import { BODY_CENTER, facesBack, focusShade, focusView, MAX_DISTANCE, zoomed } from '@/body/model-focus'
+import { hexToRgb, nearestAngle, shadeRgb, type Tone } from '@/body/model-math'
 import { cn } from '@/lib/cn'
 
 // Modeli 3D i trupit (SPEC §11, TH-05, TH-19): BodyParts3D, një nyje për çdo çelës të Shtojcës D
@@ -18,14 +18,12 @@ const RADIANS_PER_PIXEL = 0.012
 // Muskuli pa vlerë: gri i errët mbi panel, që forma të lexohet pa u ngatërruar me legjendën.
 const BASE: Tone = { token: '--panel-muted-foreground', alpha: 0.2 }
 const SOLID = (token: string): Tone => ({ token, alpha: 1 })
-// Gjatë fokusit, muskujt e tjerë afrohen kaq drejt panelit.
-const DIM = 0.6
-
-/** Ngjyra e një toni mbi panel, si te figura 2D, në ngjyrën e three.js. */
-function toneColor(element: Element, tone: Tone, target = new THREE.Color(), dim = 0) {
+/** Ngjyra e një toni mbi panel, si te figura 2D, me theksimin ose zbehjen e fokusit, në ngjyrën e three.js. */
+function toneColor(element: Element, tone: Tone, target = new THREE.Color(), shade = focusShade(null)) {
   const read = (token: string) => hexToRgb(getComputedStyle(element).getPropertyValue(token))
   const panel = read('--panel') ?? [0, 0, 0]
-  const [r, g, b] = blendOver(blendOver(panel, read(tone.token) ?? panel, tone.alpha), panel, dim)
+  const palette = { panel, color: read(tone.token) ?? panel, foreground: read('--panel-foreground') ?? panel }
+  const [r, g, b] = shadeRgb(palette, tone.alpha, shade)
   return target.setRGB(r, g, b, THREE.SRGBColorSpace)
 }
 
@@ -47,6 +45,7 @@ export default function BodyModel({
   back,
   onBackChange,
   focus = null,
+  focusRequest = 0,
   face,
   overlay,
   label,
@@ -60,6 +59,8 @@ export default function BodyModel({
   onBackChange: (back: boolean) => void
   /** Çelësat e theksuar; kamera u afrohet. null: i gjithë trupi. */
   focus?: string[] | null
+  /** Rritet me çdo prekje: e njëjta zgjedhje, pas një rrotullimi ose zmadhimi, e afron përsëri kamerën. */
+  focusRequest?: number
   /** Çelësat nga të cilët kthehet modeli kur hapet (p.sh. muskujt kryesorë të ushtrimit). */
   face?: string[]
   /** Përmbajtje mbi pjesën e poshtme të modelit (p.sh. emri i muskulit të zgjedhur). */
@@ -120,6 +121,8 @@ export default function BodyModel({
       body.rotation.y = view.rotation
       camera.position.set(0, view.height + 0.02, view.distance)
       camera.lookAt(0, view.height, 0)
+      // Për provat (zmadhimi me dy gishta në emulator): sa larg është kamera.
+      element.dataset.distance = view.distance.toFixed(2)
     }
     const animate = () => {
       frame = 0
@@ -227,14 +230,8 @@ export default function BodyModel({
       const [hit] = raycaster.intersectObjects([...muscles.values()], false)
       pick(hit ? hit.object.name : null)
     }
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault()
-      target.distance = zoomed(target.distance, event.deltaY < 0 ? 1.15 : 1 / 1.15)
-      schedule()
-    }
     canvas.addEventListener('pointerdown', onDown)
     canvas.addEventListener('click', onClick)
-    canvas.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
     window.addEventListener('pointercancel', onUp)
@@ -258,20 +255,16 @@ export default function BodyModel({
         })
         body.add(gltf.scene)
         // Ana e nisjes: nga prindi, ose nga muskujt që duhet të duken (p.sh. Romanian Deadlift mbrapa).
-        const faced = initialFace.current?.length ? boxOf(initialFace.current) : null
-        if (faced && !facing.current) {
-          const center = faced.getCenter(new THREE.Vector3())
-          if (center.z < 0) {
-            facing.current = true
-            reportFacing(true)
-          }
+        if (!facing.current && initialFace.current && facesBack(initialFace.current)) {
+          facing.current = true
+          reportFacing(true)
         }
         target.rotation = view.rotation = facing.current ? Math.PI : 0
         place()
         api.current = {
           repaint(next, focused) {
             for (const [name, mesh] of muscles) {
-              toneColor(element, next(name) ?? BASE, mesh.material.color, focused && !focused.includes(name) ? DIM : 0)
+              toneColor(element, next(name) ?? BASE, mesh.material.color, focusShade(focused ? focused.includes(name) : null))
             }
             schedule()
           },
@@ -281,13 +274,12 @@ export default function BodyModel({
           },
           focus(keys) {
             const box = keys ? boxOf(keys) : null
-            if (!box) {
+            if (!keys || !box) {
               target.height = BODY_CENTER
               target.distance = MAX_DISTANCE
             } else {
-              const center = box.getCenter(new THREE.Vector3())
               const fit = focusView({ min: box.min.toArray(), max: box.max.toArray() })
-              target.rotation = nearestAngle(facingAngle(center), view.rotation)
+              target.rotation = nearestAngle(facesBack(keys) ? Math.PI : 0, view.rotation)
               target.height = fit.height
               target.distance = fit.distance
               settleFacing()
@@ -308,7 +300,6 @@ export default function BodyModel({
       observer.disconnect()
       canvas.removeEventListener('pointerdown', onDown)
       canvas.removeEventListener('click', onClick)
-      canvas.removeEventListener('wheel', onWheel)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
@@ -330,7 +321,7 @@ export default function BodyModel({
 
   useEffect(() => {
     if (state === 'ready') api.current?.focus(focusKey ? focusKey.split(',') : null)
-  }, [focusKey, state])
+  }, [focusKey, focusRequest, state])
 
   useEffect(() => {
     if (state !== 'ready' || back === facing.current) return
@@ -346,7 +337,10 @@ export default function BodyModel({
           {state === 'loading' ? 'Po ngarkohet modeli' : 'Modeli 3D nuk u ngarkua'}
         </span>
       )}
-      {state === 'ready' && overlay ? <div className="absolute inset-x-0 bottom-0 flex justify-center px-2">{overlay}</div> : null}
+      {state === 'ready' && overlay ? (
+        // Shiriti rreth emrit nuk i merr prekjet: vetëm vetë emri, modeli poshtë tij rrotullohet dhe zgjedh.
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-2 [&>*]:pointer-events-auto">{overlay}</div>
+      ) : null}
     </div>
   )
 }

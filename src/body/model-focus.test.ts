@@ -1,16 +1,29 @@
-import { facingAngle, focusView, MAX_DISTANCE, MIN_DISTANCE, zoomed } from './model-focus'
+import { MUSCLE_GROUPS } from '@/program/muscles'
+import { facesBack, focusShade, focusView, MAX_DISTANCE, MIN_DISTANCE, sideOf, zoomed } from './model-focus'
 
 describe('fokusi i modelit 3D', () => {
-  it('kthen trupin që pika e fokusit të dalë përballë kamerës', () => {
-    // Gjoksi përpara: pa kthim. Shpina mbrapa: gjysmë rrotullimi. Krahu i djathtë anash: çerek.
-    expect(facingAngle({ x: 0, z: 0.1 })).toBeCloseTo(0)
-    expect(Math.abs(facingAngle({ x: 0, z: -0.1 }))).toBeCloseTo(Math.PI)
-    expect(facingAngle({ x: -0.2, z: 0 })).toBeCloseTo(Math.PI / 2)
-    // Pas rrotullimit me këtë kënd, pika bie mbi boshtin +Z.
-    const point = { x: 0.15, z: -0.05 }
-    const angle = facingAngle(point)
-    expect(point.x * Math.cos(angle) + point.z * Math.sin(angle)).toBeCloseTo(0)
-    expect(-point.x * Math.sin(angle) + point.z * Math.cos(angle)).toBeGreaterThan(0)
+  it('ana nga duket çdo muskul vjen nga figura 2D: bicepsi përpara edhe pse në model rri pak mbrapa', () => {
+    for (const key of MUSCLE_GROUPS.flatMap((group) => group.keys)) expect(['front', 'back', 'both'], key).toContain(sideOf(key))
+    expect(sideOf('biceps_brachii')).toBe('front')
+    expect(sideOf('deltoid_anterior')).toBe('front')
+    expect(sideOf('latissimus_dorsi')).toBe('back')
+    expect(sideOf('deltoid_lateral')).toBe('both')
+  })
+
+  it('modeli kthehet mbrapa vetëm kur shumica e muskujve duken mbrapa; barazimi mbetet përpara', () => {
+    expect(facesBack(['biceps_brachii', 'brachialis'])).toBe(false)
+    expect(facesBack(['deltoid_anterior', 'deltoid_lateral'])).toBe(false)
+    expect(facesBack(['biceps_femoris', 'semitendinosus', 'semimembranosus', 'gluteus_maximus'])).toBe(true)
+    expect(facesBack(['latissimus_dorsi', 'biceps_brachii'])).toBe(false)
+    expect(facesBack([])).toBe(false)
+  })
+
+  it('gjatë fokusit: muskuli i zgjedhur ndriçohet, të tjerët zbehen; pa fokus asgjë', () => {
+    expect(focusShade(null)).toEqual({ dim: 0, lift: 0 })
+    expect(focusShade(true).lift).toBeGreaterThan(0)
+    expect(focusShade(true).dim).toBe(0)
+    expect(focusShade(false).dim).toBeGreaterThan(0)
+    expect(focusShade(false).lift).toBe(0)
   })
 
   it('largësia e kamerës e nxë muskulin, brenda kufijve; lartësia ndjek qendrën e tij', () => {

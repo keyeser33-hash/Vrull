@@ -11,6 +11,7 @@ interface ModelProps {
   back: boolean
   onBackChange: (back: boolean) => void
   focus?: string[] | null
+  focusRequest?: number
   overlay?: React.ReactNode
   label: string
 }
@@ -40,11 +41,11 @@ vi.mock('@/data/app-data', async () => {
 const gl = vi.hoisted(() => ({ available: false }))
 vi.mock('@/lib/webgl', () => ({ webglAvailable: () => gl.available }))
 vi.mock('@/components/body/body-model', () => ({
-  default: ({ paint, onPick, back, onBackChange, focus, overlay, label }: ModelProps) => (
+  default: ({ paint, onPick, back, onBackChange, focus, focusRequest, overlay, label }: ModelProps) => (
     <div>
       <div role="img" aria-label={label}>
         <p>{back ? 'modeli mbrapa' : 'modeli përpara'}</p>
-        <p>{focus ? `fokusi ${focus.join(' ')}` : 'pa fokus'}</p>
+        <p>{focus ? `fokusi ${focus.join(' ')} · kërkesa ${focusRequest}` : 'pa fokus'}</p>
         {['pectoralis_major_sternocostal', 'gastrocnemius'].map((key) => (
           <button key={key} type="button" onClick={() => onPick(key)}>
             {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}`}
@@ -132,7 +133,10 @@ describe('Trupi', () => {
 
     // Prekja e muskulit: fokusi te grupi, emri i pjesës dhe "Më shumë" që hap fletën.
     await user.click(within(model).getByText(/^gastrocnemius/))
-    expect(model).toHaveTextContent('fokusi gastrocnemius soleus')
+    expect(model).toHaveTextContent('fokusi gastrocnemius soleus · kërkesa 1')
+    // E njëjta prekje përsëri (p.sh. pas një rrotullimi) e afron sërish kamerën.
+    await user.click(within(model).getByText(/^gastrocnemius/))
+    expect(model).toHaveTextContent('fokusi gastrocnemius soleus · kërkesa 2')
     const chip = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
     expect(chip).toHaveTextContent('Pulpat')
     expect(chip).toHaveTextContent('Gastroknemiusi · 0 sete')

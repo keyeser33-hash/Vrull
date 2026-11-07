@@ -1,4 +1,5 @@
-import { blendOver, hexToRgb, nearestAngle } from './model-math'
+import { blendOver, hexToRgb, nearestAngle, shadeRgb } from './model-math'
+import { focusShade } from './model-focus'
 
 describe('ngjyrat dhe rrotullimi i modelit 3D', () => {
   it('lexon tokenat hex me 6 dhe 3 shifra; çdo formë tjetër nuk lexohet', () => {
@@ -26,5 +27,17 @@ describe('ngjyrat dhe rrotullimi i modelit 3D', () => {
     expect(nearestAngle(Math.PI, 4 * Math.PI + 0.3)).toBeCloseTo(5 * Math.PI)
     expect(nearestAngle(0, -2 * Math.PI - 0.2)).toBeCloseTo(-2 * Math.PI)
     expect(Math.abs(nearestAngle(0, 7) - 7)).toBeLessThanOrEqual(Math.PI)
+  })
+
+  it('një muskul gri i fokusuar del më i ndritshëm se një muskul amber i zbehur (OLED)', () => {
+    const panel = hexToRgb('#0B0B0B')!
+    const muted = hexToRgb('#A3A3A3')!
+    const brand = hexToRgb('#F1A335')!
+    const foreground = hexToRgb('#F5F5F5')!
+    const luminance = ([r, g, b]: number[]) => 0.2126 * r + 0.7152 * g + 0.0722 * b
+    const focusedGrey = shadeRgb({ panel, color: muted, foreground }, 0.2, focusShade(true))
+    const dimmedAmber = shadeRgb({ panel, color: brand, foreground }, 1, focusShade(false))
+    expect(luminance(focusedGrey)).toBeGreaterThan(luminance(dimmedAmber))
+    shadeRgb({ panel, color: brand, foreground }, 1, focusShade(null)).forEach((value, index) => expect(value).toBeCloseTo(brand[index]))
   })
 })

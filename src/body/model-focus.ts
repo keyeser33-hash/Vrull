@@ -1,5 +1,7 @@
-// Fokusi i modelit 3D (SPEC §11): nga kutia e muskujve të zgjedhur, sa kthehet trupi dhe ku shkon
-// kamera. Koordinatat në metra, Y lart, Z përpara; kamera shikon nga +Z.
+import { BACK, FRONT } from './figure-regions'
+
+// Fokusi i modelit 3D (SPEC §11): nga cila anë shihen muskujt e zgjedhur, si theksohen, dhe ku
+// shkon kamera. Koordinatat në metra, Y lart, Z përpara; kamera shikon nga +Z.
 
 /** Largësia e kamerës kur shihet i gjithë trupi, dhe sa afër lejohet zmadhimi. */
 export const MAX_DISTANCE = 3.75
@@ -8,9 +10,29 @@ export const MIN_DISTANCE = 1.1
 export const BODY_CENTER = 0.86
 const FIELD_OF_VIEW = (28 * Math.PI) / 180
 
-/** Këndi i rrotullimit rreth Y që e sjell pikën (x, z) përballë kamerës (mbi boshtin +Z). */
-export function facingAngle(point: { x: number; z: number }) {
-  return Math.atan2(-point.x, point.z)
+const FRONT_KEYS = new Set(FRONT.flatMap((region) => region.keys))
+const BACK_KEYS = new Set(BACK.flatMap((region) => region.keys))
+
+/**
+ * Nga cila anë duket një muskul, si te figura 2D. Gjeometria nuk mjafton: te modeli krahët varen pak
+ * pas mesit të trupit, ndaj bicepsi dhe deltoidi i përparmë do të dukeshin "mbrapa".
+ */
+export function sideOf(key: string): 'front' | 'back' | 'both' {
+  const front = FRONT_KEYS.has(key)
+  const back = BACK_KEYS.has(key)
+  return front && back ? 'both' : back ? 'back' : 'front'
+}
+
+/** A duhet kthyer modeli mbrapa që këta muskuj të duken: shumica mbrapa; barazimi mbetet përpara. */
+export function facesBack(keys: string[]) {
+  const sides = keys.map(sideOf)
+  return sides.filter((side) => side === 'back').length > sides.filter((side) => side === 'front').length
+}
+
+/** Gjatë fokusit, i zgjedhuri ndriçohet (edhe kur s'ka ngjyrë) dhe të tjerët zbehen drejt panelit. */
+export function focusShade(focused: boolean | null) {
+  if (focused === null) return { dim: 0, lift: 0 }
+  return focused ? { dim: 0, lift: 0.35 } : { dim: 0.6, lift: 0 }
 }
 
 /** Kamera për një kuti: lartësia e qendrës dhe largësia që e nxë me pak hapësirë rreth saj. */

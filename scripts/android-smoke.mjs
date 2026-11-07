@@ -463,7 +463,23 @@ try {
     await sleep(1000)
     const chip = await page.evaluate(`document.querySelector('[aria-label="Muskuli i zgjedhur"]')?.textContent ?? ''`)
     check('Trupi 3D: prekja e muskulit e fokuson dhe tregon emrin', chip.startsWith('Gjoksi'), chip)
-    await page.evaluate(`document.querySelector('[aria-label="Muskuli i zgjedhur"] button').click()`)
+    // Dy gishta që afrohen: kamera largohet nga muskuli i fokusuar (data-distance te modeli rritet).
+    const zoomBefore = Number(await page.evaluate(`document.querySelector('[role="img"][data-distance]').dataset.distance`))
+    const middle = { x: point.x, y: point.y + 60 }
+    const fingers = (spread) => [
+      { x: middle.x - spread, y: middle.y, id: 1 },
+      { x: middle.x + spread, y: middle.y, id: 2 },
+    ]
+    await page.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: fingers(100) })
+    for (let spread = 90; spread >= 30; spread -= 10) await page.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: fingers(spread) })
+    await page.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await sleep(600)
+    const zoomAfter = Number(await page.evaluate(`document.querySelector('[role="img"][data-distance]').dataset.distance`))
+    check('Trupi 3D: dy gishta e ndryshojnë zmadhimin', zoomAfter > zoomBefore, `${zoomBefore} -> ${zoomAfter}`)
+    // "Më shumë" me prekje të vërtetë në qendër të butonit: fleta hapet dhe mbetet hapur.
+    const more = await page.evaluate(`(() => { const box = document.querySelector('[aria-label="Muskuli i zgjedhur"] button').getBoundingClientRect(); return { x: box.left + box.width / 2, y: box.top + box.height / 2 } })()`)
+    await page.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [more] })
+    await page.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
     await sleep(800)
     check('Trupi 3D: "Më shumë" hap fletën e muskulit dhe e mban hapur', await page.evaluate(`!!document.querySelector('[role="dialog"]')`), await page.evaluate('location.search'))
     await pressBack()

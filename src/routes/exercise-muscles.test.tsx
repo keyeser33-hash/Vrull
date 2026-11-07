@@ -60,10 +60,13 @@ describe('muskujt e ushtrimit në 3D', () => {
     const model = await within(sheet).findByRole('img', { name: 'Muskujt e Bench Press' })
     await user.click(within(sheet).getByRole('button', { name: 'Tricepsi' }))
     expect(model).toHaveTextContent('fokusi triceps_brachii')
-    expect(within(sheet).getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('Tricepsi · Ndihmës')
+    expect(within(sheet).getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('TricepsiNdihmës')
+    expect(within(sheet).getByRole('button', { name: 'Tricepsi' })).toHaveAttribute('aria-pressed', 'true')
     // Prekja te modeli i një muskuli që s'punon këtu e thotë.
     await user.click(within(model).getByText(/^gastrocnemius/))
-    expect(within(sheet).getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('Gastroknemiusi · Nuk punon te ky ushtrim')
+    expect(within(sheet).getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('GastroknemiusiNuk punon te ky ushtrim')
+    await user.click(within(sheet).getByRole('button', { name: 'Hiq fokusin' }))
+    expect(model).toHaveTextContent('pa fokus')
   })
 
   it('pa WebGL tregon figurën 2D me të njëjtët muskuj', async () => {

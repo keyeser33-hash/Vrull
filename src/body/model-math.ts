@@ -25,3 +25,12 @@ export function blendOver(panel: Rgb, color: Rgb, alpha: number): Rgb {
 export function nearestAngle(angle: number, current: number) {
   return angle + Math.round((current - angle) / (2 * Math.PI)) * 2 * Math.PI
 }
+
+/**
+ * Ngjyra përfundimtare e një muskuli: toni mbi panel, pastaj ndriçimi drejt tekstit të panelit
+ * (muskuli i fokusuar) ose zbehja drejt panelit (të tjerët gjatë fokusit).
+ */
+export function shadeRgb(palette: { panel: Rgb; color: Rgb; foreground: Rgb }, alpha: number, shade: { dim: number; lift: number }): Rgb {
+  const toned = blendOver(palette.panel, palette.color, alpha)
+  return blendOver(blendOver(toned, palette.foreground, shade.lift), palette.panel, shade.dim)
+}
