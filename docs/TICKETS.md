@@ -53,7 +53,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 ## TH-03 · Skema e Supabase, RLS, Auth, Storage
 
 - Migrime për tabelat e §15, me `user_id`, `updated_at`, `deleted_at` dhe RLS në secilën.
-- Auth me email dhe fjalëkalim; pas krijimit të llogarisë së përdoruesit, regjistrimet e reja çaktivizohen.
+- Auth me email dhe fjalëkalim; llogaria e vetme krijohet nga paneli i Supabase dhe regjistrimet e reja çaktivizohen që në fillim.
 - Bucket privat `progress-photos` me rrugë `<user_id>/...` dhe RLS te `storage.objects`.
 - Datat e ditarit dhe të stërvitjes si datë lokale; kohët në UTC (§15).
 
@@ -69,7 +69,7 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 
 ## TH-22 · Hyrja e parë
 
-- Hapat e SPEC §3a: llogaria, pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi, programi aktiv.
+- Hapat e SPEC §3a: hyrja, pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi, programi aktiv.
 - Çdo vlerë ndryshohet më vonë te cilësimet.
 
 **Pranimi:** pas instalimit të ri, hyrja e parë përfundon në më pak se dy minuta dhe ekrani Sot tregon "Java 0 · Stërvitja 1"; pa internet pas hyrjes, app-i hapet direkt te Sot.

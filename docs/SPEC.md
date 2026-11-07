@@ -35,13 +35,13 @@ Një aplikacion personal për Android që e çon përdoruesin, fillestar në pal
 - **Paketimi:** Capacitor Android. Plugin-et: njoftime lokale, dridhje (haptics), skaner barkodi, kamera për fotot. Lejet e Android-it: njoftimet (`POST_NOTIFICATIONS`, kërkohet në stërvitjen e parë) dhe alarmet e sakta (`SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`), pa të cilat Android mund ta vonojë njoftimin e timer-it me ekran të kyçur. APK-ja ndërtohet nga GitHub Actions dhe publikohet si GitHub Release; përditësimi është instalim i APK-së së re mbi të vjetrën, me të njëjtin çelës nënshkrimi (ruhet si secret në repo; workflow-i kontrollon gjurmën SHA-256 të certifikatës). `appId` është `al.traininghub.app` dhe nuk ndryshon më. Versioni vjen nga `package.json`; Android merr `versionCode = major × 10000 + minor × 100 + patch`. Ekrani shkon nga cepi në cep (SystemBars i Capacitor-it, `insetsHandling: native`) dhe ikonat e shiritave të sistemit ndjekin temën. Butoni mbrapa i Android-it kthen te faqja e mëparshme dhe mbyll app-in në fillim të historisë (`@capacitor/app`). Hapat për telefonin: `docs/INSTALL.md`.
 - **Ruajtja lokale:** Dexie (IndexedDB). Çdo veprim shkruan fillimisht lokalisht; asnjë ekran nuk pret rrjetin.
 - **Sinkronizimi:** çdo rresht ka `id` (UUID i krijuar në telefon), `updated_at`, `deleted_at`. Dërgohen rreshtat e ndryshuar, merren ato më të reja se sinkronizimi i fundit. Konfliktet: fiton ndryshimi më i fundit (një përdorues, një telefon).
-- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot (rrugët `<user_id>/...`, RLS te `storage.objects`), Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret). Pasi krijohet llogaria e përdoruesit, regjistrimet e reja çaktivizohen te Auth, që askush tjetër të mos hapë llogari në projekt.
+- **Supabase:** Postgres me RLS (`user_id = auth.uid()` në çdo tabelë), Auth me email dhe fjalëkalim (hyrja e parë kërkon internet, pastaj sesioni ruhet dhe app-i punon pa rrjet), Storage me bucket privat për fotot (rrugët `<user_id>/...`, RLS te `storage.objects`), Edge Function si ndërmjetës për USDA FoodData Central (çelësi si secret). Llogaria e vetme krijohet një herë nga paneli i Supabase (Authentication → Users → Add user) dhe regjistrimet e reja janë të çaktivizuara që në fillim, që askush tjetër të mos hapë llogari në projekt; app-i ka vetëm hyrjen.
 - **3D:** three.js përmes `@react-three/fiber`. Modeli është një GLB i gjeneruar nga një skript i përsëritshëm në `tools/anatomy/` (shih §11).
 - **Varësitë:** çdo paketë e re verifikohet para instalimit (autenticiteti, mirëmbajtja, licenca).
 
 ## 3a. Hyrja e parë
 
-1. Hyrja ose krijimi i llogarisë (email dhe fjalëkalim; kërkon internet vetëm këtë herë).
+1. Hyrja me email dhe fjalëkalim (llogaria krijohet te paneli i Supabase; hyrja kërkon internet vetëm këtë herë).
 2. Pesha e trupit sot (kg), e nevojshme për objektivat e ushqimit.
 3. Ditët e stërvitjes (parazgjedhje: e hënë, e martë, e enjte, e premte) dhe ora e zakonshme e stërvitjes.
 4. Ora e zgjimit dhe e gjumit, për rikujtuesit.
@@ -183,6 +183,8 @@ Njoftime lokale, të planifikuara në telefon. Cilësimet mbajnë: orën e zgjim
 
 `programs`, `program_blocks`, `program_days`, `program_slots`, `slot_prescriptions` (JSON i tipizuar sipas §4), `exercises` (biblioteka + të përdoruesit, `video_url`, `primary_muscles`, `secondary_muscles`, `equipment`), `program_state` (treguesi i radhës), `workout_sessions`, `set_logs` (me segmente), `one_rm_overrides`, `body_measurements`, `progress_photos`, `foods` (cache + të përdoruesit), `recipes`, `recipe_items`, `meal_templates`, `diary_entries`, `nutrition_targets`, `supplements`, `supplement_logs`, `user_settings` (ditët dhe oraret e stërvitjes, zgjimi, gjumi, hapat e peshave sipas pajisjes, tema, rikujtuesit). Çdo tabelë ka `user_id`, `updated_at`, `deleted_at`, RLS. Kohët ruhen në UTC; dita e ditarit dhe e stërvitjes ruhet si datë lokale (`YYYY-MM-DD`, zona e telefonit), që një vakt pas mesnate të mos kalojë në ditën e gabuar.
 
+Skema jeton te `supabase/migrations/`. Kolonat e përbashkëta: `id` (UUID nga telefoni), `user_id`, `created_at`, `updated_at` (koha e ndryshimit në telefon), `deleted_at` (fshirje e butë) dhe `server_updated_at` (vendoset nga serveri në çdo shkrim; kursori i tërheqjes për sinkronizimin). Një version më i vjetër se ai në server nuk e mbishkruan (trigger-i `private.sync_touch`). Politikat lejojnë vetëm pronarin (`TO authenticated` + `user_id = auth.uid()`); `anon` nuk ka asnjë grant. Vlerat e mbyllura kontrollohen në bazë: vaktet (`meal_key`), çelësat e muskujve të Shtojcës D (`muscle_keys`), llojet e recetës dhe të teknikës. Prova e izolimit: `supabase/tests/rls_isolation.sql`.
+
 ## 16. Jashtë planit
 
 Play Store, iOS, përdorues të tjerë ose ndarje, superset-e dhe qarqe, deload automatik, sinkronizim me ora inteligjente, trajner me AI.
@@ -219,6 +221,7 @@ Hapat 1, 3, 4 dhe 5 janë minimumi për ditën e parë në palestër.
 - Lejo "instalimin e app-eve të panjohura" për shfletuesin ose skedarët, një herë, për APK-në.
 - Lejo njoftimet dhe alarmet e sakta kur i kërkon app-i.
 - Merr një çelës falas për USDA FoodData Central (api.data.gov) për detyrën TH-15.
+- Te paneli i Supabase: krijo llogarinë tënde (Authentication → Users → Add user, me "Auto Confirm User") dhe çaktivizo "Allow new users to sign up".
 - Shto në GitHub secret-et e nënshkrimit `TH_KEYSTORE_BASE64` dhe `TH_KEYSTORE_PASSWORD` dhe ruaj një kopje rezervë të çelësit (`docs/INSTALL.md`, pika 1). Proxy-i i sesionit nuk lejon shkrimin e secret-eve.
 - Kur rregulli i Google-it të vlejë në vendin tënd: regjistro app-in me llogarinë falas "limited distribution" (`docs/INSTALL.md`, pika 5).
 
