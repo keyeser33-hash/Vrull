@@ -7,6 +7,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `docs/SPEC.md`: e vërteta për çfarë ndërtohet. Çdo ndryshim vendimi shkruhet aty.
 - `docs/TICKETS.md`: radha e detyrave dhe kriteret e pranimit.
 - `DESIGN.md`: Omal UI v2. Lexoje para se të shkruash UI.
+- `GLOSSARY.md`: fjalori i domenit (bllok, stërvitje, seancë, slot, receta, gatim…). Emrat e rinj në UI, specifikim dhe kod ndjekin atë.
 
 ## Komandat
 

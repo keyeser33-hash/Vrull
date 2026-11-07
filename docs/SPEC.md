@@ -136,7 +136,7 @@ Programi futet si program i parë, i gatshëm, sipas Shtojcës A. Rregullat:
 - **Burimet e ushqimeve:**
   - Open Food Facts për produktet me barkod (skaner në kamerë), me User-Agent `TrainingHub/<versioni>` pa të dhëna personale;
   - USDA FoodData Central për ushqimet e përgjithshme, përmes Edge Function që pranon vetëm kërkesa me sesion të vlefshëm;
-  - ushqimet e përdoruesit (makro për 100 g) dhe recetat (përbërës me gramë, peshë totale, porcione), të ruajtura për ripërdorim.
+  - ushqimet e përdoruesit (makro për 100 g) dhe gatimet (përbërës me gramë, peshë totale, porcione), të ruajtura për ripërdorim. "Receta" mbetet fjala e slotit të stërvitjes (GLOSSARY.md).
 - **Shablloni i Jimit** (Q18): çdo vakt i planit regjistrohet me një prekje dhe pastaj ndryshohet. Listat e zëvendësimeve të PDF-së (mishrat, bulmetrat, drithërat, perimet, frutat, karbohidratet pas stërvitjes) shfaqen si alternativa për artikullin përkatës.
 - **Ekrani (vendim i 07.11.2026, sipas mockup-it C · Ushqimi):** shiriti i kcal sipër me llojin e ditës (një prekje e ndërron); paneli "Vakti i radhës" me artikujt e Jimit dhe "Regjistro <vaktin>"; dita si orar; makrot kundrejt objektivave. I radhës është vakti i parë pa regjistrim që nuk ka kaluar më shumë se 1 orë; ato që kanë kaluar dalin "Pa regjistruar".
 - **Orari:** mëngjesi 1 në zgjim, mëngjesi 2 +45 min, snack-u i paraditës +3:30, dreka +6:00, snack-u i pasdites +8:30, darka +11:30, vakti para gjumit 30 min para gjumit. Në ditë stërvitjeje: vakti para 15 min para fillimit, ai pas 90 min pas fillimit; vakti që bie nga 30 min para vaktit para stërvitjes deri 30 min pas vaktit pas saj vjen 1 orë pas vaktit pas stërvitjes, dhe vaktet pas tij zhvendosen bashkë me të (asnjë pas vaktit para gjumit).
