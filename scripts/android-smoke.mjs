@@ -67,6 +67,18 @@ function statusBandColor() {
   return [raw[offset], raw[offset + 1], raw[offset + 2]]
 }
 
+// Ngjyra e dritares vendoset me dy thirrje native njëra pas tjetrës (setStyle, pastaj setColor):
+// pritet deri në 5 s që rripi të marrë ngjyrën, pa pritje fikse.
+async function waitForBand(hex, timeout = 5000) {
+  const until = Date.now() + timeout
+  let color = statusBandColor()
+  while (!sameColor(color, hex) && Date.now() < until) {
+    await sleep(250)
+    color = statusBandColor()
+  }
+  return color
+}
+
 function sameColor(actual, hex) {
   const expected = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
   return actual.every((value, i) => Math.abs(value - expected[i]) <= 4)
@@ -316,8 +328,7 @@ try {
   check('pa sesion hapet hyrja', (await page.evaluate('location.pathname')) === '/hyrja')
   check('tema OLED si parazgjedhje', (await page.evaluate('document.documentElement.className')) === 'dark oled')
   check('pa shirit veprimesh mbi faqe', !hasActionBar())
-  await sleep(500)
-  const bandLogin = statusBandColor()
+  const bandLogin = await waitForBand('#0B0B0B')
   check('rripi i orës te hyrja merr ngjyrën e panelit', sameColor(bandLogin, '#0B0B0B'), bandLogin.join(','))
   screenshot('1-hyrja')
 
@@ -369,7 +380,7 @@ try {
   check('navigimi poshtë brenda ekranit', navInside, JSON.stringify(report.insets))
   check('pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
   check('titulli i Sot brenda ekranit', await page.evaluate(`document.querySelector('h1').getBoundingClientRect().top >= 0`))
-  const bandOled = statusBandColor()
+  const bandOled = await waitForBand('#000000')
   check('pas hyrjes rripi i orës kthehet te tema: i zi në OLED', sameColor(bandOled, '#000000'), bandOled.join(','))
   screenshot('4-sot-oled')
 
@@ -453,9 +464,8 @@ try {
   await page.evaluate(`document.querySelector('input[type="radio"][value="light"]').click()`)
   await waitFor(async () => (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light', 'ruajtja e temës')
   check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
-  await sleep(500)
+  const bandLight = await waitForBand('#FAFAFA')
   screenshot('5-cilesimet-light-v1')
-  const bandLight = statusBandColor()
   check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#FAFAFA'), bandLight.join(','))
   await pressBack()
   await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
@@ -480,9 +490,8 @@ try {
   check('pas përditësimit: pa hyrje të re, direkt te Sot me programin', true)
   check('tema e çelët mbetet pas përditësimit', (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light')
   check('tema aplikohet para vizatimit', (await page.evaluate('document.documentElement.className')) === '')
-  await sleep(500)
+  const bandAfterUpdate = await waitForBand('#FAFAFA')
   screenshot('6-sot-light-v2')
-  const bandAfterUpdate = statusBandColor()
   check('rripi i orës mbetet i çelët pas përditësimit', sameColor(bandAfterUpdate, '#FAFAFA'), bandAfterUpdate.join(','))
   page.close()
 
