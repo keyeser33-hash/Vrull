@@ -1228,6 +1228,8 @@ try {
   // ==== F. Instalim i ri (një mik): hyrja në gjuhën e telefonit, hapat e parë me gjuhën ====
   adb('uninstall', PKG)
   adb('install', apkV2)
+  // Instalimi i ri nuk ka lejen e njoftimeve (Android 13+); app-i e kërkon në stërvitjen e parë, këtu jepet si nga përdoruesi.
+  adb('shell', 'pm', 'grant', PKG, 'android.permission.POST_NOTIFICATIONS')
   page = await open()
   await page.send('Page.reload')
   const phoneLanguage = String(await page.evaluate('(navigator.languages[0] ?? navigator.language).toLowerCase()')).split('-')[0]
