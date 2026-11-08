@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
   version: string
@@ -23,5 +24,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: false,
     globals: true,
+    // Worktree-t e nënagjentëve (.claude/worktrees) janë kopje të repo-s me provat e veta.
+    exclude: [...configDefaults.exclude, '.claude/**'],
   },
 })
