@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
+import { language } from '@/i18n/language'
 import { LoginPage } from './login'
 
 const auth = vi.hoisted(() => ({
@@ -18,6 +19,7 @@ function renderLogin() {
 
 describe('hyrja', () => {
   beforeEach(() => auth.signIn.mockClear())
+  afterEach(() => language.set('sq'))
 
   it('ka një titull, dy fusha me etiketa dhe veprimin kryesor', () => {
     renderLogin()
@@ -65,6 +67,17 @@ describe('hyrja', () => {
     await userEvent.type(screen.getByLabelText('Fjalëkalimi'), 'gabim{enter}')
     expect(await screen.findByRole('alert')).toHaveTextContent('Email-i ose fjalëkalimi nuk është i saktë.')
     expect(screen.getByRole('button', { name: 'Hyr' })).toBeEnabled()
+  })
+
+  it('në anglisht: titulli, fushat, veprimi dhe figura', () => {
+    language.set('en')
+    renderLogin()
+    expect(screen.getByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Password')).toHaveAttribute('type', 'password')
+    expect(screen.getByRole('button', { name: 'Show password' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sign in' })).toBeDisabled()
+    expect(screen.getByText('Front')).toBeInTheDocument()
+    expect(document.body.textContent).not.toMatch(/Hyr|Fjalëkalimi|Përpara/)
   })
 
   it('fjalëkalimi mund të shfaqet dhe të fshihet', async () => {

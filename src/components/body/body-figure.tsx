@@ -1,5 +1,6 @@
 import { BACK, FRONT, type Region, type Shape, SILHOUETTE } from '@/body/figure-regions'
 import { MUSCLE_ROLE } from './roles'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 
 // Figura e trupit përpara dhe mbrapa (SPEC §14, ekrani Sot; rruga 2D e §18 për Trupin). Çdo
@@ -80,6 +81,7 @@ export function BodyFigure({
   scale?: number
   className?: string
 }) {
+  const { t } = useI18n()
   const primarySet = new Set(primary)
   const secondarySet = new Set(secondary.filter((key) => !primarySet.has(key)))
   return (
@@ -97,8 +99,8 @@ export function BodyFigure({
         </g>
       </svg>
       <figcaption aria-hidden className="flex gap-6 text-xs leading-4 text-panel-muted-foreground">
-        <span>Përpara</span>
-        <span>Mbrapa</span>
+        <span>{t('body.front')}</span>
+        <span>{t('body.back')}</span>
       </figcaption>
     </figure>
   )

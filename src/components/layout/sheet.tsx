@@ -1,10 +1,12 @@
 import { type ReactNode, useEffect, useId, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
+import { useI18n } from '@/i18n/use-i18n'
 
 // Fletë nga poshtë (seanca, cilësimet). Hapet me një parametër në adresë, që butoni mbrapa i
 // Android-it ta mbyllë pa dalë nga ekrani; onClose zakonisht bën navigate(-1).
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  const { t } = useI18n()
   const titleId = useId()
   const panel = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -30,7 +32,7 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
           <h2 id={titleId} className="flex-1 text-lg leading-7 font-semibold">
             {title}
           </h2>
-          <Button variant="ghost" size="icon" aria-label="Mbyll" onClick={onClose}>
+          <Button variant="ghost" size="icon" aria-label={t('common.close')} onClick={onClose}>
             <Icon name="mbyll" />
           </Button>
         </header>

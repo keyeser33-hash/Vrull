@@ -15,12 +15,7 @@ export type Theme = (typeof THEMES)[number]
 
 export const DEFAULT_THEME: Theme = 'oled'
 const STORAGE_KEY = 'th-theme'
-
-export const THEME_LABELS: Record<Theme, string> = {
-  oled: 'OLED',
-  dark: 'E errët',
-  light: 'E çelët',
-}
+// Emrat e temave janë te katalogu: `settings.theme.<tema>` (i18n/sq.ts).
 
 function isTheme(value: unknown): value is Theme {
   return typeof value === 'string' && (THEMES as readonly string[]).includes(value)

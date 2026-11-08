@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import pkg from '../../package.json'
 import type { LocalStore } from '@/data/store'
+import { language } from '@/i18n/language'
 
 // Cilësimet, varianti A (07.11.2026): paneli i llogarisë sipër, rreshta me vlerat, fletë për ndryshim.
 // Store i vërtetë me një përdorues; llogaria dhe sinkronizimi të imituara.
@@ -83,6 +84,7 @@ describe('cilësimet', () => {
     document.documentElement.className = 'dark oled'
     data.signOut.mockClear()
   })
+  afterEach(() => language.set('sq'))
 
   it('llogaria sipër: email-i, gjendja e sinkronizimit dhe "Dil"', async () => {
     await renderSettings()
@@ -168,6 +170,27 @@ describe('cilësimet', () => {
     await user.click(within(sheet).getByRole('radio', { name: 'E çelët' }))
     expect(document.documentElement.className).toBe('')
     expect(window.localStorage.getItem('th-theme')).toBe('light')
+  })
+
+  it('gjuha ndërrohet menjëherë, pa rinisje, dhe ruhet te cilësimet e sinkronizuara', async () => {
+    const user = userEvent.setup()
+    await renderSettings()
+    expect(row(/^Gjuha/)).toHaveTextContent('Shqip')
+    await user.click(row(/^Gjuha/))
+    const sheet = screen.getByRole('dialog', { name: 'Gjuha' })
+    expect(within(sheet).getByRole('radio', { name: 'Shqip' })).toBeChecked()
+    expect(within(sheet).getByText('English').closest('[lang]')).toHaveAttribute('lang', 'en-GB')
+    await user.click(within(sheet).getByRole('radio', { name: 'English' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Language' })).toHaveTextContent('Exercise names stay in English.')
+    expect(screen.getByRole('region', { name: 'Account' })).toHaveTextContent('Not synced yet')
+    expect(document.documentElement.lang).toBe('en-GB')
+    expect(window.localStorage.getItem('th-language')).toBe('en')
+    expect((await data.store.all('user_settings'))[0].language).toBe('en')
+    await user.click(within(screen.getByRole('dialog', { name: 'Language' })).getByRole('radio', { name: 'Shqip' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
+    expect((await data.store.all('user_settings'))[0].language).toBe('sq')
+    expect(language.get()).toBe('sq')
   })
 
   it('sinkronizimi dhe eksporti me një prekje; eksporti i dështuar thuhet me fjalë', async () => {

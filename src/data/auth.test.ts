@@ -1,3 +1,4 @@
+import { i18nFor } from '@/i18n'
 import { createAuth, signInErrorMessage } from './auth'
 
 type Listener = (event: string, session: { user: { id: string; email?: string } } | null) => void
@@ -89,5 +90,10 @@ describe('mesazhet e gabimeve të hyrjes', () => {
     [{ status: 418 }, 'Hyrja nuk u krye. Provo përsëri.'],
   ])('%o', (error, message) => {
     expect(signInErrorMessage(error)).toBe(message)
+  })
+
+  it('në anglisht', () => {
+    expect(signInErrorMessage({ code: 'invalid_credentials', status: 400 }, i18nFor('en'))).toBe('The email or password is not correct.')
+    expect(signInErrorMessage({ status: 0 }, i18nFor('en'))).toBe('Signing in needs the internet. Connect and try again.')
   })
 })

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { useSyncExternalStore } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { AppPhase } from '@/data/phase'
+import { language } from '@/i18n/language'
 import { AppGate } from './gate'
 
 const mock = vi.hoisted(() => {
@@ -34,6 +35,7 @@ vi.mock('@/data/app-data', () => ({
   useReminderPlanner: () => undefined,
   usePhotoUploader: () => undefined,
   useUpdateChecker: () => undefined,
+  useLanguageSync: () => undefined,
 }))
 
 function renderAt(path: string, phase: AppPhase) {
@@ -88,6 +90,16 @@ describe('porta e app-it', () => {
     expect(mock.syncNow).toHaveBeenCalledOnce()
     await userEvent.click(screen.getByRole('button', { name: 'Dil nga llogaria' }))
     expect(mock.signOut).toHaveBeenCalledOnce()
+  })
+
+  it('në anglisht, dhe ndërrimi i gjuhës ndryshon tekstet pa rinisje', () => {
+    renderAt('/', 'fetch_failed')
+    act(() => language.set('en'))
+    expect(screen.getByRole('heading', { name: 'Your data did not arrive' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
+    act(() => language.set('sq'))
+    expect(screen.getByRole('heading', { name: 'Të dhënat nuk u morën' })).toBeInTheDocument()
   })
 
   it('para leximit të sesionit nuk shfaq asnjë ekran', () => {
