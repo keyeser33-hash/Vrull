@@ -4,18 +4,19 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="288dp"
     android:height="288dp"
-    android:viewportWidth="121"
-    android:viewportHeight="121">
-    <group android:translateX="28.5" android:translateY="28.5">
+    android:viewportWidth="124"
+    android:viewportHeight="124">
+    <group android:translateX="30" android:translateY="30">
         <path
-            android:pathData="M16,0H48A16,16 0,0 1,64,16V48A16,16 0,0 1,48,64H16A16,16 0,0 1,0,48V16A16,16 0,0 1,16,0Z"
+            android:pathData="M14,0H50A14,14 0,0 1,64,14V50A14,14 0,0 1,50,64H14A14,14 0,0 1,0,50V14A14,14 0,0 1,14,0Z"
             android:fillColor="@color/ic_launcher_background"
             />
         <path
-            android:pathData="M15,43L49,21"
+            android:pathData="M14 18L28 46L34 34M38 18L50 18M34 26L44 26"
             android:strokeColor="@color/ic_launcher_line"
             android:strokeWidth="7"
             android:strokeLineCap="round"
+            android:strokeLineJoin="round"
             />
     </group>
 </vector>

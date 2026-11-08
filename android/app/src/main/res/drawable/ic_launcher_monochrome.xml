@@ -8,10 +8,11 @@
     android:viewportHeight="96">
     <group android:translateX="16" android:translateY="16">
         <path
-            android:pathData="M15,43L49,21"
+            android:pathData="M14 18L28 46L34 34M38 18L50 18M34 26L44 26"
             android:strokeColor="#FFFFFFFF"
             android:strokeWidth="7"
             android:strokeLineCap="round"
+            android:strokeLineJoin="round"
             />
     </group>
 </vector>

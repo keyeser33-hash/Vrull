@@ -1,7 +1,7 @@
 // Ikona e app-it me shenjën e Vrullit, nga një burim i vetëm (V2-E1-18): gjeometria e shenjës vjen nga
-// `src/components/ui/logo.tsx` (katrori, rrezja, vija e shpejtësisë dhe trashësia e saj) dhe ngjyrat
-// `--ember` / `--on-ember` nga `src/styles/globals.css`. Shenja: katror prushi me vijën në `on-ember`
-// (sistemi i dizajnit, assets/Logos), pa kufi dhe kurrë në ngjyra të tjera.
+// `src/components/ui/logo.tsx` (katrori, rrezja, vijat dhe trashësia e tyre) dhe ngjyrat `--ember` /
+// `--on-ember` nga `src/styles/globals.css`. Shenja: katror prushi me V-në dhe dy vijat e shpejtësisë në
+// `on-ember` (sistemi i dizajnit, assets/Logos/vrull-mark.svg), pa kufi dhe kurrë në ngjyra të tjera.
 //
 // Krijon:
 // - `public/favicon.svg`;
@@ -12,7 +12,8 @@
 // - shenjën e plotë për ekranin e nisjes (`drawable/ic_splash.xml`, 288 dp, brenda rrethit 192 dp
 //   të Android 12+ dhe të `core-splashscreen`);
 // - ikonat PNG për Android 7.0–7.1 (`mipmap-*/ic_launcher.png` katror, `ic_launcher_round.png` rreth),
-//   me Chrome headless.
+//   me Chrome headless;
+// - ikonën e vogël të njoftimit të seancës (`drawable/ic_stat_vrull.xml`): vijat e bardha pa katrorin.
 // Me `--preview <dosja>` ruan edhe pamjet për kontroll: 48, 96 dhe 192 px në rreth, katror dhe
 // squircle, ikonën me temë, PNG-të, favicon-in dhe ekranin e nisjes.
 //
@@ -41,9 +42,9 @@ function match(text, pattern, what) {
 const logo = read('src/components/ui/logo.tsx')
 const size = Number(match(logo, /viewBox="0 0 (\d+) \1"/, 'viewBox-in katror te logo.tsx')[1])
 const radius = Number(match(logo, /<rect [^>]*rx="(\d+(?:\.\d+)?)"/, 'rrezen e katrorit te logo.tsx')[1])
-const line = match(logo, /<path d="M\s*([\d.]+)[ ,]([\d.]+)\s+L?\s*([\d.]+)[ ,]([\d.]+)"/, 'vijën e shpejtësisë te logo.tsx').slice(1).map(Number)
+// Vijat (V-ja dhe vijat e shpejtësisë) si një rrugë SVG me M dhe L, që Android-i e lexon njësoj.
+const linePath = match(logo, /<path\s+d="([MLml\d.\s,-]+)"/, 'rrugën e vijave te logo.tsx')[1].trim()
 const stroke = Number(match(logo, /strokeWidth="(\d+(?:\.\d+)?)"/, 'trashësinë e vijës te logo.tsx')[1])
-const [x1, y1, x2, y2] = line
 
 // Ngjyrat nga tokenat e app-it (të njëjta në çdo temë).
 const css = read('src/styles/globals.css')
@@ -52,7 +53,6 @@ const ember = token('ember')
 const onEmber = token('on-ember')
 
 const HEADER = 'Krijuar nga tools/app-icon/build.mjs nga shenja te src/components/ui/logo.tsx; mos e ndrysho me dorë.'
-const linePath = `M${x1},${y1}L${x2},${y2}`
 const r = radius
 const roundedSquare = `M${r},0H${size - r}A${r},${r} 0,0 1,${size},${r}V${size - r}A${r},${r} 0,0 1,${size - r},${size}H${r}A${r},${r} 0,0 1,0,${size - r}V${r}A${r},${r} 0,0 1,${r},0Z`
 
@@ -65,7 +65,7 @@ function markSvg({ shape = 'square', lineColor = onEmber, fill = ember, margin =
       : shape === 'circle'
         ? `<circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" fill="${fill}"/>`
         : ''
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-margin} ${-margin} ${box} ${box}">${body}<path d="M${x1} ${y1} ${x2} ${y2}" fill="none" stroke="${lineColor}" stroke-width="${stroke}" stroke-linecap="round"/></svg>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-margin} ${-margin} ${box} ${box}">${body}<path d="${linePath}" fill="none" stroke="${lineColor}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 }
 
 /** Vector drawable i Android-it me shenjën në mes të një kanavace `viewport` njësi. */
@@ -77,7 +77,9 @@ function vector({ dp, viewport, paths, comment }) {
         '        <path',
         `            android:pathData="${path.data}"`,
         ...(path.fill ? [`            android:fillColor="${path.fill}"`] : []),
-        ...(path.stroke ? [`            android:strokeColor="${path.stroke}"`, `            android:strokeWidth="${stroke}"`, '            android:strokeLineCap="round"'] : []),
+        ...(path.stroke
+          ? [`            android:strokeColor="${path.stroke}"`, `            android:strokeWidth="${stroke}"`, '            android:strokeLineCap="round"', '            android:strokeLineJoin="round"']
+          : []),
         '            />',
       ].join('\n'),
     )
@@ -106,7 +108,7 @@ write(
     dp: 108,
     viewport: adaptiveViewport,
     paths: [{ data: linePath, stroke: '@color/ic_launcher_line' }],
-    comment: 'Vija e shpejtësisë mbi sfondin prush (@color/ic_launcher_background); launcher-i e pret në formën e vet.',
+    comment: 'V-ja dhe vijat e shpejtësisë mbi sfondin prush (@color/ic_launcher_background); launcher-i e pret në formën e vet.',
   }),
 )
 write(
@@ -146,6 +148,17 @@ write(
 `,
 )
 write(join(root, 'public/favicon.svg'), `${markSvg()}\n`)
+// Njoftimi i seancës: vetëm vijat, të bardha mbi të tejdukshme (sistemi i ngjyros me prushin e njoftimit),
+// në një kanavacë pak më të ngushtë se katrori, që shenja të mbushë ikonën 24 dp të shiritit.
+write(
+  join(res, 'drawable/ic_stat_vrull.xml'),
+  vector({
+    dp: 24,
+    viewport: size - 12,
+    paths: [{ data: linePath, stroke: '#FFFFFFFF' }],
+    comment: 'Ikona e vogël e njoftimit të seancës: V-ja dhe vijat e shpejtësisë, të bardha; sistemi i ngjyros.',
+  }),
+)
 
 // Chrome headless përmes CDP (si scripts/ds-screens.mjs): një shfletues për të gjitha PNG-të, çdo
 // faqe me SVG-në në gjithë dritaren dhe sfond të tejdukshëm.
@@ -172,7 +185,7 @@ try {
   await browser.close()
   rmSync(work, { recursive: true, force: true, maxRetries: 5 })
 }
-console.log(`Ikona e Vrullit: ${ember} me vijën ${onEmber}; nisja ${splashViewport} njësi në 288 dp.`)
+console.log(`Ikona e Vrullit: ${ember} me vijat ${onEmber}; nisja ${splashViewport} njësi në 288 dp.`)
 
 /** Pamjet për kontroll: si e pret launcher-i ikonën adaptive në forma të ndryshme dhe madhësi. */
 async function preview(browser, out) {
@@ -191,7 +204,7 @@ async function preview(browser, out) {
     const background = themed ? '#D8E2FF' : ember
     const lineColor = themed ? '#1A2B4C' : onEmber
     const id = `m-${shape}-${px}-${themed ? 't' : 'c'}`
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="${offset} ${offset} ${size} ${size}"><defs><clipPath id="${id}">${clip}</clipPath></defs><g clip-path="url(#${id})"><rect width="${adaptiveViewport}" height="${adaptiveViewport}" fill="${background}"/><path d="M${x1 + offset} ${y1 + offset} ${x2 + offset} ${y2 + offset}" stroke="${lineColor}" stroke-width="${stroke}" stroke-linecap="round" fill="none"/></g></svg>`
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="${offset} ${offset} ${size} ${size}"><defs><clipPath id="${id}">${clip}</clipPath></defs><g clip-path="url(#${id})"><rect width="${adaptiveViewport}" height="${adaptiveViewport}" fill="${background}"/><path transform="translate(${offset} ${offset})" d="${linePath}" stroke="${lineColor}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></svg>`
   }
   const cell = (label, content) => `<figure><div class="art">${content}</div><figcaption>${label}</figcaption></figure>`
   const rows = [48, 96, 192]

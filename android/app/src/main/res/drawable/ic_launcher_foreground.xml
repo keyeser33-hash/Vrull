@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Krijuar nga tools/app-icon/build.mjs nga shenja te src/components/ui/logo.tsx; mos e ndrysho me dorë.
-     Vija e shpejtësisë mbi sfondin prush (@color/ic_launcher_background); launcher-i e pret në formën e vet. -->
+     V-ja dhe vijat e shpejtësisë mbi sfondin prush (@color/ic_launcher_background); launcher-i e pret në formën e vet. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -8,10 +8,11 @@
     android:viewportHeight="96">
     <group android:translateX="16" android:translateY="16">
         <path
-            android:pathData="M15,43L49,21"
+            android:pathData="M14 18L28 46L34 34M38 18L50 18M34 26L44 26"
             android:strokeColor="@color/ic_launcher_line"
             android:strokeWidth="7"
             android:strokeLineCap="round"
+            android:strokeLineJoin="round"
             />
     </group>
 </vector>
