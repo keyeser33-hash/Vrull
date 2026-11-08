@@ -2,6 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
+import { language } from '@/i18n'
 import type { ExternalFood } from '@/nutrition/off'
 
 // Shto ushqim me store të vërtetë; Open Food Facts zëvendësohet me përgjigje të njohura.
@@ -51,6 +52,7 @@ describe('Shto ushqim', () => {
     const { completeOnboarding } = await import('@/data/profile')
     await completeOnboarding(data.store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' })
   })
+  afterEach(() => language.set('sq'))
 
   it('ushqim i ri me porcion: fleta e sasisë dhe shtimi te vakti', async () => {
     const user = userEvent.setup()
@@ -135,5 +137,41 @@ describe('Shto ushqim', () => {
     expect(await screen.findByRole('dialog', { name: 'Coca-Cola' })).toBeInTheDocument()
     expect(off.product).toHaveBeenLastCalledWith('5449000000996')
     scanner.native = false
+  })
+
+  it('në anglisht: tekstet, shablloni i Jimit me emrin anglisht (edhe te kërkimi), ushqimet e tua dhe të jashtmet siç janë', async () => {
+    const user = userEvent.setup()
+    const { logTemplateMeal } = await import('@/data/nutrition')
+    const { localDate } = await import('@/lib/calendar')
+    await logTemplateMeal(data.store, localDate(new Date()), 'snack_pm')
+    off.search.mockResolvedValue([NUTELLA])
+    off.usda.mockResolvedValue([])
+    language.set('en')
+    await renderPage()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Add to Lunch' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Back to Food' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Search by barcode' })).toBeInTheDocument()
+    const recent = await screen.findByRole('region', { name: 'Recently used' })
+    expect(within(recent).getByRole('button', { name: /^Wholemeal bread/ })).toHaveTextContent('252 kcal / 100 g')
+    expect(within(recent).getByRole('button', { name: /^Peanut butter/ })).toBeInTheDocument()
+    expect(within(recent).getByRole('button', { name: /^Bukë e zezë/ })).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('Search for a food'), 'whole')
+    expect(await screen.findByRole('region', { name: 'Your foods' })).toHaveTextContent('Wholemeal bread')
+    expect(await screen.findByRole('region', { name: 'Open Food Facts' })).toHaveTextContent('Nutella')
+
+    await user.click(within(screen.getByRole('region', { name: 'Your foods' })).getByRole('button', { name: /^Wholemeal bread/ }))
+    const amount = await screen.findByRole('dialog', { name: 'Wholemeal bread' })
+    expect(within(amount).getByRole('button', { name: '10 g more' })).toBeInTheDocument()
+    await user.click(within(amount).getByRole('button', { name: 'Add to Lunch' }))
+    expect(await screen.findByRole('status')).toHaveTextContent('Added: Wholemeal bread, 100 g')
+
+    await user.click(screen.getByRole('button', { name: 'New food' }))
+    const sheet = screen.getByRole('dialog', { name: 'New food' })
+    await user.click(within(sheet).getByRole('button', { name: 'Save food' }))
+    expect(within(sheet).getByRole('alert')).toHaveTextContent('Enter the kcal and macros per 100 g, as numbers.')
+    expect(within(sheet).getByLabelText('Protein, g')).toBeInTheDocument()
+    expect(within(sheet).getByPlaceholderText('no serving')).toBeInTheDocument()
+    expect(document.body.textContent?.replace('Bukë e zezë', '')).not.toMatch(/[ëç]/)
   })
 })

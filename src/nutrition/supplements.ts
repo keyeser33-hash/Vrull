@@ -1,47 +1,54 @@
 import type { MealKey } from './meals'
 import type { ScheduledMeal } from './schedule'
 
-// Suplementet e planit (SPEC §10): kur merren (sipas vakteve), doza e PDF-së dhe evidenca me
-// fjalë. Shake-u para/gjatë/pas stërvitjes ndahet te vakti para dhe ai pas stërvitjes.
+// Suplementet e planit (SPEC §10): kur merren (sipas vakteve), doza e PDF-së dhe evidenca. Shake-u
+// para/gjatë/pas stërvitjes ndahet te vakti para dhe ai pas stërvitjes. Emri dhe doza ruhen shqip te
+// `supplements` (`name`, `notes`); ekrani i përkthen sipas `key` (`supplementName`, `supplementDose`),
+// dhe evidenca me fjalë vjen nga katalogu ('food.supplementEvidence.*', 'food.evidence.*').
 
 export type Evidence = 'strong' | 'moderate' | 'limited' | 'weak' | 'food' | 'deficiency_only'
 export type DoseUnit = 'g' | 'mg' | 'scoop' | 'dose' | 'piece' | 'capsule'
+export type SupplementKey =
+  | 'protein'
+  | 'creatine'
+  | 'beta_alanine'
+  | 'betaine'
+  | 'bcaa'
+  | 'carnitine'
+  | 'glutamine'
+  | 'dextrose'
+  | 'multivitamin'
+  | 'zma'
 
 export interface SupplementDef {
+  key: SupplementKey
+  /** Emri shqip, si ruhet te baza. */
   name: string
   doseAmount: number
   doseUnit: DoseUnit
-  /** Doza si te PDF-ja: "1,5–5 g". */
+  /** Doza si te PDF-ja ("1,5–5 g"), si ruhet te baza (`notes`). */
   doseText: string
   timing: MealKey[]
   evidence: Evidence
-  /** Evidenca si te tabela e §10. */
-  evidenceText: string
-}
-
-export const EVIDENCE_LABEL: Record<Evidence, string> = {
-  strong: 'E fortë',
-  moderate: 'Mesatare',
-  limited: 'E kufizuar',
-  weak: 'E dobët',
-  food: 'Ushqim',
-  deficiency_only: 'Vetëm për mungesa',
 }
 
 const SHAKE: MealKey[] = ['pre_workout', 'post_workout']
 
 export const SUPPLEMENTS: SupplementDef[] = [
-  { name: 'Pluhur proteine', doseAmount: 1, doseUnit: 'scoop', doseText: '1–2 scoop', timing: ['breakfast_1', 'snack_pm', 'bedtime', 'pre_workout'], evidence: 'food', evidenceText: 'Ushqim; e mirë kur mbush objektivin' },
-  { name: 'Kreatinë', doseAmount: 5, doseUnit: 'g', doseText: '1,5–5 g', timing: SHAKE, evidence: 'strong', evidenceText: 'E fortë' },
-  { name: 'Beta-alaninë', doseAmount: 3, doseUnit: 'g', doseText: '1,5–3 g', timing: SHAKE, evidence: 'moderate', evidenceText: 'Mesatare' },
-  { name: 'Betainë', doseAmount: 2, doseUnit: 'g', doseText: '1,5–2 g', timing: SHAKE, evidence: 'limited', evidenceText: 'E kufizuar' },
-  { name: 'BCAA', doseAmount: 5, doseUnit: 'g', doseText: '5 g', timing: SHAKE, evidence: 'weak', evidenceText: 'E dobët kur proteina është e lartë' },
-  { name: 'Karnitinë', doseAmount: 2, doseUnit: 'g', doseText: '1–2 g', timing: ['post_workout'], evidence: 'weak', evidenceText: 'E dobët' },
-  { name: 'Glutaminë', doseAmount: 5, doseUnit: 'g', doseText: '3–5 g', timing: ['post_workout'], evidence: 'weak', evidenceText: 'E dobët për muskulin' },
-  { name: 'Dekstrozë ose gummy', doseAmount: 30, doseUnit: 'g', doseText: '20–30 g ose 30 copë', timing: ['post_workout'], evidence: 'food', evidenceText: 'Ushqim (karbohidrat i shpejtë)' },
-  { name: 'Multivitaminë', doseAmount: 1, doseUnit: 'dose', doseText: '1 dozë', timing: ['lunch'], evidence: 'deficiency_only', evidenceText: 'Vetëm për mungesa' },
-  { name: 'ZMA', doseAmount: 1, doseUnit: 'dose', doseText: '1 dozë', timing: ['bedtime'], evidence: 'weak', evidenceText: 'E dobët pa mungesë' },
+  { key: 'protein', name: 'Pluhur proteine', doseAmount: 1, doseUnit: 'scoop', doseText: '1–2 scoop', timing: ['breakfast_1', 'snack_pm', 'bedtime', 'pre_workout'], evidence: 'food' },
+  { key: 'creatine', name: 'Kreatinë', doseAmount: 5, doseUnit: 'g', doseText: '1,5–5 g', timing: SHAKE, evidence: 'strong' },
+  { key: 'beta_alanine', name: 'Beta-alaninë', doseAmount: 3, doseUnit: 'g', doseText: '1,5–3 g', timing: SHAKE, evidence: 'moderate' },
+  { key: 'betaine', name: 'Betainë', doseAmount: 2, doseUnit: 'g', doseText: '1,5–2 g', timing: SHAKE, evidence: 'limited' },
+  { key: 'bcaa', name: 'BCAA', doseAmount: 5, doseUnit: 'g', doseText: '5 g', timing: SHAKE, evidence: 'weak' },
+  { key: 'carnitine', name: 'Karnitinë', doseAmount: 2, doseUnit: 'g', doseText: '1–2 g', timing: ['post_workout'], evidence: 'weak' },
+  { key: 'glutamine', name: 'Glutaminë', doseAmount: 5, doseUnit: 'g', doseText: '3–5 g', timing: ['post_workout'], evidence: 'weak' },
+  { key: 'dextrose', name: 'Dekstrozë ose gummy', doseAmount: 30, doseUnit: 'g', doseText: '20–30 g ose 30 copë', timing: ['post_workout'], evidence: 'food' },
+  { key: 'multivitamin', name: 'Multivitaminë', doseAmount: 1, doseUnit: 'dose', doseText: '1 dozë', timing: ['lunch'], evidence: 'deficiency_only' },
+  { key: 'zma', name: 'ZMA', doseAmount: 1, doseUnit: 'dose', doseText: '1 dozë', timing: ['bedtime'], evidence: 'weak' },
 ]
+
+/** Suplementi i planit me këtë emër (si ruhet te baza), ose null për një suplement tjetër. */
+export const supplementByName = (name: string): SupplementDef | null => SUPPLEMENTS.find((supplement) => supplement.name === name) ?? null
 
 export interface PlannedSupplement {
   id: string

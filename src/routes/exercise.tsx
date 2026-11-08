@@ -12,7 +12,7 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type ExerciseDetail, exerciseDetail, exerciseRowFor } from '@/data/exercises'
 import { programView, setExerciseVideo, trainingHistory } from '@/data/training'
 import type { I18n } from '@/i18n'
-import { equipmentName, muscleName } from '@/i18n/domain'
+import { equipmentName, muscleName, programBlockName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useExercisePhoto } from '@/lib/exercise-photo'
@@ -77,7 +77,7 @@ export function ExercisePage() {
       <Video detail={detail} onEdit={() => open('video')} />
       {plan && slot ? (
         <Button variant="outline" className="w-full" onClick={() => open('ushtrimi')}>
-          {t('programme.changeForBlock', { block: plan.blockName })}
+          {t('programme.changeForBlock', { block: programBlockName(t, plan.blockName) })}
         </Button>
       ) : null}
 

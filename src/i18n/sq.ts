@@ -3,10 +3,14 @@ import * as body from './areas/body'
 import * as builder from './areas/builder'
 import * as domain from './areas/domain'
 import * as entry from './areas/entry'
+import * as food from './areas/food'
 import * as history from './areas/history'
 import * as music from './areas/music'
 import * as notify from './areas/notify'
+import * as photos from './areas/photos'
 import * as programme from './areas/programme'
+import * as progress from './areas/progress'
+import * as reminders from './areas/reminders'
 import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
@@ -72,20 +76,7 @@ export const base = {
   'friends.shared': 'Stërvitjet dhe rekordet',
   'friends.sharedText': 'Miqtë shohin stërvitjet, rekordet dhe vargjet. Pesha, matjet dhe ushqimi mbeten të tuat.',
 
-  // Progresi: gjendja bosh (bordi "Gjendje · Bosh") dhe Trupi brenda Progresit.
-  'progress.emptyTitle': 'Grafikët nisin me setin e parë',
-  'progress.emptyIntro': 'Pas stërvitjes së parë, këtu shfaqen:',
-  'progress.strength': 'Forca · e1RM',
-  'progress.strengthText': 'Për çdo ushtrim, që nga seti i parë.',
-  'progress.volume': 'Volumi javor',
-  'progress.volumeText': 'Setet për çdo grup muskujsh, kundrejt objektivit 10–⁠20.',
-  'progress.body': 'Trupi 3D',
-  'progress.bodyText': 'Muskujt që punove dhe rikuperimi i tyre.',
-  'progress.measurements': 'Pesha dhe matjet',
-  'progress.measurementsText': 'Perimetrat dhe fotot i shton kur të duash.',
-  'progress.measurementsWeight': '{weight} sot. Perimetrat dhe fotot i shton kur të duash.',
-  'progress.startFirst': 'Fillo stërvitjen e parë',
-  'progress.nextWorkout': '{label} · Stërvitja {day} · {name}',
+  // Progresi: tekstet e ekranit janë te areas/progress.ts; kthimi te Progresi nga ekranet brenda tij.
   'body.backToProgress': 'Mbrapa te Progresi',
 
   // Figura e trupit (hyrja, Sot).
@@ -180,24 +171,7 @@ export const base = {
   'appearance.themeHint': 'OLED: e zeza e plotë. Natë: më e butë. Ditë: e çelët.',
   'appearance.backgroundHint': 'Të dyja punojnë me çdo temë. Vijat shfaqen vetëm në sfond, kurrë pas tekstit.',
 
-  // Rikujtuesit (SPEC §13).
-  'reminders.allow': 'Lejo njoftimet',
-  'reminders.allowDenied': 'Lejoji te cilësimet e telefonit',
-  'reminders.allowPrompt': 'Pa leje, rikujtuesit nuk vijnë',
-  'reminders.training': 'Stërvitja',
-  'reminders.trainingDetail': 'Në mëngjes, stërvitja e radhës',
-  'reminders.meals': 'Vaktet',
-  'reminders.mealsDetail': 'Në orën e çdo vakti, me artikujt e planit',
-  'reminders.supplements': 'Suplementet',
-  'reminders.supplementsDetail': 'Bashkë me vaktin ku merren',
-  'reminders.measurements': 'Matja javore',
-  'reminders.measurementsDetail': 'Pesha, perimetrat dhe fotot',
-  'reminders.list.training': 'stërvitja',
-  'reminders.list.meals': 'vaktet',
-  'reminders.list.supplements': 'suplementet',
-  'reminders.list.measurements': 'matjet',
-  'reminders.measurementDay': 'Dita e matjes',
-  'reminders.measurementDayHint': 'Rikujtuesi vjen në orën e zgjimit, që pesha të matet para mëngjesit.',
+  // Rikujtuesit (SPEC §13): Cilësimet › Rikujtuesit dhe njoftimet, te areas/reminders.ts.
 
   // Burimet dhe licencat (SPEC §11, §9).
   'sources.program.use': 'Programi 12-javor, ushqimi dhe suplementet e ditës shembull.',
@@ -283,9 +257,27 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify }
+export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders }
 
-export const sq = { ...base, ...today.sq, ...session.sq, ...programme.sq, ...body.sq, ...history.sq, ...entry.sq, ...domain.sq, ...builder.sq, ...videos.sq, ...ai.sq, ...music.sq, ...notify.sq } as const satisfies Messages
+export const sq = {
+  ...base,
+  ...today.sq,
+  ...session.sq,
+  ...programme.sq,
+  ...body.sq,
+  ...history.sq,
+  ...entry.sq,
+  ...domain.sq,
+  ...builder.sq,
+  ...videos.sq,
+  ...ai.sq,
+  ...music.sq,
+  ...notify.sq,
+  ...food.sq,
+  ...photos.sq,
+  ...progress.sq,
+  ...reminders.sq,
+} as const satisfies Messages
 
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */
 export type Translation = TranslationOf<typeof sq>

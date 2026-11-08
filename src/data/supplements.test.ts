@@ -24,7 +24,7 @@ describe('suplementet e ditës', () => {
     await ensureSupplements(store)
     const list = await supplementList(store)
     expect(list).toHaveLength(10)
-    expect(list.find((item) => item.name === 'Kreatinë')).toMatchObject({ doseText: '1,5–5 g', evidenceText: 'E fortë', enabled: true })
+    expect(list.find((item) => item.name === 'Kreatinë')).toMatchObject({ doseText: '1,5–5 g', evidence: 'strong', enabled: true })
   })
 
   it('suplementet dalin te vakti i tyre; një prekje i shënon të marra dhe një tjetër e heq', async () => {

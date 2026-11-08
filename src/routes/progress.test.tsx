@@ -2,6 +2,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
+import { language } from '@/i18n'
 
 // Progresi me store të vërtetë: matja e parë, pamja e peshës dhe historia e një matjeje.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
@@ -30,9 +31,11 @@ vi.mock('@/lib/image', () => ({ compressPhoto: async () => ({ data: new Uint8Arr
 async function renderAt(path: string) {
   const { MetricPage, ProgressPage } = await import('./progress')
   const { MeasurePage } = await import('./body-measure')
+  const { PhotosPage } = await import('./photos')
   const router = createMemoryRouter(
     [
       { path: '/progresi', element: <ProgressPage /> },
+      { path: '/progresi/fotot', element: <PhotosPage /> },
       { path: '/progresi/matja', element: <MeasurePage /> },
       { path: '/progresi/trupi', element: <h1>Trupi</h1> },
       { path: '/progresi/:metric', element: <MetricPage /> },
@@ -49,6 +52,7 @@ describe('Progresi', () => {
     URL.createObjectURL = () => 'blob:foto'
     URL.revokeObjectURL = () => {}
   })
+  afterEach(() => language.set('sq'))
 
   it('pa asgjë: gjendja bosh; matja hapet nga lista, gabimi tregohet te fusha; pas perimetrit del pamja e plotë', async () => {
     const user = userEvent.setup()
@@ -83,8 +87,9 @@ describe('Progresi', () => {
     const { saveMeasurement } = await import('@/data/progress')
     for (const [date, weight] of [['2026-11-20', 81.6], ['2026-11-27', 81], ['2026-12-04', 80.5]] as const) await saveMeasurement(data.store, date, { weight_kg: weight })
     await renderAt('/progresi/weight_kg')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Pesha' })).toBeInTheDocument()
+    // Gjatë leximit titulli i fshehur ka të njëjtin emër: pritet grafiku, pastaj titulli i faqes.
     expect(await screen.findByRole('img', { name: /^Pesha në kohë/ })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Pesha' })).toBeInTheDocument()
     const history = screen.getByRole('region', { name: 'Historia' })
     // Më e reja e para; matja e testit të parë është e sotme (para këtyre datave).
     const [newest] = within(history).getAllByRole('link')
@@ -110,5 +115,49 @@ describe('Progresi', () => {
     await waitFor(() => expect(within(section).queryByRole('button', { name: /^Para, / })).not.toBeInTheDocument())
     expect(within(section).getByText('Para').closest('label')).not.toBeNull()
     expect(await data.store.all('progress_photos')).toEqual([])
+  })
+
+  it('në anglisht: paneli i peshës, matjet, fotot dhe historia e një matjeje, pa asnjë tekst shqip', async () => {
+    const user = userEvent.setup()
+    language.set('en')
+    await renderAt('/progresi')
+    const weight = (await screen.findByText('Weight · 7-day average')).closest('section')!
+    // Numri dhe njësia lidhen me hapësirë që nuk thyhet (\s e kap).
+    expect(within(weight).getByRole('img', { name: /^Weight over the last 8 weeks, latest average 80\.5\skg$/ })).toBeInTheDocument()
+    expect(within(weight).getByText('7-day average')).toBeInTheDocument()
+    expect(within(weight).getByRole('link', { name: 'Add measurement' })).toHaveAttribute('href', '/progresi/matja')
+    expect(within(weight).getByRole('link', { name: 'History' })).toHaveAttribute('href', '/progresi/weight_kg')
+    expect(screen.getByRole('region', { name: 'Body' })).toHaveTextContent('Waist')
+    expect(screen.getByRole('link', { name: /^Waist/ })).toHaveTextContent('84 cm')
+    expect(await screen.findByText('Strength (e1RM) shows up here after your first weighted sets.')).toBeInTheDocument()
+
+    const section = await screen.findByRole('region', { name: 'Progress photos' })
+    expect(section).toHaveTextContent('Same place and light every time, so the change shows.')
+    await user.upload(within(section).getByText('Front').closest('label')!.querySelector('input')!, new File(['x'], 'foto.jpg', { type: 'image/jpeg' }))
+    const photo = await within(section).findByRole('button', { name: /^Front, \d+ [A-Z][a-z]+$/ })
+    expect(section).toHaveTextContent(/Latest: \d+ [A-Z][a-z]+\./)
+    await user.click(photo)
+    const viewer = screen.getByRole('dialog', { name: /^Front · / })
+    expect(within(viewer).getByText('Take a new photo today')).toBeInTheDocument()
+    await user.click(within(viewer).getByRole('button', { name: 'Delete photo' }))
+    expect(within(viewer).getByRole('alert')).toHaveTextContent('The photo is deleted from this phone and from your account.')
+    expect(within(viewer).getByRole('button', { name: 'Yes, delete it' })).toBeInTheDocument()
+    expect(document.body.textContent).not.toMatch(/[ëç]/)
+  })
+
+  it('në anglisht: faqja me të gjitha fotot (foto para nga testi i mëparshëm) dhe faqja e një matjeje', async () => {
+    language.set('en')
+    const router = await renderAt('/progresi/fotot')
+    // Gjatë leximit ka vetëm titullin e fshehur; faqja vjen me butonin mbrapa.
+    expect(await screen.findByRole('button', { name: 'Back to Progress' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Progress photos' })).toBeInTheDocument()
+    expect(await screen.findByText('No side photo')).toBeInTheDocument()
+    expect(screen.getByText('No back photo')).toBeInTheDocument()
+    await router.navigate('/progresi/weight_kg')
+    expect(await screen.findByRole('img', { name: 'Weight over time, 4 measurements' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Weight' })).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: 'History' })).getAllByRole('link')[0]).toHaveTextContent(/^4 December80\.5\skg$/)
+    expect(screen.getByRole('link', { name: 'Add measurement' })).toBeInTheDocument()
+    expect(document.body.textContent).not.toMatch(/[ëç]/)
   })
 })

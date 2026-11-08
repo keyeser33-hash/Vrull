@@ -6,11 +6,8 @@ import type { LocalStore } from './store'
 // Në një telefon tjetër shkarkohet një herë dhe ruhet në telefon.
 
 export type Pose = 'front' | 'side' | 'back'
-export const POSES: { pose: Pose; label: string }[] = [
-  { pose: 'front', label: 'Para' },
-  { pose: 'side', label: 'Anash' },
-  { pose: 'back', label: 'Mbrapa' },
-]
+/** Pozat me radhën e ekranit; emrat vijnë nga katalogu ('photos.pose.*'). */
+export const POSES: readonly Pose[] = ['front', 'side', 'back']
 
 export interface PhotoRemote {
   upload(path: string, data: ArrayBuffer, type: string): Promise<void>

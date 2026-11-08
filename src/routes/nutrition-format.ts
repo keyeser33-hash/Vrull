@@ -1,20 +1,45 @@
+import type { I18n } from '@/i18n'
 import type { Macros } from '@/nutrition/targets'
-import { kg } from './training-format'
 
-// Tekstet e ushqimit sipas DESIGN.md: pika për mijëshet ("1.487 kcal"), presja dhjetore, ora 24h.
+// Tekstet e ushqimit sipas gjuhës (SPEC §0.3a, Gjuhët): "2 900 kcal" / "2,900 kcal", gramët me
+// hapësirë që nuk thyhet, makrot "P 40 · K 62 · Y 9 g" dhe koha relative e vaktit nga katalogu.
 
-export const kcal = (value: number) => String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+type Texts = Pick<I18n, 't' | 'fmt'>
 
-export const grams = (value: number) => `${kg(value)} g`
+/** Kaloritë pa presje dhjetore, me mijëshet e gjuhës: "1 487" / "1,487". */
+export const kcalText = ({ fmt }: Texts, value: number) => fmt.number(Math.round(value))
 
-export const macrosLine = (macros: Macros) => `P ${Math.round(macros.proteinG)} · K ${Math.round(macros.carbsG)} · Y ${Math.round(macros.fatG)} g`
+/** "13,5 g" / "13.5 g". */
+export const gramsText = ({ fmt }: Texts, value: number) => fmt.unit(value, 'g', { maxDigits: 1 })
 
-/** "pas 20 min", "pas 2 orë 50 min", "para 30 min", "tani". */
-export function relativeTime(time: string, now: Date) {
+export const macrosLine = ({ t }: Texts, macros: Macros) =>
+  t('food.macros', { protein: Math.round(macros.proteinG), carbs: Math.round(macros.carbsG), fat: Math.round(macros.fatG) })
+
+/** "pas 20 min", "pas 2 orë 50 min", "para 30 min", "tani" / "in 20 min", "30 min ago", "now". */
+export function relativeTime({ t }: Texts, time: string, now: Date) {
   const [hours, minutes] = time.split(':').map(Number)
   const diff = hours * 60 + minutes - (now.getHours() * 60 + now.getMinutes())
-  if (diff === 0) return 'tani'
+  if (diff === 0) return t('food.time.now')
   const span = Math.abs(diff)
-  const text = span < 60 ? `${span} min` : `${Math.floor(span / 60)} orë${span % 60 ? ` ${span % 60} min` : ''}`
-  return diff > 0 ? `pas ${text}` : `para ${text}`
+  const whole = Math.floor(span / 60)
+  const text =
+    span < 60
+      ? t('food.time.minutes', { minutes: span })
+      : span % 60
+        ? t('food.time.hoursMinutes', { count: whole, minutes: span % 60 })
+        : t('food.time.hours', { count: whole })
+  return diff > 0 ? t('food.time.in', { span: text }) : t('food.time.ago', { span: text })
+}
+
+/**
+ * Gramët e shkruar me dorë, në çdo gjuhë: "12,5" ose "12.5"; mijëshet me hapësirë ("1 200") ose me
+ * presje para tri shifrave ("1,200"). Null kur nuk është numër pozitiv.
+ */
+export function parseGrams(text: string): number | null {
+  const compact = text.replace(/[\s ]/g, '')
+  const english = /^\d{1,3}(,\d{3})+(\.\d+)?$/.test(compact)
+  const normalized = english ? compact.replace(/,/g, '') : compact.replace(',', '.')
+  if (!/^\d+(\.\d+)?$/.test(normalized)) return null
+  const value = Number(normalized)
+  return value > 0 ? value : null
 }

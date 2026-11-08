@@ -9,6 +9,8 @@ import type { LocalRow } from './tables'
 export interface Food {
   id: string
   source: 'off' | 'usda' | 'custom' | 'template'
+  /** `jim:<çelësi>` për shabllonin, kodi i produktit për Open Food Facts dhe USDA; null për të tuat. */
+  sourceId: string | null
   name: string
   brand: string | null
   kcal: number
@@ -25,6 +27,7 @@ function toFood(row: LocalRow): Food {
   return {
     id: row.id,
     source: row.source as Food['source'],
+    sourceId: (row.source_id as string | null | undefined) ?? null,
     name: String(row.name),
     brand: (row.brand as string | null | undefined) ?? null,
     kcal: Number(row.kcal),
@@ -43,16 +46,20 @@ const plain = (value: string) =>
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
 
-/** Kërkimi lokal: çdo fjalë e kërkesës duhet të jetë në emër ose në markë; fillimi i emrit del i pari. */
-export async function searchFoods(store: LocalStore, query: string): Promise<Food[]> {
+/**
+ * Kërkimi lokal: çdo fjalë e kërkesës duhet të jetë në emër ose në markë; fillimi i emrit del i pari.
+ * `shown` jep emrin që sheh përdoruesi (ushqimet e shabllonit në anglisht), që të gjendet edhe ai.
+ */
+export async function searchFoods(store: LocalStore, query: string, shown: (food: Food) => string = (food) => food.name): Promise<Food[]> {
   const words = plain(query).split(/\s+/).filter(Boolean)
   if (words.length === 0) return []
   const foods = (await store.all('foods')).map(toFood)
-  const haystack = (food: Food) => plain(`${food.name} ${food.brand ?? ''}`)
-  const starts = (food: Food) => (plain(food.name).startsWith(words[0]) ? 0 : 1)
+  const names = (food: Food) => (shown(food) === food.name ? food.name : `${shown(food)} ${food.name}`)
+  const haystack = (food: Food) => plain(`${names(food)} ${food.brand ?? ''}`)
+  const starts = (food: Food) => (plain(shown(food)).startsWith(words[0]) || plain(food.name).startsWith(words[0]) ? 0 : 1)
   return foods
     .filter((food) => words.every((word) => haystack(food).includes(word)))
-    .sort((a, b) => starts(a) - starts(b) || a.name.localeCompare(b.name, 'sq'))
+    .sort((a, b) => starts(a) - starts(b) || shown(a).localeCompare(shown(b), 'sq'))
     .slice(0, 30)
 }
 

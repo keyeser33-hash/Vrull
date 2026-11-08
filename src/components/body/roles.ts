@@ -1,14 +1,14 @@
 import type { Tone } from '@/body/model-math'
 
 // Roli i një muskuli te një ushtrim (SPEC §11, funksioni 1): kryesorët me prush, ndihmësit gri.
-// Një burim i vetëm për figurën 2D (`fill`), modelin 3D (`tone`) dhe legjendën (`swatch`).
+// Një burim i vetëm për figurën 2D (`fill`), modelin 3D (`tone`) dhe legjendën (`swatch`); emri i
+// rolit vjen nga katalogu.
 
 export type MuscleRole = 'primary' | 'secondary'
 
-export const MUSCLE_ROLE: Record<MuscleRole, { label: string; fill: string; swatch: string; tone: Tone }> = {
-  primary: { label: 'Kryesor', fill: 'fill-ember', swatch: 'bg-ember', tone: { token: '--ember', alpha: 1 } },
+export const MUSCLE_ROLE: Record<MuscleRole, { fill: string; swatch: string; tone: Tone }> = {
+  primary: { fill: 'fill-ember', swatch: 'bg-ember', tone: { token: '--ember', alpha: 1 } },
   secondary: {
-    label: 'Ndihmës',
     fill: 'fill-muted-foreground/60',
     swatch: 'bg-muted-foreground/60',
     tone: { token: '--muted-foreground', alpha: 0.6 },

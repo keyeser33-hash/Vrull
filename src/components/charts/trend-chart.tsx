@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 
-// Grafiku i një vlere në kohë (SPEC §8; skill-i dataviz): vija 2 px me shenjën dhe vlerën e
-// fundit, pikat e ditës të zbehta, rrjeti i qetë. Në panel (i errët në çdo temë) vija është
-// --chart-1; mbi kartë merr ngjyrën e tekstit, që kontrasti të mbetet mbi 3:1 edhe në temën e
-// çelët. Prekja ose lëvizja e gishtit tregon datën dhe vlerën; lista poshtë grafikut është tabela.
+// Grafiku i një vlere në kohë (SPEC §8; skill-i dataviz; në Vrull me V2-E1-16b): vija 2 px në `data`
+// (vjollca e të dhënave dytësore, mbi 3:1 në çdo temë) me shenjën dhe vlerën e fundit, pikat e ditës
+// në `muted-foreground`, rrjeti 1 px `border`. `ground` thotë ku rri grafiku: brenda kartës (`surface`)
+// ose mbi sfondin e faqes, që unaza e pikave të marrë ngjyrën e asaj që ka poshtë. Numrat dhe datat
+// sipas gjuhës (`fmt`), me `tabular-nums`. Prekja ose lëvizja e gishtit tregon datën dhe vlerën; lista
+// poshtë grafikut është tabela.
 
 export interface TrendPoint {
   date: string
@@ -13,7 +16,6 @@ export interface TrendPoint {
 
 const DAY_MS = 86_400_000
 const dayOf = (date: string) => Date.parse(`${date}T00:00:00Z`) / DAY_MS
-const shortDate = (date: string) => `${date.slice(8, 10)}.${date.slice(5, 7)}`
 
 function useWidth() {
   const ref = useRef<HTMLDivElement>(null)
@@ -41,10 +43,15 @@ function ticks(min: number, max: number) {
   return values
 }
 
+const GROUND = {
+  card: { ring: 'stroke-surface', tip: 'bg-surface-2' },
+  page: { ring: 'stroke-background', tip: 'bg-surface' },
+} as const
+
 export function TrendChart({
   line,
   points = [],
-  tone,
+  ground,
   label,
   format,
   lineLabel,
@@ -53,13 +60,14 @@ export function TrendChart({
 }: {
   line: TrendPoint[]
   points?: TrendPoint[]
-  tone: 'panel' | 'card'
+  ground: 'card' | 'page'
   label: string
   format: (value: number) => string
   lineLabel?: string
   pointsLabel?: string
   height?: number
 }) {
+  const { fmt } = useI18n()
   const { ref, width } = useWidth()
   const [active, setActive] = useState<number | null>(null)
   const all = [...line, ...points]
@@ -79,8 +87,12 @@ export function TrendChart({
   const y = (value: number) => top + (1 - (value - low) / (high - low || 1)) * (height - top - bottom)
   const path = line.map((point, index) => `${index === 0 ? 'M' : 'L'}${x(point.date).toFixed(1)},${y(point.value).toFixed(1)}`).join(' ')
   const last = line.at(-1)!
-  const panel = tone === 'panel'
   const shown = active === null ? null : line[active]
+  const tones = GROUND[ground]
+  const dateText = (date: string) => fmt.date(new Date(`${date}T12:00:00`), { weekday: false })
+  // Etiketa e prekjes rri anash pikës, nga ana ku ka vend, që të mos dalë jashtë grafikut.
+  const anchor = x((shown ?? last).date)
+  const tipPosition = anchor < width / 2 ? { left: Math.max(0, anchor - 24) } : { right: Math.max(0, width - anchor - 24) }
 
   function pick(clientX: number, target: SVGElement) {
     const box = target.getBoundingClientRect()
@@ -98,31 +110,24 @@ export function TrendChart({
         <svg width={width} height={height} role="img" aria-label={label} className="block touch-pan-y">
           {grid.map((value) => (
             <g key={value}>
-              <line x1={left} x2={width - right} y1={y(value)} y2={y(value)} strokeWidth={1} className={panel ? 'stroke-panel-border' : 'stroke-border-subtle'} />
-              <text x={left - 6} y={y(value) + 4} textAnchor="end" className={cn('text-[11px] tabular-nums', panel ? 'fill-panel-muted-foreground' : 'fill-muted-foreground')}>
-                {String(value).replace('.', ',')}
+              <line x1={left} x2={width - right} y1={y(value)} y2={y(value)} strokeWidth={1} className="stroke-border" />
+              <text x={left - 6} y={y(value) + 4} textAnchor="end" className="fill-muted-foreground text-[11px] tabular-nums">
+                {fmt.number(value)}
               </text>
             </g>
           ))}
-          <text x={left} y={height - 6} className={cn('text-[11px] tabular-nums', panel ? 'fill-panel-muted-foreground' : 'fill-muted-foreground')}>
-            {shortDate(all.reduce((first, point) => (point.date < first ? point.date : first), all[0].date))}
+          <text x={left} y={height - 6} className="fill-muted-foreground text-[11px] tabular-nums">
+            {dateText(all.reduce((first, point) => (point.date < first ? point.date : first), all[0].date))}
           </text>
-          <text x={width - right} y={height - 6} textAnchor="end" className={cn('text-[11px] tabular-nums', panel ? 'fill-panel-muted-foreground' : 'fill-muted-foreground')}>
-            {shortDate(last.date)}
+          <text x={width - right} y={height - 6} textAnchor="end" className="fill-muted-foreground text-[11px] tabular-nums">
+            {dateText(last.date)}
           </text>
           {points.map((point) => (
-            <circle
-              key={point.date}
-              cx={x(point.date)}
-              cy={y(point.value)}
-              r={3}
-              strokeWidth={2}
-              className={panel ? 'fill-panel-muted-foreground stroke-panel' : 'fill-muted-foreground stroke-card'}
-            />
+            <circle key={point.date} cx={x(point.date)} cy={y(point.value)} r={3} strokeWidth={2} className={cn('fill-muted-foreground', tones.ring)} />
           ))}
-          <path d={path} fill="none" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" className={panel ? 'stroke-chart-1' : 'stroke-foreground'} />
-          {shown ? <line x1={x(shown.date)} x2={x(shown.date)} y1={top} y2={height - bottom} strokeWidth={1} className={panel ? 'stroke-panel-muted-foreground' : 'stroke-muted-foreground'} /> : null}
-          <circle cx={x((shown ?? last).date)} cy={y((shown ?? last).value)} r={4.5} strokeWidth={2} className={panel ? 'fill-chart-1 stroke-panel' : 'fill-foreground stroke-card'} />
+          <path d={path} fill="none" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" className="stroke-data" />
+          {shown ? <line x1={x(shown.date)} x2={x(shown.date)} y1={top} y2={height - bottom} strokeWidth={1} className="stroke-muted-foreground" /> : null}
+          <circle cx={x((shown ?? last).date)} cy={y((shown ?? last).value)} r={4.5} strokeWidth={2} className={cn('fill-data', tones.ring)} />
           <rect
             x={0}
             y={0}
@@ -136,23 +141,20 @@ export function TrendChart({
         </svg>
         <div
           aria-live="polite"
-          className={cn(
-            'pointer-events-none absolute top-0 rounded-md px-2 py-1 text-xs leading-4 font-medium whitespace-nowrap tabular-nums',
-            panel ? 'bg-panel-button text-panel-foreground' : 'bg-popover text-popover-foreground shadow-sm',
-          )}
-          style={{ left: Math.min(Math.max(x((shown ?? last).date) - 48, 0), width - 108), visibility: shown ? 'visible' : 'hidden' }}
+          className={cn('pointer-events-none absolute top-0 rounded-sm px-2 py-1 text-xs leading-4 font-medium whitespace-nowrap text-foreground tabular-nums', tones.tip)}
+          style={{ ...tipPosition, visibility: shown ? 'visible' : 'hidden' }}
         >
-          {shown ? `${shortDate(shown.date)} · ${format(shown.value)}` : ''}
+          {shown ? `${dateText(shown.date)} · ${format(shown.value)}` : ''}
         </div>
       </div>
       {lineLabel && pointsLabel && points.length > 0 ? (
-        <figcaption className={cn('flex gap-4 text-xs leading-4', panel ? 'text-panel-muted-foreground' : 'text-muted-foreground')}>
+        <figcaption className="flex gap-4 text-xs leading-4 text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span aria-hidden className={cn('h-0.5 w-4 rounded-full', panel ? 'bg-chart-1' : 'bg-foreground')} />
+            <span aria-hidden className="h-0.5 w-4 rounded-full bg-data" />
             {lineLabel}
           </span>
           <span className="flex items-center gap-1.5">
-            <span aria-hidden className={cn('size-2 rounded-full', panel ? 'bg-panel-muted-foreground' : 'bg-muted-foreground')} />
+            <span aria-hidden className="size-2 rounded-full bg-muted-foreground" />
             {pointsLabel}
           </span>
         </figcaption>
