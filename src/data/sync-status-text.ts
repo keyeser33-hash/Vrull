@@ -13,6 +13,31 @@ function relative(at: Date, now: Date, { t, fmt }: I18n) {
   return t('sync.on', { date: fmt.numericDate(at), time: fmt.time(at) })
 }
 
+export interface SyncSummary {
+  /** Ngjyra e pikës pranë gjendjes; gjendja thuhet gjithnjë edhe me fjalë. */
+  tone: 'success' | 'muted' | 'danger'
+  title: string
+  detail: string | null
+}
+
+/** Rreshti "Sinkronizimi" te Cilësimet (bordi): "I sinkronizuar" dhe koha, ose çfarë ndodhi. */
+export function syncSummary(status: SyncStatus, now: Date = new Date(), i18n: I18n = currentI18n()): SyncSummary {
+  const { t } = i18n
+  if (status.syncing) return { tone: 'muted', title: t('sync.syncing'), detail: null }
+  const last = status.last
+  if (!last) return { tone: 'muted', title: t('sync.never'), detail: null }
+  switch (last.status) {
+    case 'ok':
+      return { tone: 'success', title: t('sync.okTitle'), detail: relative(new Date(last.at), now, i18n) }
+    case 'offline':
+      return { tone: 'muted', title: t('shell.offline'), detail: t('sync.offlineDetail') }
+    case 'signed_out':
+      return { tone: 'muted', title: t('sync.signedOutTitle'), detail: t('sync.signedOut') }
+    case 'error':
+      return { tone: 'danger', title: t('sync.errorTitle'), detail: last.rejected > 0 ? t('sync.rejected', { count: last.rejected }) : t('sync.failed') }
+  }
+}
+
 export function describeSync(status: SyncStatus, now: Date = new Date(), i18n: I18n = currentI18n()): string {
   const { t } = i18n
   if (status.syncing) return t('sync.syncing')

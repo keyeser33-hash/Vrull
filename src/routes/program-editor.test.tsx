@@ -62,7 +62,7 @@ describe('editori i programit', () => {
 
   it('nga Programi te editori i programit aktiv dhe te lista e programeve', async () => {
     await renderAt('/programi')
-    const panel = await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' })
+    const panel = await screen.findByRole('heading', { level: 2, name: 'Shortcut to Size' })
     const section = panel.closest('section')!
     expect(within(section).getByRole('link', { name: 'Ndrysho programin' })).toHaveAttribute('href', expect.stringMatching(/^\/programi\/editori\//))
     expect(within(section).getByRole('link', { name: 'Programet' })).toHaveAttribute('href', '/programet')

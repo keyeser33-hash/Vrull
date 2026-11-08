@@ -1,3 +1,4 @@
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { WEEK_DAYS } from './week-days'
 
@@ -14,6 +15,7 @@ export function DayPicker({
   labelledBy: string
   describedBy?: string
 }) {
+  const { t } = useI18n()
   function toggle(day: number) {
     const next = value.includes(day) ? value.filter((item) => item !== day) : [...value, day]
     onChange(next.sort((a, b) => a - b))
@@ -27,7 +29,7 @@ export function DayPicker({
             key={day.value}
             type="button"
             aria-pressed={selected}
-            aria-label={day.name}
+            aria-label={t(`day.${day.value}`)}
             onClick={() => toggle(day.value)}
             className={cn(
               'h-11 rounded-full text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
@@ -36,7 +38,7 @@ export function DayPicker({
                 : 'border border-input bg-card text-muted-foreground hover:bg-accent',
             )}
           >
-            {day.short}
+            {t(`day.short.${day.value}`)}
           </button>
         )
       })}

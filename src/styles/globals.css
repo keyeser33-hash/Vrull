@@ -323,6 +323,21 @@
   font-weight: 500;
 }
 
+/* Sfondi "Vija shpejtësie" (DESIGN.md › Sfondet): vija prushi 115°, 2 px me 16%, çdo 14 px, me çdo
+   temë. Korniza e vendos pas kreut dhe e zbeh poshtë (`mask-fade-down`), që të mos bjerë pas tekstit
+   të gjatë; mostra te Pamja e tregon të plotë. */
+@utility bg-speed-lines {
+  background-image: repeating-linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--ember) 16%, transparent) 0 2px,
+    transparent 2px 14px
+  );
+}
+@utility mask-fade-down {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
+}
+
 @layer base {
   * {
     @apply border-border;

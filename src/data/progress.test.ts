@@ -1,6 +1,6 @@
 import { createDatabase } from './db'
 import { logTemplateMeal } from './nutrition'
-import { measurementsOn, metricHistory, progressView, saveMeasurement, trainingProgress } from './progress'
+import { measurementsOn, metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from './progress'
 import { completeOnboarding } from './profile'
 import { finishWorkout, saveSet, startWorkout, trainingSnapshot } from './training'
 import { createLocalStore } from './store'
@@ -51,5 +51,55 @@ describe('matjet e progresit', () => {
     expect(progress.compliance.map((day) => day.date)).toEqual(['2026-12-02', '2026-12-03', '2026-12-04', '2026-12-05', '2026-12-06', '2026-12-07', '2026-12-08'])
     expect(progress.compliance[5]).toEqual({ date: '2026-12-07', kcal: 495, target: 3625 })
     expect(progress.compliance[6]).toEqual({ date: '2026-12-08', kcal: 0, target: null })
+  })
+})
+
+// Bordi "Gjendje · Bosh": Progresi pa asgjë për të treguar, para setit të parë.
+describe('Progresi bosh', () => {
+  const onboard = (store: ReturnType<typeof setup>) =>
+    completeOnboarding(store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' }, () => new Date('2026-12-01T08:00:00'))
+
+  it('pa të dhëna, ose vetëm me peshën e hapave të parë, është bosh dhe e tregon peshën', async () => {
+    const store = setup()
+    expect(await progressStart(store)).toEqual({ empty: true, weightKg: null })
+    await onboard(store)
+    expect(await progressStart(store)).toEqual({ empty: true, weightKg: 80 })
+    // Pesha e po asaj dite ndryshon, por mbetet një pikë: ende pa grafik.
+    await saveMeasurement(store, '2026-12-01', { weight_kg: 80.4 })
+    expect(await progressStart(store)).toEqual({ empty: true, weightKg: 80.4 })
+  })
+
+  it('një pikë e dytë peshe, një perimetër, një foto ose një set e mbushin', async () => {
+    const withSecondWeight = setup()
+    await onboard(withSecondWeight)
+    await saveMeasurement(withSecondWeight, '2026-12-02', { weight_kg: 79.9 })
+    expect((await progressStart(withSecondWeight)).empty).toBe(false)
+
+    const withWaist = setup()
+    await onboard(withWaist)
+    await saveMeasurement(withWaist, '2026-12-01', { waist_cm: 84 })
+    expect((await progressStart(withWaist)).empty).toBe(false)
+
+    const withPhoto = setup()
+    await onboard(withPhoto)
+    await withPhoto.put('progress_photos', { date: '2026-12-01', pose: 'front', storage_path: `${USER}/a.jpg`, width: 1, height: 1, bytes: 1 })
+    expect((await progressStart(withPhoto)).empty).toBe(false)
+
+    const withSet = setup()
+    await onboard(withSet)
+    const sessionId = await startWorkout(withSet)
+    const [first] = (await trainingSnapshot(withSet))!.plan.slots
+    await saveSet(withSet, { sessionId, slot: first, setNumber: 1, weightKg: 60, reps: 12 })
+    expect((await progressStart(withSet)).empty).toBe(false)
+  })
+
+  it('një set i fshirë nuk e mbush', async () => {
+    const store = setup()
+    await onboard(store)
+    const sessionId = await startWorkout(store)
+    const [first] = (await trainingSnapshot(store))!.plan.slots
+    const set = await saveSet(store, { sessionId, slot: first, setNumber: 1, weightKg: 60, reps: 12 })
+    await store.remove('set_logs', set.id)
+    expect((await progressStart(store)).empty).toBe(true)
   })
 })

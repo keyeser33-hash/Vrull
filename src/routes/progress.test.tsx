@@ -52,6 +52,7 @@ async function renderAt(path: string) {
     [
       { path: '/progresi', element: <ProgressPage /> },
       { path: '/progresi/matja', element: <MeasurementPage /> },
+      { path: '/progresi/trupi', element: <h1>Trupi</h1> },
       { path: '/progresi/:metric', element: <MetricPage /> },
     ],
     { initialEntries: path.split('|') },
@@ -67,13 +68,15 @@ describe('Progresi', () => {
     URL.revokeObjectURL = () => {}
   })
 
-  it('pa matje: paneli e thotë dhe "Shto matjen" hap formularin; gabimi tregohet te fusha', async () => {
+  it('pa asgjë: gjendja bosh; matja hapet nga lista, gabimi tregohet te fusha; pas perimetrit del pamja e plotë', async () => {
     const user = userEvent.setup()
     await renderAt('/progresi')
-    const panel = (await screen.findByText('Pesha · mesatarja 7-ditore')).closest('section')!
-    expect(panel).toHaveTextContent('Pa peshë ende')
-    expect(await screen.findByText('Forca (e1RM) del këtu pas seteve të para me peshë.')).toBeInTheDocument()
-    await user.click(within(panel).getByRole('link', { name: 'Shto matjen' }))
+    expect(await screen.findByRole('heading', { level: 2, name: 'Grafikët nisin me setin e parë' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Progresi' })).toBeInTheDocument()
+    // Pa program aktiv nuk ka "Fillo stërvitjen e parë".
+    expect(screen.queryByRole('button', { name: 'Fillo stërvitjen e parë' })).toBeNull()
+    expect(screen.getByRole('link', { name: /^Trupi 3D/ })).toHaveAttribute('href', '/progresi/trupi')
+    await user.click(screen.getByRole('link', { name: /^Pesha dhe matjet/ }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Matja' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))
     expect(screen.getByRole('alert')).toHaveTextContent('Shkruaj të paktën një matje.')
@@ -86,8 +89,11 @@ describe('Progresi', () => {
     await user.type(screen.getByLabelText('Beli, cm'), '84')
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))
     const updated = (await screen.findByText('Pesha · mesatarja 7-ditore')).closest('section')!
-    expect(await within(updated).findByText('80,4 kg')).toBeInTheDocument()
+    await waitFor(() => expect(updated).toHaveTextContent('80,4kg'))
+    expect(within(updated).getByRole('link', { name: 'Shto matjen' })).toHaveAttribute('href', '/progresi/matja')
     expect(screen.getByRole('link', { name: /^Beli/ })).toHaveTextContent('84 cm')
+    expect(screen.getByRole('link', { name: /^Trupi 3D/ })).toHaveAttribute('href', '/progresi/trupi')
+    expect(await screen.findByText('Forca (e1RM) del këtu pas seteve të para me peshë.')).toBeInTheDocument()
   })
 
   it('historia e peshës: grafiku me mesataren dhe lista sipas datës', async () => {

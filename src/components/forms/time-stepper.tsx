@@ -1,3 +1,4 @@
+import { useI18n } from '@/i18n/use-i18n'
 import { addMinutes, parseTimeInput } from '@/lib/time'
 import { ValueStepper } from './value-stepper'
 
@@ -10,6 +11,7 @@ export function TimeStepper({
   value,
   onChange,
   hideLabel,
+  variant = 'hero',
 }: {
   label: string
   /** "Ora e stërvitjes", për etiketat e butonave. */
@@ -17,16 +19,19 @@ export function TimeStepper({
   value: string
   onChange: (value: string) => void
   hideLabel?: boolean
+  /** `row` në një rresht me etiketën (disa orë në një fletë); `hero` në qendër (hapat e parë). */
+  variant?: 'row' | 'hero'
 }) {
+  const { t } = useI18n()
   return (
     <ValueStepper
-      variant="hero"
+      variant={variant}
       hideLabel={hideLabel}
       label={label}
       text={value}
       inputMode="numeric"
-      minusLabel={`${short} ${TIME_STEP} minuta më herët`}
-      plusLabel={`${short} ${TIME_STEP} minuta më vonë`}
+      minusLabel={t('form.time.earlier', { label: short, minutes: TIME_STEP })}
+      plusLabel={t('form.time.later', { label: short, minutes: TIME_STEP })}
       onMinus={() => onChange(addMinutes(value, -TIME_STEP))}
       onPlus={() => onChange(addMinutes(value, TIME_STEP))}
       onCommit={(text) => {

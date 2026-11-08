@@ -1,24 +1,39 @@
 import type { ReactNode } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
+import { cn } from '@/lib/cn'
 
-// Koka e një ekrani: një h1 për faqe (Omal UI v2: 30/36, 600, -0.025em) dhe veprime opsionale.
-export function PageHeader({ title, actions }: { title: string; actions?: ReactNode }) {
+/**
+ * Shigjeta mbrapa e ekraneve të detajit; kthehet aty nga erdhi përdoruesi. Kur ekrani është i pari
+ * në histori (p.sh. pas rifreskimit), shkon te `fallback`, që butoni të mos dalë nga app-i.
+ */
+export function BackButton({ label, fallback = '/', className }: { label: string; fallback?: string; className?: string }) {
+  const navigate = useNavigate()
+  const location = useLocation()
   return (
-    <header className="mb-6 flex min-h-11 items-center justify-between gap-3">
-      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-      {actions ? <div className="flex items-center gap-1">{actions}</div> : null}
-    </header>
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label={label}
+      className={cn('-ml-3 rounded-pill text-foreground', className)}
+      onClick={() => (location.key === 'default' ? navigate(fallback, { replace: true }) : navigate(-1))}
+    >
+      <Icon name="chevron-majtas" size={22} />
+    </Button>
   )
 }
 
-/** Shigjeta mbrapa e ekraneve të detajit; kthehet aty nga erdhi përdoruesi. */
-export function BackButton({ label }: { label: string }) {
-  const navigate = useNavigate()
+/**
+ * Kreu i ekraneve brenda një vendi (Cilësimet, Pamja, Trupi): shigjeta mbrapa 44 px dhe titulli
+ * `display-m`, si te bordet; veprimet e ekranit djathtas.
+ */
+export function BackHeader({ title, back, fallback, actions }: { title: string; back: string; fallback?: string; actions?: ReactNode }) {
   return (
-    <Button variant="ghost" size="icon" aria-label={label} className="-ml-3 text-foreground" onClick={() => navigate(-1)}>
-      <Icon name="chevron-majtas" size={22} />
-    </Button>
+    <header className="flex min-h-14 items-center gap-1">
+      <BackButton label={back} fallback={fallback} className="-ml-2" />
+      <h1 className="min-w-0 flex-1 type-display-m">{title}</h1>
+      {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
+    </header>
   )
 }

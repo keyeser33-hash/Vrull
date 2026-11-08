@@ -1,23 +1,31 @@
 import { useId, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { TrendChart } from '@/components/charts/trend-chart'
+import { EmptyState } from '@/components/layout/empty-state'
 import { Group, LinkRow } from '@/components/layout/list-group'
 import { BackButton } from '@/components/layout/page'
+import { ScreenHeader } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { inputClass } from '@/components/ui/field-styles'
+import { Icon } from '@/components/ui/icons'
+import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
-import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHistory, progressView, saveMeasurement, trainingProgress } from '@/data/progress'
+import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from '@/data/progress'
+import { startWorkout, trainingSnapshot } from '@/data/training'
+import { useI18n } from '@/i18n/use-i18n'
+import { prepareRestNotifications } from '@/lib/rest-alarm'
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, type MetricKey, metricByKey, movingAverage, parseMetric } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
 import { PhotoSection } from './photos'
 import { dateLabel, kg } from './training-format'
 
-// Progresi, varianti A (07.11.2026; referencat nga Mobbin: Hevy, Withings, Lifesum): paneli i
-// peshës me mesataren 7-ditore, ndryshimin në 4 javë dhe grafikun; "Shto matjen" është veprimi
-// kryesor. Poshtë, çdo matje me vlerën e fundit; secila hap grafikun dhe historinë e vet.
+// Progresi (V2-E1-05 në sistemin Vrull; pamja e plotë e bordit vjen me Etapën 3): para setit të
+// parë gjendja bosh e bordit "Gjendje · Bosh" me "Fillo stërvitjen e parë"; pastaj paneli i peshës
+// me mesataren 7-ditore dhe "Shto matjen" (veprimi kryesor), Trupi 3D (këtu që nga v2), fotot,
+// forca, volumi, ushqimi dhe çdo matje me vlerën e fundit.
 
 // Një shifër pas presjes: sa mat peshorja dhe centimetri.
 const round1 = (value: number) => Math.round(value * 10) / 10
@@ -37,28 +45,48 @@ const since = <T extends { date: string }>(points: T[], days: number): T[] => {
 }
 const dayText = (date: string) => dateLabel(new Date(`${date}T12:00:00`))
 
+/** Kreu i Progresit: data dhe java e programit sipër, si te bordi. */
+function ProgressHeader({ label }: { label?: string }) {
+  const { t, fmt } = useI18n()
+  const [now] = useState(() => new Date())
+  const date = fmt.date(now)
+  const eyebrow = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
+  return <ScreenHeader eyebrow={eyebrow} title={t('tab.progress')} />
+}
+
 export function ProgressPage() {
+  const start = useLocalQuery(() => progressStart(store), [])
   const view = useLocalQuery(() => progressView(store), [])
-  if (!view) {
+  const snapshot = useLocalQuery(() => trainingSnapshot(store), [])
+  const label = snapshot && !snapshot.completed ? snapshot.label : undefined
+  if (!start || !view) {
     return (
       <div className="flex flex-col gap-5">
-        <h1 className="sr-only">Progresi</h1>
-        <div aria-hidden className="h-80 rounded-xl bg-skeleton" />
+        <ProgressHeader label={label} />
+        <div aria-hidden className="h-80 rounded-xl bg-surface" />
       </div>
     )
   }
+  if (start.empty) return <ProgressEmpty weightKg={start.weightKg} snapshot={snapshot} label={label} />
   const { weight } = view
   const measured = view.metrics.filter((entry) => entry.latest)
   return (
-    <div className="flex flex-col gap-5">
-      <h1 className="sr-only">Progresi</h1>
-      <section aria-labelledby="weight-title" className="flex flex-col gap-3 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-        <div className="flex flex-col gap-0.5">
-          <span id="weight-title" className="text-xs leading-4 font-medium text-panel-muted-foreground">
+    <div className="flex flex-col gap-3.5">
+      <ProgressHeader label={label} />
+      <section aria-labelledby="weight-title" className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-4')}>
+        <div className="flex flex-col gap-1">
+          <span id="weight-title" className="type-label text-muted-foreground">
             Pesha · mesatarja 7-ditore
           </span>
-          <span className="text-4xl leading-10 font-bold tracking-[-0.03em] tabular-nums">{weight.latest ? valueText(WEIGHT, weight.latest.value) : 'Pa peshë ende'}</span>
-          <span className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
+          {weight.latest ? (
+            <span className="flex items-baseline gap-1.5">
+              <span className="type-display-s tabular-nums">{kg(round1(weight.latest.value))}</span>
+              <span className="type-body text-muted-foreground">{WEIGHT.unit}</span>
+            </span>
+          ) : (
+            <span className="type-title">Pa peshë ende</span>
+          )}
+          <span className="type-caption text-muted-foreground tabular-nums">
             {weight.change ? `${deltaText(WEIGHT, weight.change.delta)} nga ${dayText(weight.change.from.date)}` : 'Ndryshimi del pas matjeve të tjera'}
           </span>
         </div>
@@ -74,14 +102,16 @@ export function ProgressPage() {
           />
         ) : null}
         <div className="flex gap-2">
-          <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'brand' }), 'min-h-[52px] flex-1 text-base')}>
+          <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'min-w-0 flex-1 px-4')}>
             Shto matjen
           </Link>
-          <Link to="/progresi/weight_kg" className={cn(buttonVariants({ variant: 'panel' }), 'min-h-[52px] shrink-0')}>
+          <Link to="/progresi/weight_kg" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
             Historia
           </Link>
         </div>
       </section>
+
+      <BodyLink />
 
       <PhotoSection />
 
@@ -100,8 +130,76 @@ export function ProgressPage() {
           ))}
         </Group>
       ) : (
-        <p className="text-sm leading-5 text-muted-foreground">Perimetrat dhe % e yndyrës dalin këtu pas matjes së parë me centimetër.</p>
+        <p className="type-caption text-muted-foreground">Perimetrat dhe % e yndyrës dalin këtu pas matjes së parë me centimetër.</p>
       )}
+    </div>
+  )
+}
+
+/** Trupi 3D, që në v2 jeton brenda Progresit (/progresi/trupi). */
+function BodyLink() {
+  const { t } = useI18n()
+  return (
+    <Link
+      to="/progresi/trupi"
+      className={cn(
+        surfaceClass,
+        'flex min-h-row items-center gap-3 rounded-lg py-3 pr-3 pl-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+      )}
+    >
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="type-title">{t('progress.body')}</span>
+        <span className="type-caption text-muted-foreground">{t('progress.bodyText')}</span>
+      </span>
+      <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
+    </Link>
+  )
+}
+
+/** Bordi "Gjendje · Bosh": grafikët nisin me setin e parë; Trupi dhe matjet hapen që tani. */
+function ProgressEmpty({ weightKg, snapshot, label }: { weightKg: number | null; snapshot: Awaited<ReturnType<typeof trainingSnapshot>> | undefined; label?: string }) {
+  const { t, fmt, lang } = useI18n()
+  const navigate = useNavigate()
+  const [busy, setBusy] = useState(false)
+  const plan = snapshot && !snapshot.completed ? snapshot.plan : null
+
+  async function start() {
+    setBusy(true)
+    try {
+      // Lejet e timer-it kërkohen kur nevojiten: në stërvitjen e parë (SPEC §3a).
+      await prepareRestNotifications()
+      await startWorkout(store)
+      navigate('/seanca')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex min-h-[calc(100dvh-var(--spacing-tab-bar)-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-[18px]">
+      <ProgressHeader label={label} />
+      <EmptyState
+        title={t('progress.emptyTitle')}
+        intro={t('progress.emptyIntro')}
+        items={[
+          { title: t('progress.strength'), text: t('progress.strengthText') },
+          { title: t('progress.volume'), text: t('progress.volumeText') },
+          { title: t('progress.body'), text: t('progress.bodyText'), to: '/progresi/trupi' },
+          {
+            title: t('progress.measurements'),
+            text: weightKg === null ? t('progress.measurementsText') : t('progress.measurementsWeight', { weight: fmt.unit(weightKg, 'kg', { minDigits: 1, maxDigits: 1 }) }),
+            to: '/progresi/matja',
+          },
+        ]}
+        action={
+          plan ? (
+            <Button variant="primary" size="xl" disabled={busy} onClick={() => void start()}>
+              {t('progress.startFirst')}
+            </Button>
+          ) : undefined
+        }
+        caption={plan && label ? t('progress.nextWorkout', { label, day: plan.dayNumber, name: plan.dayName.toLocaleLowerCase(lang) }) : undefined}
+      />
     </div>
   )
 }
@@ -110,7 +208,7 @@ export function MetricPage() {
   const { metric: key = '' } = useParams()
   const metric = metricByKey(key)
   const history = useLocalQuery(() => (metric ? metricHistory(store, metric.key) : Promise.resolve([])), [key])
-  if (!metric) return <p className="text-sm text-muted-foreground">Kjo matje nuk ekziston.</p>
+  if (!metric) return <p className="type-body text-muted-foreground">Kjo matje nuk ekziston.</p>
   if (!history) return <h1 className="sr-only">{metric.label}</h1>
   const isWeight = metric.key === 'weight_kg'
   const line = isWeight ? movingAverage(history) : history
@@ -118,11 +216,11 @@ export function MetricPage() {
   return (
     <div className="flex flex-col gap-5">
       <header className="flex min-h-11 items-center">
-        <BackButton label="Kthehu te progresi" />
+        <BackButton label="Kthehu te progresi" fallback="/progresi" />
       </header>
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl leading-9 font-bold tracking-[-0.025em]">{metric.label}</h1>
-        <span className="text-base leading-6 text-muted-foreground tabular-nums">
+        <h1 className="type-display-m">{metric.label}</h1>
+        <span className="type-body text-muted-foreground tabular-nums">
           {latest ? `${valueText(metric, latest.value)} · ${dayText(latest.date)}` : 'Ende pa matje'}
         </span>
       </div>
@@ -144,7 +242,7 @@ export function MetricPage() {
           ))}
         </Group>
       ) : null}
-      <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+      <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full')}>
         Shto matjen
       </Link>
     </div>
@@ -200,16 +298,16 @@ function MeasurementForm({ date, saved }: { date: string; saved: MeasurementValu
   return (
     <div className="flex flex-col gap-5">
       <header className="flex min-h-11 items-center">
-        <BackButton label="Kthehu" />
+        <BackButton label="Kthehu" fallback="/progresi" />
       </header>
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl leading-9 font-bold tracking-[-0.025em]">Matja</h1>
-        <span className="text-base leading-6 text-muted-foreground">{dayText(date)}</span>
+        <h1 className="type-display-m">Matja</h1>
+        <span className="type-body text-muted-foreground">{dayText(date)}</span>
       </div>
-      <p className="-mt-2 text-sm leading-5 text-muted-foreground">Pesha më mirë në mëngjes, para ushqimit. Perimetrat me centimetër, në të njëjtin vend çdo herë. Fushat bosh nuk ruhen.</p>
+      <p className="-mt-2 type-caption text-muted-foreground">Pesha më mirë në mëngjes, para ushqimit. Perimetrat me centimetër, në të njëjtin vend çdo herë. Fushat bosh nuk ruhen.</p>
       {GROUPS.map((group) => (
         <fieldset key={group.title} className="flex flex-col gap-3">
-          <legend className="mb-1 text-sm leading-5 font-semibold">{group.title}</legend>
+          <legend className="mb-1 type-label text-muted-foreground">{group.title}</legend>
           <div className={cn('grid gap-3', group.pairs || group.keys.length === 2 ? 'grid-cols-2' : 'grid-cols-1')}>
             {group.keys.map((key) => {
               const metric = metricByKey(key)!
@@ -233,11 +331,11 @@ function MeasurementForm({ date, saved }: { date: string; saved: MeasurementValu
         </fieldset>
       ))}
       {errors.form ? (
-        <p role="alert" className="text-sm leading-5 text-destructive">
+        <p role="alert" className="type-caption text-danger">
           {errors.form}
         </p>
       ) : null}
-      <Button variant="brand" size="xl" disabled={busy} onClick={() => void save()}>
+      <Button variant="primary" size="xl" disabled={busy} onClick={() => void save()}>
         Ruaj matjen
       </Button>
     </div>
@@ -249,7 +347,7 @@ function MetricField({ metric, value, error, onChange }: { metric: Metric; value
   const errorId = useId()
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm leading-5 font-medium">
+      <label htmlFor={id} className="type-caption font-medium">
         {metric.label}, {metric.unit}
       </label>
       <input
@@ -263,7 +361,7 @@ function MetricField({ metric, value, error, onChange }: { metric: Metric; value
         className={inputClass}
       />
       {error ? (
-        <p id={errorId} role="alert" className="text-xs leading-4 text-destructive">
+        <p id={errorId} role="alert" className="type-caption text-danger">
           {error}
         </p>
       ) : null}
@@ -288,7 +386,7 @@ const KG = METRICS[0]
 
 function Strength({ rows }: { rows: StrengthRow[] }) {
   if (rows.length === 0) {
-    return <p className="text-sm leading-5 text-muted-foreground">Forca (e1RM) del këtu pas seteve të para me peshë.</p>
+    return <p className="type-caption text-muted-foreground">Forca (e1RM) del këtu pas seteve të para me peshë.</p>
   }
   return (
     <Group title="Forca · e1RM">
@@ -310,20 +408,20 @@ function Volume({ rows }: { rows: VolumeRow[] }) {
   const max = Math.max(...rows.map((row) => Math.max(row.thisWeek, row.lastWeek)), 1)
   return (
     <section aria-labelledby="volume-title" className="flex flex-col gap-2">
-      <h2 id="volume-title" className="text-sm leading-5 font-semibold text-muted-foreground">
+      <h2 id="volume-title" className="type-label text-muted-foreground">
         Volumi javor · sete pune
       </h2>
-      <dl className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 tabular-nums">
+      <dl className={cn(surfaceClass, 'flex flex-col gap-3 rounded-lg p-4 tabular-nums')}>
         {rows.map((row) => (
           <div key={row.group.id} className="flex flex-col gap-1.5">
-            <div className="flex items-baseline justify-between gap-3 text-sm leading-5">
+            <div className="flex items-baseline justify-between gap-3 type-caption">
               <dt>{row.group.name}</dt>
               <dd className="text-muted-foreground">
                 <b className="font-semibold text-foreground">{row.thisWeek}</b> këtë javë · {row.lastWeek} e kaluara
               </dd>
             </div>
-            <div aria-hidden className="h-1.5 overflow-hidden rounded-full bg-chart-track">
-              <div className="h-full rounded-full bg-foreground" style={{ width: `${(row.thisWeek / max) * 100}%` }} />
+            <div aria-hidden className="h-1.5 overflow-hidden rounded-pill bg-surface-2">
+              <div className="h-full rounded-pill bg-data" style={{ width: `${(row.thisWeek / max) * 100}%` }} />
             </div>
           </div>
         ))}
@@ -338,11 +436,11 @@ function Compliance({ days }: { days: ComplianceDay[] }) {
   if (days.every((day) => day.kcal === 0)) return null
   return (
     <section aria-labelledby="compliance-title" className="flex flex-col gap-2">
-      <h2 id="compliance-title" className="text-sm leading-5 font-semibold text-muted-foreground">
+      <h2 id="compliance-title" className="type-label text-muted-foreground">
         Ushqimi · 7 ditët e fundit
       </h2>
-      <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
-        <ol className="relative grid h-32 grid-cols-7 items-end gap-2 border-b border-border-subtle">
+      <div className={cn(surfaceClass, 'flex flex-col gap-2 rounded-lg p-4')}>
+        <ol className="relative grid h-32 grid-cols-7 items-end gap-2 border-b border-border">
           <span aria-hidden className="pointer-events-none absolute inset-x-0 border-t border-dashed border-muted-foreground" style={{ bottom: `${(100 / 130) * 100}%` }} />
           {days.map((day) => {
             const percent = day.target ? Math.round((day.kcal / day.target) * 100) : null
@@ -368,7 +466,7 @@ function Compliance({ days }: { days: ComplianceDay[] }) {
             )
           })}
         </div>
-        <p className="text-xs leading-4 text-muted-foreground">Vija me ndërprerje është objektivi i kcal të ditës.</p>
+        <p className="type-caption text-muted-foreground">Vija me ndërprerje është objektivi i kcal të ditës.</p>
       </div>
     </section>
   )

@@ -59,7 +59,8 @@ describe('Programi', () => {
   it('paneli i ecurisë, javët dhe stërvitjet e javës me gjendjen', async () => {
     const user = userEvent.setup()
     await renderAt('/programi')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Programi' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Shortcut to Size' })).toBeInTheDocument()
     expect(screen.getByText('0 nga 52 stërvitje')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Java 0' })).toHaveAttribute('aria-pressed', 'true')
     const week = screen.getByRole('region', { name: 'Java 0' })

@@ -1,18 +1,22 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import pkg from '../../package.json'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
+import { background } from '@/lib/background'
+import type { Release, UpdateState } from '@/update/updater'
 
-// Cilësimet, varianti A (07.11.2026): paneli i llogarisë sipër, rreshta me vlerat, fletë për ndryshim.
-// Store i vërtetë me një përdorues; llogaria dhe sinkronizimi të imituara.
+// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, Sinkronizimi, Versioni, "Dil".
+// Store i vërtetë me një përdorues; llogaria, sinkronizimi dhe përditësimi të imituara.
 const data = vi.hoisted(() => ({
   store: null as unknown as LocalStore,
   signOut: vi.fn(async () => undefined),
   syncNow: vi.fn(async () => undefined),
   check: vi.fn(async () => undefined),
+  update: { status: 'idle' } as UpdateState,
+  sync: { syncing: false } as { syncing: boolean; last?: unknown },
 }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
@@ -25,12 +29,11 @@ vi.mock('@/data/app-data', async () => {
     store,
     auth: { signOut: data.signOut },
     scheduler: { syncNow: data.syncNow },
-    useAuth: () => ({ status: 'signed_in', userId: '11111111-1111-4111-8111-111111111111', email: 'une@example.com' }),
-    useSyncStatus: () => ({ syncing: false, last: null }),
+    useSyncStatus: () => data.sync,
     usePendingChanges: () => 0,
     planRemindersNow: async () => {},
     updatesSupported: () => true,
-    useAppUpdate: () => ({ status: 'current' }),
+    useAppUpdate: () => data.update,
     updater: { check: data.check, update: vi.fn(), allowInstall: vi.fn() },
     useLocalQuery<T>(query: () => Promise<T>) {
       const [value, setValue] = useState<T>()
@@ -57,21 +60,33 @@ vi.mock('@/data/app-data', async () => {
 const share = vi.hoisted(() => ({ shareExport: vi.fn(async () => true) }))
 vi.mock('@/data/share-export', () => share)
 
+const release: Release = {
+  version: '0.30.0',
+  apk: 'TrainingHub-0.30.0.apk',
+  sha256: 'a'.repeat(64),
+  bytes: 12_582_912,
+  notes: ['Ushqimi me AI'],
+  publishedAt: '2026-12-01T10:00:00Z',
+}
+
 async function renderSettings() {
   const { SettingsPage } = await import('./settings')
   const router = createMemoryRouter(
     [
-      { path: '/cilesimet', element: <SettingsPage /> },
       { path: '/', element: <h1>Sot</h1> },
+      { path: '/cilesimet', element: <SettingsPage /> },
+      { path: '/cilesimet/pamja', element: <h1>Pamja</h1> },
+      { path: '/cilesimet/rikujtuesit', element: <h1>Rikujtuesit</h1> },
     ],
-    { initialEntries: ['/cilesimet'] },
+    { initialEntries: ['/', '/cilesimet'], initialIndex: 1 },
   )
   render(<RouterProvider router={router} />)
-  await screen.findByRole('button', { name: /^Ora e stërvitjes/ })
+  await screen.findByRole('button', { name: /^Oraret/ })
   return router
 }
 
 const row = (name: RegExp) => screen.getByRole('button', { name })
+const group = (name: string) => screen.getByRole('region', { name })
 
 describe('cilësimet', () => {
   beforeAll(async () => {
@@ -83,20 +98,40 @@ describe('cilësimet', () => {
     window.localStorage.clear()
     document.documentElement.className = 'dark oled'
     data.signOut.mockClear()
+    data.update = { status: 'idle' }
+    data.sync = { syncing: false }
   })
-  afterEach(() => language.set('sq'))
+  afterEach(() => {
+    act(() => language.set('sq'))
+    act(() => background.set('solid'))
+  })
 
-  it('llogaria sipër: email-i, gjendja e sinkronizimit dhe "Dil"', async () => {
+  it('seksionet e bordit me vlerat e tanishme; ato të etapave të tjera mungojnë', async () => {
     await renderSettings()
-    const account = screen.getByRole('region', { name: 'Llogaria' })
-    expect(within(account).getByText('une@example.com')).toBeInTheDocument()
-    expect(within(account).getByRole('status')).toHaveTextContent('Ende pa sinkronizim')
-    expect(within(account).getByRole('button', { name: 'Dil' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Njoftimet', 'Sinkronizimi', 'Versioni'])
+    expect(row(/^Pesha sot/)).toHaveTextContent('80,5 kg')
+    expect(row(/^Ditët e stërvitjes/)).toHaveTextContent('Hën, Mar, Enj, Pre')
+    expect(row(/^Oraret/)).toHaveTextContent('18:00 · zgjimi 07:00 · gjumi 23:00')
+    const appearance = group('Pamja')
+    expect(within(appearance).getByRole('link', { name: 'Tema, OLED' })).toHaveAttribute('href', '/cilesimet/pamja')
+    expect(within(appearance).getByRole('link', { name: 'Sfondi, I plotë' })).toHaveAttribute('href', '/cilesimet/pamja')
+    expect(within(appearance).getByRole('link', { name: 'Gjuha, Shqip' })).toHaveAttribute('href', '/cilesimet/pamja')
+    expect(within(group('Njoftimet')).getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, vaktet, suplementet, matjet')
+    for (const later of ['AI', 'Admini', 'Ora dhe Health Connect']) expect(screen.queryByRole('region', { name: later })).toBeNull()
   })
 
-  it('"Dil" pyet një herë dhe del vetëm pas konfirmimit', async () => {
+  it('mbrapa kthehet aty nga erdhi përdoruesi', async () => {
+    const user = userEvent.setup()
+    const router = await renderSettings()
+    await user.click(screen.getByRole('button', { name: 'Mbrapa' }))
+    expect(router.state.location.pathname).toBe('/')
+  })
+
+  it('"Dil" në fund pyet një herë dhe del vetëm pas konfirmimit', async () => {
     const user = userEvent.setup()
     await renderSettings()
+    expect(screen.getByText('Dalja nuk fshin të dhënat në telefon.')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Dil' }))
     const sheet = screen.getByRole('dialog', { name: 'Dil nga llogaria' })
     expect(sheet).toHaveTextContent('Të dhënat mbeten në telefon')
@@ -105,26 +140,17 @@ describe('cilësimet', () => {
     expect(data.signOut).toHaveBeenCalledOnce()
   })
 
-  it('çdo rresht tregon vlerën e tanishme', async () => {
-    await renderSettings()
-    expect(row(/^Ditët e stërvitjes/)).toHaveTextContent('Hën, Mar, Enj, Pre')
-    expect(row(/^Ora e stërvitjes/)).toHaveTextContent('18:00')
-    expect(row(/^Pesha e sotme/)).toHaveTextContent('80,5 kg')
-    expect(row(/^Zgjimi/)).toHaveTextContent('07:00')
-    expect(row(/^Gjumi/)).toHaveTextContent('23:00')
-    expect(row(/^Tema/)).toHaveTextContent('OLED')
-  })
-
-  it('ora ndryshohet në fletë me − dhe + dhe ruhet me "Ruaj"', async () => {
+  it('oraret ndryshohen në një fletë me − dhe + dhe ruhen me "Ruaj"', async () => {
     const { readProfile } = await import('@/data/profile')
     const user = userEvent.setup()
     await renderSettings()
-    await user.click(row(/^Ora e stërvitjes/))
-    const sheet = screen.getByRole('dialog', { name: 'Ora e stërvitjes' })
+    await user.click(row(/^Oraret/))
+    const sheet = screen.getByRole('dialog', { name: 'Oraret' })
     await user.click(within(sheet).getByRole('button', { name: 'Ora e stërvitjes 15 minuta më vonë' }))
+    await user.click(within(sheet).getByRole('button', { name: 'Zgjimi 15 minuta më herët' }))
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
-    await vi.waitFor(async () => expect((await readProfile(data.store)).trainingTime).toBe('18:15'))
-    expect(await screen.findByRole('button', { name: 'Ora e stërvitjes, 18:15' })).toBeInTheDocument()
+    await vi.waitFor(async () => expect(await readProfile(data.store)).toMatchObject({ trainingTime: '18:15', wakeTime: '06:45', sleepTime: '23:00' }))
+    expect(await screen.findByRole('button', { name: /^Oraret, 18:15 · zgjimi 06:45/ })).toBeInTheDocument()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
@@ -132,13 +158,13 @@ describe('cilësimet', () => {
     const { readProfile } = await import('@/data/profile')
     const user = userEvent.setup()
     await renderSettings()
-    await user.click(row(/^Pesha e sotme/))
-    const sheet = screen.getByRole('dialog', { name: 'Pesha e sotme' })
+    await user.click(row(/^Pesha sot/))
+    const sheet = screen.getByRole('dialog', { name: 'Pesha sot' })
     const input = within(sheet).getByLabelText('Pesha')
     await user.clear(input)
     await user.type(input, '3{enter}')
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
-    expect(within(sheet).getByText('Shkruaj një peshë mes 30 dhe 300 kg, p.sh. 80,5.')).toBeInTheDocument()
+    expect(within(sheet).getByRole('alert')).toHaveTextContent('Shkruaj një peshë mes 30 dhe 300 kg, p.sh. 80,5.')
     await user.clear(input)
     await user.type(input, '79,8{enter}')
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
@@ -153,97 +179,80 @@ describe('cilësimet', () => {
     const sheet = screen.getByRole('dialog', { name: 'Ditët e stërvitjes' })
     for (const day of ['E hënë', 'E martë', 'E enjte', 'E premte']) await user.click(within(sheet).getByRole('button', { name: day }))
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
-    expect(within(sheet).getByText('Zgjidh të paktën një ditë stërvitjeje.')).toBeInTheDocument()
+    expect(within(sheet).getByRole('alert')).toHaveTextContent('Zgjidh të paktën një ditë stërvitjeje.')
     for (const day of ['E hënë', 'E martë', 'E enjte', 'E premte', 'E shtunë']) await user.click(within(sheet).getByRole('button', { name: day }))
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
     await vi.waitFor(async () => expect((await readProfile(data.store)).trainingDays).toEqual([1, 2, 4, 5, 6]))
   })
 
-  it('tema ndërrohet menjëherë dhe ruhet', async () => {
+  it('sinkronizimi: gjendja me fjalë dhe "Sinkronizo tani"; eksporti, i dështuar thuhet me fjalë', async () => {
     const user = userEvent.setup()
+    data.sync = { syncing: false, last: { status: 'ok', at: new Date(Date.now() - 2 * 60_000).toISOString(), pushed: 0, pulled: 0, rejected: 0 } }
     await renderSettings()
-    await user.click(row(/^Tema/))
-    const sheet = screen.getByRole('dialog', { name: 'Tema' })
-    expect(within(sheet).getByRole('radio', { name: 'OLED' })).toBeChecked()
-    // Prova në emulator e gjen temën sipas vlerës së radios.
-    expect(within(sheet).getByRole('radio', { name: 'Ditë' })).toHaveAttribute('value', 'light')
-    await user.click(within(sheet).getByRole('radio', { name: 'Ditë' }))
-    expect(document.documentElement.className).toBe('')
-    expect(window.localStorage.getItem('th-theme')).toBe('light')
-  })
-
-  it('gjuha ndërrohet menjëherë, pa rinisje, dhe ruhet te cilësimet e sinkronizuara', async () => {
-    const user = userEvent.setup()
-    await renderSettings()
-    expect(row(/^Gjuha/)).toHaveTextContent('Shqip')
-    await user.click(row(/^Gjuha/))
-    const sheet = screen.getByRole('dialog', { name: 'Gjuha' })
-    expect(within(sheet).getByRole('radio', { name: 'Shqip' })).toBeChecked()
-    expect(within(sheet).getByText('English').closest('[lang]')).toHaveAttribute('lang', 'en-GB')
-    await user.click(within(sheet).getByRole('radio', { name: 'English' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
-    expect(screen.getByRole('dialog', { name: 'Language' })).toHaveTextContent('Exercise names stay in English.')
-    expect(screen.getByRole('region', { name: 'Account' })).toHaveTextContent('Not synced yet')
-    expect(document.documentElement.lang).toBe('en-GB')
-    expect(window.localStorage.getItem('th-language')).toBe('en')
-    expect((await data.store.all('user_settings'))[0].language).toBe('en')
-    await user.click(within(screen.getByRole('dialog', { name: 'Language' })).getByRole('radio', { name: 'Shqip' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
-    expect((await data.store.all('user_settings'))[0].language).toBe('sq')
-    expect(language.get()).toBe('sq')
-  })
-
-  it('sinkronizimi dhe eksporti me një prekje; eksporti i dështuar thuhet me fjalë', async () => {
-    const user = userEvent.setup()
-    await renderSettings()
-    await user.click(screen.getByRole('button', { name: 'Sinkronizo tani' }))
+    const sync = group('Sinkronizimi')
+    expect(within(sync).getByRole('status')).toHaveTextContent('I sinkronizuarpara 2 min')
+    await user.click(within(sync).getByRole('button', { name: 'Sinkronizo tani' }))
     expect(data.syncNow).toHaveBeenCalled()
-    await user.click(screen.getByRole('button', { name: 'Eksporto të dhënat' }))
+    await user.click(within(sync).getByRole('button', { name: 'Eksporto të dhënat' }))
     expect(share.shareExport).toHaveBeenCalledOnce()
     share.shareExport.mockRejectedValueOnce(new Error('disk'))
-    await user.click(await screen.findByRole('button', { name: 'Eksporto të dhënat' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Eksporti nuk u krye. Provo përsëri.')
+    await user.click(await within(sync).findByRole('button', { name: 'Eksporto të dhënat' }))
+    expect(await within(sync).findByRole('alert')).toHaveTextContent('Eksporti nuk u krye. Provo përsëri.')
   })
 
-  it('burimet dhe licencat: modeli 3D, ushtrimet dhe ushqimet me atribuimin e tyre', async () => {
+  it('burimet dhe licencat: modeli 3D, ushtrimet, ushqimet dhe shkronjat me atribuimin e tyre', async () => {
     const user = userEvent.setup()
     await renderSettings()
     await user.click(row(/^Burimet dhe licencat/))
     const sheet = screen.getByRole('dialog', { name: 'Burimet dhe licencat' })
-    expect(sheet).toHaveTextContent('BodyParts3D, © The Database Center for Life Science')
+    expect(sheet).toHaveTextContent('BodyParts3D, (c) The Database Center for Life Science')
     expect(sheet).toHaveTextContent('CC BY-SA 2.1 Japan')
     expect(sheet).toHaveTextContent('free-exercise-db')
-    expect(sheet).toHaveTextContent('Open Food Facts')
     expect(sheet).toHaveTextContent('Open Database License')
     expect(sheet).toHaveTextContent('USDA FoodData Central')
+    expect(sheet).toHaveTextContent('Barlow, Barlow Condensed')
   })
 
-  it('versioni: rreshti tregon gjendjen e përditësimit dhe hap fletën me "Kontrollo tani"', async () => {
+  it('versioni: "Vrull" me versionin nga package.json dhe "Kontrollo tani"', async () => {
     const user = userEvent.setup()
+    data.update = { status: 'current' }
     await renderSettings()
-    await user.click(row(/^Versioni/))
-    const sheet = screen.getByRole('dialog', { name: 'Përditësimi' })
-    await user.click(within(sheet).getByRole('button', { name: 'Kontrollo tani' }))
+    const version = group('Versioni')
+    expect(version).toHaveTextContent(`Vrull ${pkg.version}`)
+    expect(version).toHaveTextContent('I fundit')
+    await user.click(within(version).getByRole('button', { name: 'Kontrollo tani' }))
     expect(data.check).toHaveBeenCalledWith({ force: true })
   })
 
-  it('tregon versionin nga package.json', async () => {
-    await renderSettings()
-    expect(screen.getByText(`Training Hub ${pkg.version}`)).toBeInTheDocument()
+  it('versioni: kur ka version të ri, rreshti e thotë dhe hap fletën e përditësimit', async () => {
+    const user = userEvent.setup()
+    data.update = { status: 'available', release }
+    const router = await renderSettings()
+    await user.click(within(group('Versioni')).getByRole('button', { name: `Vrull ${pkg.version}, 0.30.0 është gati` }))
+    expect(router.state.location.search).toBe('?ndrysho=perditesimi')
+    expect(screen.getByRole('dialog', { name: 'Versioni 0.30.0' })).toBeInTheDocument()
   })
 
-  it('rikujtuesit: çelësat ruhen dhe dita e matjes zgjidhet në fletë', async () => {
-    const user = userEvent.setup()
+  it('i gjithë ekrani në anglisht, pa rinisje', async () => {
     await renderSettings()
-    const group = await screen.findByRole('region', { name: 'Rikujtuesit' })
-    const meals = within(group).getByRole('switch', { name: /^Vaktet/ })
-    expect(meals).toBeChecked()
-    await user.click(meals)
-    await waitFor(() => expect(within(group).getByRole('switch', { name: /^Vaktet/ })).not.toBeChecked())
-    expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ meals: false, supplements: true })
-    await user.click(within(group).getByRole('button', { name: 'Dita e matjes, E diel' }))
-    await user.click(within(screen.getByRole('dialog', { name: 'Dita e matjes' })).getByRole('radio', { name: 'E hënë' }))
-    expect(await within(group).findByRole('button', { name: 'Dita e matjes, E hënë' })).toBeInTheDocument()
-    expect((await data.store.all('user_settings'))[0].measurement_day).toBe(1)
+    act(() => language.set('en'))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profile', 'Appearance', 'Notifications', 'Sync', 'Version'])
+    // Provat e mësipërme kanë ndryshuar peshën, ditët dhe oraret: formatet britanike kontrollohen këtu.
+    expect(row(/^Weight today/)).toHaveTextContent(/^Weight today\d+\.\d\skg$/)
+    expect(row(/^Training days/)).toHaveTextContent(/^Training daysMon, Tue, Thu, Fri/)
+    expect(row(/^Times/)).toHaveTextContent(/\d\d:\d\d · wake \d\d:\d\d · sleep \d\d:\d\d/)
+    expect(screen.getByRole('link', { name: 'Theme, OLED' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Background, Solid' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^Reminders/ })).toHaveTextContent('Workouts, meals, supplements, measurements')
+    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
+  })
+
+  it('rikujtuesit e fikur dalin te rreshti', async () => {
+    const { setReminderToggle } = await import('@/data/reminders')
+    await setReminderToggle(data.store, 'meals', false)
+    await renderSettings()
+    await waitFor(() => expect(screen.getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, suplementet, matjet'))
+    await setReminderToggle(data.store, 'meals', true)
   })
 })
