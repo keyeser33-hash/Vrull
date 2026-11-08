@@ -54,6 +54,6 @@ Tekstet e UI-së vijnë nga katalogu `src/i18n` (SPEC V22, §0.3a); ekranet që 
 - Parametrat: `'{count} sete'` me `t('x', { count })`. Një numër te parametri formatohet sipas gjuhës (62,5 / 62.5, 2 900 / 2,900); vitet dhe kodet jepen si tekst.
 - Shumësi: mesazh me forma (`{ one, other }`, `'=0'`, `ordinal: true`), që rregullat e gjuhës zgjedhin formën.
 - Numrat, njësitë, datat dhe orët me `fmt`: `fmt.unit(62.5, 'kg')` (hapësirë që nuk thyhet), `fmt.date(d)` ("e diel, 8 nëntor"), `fmt.time(d)` (24 orë). Chrome dhe WebView nuk e kanë shqipen në `Intl`; `format.ts` e plotëson.
-- Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët.
+- Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët. Grupet e muskujve dhe emrat e Shortcut to Size (blloqet, ditët, që ruhen shqip në bazë) vijnë nga `@/i18n/domain` (`muscleName`, `programDayName`, `programBlockName`, `programWeekLabel`), jo nga çelësa të rinj te çdo zonë.
 - Gjuha ruhet në telefon (`i18n/language.ts`) dhe te `user_settings.language` (`data/language.ts`), që sinkronizohet. Sfondi njësoj: `lib/background.ts` dhe `user_settings.background` (`data/background.ts`). Tema mbetet vetëm në telefon (`lib/theme.ts`), si te v1.
 - Provat e një ekrani të kaluar kontrollojnë edhe anglishten: `language.set('en')`, dhe `language.set('sq')` në `afterEach`.
