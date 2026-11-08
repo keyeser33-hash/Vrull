@@ -1,0 +1,2 @@
+Logoja e Vrullit si në dizajn: ikona e app-it, ekrani i nisjes dhe njoftimi i seancës
+Importi i programit nga PDF lexon gjithë programin
