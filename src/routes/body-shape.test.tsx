@@ -1,5 +1,4 @@
 import { act, render, screen, within } from '@testing-library/react'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { ShapeScales } from '@/body/body-shape'
 import type { LocalStore } from '@/data/store'
@@ -15,16 +14,7 @@ vi.mock('@/data/app-data', async () => {
   data.store = store
   return {
     store,
-    useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        const run = () => void query().then((result) => setValue(() => result))
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, deps)
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 

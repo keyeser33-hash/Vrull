@@ -1,6 +1,5 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import type { Segment } from '@/data/training'
@@ -25,25 +24,7 @@ vi.mock('@/data/app-data', async () => {
       remove: (id: string) => photoApi.removePhoto(store, db, id),
       data: (photo: { id: string; storagePath: string }) => photoApi.photoData(db, remote, photo),
     },
-    useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        let started = 0
-        let shown = 0
-        const run = () => {
-          const ticket = ++started
-          void query().then((result) => {
-            if (ticket < shown) return
-            shown = ticket
-            setValue(() => result)
-          })
-        }
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, deps)
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 
