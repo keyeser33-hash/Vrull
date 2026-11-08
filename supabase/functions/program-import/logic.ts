@@ -41,8 +41,12 @@ export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 
 /** Dalja (mendimi dhe JSON-i); programi i Shortcut to Size zë rreth 7 000. */
 export const MAX_TOKENS = 32_000
-/** Leximi është transkriptim i strukturuar: `low` mban kohën brenda kufirit 150 s të planit falas. */
-export const EFFORT = 'low'
+/**
+ * `medium`: me `low` AI-ja e shkurtonte programin (prova me PDF-në e vërtetë të Shortcut to Size më
+ * 08.11.2026: 4 nga 9 slotet e ditës së parë, 13 nga 66 ushtrime, 16 s, €0,12). Koha mbetet brenda
+ * kufirit 150 s të planit falas.
+ */
+export const EFFORT = 'medium'
 /** Edge Function-i në planin falas ka 150 s (wall clock dhe pritja e përgjigjes); 10 s mbeten për ruajtjen. */
 export const AI_TIMEOUT_MS = 140_000
 /**
@@ -242,7 +246,8 @@ How to fill it:
 - days: the training days that repeat each week, in order. A slot is one exercise position of the day; list supersets and circuits as consecutive slots.
 - plans: each distinct rep scheme once. weeks[i] is week i+1 of the block; give one entry when every week is the same. Use reps_min 0 when the PDF gives no reps. rir_min/rir_max are -1 unless the PDF asks for reps in reserve. last_set is the technique on the last set that week (none when the PDF says nothing).
 - A slot's sets, rest and plan are its usual values. Put what changes in one block in "blocks" (1-based block number; -1 or 0 for what stays the same) and exercises that change by week in "weeks".
-- exercises: each distinct exercise once, with its name exactly as written (keep typos), and the page where it first appears. For match, use the exact name from the known exercise list below when it is the same movement (same equipment and body position); otherwise an empty string. Set sure to false whenever you hesitate between names, the PDF wording is unclear, or the closest known name is a different variation. Never invent sets, reps or exercises that are not in the PDF.`
+- Completeness: transcribe the whole programme. Every training day lists every exercise position the PDF gives for it (often 7 to 10, including calves and abs), and every exercise that changes by phase or week goes in "blocks" or "weeks". Never shorten, sample or merge positions; check each day and each phase table against the PDF before answering.
+- exercises: each distinct exercise once, with its name exactly as written (keep typos), and the page where it first appears. For match, use the exact name from the known exercise list below when it is the same movement (same equipment and body position); otherwise an empty string. Set sure to false whenever you hesitate between names, the PDF wording is unclear, or the closest known name is a different variation. Never invent sets, reps or exercises that are not in the PDF. Never shorten the programme.`
 
 /** Gjuha e emrave të blloqeve dhe ditëve; emrat e ushtrimeve mbeten si në PDF. */
 const LANGUAGE_NAME: Record<Language, string> = { sq: 'Albanian', en: 'British English' }

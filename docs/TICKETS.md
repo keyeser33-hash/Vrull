@@ -171,7 +171,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 
 **Veprimet e përdoruesit për këtë etapë:** çelësi i AI-së si secret i Supabase (E1-11); instalimi i 0.20.0 dhe një seancë prove në telefon.
 
-**Gjendja (08.11.2026):** 0.20.0 u publikua (GitHub Release dhe përditësimi brenda app-it, "Çfarë ka të re" nga `docs/whats-new/0.20.0.txt`), pas provës në emulator në të gjitha pjesët dhe rishikimit në tri boshtet (ndreqjet te "Pas rishikimit të E1"). Migrimet dhe RLS (133/133) në Supabase; funksionet `program-import` dhe `song-tempo` me JWT. Mbeten te përdoruesi: çelësat `ANTHROPIC_API_KEY` dhe `GETSONGBPM_API_KEY` si secret, lista `docs/PROVA-NE-TELEFON.md` në telefon, dhe (sipas dëshirës) titulli i Release-it v0.20.0 "Vrull 0.20.0" me dorë; workflow-i i jep titullin Vrull nga versioni tjetër.
+**Gjendja (08.11.2026):** 0.20.0 u publikua (GitHub Release dhe përditësimi brenda app-it, "Çfarë ka të re" nga `docs/whats-new/0.20.0.txt`), pas provës në emulator në të gjitha pjesët dhe rishikimit në tri boshtet (ndreqjet te "Pas rishikimit të E1"). Migrimet dhe RLS (133/133) në Supabase; funksionet `program-import` dhe `song-tempo` me JWT. Importi nga PDF u provua me çelësin e vërtetë dhe PDF-në e Shortcut to Size (08.11.2026, me përdorues prove të përkohshëm, i fshirë pas provës): 3 faza × 4 javë, 4 ditë me 9/10/7/8 slote, 67 ushtrime (29 të shënuara si të pasigurta për t'u parë), 86 s, €0,25, kostoja e ruajtur një herë. Mbeten te përdoruesi: çelësi `GETSONGBPM_API_KEY` si secret, lista `docs/PROVA-NE-TELEFON.md` në telefon, dhe (sipas dëshirës) titulli i Release-it v0.20.0 "Vrull 0.20.0" me dorë; workflow-i i jep titullin Vrull nga versioni tjetër.
 
 
 ---

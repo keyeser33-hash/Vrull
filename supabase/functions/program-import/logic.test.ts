@@ -67,7 +67,10 @@ describe('funksioni program-import', () => {
 
   it('kërkesa: PDF-ja para tekstit, dalja me skemën e programit, pa stream të ndalur', () => {
     const body = buildRequest({ pdfBase64: 'JVBERi0=', known: ['Barbell Bench Press - Medium Grip', 'Squat'], language: 'sq' })
-    expect(body).toMatchObject({ model: 'claude-sonnet-5-5', stream: true, output_config: { format: { type: 'json_schema', schema: PROGRAM_SCHEMA }, effort: 'low' } })
+    // Prova me PDF-në e vërtetë (08.11.2026): me `low` AI-ja ktheu 4 nga 9 slotet e ditës së parë dhe 13 nga 66
+    // ushtrime; `medium` dhe udhëzimi për çdo slot.
+    expect(body).toMatchObject({ model: 'claude-sonnet-5-5', stream: true, output_config: { format: { type: 'json_schema', schema: PROGRAM_SCHEMA }, effort: 'medium' } })
+    expect(body.system).toContain('Never shorten')
     expect(body.max_tokens).toBeGreaterThanOrEqual(16_000)
     const [message] = body.messages
     expect(message.content[0]).toEqual({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: 'JVBERi0=' } })

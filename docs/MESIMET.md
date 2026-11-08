@@ -47,4 +47,5 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Një cikël sinkronizimi lexonte çdo video të telefonit në kujtesë → mbi tabelat me skedarë, kërkimet bëhen me indekset dhe skedari lexohet vetëm kur duhet, një nga një.
 - Dy vendime njëkohësisht krijonin dy rreshta me id të rastit, që indeksi unik i serverit i refuzonte përgjithmonë → rreshtat që kanë një çelës natyror unik marrin id nga ai çelës (`weekWeightId`). Një id nga çelësi natyror bie mbi rreshtin e fshirë (fshirja është e butë) → `store.put(..., { revive: true })` e kthen; prova e plotë e kapi, provat e skedarit jo.
 - Provat që imitojnë kthimin në app me një `visibilitychange` "visible" pa "hidden" para tij nuk janë realiste → kthimi provohet me të dy hapat (`backFromSettings` te `music.test.tsx`).
+- Pranimi i importit me AI u provua vetëm me një fixture të plotë; me PDF-në e vërtetë dhe `effort: low` AI-ja ktheu 4 nga 9 slotet e ditës së parë (13 nga 66 ushtrime) → çdo veçori me AI provohet me të dhënat e vërteta para lëshimit (`scripts`/prova me përdorues të përkohshëm), jo vetëm me fixture. Me `medium` dhe udhëzimin për plotësinë: 9/10/7/8 slote, 67 ushtrime, 86 s, €0,25.
 
