@@ -181,6 +181,12 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           VERSION: ${{ needs.plan.outputs.version }}
         run: |
-          previous=$(git tag --list 'v*' --sort=-v:refname | grep -vx "v$VERSION" | head -1 || true)
-          git log --format=%s ${previous:+"$previous..HEAD"} > notes.txt
+          # "Çfarë ka të re": shënimet e shkruara për versionin (docs/whats-new/<versioni>.txt), përndryshe titujt
+          # e commit-eve që nga versioni i kaluar.
+          if [ -f "docs/whats-new/$VERSION.txt" ]; then
+            cp "docs/whats-new/$VERSION.txt" notes.txt
+          else
+            previous=$(git tag --list 'v*' --sort=-v:refname | grep -vx "v$VERSION" | head -1 || true)
+            git log --format=%s ${previous:+"$previous..HEAD"} > notes.txt
+          fi
           node scripts/publish-update.mjs "out/TrainingHub-$VERSION.apk" "$VERSION" notes.txt

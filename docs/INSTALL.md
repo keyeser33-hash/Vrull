@@ -62,7 +62,7 @@ Kur rregulli të hyjë në fuqi në Shqipëri, regjistrimi bëhet një herë dhe
 
 Release-i del vetë, pa hap me dorë:
 
-1. Rritet `version` te `package.json` (p.sh. `0.3.0` → `0.4.0`) dhe bëhet commit në `main`.
+1. Rritet `version` te `package.json` (p.sh. `0.3.0` → `0.4.0`) dhe bëhet commit në `main`. "Çfarë ka të re" te përditësimi brenda app-it vjen nga `docs/whats-new/<versioni>.txt` (një rresht për gjë të re, deri në 12); pa këtë skedar, nga titujt e commit-eve.
 2. Workflow-i "APK për Android" e sheh që versioni nuk ka ende Release. Nis fillimisht provën në emulator ("Prova e Android-it": v1 → ky version, seanca, njoftimi, kamera, muzika, instalimi i ri; rreth 12 minuta); kur dështon, Release-i nuk krijohet dhe raporti me pamjet e ekranit del si artifact. Pastaj kalon lint-in, testet dhe build-in, ndërton APK-në, verifikon nënshkrimin, krijon tag-un `v0.4.0` dhe publikon Release-in me APK-në (rreth 6 minuta).
 3. Hapi i fundit vendos APK-në dhe `latest.json` te Supabase; app-i e njofton versionin e ri te Sot (pika 3).
 4. Në telefon: lista 10-minutëshe te `docs/PROVA-NE-TELEFON.md` (kamera, muzika dhe ekrani i kyçur i vërtetë).
