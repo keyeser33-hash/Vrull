@@ -103,6 +103,10 @@ Pjesa e setit të fundit pas pushimit të rest-pause ose pas uljes së peshës t
 **Pushimi**:
 Koha mes seteve të një sloti, që mat timer-i; te rest-pause është 15 s.
 
+**Njoftimi i seancës**:
+Njoftimi i Android-it gjatë një **Seance** të hapur: seti i radhës me peshën dhe përsëritjet e propozuara, "Ruaj setin", −/+, "Ndrysho" dhe **Pushimi**; punon edhe me ekran të kyçur. "Seti nga njoftimi" është seti i ruajtur prej tij.
+_Avoid_: widget, njoftimi i pushimit (është "Pushimi mbaroi")
+
 **RIR**:
 Përsëritjet që mbeten në rezervë në fund të setit (Reps In Reserve).
 _Avoid_: RPE, kur synohet RIR
