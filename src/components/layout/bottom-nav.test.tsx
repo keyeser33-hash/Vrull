@@ -1,6 +1,7 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
+import { language } from '@/i18n/language'
 import { appRoutes as routes } from '@/router'
 
 function renderAt(path: string) {
@@ -17,6 +18,18 @@ describe('navigimi poshtë', () => {
       .getAllByRole('link')
       .map((link) => link.textContent)
     expect(labels).toEqual(['Sot', 'Programi', 'Ushqimi', 'Progresi', 'Trupi'])
+  })
+
+  it('në anglisht ndërrohen menjëherë, me termat e SPEC §0.3a', () => {
+    renderAt('/')
+    act(() => language.set('en'))
+    const nav = screen.getByRole('navigation', { name: 'Main' })
+    const labels = within(nav)
+      .getAllByRole('link')
+      .map((link) => link.textContent)
+    expect(labels).toEqual(['Today', 'Programme', 'Food', 'Progress', 'Body'])
+    act(() => language.set('sq'))
+    expect(within(nav).getAllByRole('link')[1]).toHaveTextContent('Programi')
   })
 
   it('shënon vetëm vendin aktiv me aria-current', () => {

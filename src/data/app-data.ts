@@ -13,6 +13,7 @@ import { PENDING, REJECTED, TABLES } from './tables'
 import { planReminders } from '@/reminders/plan'
 import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
+import { adoptSavedLanguage } from './language'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { ensureSupplements } from './supplements'
 import { usdaFromJson } from '@/nutrition/usda'
@@ -234,6 +235,22 @@ export function useReminderPlanner(ready: boolean) {
       stop()
       void resume.then((handle) => handle.remove())
     }
+  }, [ready, userId])
+}
+
+/**
+ * Gjuha e ruajtur te cilësimet (SPEC V22): në nisje dhe pas çdo sinkronizimi, që zgjedhja nga
+ * një telefon tjetër të vlejë edhe këtu. Zgjedhja te Cilësimet: chooseLanguage (data/language.ts).
+ */
+export function useLanguageSync(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId) return
+    const adopt = () => void adoptSavedLanguage(store).catch(() => {})
+    adopt()
+    return scheduler.subscribe(() => {
+      if (!scheduler.getStatus().syncing) adopt()
+    })
   }, [ready, userId])
 }
 

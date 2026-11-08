@@ -1,7 +1,8 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { FocusLayout } from '@/components/layout/focus-layout'
 import { Button } from '@/components/ui/button'
-import { auth, scheduler, useAppPhase, useDataUpgrades, usePhotoUploader, useReminderPlanner, useUpdateChecker } from '@/data/app-data'
+import { auth, scheduler, useAppPhase, useDataUpgrades, useLanguageSync, usePhotoUploader, useReminderPlanner, useUpdateChecker } from '@/data/app-data'
+import { useI18n } from '@/i18n/use-i18n'
 
 // Porta e app-it: i vetmi vend që vendos rrugën sipas fazës (data/phase.ts).
 export function AppGate() {
@@ -11,6 +12,7 @@ export function AppGate() {
   useReminderPlanner(phase === 'ready')
   usePhotoUploader(phase === 'ready')
   useUpdateChecker(phase === 'ready')
+  useLanguageSync(phase === 'ready')
 
   switch (phase) {
     case 'loading':
@@ -28,27 +30,22 @@ export function AppGate() {
 }
 
 function FetchingScreen({ failed }: { failed: boolean }) {
+  const { t } = useI18n()
   const footer = failed ? (
     <div className="grid gap-2">
       <Button variant="brand" className="w-full" onClick={() => void scheduler.syncNow()}>
-        Provo përsëri
+        {t('common.retry')}
       </Button>
       <Button variant="ghost" className="w-full" onClick={() => void auth.signOut()}>
-        Dil nga llogaria
+        {t('common.signOut')}
       </Button>
     </div>
   ) : undefined
   return (
     <FocusLayout footer={footer}>
       <div className="mt-16" role="status">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {failed ? 'Të dhënat nuk u morën' : 'Po merren të dhënat e tua'}
-        </h1>
-        <p className="mt-2 text-base leading-6 text-muted-foreground">
-          {failed
-            ? 'Pas hyrjes duhet internet edhe për këtë hap, që profili dhe historia jote të vijnë nga Supabase. Lidhu dhe provo përsëri.'
-            : 'Nëse e ke përdorur Training Hub më parë, profili dhe historia jote vijnë nga Supabase.'}
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight">{t(failed ? 'fetch.failedTitle' : 'fetch.title')}</h1>
+        <p className="mt-2 text-base leading-6 text-muted-foreground">{t(failed ? 'fetch.failedText' : 'fetch.text')}</p>
       </div>
     </FocusLayout>
   )

@@ -6,6 +6,7 @@ import { Field } from '@/components/ui/field'
 import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { auth } from '@/data/app-data'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { applyPanelTop } from '@/lib/theme'
 
@@ -27,6 +28,7 @@ function subscribeOnline(listener: () => void) {
 }
 
 export function LoginPage() {
+  const { t } = useI18n()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [visible, setVisible] = useState(false)
@@ -63,7 +65,7 @@ export function LoginPage() {
           <BodyFigure primary={HERO_PRIMARY} scale={1.75} className="max-h-full" />
         </div>
         <p className="mx-auto w-full max-w-[480px] text-center text-sm leading-5 text-panel-muted-foreground [@media(max-height:640px)]:hidden">
-          Shortcut to Size, peshat dhe ushqimi. Edhe pa internet.
+          {t('login.tagline')}
         </p>
       </section>
 
@@ -74,12 +76,10 @@ export function LoginPage() {
       >
         <div className="mx-auto flex w-full max-w-[480px] flex-col gap-4">
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Hyr</h1>
-            <p className="mt-1 text-base leading-6 text-muted-foreground">
-              Hyr me llogarinë tënde. Interneti duhet vetëm këtë herë.
-            </p>
+            <h1 className="text-3xl font-semibold tracking-tight">{t('login.title')}</h1>
+            <p className="mt-1 text-base leading-6 text-muted-foreground">{t('login.intro')}</p>
           </div>
-          <Field label="Email">
+          <Field label={t('login.email')}>
             {(props) => (
               <input
                 {...props}
@@ -96,7 +96,7 @@ export function LoginPage() {
               />
             )}
           </Field>
-          <Field label="Fjalëkalimi">
+          <Field label={t('login.password')}>
             {(props) => (
               <div className="relative">
                 <input
@@ -112,7 +112,7 @@ export function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setVisible((value) => !value)}
-                  aria-label={visible ? 'Fshih fjalëkalimin' : 'Shfaq fjalëkalimin'}
+                  aria-label={t(visible ? 'login.hidePassword' : 'login.showPassword')}
                   aria-pressed={visible}
                   className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'absolute top-0 right-0')}
                 >
@@ -126,10 +126,10 @@ export function LoginPage() {
               {problem}
             </p>
           ) : !online ? (
-            <p className="text-sm leading-5 text-muted-foreground">Pa internet. Hyrja kërkon internet vetëm herën e parë.</p>
+            <p className="text-sm leading-5 text-muted-foreground">{t('login.offline')}</p>
           ) : null}
           <Button type="submit" variant="brand" size="xl" disabled={busy || !email.trim() || !password}>
-            {busy ? 'Po hyn' : 'Hyr'}
+            {t(busy ? 'login.busy' : 'login.submit')}
           </Button>
         </div>
       </form>

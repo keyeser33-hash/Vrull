@@ -1,6 +1,7 @@
 import { cn } from '@/lib/cn'
 
 // Një zgjedhje radio si rresht 44 px (tema, receta, teknika); e zgjedhura ka kufi dhe sfond.
+// `lang` kur etiketa është në një gjuhë tjetër nga faqja (p.sh. "English" te zgjedhja e gjuhës).
 export function Choice({
   name,
   value,
@@ -8,6 +9,7 @@ export function Choice({
   onChange,
   label,
   hint,
+  lang,
 }: {
   name: string
   value: string
@@ -15,6 +17,7 @@ export function Choice({
   onChange: () => void
   label: string
   hint?: string
+  lang?: string
 }) {
   return (
     <label
@@ -24,7 +27,7 @@ export function Choice({
       )}
     >
       <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="size-4 shrink-0 accent-current" />
-      <span className="flex flex-col">
+      <span className="flex flex-col" lang={lang}>
         <span className="leading-6">{label}</span>
         {hint ? <span className="text-xs leading-4 text-muted-foreground">{hint}</span> : null}
       </span>

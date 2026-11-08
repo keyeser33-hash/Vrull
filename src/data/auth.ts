@@ -2,6 +2,8 @@
 // regjistrimet janë të mbyllura, ndaj app-i ka vetëm hyrjen. Sesioni ruhet në telefon:
 // pas hyrjes së parë app-i hapet pa internet.
 
+import { currentI18n, type I18n } from '@/i18n'
+
 export type AuthStatus = 'loading' | 'signed_out' | 'signed_in'
 
 export interface AuthState {
@@ -31,17 +33,16 @@ export interface AuthClient {
 
 export type SignInResult = { ok: true } | { ok: false; message: string }
 
-export function signInErrorMessage(error: AuthErrorLike): string {
+/** Gabimi i hyrjes me fjalë, në gjuhën e tanishme të app-it. */
+export function signInErrorMessage(error: AuthErrorLike, { t }: I18n = currentI18n()): string {
   if (error.code === 'invalid_credentials' || /invalid login credentials/i.test(error.message ?? '')) {
-    return 'Email-i ose fjalëkalimi nuk është i saktë.'
+    return t('auth.wrongCredentials')
   }
-  if (error.code === 'email_not_confirmed') return 'Llogaria nuk është konfirmuar ende.'
-  if (error.status === 429 || error.code === 'over_request_rate_limit') {
-    return 'Shumë përpjekje radhazi. Prit pak minuta dhe provo përsëri.'
-  }
-  if (error.name === 'AuthRetryableFetchError' || error.status === 0) return 'Hyrja kërkon internet. Lidhu dhe provo përsëri.'
-  if ((error.status ?? 0) >= 500) return 'Serveri nuk po përgjigjet. Provo përsëri pas pak.'
-  return 'Hyrja nuk u krye. Provo përsëri.'
+  if (error.code === 'email_not_confirmed') return t('auth.notConfirmed')
+  if (error.status === 429 || error.code === 'over_request_rate_limit') return t('auth.tooManyAttempts')
+  if (error.name === 'AuthRetryableFetchError' || error.status === 0) return t('auth.offline')
+  if ((error.status ?? 0) >= 500) return t('auth.serverDown')
+  return t('auth.failed')
 }
 
 const toState = (session: SessionLike | null): AuthState =>
@@ -69,8 +70,8 @@ export function createAuth(client: AuthClient) {
 
     async signIn(email: string, password: string): Promise<SignInResult> {
       const trimmed = email.trim()
-      if (!trimmed) return { ok: false, message: 'Shkruaj email-in.' }
-      if (!password) return { ok: false, message: 'Shkruaj fjalëkalimin.' }
+      if (!trimmed) return { ok: false, message: currentI18n().t('auth.emailMissing') }
+      if (!password) return { ok: false, message: currentI18n().t('auth.passwordMissing') }
       try {
         const { error } = await client.signInWithPassword({ email: trimmed, password })
         if (error) return { ok: false, message: signInErrorMessage(error) }

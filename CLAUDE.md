@@ -41,3 +41,16 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `src/update`: përditësimi brenda app-it pa UI (`updater.ts`); plugin-i native `AppUpdaterPlugin.java`, publikimi `scripts/publish-update.mjs` (SPEC §3b).
 - `tools/anatomy`: pipeline-i i modelit 3D nga BodyParts3D (`public/anatomy/body.glb`); shikuesi: `components/body/body-model.tsx`, i ngarkuar me `lazy`.
 - `src/data`: baza lokale (Dexie) dhe sinkronizimi. Ekranet lexojnë dhe shkruajnë vetëm përmes `store` nga `app-data.ts`; asnjë ekran nuk thërret Supabase direkt. Programi dhe stërvitjet: `training.ts`; editori: `program-editor.ts`; ushqimi: `nutrition.ts`. Një tabelë e re: migrim i ri, `TABLES` dhe `INDEXES` te `tables.ts` (testi i krahason me migrimet), dhe version i ri te `db.ts` kur ndryshojnë indekset.
+
+## Tekstet në dy gjuhë
+
+Tekstet e UI-së vijnë nga katalogu `src/i18n` (SPEC V22, §0.3a); ekranet që kanë mbetur kalojnë një nga një, me detyrën e secilit.
+
+- Një tekst i ri: çelësi te `src/i18n/sq.ts` (burimi i çelësave, emri sipas vendit: `login.title`) dhe i njëjti çelës te `en.ts`, në anglishten britanike (Programme, yoghurt, litres). Tipet dhe `catalog.test.ts` kapin çelësin ose parametrin që mungon.
+- Në komponentë: `const { t, fmt } = useI18n()` (`@/i18n/use-i18n`), që ndërrimi i gjuhës t'i rivizatojë; jashtë React-it: `currentI18n()` nga `@/i18n`.
+- Parametrat: `'{count} sete'` me `t('x', { count })`. Një numër te parametri formatohet sipas gjuhës (62,5 / 62.5, 2 900 / 2,900); vitet dhe kodet jepen si tekst.
+- Shumësi: mesazh me forma (`{ one, other }`, `'=0'`, `ordinal: true`), që rregullat e gjuhës zgjedhin formën.
+- Numrat, njësitë, datat dhe orët me `fmt`: `fmt.unit(62.5, 'kg')` (hapësirë që nuk thyhet), `fmt.date(d)` ("e diel, 8 nëntor"), `fmt.time(d)` (24 orë). Chrome dhe WebView nuk e kanë shqipen në `Intl`; `format.ts` e plotëson.
+- Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët.
+- Gjuha ruhet në telefon (`i18n/language.ts`) dhe te `user_settings.language` (`data/language.ts`), që sinkronizohet.
+- Provat e një ekrani të kaluar kontrollojnë edhe anglishten: `language.set('en')`, dhe `language.set('sq')` në `afterEach`.

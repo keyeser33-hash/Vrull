@@ -13,11 +13,14 @@ import { Icon } from '@/components/ui/icons'
 import { auth, planRemindersNow, scheduler, store, updatesSupported, useAppUpdate, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
 import { reminderSettings, setMeasurementDay, setReminderToggle } from '@/data/reminders'
+import { chooseLanguage } from '@/data/language'
 import { shareExport } from '@/data/share-export'
 import { describeSync } from '@/data/sync-status-text'
 import { reminderPermission, type ReminderPermission, requestReminderPermission } from '@/lib/reminders-native'
 import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
-import { readTheme, saveTheme, THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
+import { type Language, LANGUAGE_NAMES, LANGUAGES, LOCALES } from '@/i18n/language'
+import { useI18n } from '@/i18n/use-i18n'
+import { readTheme, saveTheme, THEMES, type Theme } from '@/lib/theme'
 import { UpdateSheet } from './app-update'
 import { versionRowDetail } from './update-format'
 import { kg } from './training-format'
@@ -25,9 +28,11 @@ import { kg } from './training-format'
 // Cilësimet, varianti A i aprovuar më 07.11.2026 (referencat nga Mobbin: Tempo, Hevy, Google
 // Health): sipër paneli i llogarisë me "Dil"; poshtë grupe rreshtash me vlerën e tanishme. Një
 // rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
+// Tekstet e kokës, të llogarisë dhe të grupit "App-i" janë në katalog (i18n); pjesa tjetër
+// kalon me V2-E1-05, kur ndërtohen Cilësimet e reja.
 
 type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
-type Editor = ProfileEditor | 'tema' | 'dil' | 'matja' | 'burimet' | 'perditesimi'
+type Editor = ProfileEditor | 'tema' | 'gjuha' | 'dil' | 'matja' | 'burimet' | 'perditesimi'
 const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
   value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
 
@@ -38,6 +43,7 @@ const shortDays = (days: number[]) =>
     .join(', ')
 
 export function SettingsPage() {
+  const { t, lang } = useI18n()
   const profile = useLocalQuery(() => readProfile(store), [])
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
@@ -49,8 +55,8 @@ export function SettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex min-h-11 items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Cilësimet</h1>
-        <Link to="/" aria-label="Kthehu te Sot" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+        <h1 className="text-3xl font-semibold tracking-tight">{t('settings.title')}</h1>
+        <Link to="/" aria-label={t('settings.backToToday')} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
           <Icon name="mbyll" size={22} />
         </Link>
       </header>
@@ -73,8 +79,9 @@ export function SettingsPage() {
         <div aria-hidden className="h-72 rounded-xl bg-skeleton" />
       )}
 
-      <Group title="App-i">
-        <Row label="Tema" value={THEME_LABELS[theme]} onClick={() => open('tema')} />
+      <Group title={t('settings.app')}>
+        <Row label={t('settings.theme')} value={t(`settings.theme.${theme}`)} onClick={() => open('tema')} />
+        <Row label={t('settings.language')} value={LANGUAGE_NAMES[lang]} onClick={() => open('gjuha')} />
         <TimerRow />
       </Group>
 
@@ -93,6 +100,7 @@ export function SettingsPage() {
       {editor === 'matja' ? <MeasurementDaySheet onClose={close} /> : null}
       {editor === 'burimet' ? <SourcesSheet onClose={close} /> : null}
       {editor === 'perditesimi' ? <UpdateSheet onClose={close} /> : null}
+      {editor === 'gjuha' ? <LanguageSheet current={lang} onChoose={(next) => void chooseLanguage(store, next)} onClose={close} /> : null}
       {editor === 'tema' ? (
         <ThemeSheet
           theme={theme}
@@ -109,35 +117,37 @@ export function SettingsPage() {
 }
 
 function AccountPanel({ onSignOut }: { onSignOut: () => void }) {
+  const i18n = useI18n()
+  const { t } = i18n
   const session = useAuth()
   const status = useSyncStatus()
   const pending = usePendingChanges()
-  const [, setTick] = useState(0)
+  const [now, setNow] = useState(() => new Date())
   // Koha relative ("para 5 min") rifreskohet vetë.
   useEffect(() => {
-    const timer = setInterval(() => setTick((value) => value + 1), 30_000)
+    const timer = setInterval(() => setNow(new Date()), 30_000)
     return () => clearInterval(timer)
   }, [])
   const initial = (session.email ?? '?').charAt(0).toUpperCase()
   return (
-    <section aria-label="Llogaria" className="flex flex-col gap-4 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
+    <section aria-label={t('settings.account')} className="flex flex-col gap-4 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
       <div className="flex items-center gap-3">
         <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-panel-button text-lg font-semibold">
           {initial}
         </span>
         <div className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate text-base leading-6 font-semibold">{session.email ?? 'Pa llogari'}</span>
+          <span className="truncate text-base leading-6 font-semibold">{session.email ?? t('settings.noAccount')}</span>
           <span role="status" className="text-sm leading-5 text-panel-muted-foreground">
-            {describeSync(status)}
+            {describeSync(status, now, i18n)}
           </span>
         </div>
         <Button variant="panel" className="shrink-0" onClick={onSignOut}>
-          Dil
+          {t('settings.signOut')}
         </Button>
       </div>
       {pending > 0 ? (
         <p className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
-          {pending === 1 ? '1 ndryshim pret dërgimin' : `${pending} ndryshime presin dërgimin`}
+          {t('sync.pending', { count: pending })}
         </p>
       ) : null}
     </section>
@@ -146,6 +156,7 @@ function AccountPanel({ onSignOut }: { onSignOut: () => void }) {
 
 /** Vetëm në telefon: përjashtimi nga optimizimi i baterisë, kur timer-i vonon me ekran të kyçur. */
 function TimerRow() {
+  const { t } = useI18n()
   const [unrestricted, setUnrestricted] = useState<boolean | null>(null)
   useEffect(() => {
     const check = () => void batteryUnrestricted().then(setUnrestricted)
@@ -157,8 +168,8 @@ function TimerRow() {
   if (unrestricted === null) return null
   return (
     <Row
-      label="Timer-i i pushimit"
-      value={unrestricted ? 'Bateria pa kufizime' : 'Hiq kufizimin e baterisë'}
+      label={t('settings.restTimer')}
+      value={t(unrestricted ? 'settings.batteryUnrestricted' : 'settings.removeBatteryLimit')}
       onClick={() => void requestBatteryExemption()}
       disabled={unrestricted}
       action
@@ -200,19 +211,20 @@ function DataGroup() {
 }
 
 function SignOutSheet({ onClose }: { onClose: () => void }) {
+  const { t } = useI18n()
   const pending = usePendingChanges()
   return (
-    <Sheet title="Dil nga llogaria" onClose={onClose}>
+    <Sheet title={t('common.signOut')} onClose={onClose}>
       <p className="text-base leading-6 text-muted-foreground">
-        Të dhënat mbeten në telefon. Për të hyrë përsëri duhet internet.
-        {pending > 0 ? ' Ndryshimet që presin dërgohen pasi të hysh.' : ''}
+        {t('settings.signOutText')}
+        {pending > 0 ? ` ${t('settings.signOutPending')}` : ''}
       </p>
       <div className="grid grid-cols-2 gap-2">
         <Button variant="outline" onClick={onClose}>
-          Anulo
+          {t('common.cancel')}
         </Button>
         <Button variant="outline" onClick={() => void auth.signOut()}>
-          Dil nga llogaria
+          {t('common.signOut')}
         </Button>
       </div>
     </Sheet>
@@ -220,14 +232,36 @@ function SignOutSheet({ onClose }: { onClose: () => void }) {
 }
 
 function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (theme: Theme) => void; onClose: () => void }) {
+  const { t } = useI18n()
   return (
-    <Sheet title="Tema" onClose={onClose}>
+    <Sheet title={t('settings.theme')} onClose={onClose}>
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm leading-5 text-muted-foreground">
-          OLED përdor të zezë të plotë dhe kursen bateri në ekranet OLED.
-        </legend>
+        <legend className="mb-2 text-sm leading-5 text-muted-foreground">{t('settings.themeHint')}</legend>
         {THEMES.map((option) => (
-          <Choice key={option} name="theme" value={option} checked={theme === option} onChange={() => onChoose(option)} label={THEME_LABELS[option]} />
+          <Choice key={option} name="theme" value={option} checked={theme === option} onChange={() => onChoose(option)} label={t(`settings.theme.${option}`)} />
+        ))}
+      </fieldset>
+    </Sheet>
+  )
+}
+
+/** Gjuha ndërrohet menjëherë, pa rinisje (SPEC V22); çdo gjuhë shkruhet në gjuhën e vet. */
+function LanguageSheet({ current, onChoose, onClose }: { current: Language; onChoose: (lang: Language) => void; onClose: () => void }) {
+  const { t } = useI18n()
+  return (
+    <Sheet title={t('settings.language')} onClose={onClose}>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="mb-2 text-sm leading-5 text-muted-foreground">{t('settings.languageHint')}</legend>
+        {LANGUAGES.map((option) => (
+          <Choice
+            key={option}
+            name="language"
+            value={option}
+            lang={LOCALES[option]}
+            checked={current === option}
+            onChange={() => onChoose(option)}
+            label={LANGUAGE_NAMES[option]}
+          />
         ))}
       </fieldset>
     </Sheet>

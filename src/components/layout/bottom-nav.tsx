@@ -1,14 +1,17 @@
 import { NavLink } from 'react-router'
 import { Icon } from '@/components/ui/icons'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { NAV_PLACES } from './nav-places'
 
 // Omal UI v2 BottomNav: 56px mbi `card`, vijë e hollë sipër, ikonë 22px mbi etiketë 12px.
 // Vendi aktiv: tekst `foreground` 600 dhe vijë 2px `brand` sipër, me aria-current="page".
+// Etiketat mbeten në një rresht në të dyja gjuhët (SPEC §0.3a).
 export function BottomNav() {
+  const { t } = useI18n()
   return (
     <nav
-      aria-label="Kryesore"
+      aria-label={t('shell.mainNav')}
       className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card pb-[var(--safe-bottom)]"
     >
       <ul className="mx-auto grid h-14 max-w-[480px] grid-cols-5">
@@ -27,7 +30,7 @@ export function BottomNav() {
               }
             >
               <Icon name={place.icon} size={22} />
-              <span>{place.label}</span>
+              <span className="whitespace-nowrap">{t(place.label)}</span>
             </NavLink>
           </li>
         ))}
