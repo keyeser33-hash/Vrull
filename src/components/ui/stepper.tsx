@@ -1,28 +1,26 @@
 import { type ReactNode, useState } from 'react'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { Button } from './button'
 
 // Stepper-i i Vrullit: pesha dhe përsëritjet e setit që po regjistrohet, si tabelë rezultatesh. Dy
 // numra `display-hero`, × `subtle` dhe katër butona 52 px poshtë. Numri që ndryshoi i fundit merr
-// `ember-text`. Vlerat vijnë të formatuara nga ekrani (gjuha, presja dhjetore); hapi i peshës
-// varet nga pajisja (2,5 kg shufër, 2 kg dumbbell).
+// `ember-text`. Numrat formatohen sipas gjuhës (62,5 / 62.5); hapi i peshës varet nga pajisja
+// (2,5 kg shufër, 2 kg dumbbell). Lexuesi i ekranit dëgjon "Seti 1: 62,5 kg, 9 përsëritje".
 
 type Part = 'weight' | 'reps'
 
 export interface StepperProps {
-  /** Pesha e formatuar ("62,5"). */
-  weight: string
-  /** Përsëritjet e formatuara ("9"). */
-  reps: string
-  /** Hapi i peshës, i formatuar ("2,5"). */
-  weightStep: string
+  /** Pesha në kg. */
+  weight: number
+  reps: number
+  /** Hapi i peshës në kg. */
+  weightStep: number
   onWeightStep: (direction: -1 | 1) => void
   onRepsStep: (direction: -1 | 1) => void
   /** Prekja e numrit hap tastierën numerike; ekrani vendos si. */
   onEditWeight?: () => void
   onEditReps?: () => void
-  weightUnit?: string
-  repsUnit?: string
   /** Para vlerave te lexuesi i ekranit ("Seti 1"). */
   label?: string
   /** Numri që ndryshoi i fundit. Pa të, komponenti e mban vetë sipas butonave. */
@@ -40,43 +38,49 @@ export function Stepper({
   onRepsStep,
   onEditWeight,
   onEditReps,
-  weightUnit = 'kg',
-  repsUnit = 'përsëritje',
   label,
   live,
   canLowerWeight = true,
   canLowerReps = true,
   className,
 }: StepperProps) {
+  const { t, fmt } = useI18n()
   const [changed, setChanged] = useState<Part | null>(null)
   const current = live !== undefined ? live : changed
-  const summary = `${weight} ${weightUnit}, ${reps} ${repsUnit}`
-  const step = (part: Part, direction: -1 | 1) => {
+  const summary = t('ui.stepper.summary', { weight, count: reps })
+  const step = fmt.number(weightStep)
+  const press = (part: Part, direction: -1 | 1) => {
     setChanged(part)
     if (part === 'weight') onWeightStep(direction)
     else onRepsStep(direction)
   }
 
   return (
-    <div role="group" aria-label={label ? `${label}: ${summary}` : summary} className={cn('flex flex-col gap-3.5', className)}>
+    <div role="group" aria-label={label ? t('ui.stepper.labelled', { label, summary }) : summary} className={cn('flex flex-col gap-3.5', className)}>
       <div className="flex items-end justify-center gap-4">
-        <BigNumber text={weight} unit={weightUnit} live={current === 'weight'} onEdit={onEditWeight} editLabel={`Shkruaj peshën, ${weight} ${weightUnit}`} />
+        <BigNumber text={fmt.number(weight)} unit="kg" live={current === 'weight'} onEdit={onEditWeight} editLabel={t('ui.stepper.editWeight', { weight })} />
         <span aria-hidden className="pb-[26px] font-display text-[56px] leading-none font-bold text-subtle">
           ×
         </span>
-        <BigNumber text={reps} unit={repsUnit} live={current === 'reps'} onEdit={onEditReps} editLabel={`Shkruaj përsëritjet, ${reps}`} />
+        <BigNumber
+          text={fmt.number(reps)}
+          unit={t('ui.stepper.repsUnit', { count: reps })}
+          live={current === 'reps'}
+          onEdit={onEditReps}
+          editLabel={t('ui.stepper.editReps', { reps })}
+        />
       </div>
       <div className="grid grid-cols-4 gap-2">
-        <StepKey label={`Ul peshën me ${weightStep} ${weightUnit}`} disabled={!canLowerWeight} onClick={() => step('weight', -1)}>
-          −{weightStep}
+        <StepKey label={t('ui.stepper.lowerWeight', { step: weightStep })} disabled={!canLowerWeight} onClick={() => press('weight', -1)}>
+          −{step}
         </StepKey>
-        <StepKey label={`Rrit peshën me ${weightStep} ${weightUnit}`} onClick={() => step('weight', 1)}>
-          +{weightStep}
+        <StepKey label={t('ui.stepper.raiseWeight', { step: weightStep })} onClick={() => press('weight', 1)}>
+          +{step}
         </StepKey>
-        <StepKey label="Ul përsëritjet" disabled={!canLowerReps} onClick={() => step('reps', -1)}>
+        <StepKey label={t('ui.stepper.lowerReps')} disabled={!canLowerReps} onClick={() => press('reps', -1)}>
           −1
         </StepKey>
-        <StepKey label="Rrit përsëritjet" onClick={() => step('reps', 1)}>
+        <StepKey label={t('ui.stepper.raiseReps')} onClick={() => press('reps', 1)}>
           +1
         </StepKey>
       </div>

@@ -1,4 +1,6 @@
 // @vitest-environment node
+/// <reference types="node" />
+// CSS-i lexohet nga disku: me `css: false` te Vitest, `?raw` i një .css kthehet bosh.
 import { readFileSync } from 'node:fs'
 import { contrastRatio, readThemeTokens } from '@/lib/contrast'
 import { THEMES, type Theme } from '@/lib/theme'

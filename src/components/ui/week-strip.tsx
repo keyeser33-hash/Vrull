@@ -1,3 +1,5 @@
+import { type T } from '@/i18n'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 
 // Java kalendarike te Sot: shtatë rrathë 34 px. Ditët e stërvitjes së bërë në prush, sot me unazë
@@ -11,7 +13,7 @@ export interface WeekDay {
   key: string
   /** Shkronja sipër rrethit ("H", "Sh"). */
   letter: string
-  /** Emri i plotë me datën, për lexuesin e ekranit ("E hënë 2"). */
+  /** Dita me datën, si në mes të fjalisë ("e hënë 2" / "Monday 2"); fillon me shkronjë të madhe vetë. */
   name: string
   day: number
   state: WeekDayState
@@ -19,22 +21,23 @@ export interface WeekDay {
   onSelect?: () => void
 }
 
-const STATE_TEXT: Record<WeekDayState, string> = {
-  done: 'e bërë',
-  rest: 'pushim',
-  planned: 'stërvitje',
+function spoken(t: T, day: WeekDay) {
+  const name = day.today ? t('ui.week.today', { day: day.name }) : day.name
+  const text =
+    day.state === 'done'
+      ? t('ui.week.done', { day: name })
+      : day.state === 'rest'
+        ? t('ui.week.rest', { day: name })
+        : t(day.today ? 'ui.week.next' : 'ui.week.planned', { day: name })
+  return text.charAt(0).toLocaleUpperCase() + text.slice(1)
 }
 
-function spoken(day: WeekDay) {
-  const state = day.today && day.state === 'planned' ? 'stërvitja e radhës' : STATE_TEXT[day.state]
-  const name = day.today ? `Sot, ${day.name.charAt(0).toLowerCase()}${day.name.slice(1)}` : day.name
-  return `${name}, ${state}`
-}
-
-export function WeekStrip({ days, label = 'Java', className }: { days: WeekDay[]; label?: string; className?: string }) {
+export function WeekStrip({ days, className }: { days: WeekDay[]; className?: string }) {
+  const { t } = useI18n()
   return (
-    <ol aria-label={label} className={cn('m-0 grid list-none grid-cols-7 gap-1 p-0', className)}>
+    <ol aria-label={t('ui.week.label')} className={cn('m-0 grid list-none grid-cols-7 gap-1 p-0', className)}>
       {days.map((day) => {
+        const label = spoken(t, day)
         const content = (
           <>
             <span aria-hidden className={cn('text-xs leading-[1.2]', day.today ? 'font-bold text-foreground' : 'text-muted-foreground')}>
@@ -42,7 +45,7 @@ export function WeekStrip({ days, label = 'Java', className }: { days: WeekDay[]
             </span>
             <span
               role={day.onSelect ? undefined : 'img'}
-              aria-label={day.onSelect ? undefined : spoken(day)}
+              aria-label={day.onSelect ? undefined : label}
               className={cn(
                 'box-border flex size-[34px] items-center justify-center rounded-pill text-sm tabular-nums',
                 day.state === 'done' && 'bg-ember font-bold text-on-ember',
@@ -59,12 +62,7 @@ export function WeekStrip({ days, label = 'Java', className }: { days: WeekDay[]
         return (
           <li key={day.key} className="flex">
             {day.onSelect ? (
-              <button
-                type="button"
-                aria-label={spoken(day)}
-                onClick={day.onSelect}
-                className="flex min-h-row flex-1 flex-col items-center justify-center gap-1 rounded-md"
-              >
+              <button type="button" aria-label={label} onClick={day.onSelect} className="flex min-h-row flex-1 flex-col items-center justify-center gap-1 rounded-md">
                 {content}
               </button>
             ) : (

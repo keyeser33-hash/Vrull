@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { MemoryRouter } from 'react-router'
+import { language } from '@/i18n/language'
 import { Button } from './button'
 import { FactCard } from './fact-card'
 import { InsightCard } from './insight-card'
@@ -47,16 +48,18 @@ describe('Button', () => {
   })
 })
 
+afterEach(() => language.set('sq'))
+
 describe('Stepper', () => {
-  function Harness() {
+  function Harness({ label = 'Seti 1', reps: initialReps = 9 }: { label?: string; reps?: number }) {
     const [kg, setKg] = useState(62.5)
-    const [reps, setReps] = useState(9)
+    const [reps, setReps] = useState(initialReps)
     return (
       <Stepper
-        label="Seti 1"
-        weight={String(kg).replace('.', ',')}
-        reps={String(reps)}
-        weightStep="2,5"
+        label={label}
+        weight={kg}
+        reps={reps}
+        weightStep={2.5}
         onWeightStep={(direction) => setKg((value) => value + direction * 2.5)}
         onRepsStep={(direction) => setReps((value) => value + direction)}
       />
@@ -67,9 +70,18 @@ describe('Stepper', () => {
     const user = userEvent.setup()
     render(<Harness />)
     expect(screen.getByRole('group', { name: 'Seti 1: 62,5 kg, 9 përsëritje' })).toBeInTheDocument()
+    expect(screen.getByText('62,5')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Rrit peshën me 2,5 kg' }))
     await user.click(screen.getByRole('button', { name: 'Rrit përsëritjet' }))
     expect(screen.getByRole('group', { name: 'Seti 1: 65 kg, 10 përsëritje' })).toBeInTheDocument()
+  })
+
+  it('në anglisht: pika dhjetore dhe shumësi i "rep"', () => {
+    language.set('en')
+    render(<Harness label="Set 1" reps={1} />)
+    expect(screen.getByRole('group', { name: 'Set 1: 62.5 kg, 1 rep' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Decrease weight by 2.5 kg' })).toHaveTextContent('−2.5')
+    expect(screen.getByText('rep')).toBeInTheDocument()
   })
 
   it('numri që ndryshoi i fundit merr ember-text', async () => {
@@ -99,6 +111,13 @@ describe('RirPicker', () => {
     expect(within(group).getByRole('button', { name: '4 ose më shumë' })).toHaveAttribute('aria-pressed', 'true')
     expect(within(group).getByRole('button', { name: '4 ose më shumë' })).toHaveClass('bg-foreground', 'text-background')
     expect(within(group).getByRole('button', { name: '2' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('në anglisht', () => {
+    language.set('en')
+    render(<RirPicker value={null} onChange={() => {}} />)
+    const group = screen.getByRole('group', { name: 'Reps in reserve (RIR)' })
+    expect(within(group).getByRole('button', { name: '4 or more' })).toHaveTextContent('4+')
   })
 })
 
@@ -142,6 +161,12 @@ describe('StatTile dhe ProgressBar', () => {
     expect(fills.map((fill) => parseFloat(fill.style.width))).toEqual([expect.closeTo((96 / 180) * 100, 2), 100])
     expect(fills[1]).toHaveClass('bg-sand')
   })
+
+  it('në anglisht me presjen e mijësheve', () => {
+    language.set('en')
+    render(<ProgressBar label="Energy" value={1240} target={2900} unitName="kcal" />)
+    expect(screen.getByRole('group', { name: 'Energy, 1,240 of 2,900 kcal' })).toBeInTheDocument()
+  })
 })
 
 describe('InsightCard dhe FactCard', () => {
@@ -171,6 +196,14 @@ describe('InsightCard dhe FactCard', () => {
     expect(within(withSource).getByRole('button', { name: 'Tjetër' })).toBeInTheDocument()
     expect(within(fromAi).getByText('Shpjeguar nga AI')).toBeInTheDocument()
   })
+
+  it('në anglisht', () => {
+    language.set('en')
+    render(<FactCard fact="One gram of fat gives about 9 kcal." source="USDA" onMore={() => {}} />)
+    const card = screen.getByRole('region', { name: 'Did you know?' })
+    expect(within(card).getByText('Source: USDA')).toBeInTheDocument()
+    expect(within(card).getByRole('button', { name: 'Learn more' })).toBeInTheDocument()
+  })
 })
 
 describe('WeekStrip', () => {
@@ -180,16 +213,32 @@ describe('WeekStrip', () => {
     render(
       <WeekStrip
         days={[
-          { key: 'h', letter: 'H', name: 'E hënë 2', day: 2, state: 'done', onSelect: open },
-          { key: 'm', letter: 'M', name: 'E mërkurë 4', day: 4, state: 'rest' },
-          { key: 'd', letter: 'D', name: 'E diel 8', day: 8, state: 'planned', today: true },
+          { key: 'h', letter: 'H', name: 'e hënë 2', day: 2, state: 'done', onSelect: open },
+          { key: 'm', letter: 'M', name: 'e mërkurë 4', day: 4, state: 'rest' },
+          { key: 'd', letter: 'D', name: 'e diel 8', day: 8, state: 'planned', today: true },
         ]}
       />,
     )
+    expect(screen.getByRole('list', { name: 'Java' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'E hënë 2, e bërë' }))
     expect(open).toHaveBeenCalledOnce()
     expect(screen.getByRole('img', { name: 'E mërkurë 4, pushim' })).toHaveClass('bg-mark')
     expect(screen.getByRole('img', { name: 'Sot, e diel 8, stërvitja e radhës' })).toHaveClass('border-ember-text')
+  })
+
+  it('në anglisht, si te bordi EN', () => {
+    language.set('en')
+    render(
+      <WeekStrip
+        days={[
+          { key: 'w', letter: 'W', name: 'Wednesday 4', day: 4, state: 'rest' },
+          { key: 's', letter: 'S', name: 'Sunday 8', day: 8, state: 'planned', today: true },
+        ]}
+      />,
+    )
+    expect(screen.getByRole('list', { name: 'This week' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Wednesday 4, rest day' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Today, Sunday 8, next workout' })).toBeInTheDocument()
   })
 })
 
@@ -206,7 +255,7 @@ describe('TabBar', () => {
         />
       </MemoryRouter>,
     )
-    const nav = screen.getByRole('navigation', { name: 'Navigimi' })
+    const nav = screen.getByRole('navigation', { name: 'Kryesore' })
     expect(within(nav).getByRole('link', { name: 'Sot' })).toHaveAttribute('aria-current', 'page')
     expect(within(nav).getByRole('link', { name: 'Sot' })).toHaveClass('text-ember-text')
     expect(within(nav).getByRole('link', { name: 'Programi' })).not.toHaveAttribute('aria-current')
@@ -231,5 +280,14 @@ describe('QuickAdd', () => {
     expect(screen.getByRole('button', { name: 'Foto e pjatës' })).toHaveAccessibleDescription('Kufiri i këtij muaji u arrit')
     await user.click(screen.getByRole('button', { name: 'Skano barkodin' }))
     expect(barcode).toHaveBeenCalledOnce()
+  })
+
+  it('në anglisht, si te bordi EN', () => {
+    language.set('en')
+    render(<QuickAdd value="" onChange={() => {}} onSubmit={() => {}} onPhoto={() => {}} onBarcode={() => {}} />)
+    const form = screen.getByRole('form', { name: 'Quick add' })
+    expect(within(form).getByPlaceholderText('e.g. 2 eggs and a slice of bread')).toBeInTheDocument()
+    expect(within(form).getByRole('button', { name: 'Photo of your meal' })).toBeInTheDocument()
+    expect(within(form).getByRole('button', { name: 'Scan barcode' })).toBeInTheDocument()
   })
 })

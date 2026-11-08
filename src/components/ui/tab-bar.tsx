@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { Icon, type IconName } from './icons'
 
@@ -9,14 +10,16 @@ import { Icon, type IconName } from './icons'
 
 export interface TabBarItem {
   id: string
+  /** Teksti i përkthyer (p.sh. t('tab.today')). */
   label: string
   icon: IconName
   to: string
 }
 
-export function TabBar({ items, active, label = 'Navigimi', className }: { items: TabBarItem[]; active: string | null; label?: string; className?: string }) {
+export function TabBar({ items, active, className }: { items: TabBarItem[]; active: string | null; className?: string }) {
+  const { t } = useI18n()
   return (
-    <nav aria-label={label} className={cn('border-t border-border bg-nav pb-[var(--safe-bottom)]', className)}>
+    <nav aria-label={t('shell.mainNav')} className={cn('border-t border-border bg-nav pb-[var(--safe-bottom)]', className)}>
       <ul className="mx-auto grid h-tab-bar max-w-[480px] auto-cols-fr grid-flow-col">
         {items.map((item) => {
           const current = item.id === active

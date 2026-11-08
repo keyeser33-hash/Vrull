@@ -24,7 +24,7 @@ describe('faqja e brendshme e sistemit Vrull', () => {
       expect(inside.getByRole('list', { name: 'Java' })).toBeInTheDocument()
       expect(inside.getByRole('region', { name: 'A e dije?' })).toBeInTheDocument()
       expect(inside.getAllByRole('form', { name: 'Shto shpejt' })).toHaveLength(2)
-      expect(inside.getByRole('navigation', { name: 'Navigimi' })).toBeInTheDocument()
+      expect(inside.getByRole('navigation', { name: 'Kryesore' })).toBeInTheDocument()
       expect(inside.getByRole('link', { name: 'Sot' })).toHaveAttribute('aria-current', 'page')
     }
   })

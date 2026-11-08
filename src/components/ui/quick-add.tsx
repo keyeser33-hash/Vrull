@@ -1,4 +1,5 @@
 import { type FormEvent, useId } from 'react'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { Icon } from './icons'
 import { surfaceClass } from './surface'
@@ -12,8 +13,6 @@ export function QuickAdd({
   onPhoto,
   onBarcode,
   aiLimitReached = false,
-  label = 'Me fjalë: shkruaj çfarë hëngre',
-  placeholder = 'p.sh. 2 vezë dhe një fetë bukë',
   className,
 }: {
   value: string
@@ -22,10 +21,9 @@ export function QuickAdd({
   onPhoto: () => void
   onBarcode: () => void
   aiLimitReached?: boolean
-  label?: string
-  placeholder?: string
   className?: string
 }) {
+  const { t } = useI18n()
   const id = useId()
   const limitId = `${id}-kufiri`
   const submit = (event: FormEvent) => {
@@ -35,10 +33,10 @@ export function QuickAdd({
   }
   const iconButton = 'flex size-12 shrink-0 items-center justify-center rounded-md bg-surface-2 text-foreground'
   return (
-    <form aria-label="Shto shpejt" onSubmit={submit} className={cn(surfaceClass, 'flex flex-col gap-1.5 rounded-lg p-1.5', className)}>
+    <form aria-label={t('ui.quickAdd.title')} onSubmit={submit} className={cn(surfaceClass, 'flex flex-col gap-1.5 rounded-lg p-1.5', className)}>
       <div className="flex items-center gap-1.5">
         <label htmlFor={id} className="sr-only">
-          {label}
+          {t('ui.quickAdd.label')}
         </label>
         <input
           id={id}
@@ -46,13 +44,13 @@ export function QuickAdd({
           enterKeyHint="search"
           autoComplete="off"
           value={value}
-          placeholder={placeholder}
+          placeholder={t('ui.quickAdd.placeholder')}
           onChange={(event) => onChange(event.target.value)}
           className="h-12 min-w-0 flex-1 rounded-md border-0 bg-background px-3 type-body text-foreground placeholder:text-muted-foreground"
         />
         <button
           type="button"
-          aria-label="Foto e pjatës"
+          aria-label={t('ui.quickAdd.photo')}
           aria-disabled={aiLimitReached || undefined}
           aria-describedby={aiLimitReached ? limitId : undefined}
           onClick={aiLimitReached ? undefined : onPhoto}
@@ -60,13 +58,13 @@ export function QuickAdd({
         >
           <Icon name="kamera" size={22} />
         </button>
-        <button type="button" aria-label="Skano barkodin" onClick={onBarcode} className={iconButton}>
+        <button type="button" aria-label={t('ui.quickAdd.barcode')} onClick={onBarcode} className={iconButton}>
           <Icon name="barkodi-vija" size={22} />
         </button>
       </div>
       {aiLimitReached ? (
         <p id={limitId} className="m-0 px-1.5 pb-1 text-[13px] leading-[1.35] text-muted-foreground">
-          Kufiri i këtij muaji u arrit
+          {t('ui.quickAdd.aiLimit')}
         </p>
       ) : null}
     </form>

@@ -1,5 +1,6 @@
 import { cva } from 'class-variance-authority'
 import type { ReactNode } from 'react'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { Icon, type IconName } from './icons'
 
@@ -33,12 +34,13 @@ export function InsightCard({
   ai?: boolean
   className?: string
 }) {
+  const { t } = useI18n()
   return (
     <div className={cn(card({ tone }), className)}>
       {tone === 'insight' && icon ? <Icon name={icon} size={28} className="text-ember-text" /> : null}
       <div className="flex min-w-0 flex-col gap-1">
         <p className="m-0 text-sm leading-[1.4] text-foreground">{children}</p>
-        {ai ? <span className="text-[13px] leading-[1.35] text-muted-foreground">Shpjeguar nga AI</span> : null}
+        {ai ? <span className="text-[13px] leading-[1.35] text-muted-foreground">{t('ui.ai')}</span> : null}
         {actions ? <div className="mt-2 flex flex-wrap gap-2">{actions}</div> : null}
       </div>
     </div>

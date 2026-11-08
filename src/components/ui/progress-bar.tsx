@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { surfaceClass } from './surface'
 
@@ -29,8 +30,6 @@ export function ProgressBar({
   unit,
   unitName,
   tone = 'ember',
-  format = (n: number) => String(n),
-  overText = 'mbi objektiv',
   className,
 }: {
   label: string
@@ -41,29 +40,28 @@ export function ProgressBar({
   /** Njësia me fjalë për lexuesin e ekranit ("gramë"). */
   unitName: string
   tone?: ProgressTone
-  format?: (value: number) => string
-  overText?: string
   className?: string
 }) {
+  const { t, fmt } = useI18n()
   const over = value > target
   const ratio = target > 0 ? value / target : 0
-  const spoken = `${label} ${format(value)} nga ${format(target)} ${unitName}${over ? `, ${overText}` : ''}`
+  const spoken = t(over ? 'ui.progress.spokenOver' : 'ui.progress.spoken', { label, value, target, unit: unitName })
   return (
     <div role="group" aria-label={spoken} className={cn(surfaceClass, 'flex min-w-0 flex-col gap-2 rounded-lg p-3', className)}>
       <span aria-hidden className="text-[13px] leading-[1.35] text-muted-foreground">
         {label}
       </span>
       <span aria-hidden className="font-display text-[26px] leading-none font-extrabold whitespace-nowrap tabular-nums">
-        {format(value)}
+        {fmt.number(value)}
         <span className="text-[15px] font-semibold text-muted-foreground">
-          /{format(target)}
+          /{fmt.number(target)}
           {unit ? ` ${unit}` : ''}
         </span>
       </span>
       <ProgressTrack ratio={ratio} tone={tone} />
       {over ? (
         <span aria-hidden className="text-[13px] leading-[1.35] text-muted-foreground">
-          {overText}
+          {t('ui.progress.over')}
         </span>
       ) : null}
     </div>

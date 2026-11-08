@@ -12,12 +12,15 @@ import { Stepper } from '@/components/ui/stepper'
 import { surfaceClass } from '@/components/ui/surface'
 import { TabBar, type TabBarItem } from '@/components/ui/tab-bar'
 import { WeekStrip, type WeekDay } from '@/components/ui/week-strip'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
-import { THEME_LABELS, THEMES, type Theme } from '@/lib/theme'
+import { THEMES, type Theme } from '@/lib/theme'
 
 // Faqja e brendshme e sistemit Vrull (/dev/ds): komponentët në OLED, Natë dhe Ditë njëra pas tjetrës,
 // secila me data-theme. Nuk ka lidhje nga app-i dhe nuk kalon nga porta. Prova e pamjes në 390 px:
-// scripts/ds-screens.mjs.
+// scripts/ds-screens.mjs. Tekstet e komponentëve vijnë nga katalogu (ndjekin gjuhën); titujt e
+// faqes dhe të dhënat e shembullit (nga sistemi i dizajnit) mbeten këtu, se faqja nuk është për
+// përdoruesin.
 
 const SWATCHES = [
   ['background', 'bg-background'],
@@ -56,25 +59,23 @@ const TYPE = [
   ['type-caption', 'Faza 1 · Stërvitja 1 · ~65 min'],
 ] as const
 
-const TABS: TabBarItem[] = [
-  { id: 'sot', label: 'Sot', icon: 'sot', to: '/dev/ds' },
-  { id: 'programi', label: 'Programi', icon: 'programi', to: '/dev/ds' },
-  { id: 'ushqimi', label: 'Ushqimi', icon: 'pjata', to: '/dev/ds' },
-  { id: 'progresi', label: 'Progresi', icon: 'progresi', to: '/dev/ds' },
-  { id: 'miqte', label: 'Miqtë', icon: 'miqte', to: '/dev/ds' },
-]
+const TABS = [
+  { id: 'sot', label: 'tab.today', icon: 'sot' },
+  { id: 'programi', label: 'tab.programme', icon: 'programi' },
+  { id: 'ushqimi', label: 'tab.food', icon: 'pjata' },
+  { id: 'progresi', label: 'tab.progress', icon: 'progresi' },
+  { id: 'miqte', label: 'tab.friends', icon: 'miqte' },
+] as const
 
 const WEEK: WeekDay[] = [
-  { key: '2', letter: 'H', name: 'E hënë 2', day: 2, state: 'done', onSelect: () => {} },
-  { key: '3', letter: 'M', name: 'E martë 3', day: 3, state: 'done', onSelect: () => {} },
-  { key: '4', letter: 'M', name: 'E mërkurë 4', day: 4, state: 'rest' },
-  { key: '5', letter: 'E', name: 'E enjte 5', day: 5, state: 'done', onSelect: () => {} },
-  { key: '6', letter: 'P', name: 'E premte 6', day: 6, state: 'rest' },
-  { key: '7', letter: 'Sh', name: 'E shtunë 7', day: 7, state: 'rest' },
-  { key: '8', letter: 'D', name: 'E diel 8', day: 8, state: 'planned', today: true },
+  { key: '2', letter: 'H', name: 'e hënë 2', day: 2, state: 'done', onSelect: () => {} },
+  { key: '3', letter: 'M', name: 'e martë 3', day: 3, state: 'done', onSelect: () => {} },
+  { key: '4', letter: 'M', name: 'e mërkurë 4', day: 4, state: 'rest' },
+  { key: '5', letter: 'E', name: 'e enjte 5', day: 5, state: 'done', onSelect: () => {} },
+  { key: '6', letter: 'P', name: 'e premte 6', day: 6, state: 'rest' },
+  { key: '7', letter: 'Sh', name: 'e shtunë 7', day: 7, state: 'rest' },
+  { key: '8', letter: 'D', name: 'e diel 8', day: 8, state: 'planned', today: true },
 ]
-
-const decimal = (value: number) => String(Math.round(value * 100) / 100).replace('.', ',')
 
 export function DesignSystemPage() {
   return (
@@ -91,16 +92,18 @@ export function DesignSystemPage() {
 }
 
 function ThemeShowcase({ theme }: { theme: Theme }) {
+  const { t } = useI18n()
   const id = useId()
   const [kg, setKg] = useState(62.5)
   const [reps, setReps] = useState(9)
   const [rir, setRir] = useState<number | null>(2)
   const [food, setFood] = useState('')
+  const tabs: TabBarItem[] = TABS.map((tab) => ({ ...tab, label: t(tab.label), to: '/dev/ds' }))
 
   return (
     <section data-theme={theme} aria-labelledby={id} className="flex flex-col gap-6 bg-background px-4 pt-6 pb-10 text-foreground">
       <h2 id={id} className="m-0 type-display-l">
-        {THEME_LABELS[theme]}
+        {t(`settings.theme.${theme}`)}
       </h2>
 
       <Group title="Ngjyrat">
@@ -156,9 +159,9 @@ function ThemeShowcase({ theme }: { theme: Theme }) {
       <Group title="Regjistrimi">
         <Stepper
           label="Seti 1"
-          weight={decimal(kg)}
-          reps={String(reps)}
-          weightStep="2,5"
+          weight={kg}
+          reps={reps}
+          weightStep={2.5}
           canLowerWeight={kg > 0}
           canLowerReps={reps > 0}
           onWeightStep={(direction) => setKg((value) => Math.max(0, value + direction * 2.5))}
@@ -218,7 +221,7 @@ function ThemeShowcase({ theme }: { theme: Theme }) {
       </Group>
 
       <Group title="Navigimi">
-        <TabBar items={TABS} active="sot" className="-mx-4" />
+        <TabBar items={tabs} active="sot" className="-mx-4" />
       </Group>
     </section>
   )
