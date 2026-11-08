@@ -1,11 +1,14 @@
 import { useEffect, useId, useState } from 'react'
 import { inputClass } from '@/components/ui/field-styles'
-import { type LibraryExercise, loadLibrary, searchLibrary } from '@/program/library'
+import { store } from '@/data/app-data'
+import { exerciseChoices } from '@/data/exercises'
+import { type LibraryExercise, searchLibrary } from '@/program/library'
 import { cn } from '@/lib/cn'
 import { EQUIPMENT_LABEL } from '@/routes/training-format'
 
 // Zgjedhja e një ushtrimi nga biblioteka (seanca, editori): kërkim sipas emrit dhe lista e
-// rezultateve. Biblioteka ngarkohet vetëm kur hapet zgjedhja.
+// rezultateve. Biblioteka ngarkohet vetëm kur hapet zgjedhja; ushtrimet që krijoi përdoruesi
+// ("Krijo ushtrim", V2-E1-09) dalin bashkë me të.
 
 export function LibraryPicker({ onPick, busy = false }: { onPick: (exercise: LibraryExercise) => void; busy?: boolean }) {
   const [library, setLibrary] = useState<LibraryExercise[] | null>(null)
@@ -13,7 +16,7 @@ export function LibraryPicker({ onPick, busy = false }: { onPick: (exercise: Lib
   const searchId = useId()
   useEffect(() => {
     let cancelled = false
-    void loadLibrary().then((items) => {
+    void exerciseChoices(store).then((items) => {
       if (!cancelled) setLibrary(items)
     })
     return () => {

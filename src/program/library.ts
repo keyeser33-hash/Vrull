@@ -19,7 +19,7 @@ export async function loadLibrary(): Promise<LibraryExercise[]> {
 }
 
 // Shtojca D.
-const GROUP_KEYS: Record<string, string[]> = {
+export const GROUP_KEYS: Record<string, string[]> = {
   chest: ['pectoralis_major_clavicular', 'pectoralis_major_sternocostal', 'pectoralis_minor'],
   shoulders: ['deltoid_anterior', 'deltoid_lateral', 'deltoid_posterior'],
   traps: ['trapezius'],
