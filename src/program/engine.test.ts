@@ -177,6 +177,19 @@ describe('llojet e recetës', () => {
     expect(planSession(p, at('b1', 3, 'd1')).slots[0].technique).toEqual({ type: 'drop_set' })
   })
 
+  it('rregulli i progresit (V9) vjen nga niveli më i saktë: programi, blloku, java e bllokut', () => {
+    const p = program([
+      { slotId: 's1', blockId: null, week: null, progression: { minRir: 2, incrementKg: 2.5 } },
+      { slotId: 's1', blockId: 'b1', week: null, progression: { minRir: 1, incrementKg: 5 } },
+      { slotId: 's1', blockId: 'b1', week: 3, progression: { minRir: 3, incrementKg: 1 } },
+    ])
+    const rule = (blockId: string, week: number) => planSession(p, at(blockId, week, 'd1')).slots[0].progression
+    expect(rule('b0', 1)).toEqual({ minRir: 2, incrementKg: 2.5 })
+    expect(rule('b1', 2)).toEqual({ minRir: 1, incrementKg: 5 })
+    expect(rule('b1', 3)).toEqual({ minRir: 3, incrementKg: 1 })
+    expect(planSession(p, at('b1', 2, 'd1')).slots[1].progression).toBeUndefined()
+  })
+
   it('pa recetë: përsëritje pa objektiv', () => {
     expect(planSession(program(), at('b1', 1, 'd1')).slots[0].target).toEqual({ kind: 'reps', min: 0, max: null, beyond: false })
   })

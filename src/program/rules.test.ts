@@ -50,6 +50,13 @@ describe('rregullat e një sloti në një nivel të editorit', () => {
     expect(slotRules(PROGRAM, 's', { blockId: 'b2', week: 2 }).technique.value).toBeUndefined()
   })
 
+  it('rregulli i progresit tregon nga cili nivel vjen', () => {
+    const rule = { minRir: 2, incrementKg: 2.5 }
+    const withRule: Program = { ...PROGRAM, overrides: [...PROGRAM.overrides, { slotId: 's', blockId: 'b1', week: null, progression: rule }] }
+    expect(slotRules(withRule, 's', { blockId: 'b1', week: 2 }).progression).toEqual({ value: rule, from: { blockId: 'b1', week: null } })
+    expect(slotRules(withRule, 's', { blockId: 'b2', week: 2 }).progression).toEqual({ value: undefined, from: null })
+  })
+
   it('për çdo bllok dhe javë të Shortcut to Size përputhet me planin e motorit', () => {
     const program = SHORTCUT_TO_SIZE.program
     for (const block of program.blocks) {

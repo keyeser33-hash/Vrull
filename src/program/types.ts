@@ -66,6 +66,16 @@ export interface Slot {
   restSeconds: number
 }
 
+/**
+ * Rregulli i progresit të një sloti në programet e përdoruesit (V9): kur çdo set i seancës së
+ * kaluar arrin kufirin e sipërm të intervalit me RIR të paktën `minRir`, pesha e radhës rritet me
+ * `incrementKg`; përndryshe mbetet. Është propozim: vlen vetëm kur përdoruesi e pranon.
+ */
+export interface ProgressionRule {
+  minRir: number
+  incrementKg: number
+}
+
 /** Një ndryshim për slotin: vlen për bllokun, javën, ose të dyja (null = çdo bllok, çdo javë). */
 export interface SlotOverride {
   slotId: string
@@ -76,6 +86,7 @@ export interface SlotOverride {
   restSeconds?: number | null
   prescription?: Prescription | null
   technique?: Technique | null
+  progression?: ProgressionRule | null
 }
 
 export interface Program {
@@ -121,6 +132,8 @@ export interface PlannedSlot {
   technique: Technique
   /** Shtesa e peshës kundrejt së njëjtës javë të bllokut të kaluar, kur programi e ka. */
   blockIncreaseKg?: { min: number; max: number }
+  /** Rregulli i progresit që vlen për slotin në këtë bllok dhe javë, kur programi e ka. */
+  progression?: ProgressionRule
 }
 
 export interface SessionPlan {
