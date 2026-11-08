@@ -155,7 +155,9 @@ function FilterRow({ label, group, selected, children }: { label: string; group:
     const scroller = row.current
     const chip = scroller?.querySelector<HTMLElement>('[aria-pressed="true"]')
     if (!scroller || !chip) return
-    if (chip.offsetLeft + chip.offsetWidth > scroller.scrollLeft + scroller.clientWidth) scroller.scrollLeft = chip.offsetLeft - 16
+    const [box, target] = [scroller.getBoundingClientRect(), chip.getBoundingClientRect()]
+    // Çipi që del jashtë djathtas vjen në fillim të rreshtit.
+    if (target.right > box.right) scroller.scrollLeft += target.left - box.left
   }, [selected])
   return (
     <div className="flex items-center gap-1.5">
