@@ -43,6 +43,123 @@ Detyrat e çdo etape shkruhen këtu në fillim të saj, me kriteret e pranimit, 
 | V2-E4 | Etapa 4 (0.50.0): miqtë, ftesat, sfidat, ndarja, kartat | V2-E1 |
 | V2-E5 | Etapa 5 (0.60.0): app-i në Galaxy Watch | V2-E3 |
 
+### Etapa 1 · 0.20.0 (plani i 08.11.2026)
+
+**Mënyra e punës.** Sesioni kryesor është orkestruesi: mban planin, ndan detyrat, rishikon çdo ndryshim dhe e bashkon te `main`. Çdo detyrë e bën një nënagjent në një `git worktree` më vete, në degën `e1/<ID>`, dhe kthen përmbledhjen me rezultatet e provave. Logjika pa UI ndërtohet me prova përpara kodit. Çdo varësi e re verifikohet para instalimit. Ekranet ndjekin kanavacën "Vrull · Ekranet" dhe sistemin e dizajnit Vrull (me "Rregullat e temave"). Nuk ka publikim deri te V2-E1-16; prova në emulator vetëm kur ndryshon pjesa native (E1-08, E1-12, E1-13) dhe në fund. Të dhënat e v1 në telefonin e përdoruesit duhet të kalojnë të paprekura në v2.
+
+| ID | Detyra | Varet nga |
+|---|---|---|
+| V2-E1-01 | Sistemi Vrull në kod: tokenat, fontet, komponentët, roja e dizajnit | – |
+| V2-E1-02 | Dy gjuhët: katalogu sq/en, formatet, zgjedhja te Cilësimet | – |
+| V2-E1-03 | Spike muzika: kontrolli i app-it të muzikës dhe burimi i tempos | – |
+| V2-E1-04 | Logjika e progresit: peshat e javës, pragu i rekordit, pesha pa e1RM, rregullat e programeve të tua | – |
+| V2-E1-05 | Korniza: tab-et, kreu, Cilësimet, Pamja, temat, sfondet, migrimi i të dhënave të v1 | E1-01, E1-02 |
+| V2-E1-06 | Sot | E1-05 |
+| V2-E1-07 | Seanca: seti, pushimi, ushtrimet, mbyllja, rekordi | E1-05, E1-04 |
+| V2-E1-08 | Seti nga njoftimi | E1-07 |
+| V2-E1-09 | Programi: Shortcut to Size, ushtrimi, biblioteka, krijo ushtrim, peshat e javës | E1-05, E1-04 |
+| V2-E1-10 | Ndërtuesi i programeve me shabllone dhe nivelet e slotit | E1-09 |
+| V2-E1-11 | Importi i programit nga PDF me AI dhe kufiri mujor | E1-10 |
+| V2-E1-12 | Muzika "Trupi në ritëm" | E1-03, E1-07, E1-14 |
+| V2-E1-13 | Videot e formës | E1-07 |
+| V2-E1-14 | Trupi 3D: ngjyrat e Vrullit, shtresat, sipas matjeve, shto matjen | E1-05 |
+| V2-E1-15 | Historiku dhe seanca e kaluar, ndryshimi i një seti | E1-05 |
+| V2-E1-16 | Lëshimi 0.20.0: rishikimi, provat, emulatori, publikimi | të gjitha |
+
+## V2-E1-01 · Sistemi Vrull në kod
+
+- `globals.css` me tokenat e Vrullit për OLED, Natë dhe Ditë (përfshirë `track`, `model-light`, `volume-1..3`), nga `tokens.json` i sistemit të dizajnit; asnjë token i Omal nuk mbetet.
+- Barlow dhe Barlow Condensed të paketuara në app (OFL), që app-i të mos presë rrjetin.
+- Komponentët e sistemit: Button (52 / 58 px), Stepper, ListRow, StatTile, InsightCard, FactCard, ProgressBar, WeekStrip, TabBar, RirPicker, QuickAdd; ikonat me vijë 2 px.
+- `DESIGN.md` zëvendësohet nga rregullat e Vrullit; `CLAUDE.md` dhe `scripts/check-design.mjs` përditësohen (prushi në vend të amber-it, pa hex në komponentë).
+
+**Pranimi:** `npm run build`, `npm test`, `npm run lint` kalojnë; një faqe e brendshme me komponentët në tri temat, me provë pamjeje në 390 px; kontrasti ≥ 4,5:1 në çdo temë.
+
+## V2-E1-02 · Dy gjuhët
+
+- Katalog sq/en, `t()` me çelësa, shqipja parazgjedhje; emrat e ushtrimeve mbeten në anglisht.
+- Formatet me `Intl` sipas gjuhës: numrat, datat, njësitë me hapësirë që nuk thyhet; shumësi me rregullat e shumësit.
+- Zgjedhja e gjuhës te Cilësimet; `lang` i faqes ndjek gjuhën. Termat sipas SPEC §0.3a (Gjuhët).
+
+**Pranimi:** prova për formatet dhe shumësin në të dyja gjuhët; ndërrimi i gjuhës ndryshon tekstet pa rinisje.
+
+## V2-E1-03 · Spike muzika
+
+- Android 13+ (Galaxy): `NotificationListenerService` + `MediaSessionManager.getActiveSessions`; çfarë jep Spotify dhe YouTube Music (titulli, artisti, kohëzgjatja, pozicioni, play/pause/para/mbrapa, radha e këngëve).
+- **Pyetja kryesore:** a mund të nxirret përpara "kënga e setit" kur app-i i muzikës nuk e jep radhën? Nëse jo: zgjidhja e ndershme (p.sh. Vrull sugjeron "Kalo te kënga e radhës, 136 BPM" dhe e bën vetëm me prekjen e përdoruesit).
+- Burimi i tempos: kushtet, atribuimi, kufijtë, kostoja; "Prek ritmin" si rezervë.
+
+**Pranimi:** `docs/research/muzika.md` me burimet; V29 te SPEC përditësohet me atë që del e mundur.
+
+## V2-E1-04 · Logjika e progresit
+
+- Peshat e javës së radhës sipas §7, që përdoruesi i pranon ose i ndryshon (V23); pesha pa e1RM = pesha e fundit; pragu i rekordit për peshën e zgjedhur.
+- Rregullat e programeve të tua: pragu i RIR-së dhe shtesa e peshës, nivelet e slotit (gjithë programi, blloku, java).
+
+**Pranimi:** prova me shembujt e kanavacës: Bench Press 62,5 × 12 → e1RM 87,5, rekord +1,5; Java 3 → 67,5 kg × 6–8; pulpat → pesha e fundit; 12 përsëritje si prag te 62,5 kg.
+
+## V2-E1-05 · Korniza
+
+- Tab-et Sot, Programi, Ushqimi, Progresi, Miqtë (Miqtë bosh deri te Etapa 4; Ushqimi i v1 në stilin e ri); butoni "Profili dhe cilësimet" te kreu.
+- Cilësimet e reja: Pamja (OLED, Natë, Ditë; sfondi "I plotë" ose "Vija shpejtësie"), Gjuha, Përditësimi.
+- Migrimi i të dhënave të v1 te v2 pa humbje (seancat, setet, matjet, ushqimi), me provë.
+
+**Pranimi:** të gjitha ekranet e v1 hapen në sistemin e ri në tri temat; prova e migrimit kalon me një kopje të të dhënave të v1.
+
+## V2-E1-06 · Sot
+
+Sipas bordeve Sot dhe Sot · Ditë e lodhur (gjendja e ditës vjen në Etapën 3; deri atëherë vetëm pamja energjike). **Pranimi:** ekrani përputhet me bordin në 390 px dhe në tri temat.
+
+## V2-E1-07 · Seanca
+
+- Seti me numrat e mëdhenj, "Herën e kaluar", pragu i rekordit, rest-pause si segmente; pushimi 90 s me −15 / +15 dhe njoftim; lista e ushtrimeve; mbyllja me rekordet dhe lëvizjen e rekordit (me "lëvizje të reduktuar").
+- Vendi për mini-player-in e muzikës (E1-12).
+
+**Pranimi:** një seancë e plotë e Stërvitjes 1 regjistrohet pa internet dhe sinkronizohet; rekordi del në moment.
+
+## V2-E1-08 · Seti nga njoftimi
+
+Njoftimi i seancës me veprime: ruaj setin me peshën dhe përsëritjet e propozuara, ndrysho, kapërce pushimin; edhe në ekranin e kyçur. **Pranimi:** në emulator, një set i ruajtur nga njoftimi del te seanca dhe sinkronizohet.
+
+## V2-E1-09 · Programi
+
+Ekrani i programit me ditët e javës, faqja e ushtrimit (foto bardh e zi, grafiku i e1RM-së, historia, video), biblioteka me filtrat, "Krijo ushtrim", "Peshat e javës". **Pranimi:** përputhen me bordet; ushtrimi i krijuar përdoret në një program dhe numërohet te volumi.
+
+## V2-E1-10 · Ndërtuesi i programeve
+
+Programet e mia, ndërtimi nga shabllonet, redaktori i ditës me tërheqje, sloti me nivelet, rregulli i progresit; motori i programit i mbështet programet e përdoruesit (prova përpara kodit). **Pranimi:** një program Sipër/poshtë 4 ditë ndërtohet, stërvitet dhe progreson sipas rregullit.
+
+## V2-E1-11 · PDF me AI
+
+- Edge Function në Supabase që lexon PDF-në me AI; çelësi i AI-së është secret i Supabase që e shton përdoruesi (§19), kurrë në app.
+- Ushtrimet e pasigurta pyeten (Po / alternativa / tjetër); drafti hapet te ndërtuesi.
+- Kostoja ruhet për përdorues dhe muaj; te €10 AI ndalet deri në muajin tjetër (V25).
+
+**Pranimi:** PDF-ja e Shortcut to Size kthehet në draft programi; kostoja e importit shfaqet dhe ruhet.
+
+## V2-E1-12 · Muzika "Trupi në ritëm"
+
+Sipas spike-ut E1-03: lidhja dhe leja, player-i, pushimi, dita e lodhur, "Prek ritmin", mini-player-i te seanca; trupi pulson me BPM-në, me "lëvizje të reduktuar". **Pranimi:** në emulator me një app muzike prove, kënga shfaqet, kontrollet punojnë dhe pulsi ndjek tempon.
+
+## V2-E1-13 · Videot e formës
+
+Regjistrimi nga seanca, ruajtja në telefon dhe në Supabase Storage (private, RLS), shikimi dhe fshirja; mesazhi kur afrohet kufiri i hapësirës (V27). **Pranimi:** një video ruhet pa internet dhe ngarkohet kur kthehet rrjeti; vetëm pronari e sheh.
+
+## V2-E1-14 · Trupi 3D
+
+Ngjyrat e Vrullit dhe drita nga `model-light`; volumi me `volume-1..3`; shtresat (muskujt e thellë, TH-19); trupi sipas matjeve; "Shto matjen". **Pranimi:** trupi duket njësoj si në bordet e tri temave; matja e re ndryshon trupin sipas matjeve.
+
+## V2-E1-15 · Historiku
+
+Historiku i seancave sipas javëve, seanca e kaluar me setet dhe rekordet, ndryshimi i një seti që rillogarit e1RM-në dhe rekordet. **Pranimi:** përputhet me bordet; ndryshimi i një seti sinkronizohet.
+
+## V2-E1-16 · Lëshimi 0.20.0
+
+Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në emulator me përditësimin v1 → v2 dhe të dhënat e v1, publikimi në app-releases dhe njoftimi i përditësimit brenda app-it. **Pranimi:** të gjitha kontrollet jeshile; përdoruesi e merr 0.20.0 nga app-i.
+
+**Veprimet e përdoruesit për këtë etapë:** çelësi i AI-së si secret i Supabase (E1-11); instalimi i 0.20.0 dhe një seancë prove në telefon.
+
+
 ---
 
 ## TH-01 · Skeleti i projektit dhe Omal UI v2

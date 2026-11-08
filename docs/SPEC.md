@@ -54,7 +54,7 @@ Data: 08.11.2026. v2.0 shton vendimet e seancës së pyetjeve të 08.11.2026 (V1
 
 Ekranet janë te kanavaca "Training Hub v2 · Vrull", faqja "Vrull · Ekranet", sipas zonave: hyrja, Sot dhe seanca, programi, trupi 3D, Mëso, ushqimi, gjurmimet dhe progresi, miqtë, muzika, ora, cilësimet dhe gjendjet. Të gjitha tregojnë të njëjtën ditë (e diel, 8 nëntor 2026, Faza 1 · Java 2 · Stërvitja 1) me numra që dalin nga rregullat e këtij dokumenti; trupi 3D është renderuar nga app-i me një javë të vërtetë të programit.
 
-Rregullat që lindën nga ekranet. Hyjnë në fuqi kur përdoruesi i miraton ekranet; deri atëherë janë propozime:
+Rregullat që lindën nga ekranet. Përdoruesi i miratoi më 08.11.2026, bashkë me ekranet:
 
 - **Uji:** objektivi i ditës = 35 ml për kg peshë + 0,5 L në ditë stërvitjeje + shtesa e motit (24°C: +0,1 L). Shtesa e motit merr formulë me burim në Etapën 3.
 - **Ftesa:** kodi i ftesës vlen 7 ditë dhe përdoret një herë.
@@ -72,8 +72,8 @@ Rregullat që lindën nga ekranet. Hyjnë në fuqi kur përdoruesi i miraton ekr
 | Etapa | Versioni | Përmbajtja |
 |---|---|---|
 | D | pa version | D1–D3 (§0.3), specifikimi i etapave. |
-| 1 | 0.20.0 | Sistemi i ri në gjithë app-in, dy gjuhët, Sot, seanca me setin nga njoftimi, muzika ("Trupi në ritëm", V29), fotot dhe ikonat e ushqimit (V30), admin-i (V31), ndërtuesi i programeve me shabllone, progresin e zgjuar dhe PDF-në me AI, videot e formës, trupi 3D me shtresat dhe sipas matjeve. |
-| 2 | 0.30.0 | Ushqimi: AI me tekst dhe foto, kufiri mujor, lista vendase, të shpeshtat me një prekje, "Plotëso makrot", rikujtuesit e zgjuar me "Si zakonisht". |
+| 1 | 0.20.0 | Sistemi i ri në gjithë app-in, dy gjuhët, Sot, seanca me setin nga njoftimi, muzika ("Trupi në ritëm", V29), ndërtuesi i programeve me shabllone, progresin e zgjuar dhe PDF-në me AI, videot e formës, trupi 3D me shtresat dhe sipas matjeve. |
+| 2 | 0.30.0 | Ushqimi: AI me tekst dhe foto, kufiri mujor, lista vendase me fotot dhe ikonat (V30) dhe faqet e Adminit (V31), të shpeshtat me një prekje, "Plotëso makrot", rikujtuesit e zgjuar me "Si zakonisht". |
 | 3 | 0.40.0 | Uji (sipas motit), gjendja dhe gatishmëria me sugjerimet për seancën, zakonet, Health Connect, raporti PDF mujor, "Mëso" (faktet, faqet e ushtrimit dhe të pjatës, kuizi javor). |
 | 4 | 0.50.0 | Miqtë: ftesat, lidhja e shkarkimit, profilet, progresi i ndarë, sfidat, programet dhe recetat e ndara, kartat. |
 | 5 | 0.60.0 | App-i në Galaxy Watch (Wear OS). |
