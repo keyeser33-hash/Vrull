@@ -28,3 +28,6 @@ dist-ssr
 *.keystore
 *.p12
 keystore.properties
+
+# Worktree-t e nënagjentëve (të përkohshme, kurrë në repo)
+.claude/worktrees/
