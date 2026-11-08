@@ -14,6 +14,7 @@ import { planReminders } from '@/reminders/plan'
 import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
 import { adoptSavedLanguage } from './language'
+import { adoptSavedBackground } from './background'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { ensureSupplements } from './supplements'
 import { usdaFromJson } from '@/nutrition/usda'
@@ -247,6 +248,22 @@ export function useLanguageSync(ready: boolean) {
   useEffect(() => {
     if (!ready || !userId) return
     const adopt = () => void adoptSavedLanguage(store).catch(() => {})
+    adopt()
+    return scheduler.subscribe(() => {
+      if (!scheduler.getStatus().syncing) adopt()
+    })
+  }, [ready, userId])
+}
+
+/**
+ * Sfondi i ruajtur te cilësimet (V2-E1-05), si gjuha: në nisje dhe pas çdo sinkronizimi. Zgjedhja
+ * te Pamja: chooseBackground (data/background.ts).
+ */
+export function useBackgroundSync(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId) return
+    const adopt = () => void adoptSavedBackground(store).catch(() => {})
     adopt()
     return scheduler.subscribe(() => {
       if (!scheduler.getStatus().syncing) adopt()

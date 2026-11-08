@@ -92,8 +92,29 @@ describe('përditësimi brenda app-it', () => {
     first.unmount()
     fake.state = { status: 'installing', release }
     const second = await renderSheet()
-    expect(second.sheet).toHaveTextContent('Training Hub mbyllet për pak')
+    expect(second.sheet).toHaveTextContent('App-i mbyllet për pak')
     expect(within(second.sheet).queryByRole('button')).toHaveAccessibleName('Mbyll')
+  })
+
+  it('fleta sipas bordit: madhësia poshtë titullit, "Si shkon" me tre hapat, "Përditëso" në fund; edhe në anglisht', async () => {
+    const { act } = await import('@testing-library/react')
+    const { language } = await import('@/i18n/language')
+    fake.state = { status: 'available', release }
+    const { sheet } = await renderSheet()
+    expect(sheet).toHaveAccessibleDescription(/^Ke .+\. Shkarkimi: 27\sMB\.$/)
+    const steps = within(sheet).getByRole('region', { name: 'Si shkon' })
+    expect(within(steps).getAllByRole('listitem').map((item) => item.querySelector('.type-body-strong')?.textContent)).toEqual([
+      'Shkarkimi',
+      'Leja e Android-it · vetëm herën e parë',
+      'Instalimi',
+    ])
+    expect(within(steps).getByRole('progressbar', { name: 'Shkarkimi' })).toHaveAttribute('aria-valuetext', '0 nga 27\u00A0MB')
+    expect(steps).toHaveTextContent('Nis kur prek Përditëso')
+    act(() => language.set('en'))
+    expect(sheet).toHaveAccessibleName('Version 0.16.0')
+    expect(within(sheet).getByRole('region', { name: 'How it works' })).toHaveTextContent('Starts when you tap Update')
+    expect(within(sheet).getByRole('button', { name: 'Update' })).toBeInTheDocument()
+    act(() => language.set('sq'))
   })
 
   it('fleta: çdo dështim thuhet me fjalë dhe provohet përsëri', async () => {

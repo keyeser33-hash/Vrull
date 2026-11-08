@@ -113,8 +113,20 @@ OLED (parazgjedhja, e zeza e plotë), Natë dhe Ditë. Në kod emrat e ruajtur m
 | `TabBar` | Navigimi 72 px, aktivi `ember-text` 700 me `aria-current="page"` |
 | `QuickAdd` | "Me fjalë", foto e pjatës dhe barkodi; me kufirin e AI-së foto e thotë |
 | `Icon` | Vijë 2 px në rrjetë 24, `currentColor`; ikonat e reja te `icon-paths-vrull.ts` |
+| `VrullMark` (`logo.tsx`) | Shenja e Vrullit: katror `ember` me vijën e shpejtësisë në `on-ember`; dekorative |
 
 Tekstet e komponentëve vijnë nga katalogu (`ui.*`); numrat i formatojnë vetë me `fmt`.
+
+### Korniza (`src/components/layout`, V2-E1-05)
+
+| Pjesa | Përdorimi |
+|---|---|
+| `AppShell` | Rripi "Pa internet" sipër (`OfflineBanner`), ekrani, `TabBar` poshtë; sfondi "Vija shpejtësie". Tab-i aktiv vjen nga `handle: { tab }` i rrugës (`router.tsx`); `null` = pa tab-bar (cilësimet, editorët, shtimi) |
+| `ScreenHeader` | Kreu i pesë ekraneve kryesore: rreshti i vogël (`caption`), titulli `display-m`, fjalia poshtë; djathtas veprimet e ekranit dhe `ProfileButton` (logo 36 px në 44 px, "Profili dhe cilësimet", hap `/cilesimet`) |
+| `BackHeader`, `BackButton` (`page.tsx`) | Ekranet brenda një vendi: shigjeta 44 px dhe titulli `display-m`; mbrapa kthehet aty nga erdhi përdoruesi, ose te `fallback` kur ekrani është i pari në histori |
+| `Group`, `Row`, `LinkRow`, `SwitchRow`, `ChoiceRow` | Grupet e rreshtave (Cilësimet): etiketa `label`, karta `rounded-lg`, rreshta 52 px me vlerën dhe shigjetën; çelësi i ndezur në bojë |
+| `Sheet` | Fleta: `surface`, cepat 20 px, doreza, titulli `display-s` me `description` poshtë, "Mbyll" 44 px; `footer` mban veprimin kryesor jashtë pjesës që lëviz |
+| `EmptyState` | Gjendja bosh (bordi "Gjendje · Bosh"): fjalia `display-l`, lista me numra (një rresht me `to` hap vendin e vet), veprimi kryesor poshtë |
 
 ## Ikonat
 
@@ -134,6 +146,8 @@ Check-in-i dhe gatishmëria (V7, V20) zgjedhin pamjen: **energik** (parazgjedhje
 ## Sfondet
 
 Për çdo temë: **I plotë** (`background`) ose **Vija shpejtësie** (vija prushi 115°, 16%, çdo 14 px, vetëm në sfond, kurrë pas tekstit të gjatë). Emrat e temave nuk përdoren si emra sfondesh.
+
+Në kod (V2-E1-05): zgjedhja është te Cilësimet › Pamja, ruhet te `user_settings.background` (`solid` | `speed_lines`, sinkronizohet) dhe në telefon (`lib/background.ts`), që korniza ta vizatojë pa pritur bazën. Korniza vendos `bg-speed-lines` pas 320 px të sipërme të faqes dhe e zbeh poshtë me `mask-fade-down` (të dyja te `globals.css`): vijat bien pas kreut dhe titullit, jo pas paragrafëve. Mostra te Pamja i tregon të plota.
 
 ## Modeli 3D, fotot, Mëso
 

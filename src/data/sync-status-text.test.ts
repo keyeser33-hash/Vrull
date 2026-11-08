@@ -1,5 +1,5 @@
 import { i18nFor } from '@/i18n'
-import { describeSync } from './sync-status-text'
+import { describeSync, syncSummary } from './sync-status-text'
 import type { SyncResult } from './sync'
 
 const NOW = new Date('2026-11-30T10:00:00.000Z')
@@ -67,5 +67,35 @@ describe('teksti i gjendjes së sinkronizimit', () => {
     expect(describeSync({ syncing: false, last: result({ status: 'error', rejected: 2 }) }, NOW, en)).toBe(
       '2 changes were not accepted by the server. They stay on the phone.',
     )
+  })
+
+  // Cilësimet › Sinkronizimi (bordi): gjendja me pikë dhe fjalë, koha ose shpjegimi poshtë.
+  it('rreshti i Cilësimeve: gjendja, ngjyra e pikës dhe detaji', () => {
+    const at = (minutes: number) => new Date(NOW.getTime() - minutes * 60_000).toISOString()
+    expect(syncSummary({ syncing: false, last: result({ at: at(2) }) }, NOW)).toEqual({ tone: 'success', title: 'I sinkronizuar', detail: 'para 2 min' })
+    expect(syncSummary({ syncing: true }, NOW)).toEqual({ tone: 'muted', title: 'Po sinkronizohet', detail: null })
+    expect(syncSummary({ syncing: false }, NOW)).toEqual({ tone: 'muted', title: 'Ende pa sinkronizim', detail: null })
+    expect(syncSummary({ syncing: false, last: result({ status: 'offline' }) }, NOW)).toEqual({
+      tone: 'muted',
+      title: 'Pa internet',
+      detail: 'Ndryshimet ruhen në telefon dhe dërgohen kur të kthehet rrjeti.',
+    })
+    expect(syncSummary({ syncing: false, last: result({ status: 'signed_out' }) }, NOW)).toEqual({
+      tone: 'muted',
+      title: 'Pa llogari',
+      detail: 'Hyr në llogari që të dhënat të ruhen edhe në Supabase.',
+    })
+    expect(syncSummary({ syncing: false, last: result({ status: 'error', rejected: 2 }) }, NOW)).toEqual({
+      tone: 'danger',
+      title: 'Nuk u sinkronizua',
+      detail: '2 ndryshime nuk u pranuan nga serveri. Mbeten në telefon.',
+    })
+    const en = i18nFor('en')
+    expect(syncSummary({ syncing: false, last: result({ at: at(2) }) }, NOW, en)).toEqual({ tone: 'success', title: 'Synced', detail: '2 min ago' })
+    expect(syncSummary({ syncing: false, last: result({ status: 'error' }) }, NOW, en)).toEqual({
+      tone: 'danger',
+      title: 'Not synced',
+      detail: 'Sync did not finish. It will try again by itself.',
+    })
   })
 })

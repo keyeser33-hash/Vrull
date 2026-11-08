@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
+import { ProfileButton } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
-import { buttonVariants } from '@/components/ui/button-variants'
-import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { restartProgram, skipWorkout, startWorkout, trainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
@@ -28,9 +27,7 @@ export function TodayPage() {
         <span>{dateLabel(now)}</span>
         <div className="flex items-center gap-1">
           {snapshot ? <span>{snapshot.label}</span> : null}
-          <Link to="/cilesimet" aria-label="Cilësimet" className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-            <Icon name="cilesimet" size={22} />
-          </Link>
+          <ProfileButton />
         </div>
       </header>
       <UpdateNotice />

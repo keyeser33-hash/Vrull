@@ -30,6 +30,26 @@ export async function metricHistory(store: LocalStore, key: MetricKey): Promise<
     .sort((a, b) => a.date.localeCompare(b.date))
 }
 
+export interface ProgressStart {
+  /** Asgjë për grafikë: pa set, pa foto, pa perimetër dhe me të shumtën një peshë (e hapave të parë). */
+  empty: boolean
+  /** Pesha e fundit, për gjendjen bosh ("80,0 kg sot"). */
+  weightKg: number | null
+}
+
+/** Gjendja bosh e Progresit (bordi "Gjendje · Bosh"): grafikët nisin me setin e parë. */
+export async function progressStart(store: LocalStore): Promise<ProgressStart> {
+  const [sets, photos, measurements] = await Promise.all([store.all('set_logs'), store.all('progress_photos'), store.all('body_measurements')])
+  const has = (row: Record<string, unknown>, key: MetricKey) => row[key] !== null && row[key] !== undefined
+  const weights = measurements.filter((row) => has(row, 'weight_kg')).sort((a, b) => String(a.date).localeCompare(String(b.date)))
+  const otherMetrics = measurements.some((row) => METRICS.some((metric) => metric.key !== 'weight_kg' && has(row, metric.key)))
+  const latest = weights.at(-1)
+  return {
+    empty: sets.length === 0 && photos.length === 0 && !otherMetrics && weights.length <= 1,
+    weightKg: latest ? Number(latest.weight_kg) : null,
+  }
+}
+
 export interface MetricSummary {
   metric: Metric
   latest: Point | null

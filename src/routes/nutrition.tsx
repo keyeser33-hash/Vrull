@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
+import { ScreenHeader } from '@/components/layout/screen-header'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
+import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
 import { setSupplementEnabled, supplementList, toggleSupplement } from '@/data/supplements'
 import { logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
 import { MEAL_OBJECT, type MealKey } from '@/nutrition/meals'
 import { EVIDENCE_LABEL } from '@/nutrition/supplements'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { grams, kcal, macrosLine, relativeTime } from './nutrition-format'
 import { dateLabel } from './training-format'
 
-// Ushqimi, drejtimi C · Fokus (SPEC §14, mockup-i "C · Ushqimi"): shiriti i kcal të ditës sipër;
-// paneli "Vakti i radhës" me artikujt e planit, "Regjistro <vaktin>" (veprimi kryesor, amber) dhe
-// "Ndrysho"; poshtë dita si orar vertikal; në fund makrot kundrejt objektivave. Një vakt hapet në
-// fletë (?vakti=...), që butoni mbrapa i Android-it ta mbyllë.
+// Ushqimi i v1 në sistemin Vrull (V2-E1-05; ekrani i ri vjen me Etapën 2): kreu me butonin e
+// profilit, shiriti i kcal të ditës; karta "Vakti i radhës" me artikujt e planit, "Regjistro
+// <vaktin>" (veprimi kryesor, prushi) dhe "Ndrysho"; poshtë dita si orar vertikal; në fund makrot
+// kundrejt objektivave. Një vakt hapet në fletë (?vakti=...), që butoni mbrapa i Android-it ta mbyllë.
 
 /** Ora rifreskohet çdo minutë, që "Vakti i radhës" dhe "pas 20 min" të ndjekin kohën. */
 function useNow() {
@@ -41,10 +44,10 @@ export function NutritionPage() {
   if (!day) {
     return (
       <div className="flex flex-col gap-4">
-        <h1 className="sr-only">Ushqimi</h1>
-        <div aria-hidden className="h-11 rounded-md bg-skeleton" />
-        <div aria-hidden className="h-72 rounded-xl bg-skeleton" />
-        <div aria-hidden className="h-80 rounded-lg bg-skeleton" />
+        <FoodHeader />
+        <div aria-hidden className="h-11 rounded-md bg-surface" />
+        <div aria-hidden className="h-72 rounded-xl bg-surface" />
+        <div aria-hidden className="h-80 rounded-lg bg-surface" />
       </div>
     )
   }
@@ -52,6 +55,7 @@ export function NutritionPage() {
 
   return (
     <div className="flex flex-col gap-5">
+      <FoodHeader />
       <DayHeader day={day} now={now} />
       {day.next ? <NextMeal day={day} meal={day.next} now={now} onEdit={() => openMeal(day.next!.meal)} /> : <DayDone day={day} />}
       <Timeline day={day} onOpen={openMeal} />
@@ -61,6 +65,11 @@ export function NutritionPage() {
       {params.get('ndrysho') === 'suplementet' ? <SupplementsSheet onClose={() => navigate(-1)} /> : null}
     </div>
   )
+}
+
+function FoodHeader() {
+  const { t } = useI18n()
+  return <ScreenHeader title={t('tab.food')} />
 }
 
 function DayHeader({ day, now }: { day: NutritionDay; now: Date }) {
@@ -91,11 +100,10 @@ function DayHeader({ day, now }: { day: NutritionDay; now: Date }) {
         aria-valuemin={0}
         aria-valuemax={day.targets?.kcal ?? 0}
         aria-valuenow={Math.round(day.totals.kcal)}
-        className="h-1 overflow-hidden rounded-full bg-chart-track"
+        className="h-1.5 overflow-hidden rounded-pill bg-track"
       >
-        <div className="h-full bg-brand" style={{ width: `${progress}%` }} />
+        <div className="h-full rounded-pill bg-ember" style={{ width: `${progress}%` }} />
       </div>
-      <h1 className="sr-only">Ushqimi</h1>
     </header>
   )
 }
@@ -104,14 +112,14 @@ function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlo
   const [busy, setBusy] = useState(false)
   const today = day.date === localDate(now)
   return (
-    <section aria-labelledby="next-meal" className="flex flex-col gap-3.5 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-      <div className="flex flex-col gap-0.5">
-        <span className="text-xs leading-4 font-medium text-panel-muted-foreground">Vakti i radhës</span>
+    <section aria-labelledby="next-meal" className={cn(surfaceClass, 'flex flex-col gap-3.5 rounded-xl p-4')}>
+      <div className="flex flex-col gap-1">
+        <span className="type-label text-muted-foreground">Vakti i radhës</span>
         <div className="flex flex-wrap items-baseline gap-x-2.5">
-          <h2 id="next-meal" className="text-4xl leading-10 font-bold tracking-[-0.03em]">
+          <h2 id="next-meal" className="type-display-s">
             {meal.label}
           </h2>
-          <span className="text-base leading-6 text-panel-muted-foreground tabular-nums">
+          <span className="type-body text-muted-foreground tabular-nums">
             {meal.time}
             {today ? ` · ${relativeTime(meal.time, now)}` : ''}
           </span>
@@ -121,24 +129,25 @@ function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlo
         <>
           <ul className="flex flex-col text-sm leading-5 tabular-nums">
             {meal.template.map((item) => (
-              <li key={item.name} className="flex justify-between gap-2 border-t border-panel-border py-[7px]">
+              <li key={item.name} className="flex justify-between gap-2 border-t border-border py-[7px]">
                 <span>{item.name}</span>
-                <span className="text-panel-muted-foreground">{item.amount}</span>
+                <span className="text-muted-foreground">{item.amount}</span>
               </li>
             ))}
           </ul>
-          <div className="flex justify-between text-xs leading-4 text-panel-muted-foreground tabular-nums">
+          <div className="flex justify-between text-xs leading-4 text-muted-foreground tabular-nums">
             <span>rreth {kcal(meal.templateTotals.kcal)} kcal</span>
             <span>{macrosLine(meal.templateTotals)}</span>
           </div>
         </>
       ) : (
-        <p className="text-sm leading-5 text-panel-muted-foreground">Ky vakt nuk ka artikuj në plan.</p>
+        <p className="type-caption text-muted-foreground">Ky vakt nuk ka artikuj në plan.</p>
       )}
       <div className="flex gap-2">
         <Button
-          variant="brand"
-          className="min-h-[52px] min-w-0 flex-1 text-base"
+          variant="primary"
+          size="lg"
+          className="min-w-0 flex-1 px-4"
           disabled={busy || meal.template.length === 0}
           onClick={() => {
             setBusy(true)
@@ -147,7 +156,7 @@ function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlo
         >
           Regjistro {MEAL_OBJECT[meal.meal]}
         </Button>
-        <Button variant="panel" className="min-h-[52px] shrink-0" onClick={onEdit}>
+        <Button variant="secondary" size="lg" className="shrink-0 px-5" onClick={onEdit}>
           Ndrysho
         </Button>
       </div>
@@ -157,11 +166,11 @@ function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlo
 
 function DayDone({ day }: { day: NutritionDay }) {
   return (
-    <section aria-labelledby="day-done" className="flex flex-col gap-1.5 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-      <h2 id="day-done" className="text-2xl leading-8 font-bold tracking-[-0.02em]">
+    <section aria-labelledby="day-done" className={cn(surfaceClass, 'flex flex-col gap-1.5 rounded-xl p-4')}>
+      <h2 id="day-done" className="type-title">
         Vaktet e ditës u regjistruan
       </h2>
-      <p className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
+      <p className="type-caption text-muted-foreground tabular-nums">
         {kcal(day.totals.kcal)} kcal · {macrosLine(day.totals)}
       </p>
     </section>
@@ -169,17 +178,17 @@ function DayDone({ day }: { day: NutritionDay }) {
 }
 
 const BADGE: Record<MealStatus, string> = {
-  done: 'bg-success-soft text-success',
-  next: 'bg-secondary text-foreground',
+  done: 'bg-surface-2 text-success',
+  next: 'bg-surface-2 text-foreground',
   todo: 'text-muted-foreground',
   missed: 'text-muted-foreground',
 }
 
 const DOT: Record<MealStatus, string> = {
   done: 'bg-foreground',
-  next: 'bg-brand ring-[3px] ring-brand-soft',
-  todo: 'border-[1.5px] border-input',
-  missed: 'border-[1.5px] border-dashed border-input',
+  next: 'bg-ember ring-[3px] ring-insight-border',
+  todo: 'border-[1.5px] border-subtle',
+  missed: 'border-[1.5px] border-dashed border-subtle',
 }
 
 function statusText(meal: MealSlot) {
@@ -198,7 +207,7 @@ function statusText(meal: MealSlot) {
 function Timeline({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) => void }) {
   return (
     <section aria-labelledby="day-title" className="flex flex-col">
-      <h2 id="day-title" className="mb-1 text-sm leading-5 font-semibold">
+      <h2 id="day-title" className="mb-1 type-label text-muted-foreground">
         Dita
       </h2>
       <ol className="flex flex-col">
@@ -208,7 +217,7 @@ function Timeline({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) 
               type="button"
               onClick={() => onOpen(meal.meal)}
               aria-label={`${meal.label}, ${meal.time}, ${statusText(meal)}`}
-              className="grid min-h-12 w-full grid-cols-[44px_20px_minmax(0,1fr)_auto] items-center gap-2 rounded-md text-left tabular-nums hover:bg-accent"
+              className="grid min-h-12 w-full grid-cols-[44px_20px_minmax(0,1fr)_auto] items-center gap-2 rounded-md text-left tabular-nums hover:bg-surface"
             >
               <span className="text-xs leading-4 text-muted-foreground">{meal.time}</span>
               <span aria-hidden className={cn('size-2.5 justify-self-center rounded-full', DOT[meal.status])} />
@@ -230,14 +239,15 @@ function Timeline({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) 
 }
 
 function MacroTotals({ day }: { day: NutritionDay }) {
+  // Makrot me ngjyrat e Vrullit: proteina prushi, karbohidratet vjollcë, yndyrat rërë.
   const rows = [
-    { label: 'Proteina', value: day.totals.proteinG, target: day.targets?.proteinG },
-    { label: 'Karbohidratet', value: day.totals.carbsG, target: day.targets?.carbsG },
-    { label: 'Yndyrat', value: day.totals.fatG, target: day.targets?.fatG },
+    { label: 'Proteina', value: day.totals.proteinG, target: day.targets?.proteinG, fill: 'bg-ember' },
+    { label: 'Karbohidratet', value: day.totals.carbsG, target: day.targets?.carbsG, fill: 'bg-data' },
+    { label: 'Yndyrat', value: day.totals.fatG, target: day.targets?.fatG, fill: 'bg-sand' },
   ]
   return (
     <section aria-labelledby="macros-title" className="flex flex-col gap-3">
-      <h2 id="macros-title" className="text-sm leading-5 font-semibold">
+      <h2 id="macros-title" className="type-label text-muted-foreground">
         Makrot e ditës
       </h2>
       {day.targets ? null : <p className="text-sm leading-5 text-muted-foreground">Shkruaj peshën te Cilësimet që të dalin objektivat.</p>}
@@ -252,8 +262,8 @@ function MacroTotals({ day }: { day: NutritionDay }) {
               </dd>
             </div>
             {row.target ? (
-              <div aria-hidden className="h-1 overflow-hidden rounded-full bg-chart-track">
-                <div className="h-full bg-foreground" style={{ width: `${Math.min(100, (row.value / row.target) * 100)}%` }} />
+              <div aria-hidden className="h-1.5 overflow-hidden rounded-pill bg-track">
+                <div className={cn('h-full rounded-pill', row.fill)} style={{ width: `${Math.min(100, (row.value / row.target) * 100)}%` }} />
               </div>
             ) : null}
           </div>
@@ -279,7 +289,7 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
         <>
           <ul className="flex flex-col tabular-nums">
             {meal.entries.map((entry) => (
-              <li key={entry.id} className="flex min-h-12 items-center gap-3 border-t border-border-subtle first:border-t-0">
+              <li key={entry.id} className="flex min-h-12 items-center gap-3 border-t border-border first:border-t-0">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-base leading-6">{entry.name}</span>
                   <span className="text-xs leading-4 text-muted-foreground">
@@ -303,13 +313,15 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
           <p className="text-sm leading-5 text-muted-foreground">Sipas planit të Jimit:</p>
           <ul className="flex flex-col tabular-nums">
             {meal.template.map((item) => (
-              <li key={item.name} className="flex min-h-11 items-center justify-between gap-3 border-t border-border-subtle first:border-t-0">
+              <li key={item.name} className="flex min-h-11 items-center justify-between gap-3 border-t border-border first:border-t-0">
                 <span className="text-base leading-6">{item.name}</span>
                 <span className="text-sm leading-5 text-muted-foreground">{item.amount}</span>
               </li>
             ))}
           </ul>
           <Button
+            variant="secondary"
+            size="lg"
             disabled={busy || meal.template.length === 0}
             onClick={() => {
               setBusy(true)
@@ -327,7 +339,7 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
 
 function AddFoodLink({ meal }: { meal: MealKey }) {
   return (
-    <Link to={`/ushqimi/shto/${meal}`} replace className={cn(buttonVariants({ variant: 'outline' }), 'w-full')}>
+    <Link to={`/ushqimi/shto/${meal}`} replace className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full')}>
       <Icon name="shto" size={20} />
       Shto ushqim
     </Link>
@@ -341,19 +353,19 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
   return (
     <section aria-labelledby="supplements-title" className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-3">
-        <h2 id="supplements-title" className="text-sm leading-5 font-semibold">
-          Suplementet <span className="font-normal text-muted-foreground tabular-nums">· {taken} nga {total}</span>
+        <h2 id="supplements-title" className="type-label text-muted-foreground">
+          Suplementet <span className="tabular-nums">· {taken} nga {total}</span>
         </h2>
-        <Button variant="ghost" size="sm" className="min-h-11" onClick={onEdit}>
+        <Button variant="ghost" onClick={onEdit}>
           Ndrysho listën
         </Button>
       </div>
       {meals.length === 0 ? (
         <p className="text-sm leading-5 text-muted-foreground">Asnjë suplement aktiv për sot.</p>
       ) : (
-        <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+        <div className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
           {meals.map((meal) => (
-            <fieldset key={meal.meal} className="border-t border-border-subtle px-4 py-1 first:border-t-0">
+            <fieldset key={meal.meal} className="border-t border-border px-4 py-1 first:border-t-0">
               <legend className="sr-only">
                 {meal.label}, {meal.time}
               </legend>
@@ -372,7 +384,7 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
                     <span className={cn('text-base leading-6', item.taken && 'text-muted-foreground line-through')}>{item.name}</span>
                     <span className="text-xs leading-4 text-muted-foreground">{item.doseText}</span>
                   </span>
-                  <span className="shrink-0 rounded-full bg-secondary px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">
+                  <span className="shrink-0 rounded-pill bg-surface-2 px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">
                     {EVIDENCE_LABEL[item.evidence]}
                   </span>
                 </label>
@@ -392,7 +404,7 @@ function SupplementsSheet({ onClose }: { onClose: () => void }) {
       <p className="text-sm leading-5 text-muted-foreground">Ato të çaktivizuara nuk dalin te dita. Evidenca tregon sa e mbështesin studimet.</p>
       <ul className="flex flex-col">
         {(list ?? []).map((item) => (
-          <li key={item.id} className="border-t border-border-subtle first:border-t-0">
+          <li key={item.id} className="border-t border-border first:border-t-0">
             <label className="flex min-h-14 cursor-pointer items-center gap-3 py-1.5">
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-base leading-6">{item.name}</span>

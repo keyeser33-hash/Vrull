@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { FocusChip } from '@/components/body/focus-chip'
 import { Group, Row } from '@/components/layout/list-group'
+import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type BodyGroup, bodyView } from '@/data/body'
@@ -11,6 +12,7 @@ import { KEY_NAMES } from '@/body/muscle-info'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { safeStorage } from '@/lib/safe-storage'
 import { webglAvailable } from '@/lib/webgl'
@@ -31,6 +33,12 @@ const readView = (): View => (safeStorage.getItem(VIEW_KEY) === '3d' && webglAva
 const saveView = (view: View) => safeStorage.setItem(VIEW_KEY, view)
 
 const groupOf = (keys: string[]) => MUSCLE_GROUPS.find((group) => keys.some((key) => group.keys.includes(key)))
+
+/** Trupi jeton brenda Progresit që nga v2 (V2-E1-05): titulli me shigjetën mbrapa te Progresi. */
+function BodyHeader() {
+  const { t } = useI18n()
+  return <BackHeader title={t('tab.body')} back={t('body.backToProgress')} fallback="/progresi" />
+}
 
 export function BodyPage() {
   const [now] = useState(() => new Date())
@@ -60,7 +68,7 @@ export function BodyPage() {
   if (!groups) {
     return (
       <div className="flex flex-col gap-5">
-        <h1 className="sr-only">Trupi</h1>
+        <BodyHeader />
         <div aria-hidden className="h-[480px] rounded-xl bg-skeleton" />
       </div>
     )
@@ -80,7 +88,7 @@ export function BodyPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="sr-only">Trupi</h1>
+      <BodyHeader />
       <section aria-label="Harta e trupit" className="flex flex-col gap-4 rounded-xl border border-panel-border bg-panel p-4 text-panel-foreground">
         <div role="group" aria-label="Pamja e hartës" className="grid grid-cols-2 gap-1 rounded-full bg-panel-button p-1">
           {(

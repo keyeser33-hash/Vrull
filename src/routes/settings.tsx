@@ -1,158 +1,125 @@
 import { useEffect, useId, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
-import { Choice } from '@/components/forms/choice'
+import { useNavigate, useSearchParams } from 'react-router'
 import { DayPicker } from '@/components/forms/day-picker'
 import { TimeStepper } from '@/components/forms/time-stepper'
 import { ValueStepper } from '@/components/forms/value-stepper'
-import { WEEK_DAYS } from '@/components/forms/week-days'
-import { Group, Row, SwitchRow } from '@/components/layout/list-group'
+import { Group, LinkRow, Row, rowClass } from '@/components/layout/list-group'
+import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
-import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
-import { auth, planRemindersNow, scheduler, store, updatesSupported, useAppUpdate, useAuth, useLocalQuery, usePendingChanges, useSyncStatus } from '@/data/app-data'
+import {
+  auth,
+  scheduler,
+  store,
+  updater,
+  updatesSupported,
+  useAppUpdate,
+  useLocalQuery,
+  usePendingChanges,
+  useSyncStatus,
+} from '@/data/app-data'
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
-import { reminderSettings, setMeasurementDay, setReminderToggle } from '@/data/reminders'
-import { chooseLanguage } from '@/data/language'
+import { reminderSettings } from '@/data/reminders'
 import { shareExport } from '@/data/share-export'
-import { describeSync } from '@/data/sync-status-text'
-import { reminderPermission, type ReminderPermission, requestReminderPermission } from '@/lib/reminders-native'
-import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
-import { type Language, LANGUAGE_NAMES, LANGUAGES, LOCALES } from '@/i18n/language'
+import { syncSummary } from '@/data/sync-status-text'
+import { LANGUAGE_NAMES } from '@/i18n/language'
 import { useI18n } from '@/i18n/use-i18n'
-import { readTheme, saveTheme, THEMES, type Theme } from '@/lib/theme'
+import { useBackground } from '@/lib/background'
+import { cn } from '@/lib/cn'
+import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
+import { readTheme } from '@/lib/theme'
+import type { ReminderToggles } from '@/reminders/plan'
 import { UpdateSheet } from './app-update'
 import { versionRowDetail } from './update-format'
-import { kg } from './training-format'
 
-// Cilësimet, varianti A i aprovuar më 07.11.2026 (referencat nga Mobbin: Tempo, Hevy, Google
-// Health): sipër paneli i llogarisë me "Dil"; poshtë grupe rreshtash me vlerën e tanishme. Një
-// rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll.
-// Tekstet e kokës, të llogarisë dhe të grupit "App-i" janë në katalog (i18n); pjesa tjetër
-// kalon me V2-E1-05, kur ndërtohen Cilësimet e reja.
+// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, Sinkronizimi, Versioni dhe
+// "Dil" në fund. Seksionet e etapave të tjera (AI, ora dhe Health Connect, Admini) mungojnë deri
+// atëherë. Një rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll, ose një
+// ekran (Pamja, Rikujtuesit).
 
-type ProfileEditor = 'dite' | 'ora' | 'pesha' | 'zgjimi' | 'gjumi'
-type Editor = ProfileEditor | 'tema' | 'gjuha' | 'dil' | 'matja' | 'burimet' | 'perditesimi'
-const isProfileEditor = (value: Editor | null): value is ProfileEditor =>
-  value === 'dite' || value === 'ora' || value === 'pesha' || value === 'zgjimi' || value === 'gjumi'
+type ProfileEditor = 'pesha' | 'dite' | 'oraret'
+type Editor = ProfileEditor | 'dil' | 'burimet' | 'perditesimi'
+const isProfileEditor = (value: Editor | null): value is ProfileEditor => value === 'pesha' || value === 'dite' || value === 'oraret'
 
-const shortDays = (days: number[]) =>
-  [...days]
-    .sort((a, b) => a - b)
-    .map((day) => WEEK_DAYS.find((entry) => entry.value === day)?.short)
-    .join(', ')
+// Radha e bordit: "Stërvitja, vaktet, suplementet, matjet".
+const REMINDER_ORDER: (keyof ReminderToggles)[] = ['training', 'meals', 'supplements', 'measurements']
 
 export function SettingsPage() {
-  const { t, lang } = useI18n()
+  const { t, fmt, lang } = useI18n()
   const profile = useLocalQuery(() => readProfile(store), [])
+  const reminders = useLocalQuery(() => reminderSettings(store), [])
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const [theme, setTheme] = useState<Theme>(readTheme)
+  const [theme] = useState(readTheme)
+  const background = useBackground()
   const editor = params.get('ndrysho') as Editor | null
   const open = (name: Editor) => setParams({ ndrysho: name })
   const close = () => navigate(-1)
 
-  return (
-    <div className="flex flex-col gap-6">
-      <header className="flex min-h-11 items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">{t('settings.title')}</h1>
-        <Link to="/" aria-label={t('settings.backToToday')} className={buttonVariants({ variant: 'ghost', size: 'icon' })}>
-          <Icon name="mbyll" size={22} />
-        </Link>
-      </header>
+  const days = profile ? [...profile.trainingDays].sort((a, b) => a - b).map((day) => t(`day.short.${day}` as 'day.short.1')).join(', ') : ''
+  const enabled = reminders ? REMINDER_ORDER.filter((key) => reminders.toggles[key]).map((key) => t(`reminders.list.${key}`)) : []
+  const remindersDetail = enabled.length ? capitalize(enabled.join(', ')) : t('settings.remindersOff')
 
-      <AccountPanel onSignOut={() => open('dil')} />
+  return (
+    <div className="flex flex-col gap-3.5">
+      <BackHeader title={t('settings.title')} back={t('common.back')} />
 
       {profile ? (
-        <>
-          <Group title="Stërvitja">
-            <Row label="Ditët e stërvitjes" value={shortDays(profile.trainingDays)} onClick={() => open('dite')} />
-            <Row label="Ora e stërvitjes" value={profile.trainingTime} onClick={() => open('ora')} />
-          </Group>
-          <Group title="Ti">
-            <Row label="Pesha e sotme" value={profile.weightKg === null ? 'Pa peshë' : `${kg(profile.weightKg)} kg`} onClick={() => open('pesha')} />
-            <Row label="Zgjimi" value={profile.wakeTime} onClick={() => open('zgjimi')} />
-            <Row label="Gjumi" value={profile.sleepTime} onClick={() => open('gjumi')} />
-          </Group>
-        </>
+        <Group title={t('settings.profile')}>
+          <Row
+            label={t('settings.weightToday')}
+            value={profile.weightKg === null ? t('settings.noWeight') : fmt.unit(profile.weightKg, 'kg', { minDigits: 1, maxDigits: 1 })}
+            onClick={() => open('pesha')}
+          />
+          <Row label={t('settings.trainingDays')} value={days} onClick={() => open('dite')} />
+          <Row
+            label={t('settings.schedule')}
+            detail={t('settings.scheduleDetail', { training: profile.trainingTime, wake: profile.wakeTime, sleep: profile.sleepTime })}
+            ariaLabel={`${t('settings.schedule')}, ${t('settings.scheduleDetail', { training: profile.trainingTime, wake: profile.wakeTime, sleep: profile.sleepTime })}`}
+            onClick={() => open('oraret')}
+          />
+        </Group>
       ) : (
-        <div aria-hidden className="h-72 rounded-xl bg-skeleton" />
+        <div aria-hidden className="h-52 rounded-lg bg-surface" />
       )}
 
-      <Group title={t('settings.app')}>
-        <Row label={t('settings.theme')} value={t(`settings.theme.${theme}`)} onClick={() => open('tema')} />
-        <Row label={t('settings.language')} value={LANGUAGE_NAMES[lang]} onClick={() => open('gjuha')} />
+      <Group title={t('settings.appearance')}>
+        <LinkRow to="/cilesimet/pamja" label={t('settings.theme')} value={t(`settings.theme.${theme}`)} ariaLabel={`${t('settings.theme')}, ${t(`settings.theme.${theme}`)}`} />
+        <LinkRow
+          to="/cilesimet/pamja"
+          label={t('settings.background')}
+          value={t(`settings.background.${background}`)}
+          ariaLabel={`${t('settings.background')}, ${t(`settings.background.${background}`)}`}
+        />
+        <LinkRow to="/cilesimet/pamja" label={t('settings.language')} value={LANGUAGE_NAMES[lang]} ariaLabel={`${t('settings.language')}, ${LANGUAGE_NAMES[lang]}`} />
+      </Group>
+
+      <Group title={t('settings.notifications')}>
+        <LinkRow to="/cilesimet/rikujtuesit" label={t('settings.reminders')} detail={reminders ? remindersDetail : undefined} />
         <TimerRow />
       </Group>
 
-      <RemindersGroup onPickDay={() => open('matja')} />
+      <SyncGroup />
 
-      <DataGroup />
+      <VersionGroup onOpenUpdate={() => open('perditesimi')} onOpenSources={() => open('burimet')} />
 
-      <Group title="Rreth app-it">
-        {updatesSupported() ? <VersionRow onClick={() => open('perditesimi')} /> : null}
-        <Row label="Burimet dhe licencat" onClick={() => open('burimet')} />
-      </Group>
-
-      <p className="text-xs leading-4 text-muted-foreground">Training Hub {__APP_VERSION__}</p>
+      <div className="flex flex-col gap-2 pt-1">
+        <Button variant="outline" size="lg" className="w-full" onClick={() => open('dil')}>
+          {t('settings.signOut')}
+        </Button>
+        <p className="text-center type-caption text-muted-foreground">{t('settings.signOutNote')}</p>
+      </div>
 
       {editor === 'dil' ? <SignOutSheet onClose={close} /> : null}
-      {editor === 'matja' ? <MeasurementDaySheet onClose={close} /> : null}
       {editor === 'burimet' ? <SourcesSheet onClose={close} /> : null}
       {editor === 'perditesimi' ? <UpdateSheet onClose={close} /> : null}
-      {editor === 'gjuha' ? <LanguageSheet current={lang} onChoose={(next) => void chooseLanguage(store, next)} onClose={close} /> : null}
-      {editor === 'tema' ? (
-        <ThemeSheet
-          theme={theme}
-          onChoose={(next) => {
-            setTheme(next)
-            saveTheme(next)
-          }}
-          onClose={close}
-        />
-      ) : null}
       {profile && isProfileEditor(editor) ? <ProfileSheet editor={editor} profile={profile} onClose={close} /> : null}
     </div>
   )
 }
 
-function AccountPanel({ onSignOut }: { onSignOut: () => void }) {
-  const i18n = useI18n()
-  const { t } = i18n
-  const session = useAuth()
-  const status = useSyncStatus()
-  const pending = usePendingChanges()
-  const [now, setNow] = useState(() => new Date())
-  // Koha relative ("para 5 min") rifreskohet vetë.
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 30_000)
-    return () => clearInterval(timer)
-  }, [])
-  const initial = (session.email ?? '?').charAt(0).toUpperCase()
-  return (
-    <section aria-label={t('settings.account')} className="flex flex-col gap-4 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-      <div className="flex items-center gap-3">
-        <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-panel-button text-lg font-semibold">
-          {initial}
-        </span>
-        <div className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate text-base leading-6 font-semibold">{session.email ?? t('settings.noAccount')}</span>
-          <span role="status" className="text-sm leading-5 text-panel-muted-foreground">
-            {describeSync(status, now, i18n)}
-          </span>
-        </div>
-        <Button variant="panel" className="shrink-0" onClick={onSignOut}>
-          {t('settings.signOut')}
-        </Button>
-      </div>
-      {pending > 0 ? (
-        <p className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
-          {t('sync.pending', { count: pending })}
-        </p>
-      ) : null}
-    </section>
-  )
-}
+const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1)
 
 /** Vetëm në telefon: përjashtimi nga optimizimi i baterisë, kur timer-i vonon me ekran të kyçur. */
 function TimerRow() {
@@ -177,35 +144,94 @@ function TimerRow() {
   )
 }
 
-function DataGroup() {
+const DOT = { success: 'bg-success', muted: 'bg-muted-foreground', danger: 'bg-danger' } as const
+const TONE = { success: 'text-success', muted: 'text-foreground', danger: 'text-danger' } as const
+
+function SyncGroup() {
+  const i18n = useI18n()
+  const { t } = i18n
   const status = useSyncStatus()
+  const pending = usePendingChanges()
+  const [now, setNow] = useState(() => new Date())
   const [exporting, setExporting] = useState(false)
-  const [problem, setProblem] = useState<string | null>(null)
+  const [problem, setProblem] = useState(false)
+  // Koha relative ("para 5 min") rifreskohet vetë.
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30_000)
+    return () => clearInterval(timer)
+  }, [])
+  const summary = syncSummary(status, now, i18n)
 
   async function exportData() {
     setExporting(true)
-    setProblem(null)
+    setProblem(false)
     try {
       await shareExport()
     } catch {
-      setProblem('Eksporti nuk u krye. Provo përsëri.')
+      setProblem(true)
     } finally {
       setExporting(false)
     }
   }
 
   return (
-    <Group title="Të dhënat">
-      <Row label="Sinkronizo tani" action onClick={() => void scheduler.syncNow()} disabled={status.syncing} />
-      <Row label={exporting ? 'Po përgatitet' : 'Eksporto të dhënat'} action onClick={() => void exportData()} disabled={exporting} />
-      <p className="border-t border-border-subtle px-4 py-3 text-xs leading-4 text-muted-foreground">
-        Kopja JSON përmban çdo tabelë, pa fotot. Ruaje diku jashtë telefonit.
-      </p>
+    <Group title={t('settings.sync')}>
+      <div className={cn(rowClass, 'min-h-16 py-2.5')}>
+        <div role="status" className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className={cn('flex items-center gap-2 type-body-strong', TONE[summary.tone])}>
+            <span aria-hidden className={cn('size-2 shrink-0 rounded-pill', DOT[summary.tone])} />
+            {summary.title}
+          </span>
+          {summary.detail ? <span className="type-caption text-muted-foreground">{summary.detail}</span> : null}
+          {pending > 0 ? <span className="type-caption text-muted-foreground tabular-nums">{t('sync.pending', { count: pending })}</span> : null}
+        </div>
+        <Button variant="outline" className="shrink-0" disabled={status.syncing} onClick={() => void scheduler.syncNow()}>
+          {t('settings.syncNow')}
+        </Button>
+      </div>
+      <Row
+        label={exporting ? t('settings.exporting') : t('settings.export')}
+        ariaLabel={exporting ? t('settings.exporting') : t('settings.export')}
+        detail={t('settings.exportHint')}
+        value="JSON"
+        disabled={exporting}
+        onClick={() => void exportData()}
+      />
       {problem ? (
-        <p role="alert" className="px-4 pb-3 text-sm leading-5 text-destructive">
-          {problem}
+        <p role="alert" className="border-t border-border px-4 py-3 type-caption text-danger">
+          {t('settings.exportFailed')}
         </p>
       ) : null}
+    </Group>
+  )
+}
+
+function VersionGroup({ onOpenUpdate, onOpenSources }: { onOpenUpdate: () => void; onOpenSources: () => void }) {
+  const i18n = useI18n()
+  const { t } = i18n
+  const state = useAppUpdate()
+  const supported = updatesSupported()
+  const name = t('settings.appVersion', { version: __APP_VERSION__ })
+  const detail = supported ? (versionRowDetail(state, i18n) ?? t('settings.checksItself')) : null
+  const release = 'release' in state ? state.release : undefined
+  return (
+    <Group title={t('settings.version')}>
+      {supported && release ? (
+        <Row label={name} detail={detail} ariaLabel={`${name}, ${detail}`} onClick={onOpenUpdate} />
+      ) : (
+        <div className={cn(rowClass, 'min-h-16 py-2.5')}>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="type-body-strong tabular-nums">{name}</span>
+            {detail ? <span className="type-caption text-muted-foreground">{detail}</span> : null}
+          </span>
+          {supported ? (
+            <Button variant="outline" className="shrink-0" disabled={state.status === 'checking'} onClick={() => void updater.check({ force: true })}>
+              {t('update.checkNow')}
+            </Button>
+          ) : null}
+        </div>
+      )}
+      <Row label={t('settings.sources')} onClick={onOpenSources} />
     </Group>
   )
 }
@@ -215,15 +241,15 @@ function SignOutSheet({ onClose }: { onClose: () => void }) {
   const pending = usePendingChanges()
   return (
     <Sheet title={t('common.signOut')} onClose={onClose}>
-      <p className="text-base leading-6 text-muted-foreground">
+      <p className="type-body text-muted-foreground">
         {t('settings.signOutText')}
         {pending > 0 ? ` ${t('settings.signOutPending')}` : ''}
       </p>
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="outline" onClick={onClose}>
+        <Button variant="secondary" size="lg" onClick={onClose}>
           {t('common.cancel')}
         </Button>
-        <Button variant="outline" onClick={() => void auth.signOut()}>
+        <Button variant="outline" size="lg" onClick={() => void auth.signOut()}>
           {t('common.signOut')}
         </Button>
       </div>
@@ -231,92 +257,26 @@ function SignOutSheet({ onClose }: { onClose: () => void }) {
   )
 }
 
-function ThemeSheet({ theme, onChoose, onClose }: { theme: Theme; onChoose: (theme: Theme) => void; onClose: () => void }) {
-  const { t } = useI18n()
-  return (
-    <Sheet title={t('settings.theme')} onClose={onClose}>
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm leading-5 text-muted-foreground">{t('settings.themeHint')}</legend>
-        {THEMES.map((option) => (
-          <Choice key={option} name="theme" value={option} checked={theme === option} onChange={() => onChoose(option)} label={t(`settings.theme.${option}`)} />
-        ))}
-      </fieldset>
-    </Sheet>
-  )
-}
-
-/** Gjuha ndërrohet menjëherë, pa rinisje (SPEC V22); çdo gjuhë shkruhet në gjuhën e vet. */
-function LanguageSheet({ current, onChoose, onClose }: { current: Language; onChoose: (lang: Language) => void; onClose: () => void }) {
-  const { t } = useI18n()
-  return (
-    <Sheet title={t('settings.language')} onClose={onClose}>
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm leading-5 text-muted-foreground">{t('settings.languageHint')}</legend>
-        {LANGUAGES.map((option) => (
-          <Choice
-            key={option}
-            name="language"
-            value={option}
-            lang={LOCALES[option]}
-            checked={current === option}
-            onChange={() => onChoose(option)}
-            label={LANGUAGE_NAMES[option]}
-          />
-        ))}
-      </fieldset>
-    </Sheet>
-  )
-}
-
-function VersionRow({ onClick }: { onClick: () => void }) {
-  const state = useAppUpdate()
-  return <Row label="Versioni" value={__APP_VERSION__} detail={versionRowDetail(state) ?? undefined} onClick={onClick} />
-}
-
 // Të dhënat dhe asetet nga të tjerët, me atribuimin që kërkon licenca e tyre (SPEC §11, §9).
 const SOURCES = [
-  {
-    name: 'Shortcut to Size',
-    use: 'Programi 12-javor, ushqimi dhe suplementet e ditës shembull.',
-    license: 'Jim Stoppani, Bodybuilding.com. Për përdorim personal.',
-  },
-  {
-    name: 'BodyParts3D',
-    use: 'Modeli 3D i muskujve te Trupi, i thjeshtuar për telefonin.',
-    license:
-      'BodyParts3D, © The Database Center for Life Science, CC BY 4.0 (versioni 4.0). Latissimus dorsi dhe rectus abdominis vijnë nga versioni 3.0, CC BY-SA 2.1 Japan, prandaj modeli i app-it shpërndahet me CC BY-SA 2.1 Japan.',
-  },
-  {
-    name: 'free-exercise-db',
-    use: 'Biblioteka e ushtrimeve me muskujt kryesorë dhe ndihmës.',
-    license: 'yuhonas/free-exercise-db, Unlicense (domain publik).',
-  },
-  {
-    name: 'Open Food Facts',
-    use: 'Produktet me barkod dhe vlerat e tyre ushqyese.',
-    license: 'Të dhënat nën Open Database License (ODbL), © kontribuesit e Open Food Facts.',
-  },
-  {
-    name: 'USDA FoodData Central',
-    use: 'Ushqimet e përgjithshme dhe makrot e shabllonit të Jimit.',
-    license: 'U.S. Department of Agriculture, Agricultural Research Service. Domain publik (CC0 1.0).',
-  },
-  {
-    name: 'Inter',
-    use: 'Shkronjat e app-it.',
-    license: 'Rasmus Andersson, SIL Open Font License 1.1.',
-  },
-]
+  { id: 'program', name: 'Shortcut to Size' },
+  { id: 'anatomy', name: 'BodyParts3D' },
+  { id: 'exercises', name: 'free-exercise-db' },
+  { id: 'off', name: 'Open Food Facts' },
+  { id: 'usda', name: 'USDA FoodData Central' },
+  { id: 'fonts', name: 'Barlow, Barlow Condensed' },
+] as const
 
 function SourcesSheet({ onClose }: { onClose: () => void }) {
+  const { t } = useI18n()
   return (
-    <Sheet title="Burimet dhe licencat" onClose={onClose}>
+    <Sheet title={t('settings.sources')} onClose={onClose}>
       <ul className="flex flex-col">
         {SOURCES.map((source) => (
-          <li key={source.name} className="flex flex-col gap-1 border-t border-border-subtle py-3 first:border-t-0 first:pt-0">
-            <span className="text-base leading-6 font-medium">{source.name}</span>
-            <span className="text-sm leading-5">{source.use}</span>
-            <span className="text-sm leading-5 text-muted-foreground">{source.license}</span>
+          <li key={source.id} className="flex flex-col gap-1 border-t border-border py-3 first:border-t-0 first:pt-0">
+            <span className="type-body-strong">{source.name}</span>
+            <span className="type-body">{t(`sources.${source.id}.use`)}</span>
+            <span className="type-caption text-muted-foreground">{t(`sources.${source.id}.license`)}</span>
           </li>
         ))}
       </ul>
@@ -324,22 +284,16 @@ function SourcesSheet({ onClose }: { onClose: () => void }) {
   )
 }
 
-const SHEET_TITLES: Record<ProfileEditor, string> = {
-  dite: 'Ditët e stërvitjes',
-  ora: 'Ora e stërvitjes',
-  pesha: 'Pesha e sotme',
-  zgjimi: 'Zgjimi',
-  gjumi: 'Gjumi',
-}
+const SHEET_TITLES = { pesha: 'settings.weightToday', dite: 'settings.trainingDays', oraret: 'settings.schedule' } as const
 
 /** Një vlerë e profilit në fletë; ruhet vetëm me "Ruaj", që një prekje e gabuar të mos ndryshojë asgjë. */
 function ProfileSheet({ editor, profile, onClose }: { editor: ProfileEditor; profile: Profile; onClose: () => void }) {
+  const { t, fmt } = useI18n()
   const daysLabel = useId()
   const errorId = useId()
+  const kg = (value: number) => fmt.number(value, { maxDigits: 2 })
   const [days, setDays] = useState(profile.trainingDays)
-  const [time, setTime] = useState(
-    editor === 'ora' ? profile.trainingTime : editor === 'zgjimi' ? profile.wakeTime : profile.sleepTime,
-  )
+  const [times, setTimes] = useState({ trainingTime: profile.trainingTime, wakeTime: profile.wakeTime, sleepTime: profile.sleepTime })
   const [weight, setWeight] = useState<number | null>(profile.weightKg)
   const [weightText, setWeightText] = useState(profile.weightKg === null ? '' : kg(profile.weightKg))
   const [problem, setProblem] = useState<string | null>(null)
@@ -356,39 +310,43 @@ function ProfileSheet({ editor, profile, onClose }: { editor: ProfileEditor; pro
     let patch: Partial<Profile>
     if (editor === 'pesha') {
       const value = weight === null ? null : parseWeight(String(weight))
-      if (value === null) return setProblem('Shkruaj një peshë mes 30 dhe 300 kg, p.sh. 80,5.')
+      if (value === null) return setProblem(t('profile.weightInvalid'))
       patch = { weightKg: value }
     } else if (editor === 'dite') {
-      if (days.length === 0) return setProblem('Zgjidh të paktën një ditë stërvitjeje.')
+      if (days.length === 0) return setProblem(t('profile.daysInvalid'))
       patch = { trainingDays: days }
     } else {
-      patch = { [editor === 'ora' ? 'trainingTime' : editor === 'zgjimi' ? 'wakeTime' : 'sleepTime']: time }
+      patch = times
     }
     setBusy(true)
     try {
       await updateProfile(store, patch)
       onClose()
     } catch {
-      setProblem('Ndryshimi nuk u ruajt. Provo përsëri.')
+      setProblem(t('profile.saveFailed'))
       setBusy(false)
     }
   }
 
-  const title = SHEET_TITLES[editor]
+  const footer = (
+    <Button variant="primary" size="xl" disabled={busy} onClick={() => void save()}>
+      {t('common.save')}
+    </Button>
+  )
   return (
-    <Sheet title={title} onClose={onClose}>
+    <Sheet title={t(SHEET_TITLES[editor])} onClose={onClose} footer={footer}>
       {editor === 'pesha' ? (
         <>
           <ValueStepper
             variant="hero"
             hideLabel
-            label="Pesha"
+            label={t('profile.weight')}
             text={weightText}
             unit="kg"
-            placeholder="80,5"
+            placeholder={kg(80.5)}
             inputMode="decimal"
-            minusLabel="Ul peshën me 0,5 kg"
-            plusLabel="Rrit peshën me 0,5 kg"
+            minusLabel={t('ui.stepper.lowerWeight', { step: 0.5 })}
+            plusLabel={t('ui.stepper.raiseWeight', { step: 0.5 })}
             onMinus={() => setWeightValue((weight ?? 80) - 0.5)}
             onPlus={() => setWeightValue((weight ?? 80) + 0.5)}
             onCommit={(text) => {
@@ -398,96 +356,42 @@ function ProfileSheet({ editor, profile, onClose }: { editor: ProfileEditor; pro
             invalid={Boolean(problem)}
             describedBy={problem ? errorId : undefined}
           />
-          <p className="text-center text-sm leading-5 text-muted-foreground">Ruhet si matja e sotme. Historia e peshës shfaqet te Progresi.</p>
+          <p className="text-center type-caption text-muted-foreground">{t('profile.weightSaved')}</p>
         </>
       ) : editor === 'dite' ? (
-        <div>
-          <p id={daysLabel} className="mb-1.5 text-sm leading-5 font-medium">
-            Ditët e stërvitjes
+        <div className="flex flex-col gap-1.5">
+          <p id={daysLabel} className="sr-only">
+            {t('settings.trainingDays')}
           </p>
           <DayPicker value={days} onChange={(next) => (setDays(next), setProblem(null))} labelledBy={daysLabel} />
-          <p className="mt-1.5 text-sm leading-5 text-muted-foreground">Radha e programit nuk ndryshon: ecën kur mbyll një stërvitje.</p>
+          <p className="type-caption text-muted-foreground">{t('profile.daysHint')}</p>
         </div>
       ) : (
-        <TimeStepper label={title} short={title} value={time} onChange={setTime} hideLabel />
+        <div className="flex flex-col gap-2">
+          {(
+            [
+              ['trainingTime', 'profile.trainingTime'],
+              ['wakeTime', 'profile.wake'],
+              ['sleepTime', 'profile.sleep'],
+            ] as const
+          ).map(([key, label]) => (
+            <TimeStepper
+              key={key}
+              variant="row"
+              label={t(label)}
+              short={t(label)}
+              value={times[key]}
+              onChange={(value) => setTimes((current) => ({ ...current, [key]: value }))}
+            />
+          ))}
+        </div>
       )}
       {problem ? (
-        <p id={errorId} role="alert" className="text-sm leading-5 text-destructive">
+        <p id={errorId} role="alert" className="flex items-center gap-2 type-caption text-danger">
+          <Icon name="paralajmerim" size={18} />
           {problem}
         </p>
       ) : null}
-      <Button className="w-full" disabled={busy} onClick={() => void save()}>
-        Ruaj
-      </Button>
-    </Sheet>
-  )
-}
-
-const TOGGLES = [
-  { key: 'meals', label: 'Vaktet', detail: 'Në orën e çdo vakti, me artikujt e planit' },
-  { key: 'supplements', label: 'Suplementet', detail: 'Bashkë me vaktin ku merren' },
-  { key: 'training', label: 'Stërvitja', detail: 'Në mëngjes, stërvitja e radhës' },
-  { key: 'measurements', label: 'Matja javore', detail: 'Pesha, perimetrat dhe fotot' },
-] as const
-
-/** Rikujtuesit (SPEC §13): çka njofton telefoni, dita e matjes dhe leja e njoftimeve. */
-function RemindersGroup({ onPickDay }: { onPickDay: () => void }) {
-  const settings = useLocalQuery(() => reminderSettings(store), [])
-  const [permission, setPermission] = useState<ReminderPermission | null>(null)
-  useEffect(() => {
-    const check = () => void reminderPermission().then(setPermission)
-    check()
-    document.addEventListener('visibilitychange', check)
-    return () => document.removeEventListener('visibilitychange', check)
-  }, [])
-  if (!settings) return null
-  const day = WEEK_DAYS.find((entry) => entry.value === settings.measurementDay)?.name ?? 'E diel'
-  return (
-    <Group title="Rikujtuesit">
-      {permission === 'prompt' || permission === 'denied' ? (
-        <Row
-          label="Lejo njoftimet"
-          detail={permission === 'denied' ? 'Lejoji te cilësimet e telefonit për Training Hub' : 'Pa leje, rikujtuesit nuk vijnë'}
-          onClick={() =>
-            void requestReminderPermission().then(async (granted) => {
-              setPermission(granted ? 'granted' : await reminderPermission())
-              if (granted) await planRemindersNow()
-            })
-          }
-          action
-        />
-      ) : null}
-      {TOGGLES.map((toggle) => (
-        <SwitchRow
-          key={toggle.key}
-          label={toggle.label}
-          detail={toggle.detail}
-          checked={settings.toggles[toggle.key]}
-          onChange={(on) => void setReminderToggle(store, toggle.key, on)}
-        />
-      ))}
-      <Row label="Dita e matjes" value={day} onClick={onPickDay} />
-    </Group>
-  )
-}
-
-function MeasurementDaySheet({ onClose }: { onClose: () => void }) {
-  const settings = useLocalQuery(() => reminderSettings(store), [])
-  return (
-    <Sheet title="Dita e matjes" onClose={onClose}>
-      <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 text-sm leading-5 text-muted-foreground">Rikujtuesi vjen në orën e zgjimit, që pesha të matet para mëngjesit.</legend>
-        {WEEK_DAYS.map((entry) => (
-          <Choice
-            key={entry.value}
-            name="measurement-day"
-            value={String(entry.value)}
-            checked={settings?.measurementDay === entry.value}
-            onChange={() => void setMeasurementDay(store, entry.value).then(onClose)}
-            label={entry.name}
-          />
-        ))}
-      </fieldset>
     </Sheet>
   )
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { BackButton } from '@/components/layout/page'
+import { ScreenHeader } from '@/components/layout/screen-header'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -14,6 +15,7 @@ import { e1rmSeries } from '@/progress/strength'
 import { TrendChart } from '@/components/charts/trend-chart'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import type { DayStatus, OverviewWeek } from '@/program/overview'
+import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { embedUrl, watchUrl, youtubeId } from '@/lib/youtube'
 import { editorPath } from './editor-nav'
@@ -40,18 +42,24 @@ function StatusBadge({ status }: { status: DayStatus }) {
 const dayPath = (week: OverviewWeek, dayId: string) => `/programi/${week.blockId}/${week.week}/${dayId}`
 
 export function ProgramPage() {
+  const { t } = useI18n()
   const view = useLocalQuery(() => programView(store), [])
   const [params, setParams] = useSearchParams()
-  if (view === undefined) return <h1 className="sr-only">Programi</h1>
+  // Kreu i Vrullit me butonin e profilit (V2-E1-05); pjesa tjetër kalon me V2-E1-09.
+  const header = <ScreenHeader title={t('tab.programme')} />
+  if (view === undefined) return header
   if (view === null) {
     return (
-      <section className="rounded-xl border border-border bg-card p-4">
-        <h1 className="text-lg leading-7 font-semibold">Pa program aktiv</h1>
-        <p className="mt-1 text-sm leading-5 text-muted-foreground">Programi i zgjedhur shfaqet këtu me javët dhe stërvitjet.</p>
-        <Link to="/programet" className={cn(buttonVariants({ variant: 'outline' }), 'mt-3 w-full')}>
-          Programet
-        </Link>
-      </section>
+      <div className="flex flex-col gap-5">
+        {header}
+        <section className="rounded-xl border border-border bg-card p-4">
+          <h2 className="text-lg leading-7 font-semibold">Pa program aktiv</h2>
+          <p className="mt-1 text-sm leading-5 text-muted-foreground">Programi i zgjedhur shfaqet këtu me javët dhe stërvitjet.</p>
+          <Link to="/programet" className={cn(buttonVariants({ variant: 'outline' }), 'mt-3 w-full')}>
+            Programet
+          </Link>
+        </section>
+      </div>
     )
   }
   const { overview } = view
@@ -62,11 +70,12 @@ export function ProgramPage() {
 
   return (
     <div className="flex flex-col gap-5">
+      {header}
       <section aria-labelledby="program-title" className="flex flex-col gap-3 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
         <span className="text-xs leading-4 font-medium text-panel-muted-foreground">{view.pointer.completed ? 'Përfunduar' : current.label}</span>
-        <h1 id="program-title" className="text-3xl leading-9 font-bold tracking-[-0.025em]">
+        <h2 id="program-title" className="text-3xl leading-9 font-bold tracking-[-0.025em]">
           {view.programName}
-        </h1>
+        </h2>
         <span className="text-sm leading-5 text-panel-muted-foreground tabular-nums">
           {overview.doneWorkouts} nga {overview.totalWorkouts} stërvitje
         </span>

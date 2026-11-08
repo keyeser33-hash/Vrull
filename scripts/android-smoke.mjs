@@ -443,7 +443,10 @@ try {
 
   // Trupi në 3D: WebView-i vizaton modelin (WebGL) dhe GLB-ja ngarkohet nga APK-ja. Emulatori vizaton
   // me SwiftShader në CPU, ndaj koha e kuadrit shënohet vetëm për krahasim, jo si kusht.
-  await click(page, 'a[href="/trupi"]')
+  // V2-E1-05: Trupi jeton brenda Progresit.
+  await click(page, 'a[href="/progresi"]')
+  await waitFor(() => page.evaluate(`!!document.querySelector('a[href="/progresi/trupi"]')`), 'Trupi te Progresi')
+  await click(page, 'a[href="/progresi/trupi"]')
   await waitFor(() => page.evaluate(`!!document.querySelector('section[aria-label="Harta e trupit"]')`), 'harta e trupit', 30_000)
   const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
   if (!webgl) {
@@ -501,7 +504,7 @@ try {
   await waitForHeading(page, 'Stërvitja 1')
 
   // 4. Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
-  await click(page, 'a[aria-label="Cilësimet"]')
+  await click(page, 'a[aria-label="Profili dhe cilësimet"]')
   await waitForHeading(page, 'Cilësimet')
   await page.send('Page.reload')
   await waitForHeading(page, 'Cilësimet')
@@ -531,12 +534,13 @@ try {
   page = await connect()
   await page.send('Page.reload')
   await waitForHeading(page, 'Stërvitja 1')
-  await click(page, 'a[aria-label="Cilësimet"]')
+  await click(page, 'a[aria-label="Profili dhe cilësimet"]')
   await waitForHeading(page, 'Cilësimet')
-  check('"Dil" duket menjëherë te Cilësimet', await page.evaluate(`[...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Dil' && b.getBoundingClientRect().bottom <= innerHeight)`))
-  // Tema zgjidhet në fletën që hap rreshti "Tema".
-  await page.evaluate(`[...document.querySelectorAll('button')].find((b) => (b.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
-  await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'fleta e temës')
+  // V2-E1-05: "Dil" është në fund të Cilësimeve, si te bordi.
+  check('"Dil" te fundi i Cilësimeve', await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Dil'); b.scrollIntoView(); return b.getBoundingClientRect().bottom <= innerHeight })()`))
+  // Tema zgjidhet te Pamja, që hap rreshti "Tema".
+  await page.evaluate(`[...document.querySelectorAll('a')].find((a) => (a.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
+  await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'Pamja')
   await page.evaluate(`document.querySelector('input[type="radio"][value="light"]').click()`)
   await waitFor(async () => (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light', 'ruajtja e temës')
   check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
@@ -545,8 +549,8 @@ try {
   screenshot('5-cilesimet-light-v1')
   check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#F4F4F5'), bandLight.join(','))
   await pressBack()
-  await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
-  check('mbrapa mbyll fletën dhe mbetet te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
+  await waitForHeading(page, 'Cilësimet')
+  check('mbrapa nga Pamja kthen te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
   await pressBack()
   await waitForHeading(page, 'Stërvitja 1')
   await pressBack()

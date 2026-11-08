@@ -51,8 +51,10 @@ describe('katalogu', () => {
 
   it('anglishtja është britanike', () => {
     const american = /\b(?:programs?|yogurts?|liters?|colors?|favorites?|centers?|meters?|optimiz\w*|personaliz\w*)\b/i
+    // Emrat e përveçëm (atribuimi i licencave) mbeten siç janë.
+    const properNames = /The Database Center for Life Science/g
     for (const [key, message] of Object.entries(catalogs.en)) {
-      for (const text of texts(message)) expect(text, key).not.toMatch(american)
+      for (const text of texts(message)) expect(text.replace(properNames, ''), key).not.toMatch(american)
     }
   })
 
