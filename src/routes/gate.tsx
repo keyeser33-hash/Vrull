@@ -1,7 +1,18 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { VrullMark } from '@/components/ui/logo'
-import { auth, scheduler, useAppPhase, useBackgroundSync, useDataUpgrades, useLanguageSync, usePhotoUploader, useReminderPlanner, useUpdateChecker } from '@/data/app-data'
+import {
+  auth,
+  scheduler,
+  useAppPhase,
+  useBackgroundSync,
+  useDataUpgrades,
+  useFormVideoUploader,
+  useLanguageSync,
+  usePhotoUploader,
+  useReminderPlanner,
+  useUpdateChecker,
+} from '@/data/app-data'
 import { useI18n } from '@/i18n/use-i18n'
 import { APP_NAME } from '@/lib/app-name'
 
@@ -12,6 +23,7 @@ export function AppGate() {
   useDataUpgrades(phase === 'ready')
   useReminderPlanner(phase === 'ready')
   usePhotoUploader(phase === 'ready')
+  useFormVideoUploader(phase === 'ready')
   useUpdateChecker(phase === 'ready')
   useLanguageSync(phase === 'ready')
   useBackgroundSync(phase === 'ready')

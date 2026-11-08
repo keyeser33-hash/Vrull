@@ -86,3 +86,52 @@ export function createFakeRemote(): FakeRemote {
   }
   return remote
 }
+
+/** Një bucket privat i Supabase Storage në memorie (p.sh. form-videos). */
+export interface FakeStorage {
+  offline: boolean
+  calls: { op: 'upload' | 'download' | 'remove'; path: string }[]
+  /** Objektet e bucket-it, pa RLS (pamja e administratorit). */
+  objects(): string[]
+  upload(path: string, data: ArrayBuffer, type: string): Promise<void>
+  download(path: string): Promise<ArrayBuffer>
+  remove(path: string): Promise<void>
+}
+
+/**
+ * Imiton politikat e `storage.objects` të migrimeve: përdoruesi i hyrë (userId) lexon, shkruan dhe
+ * fshin vetëm te dosja e tij (<user_id>/...). Një objekt i tjetrit nuk gjendet, si me RLS; fshirja e
+ * një objekti që mungon nuk është gabim (si `remove` i Supabase). Me `remote`, interneti bie bashkë
+ * me Supabase-in e rremë.
+ */
+export function createFakeStorage(options: { userId: () => string | null; remote?: FakeRemote }): FakeStorage {
+  const files = new Map<string, { data: ArrayBuffer; type: string }>()
+  const own = (path: string) => {
+    const userId = options.userId()
+    return Boolean(userId) && path.split('/')[0] === userId
+  }
+  const storage: FakeStorage = {
+    offline: false,
+    calls: [],
+    objects: () => [...files.keys()].sort(),
+    async upload(path, data, type) {
+      if (storage.offline || options.remote?.offline) throw new NetworkError('Pa internet')
+      storage.calls.push({ op: 'upload', path })
+      if (!own(path)) throw new RemoteError('new row violates row-level security policy', '42501')
+      files.set(path, { data: data.slice(0), type })
+    },
+    async download(path) {
+      if (storage.offline || options.remote?.offline) throw new NetworkError('Pa internet')
+      storage.calls.push({ op: 'download', path })
+      const file = own(path) ? files.get(path) : undefined
+      if (!file) throw new RemoteError('Object not found', '404')
+      return file.data.slice(0)
+    },
+    async remove(path) {
+      if (storage.offline || options.remote?.offline) throw new NetworkError('Pa internet')
+      storage.calls.push({ op: 'remove', path })
+      if (own(path)) files.delete(path)
+    },
+  }
+  return storage
+}

@@ -16,13 +16,27 @@ export interface PhotoFile {
   storagePath: string
 }
 
+/**
+ * Skedari i një videoje forme, vetëm në telefon (V2-E1-13). `uploaded` 1 kur është (ose mund të jetë)
+ * në bucket; `removed` 1 për një video të fshirë që pret heqjen nga bucket-i (pa `data`).
+ */
+export interface VideoFile {
+  id: string
+  data: ArrayBuffer | null
+  type: string
+  uploaded: 0 | 1
+  removed: 0 | 1
+  storagePath: string
+}
+
 export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> } & {
   _meta: Table<MetaEntry, string>
   _photo_files: Table<PhotoFile, string>
+  _video_files: Table<VideoFile, string>
 }
 
 // Tabelat e sinkronizuara që erdhën pas versionit 1, me versionin ku hynë.
-const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3 }
+const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4 }
 
 const tableSchema = (table: TableName) => ['id', '_dirty', ...INDEXES[table]].join(', ')
 
@@ -35,5 +49,7 @@ export function createDatabase(name = 'training-hub'): LocalDatabase {
   db.version(2).stores({ _photo_files: 'id, uploaded' })
   // Versioni 3: peshat e javës (V23).
   db.version(3).stores({ week_weights: tableSchema('week_weights') })
+  // Versioni 4: videot e formës (V2-E1-13): rreshtat sinkronizohen, skedarët mbeten në telefon.
+  db.version(4).stores({ form_videos: tableSchema('form_videos'), _video_files: 'id, uploaded, removed' })
   return db
 }
