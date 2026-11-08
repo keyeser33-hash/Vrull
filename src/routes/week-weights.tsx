@@ -350,7 +350,7 @@ function ChangeSheet({ review, row, onClose }: { review: WeekReview; row: WeekWe
   return (
     <Sheet
       title={exercise?.name ?? ''}
-      description={t('programme.weights.changeTitle', { label: weekLabel(t, review.block) })}
+      description={weekLabel(t, review.block)}
       onClose={onClose}
       footer={
         <Button variant="primary" size="xl" disabled={busy} onClick={() => void save()}>
