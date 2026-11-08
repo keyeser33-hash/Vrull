@@ -1,29 +1,40 @@
-import { acousticBrainzTempo, type CleanSong, lookupTempo, saveTappedTempo, songKey, type SongRef, type TempoDeps, type TempoLookup, type TempoRecord } from '@/lib/music-tempo'
+import { Capacitor, CapacitorHttp } from '@capacitor/core'
+import {
+  acousticBrainzTempo,
+  type CleanSong,
+  createTempoFetch,
+  lookupTempo,
+  saveTappedTempo,
+  songKey,
+  type SongRef,
+  type TempoDeps,
+  type TempoLookup,
+  type TempoRecord,
+} from '@/lib/music-tempo'
 import { db } from './app-data'
 import { supabase } from './supabase'
 
 // Tempo e këngës në telefon (SPEC V29): ruhet te baza lokale (`_meta`, "tempo:artisti|titulli") me
 // burimin, pa sinkronizim. GetSongBPM përmes funksionit `song-tempo` (vetëm me sesion), AcousticBrainz
-// drejt nga telefoni (IP-ja e vet, CORS i lejuar), me MusicBrainz të shumtën një kërkesë në sekondë.
+// drejt nga telefoni (IP-ja e vet, CORS i lejuar). MusicBrainz me User-Agent-in "Vrull/<versioni> ( faqja e
+// projektit )" nga native-i në telefon (CapacitorHttp, V2-E1-16a), të shumtën një kërkesë në sekondë.
 
 const PREFIX = 'tempo:'
-const TIMEOUT_MS = 8_000
-const MUSICBRAINZ_GAP_MS = 1_100
 
-let musicBrainzReady = Promise.resolve()
-
-/** Një kërkesë JSON; gabim kur nuk arrihet ose kthen gabim (503 i MusicBrainz, 429 i AcousticBrainz). */
-async function fetchJson(url: string): Promise<unknown> {
-  if (url.startsWith('https://musicbrainz.org/')) {
-    // MusicBrainz: mesatarisht 1 kërkesë në sekondë për IP, ndryshe 503 për të gjitha.
-    const turn = musicBrainzReady
-    musicBrainzReady = turn.then(() => new Promise((resolve) => setTimeout(resolve, MUSICBRAINZ_GAP_MS)))
-    await turn
-  }
-  const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(TIMEOUT_MS) })
-  if (!response.ok) throw new Error(`${new URL(url).host}: ${response.status}`)
-  return response.json()
-}
+/** Kërkesat e zinxhirit: MusicBrainz nga native-i në telefon (WebView-i nuk e lejon User-Agent-in), fetch në shfletues. */
+const fetchJson = createTempoFetch(
+  {
+    native: Capacitor.isNativePlatform()
+      ? async ({ url, headers, timeoutMs }) => {
+          const response = await CapacitorHttp.get({ url, headers, connectTimeout: timeoutMs, readTimeout: timeoutMs, responseType: 'json' })
+          return { status: response.status, data: response.data }
+        }
+      : null,
+    fetch: (url, init) => fetch(url, init),
+    sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  },
+  { version: __APP_VERSION__ },
+)
 
 export const tempoDeps: TempoDeps = {
   async read(key) {

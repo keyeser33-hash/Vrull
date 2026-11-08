@@ -204,3 +204,53 @@ export async function acousticBrainzTempo(song: CleanSong | (SongRef & { title: 
   if (ids.length === 0) return null
   return acousticBrainzBpm(await fetchJson(`https://acousticbrainz.org/api/v1/low-level?recording_ids=${ids.join(';')}&features=rhythm.bpm`))
 }
+
+// Kërkesat drejt MusicBrainz dhe AcousticBrainz (V2-E1-16a). MusicBrainz kërkon një User-Agent që e
+// identifikon app-in me versionin dhe një kontakt, URL ose email ("Application name/<version> ( contact-url )",
+// musicbrainz.org/doc/MusicBrainz_API/Rate_Limiting, lexuar më 08.11.2026), dhe të shumtën 1 kërkesë në
+// sekondë për IP. WebView-i nuk e lejon User-Agent-in te fetch, ndaj në telefon kërkesa del nga native-i
+// (CapacitorHttp); në shfletues mbetet fetch. Kontakti është faqja e projektit, kurrë një email personal.
+
+export const MUSICBRAINZ_CONTACT = 'https://github.com/keyeser33-hash/Vrull'
+const MUSICBRAINZ = 'https://musicbrainz.org/'
+const MUSICBRAINZ_GAP_MS = 1_100
+const TIMEOUT_MS = 8_000
+
+export const musicBrainzUserAgent = (version: string) => `Vrull/${version} ( ${MUSICBRAINZ_CONTACT} )`
+
+export interface TempoHttp {
+  /** Kërkesa native (CapacitorHttp) në telefon; null në shfletues. */
+  native: ((request: { url: string; headers: Record<string, string>; timeoutMs: number }) => Promise<{ status: number; data: unknown }>) | null
+  fetch: (url: string, init?: RequestInit) => Promise<Response>
+  sleep: (ms: number) => Promise<void>
+}
+
+/**
+ * `fetchJson` i zinxhirit të tempos: MusicBrainz me User-Agent-in (native) dhe radhën e vet, një kërkesë në
+ * 1,1 s edhe kur kërkohen disa këngë njëherësh; AcousticBrainz drejt. Hedh gabim kur kërkesa dështon
+ * (pa rrjet, 503 i MusicBrainz, 429 i AcousticBrainz), që zinxhiri të mos ruajë "nuk u gjet".
+ */
+export function createTempoFetch(http: TempoHttp, options: { version: string }) {
+  let musicBrainzTurn = Promise.resolve()
+
+  async function viaFetch(url: string): Promise<unknown> {
+    const response = await http.fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(TIMEOUT_MS) })
+    if (!response.ok) throw new Error(`${new URL(url).host}: ${response.status}`)
+    return response.json()
+  }
+
+  return async function fetchJson(url: string): Promise<unknown> {
+    if (!url.startsWith(MUSICBRAINZ)) return viaFetch(url)
+    const turn = musicBrainzTurn
+    musicBrainzTurn = turn.then(() => http.sleep(MUSICBRAINZ_GAP_MS))
+    await turn
+    if (!http.native) return viaFetch(url)
+    const response = await http.native({
+      url,
+      headers: { Accept: 'application/json', 'User-Agent': musicBrainzUserAgent(options.version) },
+      timeoutMs: TIMEOUT_MS,
+    })
+    if (response.status < 200 || response.status >= 300) throw new Error(`${new URL(url).host}: ${response.status}`)
+    return typeof response.data === 'string' ? JSON.parse(response.data) : response.data
+  }
+}
