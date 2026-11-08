@@ -233,6 +233,18 @@ Një veprim ditor që përdoruesi zgjedh ta ndjekë (p.sh. 10 mijë hapa, gjumë
 Ditët ose javët radhazi pa ndërprerje në një zakon, në stërvitje ose në një sfidë.
 _Avoid_: streak (në UI shqip)
 
+## Muzika
+
+**Shufra**:
+Playlist-a e seancës, e paraqitur si shufër me disqe; kontrollon app-in e muzikës që përdor përdoruesi.
+_Avoid_: player, lista e këngëve
+
+**Disku**:
+Një këngë në Shufër; madhësia tregon tempon, ngjyra fazën e seancës.
+
+**Kënga e setit**:
+Kënga më energjike e radhës, që del përpara kur fillon një set.
+
 ## Mëso
 
 **Fakti**:
