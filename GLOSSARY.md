@@ -107,6 +107,10 @@ Koha mes seteve të një sloti, që mat timer-i; te rest-pause është 15 s.
 Përsëritjet që mbeten në rezervë në fund të setit (Reps In Reserve).
 _Avoid_: RPE, kur synohet RIR
 
+**Video e formës**:
+Video e shkurtër (deri në 60 s) e një **Seti**, e regjistruar nga **Seanca** për ta krahasuar teknikën me herën e kaluar; private, në telefon dhe në cloud. Një set ka një video.
+_Avoid_: videoja e ushtrimit (është lidhja e YouTube)
+
 ## Forca
 
 **e1RM**:
@@ -316,6 +320,7 @@ Një foto e gatshme për t'u ndarë jashtë app-it: një rekord, një seancë os
 - Një **Slot** ka një **Ushtrim**; **Rregullat** e ndryshojnë atë, **Recetën** ose **Teknikën** sipas **Nivelit**.
 - Një **Stërvitje** = **Blloku** × **Java** × **Dita e programit**; **Treguesi** tregon një **Stërvitje**.
 - Një **Seancë** regjistron një **Stërvitje** dhe ka **Sete**; vetëm mbyllja e saj e çon **Treguesin** përpara.
+- Një **Video e formës** i përket një **Seti** të një **Seance** (ushtrimi dhe numri i setit) dhe krahasohet me videon e seancës së kaluar të të njëjtit **Ushtrim**.
 - Një **Ushtrim** ka **Muskuj kryesorë** dhe **ndihmës** si **Çelësa muskujsh**; çdo **Çelës** i përket një **Grupi muskujsh**.
 - **Volumi javor** dhe **Rikuperimi** llogariten për **Grupin e muskujve** nga **Setet** e **Seancave**, pa **Setet e ngrohjes**.
 - Një datë ka një **Lloj dite**, prej tij **Objektivat** dhe **Orarin e vakteve**; çdo **Vakt** ka **Regjistrime** dhe **Suplemente**.

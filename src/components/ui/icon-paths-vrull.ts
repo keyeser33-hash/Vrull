@@ -39,4 +39,9 @@ export const VRULL_ICONS = {
   doreza: '<path d="M6 9h12M6 15h12"/>',
   'me-shume': '<circle cx="5" cy="12" r="1" class="ac"/><circle cx="12" cy="12" r="1" class="ac"/><circle cx="19" cy="12" r="1" class="ac"/>',
   nderto: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/>',
+  // Videot e formës (bordet "Seanca" dhe "Seanca · Video", V2-E1-13).
+  'kamera-video': '<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>',
+  'kamera-kthe': '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20v-4h-4"/>',
+  luaj: '<path d="M8 5.5v13l10.5-6.5z"/>',
+  kyc: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
 } as const

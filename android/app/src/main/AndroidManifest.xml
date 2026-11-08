@@ -79,4 +79,9 @@
          përditësojë veten pa dritare konfirmimi. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION" />
+    <!-- Videot e formës (V2-E1-13): kamera brenda app-it (getUserMedia te WebView-i). Capacitor e
+         kërkon lejen kur hapet kamera e parë herë; pa zë, ndaj pa RECORD_AUDIO. Me këtë leje, edhe
+         fotot e progresit e kërkojnë një herë para se të hapin kamerën e sistemit. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 </manifest>
