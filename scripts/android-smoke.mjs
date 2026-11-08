@@ -289,6 +289,8 @@ function notifications(pkg = PKG) {
       title: block.match(/android\.title=\w+ \((.*)\)/)?.[1] ?? '',
       text: block.match(/android\.text=\w+ \((.*)\)/)?.[1] ?? '',
       created: Number(block.match(/mCreationTimeMs=(\d+)/)?.[1] ?? 0),
+      // Koha e builder-it (= kur u postua); mCreationTimeMs mbetet ajo e postimit të parë me të njëjtën id.
+      when: Number(block.match(/\bwhen=(\d+)/)?.[1] ?? 0),
       block,
     }))
 }
@@ -617,8 +619,8 @@ const restEndsAt = (page) =>
 async function expectRestDone(label, endsAt) {
   await sleep(Math.max(0, endsAt - deviceNow()) + 4000)
   const done = notification(4201)
-  const delta = done ? done.created - endsAt : null
-  report[label] = { endsAt, posted: done?.created ?? null, deltaMs: delta, title: done?.title ?? null }
+  const delta = done ? done.when - endsAt : null
+  report[label] = { endsAt, posted: done?.when ?? null, deltaMs: delta, title: done?.title ?? null }
   check(`${label}: "Pushimi mbaroi" vjen me ekran të kyçur, brenda 2 s`, done !== null && done.title === 'Pushimi mbaroi' && Math.abs(delta) <= 2000, JSON.stringify(report[label]))
 }
 
