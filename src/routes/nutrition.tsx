@@ -5,6 +5,7 @@ import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
+import { InsightCard } from '@/components/ui/insight-card'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
@@ -265,6 +266,20 @@ function MacroTotals({ day }: { day: NutritionDay }) {
         {t('food.macrosTitle')}
       </h2>
       {day.targets ? null : <p className="text-sm leading-5 text-muted-foreground">{t('food.noTargets')}</p>}
+      {day.targetsSource === 'jim' ? (
+        <InsightCard
+          icon={null}
+          actions={
+            <Link to="/ushqimi/objektivat" className={buttonVariants({ variant: 'secondary', ground: 'card' })}>
+              {t('food.targets.ctaAction')}
+            </Link>
+          }
+        >
+          <b className="font-semibold">{t('food.targets.cta')}</b>
+          <br />
+          {t('food.targets.ctaText')}
+        </InsightCard>
+      ) : null}
       <dl className="flex flex-col gap-3 tabular-nums">
         {rows.map((row) => (
           <div key={row.key} className="flex flex-col gap-1.5">
@@ -283,7 +298,16 @@ function MacroTotals({ day }: { day: NutritionDay }) {
           </div>
         ))}
       </dl>
-      <p className="text-xs leading-4 text-muted-foreground">{t('food.proteinNote', { jimLow: 3.3, jimHigh: 4.1, studyLow: 1.6, studyHigh: 2.2 })}</p>
+      {day.targetsSource === 'jim' ? (
+        <p className="text-xs leading-4 text-muted-foreground">{t('food.proteinNote', { jimLow: 3.3, jimHigh: 4.1, studyLow: 1.6, studyHigh: 2.2 })}</p>
+      ) : null}
+      <Link
+        to="/ushqimi/objektivat"
+        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      >
+        {t('food.targets.link')}
+        <Icon name="hap" size={20} className="text-muted-foreground" />
+      </Link>
       {day.outsideJimRange ? (
         <p className="text-xs leading-4 text-muted-foreground">{t('food.outsideJim', { min: JIM_RANGE_KG.min, max: JIM_RANGE_KG.max })}</p>
       ) : null}

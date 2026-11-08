@@ -2,10 +2,11 @@ import { JIM_FOODS, JIM_MEALS, type JimFoodKey, macrosFor, type Portion, sumMacr
 import type { MealKey } from '@/nutrition/meals'
 import { mealSchedule } from '@/nutrition/schedule'
 import type { Evidence } from '@/nutrition/supplements'
-import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros, nutritionTargets } from '@/nutrition/targets'
+import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
 import { localDate } from '@/lib/calendar'
 import { readProfile } from './profile'
 import { supplementList } from './supplements'
+import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 
@@ -59,9 +60,11 @@ export interface NutritionDay {
   dayType: DayType
   dayTypeManual: boolean
   weightKg: number | null
-  /** Jashtë 72,6–90,7 kg plani i Jimit mbetet, por objektivat ndryshojnë. */
+  /** Jashtë 72,6–90,7 kg plani i Jimit mbetet, por objektivat ndryshojnë (vetëm me objektivat e Jimit). */
   outsideJimRange: boolean
   targets: Macros | null
+  /** Nga kalkulatori (V32) ose nga totalet e Jimit (Q15). */
+  targetsSource: TargetsSource
   totals: Macros
   meals: MealSlot[]
   next: MealSlot | null
@@ -113,7 +116,7 @@ async function weightFor(store: LocalStore, date: string) {
 }
 
 export async function nutritionDay(store: LocalStore, date: string, now: Date): Promise<NutritionDay> {
-  const profile = await readProfile(store)
+  const [profile, targetsProfile] = await Promise.all([readProfile(store), readTargetsProfile(store)])
   const [{ dayType, manual, saved }, measuredKg, entries, foods, supplements, supplementLogs] = await Promise.all([
     dayTypeFor(store, date, profile.trainingDays),
     weightFor(store, date),
@@ -178,13 +181,16 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
 
   // Pesha e objektivave të ruajtura, që shënimet e ditës të përputhen me to.
   const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
+  const computed = weightKg === null ? null : targetsFor(targetsProfile, { weightKg, dayType, date, sessionsPerWeek: profile.trainingDays.length })
+  const targetsSource = computed?.source ?? (targetsProfile.from !== null && date >= targetsProfile.from ? 'personal' : 'jim')
   return {
     date,
     dayType,
     dayTypeManual: manual,
     weightKg,
-    outsideJimRange: weightKg !== null && (weightKg < JIM_RANGE_KG.min || weightKg > JIM_RANGE_KG.max),
-    targets: saved ? savedMacros(saved) : weightKg === null ? null : nutritionTargets(weightKg, dayType),
+    outsideJimRange: targetsSource === 'jim' && weightKg !== null && (weightKg < JIM_RANGE_KG.min || weightKg > JIM_RANGE_KG.max),
+    targets: saved ? savedMacros(saved) : (computed?.macros ?? null),
+    targetsSource,
     totals: sumMacros(meals.flatMap((meal) => meal.entries)),
     meals,
     next: next ?? null,
@@ -197,7 +203,8 @@ async function saveTargets(store: LocalStore, date: string, dayType: DayType, ma
   const [existing] = await store.where('nutrition_targets', 'date', date)
   if (existing && !manual && (existing.is_manual || existing.day_type === dayType)) return
   if (weightKg === null) return
-  const targets = nutritionTargets(weightKg, dayType)
+  const [profile, targetsProfile] = await Promise.all([readProfile(store), readTargetsProfile(store)])
+  const targets = targetsFor(targetsProfile, { weightKg, dayType, date, sessionsPerWeek: profile.trainingDays.length }).macros
   await store.put('nutrition_targets', {
     id: existing?.id,
     date,
@@ -287,4 +294,10 @@ export async function logFood(store: LocalStore, input: { date: string; meal: Me
 
 export async function removeDiaryEntry(store: LocalStore, id: string) {
   await store.remove('diary_entries', id)
+}
+
+/** Faqja Objektivat (V2-E2-03): profili, pesha e sotme e objektivave dhe seancat në javë. */
+export async function targetsPageData(store: LocalStore, date: string) {
+  const [profile, targets, weightKg] = await Promise.all([readProfile(store), readTargetsProfile(store), weightFor(store, date)])
+  return { targets, weightKg, sessionsPerWeek: profile.trainingDays.length }
 }

@@ -228,6 +228,8 @@ Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: M
 
 Sipas bordit dhe §9: Ushqimi › Objektivat, hapi te hapat e parë për përdoruesit e rinj, fushat e reja te `user_settings` (gjinia, viti i lindjes, gjatësia, aktiviteti, qëllimi, ritmi, proteina dhe yndyra g/kg, mirëmbajtja e njohur), të sinkronizuara. "Ruaj" vlen nga sot; objektivat e ruajtura të ditëve të kaluara mbeten. Përdoruesi ekzistues pa këto fusha sheh te Ushqimi një kartë "Llogarit objektivat e tua" dhe deri atëherë objektivat e vjetra. **Pranimi:** pas "Ruaj", Sot dhe Ushqimi tregojnë objektivat e reja; dje mbetet me të vjetrat (provë); shqip dhe anglisht; tri temat në 390 px.
 
+**Gjendja (09.11.2026):** kodi dhe provat gati: `data/targets-profile.ts` (profili, `targetsFor`, `saveTargetsProfile` që rillogarit objektivat e ruajtura nga sot), `routes/nutrition-targets.tsx` (faqja, fletët e yndyrës dhe të mirëmbajtjes), hapi 4 nga 5 te hapat e parë me "Më vonë", ftesa dhe lidhja te Ushqimi. Migrimi `20261109090000_user_settings_targets.sql` pret përdoruesin (SQL Editor; `apply_migration` u refuzua). Mbetet kontrolli i pamjes në 390 px në tri temat, bashkë me ekranet e tjera të 0.21 para lëshimit.
+
 ## V2-E2-04 · Kontrolli javor
 
 Logjika pa UI (pesha trend, mirëmbajtja e vërtetë, propozimi me gjysmën e diferencës dhe ±150 kcal, kushtet 4 ditë + 1 peshim) dhe karta te Sot dhe te Objektivat; pranimi ruhet si korrigjim me datë, i sinkronizuar. **Pranimi:** prova me javë sintetike: shtim i ngadaltë → +kcal, shtim i shpejtë → −kcal, të dhëna të pakta → pa propozim; "Po" ndryshon objektivat nga sot, "Jo tani" e heq kartën deri të hënën tjetër.

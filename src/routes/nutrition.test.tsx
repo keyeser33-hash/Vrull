@@ -140,4 +140,11 @@ describe('Ushqimi', () => {
     expect(await within(list).findByRole('switch', { name: /ZMA/ })).not.toBeChecked()
     expect(within(list).getByRole('switch', { name: /ZMA/ }).closest('label')).toHaveTextContent('1 dose · Weak without a deficiency')
   })
+  // V2-E2-03: pa profil, objektivat vijnë nga Jimi dhe ekrani fton te kalkulatori.
+  it('objektivat e Jimit me ftesën te Objektivat', async () => {
+    await renderPage()
+    expect(await screen.findByText('Llogarit objektivat e tua')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Llogarit' })).toHaveAttribute('href', '/ushqimi/objektivat')
+    expect(screen.getByRole('link', { name: 'Objektivat' })).toHaveAttribute('href', '/ushqimi/objektivat')
+  })
 })

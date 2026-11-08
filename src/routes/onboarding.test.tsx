@@ -52,7 +52,7 @@ describe('hapat e parë', () => {
     const router = renderOnboarding()
     const user = userEvent.setup()
 
-    expect(screen.getByText('Hapi 1 nga 4')).toBeInTheDocument()
+    expect(screen.getByText('Hapi 1 nga 5')).toBeInTheDocument()
     expect(progress()).toHaveAttribute('aria-valuenow', '1')
     expect(screen.getByRole('heading', { level: 1, name: 'Gjuha dhe pesha' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Shqip' })).toHaveAttribute('aria-pressed', 'true')
@@ -60,7 +60,7 @@ describe('hapat e parë', () => {
     expect(screen.queryByRole('button', { name: 'Mbrapa' })).not.toBeInTheDocument()
     await toDays(user, '80,5')
 
-    expect(screen.getByText('Hapat 2 dhe 3 nga 4')).toBeInTheDocument()
+    expect(screen.getByText('Hapat 2 dhe 3 nga 5')).toBeInTheDocument()
     expect(progress()).toHaveAttribute('aria-valuenow', '3')
     const days = screen.getByRole('group', { name: 'Ditët e stërvitjes' })
     expect(within(days).getAllByRole('button').map((day) => day.textContent)).toEqual(['H', 'M', 'M', 'E', 'P', 'Sh', 'D'])
@@ -74,9 +74,21 @@ describe('hapat e parë', () => {
     expect(screen.getByRole('button', { name: 'Gjumi, 23:00' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Zgjidh programin' })).toBeInTheDocument()
-    expect(screen.getByText('Hapi 4 nga 4')).toBeInTheDocument()
+    // Hapi 4 (V32): objektivat dalin sapo plotësohen gjinia, gjatësia dhe aktiviteti.
+    expect(screen.getByRole('heading', { level: 1, name: 'Objektivat e tua' })).toBeInTheDocument()
+    expect(screen.getByText('Hapi 4 nga 5')).toBeInTheDocument()
     expect(progress()).toHaveAttribute('aria-valuenow', '4')
+    expect(screen.queryByRole('region', { name: 'Objektivat e tua' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('radio', { name: 'Burrë' }))
+    await user.type(screen.getByLabelText('Gjatësia, cm'), '185')
+    await user.click(screen.getByRole('radio', { name: /^Ulur/ }))
+    expect(screen.getByRole('region', { name: 'Objektivat e tua' })).toHaveTextContent('Stërvitje2 800kcalPushim2 520kcalProteina161 gçdo ditë')
+    expect(screen.getByText('Me peshën 80,5 kg nga hapi 1. Vlerësim, korrigjohet çdo javë.')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Zgjidh programin' })).toBeInTheDocument()
+    expect(screen.getByText('Hapi 5 nga 5')).toBeInTheDocument()
+    expect(progress()).toHaveAttribute('aria-valuenow', '5')
     const programmes = screen.getByRole('radiogroup', { name: 'Programi' })
     expect(within(programmes).getAllByRole('radio')).toHaveLength(1)
     expect(within(programmes).getByRole('radio', { name: /Shortcut to Size/ })).toHaveAttribute('aria-checked', 'true')
@@ -105,6 +117,8 @@ describe('hapat e parë', () => {
       sleepTime: '23:00',
     })
     expect(await trainingSnapshot(store)).toMatchObject({ label: 'Java 0', plan: { dayNumber: 1 } })
+    const { readTargetsProfile } = await import('@/data/targets-profile')
+    expect(await readTargetsProfile(store)).toMatchObject({ sex: 'male', heightCm: 185, activity: 'sedentary', goal: 'gain', from: expect.any(String) })
   })
 
   it('"Ndërto timin": ndërtuesi brenda hapave; "Ruaj programin" i mbyll me programin e ndërtuar', async () => {
@@ -112,6 +126,8 @@ describe('hapat e parë', () => {
     const user = userEvent.setup()
     await toDays(user, '82')
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
+    // "Më vonë": objektivat mbeten te plani i Jimit.
+    await user.click(screen.getByRole('button', { name: 'Më vonë' }))
     await user.click(screen.getByRole('button', { name: /^Ndërto timin/ }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Ndërto programin tënd' })).toBeInTheDocument()
@@ -143,17 +159,21 @@ describe('hapat e parë', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Language and weight' })).toBeInTheDocument()
     expect(language.get()).toBe('en')
     expect(window.localStorage.getItem('th-language')).toBe('en')
-    expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
+    expect(screen.getByText('Step 1 of 5')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'English' })).toHaveAttribute('aria-pressed', 'true')
     await user.type(screen.getByLabelText('Weight today'), '80.5')
     await user.click(screen.getByRole('button', { name: 'Continue' }))
 
     expect(screen.getByRole('heading', { level: 1, name: 'Days and times' })).toBeInTheDocument()
-    expect(screen.getByText('Steps 2 and 3 of 4')).toBeInTheDocument()
+    expect(screen.getByText('Steps 2 and 3 of 5')).toBeInTheDocument()
     const days = screen.getByRole('group', { name: 'Training days' })
     expect(within(days).getAllByRole('button').map((day) => day.textContent)).toEqual(['M', 'T', 'W', 'T', 'F', 'S', 'S'])
     expect(screen.getByRole('button', { name: 'Monday' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Start, 18:00' })).toHaveAccessibleDescription('The same for all 4 days. Change it any time in Settings.')
+    await user.click(screen.getByRole('button', { name: 'Continue' }))
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Your targets' })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /^Sitting/ })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Continue' }))
 
     expect(screen.getByRole('heading', { level: 1, name: 'Choose your programme' })).toBeInTheDocument()
@@ -161,6 +181,7 @@ describe('hapat e parë', () => {
     expect(screen.getByRole('button', { name: 'Start the programme' })).toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/Vazhdo|Hapi|Zgjidh programin|stërvitje/)
 
+    await user.click(screen.getByRole('button', { name: 'Back' }))
     await user.click(screen.getByRole('button', { name: 'Back' }))
     await user.click(screen.getByRole('button', { name: 'Back' }))
     await user.click(screen.getByRole('button', { name: 'Shqip' }))
@@ -175,7 +196,7 @@ describe('hapat e parë', () => {
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
     expect(screen.getByLabelText('Pesha sot')).toHaveAttribute('aria-invalid', 'true')
     expect(screen.getByLabelText('Pesha sot')).toHaveAccessibleDescription(/mes 30 dhe 300 kg/)
-    expect(screen.getByText('Hapi 1 nga 4')).toBeInTheDocument()
+    expect(screen.getByText('Hapi 1 nga 5')).toBeInTheDocument()
   })
 
   it('pesha nuk vjen e mbushur: nis nga 80 kg me prekjen e parë dhe ndryshon me 0,5 kg', async () => {

@@ -8,14 +8,20 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store } from '@/data/app-data'
 import { chooseLanguage } from '@/data/language'
 import { completeOnboarding, DEFAULT_PROFILE, isTime, parseWeight } from '@/data/profile'
+import { EMPTY_TARGETS_PROFILE, isComplete, personalTargets, saveTargetsProfile, type TargetsInput } from '@/data/targets-profile'
 import type { MessageKey } from '@/i18n'
 import { programBlockName } from '@/i18n/domain'
 import { LANGUAGE_NAMES, LANGUAGES, LOCALES } from '@/i18n/language'
 import { useI18n } from '@/i18n/use-i18n'
+import { localDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
+import type { Sex } from '@/nutrition/calculator'
 import { addMinutes, parseTimeInput } from '@/lib/time'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import { Segmented } from './builder-parts'
 import { ONBOARDING_BUILD, type OnboardingBuild } from './editor-nav'
+import { DEFAULT_GOAL, GOAL_ORDER } from './targets-format'
+import { ActivityPicker } from './targets-parts'
 
 // Hapat e parë (SPEC §3a, V2-E1-17; bordet "Gjuha dhe pesha", "Ditët dhe oraret", "Programi"): katër
 // hapa në tri ekrane, ditët dhe oraret bashkë si hapat 2 dhe 3. Ekrani është në adresë (`?hapi=`) dhe
@@ -25,14 +31,14 @@ import { ONBOARDING_BUILD, type OnboardingBuild } from './editor-nav'
 // ndërtuesin brenda kësaj faqeje (`/fillimi/programi/…`, rrugët fëmijë te router.tsx), që pesha, ditët
 // dhe oraret të mbeten këtu deri te "Ruaj programin", që i mbyll hapat me programin e ndërtuar.
 
-type Screen = 'gjuha' | 'ditet' | 'programi'
+type Screen = 'gjuha' | 'ditet' | 'objektivat' | 'programi'
 type TimeKey = 'fillimi' | 'zgjimi' | 'gjumi'
 type Times = Record<TimeKey, string>
 
-const STEPS = 4
-/** Hapat e çdo ekrani, për rreshtin "Hapi 1 nga 4" dhe shiritin e përparimit. */
-const SCREEN_STEPS: Record<Screen, readonly number[]> = { gjuha: [1], ditet: [2, 3], programi: [4] }
-const PREVIOUS: Record<Screen, Screen | null> = { gjuha: null, ditet: 'gjuha', programi: 'ditet' }
+const STEPS = 5
+/** Hapat e çdo ekrani, për rreshtin "Hapi 1 nga 5" dhe shiritin e përparimit. */
+const SCREEN_STEPS: Record<Screen, readonly number[]> = { gjuha: [1], ditet: [2, 3], objektivat: [4], programi: [5] }
+const PREVIOUS: Record<Screen, Screen | null> = { gjuha: null, ditet: 'gjuha', objektivat: 'ditet', programi: 'objektivat' }
 const isScreen = (value: string | null): value is Screen => value !== null && Object.hasOwn(SCREEN_STEPS, value)
 const isTimeKey = (value: string | null): value is TimeKey => value === 'fillimi' || value === 'zgjimi' || value === 'gjumi'
 
@@ -72,6 +78,7 @@ export function OnboardingPage() {
     zgjimi: DEFAULT_PROFILE.wakeTime,
     gjumi: DEFAULT_PROFILE.sleepTime,
   })
+  const [targets, setTargets] = useState<TargetsInput>({ ...EMPTY_TARGETS_PROFILE, goal: DEFAULT_GOAL })
   const [problem, setProblem] = useState<MessageKey | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -85,10 +92,15 @@ export function OnboardingPage() {
         navigate('/fillimi', { replace: true })
         return
       }
-      await completeOnboarding(store, profile(), undefined, programId)
+      await finish(programId)
     },
   }
   const child = useOutlet(build)
+  // Objektivat e hapit 4 ruhen vetëm kur janë të plota; "Më vonë" i lë te plani i Jimit (V32).
+  async function finish(programId?: string) {
+    await completeOnboarding(store, profile(), undefined, programId)
+    if (isComplete(targets)) await saveTargetsProfile(store, targets, localDate(new Date()))
+  }
   // Pa peshë të vlefshme (p.sh. kur app-i rihapet në mes) hapat nisin nga e para.
   const requested = params.get('hapi')
   const screen: Screen = weightValid && isScreen(requested) ? requested : 'gjuha'
@@ -113,12 +125,13 @@ export function OnboardingPage() {
     }
     if (screen === 'ditet') {
       if (days.length === 0) return setProblem('profile.daysInvalid')
-      return go('programi')
+      return go('objektivat')
     }
+    if (screen === 'objektivat') return go('programi')
     setBusy(true)
     setProblem(null)
     try {
-      await completeOnboarding(store, profile())
+      await finish()
       // Porta (gate.tsx) e sheh profilin e plotësuar dhe e hap Sot vetë.
     } catch {
       setProblem('entry.saveFailed')
@@ -151,6 +164,18 @@ export function OnboardingPage() {
               </Button>
             ) : null}
             <span className="type-caption text-muted-foreground tabular-nums">{stepText}</span>
+            {screen === 'objektivat' ? (
+              <Button
+                variant="ghost"
+                className="ml-auto text-muted-foreground"
+                onClick={() => {
+                  setTargets({ ...EMPTY_TARGETS_PROFILE, goal: DEFAULT_GOAL })
+                  go('programi')
+                }}
+              >
+                {t('entry.targets.later')}
+              </Button>
+            ) : null}
           </div>
           <div
             role="progressbar"
@@ -159,7 +184,7 @@ export function OnboardingPage() {
             aria-valuemax={STEPS}
             aria-valuenow={last}
             aria-valuetext={stepText}
-            className="grid grid-cols-4 gap-1.5 px-4"
+            className="grid grid-cols-5 gap-1.5 px-4"
           >
             {Array.from({ length: STEPS }, (_, index) => (
               <span key={index} className={cn('h-1 rounded-pill', index < last ? 'bg-ember' : 'bg-track')} />
@@ -172,6 +197,7 @@ export function OnboardingPage() {
           {screen === 'ditet' ? (
             <DaysAndTimes days={days} times={times} onDays={(next) => (setDays(next), setProblem(null))} onOpenTime={(key) => setParams({ hapi: 'ditet', ora: key })} />
           ) : null}
+          {screen === 'objektivat' ? <TargetsStep targets={targets} weightKg={weight!} sessionsPerWeek={days.length} onChange={setTargets} /> : null}
           {screen === 'programi' ? <ChooseProgramme /> : null}
         </main>
 
@@ -525,6 +551,111 @@ function OwnStarts() {
           </span>
         </button>
       ))}
+    </div>
+  )
+}
+
+/**
+ * Hapi 4 (V32, bordi "Hapat e parë · Objektivat"): gjinia, viti i lindjes, gjatësia, aktiviteti dhe
+ * qëllimi, me objektivat që dalin menjëherë. Pesha vjen nga hapi 1, seancat nga ditët e hapit 2.
+ */
+function TargetsStep({ targets, weightKg, sessionsPerWeek, onChange }: { targets: TargetsInput; weightKg: number; sessionsPerWeek: number; onChange: (next: TargetsInput) => void }) {
+  const { t, fmt } = useI18n()
+  const yearId = useId()
+  const heightId = useId()
+  const [yearText, setYearText] = useState(targets.birthYear === null ? '' : String(targets.birthYear))
+  const [heightText, setHeightText] = useState(targets.heightCm === null ? '' : String(targets.heightCm))
+  const [today] = useState(() => localDate(new Date()))
+  const year = Number(today.slice(0, 4))
+  const set = (patch: Partial<TargetsInput>) => onChange({ ...targets, ...patch })
+  const result = personalTargets(targets, { weightKg, sessionsPerWeek, date: today })
+  const fieldClass = 'h-[50px] w-full rounded-md border border-border bg-surface-2 px-3 font-display text-[22px] font-extrabold tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1.5">
+        <h1 className="type-display-m">{t('entry.targets.title')}</h1>
+        <p className="type-body text-muted-foreground">{t('entry.targets.text')}</p>
+      </div>
+      <div className="grid grid-cols-[1.1fr_1fr_1fr] items-end gap-2">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[13px] text-muted-foreground">{t('food.targets.sex')}</span>
+          <Segmented<Sex>
+            label={t('food.targets.sex')}
+            value={targets.sex ?? ('' as Sex)}
+            onChange={(sex) => set({ sex })}
+            options={[
+              { value: 'male', label: t('food.targets.male') },
+              { value: 'female', label: t('food.targets.female') },
+            ]}
+          />
+        </div>
+        <label htmlFor={yearId} className="flex flex-col gap-1.5 text-[13px] text-muted-foreground">
+          {t('food.targets.birthYear')}
+          <input
+            id={yearId}
+            inputMode="numeric"
+            maxLength={4}
+            placeholder={String(year - 30)}
+            value={yearText}
+            onChange={(event) => {
+              const next = event.target.value.replace(/\D/g, '')
+              setYearText(next)
+              const parsed = Number(next)
+              set({ birthYear: next.length === 4 && parsed >= year - 100 && parsed <= year - 14 ? parsed : null })
+            }}
+            className={fieldClass}
+          />
+        </label>
+        <label htmlFor={heightId} className="flex flex-col gap-1.5 text-[13px] text-muted-foreground">
+          {t('entry.targets.height')}
+          <input
+            id={heightId}
+            inputMode="numeric"
+            maxLength={3}
+            placeholder="175"
+            value={heightText}
+            onChange={(event) => {
+              const next = event.target.value.replace(/\D/g, '')
+              setHeightText(next)
+              const parsed = Number(next)
+              set({ heightCm: parsed >= 120 && parsed <= 230 ? parsed : null })
+            }}
+            className={fieldClass}
+          />
+        </label>
+      </div>
+      <ActivityPicker
+        columns={2}
+        legend={<span className="text-[13px] text-muted-foreground">{t('entry.targets.activity')}</span>}
+        value={targets.activity}
+        onChange={(activity) => set({ activity })}
+      />
+      <div className="flex flex-col gap-1.5">
+        <span className="text-[13px] text-muted-foreground">{t('food.targets.goal')}</span>
+        <Segmented
+          label={t('food.targets.goal')}
+          value={targets.goal ?? DEFAULT_GOAL}
+          onChange={(goal) => set({ goal, ratePct: null })}
+          options={GOAL_ORDER.map((value) => ({ value, label: t(`food.targets.goal.${value}`) }))}
+        />
+      </div>
+      {result ? (
+        <section aria-label={t('entry.targets.title')} className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-surface p-3.5 tabular-nums">
+          {[
+            { label: t('food.targets.trainingShort'), value: fmt.number(result.training.kcal), unit: 'kcal' },
+            { label: t('food.targets.restShort'), value: fmt.number(result.rest.kcal), unit: 'kcal' },
+            { label: t('food.protein'), value: fmt.unit(result.rest.proteinG, 'g'), unit: t('entry.targets.everyDay') },
+          ].map((item, index) => (
+            <span key={item.label} className={cn('flex flex-col gap-0.5', index > 0 && 'border-l border-border pl-2.5')}>
+              <span className="text-xs text-muted-foreground">{item.label}</span>
+              <span className="font-display text-[30px] leading-none font-extrabold">{item.value}</span>
+              <span className="text-xs text-muted-foreground">{item.unit}</span>
+            </span>
+          ))}
+        </section>
+      ) : null}
+      <p className="text-[13px] leading-[1.4] text-muted-foreground">{t('entry.targets.note', { weight: weightKg })}</p>
     </div>
   )
 }

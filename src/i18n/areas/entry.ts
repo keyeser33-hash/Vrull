@@ -79,6 +79,13 @@ export const sq = {
   'entry.programme.footnote': 'Nis te {firstBlock} · Stërvitja 1. Programin e ndryshon më vonë te Programi.',
   'entry.programme.start': 'Fillo programin',
   'entry.programme.saving': 'Po ruhet',
+  'entry.targets.title': 'Objektivat e tua',
+  'entry.targets.text': 'Sa të hash për të shtuar muskul. I ndryshon kur të duash te Ushqimi.',
+  'entry.targets.later': 'Më vonë',
+  'entry.targets.activity': 'Jashtë palestrës, si e kalon ditën?',
+  'entry.targets.note': 'Me peshën {weight} kg nga hapi 1. Vlerësim, korrigjohet çdo javë.',
+  'entry.targets.everyDay': 'çdo ditë',
+  'entry.targets.height': 'Gjatësia, cm',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -148,4 +155,11 @@ export const en: TranslationOf<typeof sq> = {
   'entry.programme.footnote': 'You start at {firstBlock} · Workout 1. You can change the programme later in Programme.',
   'entry.programme.start': 'Start the programme',
   'entry.programme.saving': 'Saving',
+  'entry.targets.title': 'Your targets',
+  'entry.targets.text': 'How much to eat to build muscle. Change them any time in Food.',
+  'entry.targets.later': 'Later',
+  'entry.targets.activity': 'Outside the gym, how do you spend the day?',
+  'entry.targets.note': 'Using your weight of {weight} kg from step 1. An estimate, adjusted every week.',
+  'entry.targets.everyDay': 'every day',
+  'entry.targets.height': 'Height, cm',
 }

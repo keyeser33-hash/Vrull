@@ -37,6 +37,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 ## Supabase
 
 - `apply_migration` me `drop policy`/`revoke` u anulua automatikisht → migrime të tilla i jepen përdoruesit si skedar SQL për SQL Editor që në fillim.
+- Edhe një `alter table … add column` me `apply_migration` u refuzua (09.11.2026, baza e prodhimit) → çdo migrim i ri i jepet përdoruesit si skedar te `supabase/migrations/` për SQL Editor, ose aplikohet vetëm pasi ai e lejon shprehimisht; asnjë lëshim nuk shkon para se migrimi të jetë në Supabase, sepse sinkronizimi i rreshtave me kolonat e reja refuzohet.
 - Historia e migrimeve merrte orën e aplikimit si version → pas aplikimit, versioni dhe emri vendosen sipas skedarit lokal.
 - Prova e RLS-it me MCP: `format('%s', boolean)` jep `t`/`f`, jo `true`/`false` → numëro sipas `t`/`f`; prova niset si një bllok `do` që mbaron me `raise exception`, që asgjë të mos mbetet në bazë.
 
