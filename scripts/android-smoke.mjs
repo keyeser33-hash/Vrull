@@ -183,9 +183,10 @@ function launch() {
   adb('shell', 'am', 'start', '-W', '-n', `${PKG}/.MainActivity`)
 }
 
+/** true/false sipas KeyguardController (dumpsys activity) ose dritareve; null kur sistemi nuk e thotë. */
 function keyguardShowing() {
-  const dump = adb('shell', 'dumpsys', 'window')
-  const match = dump.match(/mKeyguardShowing=(true|false)/) ?? dump.match(/KeyguardShowing=(true|false)/)
+  const dump = `${adb('shell', 'dumpsys', 'activity', 'activities')}\n${adb('shell', 'dumpsys', 'window')}`
+  const match = dump.match(/mKeyguardShowing=(true|false)/) ?? dump.match(/KeyguardShowing=(true|false)/i)
   return match ? match[1] === 'true' : null
 }
 
@@ -209,7 +210,9 @@ async function unlock() {
     adb('shell', 'input', 'text', PIN)
     adb('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
     await sleep(1500)
-    if (keyguardShowing() === false) return
+    const showing = keyguardShowing()
+    if (showing === false) return
+    if (showing === null && focusedWindow().includes(PKG)) return
   }
   throw new Error('Ekrani nuk u shkyç me PIN-in')
 }
@@ -525,15 +528,17 @@ const click = async (page, selector) => {
   await waitFor(() => page.evaluate(`!!${query}`), selector, 20_000)
   await page.evaluate(`${query}.click()`)
 }
+// Emrat krahasohen me hapësirat që nuk thyhen si hapësira ("Rrit peshën me 2,5 kg").
+const NORMALIZE = `((text) => (text ?? '').replace(/[\\u00A0\\u202F]/g, ' ').trim())`
 const buttonExpression = (label) =>
-  `[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === ${JSON.stringify(label)} || b.getAttribute('aria-label') === ${JSON.stringify(label)})`
+  `[...document.querySelectorAll('button')].find((b) => ${NORMALIZE}(b.textContent) === ${JSON.stringify(label)} || ${NORMALIZE}(b.getAttribute('aria-label')) === ${JSON.stringify(label)})`
 const hasButton = (page, label) => page.evaluate(`!!${buttonExpression(label)}`)
 const clickButton = async (page, label) => {
   await waitFor(() => hasButton(page, label), `butoni "${label}"`, 20_000)
   await page.evaluate(`${buttonExpression(label)}.click()`)
 }
 const clickButtonStarting = async (page, prefix) => {
-  const find = `[...document.querySelectorAll('button')].find((b) => (b.getAttribute('aria-label') ?? b.textContent.trim()).startsWith(${JSON.stringify(prefix)}))`
+  const find = `[...document.querySelectorAll('button')].find((b) => ${NORMALIZE}(b.getAttribute('aria-label') ?? b.textContent).startsWith(${JSON.stringify(prefix)}))`
   await waitFor(() => page.evaluate(`!!${find}`), `butoni "${prefix}…"`, 20_000)
   await page.evaluate(`${find}.click()`)
 }
@@ -876,7 +881,7 @@ try {
   // D3. Seanca: "Ruaj setin" te app-i (Incline Bench Press seti 1, 40 kg) dhe pushimi me ekran të kyçur.
   check('pas Bench Press seanca kalon te Incline Bench Press', JSON.stringify(await sessionStep(page)) === JSON.stringify({ exercise: 'Incline Bench Press', set: 'Seti 1 nga 2' }))
   for (let i = 0; i < 16; i++) await clickButton(page, 'Rrit peshën me 2,5 kg')
-  await waitFor(() => page.evaluate(`!!document.querySelector('button[aria-label="Shkruaj peshën, 40 kg"]')`), 'pesha 40 kg')
+  await waitFor(() => hasButton(page, 'Shkruaj peshën, 40 kg'), 'pesha 40 kg')
   await clickButton(page, 'Ruaj setin')
   await waitFor(() => hasButton(page, 'Hiq 15 sekonda nga pushimi'), 'pushimi te seanca')
   for (let i = 0; i < 5; i++) await clickButton(page, 'Hiq 15 sekonda nga pushimi')
@@ -913,9 +918,11 @@ try {
   screenshot('njoftimi-pas-procesit')
   collapseShade()
   page = await open()
-  await waitForPath(page, '/')
-  await clickButton(page, 'Vazhdo stërvitjen')
-  await waitForPath(page, '/seanca')
+  await waitFor(async () => ['/', '/seanca'].includes(await page.evaluate('location.pathname')), 'Sot ose seanca')
+  if ((await page.evaluate('location.pathname')) === '/') {
+    await clickButton(page, 'Vazhdo stërvitjen')
+    await waitForPath(page, '/seanca')
+  }
   await waitForText(page, 'Seti 2 u ruajt: 40 × 12')
   check('procesi i vrarë: hapja e app-it tregon "Seti 2 u ruajt"', true)
   await waitFor(() => sessionPrefs().queue.length === 0, 'radha e zbrazur', 15_000)
