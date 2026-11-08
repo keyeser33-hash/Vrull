@@ -1,32 +1,46 @@
 import { cva } from 'class-variance-authority'
 
-// Variantet e Omal UI v2. Në Training Hub `brand` (amber) i përket vetëm veprimit kryesor
-// të ekranit ("Fillo stërvitjen", "Ruaj setin", "Mbyll stërvitjen"): një për ekran.
+// Butonat e Vrullit (DESIGN.md › Butonat). Barlow Condensed uppercase nga stili, teksti në sentence
+// case. `primary` (prushi) është veprimi i vetëm kryesor i ekranit: "Fillo stërvitjen", "Ruaj setin",
+// "Mbyll stërvitjen"; 52 px në karta (`lg`), 58 px në fund të ekranit (`xl`), `tired` në ditë të
+// lodhura. Çdo madhësi që preket ka të paktën 44 px.
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
+  'inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap uppercase tracking-[0.02em] select-none transition-transform duration-240 ease-vrull active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary-hover',
-        brand: 'bg-brand text-brand-foreground hover:bg-brand-hover',
-        outline:
-          'border border-input bg-card text-foreground hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:opacity-85',
-        ghost: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-        destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
-        // Mbi `panel` (i errët në çdo temë): veprimi kryesor dhe ai dytësor (DESIGN.md, pika 5).
-        'on-panel': 'bg-panel-foreground text-panel hover:opacity-90',
-        panel: 'bg-panel-button text-panel-foreground hover:opacity-90',
+        primary: 'bg-ember font-extrabold text-on-ember',
+        // I mbushur: `surface-2` brenda kartës, `surface` mbi sfondin e faqes (ground="page").
+        secondary: 'border border-surface-border text-foreground',
+        outline: 'border border-border bg-transparent text-foreground',
+        ghost: 'bg-transparent text-foreground',
+        // Butoni i errët mbi kartën me prush, me tekst fiks në çdo temë.
+        ink: 'bg-ink text-on-ink',
+        // Emrat e v1 (Omal UI v2), që ekranet e v1 të hapen deri sa të rishikohen (E1-05 … E1-15).
+        // Kod i ri nuk i përdor (roja e dizajnit).
+        default: 'bg-foreground text-background',
+        brand: 'bg-ember font-extrabold text-on-ember',
+        destructive: 'bg-danger text-background',
+        'on-panel': 'bg-foreground text-background',
+        panel: 'bg-surface-2 text-foreground',
       },
       size: {
-        default: 'h-11 px-5',
-        md: 'h-10 px-5',
-        sm: 'h-8 px-4 text-[13px]',
-        icon: 'size-11 px-0',
-        // Veprimi kryesor i ekraneve të stërvitjes: 56 px, në gjerësi të plotë (SPEC §14).
-        xl: 'min-h-14 w-full px-6 text-lg',
+        default: 'h-touch rounded-sm px-4 text-lg',
+        lg: 'h-button rounded-md px-6 text-[22px]',
+        xl: 'h-button-l w-full rounded-md px-7 text-2xl',
+        icon: 'size-touch rounded-sm px-0',
+        // v1: `md` merr 44 px; `sm` (32 px) mbetet vetëm te ekranet e v1.
+        md: 'h-touch rounded-sm px-4 text-lg',
+        sm: 'h-8 rounded-sm px-3 text-sm',
       },
+      ground: { card: '', page: '' },
+      tired: { true: '', false: '' },
     },
-    defaultVariants: { variant: 'default', size: 'default' },
+    compoundVariants: [
+      { variant: 'secondary', ground: 'card', class: 'bg-surface-2' },
+      { variant: 'secondary', ground: 'page', class: 'bg-surface' },
+      { variant: 'primary', tired: true, class: 'bg-sand' },
+    ],
+    defaultVariants: { variant: 'default', size: 'default', ground: 'card', tired: false },
   },
 )

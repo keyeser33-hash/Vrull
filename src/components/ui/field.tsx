@@ -1,6 +1,6 @@
 import { type ReactNode, useId } from 'react'
 
-// Fusha e Omal UI v2: etiketa 14/20 500 6 px mbi fushën, fusha 44 px me radius 12 dhe tekst
+// Fusha e Vrullit: etiketa 14/20 500 6 px mbi fushën, fusha 44 px me radius 12 dhe tekst
 // 16 px, ndihma dhe gabimi poshtë saj, të lidhura me aria-describedby.
 
 interface ControlProps {
@@ -33,7 +33,7 @@ export function Field({
       </label>
       {children({ id, 'aria-describedby': describedBy, ...(error ? { 'aria-invalid': true as const } : {}) })}
       {error ? (
-        <p id={errorId} className="mt-1.5 text-sm leading-5 text-destructive">
+        <p id={errorId} className="mt-1.5 text-sm leading-5 text-danger">
           {error}
         </p>
       ) : null}

@@ -53,4 +53,7 @@ export const routes: RouteObject[] = [
       ...appRoutes,
     ],
   },
+  // Faqja e brendshme e sistemit Vrull: pa lidhje nga app-i, jashtë portës (pa të dhëna), e ngarkuar
+  // vetëm kur hapet.
+  { path: '/dev/ds', lazy: async () => ({ Component: (await import('@/routes/dev-ds')).DesignSystemPage }) },
 ]

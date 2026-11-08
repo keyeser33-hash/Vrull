@@ -6,6 +6,6 @@ import { buttonVariants } from './button-variants'
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants>
 
-export function Button({ className, variant, size, type = 'button', ...props }: ButtonProps) {
-  return <button type={type} className={cn(buttonVariants({ variant, size }), className)} {...props} />
+export function Button({ className, variant, size, ground, tired, type = 'button', ...props }: ButtonProps) {
+  return <button type={type} className={cn(buttonVariants({ variant, size, ground, tired }), className)} {...props} />
 }

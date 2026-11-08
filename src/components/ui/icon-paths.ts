@@ -1,6 +1,6 @@
-// Ikonat e Omal UI v2 (rrjet 24px, vijë 1.5px), të marra pa ndryshim nga sistemi i dizajnit.
-// Ndryshimi i vetëm: `size` pranon çdo numër (navigimi poshtë përdor 22px).
-// Paths are inlined so icons take currentColor. Omal UI v2: globals.css already has .ic .ac{fill:var(--brand);stroke:none} (the accent point is brand; --accent is the hover ground).
+// Ikonat e v1 (nga Omal UI v2, rrjet 24 px), që ekranet e v1 përdorin ende. Vizatohen me vijën 2 px
+// të Vrullit (icons.tsx); pika e shenjës (`.ac`) mbushet me `currentColor` (globals.css).
+// Ikonat e reja shtohen te icon-paths-vrull.ts.
 export const ICONS = {
  "aeroporti": "<path d=\"M10.5 12l-1 9M13.5 12l1 9M8 21h8\"/><path d=\"M7 7.5h10l-1.5 4.5h-7z\"/><path d=\"M12 7.5V5\"/><circle cx=\"12\" cy=\"3.5\" r=\"1.25\" class=\"ac\"/>",
  "agjencia": "<path d=\"M3 9l1.5-5h15L21 9\"/><path d=\"M3 9a2.25 2.25 0 004.5 0 2.25 2.25 0 004.5 0 2.25 2.25 0 004.5 0A2.25 2.25 0 0021 9\"/><path d=\"M4.5 11.5V21h15v-9.5\"/><path d=\"M10 21v-5.5h4V21\"/>",
