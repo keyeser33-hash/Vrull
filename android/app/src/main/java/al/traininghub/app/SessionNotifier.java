@@ -82,6 +82,8 @@ final class SessionNotifier {
     private static final int MAX_QUEUE = 200;
 
     private static final Object LOCK = new Object();
+    // Një vizatim në një kohë: një vizatim i vonuar me gjendjen e vjetër nuk e mbulon një më të ri.
+    private static final Object RENDER = new Object();
     @Nullable
     private static volatile MusicRow musicRow;
 
@@ -197,7 +199,7 @@ final class SessionNotifier {
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
-            .setContentIntent(openIntent(context, null));
+            .setContentIntent(openIntent(context, null, null, -1, ID_REST_DONE));
         notify(context, ID_REST_DONE, builder.build());
     }
 
@@ -303,22 +305,24 @@ final class SessionNotifier {
     // ---- Vizatimi ----
 
     static void render(Context context) {
-        State state;
-        JSONObject rest;
-        boolean dismissed;
-        synchronized (LOCK) {
-            SharedPreferences prefs = prefs(context);
-            state = State.load(prefs);
-            rest = object(prefs.getString(KEY_REST, null));
-            dismissed = state != null && state.sessionId.equals(prefs.getString(KEY_DISMISSED, ""));
+        synchronized (RENDER) {
+            State state;
+            JSONObject rest;
+            boolean dismissed;
+            synchronized (LOCK) {
+                SharedPreferences prefs = prefs(context);
+                state = State.load(prefs);
+                rest = object(prefs.getString(KEY_REST, null));
+                dismissed = state != null && state.sessionId.equals(prefs.getString(KEY_DISMISSED, ""));
+            }
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            if (state == null || dismissed || !manager.areNotificationsEnabled()) manager.cancel(ID_SESSION);
+            else notify(context, ID_SESSION, sessionNotification(context, state));
+            long endsAt = rest.optLong("endsAt");
+            // Pushimi pa tekstet e njoftimit (JS-i s'e ka dërguar ende gjendjen): vetëm alarmi.
+            if (state == null || endsAt <= System.currentTimeMillis() || !manager.areNotificationsEnabled()) manager.cancel(ID_REST);
+            else notify(context, ID_REST, restNotification(context, state, endsAt));
         }
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        if (state == null || dismissed || !manager.areNotificationsEnabled()) manager.cancel(ID_SESSION);
-        else notify(context, ID_SESSION, sessionNotification(context, state));
-        long endsAt = rest.optLong("endsAt");
-        // Pushimi pa tekstet e njoftimit (JS-i s'e ka dërguar ende gjendjen): vetëm alarmi.
-        if (state == null || endsAt <= System.currentTimeMillis() || !manager.areNotificationsEnabled()) manager.cancel(ID_REST);
-        else notify(context, ID_REST, restNotification(context, state, endsAt));
     }
 
     private static Notification sessionNotification(Context context, State state) {
@@ -327,7 +331,7 @@ final class SessionNotifier {
         int index = state.current();
         RemoteViews small = new RemoteViews(context.getPackageName(), R.layout.notification_session);
         RemoteViews big = new RemoteViews(context.getPackageName(), R.layout.notification_session_big);
-        PendingIntent open = openIntent(context, index < 0 ? null : state.steps.optJSONObject(index), state, index);
+        PendingIntent open = openIntent(context, index < 0 ? null : state.steps.optJSONObject(index), state, index, ID_SESSION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_SESSION)
             .setSmallIcon(R.drawable.ic_stat_vrull)
             .setColor(EMBER)
@@ -436,7 +440,7 @@ final class SessionNotifier {
             .setCategory(NotificationCompat.CATEGORY_WORKOUT)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentTitle(texts.optString("rest"))
-            .setContentIntent(openIntent(context, null, state, -1))
+            .setContentIntent(openIntent(context, null, state, -1, ID_REST))
             .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(small)
             .setCustomBigContentView(big)
@@ -480,8 +484,11 @@ final class SessionNotifier {
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    /** "Ndrysho" dhe prekja e njoftimit: hap app-in te seanca, te ky set kur ka një. */
-    private static PendingIntent openIntent(Context context, @Nullable JSONObject step, @Nullable State state, int index) {
+    /**
+     * "Ndrysho" dhe prekja e njoftimit: hap app-in te seanca, te ky set kur ka një. Çdo njoftim ka
+     * kodin e vet, që hapja e pushimit të mos ua ndryshojë setin "Ndrysho"-s së seancës.
+     */
+    private static PendingIntent openIntent(Context context, @Nullable JSONObject step, @Nullable State state, int index, int requestCode) {
         Intent intent = new Intent(context, MainActivity.class)
             .setAction(ACTION_OPEN)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -493,11 +500,7 @@ final class SessionNotifier {
             intent.putExtra("segment", !step.isNull("segment"));
             intent.putExtra(timed ? "seconds" : "reps", state.count(index));
         }
-        return PendingIntent.getActivity(context, ID_SESSION, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private static PendingIntent openIntent(Context context, @Nullable State state) {
-        return openIntent(context, null, state, -1);
+        return PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private static PendingIntent restDoneIntent(Context context) {
