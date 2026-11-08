@@ -7,6 +7,8 @@ import type { LocalStore } from '@/data/store'
 // Pranimi i TH-08: një seancë e plotë e Javës 0 dhe e Fazës 1 · Java 3 (drop set) regjistrohet
 // vetëm në bazën lokale, pa asnjë kërkesë rrjeti. Store i vërtetë, pa Supabase.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
+// Sot vizaton modelin 3D vetëm me WebGL; jsdom nuk e ka.
+vi.mock('@/lib/webgl', () => ({ webglAvailable: () => false }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
@@ -81,26 +83,19 @@ describe('Sot dhe seanca', () => {
   afterEach(() => expect(fetchSpy).not.toHaveBeenCalled())
 
   it('Sot tregon stërvitjen e radhës, rikuperimin dhe ushtrimin e parë', async () => {
+    // Gjendjet e Sot (dita e stërvitjes, pushimi, seanca e hapur) provohen te today.test.tsx.
     await renderApp('/')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Stërvitja 1' })).toBeInTheDocument()
-    expect(screen.getByText('Gjoks, triceps, pulpa')).toBeInTheDocument()
-    expect(screen.getByText('Java 0')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Muskujt e sotëm: gjoksi, tricepsi dhe pulpat' })).toBeInTheDocument()
-    const recovery = screen.getByRole('region', { name: 'Rikuperimi i muskujve të sotëm' })
-    expect(within(recovery).getAllByRole('listitem').map((row) => row.textContent)).toEqual([
-      'GjoksiPa stërvitje endeGati',
-      'TricepsiPa stërvitje endeGati',
-      'PulpatPa stërvitje endeGati',
-    ])
-    expect(screen.getByText('Bench Press')).toBeInTheDocument()
-    expect(screen.getByText('3 × 12–15')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Fillo stërvitjen' })).toBeEnabled()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Gjoks, triceps, pulpa' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(screen.getByRole('banner')).toHaveTextContent('Java 0')
+    expect(screen.getByText('Gjoksi: gati')).toBeInTheDocument()
+    expect(screen.getByText('Bench Press: zgjidh peshën ku mbyll 12–\u206015.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Fillo stërvitjen e parë' })).toBeEnabled()
   })
 
   it('një seancë e plotë e Javës 0, me pesha dhe përsëritje në rezervë, pa internet', { timeout: 60_000 }, async () => {
     const user = userEvent.setup()
     const router = await renderApp('/')
-    await user.click(await screen.findByRole('button', { name: 'Fillo stërvitjen' }))
+    await user.click(await screen.findByRole('button', { name: 'Fillo stërvitjen e parë' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/seanca'))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
@@ -129,7 +124,8 @@ describe('Sot dhe seanca', () => {
     expect(saved + 1).toBe(21)
     await user.click(screen.getByRole('button', { name: 'Mbyll stërvitjen' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Stërvitja 2' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'U krye për sot' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Shpinë, biceps, bark' })).toBeInTheDocument()
 
     const sets = await data.store.all('set_logs')
     expect(sets).toHaveLength(21)
