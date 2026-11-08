@@ -792,7 +792,7 @@ try {
   await waitForPath(page, '/')
   await waitForText(page, 'Vazhdo stërvitjen')
   await waitForText(page, 'Java 0')
-  check('v2: pa hyrje të re, direkt te Sot me seancën e hapur të v1', await hasText(page, '1 nga 21 sete'))
+  check('v2: pa hyrje të re, direkt te Sot me seancën e hapur të v1', await waitFor(() => hasText(page, '1 nga 21 sete'), '1 nga 21 sete', 15_000).then(() => true, () => false))
   check('v2: tema OLED mbetet', (await page.evaluate('document.documentElement.className')) === 'dark oled')
   const bandOled = await waitForBand('#000000')
   check('v2: rripi i orës i zi në OLED', sameColor(bandOled, '#000000'), bandOled.join(','))
@@ -822,7 +822,8 @@ try {
   check('v2: pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
   await click(page, 'a[href="/progresi"]')
   await waitForText(page, '85 cm')
-  check('v2: Progresi tregon matjen dhe foton e v1', await page.evaluate(`!!document.querySelector('button[aria-label^="Para, "]')`))
+  await waitFor(() => page.evaluate(`!!document.querySelector('button[aria-label^="Para, "]')`), 'fotoja "Para" te Progresi')
+  check('v2: Progresi tregon matjen dhe foton e v1', true)
   screenshot('v2-progresi')
   await click(page, 'a[href="/ushqimi"]')
   await waitForText(page, 'Regjistruar ·')
@@ -838,7 +839,7 @@ try {
   await waitForNotificationTitle(4200, 'Bench Press · Seti 2 nga 3')
   check('njoftimi i seancës: Bench Press · Seti 2 nga 3, me peshën e setit 1', notification(4200).text.startsWith('60 kg × 12'), notification(4200).text)
   // Muzika pa leje: karta "Lidh muzikën tënde" (V2-E1-12).
-  check('muzika pa leje: karta "Lidh muzikën tënde" te seanca', await hasText(page, 'Lidh muzikën tënde'))
+  check('muzika pa leje: karta "Lidh muzikën tënde" te seanca', await waitFor(() => hasText(page, 'Lidh muzikën tënde'), 'Lidh muzikën tënde', 15_000).then(() => true, () => false))
   screenshot('seanca-v2')
 
   // D1. Prekja e dyfishtë te paneli i njoftimeve ruan një set (Bench Press seti 2), jo dy.
@@ -1126,6 +1127,7 @@ try {
   await page.send('Page.reload')
   await waitForHeading(page, 'Cilësimet')
   check('rifreskimi te /cilesimet mban faqen', true)
+  await waitFor(() => hasButton(page, 'Dil'), 'butoni "Dil"')
   check('"Dil" te fundi i Cilësimeve', await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Dil'); b.scrollIntoView(); return b.getBoundingClientRect().bottom <= innerHeight })()`))
   await page.evaluate(`[...document.querySelectorAll('a')].find((a) => (a.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
   await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'Pamja')
@@ -1188,7 +1190,7 @@ try {
   await clickButton(page, 'Fillo programin')
   await waitForPath(page, '/')
   await waitForText(page, 'Java 0')
-  check('hapat e parë mbarojnë te Sot me Java 0, shqip', await hasText(page, 'Stërvitja 1 ·'))
+  check('hapat e parë mbarojnë te Sot me Java 0, shqip', await waitFor(() => hasText(page, 'Stërvitja 1 ·'), 'Stërvitja 1 ·', 15_000).then(() => true, () => false))
   await waitFor(() => posted('user_settings').some((row) => row.language === 'sq'), 'gjuha te user_settings', 20_000)
   screenshot('sot-instalim-i-ri')
 
