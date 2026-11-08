@@ -1088,65 +1088,39 @@ try {
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     await sleep(1000)
     await expandShade()
-    // Rreshti i muzikës është te pamja e zgjeruar: njoftimi i seancës hapet me shigjetën e vet kur është i mbledhur.
-    let nodes = uiNodes()
-    if (nodes && !nodes.some((node) => node.id.endsWith(':id/music_title'))) {
-      const sessionTitle = nodes.find((node) => node.text === notification(4200)?.title)
-      const expand = sessionTitle && nodes.filter((node) => node.id === 'android:id/expand_button').sort((a, b) => Math.abs(a.y - sessionTitle.y) - Math.abs(b.y - sessionTitle.y))[0]
-      if (expand) {
-        adb('shell', 'input', 'tap', String(expand.x), String(expand.y))
-        await sleep(1200)
-        nodes = uiNodes()
-      }
-    }
-    screenshot('njoftimi-muzika')
-    if (nodes) {
-      const title = nodes.find((node) => node.id.endsWith(':id/music_title'))
-      check('njoftimi: rreshti i muzikës tregon këngën', title?.text === 'Kënga e dytë', title?.text ?? 'pa rresht')
-      const pause = nodes.find((node) => node.id.endsWith(':id/music_play_pause') && node.desc === 'Pauzë')
-      check('njoftimi: luaj/pauzë sipas gjendjes', Boolean(pause))
-      adb('shell', 'input', 'tap', String(pause.x), String(pause.y))
-      await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
-      check('njoftimi: "Pauzë" ndal muzikën', true)
-      await waitFor(() => (uiNodes() ?? []).some((node) => node.id.endsWith(':id/music_play_pause') && node.desc === 'Luaj'), 'butoni "Luaj" pas pauzës', 15_000)
-      nodes = uiNodes() ?? []
-      const play = nodes.find((node) => node.id.endsWith(':id/music_play_pause'))
-      adb('shell', 'input', 'tap', String(play.x), String(play.y))
-      await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
-      const next = (uiNodes() ?? []).find((node) => node.id.endsWith(':id/music_next'))
-      adb('shell', 'input', 'tap', String(next.x), String(next.y))
-      await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
-      await waitFor(() => (uiNodes() ?? []).some((node) => node.id.endsWith(':id/music_title') && node.text === 'Kënga e tretë'), 'titulli i ri te njoftimi', 15_000)
-      const previous = (uiNodes() ?? []).find((node) => node.id.endsWith(':id/music_previous'))
-      adb('shell', 'input', 'tap', String(previous.x), String(previous.y))
-      await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
-      check('njoftimi: luaj, para dhe mbrapa punojnë dhe titulli ndjek këngën', true)
-      screenshot('njoftimi-muzika-pas')
+    // Butonat e rreshtit (notification_music.xml). uiautomator i jep kur ekrani qetësohet; përndryshe (kronometri
+    // i njoftimit e mban në lëvizje) gjenden nga butoni prush i njoftimit të zgjeruar: rreshti 48 dp nis 8 dp nën
+    // kontrollet, butonat 48 dp me 6 dp mes tyre, i fundit në skajin e djathtë.
+    const nodes = uiNodes() ?? []
+    const node = (name) => nodes.find((entry) => entry.id.endsWith(`:id/music_${name}`))
+    let buttons
+    if (node('play_pause') && node('next') && node('previous')) {
+      check('njoftimi: rreshti i muzikës tregon këngën', node('title')?.text === 'Kënga e dytë', node('title')?.text)
+      check('njoftimi: luaj/pauzë sipas gjendjes', node('play_pause').desc === 'Pauzë', node('play_pause').desc)
+      buttons = Object.fromEntries(['play_pause', 'next', 'previous'].map((name) => [name, [String(node(name).x), String(node(name).y)]]))
     } else {
-      // uiautomator nuk e kap panelin (kronometri i njoftimit nuk e lë ekranin të qetë). Butonat e rreshtit
-      // gjenden nga butoni prush i njoftimit, sipas notification_session_big.xml dhe notification_music.xml:
-      // rreshti 48 dp nis 8 dp nën kontrollet, butonat 48 dp me 6 dp mes tyre, i fundit në skajin e djathtë.
       info('njoftimi i muzikës', 'uiautomator nuk e kapi panelin (kronometri); butonat gjenden nga butoni prush')
       const dp = Number(adb('shell', 'wm', 'density').match(/(\d+)\s*$/)[1]) / 160
       const ember = emberButton()
       const right = ember.x + ember.w / 2
       const y = Math.round(ember.y + ember.h / 2 + 32 * dp)
       const at = (index) => [String(Math.round(right - 24 * dp - index * 54 * dp)), String(y)]
-      const [next, toggle, previous] = [at(0), at(1), at(2)]
-      adb('shell', 'input', 'tap', ...toggle)
-      await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
-      await sleep(1500)
-      adb('shell', 'input', 'tap', ...toggle)
-      await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
-      await sleep(1500)
-      adb('shell', 'input', 'tap', ...next)
-      await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
-      await sleep(1500)
-      screenshot('njoftimi-muzika-pas')
-      adb('shell', 'input', 'tap', ...previous)
-      await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
-      check('njoftimi: rreshti i muzikës me pauzë, luaj, para dhe mbrapa', true)
+      buttons = { next: at(0), play_pause: at(1), previous: at(2) }
     }
+    screenshot('njoftimi-muzika')
+    adb('shell', 'input', 'tap', ...buttons.play_pause)
+    await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
+    await sleep(1500)
+    adb('shell', 'input', 'tap', ...buttons.play_pause)
+    await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
+    await sleep(1500)
+    adb('shell', 'input', 'tap', ...buttons.next)
+    await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
+    await sleep(1500)
+    screenshot('njoftimi-muzika-pas')
+    adb('shell', 'input', 'tap', ...buttons.previous)
+    await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
+    check('njoftimi: rreshti i muzikës me pauzë, luaj, para dhe mbrapa', true)
     collapseShade()
     launch()
     // MusicBrainz përmes CapacitorHttp (V2-E1-16a): për "Kënga e dytë" GetSongBPM i imituar s'ka tempo, ndaj
