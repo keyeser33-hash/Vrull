@@ -65,6 +65,7 @@ Detyrat e çdo etape shkruhen këtu në fillim të saj, me kriteret e pranimit, 
 | V2-E1-14 | Trupi 3D: ngjyrat e Vrullit, shtresat, sipas matjeve, shto matjen | E1-05 |
 | V2-E1-15 | Historiku dhe seanca e kaluar, ndryshimi i një seti | E1-05 |
 | V2-E1-16 | Lëshimi 0.20.0: rishikimi, provat, emulatori, publikimi | të gjitha |
+| V2-E1-17 | Hyrja dhe emri Vrull: hyrja, marrja e të dhënave, hapat e parë, emri i app-it | E1-05 |
 
 ## V2-E1-01 · Sistemi Vrull në kod
 
@@ -152,6 +153,10 @@ Ngjyrat e Vrullit dhe drita nga `model-light`; volumi me `volume-1..3`; shtresat
 ## V2-E1-15 · Historiku
 
 Historiku i seancave sipas javëve, seanca e kaluar me setet dhe rekordet, ndryshimi i një seti që rillogarit e1RM-në dhe rekordet. **Pranimi:** përputhet me bordet; ndryshimi i një seti sinkronizohet.
+
+## V2-E1-17 · Hyrja dhe emri Vrull
+
+Shtuar më 08.11.2026: hyrja dhe hapat e parë mbetën jashtë kornizës (E1-05) dhe pa detyrë. Sipas bordeve Hyrja · Hyr, Hapja, Gjuha dhe pesha, Ditët dhe oraret, Programi: hyrja (pa "Kam një kod ftese", që vjen me Etapën 4), marrja e të dhënave, katër hapat e parë me gjuhën te hapi 1; te "Zgjidh programin" Shortcut to Size, kurse "Ndërto timin" dhe "Importo nga PDF" shtohen kur të jenë gati E1-10 dhe E1-11. Emri Vrull kudo ku përdoruesi e sheh: emri i app-it në Android, njoftimi i përditësimit (në gjuhën e app-it), skedari i eksportit, hyrja; `appId` mbetet `al.traininghub.app`. **Pranimi:** përputhen me bordet në tri temat dhe në dy gjuhët; një përdorues i v1 hyn dhe i gjen të dhënat; një përdorues i ri kalon hapat e parë dhe nis te Java 0.
 
 ## V2-E1-16 · Lëshimi 0.20.0
 

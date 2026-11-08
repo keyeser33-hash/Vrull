@@ -49,7 +49,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 
 Tekstet e UI-së vijnë nga katalogu `src/i18n` (SPEC V22, §0.3a); ekranet që kanë mbetur kalojnë një nga një, me detyrën e secilit.
 
-- Një tekst i ri: çelësi në shqip (burimi i çelësave, emri sipas vendit: `login.title`) dhe i njëjti çelës në anglishten britanike (Programme, yoghurt, litres). Zonat e Etapës 1 (Sot, seanca, programi, trupi, historiku) kanë skedarin e tyre te `src/i18n/areas/`, me të dyja gjuhët; korniza dhe pjesa tjetër te `sq.ts` dhe `en.ts`. Zonë e re: skedar te `areas/`, i shtuar te `AREAS` dhe te bashkimet e `sq.ts`/`en.ts`. Tipet dhe `catalog.test.ts` kapin çelësin që mungon, parametrin ose çelësin e dyfishtë.
+- Një tekst i ri: çelësi në shqip (burimi i çelësave, emri sipas vendit: `login.title`) dhe i njëjti çelës në anglishten britanike (Programme, yoghurt, litres). Zonat e Etapës 1 (Sot, seanca, programi, trupi, historiku, hyrja) kanë skedarin e tyre te `src/i18n/areas/`, me të dyja gjuhët; korniza dhe pjesa tjetër te `sq.ts` dhe `en.ts`. Zonë e re: skedar te `areas/`, i shtuar te `AREAS` dhe te bashkimet e `sq.ts`/`en.ts`. Tipet dhe `catalog.test.ts` kapin çelësin që mungon, parametrin ose çelësin e dyfishtë.
 - Në komponentë: `const { t, fmt } = useI18n()` (`@/i18n/use-i18n`), që ndërrimi i gjuhës t'i rivizatojë; jashtë React-it: `currentI18n()` nga `@/i18n`.
 - Parametrat: `'{count} sete'` me `t('x', { count })`. Një numër te parametri formatohet sipas gjuhës (62,5 / 62.5, 2 900 / 2,900); vitet dhe kodet jepen si tekst.
 - Shumësi: mesazh me forma (`{ one, other }`, `'=0'`, `ordinal: true`), që rregullat e gjuhës zgjedhin formën.
