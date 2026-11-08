@@ -74,7 +74,8 @@ const fetchSpy = vi.spyOn(globalThis, 'fetch')
 async function reset() {
   const { completeOnboarding } = await import('@/data/profile')
   for (const table of ['form_videos', 'set_logs', 'workout_sessions', 'program_state', 'slot_prescriptions', 'program_slots', 'program_days', 'program_blocks', 'programs', 'exercises', 'user_settings'] as const) {
-    for (const row of await data.store.all(table)) await data.store.remove(table, row.id)
+    // Zbrazje e vërtetë: një rresht i fshirë butë nga prova e mëparshme nuk duhet të ndikojë te tjetra.
+    await data.db[table].clear()
   }
   await data.db._video_files.clear()
   localStorage.clear()
@@ -187,7 +188,7 @@ describe('videot e formës (V2-E1-13)', () => {
   it('krahasimi me herën e kaluar, kufiri 1:00 dhe mesazhi i hapësirës nga 80%', async () => {
     const { slot } = await openSession()
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
-    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 1, weight_kg: 60, reps: 12, is_warmup: false })
+    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 1, weight_kg: 60, reps: 12, is_warmup: false, logged_at: '2026-11-01T18:10:00.000Z' })
     await data.store.put('form_videos', video({ exercise_id: slot.exerciseId, session_id: 'last-week', set_number: 1, bytes: 850_000_000 }))
     const user = userEvent.setup()
     await renderAt('/seanca?video=1')
@@ -272,7 +273,7 @@ describe('videot e formës (V2-E1-13)', () => {
     const { slot } = await openSession()
     const { addFormVideo, syncFormVideoFiles } = await import('@/data/form-videos')
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
-    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 2, weight_kg: 60, reps: 12, is_warmup: false })
+    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 2, weight_kg: 60, reps: 12, is_warmup: false, logged_at: '2026-11-01T18:14:00.000Z' })
     const id = await addFormVideo(data.store, data.db, {
       exerciseId: slot.exerciseId,
       sessionId: 'last-week',
