@@ -116,7 +116,7 @@ e1RM-ja më e lartë e 28 ditëve të fundit për një ushtrim (ose e fundit e n
 Pesha që del nga 1RM aktuale për kufirin e sipërm të intervalit, e rrumbullakosur poshtë sipas pajisjes.
 
 **Peshat e javës**:
-Pesha e propozuar e çdo sloti me peshë për javën që shqyrtohet, me llogarinë që e jep; përdoruesi e pranon ("Prano peshat"), e ndryshon ose e lë "Më vonë". Pa vendimin e tij vlen propozimi.
+Pesha e propozuar e çdo sloti me peshë për javën që shqyrtohet, me llogarinë që e jep; përdoruesi e pranon ("Prano peshat"), e ndryshon ose e lë "Më vonë". Pa vendimin e tij vlen propozimi. Çdo slot ka një peshë të javës, të njëjtë te Sot, seanca dhe Programi; setet e seancës së hapur nuk e lëvizin.
 _Avoid_: sugjerimi automatik
 
 **Referenca e fazës së kaluar**:
