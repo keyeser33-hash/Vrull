@@ -417,6 +417,8 @@ function tapSaveOnce(label, times) {
 async function tapSave(label, nextTitle, times = 1) {
   for (let attempt = 1; ; attempt++) {
     await sleep(800)
+    // Ekrani i kyçur i sapozgjuar i vizaton njoftimet pak më vonë: butoni pritet, jo kërkohet një herë.
+    await waitFor(() => emberButton(), `butoni "Ruaj setin" te njoftimi (${label})`, 10_000).catch(() => null)
     const result = tapSaveOnce(label, times)
     const moved = await waitFor(() => notification(4200)?.title === nextTitle, `njoftimi 4200: "${nextTitle}"`, 15_000).catch(() => false)
     if (moved) {
@@ -425,6 +427,24 @@ async function tapSave(label, nextTitle, times = 1) {
     }
     if (attempt === 3) throw new Error(`Prekja te njoftimi nuk e ruajti setin (${label}); njoftimi: "${notification(4200)?.title ?? 'asnjë'}"`)
   }
+}
+
+/**
+ * Fsheh për 10 minuta (snooze) njoftimet e tjera të app-it ("Pushimi mbaroi", "Vrull u përditësua" dhe grupin e
+ * tyre), që njoftimi i seancës të jetë i pari te paneli dhe Android-i ta tregojë të zgjeruar, me rreshtin e muzikës.
+ */
+function onlySessionNotification() {
+  const dump = adb('shell', 'dumpsys', 'notification', '--noredact')
+  const keys = [...new Set([...dump.matchAll(/key=(0\|al\.traininghub\.app\|[^\s:]+)/g)].map((match) => match[1]))]
+  const others = keys.filter((key) => !key.startsWith(`0|${PKG}|4200|`))
+  for (const key of others) {
+    try {
+      shell(`cmd notification snooze --for 600000 '${key}'`)
+    } catch (error) {
+      info('njoftimi i fshehur', `${key}: ${error.message}`)
+    }
+  }
+  return others
 }
 
 // ---- Supabase i imituar -------------------------------------------------------------------
@@ -1164,6 +1184,7 @@ try {
       // Rreshti i muzikës te njoftimi: titulli dhe kontrollet (uiautomator; ekrani me kronometër mund të mos qetësohet).
       adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
       await sleep(1000)
+      info('njoftimet e fshehura para rreshtit të muzikës', onlySessionNotification())
       await expandShade()
       // Butonat e rreshtit (notification_music.xml). uiautomator i jep kur ekrani qetësohet; përndryshe (kronometri
       // i njoftimit e mban në lëvizje) gjenden nga butoni prush i njoftimit të zgjeruar: rreshti 48 dp nis 8 dp nën
