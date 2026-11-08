@@ -49,6 +49,7 @@ vi.mock('@/data/app-data', async () => {
 })
 
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
+
 async function reset() {
   await import('@/data/app-data')
   const { completeOnboarding } = await import('@/data/profile')
