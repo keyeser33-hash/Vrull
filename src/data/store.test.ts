@@ -46,6 +46,18 @@ describe('shkrimet lokale', () => {
     expect(updated.updated_at).toBe('2026-11-30T08:00:01.000Z')
   })
 
+  it('çdo ndryshim e rrit updated_at, edhe në të njëjtën milisekondë ose kur ora kthehet mbrapa', async () => {
+    const { db, store, tick } = setup()
+    const row = await store.put('body_measurements', { date: '2026-11-30', weight_kg: 80 })
+    const same = await store.put('body_measurements', { id: row.id, weight_kg: 79.5 })
+    expect(same.updated_at).toBe('2026-11-30T08:00:00.001Z')
+    tick(-60_000)
+    const back = await store.put('body_measurements', { id: row.id, weight_kg: 79 })
+    expect(back.updated_at).toBe('2026-11-30T08:00:00.002Z')
+    await store.remove('body_measurements', row.id)
+    expect((await db.body_measurements.get(row.id))?.updated_at).toBe('2026-11-30T08:00:00.003Z')
+  })
+
   it('një rresht i sinkronizuar që ndryshohet pret përsëri dërgimin', async () => {
     const { db, store } = setup()
     const row = await store.put('foods', { source: 'custom', name: 'Vezë', kcal: 143, protein_g: 12.6, carbs_g: 0.7, fat_g: 9.5 })
