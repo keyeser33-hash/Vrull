@@ -97,6 +97,11 @@ export interface Program {
   overrides: SlotOverride[]
   /** Si regjistrohet çdo ushtrim (pesha, pesha e trupit, koha) dhe me çfarë pajisje. */
   exercises: Record<string, ExerciseInfo>
+  /**
+   * "Progresi i zgjuar" i gjithë programit (V2-E1-10, `programs.progression`): vlen për çdo slot që
+   * nuk ka rregull më vete në asnjë nivel. Null ose mungon: pa rregull.
+   */
+  progression?: ProgressionRule | null
 }
 
 /** Treguesi "stërvitja e radhës": blloku, java brenda bllokut, dita. */

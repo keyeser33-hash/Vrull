@@ -1,6 +1,7 @@
 import { planSession } from '@/program/engine'
-import type { LibraryExercise } from '@/program/library'
+import { type LibraryExercise, loadLibrary, muscleKeys } from '@/program/library'
 import { type Scope, slotRules, type SlotRules } from '@/program/rules'
+import { isTemplateId, type ProgramTemplate, type TemplateId, templateById } from '@/program/templates'
 import type { Block, Prescription, Program, ProgressionRule, SessionPlan, Technique } from '@/program/types'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
@@ -325,6 +326,189 @@ export async function startProgram(store: LocalStore, name: string): Promise<str
   return programId
 }
 
+/** "Progresi i zgjuar" që merr një program i ri nga e para (bordi "Ndërto"): RIR ≥ 2, +2,5 kg. */
+export const DEFAULT_PROGRESSION: ProgressionRule = { minRir: 2, incrementKg: 2.5 }
+
+/** Emrat e programit, blloqeve dhe ditëve të një shablloni, në gjuhën e përdoruesit (`builder.template.*`). */
+export interface TemplateNames {
+  program: Record<TemplateId, string>
+  block: Record<string, string>
+  day: Record<string, string>
+}
+
+type ExerciseValues = { library_id: string | null; name: string; equipment: string; tracking: string; primary_muscles: string[]; secondary_muscles: string[] }
+
+/** Si krijohet ushtrimi i shabllonit që mungon: muskujt e Shtojcës E, ose ata të bibliotekës. */
+async function templateExerciseValues(template: ProgramTemplate): Promise<(id: string) => ExerciseValues> {
+  const source = template.source
+  if (source.kind === 'defs') {
+    return (id) => {
+      const def = source.exercises.find((candidate) => candidate.id === id)
+      if (!def) throw new Error(`Ushtrimi ${id} mungon te shablloni.`)
+      return { library_id: def.libraryId, name: def.name, equipment: def.equipment, tracking: def.tracking, primary_muscles: def.primary, secondary_muscles: def.secondary }
+    }
+  }
+  const library = new Map((await loadLibrary()).map((entry) => [entry.id, entry]))
+  return (id) => {
+    const entry = library.get(id)
+    if (!entry) throw new Error(`Ushtrimi ${id} mungon te biblioteka.`)
+    const primary = muscleKeys(entry.primary)
+    return {
+      library_id: entry.id,
+      name: entry.name,
+      equipment: entry.equipment,
+      tracking: source.tracking[id] ?? (entry.equipment === 'bodyweight' ? 'bodyweight_reps' : 'weight_reps'),
+      primary_muscles: primary,
+      secondary_muscles: muscleKeys(entry.secondary).filter((key) => !primary.includes(key)),
+    }
+  }
+}
+
+/**
+ * Ushtrimet e shabllonit si ushtrime të përdoruesit, një herë secili: ai me të njëjtën ID të bibliotekës
+ * ose me të njëjtin emër ripërdoret, që historia të mbetet bashkë (§4). Kthen ID-në e shabllonit → rreshti.
+ */
+async function templateExercises(store: LocalStore, template: ProgramTemplate): Promise<Map<string, string>> {
+  const used = new Set<string>([
+    ...template.program.slots.map((slot) => slot.exerciseId),
+    ...template.program.overrides.flatMap((row) => (row.exerciseId ? [row.exerciseId] : [])),
+  ])
+  const rows = await store.all('exercises')
+  const byLibrary = new Map(rows.filter((row) => row.library_id).map((row) => [String(row.library_id), row.id]))
+  const byName = new Map(rows.map((row) => [String(row.name).toLowerCase(), row.id]))
+  const valuesOf = await templateExerciseValues(template)
+  const found = new Map<string, string>()
+  for (const id of used) {
+    const values = valuesOf(id)
+    // Shortcut to Size i gjen ushtrimet sipas emrit (si ensureShortcutToSize); biblioteka sipas ID-së, pastaj emrit.
+    const existing = (template.source.kind === 'library' ? byLibrary.get(id) : undefined) ?? byName.get(values.name.toLowerCase())
+    const rowId = existing ?? (await store.put('exercises', values)).id
+    byName.set(values.name.toLowerCase(), rowId)
+    if (values.library_id) byLibrary.set(values.library_id, rowId)
+    found.set(id, rowId)
+  }
+  return found
+}
+
+/**
+ * Kopje e një shablloni si program i ri, draft (bordi "Programet"; GLOSSARY "Shablloni"): blloqet,
+ * ditët, slotet, rregullat dhe progresi i zgjuar, pa lidhje me shabllonin. Shortcut to Size, kur
+ * përdoruesi s'e ka ende, merr burimin e tij (`source`), që programi të njihet si ai i §5.
+ */
+export async function createFromTemplate(store: LocalStore, templateId: TemplateId, names: TemplateNames): Promise<string> {
+  const template = templateById(templateId)
+  const { program: definition } = template
+  const label = (kind: 'block' | 'day', name: string) => (template.localized ? (names[kind][name] ?? name) : name)
+  const firstSts = templateId === 'shortcut_to_size' && !(await store.all('programs')).some((row) => row.source === 'shortcut_to_size')
+  const exerciseIds = await templateExercises(store, template)
+  const program = await store.put('programs', {
+    name: names.program[templateId],
+    source: firstSts ? 'shortcut_to_size' : 'custom',
+    template: templateId,
+    draft: true,
+    progression: template.progression,
+  })
+  const blocks = [...definition.blocks].sort((a, b) => a.position - b.position)
+  const days = [...definition.days].sort((a, b) => a.position - b.position)
+  const blockRows = await store.insertMany(
+    'program_blocks',
+    blocks.map((block, position) => ({ program_id: program.id, position, name: label('block', block.name), weeks: block.weeks })),
+  )
+  const dayRows = await store.insertMany(
+    'program_days',
+    days.map((day, position) => ({ program_id: program.id, position, name: label('day', day.name) })),
+  )
+  const blockId = new Map(blocks.map((block, index) => [block.id, blockRows[index].id]))
+  const dayId = new Map(days.map((day, index) => [day.id, dayRows[index].id]))
+  const slotRows = await store.insertMany(
+    'program_slots',
+    definition.slots.map((slot) => ({
+      program_id: program.id,
+      day_id: dayId.get(slot.dayId),
+      position: slot.position,
+      exercise_id: exerciseIds.get(slot.exerciseId),
+      sets: slot.sets,
+      rest_seconds: slot.restSeconds,
+    })),
+  )
+  const slotId = new Map(definition.slots.map((slot, index) => [slot.id, slotRows[index].id]))
+  await store.insertMany(
+    'slot_prescriptions',
+    definition.overrides.map((row) => ({
+      program_id: program.id,
+      slot_id: slotId.get(row.slotId),
+      block_id: row.blockId ? blockId.get(row.blockId) : null,
+      week: row.week,
+      exercise_id: row.exerciseId ? exerciseIds.get(row.exerciseId) : null,
+      sets: row.sets ?? null,
+      rest_seconds: row.restSeconds ?? null,
+      prescription: row.prescription ?? null,
+      technique: row.technique ?? null,
+      progression: row.progression ?? null,
+    })),
+  )
+  return program.id
+}
+
+/** Program i ri nga e para, draft: një bllok me 4 javë, një ditë dhe progresi i zgjuar i ndezur. */
+export async function createBlankProgram(store: LocalStore, names: { program: string; block: string; day: string }): Promise<string> {
+  const programId = (await store.put('programs', { name: names.program.trim(), source: 'custom', draft: true, progression: DEFAULT_PROGRESSION })).id
+  await addBlock(store, programId, { name: names.block, weeks: 4 })
+  await addDay(store, programId, names.day)
+  return programId
+}
+
+/** "Ruaj programin": drafti bëhet program i zakonshëm (ndryshimet ruhen gjithsesi menjëherë). */
+export async function saveDraft(store: LocalStore, programId: string) {
+  await store.put('programs', { id: programId, draft: false })
+}
+
+/** "Progresi i zgjuar" i gjithë programit; null e fik. */
+export async function setProgramProgression(store: LocalStore, programId: string, rule: ProgressionRule | null) {
+  await store.put('programs', { id: programId, progression: rule })
+}
+
+/** Radha e re e ushtrimeve të ditës (tërheqja ose butonat lart/poshtë); lista ka çdo slot të ditës një herë. */
+export async function reorderSlots(store: LocalStore, dayId: string, slotIds: string[]) {
+  const current = await store.where('program_slots', 'day_id', dayId)
+  const same = current.length === slotIds.length && new Set(slotIds).size === slotIds.length && current.every((row) => slotIds.includes(row.id))
+  if (!same) throw new Error('Radha nuk përputhet me ushtrimet e ditës.')
+  const byId = new Map(current.map((row) => [row.id, row]))
+  await renumber(
+    store,
+    'program_slots',
+    slotIds.map((id) => byId.get(id)!),
+  )
+}
+
+/** Kopje e ditës në fund të programit, me ushtrimet dhe rregullat e tyre. */
+export async function copyDay(store: LocalStore, dayId: string, name: string): Promise<string> {
+  const day = await store.get('program_days', dayId)
+  if (!day) throw new Error('Dita nuk gjendet.')
+  const programId = String(day.program_id)
+  const copy = await addDay(store, programId, name)
+  const slots = (await store.where('program_slots', 'day_id', dayId)).sort(byPosition)
+  const created = await store.insertMany(
+    'program_slots',
+    slots.map((slot) => ({
+      program_id: programId,
+      day_id: copy,
+      position: slot.position,
+      exercise_id: slot.exercise_id,
+      sets: slot.sets,
+      rest_seconds: slot.rest_seconds,
+      notes: slot.notes ?? null,
+    })),
+  )
+  const slotIds = new Map(slots.map((slot, index) => [slot.id, created[index].id]))
+  const rules = (await store.where('slot_prescriptions', 'program_id', programId)).filter((rule) => slotIds.has(String(rule.slot_id)))
+  await store.insertMany(
+    'slot_prescriptions',
+    rules.map((rule) => ({ ...ruleValues(rule), program_id: programId, slot_id: slotIds.get(String(rule.slot_id)), block_id: rule.block_id ?? null, week: rule.week ?? null })),
+  )
+  return copy
+}
+
 /** Ushtrimi i slotit në një nivel, i zgjedhur nga biblioteka. */
 export async function setSlotExercise(store: LocalStore, slotId: string, scope: RuleScope, library: LibraryExercise) {
   await editSlot(store, slotId, scope, { exerciseId: await exerciseFromLibrary(store, library) })
@@ -343,27 +527,57 @@ export interface ProgramSummary {
   id: string
   name: string
   active: boolean
+  /** Ende pa "Ruaj programin" (bordi "Programet": "Draft"). */
+  draft: boolean
+  template: TemplateId | null
+  description: string | null
   blocks: number
   days: number
+  /** Javët gjithsej të programit. */
+  weeks: number
+  /** Treguesi, kur programi ka një: blloku, java dhe java e programit (nga 1). */
+  pointer: { blockName: string; blockWeeks: number; week: number; run: number; weekOfProgram: number; completed: boolean } | null
 }
 
 /** Të gjitha programet: aktivi i pari, pastaj sipas emrit. */
 export async function programList(store: LocalStore): Promise<ProgramSummary[]> {
-  const [programs, blocks, days, [settings]] = await Promise.all([
+  const [programs, blocks, days, states, [settings]] = await Promise.all([
     store.all('programs'),
     store.all('program_blocks'),
     store.all('program_days'),
+    store.all('program_state'),
     store.all('user_settings'),
   ])
   const count = (list: LocalRow[], programId: string) => list.filter((row) => row.program_id === programId).length
   return programs
-    .map((row) => ({
-      id: row.id,
-      name: String(row.name),
-      active: settings?.active_program_id === row.id,
-      blocks: count(blocks, row.id),
-      days: count(days, row.id),
-    }))
+    .map((row): ProgramSummary => {
+      const own = blocks.filter((block) => block.program_id === row.id).sort(byPosition)
+      const state = states.find((candidate) => candidate.program_id === row.id)
+      const index = own.findIndex((block) => block.id === state?.block_id)
+      const before = own.slice(0, Math.max(index, 0)).reduce((sum, block) => sum + Number(block.weeks), 0)
+      return {
+        id: row.id,
+        name: String(row.name),
+        active: settings?.active_program_id === row.id,
+        draft: Boolean(row.draft),
+        template: isTemplateId(row.template) ? row.template : null,
+        description: (row.description as string | null | undefined) || null,
+        blocks: own.length,
+        days: count(days, row.id),
+        weeks: own.reduce((sum, block) => sum + Number(block.weeks), 0),
+        pointer:
+          state && index >= 0
+            ? {
+                blockName: String(own[index].name),
+                blockWeeks: Number(own[index].weeks),
+                week: Number(state.week),
+                run: Number(state.run ?? 1),
+                weekOfProgram: before + Number(state.week),
+                completed: Boolean(state.completed_at),
+              }
+            : null,
+      }
+    })
     .sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'sq'))
 }
 
@@ -371,6 +585,8 @@ export interface EditorSlot {
   id: string
   exerciseId: string
   name: string
+  /** ID-ja te free-exercise-db, për foton. */
+  libraryId: string | null
   sets: number
   restSeconds: number
 }
@@ -386,6 +602,10 @@ export interface ProgramEditorView {
   id: string
   name: string
   active: boolean
+  draft: boolean
+  template: TemplateId | null
+  /** "Progresi i zgjuar" i gjithë programit; null: i fikur. */
+  progression: ProgressionRule | null
   engine: Program
   exercises: Record<string, ExerciseRecord>
   blocks: Block[]
@@ -405,6 +625,9 @@ export async function programEditor(store: LocalStore, programId: string): Promi
     id: programId,
     name: String(model.row.name),
     active: settings?.active_program_id === programId,
+    draft: Boolean(model.row.draft),
+    template: isTemplateId(model.row.template) ? model.row.template : null,
+    progression: engine.progression ?? null,
     engine,
     exercises,
     blocks: order(engine.blocks),
@@ -415,7 +638,8 @@ export async function programEditor(store: LocalStore, programId: string): Promi
       slots: order(engine.slots.filter((slot) => slot.dayId === day.id)).map((slot) => ({
         id: slot.id,
         exerciseId: slot.exerciseId,
-        name: exercises[slot.exerciseId]?.name ?? 'Ushtrim i panjohur',
+        name: exercises[slot.exerciseId]?.name ?? '',
+        libraryId: exercises[slot.exerciseId]?.libraryId ?? null,
         sets: slot.sets,
         restSeconds: slot.restSeconds,
       })),

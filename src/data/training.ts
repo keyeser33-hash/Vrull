@@ -242,6 +242,7 @@ export async function programModel(store: LocalStore, programId: string) {
       }),
     ),
     exercises,
+    progression: (program.progression as ProgressionRule | null | undefined) ?? null,
   }
   return { row: program, state: state as LocalRow | undefined, engine, exercises }
 }
@@ -439,15 +440,19 @@ export async function restartProgram(store: LocalStore, blockId: string) {
   })
 }
 
+/** Treguesi i programit te java 1 e bllokut të parë, dita e parë, kur programi s'ka ende një. */
+export async function ensureProgramState(store: LocalStore, programId: string) {
+  const [state] = await store.where('program_state', 'program_id', programId)
+  if (state) return
+  const [block] = (await store.where('program_blocks', 'program_id', programId)).sort(byPosition)
+  const [day] = (await store.where('program_days', 'program_id', programId)).sort(byPosition)
+  await store.put('program_state', { program_id: programId, run: 1, block_id: block?.id ?? null, week: 1, day_id: day?.id ?? null })
+}
+
 /** Programi aktiv ndërrohet; secili mban historinë dhe treguesin e vet. */
 export async function switchProgram(store: LocalStore, programId: string) {
   const row = await settings(store)
-  const [state] = await store.where('program_state', 'program_id', programId)
-  if (!state) {
-    const [block] = (await store.where('program_blocks', 'program_id', programId)).sort(byPosition)
-    const [day] = (await store.where('program_days', 'program_id', programId)).sort(byPosition)
-    await store.put('program_state', { program_id: programId, run: 1, block_id: block?.id ?? null, week: 1, day_id: day?.id ?? null })
-  }
+  await ensureProgramState(store, programId)
   await store.put('user_settings', { id: row?.id, active_program_id: programId })
 }
 

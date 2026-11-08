@@ -131,6 +131,7 @@ describe('peshat e javës (V23, §7)', () => {
 
   describe('programi i përdoruesit me rregull progresi', () => {
     // Sipër/poshtë: dy blloqe, një ditë, Dumbbell Shoulder Press 8–12 javët tek dhe 6–10 javët çift.
+    // Shtesa +2,5 kg ndjek hapin e dumbbell-it (2 kg): +2 (V2-E1-10).
     const custom: Program = {
       id: 'custom',
       blocks: [
@@ -149,12 +150,12 @@ describe('peshat e javës (V23, §7)', () => {
 
     it('java 2: krahasohet me kufirin e sipërm të javës 1 (12)', () => {
       const rows = weekWeights(input({ program: custom, week: { blockId: 'b1', week: 2 }, history: [press(12, 2), press(12, 2)] }))
-      expect(rows[0]).toMatchObject({ weightKg: 22.5, proposal: { basis: { kind: 'progression', topReps: 12, earned: true } } })
+      expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { kind: 'progression', topReps: 12, earned: true } } })
     })
 
     it('java 1 e bllokut 2: krahasohet me javën e fundit të bllokut 1 (6–10)', () => {
       const rows = weekWeights(input({ program: custom, week: { blockId: 'b2', week: 1 }, history: [press(10, 2), press(10, 3)] }))
-      expect(rows[0]).toMatchObject({ weightKg: 22.5, proposal: { basis: { kind: 'progression', topReps: 10, earned: true } } })
+      expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { kind: 'progression', topReps: 10, earned: true } } })
     })
 
     it('java e kaluar pa kufi të sipërm ("10+"): krahasohet me kufirin e poshtëm', () => {
@@ -163,7 +164,7 @@ describe('peshat e javës (V23, §7)', () => {
         overrides: [...custom.overrides, { slotId: 's1', blockId: 'b1', week: 1, prescription: { type: 'rep_ladder', ladder: [{ min: 10, max: null }] } }],
       }
       const rows = weekWeights(input({ program: open, week: { blockId: 'b1', week: 2 }, history: [press(10, 2)] }))
-      expect(rows[0]).toMatchObject({ weightKg: 22.5, proposal: { basis: { topReps: 10 } } })
+      expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { topReps: 10 } } })
     })
 
     it('java e parë e programit: pa javë të kaluar, si §7', () => {
