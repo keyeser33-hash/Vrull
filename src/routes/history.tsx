@@ -4,6 +4,7 @@ import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
+import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
 import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
@@ -43,7 +44,7 @@ import {
   summaryText,
   weekLabel,
 } from './history-format'
-import { muscleName } from '@/i18n/domain'
+import { dayThemeName, muscleName } from '@/i18n/domain'
 
 // Historiku (V2-E1-15; bordet "Hist-Seancat" dhe "Hist-Seanca"), brenda Progresit: seancat sipas
 // javës së programit me kalendarin e muajit, dhe seanca e kaluar me setet, rekordet dhe volumin.
@@ -293,7 +294,7 @@ function PastSessionView({ session }: { session: PastSession }) {
   const openSetId = params.get('seti')
   const exercisesId = useId()
 
-  const title = session.theme ? t(`history.theme.${session.theme}`) : t('history.workout', { n: session.dayNumber ?? 1 })
+  const title = session.theme ? dayThemeName(t, session.theme) : t('history.workout', { n: session.dayNumber ?? 1 })
   const name = dayNameText(t, session.dayName)
   const label = weekLabel(t, session)
   const planLine = session.dayNumber && name ? t('history.planLine', { label, n: session.dayNumber, name: name.toLocaleLowerCase(lang) }) : label
@@ -412,19 +413,6 @@ function VolumeCard({ session }: { session: PastSession }) {
   )
 }
 
-/** Vend-mbajtësi i fotos së ushtrimit (DESIGN.md: "Pa foto", kurrë imazh i shpikur). */
-function Thumb({ large = false }: { large?: boolean }) {
-  const { t } = useI18n()
-  return (
-    <span
-      aria-hidden
-      className={cn('flex shrink-0 items-center justify-center rounded-sm bg-surface-2 px-0.5 text-center text-[11px] leading-[1.1] text-muted-foreground', large ? 'size-12' : 'size-11')}
-    >
-      {t('history.noPhoto')}
-    </span>
-  )
-}
-
 function E1rmValue({ value, size }: { value: number | null; size: 'l' | 'm' }) {
   const { t, fmt } = useI18n()
   if (value === null) return <span className="shrink-0 type-caption text-muted-foreground">{t('history.noE1rm')}</span>
@@ -440,7 +428,7 @@ function ExerciseHeader({ exercise }: { exercise: PastExercise }) {
   const { t } = useI18n()
   return (
     <div className="flex items-center gap-3">
-      <Thumb />
+      <ExercisePhoto libraryId={exercise.libraryId} size="square" ground="card" />
       <span className="flex min-w-0 flex-1 items-center gap-1.5">
         <h3 className="min-w-0 truncate type-body-strong">{exercise.name}</h3>
         {exercise.record ? <Icon name="kupa" size={16} label={t('history.record')} className="text-ember-text" /> : null}
@@ -456,7 +444,7 @@ function ExerciseRow({ exercise }: { exercise: PastExercise }) {
   const { weight, reps } = setsSummary(fmt, exercise.sets)
   return (
     <li className="flex min-h-row items-center gap-3 border-b border-border py-1.5 last:border-b-0">
-      <Thumb />
+      <ExercisePhoto libraryId={exercise.libraryId} size="square" />
       <span className="flex min-w-0 flex-1 flex-col gap-px">
         <span className="flex min-w-0 items-center gap-1.5">
           <span className="min-w-0 truncate type-body-strong">{exercise.name}</span>
@@ -481,7 +469,7 @@ function RecordCard({ exercise, editing, onPick }: { exercise: PastExercise; edi
   return (
     <section aria-labelledby={id} className="flex flex-col gap-1.5 rounded-lg border border-insight-border bg-insight px-3.5 pt-3 pb-2">
       <div className="flex items-center gap-3">
-        <Thumb large />
+        <ExercisePhoto libraryId={exercise.libraryId} size="square" ground="card" className="size-12" />
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="flex items-center gap-1.5 text-[13px] leading-[1.35] font-bold text-ember-text">
             <Icon name="kupa" size={16} />

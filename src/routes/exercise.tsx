@@ -12,7 +12,7 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type ExerciseDetail, exerciseDetail, exerciseRowFor } from '@/data/exercises'
 import { programView, setExerciseVideo, trainingHistory } from '@/data/training'
 import type { I18n } from '@/i18n'
-import { muscleName } from '@/i18n/domain'
+import { equipmentName, muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useExercisePhoto } from '@/lib/exercise-photo'
@@ -23,7 +23,7 @@ import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideosSection } from './form-video'
-import { capitalize, dotted, equipmentName, groupList, weekShort } from './programme-format'
+import { capitalize, dotted, groupList, weekShort } from './programme-format'
 import { ChangeExerciseSheet } from './session-sheets'
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi (SPEC §0.3a), muskujt me figurën dhe
@@ -120,7 +120,7 @@ function Hero({ detail }: { detail: ExerciseDetail }) {
       ) : (
         <div className="flex h-[120px] items-end justify-center gap-1.5 bg-surface-2 pb-4 text-muted-foreground">
           <Icon name="programi" size={18} />
-          {photo.status === 'missing' ? <span className="type-caption">{t('programme.noPhoto')}</span> : null}
+          {photo.status === 'missing' ? <span className="type-caption">{t('exercise.noPhoto')}</span> : null}
         </div>
       )}
       <BackButton

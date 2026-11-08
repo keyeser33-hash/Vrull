@@ -18,6 +18,10 @@ describe('kohëzgjatja e stërvitjes', () => {
     expect(workoutMinutes(slots)).toBe(65)
   })
 
+  it('Java 0 me më pak sete del më e shkurtër: ~45 min', () => {
+    expect(workoutMinutes([{ sets: 3, restSeconds: 90 }, ...Array(6).fill({ sets: 2, restSeconds: 90 }), { sets: 3, restSeconds: 60 }, { sets: 3, restSeconds: 60 }])).toBe(45)
+  })
+
   it('rrumbullakohet te 5 minutat, të paktën 5', () => {
     expect(workoutMinutes([{ sets: 1, restSeconds: 0 }])).toBe(5)
     expect(workoutMinutes([])).toBe(0)

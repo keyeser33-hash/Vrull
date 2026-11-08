@@ -204,7 +204,7 @@ export const base = {
   'sources.anatomy.use': 'Modeli 3D i muskujve te Trupi, i thjeshtuar për telefonin.',
   'sources.anatomy.license':
     'BodyParts3D, (c) The Database Center for Life Science, CC BY 4.0 (versioni 4.0). Latissimus dorsi dhe rectus abdominis vijnë nga versioni 3.0, CC BY-SA 2.1 Japan, prandaj modeli i app-it shpërndahet me CC BY-SA 2.1 Japan.',
-  'sources.exercises.use': 'Biblioteka e ushtrimeve me muskujt kryesorë dhe ndihmës.',
+  'sources.exercises.use': 'Biblioteka e ushtrimeve me muskujt kryesorë e ndihmës, dhe fotot e ushtrimeve.',
   'sources.exercises.license': 'yuhonas/free-exercise-db, Unlicense (domain publik).',
   'sources.off.use': 'Produktet me barkod dhe vlerat e tyre ushqyese.',
   'sources.off.license': 'Të dhënat nën Open Database License (ODbL), (c) kontribuesit e Open Food Facts.',

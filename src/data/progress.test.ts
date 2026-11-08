@@ -1,6 +1,6 @@
 import { createDatabase } from './db'
 import { logTemplateMeal } from './nutrition'
-import { measurementsOn, metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from './progress'
+import { metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from './progress'
 import { completeOnboarding } from './profile'
 import { finishWorkout, saveSet, startWorkout, trainingSnapshot } from './training'
 import { createLocalStore } from './store'
@@ -14,7 +14,8 @@ describe('matjet e progresit', () => {
     await saveMeasurement(store, '2026-12-08', { weight_kg: 80.4, waist_cm: 84 })
     await saveMeasurement(store, '2026-12-08', { arm_left_cm: 38.5, waist_cm: null })
     expect(await store.where('body_measurements', 'date', '2026-12-08')).toHaveLength(1)
-    expect(await measurementsOn(store, '2026-12-08')).toMatchObject({ weight_kg: 80.4, arm_left_cm: 38.5, waist_cm: null })
+    const [row] = await store.where('body_measurements', 'date', '2026-12-08')
+    expect(row).toMatchObject({ weight_kg: 80.4, arm_left_cm: 38.5, waist_cm: null })
   })
 
   it('pamja: pesha me mesataren 7-ditore dhe ndryshimin në 4 javë; perimetrat me vlerën e fundit', async () => {

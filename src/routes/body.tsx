@@ -12,7 +12,7 @@ import { type BodyGroup, bodyView } from '@/data/body'
 import { libraryExercisesFor, WEEKLY_TARGET } from '@/body/body-map'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { muscleName } from '@/i18n/domain'
+import { equipmentName, muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
@@ -320,7 +320,7 @@ function MuscleSheet({ entry, onClose }: { entry: BodyGroup; onClose: () => void
           {exercises.map((exercise) => (
             <li key={exercise.id} className={cn(row, 'min-h-11')}>
               <span className="type-body">{exercise.name}</span>
-              <span className="type-caption text-muted-foreground">{t(`bodyModel.equipment.${exercise.equipment}`)}</span>
+              <span className="type-caption text-muted-foreground">{equipmentName(t, exercise.equipment)}</span>
             </li>
           ))}
         </ul>

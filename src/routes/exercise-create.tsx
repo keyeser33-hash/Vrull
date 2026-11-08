@@ -7,7 +7,7 @@ import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { createExercise, exerciseCatalog } from '@/data/exercises'
-import { muscleName } from '@/i18n/domain'
+import { equipmentName, muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { youtubeId } from '@/lib/youtube'
@@ -15,7 +15,7 @@ import { nameStatus, volumeShare } from '@/program/exercise-catalog'
 import { weightStep } from '@/program/loads'
 import type { Equipment, Tracking } from '@/program/types'
 import { Chip } from './programme-parts'
-import { equipmentName, musclesLine } from './programme-format'
+import { musclesLine } from './programme-format'
 
 // "Krijo ushtrim" (bordi "KrijoUshtrim", V2-E1-09): ushtrimi i përdoruesit me emrin në anglisht,
 // pajisjen, muskujt kryesorë dhe ndihmës sipas grupeve (si ushtrimet e bibliotekës që dinë vetëm

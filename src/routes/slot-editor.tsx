@@ -217,7 +217,7 @@ function Hero({ libraryId, name }: { libraryId: string | null; name: string }) {
       ) : photo.status === 'missing' ? (
         <span className="absolute top-3 right-3.5 flex items-center gap-1.5 type-caption text-muted-foreground">
           <Icon name="programi" size={16} />
-          {t('programme.noPhoto')}
+          {t('exercise.noPhoto')}
         </span>
       ) : null}
       <h1 lang="en" className="relative px-3.5 pb-2.5 type-display-l break-words">

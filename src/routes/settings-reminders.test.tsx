@@ -1,6 +1,5 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
@@ -15,16 +14,7 @@ vi.mock('@/data/app-data', async () => {
   return {
     store,
     planRemindersNow: async () => {},
-    useLocalQuery<T>(query: () => Promise<T>) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        const run = () => void query().then((result) => setValue(() => result))
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 

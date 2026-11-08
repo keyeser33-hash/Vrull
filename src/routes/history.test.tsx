@@ -1,6 +1,5 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import type { Segment } from '@/data/training'
@@ -25,25 +24,7 @@ vi.mock('@/data/app-data', async () => {
       remove: (id: string) => photoApi.removePhoto(store, db, id),
       data: (photo: { id: string; storagePath: string }) => photoApi.photoData(db, remote, photo),
     },
-    useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        let started = 0
-        let shown = 0
-        const run = () => {
-          const ticket = ++started
-          void query().then((result) => {
-            if (ticket < shown) return
-            shown = ticket
-            setValue(() => result)
-          })
-        }
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, deps)
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 
@@ -203,8 +184,13 @@ describe('Historiku', () => {
     expect(sets.map((item) => item.textContent)).toEqual(['Seti 160 × 13Rekord86,0', 'Seti 260 × 1284,0', 'Seti 360 × 1182,0', expect.stringContaining('Seti 460 × 10 + 480,0')])
     expect(sets[3]).toHaveTextContent('Rest-pause 60 × 4 pas 15 s · nuk hyn te e1RM')
 
+    // Fotot e ushtrimeve si te Programi (ExercisePhoto, bardh e zi), jo vend-mbajtësi "Pa foto".
+    expect(record.querySelector('img')?.getAttribute('src')).toMatch(/^\/exercise-photos\/.+\.jpg$/)
     const others = screen.getByRole('list', { name: 'Ushtrimet e tjera' })
-    expect(within(others).getByText('Standing Calf Raise').closest('li')).toHaveTextContent('60 kg · 28pa e1RM')
+    const calves = within(others).getByText('Standing Calf Raise').closest('li')!
+    expect(calves).toHaveTextContent('60 kg · 28pa e1RM')
+    expect(calves.querySelector('img')).toHaveClass('grayscale')
+    expect(screen.queryByText('Pa foto')).toBeNull()
     expect(screen.getByRole('region', { name: 'Ushtrimet · 2' })).toHaveTextContent('12–15 · pulpat 25–30 · + rest-pause')
     const volume = screen.getByRole('region', { name: 'Volumi · sete' })
     expect(within(volume).getAllByRole('term').map((term) => term.textContent)).toEqual(['Gjoksi', 'Shpatullat', 'Tricepsi', 'Pulpat'])

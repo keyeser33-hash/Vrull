@@ -1,8 +1,9 @@
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
+import { addBlock, addDay, addSlot, createProgram } from './program-editor'
 import { programmeHome, weekReview } from './programme'
-import { createLocalStore } from './store'
-import { finishWorkout, saveSet, skipWorkout, startWorkout, trainingSnapshot } from './training'
+import { createLocalStore, type LocalStore } from './store'
+import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
 import { acceptWeekWeights } from './week-weights'
 
 // Ekrani Programi (bordi "Programi"): blloqet me javët, java e treguesit me ditët, datat dhe kohën,
@@ -122,5 +123,35 @@ describe('Programi', () => {
   it('pa program aktiv: null', async () => {
     const store = createLocalStore(createDatabase(`programme-${crypto.randomUUID()}`), { userId: () => USER })
     expect(await programmeHome(store, new Date())).toBeNull()
+  })
+
+  it('programi aktiv ndërrohet gjatë leximit: pa peshat e javës, pa gabim (V2-E1-18)', async () => {
+    const { store, now } = await atPhaseOneWeekTwo()
+    const sts = (await trainingSnapshot(store))!.programId
+    const squat = await store.put('exercises', { name: 'Squat', equipment: 'barbell', tracking: 'weight_reps', primary_muscles: ['rectus_femoris'] })
+    const other = await createProgram(store, 'Këmbë')
+    await addBlock(store, other, { name: 'Cikli 1', weeks: 3 })
+    await addSlot(store, await addDay(store, other, 'Këmbë'), { exerciseId: squat.id, sets: 3, restSeconds: 180 })
+    await switchProgram(store, other)
+    await switchProgram(store, sts)
+    // Programi lexon rreshtin e programit të vet dy herë (programView, pastaj kreu); pas leximit të
+    // dytë telefoni (p.sh. sinkronizimi) e bën aktiv programin tjetër, para se të lexohen peshat e javës.
+    let reads = 0
+    const racing: LocalStore = {
+      ...store,
+      async get(table, id) {
+        const row = await store.get(table, id)
+        if (table === 'programs' && id === sts) reads += 1
+        return row
+      },
+      async all(table) {
+        const rows = await store.all(table)
+        return table === 'user_settings' && reads >= 2 ? rows.map((row) => ({ ...row, active_program_id: other })) : rows
+      },
+    }
+    const home = await programmeHome(racing, now())
+    expect(home).toMatchObject({ programName: 'Shortcut to Size', review: null })
+    reads = 0
+    await expect(weekReview(racing, now())).resolves.toBeNull()
   })
 })

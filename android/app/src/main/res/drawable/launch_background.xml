@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ekrani i nisjes për Android 7–11: sfond i zi dhe shtanga në mes.
-     Android 12+ përdor windowSplashScreen* te styles.xml. -->
+<!-- Sfondi i dritares së nisjes: i zi dhe shenja e Vrullit në mes, në të njëjtën madhësi si
+     windowSplashScreenAnimatedIcon te styles.xml (ic_splash, 288 dp). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/th_background" />
     <item
-        android:width="160dp"
-        android:height="160dp"
-        android:drawable="@drawable/ic_launcher_foreground"
+        android:width="288dp"
+        android:height="288dp"
+        android:drawable="@drawable/ic_splash"
         android:gravity="center" />
 </layer-list>
