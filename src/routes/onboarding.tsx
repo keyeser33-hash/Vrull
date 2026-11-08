@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useOutlet, useSearchParams } from 'react-router'
 import { DayPicker } from '@/components/forms/day-picker'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -15,12 +15,15 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { addMinutes, parseTimeInput } from '@/lib/time'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import { ONBOARDING_BUILD, type OnboardingBuild } from './editor-nav'
 
 // Hapat e parë (SPEC §3a, V2-E1-17; bordet "Gjuha dhe pesha", "Ditët dhe oraret", "Programi"): katër
 // hapa në tri ekrane, ditët dhe oraret bashkë si hapat 2 dhe 3. Ekrani është në adresë (`?hapi=`) dhe
 // zëvendësohet pa shtuar histori, që pas hapave butoni mbrapa i Android-it te Sot të mos kalojë nëpër
 // hapat e mbyllur; fleta e orës (`&ora=`) shton një hap historie, që butoni mbrapa ta mbyllë. Çdo vlerë
-// ndryshohet më vonë te Cilësimet; lejet e njoftimeve nuk kërkohen këtu.
+// ndryshohet më vonë te Cilësimet; lejet e njoftimeve nuk kërkohen këtu. "Ndërto timin" (V2-E1-10) hap
+// ndërtuesin brenda kësaj faqeje (`/fillimi/programi/…`, rrugët fëmijë te router.tsx), që pesha, ditët
+// dhe oraret të mbeten këtu deri te "Ruaj programin", që i mbyll hapat me programin e ndërtuar.
 
 type Screen = 'gjuha' | 'ditet' | 'programi'
 type TimeKey = 'fillimi' | 'zgjimi' | 'gjumi'
@@ -48,11 +51,13 @@ const STS_WORKOUTS = SHORTCUT_TO_SIZE.program.days.length
 const STS_IMAGE = '/anatomy/shortcut-to-size.webp'
 
 /**
- * Mënyrat e tjera të nisjes, poshtë "Ose nis vetë": "Ndërto timin" (E1-10) dhe "Importo nga PDF" (E1-11)
- * shtohen këtu kur të jenë gati. Para profilit porta (gate.tsx) lejon vetëm `/fillimi`, ndaj `to` është
- * një adresë brenda hapave (`/fillimi?hapi=…`). Pa asnjë, seksioni nuk shfaqet.
+ * Mënyrat e tjera të nisjes, poshtë "Ose nis vetë": "Ndërto timin" (E1-10); "Importo nga PDF" (E1-11)
+ * shtohet këtu kur të jetë gati. Para profilit porta (gate.tsx) lejon vetëm `/fillimi` dhe adresat nën
+ * të, ndaj `to` është një adresë brenda hapave (`/fillimi/…`). Pa asnjë, seksioni nuk shfaqet.
  */
-const OWN_STARTS: readonly { to: string; icon: IconName; title: MessageKey; text: MessageKey }[] = []
+const OWN_STARTS: readonly { to: string; icon: IconName; title: MessageKey; text: MessageKey }[] = [
+  { to: ONBOARDING_BUILD, icon: 'nderto', title: 'builder.onboarding.title', text: 'builder.onboarding.text' },
+]
 
 export function OnboardingPage() {
   const { t } = useI18n()
@@ -70,6 +75,19 @@ export function OnboardingPage() {
   const [busy, setBusy] = useState(false)
 
   const weightValid = weight !== null && parseWeight(String(weight)) !== null
+  const profile = () => ({ weightKg: weight!, trainingDays: days, trainingTime: times.fillimi, wakeTime: times.zgjimi, sleepTime: times.gjumi })
+  // "Ndërto timin": ndërtuesi brenda hapave; "Ruaj programin" i mbyll me programin e ndërtuar si aktiv.
+  // Pa peshë (p.sh. app-i u rihap në mes të ndërtimit) hapat nisin nga e para; drafti mbetet te Programet.
+  const build: OnboardingBuild = {
+    finish: async (programId) => {
+      if (!weightValid) {
+        navigate('/fillimi', { replace: true })
+        return
+      }
+      await completeOnboarding(store, profile(), undefined, programId)
+    },
+  }
+  const child = useOutlet(build)
   // Pa peshë të vlefshme (p.sh. kur app-i rihapet në mes) hapat nisin nga e para.
   const requested = params.get('hapi')
   const screen: Screen = weightValid && isScreen(requested) ? requested : 'gjuha'
@@ -99,13 +117,7 @@ export function OnboardingPage() {
     setBusy(true)
     setProblem(null)
     try {
-      await completeOnboarding(store, {
-        weightKg: weight!,
-        trainingDays: days,
-        trainingTime: times.fillimi,
-        wakeTime: times.zgjimi,
-        sleepTime: times.gjumi,
-      })
+      await completeOnboarding(store, profile())
       // Porta (gate.tsx) e sheh profilin e plotësuar dhe e hap Sot vetë.
     } catch {
       setProblem('entry.saveFailed')
@@ -115,6 +127,16 @@ export function OnboardingPage() {
 
   const stepText = steps.length === 1 ? t('entry.steps.one', { step: steps[0], total: STEPS }) : t('entry.steps.two', { first: steps[0], second: steps[1], total: STEPS })
   const last = steps[steps.length - 1]
+
+  if (child) {
+    // Ndërtuesi, me kornizën e ekraneve pa tab-bar (si AppShell).
+    return (
+      <div className="relative isolate min-h-dvh bg-background pt-[var(--safe-top)] text-foreground">
+        <div aria-hidden className="fixed inset-x-0 top-0 z-30 h-[var(--safe-top)] bg-background" />
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-5 pb-[calc(var(--safe-bottom)+24px)]">{child}</main>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-dvh flex-col bg-background pt-[var(--safe-top)] pb-[var(--safe-bottom)] text-foreground">

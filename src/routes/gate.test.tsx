@@ -48,6 +48,7 @@ function renderAt(path: string, phase: AppPhase) {
         children: [
           { path: '/hyrja', element: <h1>Hyrja</h1> },
           { path: '/fillimi', element: <h1>Hapat</h1> },
+          { path: '/fillimi/programi/:programId', element: <h1>Ndërtuesi</h1> },
           { path: '/', element: <h1>Sot</h1> },
         ],
       },
@@ -70,6 +71,14 @@ describe('porta e app-it', () => {
   it('me profil të plotësuar hap Sot, edhe nga hyrja ose hapat', () => {
     expect(renderAt('/hyrja', 'ready').state.location.pathname).toBe('/')
     expect(screen.getByRole('heading', { name: 'Sot' })).toBeInTheDocument()
+  })
+
+  it('"Ndërto timin" (V2-E1-10): ndërtuesi nën /fillimi hapet para profilit; pas tij çon te Sot', () => {
+    const router = renderAt('/fillimi/programi/p1', 'onboarding')
+    expect(screen.getByRole('heading', { name: 'Ndërtuesi' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/fillimi/programi/p1')
+    act(() => mock.setPhase('ready'))
+    expect(router.state.location.pathname).toBe('/')
   })
 
   it('pa profil çon te hapat; kur profili plotësohet, hap Sot', () => {

@@ -24,15 +24,8 @@ const LEGACY_TOKENS = [
 // mbetet bosh, hiqen edhe aliaset nga globals.css.
 export const LEGACY_FILES = new Set([
   'src/components/charts/trend-chart.tsx',
-  'src/components/forms/choice.tsx',
-  'src/components/forms/library-picker.tsx',
-  'src/components/forms/value-stepper.tsx',
   'src/routes/add-food.tsx',
-  'src/routes/exercise-muscles.tsx',
   'src/routes/photos.tsx',
-  'src/routes/prescription-sheet.tsx',
-  'src/routes/program-editor.tsx',
-  'src/routes/slot-editor.tsx',
 ])
 
 const PREFIX = '(?<![\\w-])(?:bg|text|border|fill|stroke|outline|ring|divide|placeholder|decoration|shadow|from|via|to|caret)'

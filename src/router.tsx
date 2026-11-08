@@ -20,7 +20,7 @@ import { CreateExercisePage } from '@/routes/exercise-create'
 import { LibraryPage } from '@/routes/library'
 import { ProgramPage, WorkoutPage } from '@/routes/program'
 import { WeekWeightsPage } from '@/routes/week-weights'
-import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
+import { BuildStartPage, DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
 import { SessionPage } from '@/routes/session'
 import { SessionSummaryPage } from '@/routes/session-summary'
 import { SettingsPage } from '@/routes/settings'
@@ -79,7 +79,17 @@ export const routes: RouteObject[] = [
     element: <AppGate />,
     children: [
       { path: '/hyrja', element: <LoginPage /> },
-      { path: '/fillimi', element: <OnboardingPage /> },
+      {
+        path: '/fillimi',
+        element: <OnboardingPage />,
+        // "Ndërto timin" (V2-E1-10): ndërtuesi brenda hapave të parë, para profilit.
+        children: [
+          { path: 'programi', element: <BuildStartPage /> },
+          { path: 'programi/:programId', element: <ProgramEditorPage /> },
+          { path: 'programi/:programId/dita/:dayId', element: <DayEditorPage /> },
+          { path: 'programi/:programId/sloti/:slotId', element: <SlotEditorPage /> },
+        ],
+      },
       ...appRoutes,
     ],
   },

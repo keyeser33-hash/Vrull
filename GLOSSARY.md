@@ -50,8 +50,12 @@ Një vlerë e ndryshuar (ushtrimi, setet, pushimi, receta ose teknika) në një 
 **Shablloni i programit**:
 Një program i gatshëm nga i cili nis ndërtuesi; kopjohet, nuk lidhet me origjinalin.
 
+**Drafti**:
+Programi që po ndërtohet dhe ende pa "Ruaj programin"; ndryshimet e tij ruhen, por nuk ofrohet si program për t'u nisur.
+_Avoid_: skicë
+
 **Progresi i zgjuar**:
-Rregull që propozon peshën ose vëllimin e seancës së radhës nga RIR-i i seteve të fundit dhe nga **Gatishmëria**; propozimi pranohet nga përdoruesi.
+Rregull që propozon peshën ose vëllimin e seancës së radhës nga RIR-i i seteve të fundit dhe nga **Gatishmëria**; propozimi pranohet nga përdoruesi. Vendoset për gjithë programin ose për një ushtrim në një **Nivel**.
 _Avoid_: autoregulim (në UI)
 
 **Xhiro**:
