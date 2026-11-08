@@ -518,7 +518,12 @@ const PAGE_TEXT = `(document.body.innerText + '\\n' + document.body.textContent)
 const hasText = (page, text) => page.evaluate(`${PAGE_TEXT}.includes(${JSON.stringify(text)})`)
 const waitForText = (page, text, timeout) => waitFor(() => hasText(page, text), `teksti "${text}"`, timeout)
 const waitForPath = (page, path, timeout) => waitFor(async () => (await page.evaluate('location.pathname')) === path, `adresa ${path}`, timeout)
-const click = (page, selector) => page.evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`)
+// Pret elementin (ekrani mund të jetë ende duke lexuar të dhënat), pastaj e prek.
+const click = async (page, selector) => {
+  const query = `document.querySelector(${JSON.stringify(selector)})`
+  await waitFor(() => page.evaluate(`!!${query}`), selector, 20_000)
+  await page.evaluate(`${query}.click()`)
+}
 const buttonExpression = (label) =>
   `[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === ${JSON.stringify(label)} || b.getAttribute('aria-label') === ${JSON.stringify(label)})`
 const hasButton = (page, label) => page.evaluate(`!!${buttonExpression(label)}`)
@@ -629,13 +634,17 @@ async function choosePhoto(page, selector) {
   })()`)
 }
 
+/** Gjuha zgjidhet te Cilësimet › Pamja (faqja hapet drejt, si pas një rifreskimi). */
 async function chooseLanguage(page, language) {
-  await click(page, 'a[aria-label="Profili dhe cilësimet"], a[aria-label="Profile and settings"]')
-  await waitFor(async () => ['Cilësimet', 'Settings'].includes(await heading(page)), 'Cilësimet')
-  await page.evaluate(`[...document.querySelectorAll('a')].find((a) => /^(Tema|Theme)/.test(a.getAttribute('aria-label') ?? '')).click()`)
+  await page.evaluate(`location.assign('/cilesimet/pamja')`)
   await waitFor(async () => ['Pamja', 'Appearance'].includes(await heading(page)), 'Pamja')
   await clickButton(page, language === 'en' ? 'English' : 'Shqip')
   await waitForHeading(page, language === 'en' ? 'Appearance' : 'Pamja')
+}
+
+async function goHome(page) {
+  await page.evaluate(`location.assign('/')`)
+  await waitForPath(page, '/')
 }
 
 // Ndryshimet që app-i bën vetë në sfond nuk duhet të bëjnë zhurmë: një kërkesë e dështuar e Supabase
@@ -708,7 +717,9 @@ try {
   await waitForHeading(page, 'Progresi')
   await click(page, 'a[href="/progresi/matja"]')
   await waitForHeading(page, 'Matja')
-  const waist = await page.evaluate(`[...document.querySelectorAll('label')].find((label) => label.textContent.trim() === 'Beli, cm').htmlFor`)
+  const waistLabel = `[...document.querySelectorAll('label')].find((label) => label.textContent.trim() === 'Beli, cm')`
+  await waitFor(() => page.evaluate(`!!${waistLabel}`), 'fusha "Beli, cm"')
+  const waist = await page.evaluate(`${waistLabel}.htmlFor`)
   await type(page, `[id="${waist}"]`, '85')
   await clickButton(page, 'Ruaj matjen')
   await waitForHeading(page, 'Progresi')
@@ -1033,10 +1044,14 @@ try {
   await chooseLanguage(page, 'sq')
   await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
 
-  // D8. "Mbyll stërvitjen" heq njoftimin.
-  await click(page, 'a[href="/"]')
-  await waitForPath(page, '/')
+  // D8. Butoni mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca; "Mbyll stërvitjen" heq njoftimin.
+  await goHome(page)
   await openSession(page)
+  await clickButtonStarting(page, 'Ushtrimet e seancës, ')
+  await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"]')`), 'fleta e ushtrimeve')
+  await pressBack()
+  await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
+  check('seanca: mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca', (await page.evaluate('location.pathname')) === '/seanca')
   await clickButtonStarting(page, 'Ushtrimet e seancës, ')
   await clickButton(page, 'Mbyll stërvitjen')
   await clickButton(page, 'Po, mbyll')
@@ -1068,28 +1083,22 @@ try {
   }
   await click(page, 'a[href="/"]')
   await waitForPath(page, '/')
-  // Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
+  // Butoni mbrapa: nga biblioteka te Programi, pastaj te Sot.
+  await click(page, 'a[href="/programi"]')
+  await waitForPath(page, '/programi')
+  await click(page, 'a[href="/programi/biblioteka"]')
+  await waitForPath(page, '/programi/biblioteka')
+  await pressBack()
+  await waitForPath(page, '/programi')
+  check('mbrapa kthen te faqja e mëparshme', true)
+  await click(page, 'a[href="/"]')
+  await waitForPath(page, '/')
   await click(page, 'a[aria-label="Profili dhe cilësimet"]')
   await waitForHeading(page, 'Cilësimet')
+  // Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
   await page.send('Page.reload')
   await waitForHeading(page, 'Cilësimet')
   check('rifreskimi te /cilesimet mban faqen', true)
-  // Butoni mbrapa: editori i programit dhe fleta e bllokut, pastaj faqet e mëparshme.
-  await click(page, 'a[href="/programi"]')
-  await waitForPath(page, '/programi')
-  await waitForText(page, 'nga 52 stërvitje')
-  await click(page, 'a[href^="/programi/editori/"]')
-  await waitForText(page, '4 blloqe · 13 javë · 4 ditë')
-  await page.evaluate(`[...document.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Faza 1, 4 javë').click()`)
-  await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"]')`), 'fleta e bllokut')
-  await pressBack()
-  await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën e bllokut')
-  check('editori: mbrapa mbyll fletën e bllokut', (await page.evaluate('location.pathname')).startsWith('/programi/editori/'))
-  await pressBack()
-  await waitForPath(page, '/programi')
-  await pressBack()
-  await waitForHeading(page, 'Cilësimet')
-  check('mbrapa kthen te faqja e mëparshme', true)
   check('"Dil" te fundi i Cilësimeve', await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Dil'); b.scrollIntoView(); return b.getBoundingClientRect().bottom <= innerHeight })()`))
   await page.evaluate(`[...document.querySelectorAll('a')].find((a) => (a.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
   await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'Pamja')
@@ -1101,13 +1110,18 @@ try {
   check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#F4F4F5'), bandLight.join(','))
   await pressBack()
   await waitForHeading(page, 'Cilësimet')
-  await pressBack()
+  check('mbrapa nga Pamja kthen te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
+  const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
+  check('rikujtuesit planifikohen pas lejes së njoftimeve', (await page.evaluate(pendingReminders)) > 0, `${await page.evaluate(pendingReminders)} njoftime`)
+  page.close()
+  // Mbrapa në fillim të historisë (app-i i sapohapur te Sot) e çon app-in në sfond pa e mbyllur.
+  adb('shell', 'am', 'force-stop', PKG)
+  page = await open()
   await waitForPath(page, '/')
+  await waitForText(page, 'Java 0')
   await pressBack()
   await waitFor(() => !isForeground(), 'app-i në sfond me butonin mbrapa', 15_000)
   check('mbrapa në fillim të historisë e çon app-in në sfond, gjallë', pidOf() !== '')
-  const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
-  check('rikujtuesit planifikohen pas lejes së njoftimeve', (await page.evaluate(pendingReminders)) > 0, `${await page.evaluate(pendingReminders)} njoftime`)
   page.close()
   adb('shell', 'locksettings', 'clear', '--old', PIN)
 
