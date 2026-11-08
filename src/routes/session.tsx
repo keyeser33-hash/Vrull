@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { Navigate, useNavigate, useSearchParams } from 'react-router'
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { InsightCard } from '@/components/ui/insight-card'
@@ -123,6 +123,7 @@ function ActiveSession({
   const texts = useI18n()
   const { t } = texts
   const navigate = useNavigate()
+  const location = useLocation()
   const [params, setParams] = useSearchParams()
   const [selected, setSelected] = useState<string | null>(null)
   // Segmenti që përdoruesi e kapërceu; pa të, seti i fundit me teknikë pret segmentin e vet.
@@ -179,7 +180,8 @@ function ActiveSession({
     <SessionFrame
       progress={progress}
       position={position}
-      onBack={() => navigate('/')}
+      // Mbrapa aty nga erdhi (zakonisht Sot); seanca mbetet e hapur dhe vazhdohet prej andej.
+      onBack={() => (location.key === 'default' ? navigate('/', { replace: true }) : navigate(-1))}
       onList={() => openSheet('lista')}
       onMuscles={exercise ? () => openSheet('muskujt') : undefined}
     >
@@ -222,7 +224,7 @@ function ActiveSession({
         rest={rest}
         saved={waiting ? null : lastSet}
         record={waiting ? null : savedRecord(lastSet, history.sets, plan, session.id)}
-        next={next}
+        next={waiting ? null : next}
       />,
     )
   }

@@ -108,6 +108,9 @@ Pesha dhe përsëritjet e së njëjtës javë në bllokun e mëparshëm, me shte
 Pesha më e madhe për një numër përsëritjesh, ose e1RM-ja më e lartë, për një ushtrim.
 _Avoid_: PR, kur shkruhet për përdoruesin
 
+**Pragu i rekordit**:
+Përsëritjet më të pakta që me peshën e zgjedhur japin një e1RM më të lartë se **Rekordi personal**; seti e thotë para se të bëhet ("12 përsëritje të japin rekord të ri").
+
 ## Trupi
 
 **Çelësi i muskulit**:

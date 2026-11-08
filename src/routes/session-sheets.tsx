@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LibraryPicker } from '@/components/forms/library-picker'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -243,6 +243,15 @@ export function NumberSheet({ label, value, decimals, onSave, onClose }: { label
   const { t, fmt } = useI18n()
   const [text, setText] = useState(() => fmt.number(value, { maxDigits: decimals ? 2 : 0 }).replace(/\s/g, ''))
   const [error, setError] = useState<string | null>(null)
+  const input = useRef<HTMLInputElement>(null)
+  // Fleta fokuson veten kur hapet; fusha merr fokusin pas saj, që tastiera numerike të hapet menjëherë.
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      input.current?.focus()
+      input.current?.select()
+    })
+    return () => window.clearTimeout(id)
+  }, [])
   const submit = () => {
     const parsed = Number(text.replace(/\s/g, '').replace(',', '.'))
     if (text.trim() === '' || !Number.isFinite(parsed) || parsed < 0) setError(t('session.edit.invalid'))
@@ -267,6 +276,7 @@ export function NumberSheet({ label, value, decimals, onSave, onClose }: { label
         className="flex flex-col gap-1.5"
       >
         <input
+          ref={input}
           aria-label={label}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'number-sheet-error' : undefined}

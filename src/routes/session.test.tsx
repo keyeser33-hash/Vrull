@@ -404,6 +404,29 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument()
   })
 
+  it('segmenti i rest-pause kapërcehet; "Mbrapa" e lë seancën të hapur', { timeout: 30_000 }, async () => {
+    const { bench, sessionId } = await atPhaseOneWeekTwo()
+    const { saveSet } = await import('@/data/training')
+    for (const setNumber of [1, 2, 3]) await saveSet(data.store, { sessionId, slot: bench, setNumber, weightKg: 62.5, reps: 10 })
+    const user = userEvent.setup()
+    const router = await renderApp()
+
+    expect(await setGroup('Seti 4: 62,5 kg, 10 përsëritje')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
+    await user.click(await screen.findByRole('button', { name: 'Kapërce' }))
+    expect(await screen.findByRole('button', { name: 'Ruaj segmentin' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Kapërce segmentin' }))
+    // Pushimi i zakonshëm, pastaj ushtrimi tjetër.
+    expect(await screen.findByText('nga 1:30')).toBeInTheDocument()
+    expect(screen.getByText('Incline Bench Press')).toBeInTheDocument()
+    const set4 = (await data.store.where('set_logs', 'session_id', sessionId)).find((set) => set.set_number === 4)
+    expect(set4).toMatchObject({ technique: 'rest_pause', segments: null })
+
+    await user.click(screen.getByRole('button', { name: 'Mbrapa' }))
+    await waitFor(() => expect(router.state.location.pathname).toBe('/'))
+    expect((await data.store.get('workout_sessions', sessionId))?.status).toBe('in_progress')
+  })
+
   it('pa seancë të hapur kthehet te Sot', async () => {
     const router = await renderApp()
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
