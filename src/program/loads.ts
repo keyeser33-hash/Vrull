@@ -311,30 +311,3 @@ export function weightFor(input: WeightInput): WeightProposal {
   const exactKg = exactWeight(oneRmKg, reps)
   return { weightKg: roundDown(exactKg, stepKg), basis: { kind: 'one_rm', oneRmKg, reps, exactKg, stepKg } }
 }
-
-export interface Suggestion {
-  weightKg: number | null
-  /** Kur s'ka sugjerim: si të zgjidhet pesha. */
-  hint: string | null
-}
-
-function hintFor(basis: WeightBasis | null): string | null {
-  if (basis?.kind === 'needs_one_rm') return 'Vendos 1RM-në e ushtrimit për peshën e javës'
-  if (basis?.kind !== 'choose') return null
-  const range = basis.max === null ? `${basis.min}` : `${basis.min}–${basis.max}`
-  return `Zgjidh peshën ku mbyll ${range} përsëritje`
-}
-
-/** Pesha e sugjeruar e §7 për slotin e seancës, ose si të zgjidhet kur s'ka 1RM. */
-export function suggestionFor(
-  slot: { exerciseId: string; target: Target },
-  exercise: { equipment: Equipment; tracking: Tracking },
-  history: HistorySet[],
-  now: Date,
-  override: { oneRmKg: number; setAt: string } | null,
-  steps: Partial<Record<Equipment, number>>,
-): Suggestion {
-  if (exercise.tracking !== 'weight_reps') return { weightKg: null, hint: null }
-  const { weightKg, basis } = weightFor({ exerciseId: slot.exerciseId, target: slot.target, exercise, history, now, override, steps })
-  return { weightKg, hint: hintFor(basis) }
-}

@@ -11,10 +11,11 @@ import {
   reference,
   roundDown,
   suggestedWeight,
-  suggestionFor,
   weightFor,
+  type WeightInput,
   weightStep,
 } from './loads'
+import type { Target } from './types'
 
 const NOW = new Date('2026-12-30T18:00:00.000Z')
 const daysAgo = (days: number) => new Date(NOW.getTime() - days * 86_400_000).toISOString()
@@ -323,56 +324,32 @@ describe('progresioni çdo seancë dhe %1RM', () => {
   })
 })
 
-describe('sugjerimi për slotin e seancës', () => {
+describe('pesha e propozuar për slotin (§7)', () => {
   const steps = { barbell: 2.5, dumbbell: 2 }
   const barbell = { equipment: 'barbell' as const, tracking: 'weight_reps' as const }
   const history = [set({ weightKg: 60, reps: 10, loggedAt: daysAgo(3) })] // 1RM 80
   const reps = (min: number, max: number | null) => ({ kind: 'reps' as const, min, max, beyond: false })
+  const weight = (exerciseId: string, target: Target, exercise: WeightInput['exercise'] = barbell, sets = history) => weightFor({ exerciseId, target, exercise, history: sets, now: NOW, steps }).weightKg
 
   it('nga 1RM aktuale dhe kufiri i sipërm, me hapin e pajisjes', () => {
-    expect(suggestionFor({ exerciseId: 'bench', target: reps(12, 15) }, barbell, history, NOW, null, steps)).toEqual({ weightKg: 52.5, hint: null })
-    expect(suggestionFor({ exerciseId: 'bench', target: reps(6, 8) }, { ...barbell, equipment: 'dumbbell' }, history, NOW, null, steps)).toEqual({
-      weightKg: 62,
-      hint: null,
-    })
+    expect(weight('bench', reps(12, 15))).toBe(52.5)
+    expect(weight('bench', reps(6, 8), { ...barbell, equipment: 'dumbbell' })).toBe(62)
   })
 
   it('pa kufi të sipërm: nga kufiri i poshtëm', () => {
-    expect(suggestionFor({ exerciseId: 'bench', target: reps(10, null) }, barbell, history, NOW, null, steps).weightKg).toBe(60)
+    expect(weight('bench', reps(10, null))).toBe(60)
   })
 
-  it('seanca: pulpat me histori pa e1RM marrin peshën e fundit, jo "Zgjidh peshën"', () => {
-    const machine = { equipment: 'machine' as const, tracking: 'weight_reps' as const }
-    const calves = [set({ exerciseId: 'calf', weightKg: 80, reps: 27, loggedAt: daysAgo(7) })]
-    expect(suggestionFor({ exerciseId: 'calf', target: reps(15, 20) }, machine, calves, NOW, null, steps)).toEqual({ weightKg: 80, hint: null })
-  })
-
-  it('ushtrim pa histori: "Zgjidh peshën ku mbyll X–Y përsëritje"', () => {
-    expect(suggestionFor({ exerciseId: 'squat', target: reps(12, 15) }, barbell, history, NOW, null, steps)).toEqual({
-      weightKg: null,
-      hint: 'Zgjidh peshën ku mbyll 12–15 përsëritje',
-    })
-  })
-
-  it('%1RM nga 1RM aktuale; pa 1RM, si ta gjesh', () => {
-    const target = { kind: 'percent_1rm' as const, percent: 75, reps: 5, amrap: false }
-    expect(suggestionFor({ exerciseId: 'bench', target }, barbell, history, NOW, null, steps).weightKg).toBe(60)
-    expect(suggestionFor({ exerciseId: 'squat', target }, barbell, history, NOW, null, steps)).toEqual({
-      weightKg: null,
-      hint: 'Vendos 1RM-në e ushtrimit për peshën e javës',
-    })
-  })
-
-  it('progresion çdo seancë: nga seancat e mëparshme të ushtrimit', () => {
+  it('progresion çdo seancë: rritet pas seancës së plotë, mbetet pas dështimit', () => {
     const target = { kind: 'linear' as const, reps: 5, startKg: 40, incrementKg: 2.5, failuresBeforeDeload: 3, deloadPercent: 10 }
     const done = [
       set({ sessionId: 'a', weightKg: 60, reps: 5, loggedAt: daysAgo(4) }),
       set({ sessionId: 'a', setNumber: 2, weightKg: 60, reps: 5, loggedAt: daysAgo(4) }),
     ]
-    expect(suggestionFor({ exerciseId: 'bench', target }, barbell, done, NOW, null, steps).weightKg).toBe(62.5)
+    expect(weight('bench', target, barbell, done)).toBe(62.5)
     const missed = [...done, set({ sessionId: 'b', weightKg: 62.5, reps: 5, loggedAt: daysAgo(2) }), set({ sessionId: 'b', setNumber: 2, weightKg: 62.5, reps: 3, loggedAt: daysAgo(2) })]
-    expect(suggestionFor({ exerciseId: 'bench', target }, barbell, missed, NOW, null, steps).weightKg).toBe(62.5)
-    expect(suggestionFor({ exerciseId: 'squat', target }, barbell, missed, NOW, null, steps).weightKg).toBe(40)
+    expect(weight('bench', target, barbell, missed)).toBe(62.5)
+    expect(weight('squat', target, barbell, missed)).toBe(40)
   })
 
   it('pesha me arsyen e §7: Bench Press 60 × 13 te Java 1 jep 62,5 kg për 9–11', () => {
@@ -428,11 +405,7 @@ describe('sugjerimi për slotin e seancës', () => {
     })
   })
 
-  it('pa sugjerim për kohën dhe për peshën e trupit', () => {
-    expect(suggestionFor({ exerciseId: 'bench', target: { kind: 'timed', seconds: 60 } }, barbell, history, NOW, null, steps)).toEqual({ weightKg: null, hint: null })
-    expect(suggestionFor({ exerciseId: 'bench', target: reps(12, 15) }, { equipment: 'bodyweight', tracking: 'bodyweight_reps' }, history, NOW, null, steps)).toEqual({
-      weightKg: null,
-      hint: null,
-    })
+  it('pa peshë për ushtrimin me kohë', () => {
+    expect(weightFor({ exerciseId: 'bench', target: { kind: 'timed', seconds: 60 }, exercise: barbell, history, now: NOW, steps })).toEqual({ weightKg: null, basis: null })
   })
 })

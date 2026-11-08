@@ -373,10 +373,6 @@ export async function saveSet(store: LocalStore, input: SetInput) {
   )
 }
 
-export async function removeSet(store: LocalStore, id: string) {
-  await store.remove('set_logs', id)
-}
-
 /** Treguesi kalon përpara; pas stërvitjes së fundit programi shënohet "Përfunduar". */
 async function moveForward(store: LocalStore, loaded: NonNullable<Awaited<ReturnType<typeof activeProgram>>>, at: Date) {
   const next = advance(loaded.engine, loaded.pointer)

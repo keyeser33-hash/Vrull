@@ -1,5 +1,5 @@
 import { planSession } from '@/program/engine'
-import { suggestionFor } from '@/program/loads'
+import { weightFor } from '@/program/loads'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import { createDatabase } from './db'
 import {
@@ -128,8 +128,8 @@ describe('editori i programeve (TH-11)', () => {
     expect(snapshot).toMatchObject({ programName: '5/3/1', label: 'Cikli 1 · Java 1' })
     const [planned] = snapshot.plan.slots
     expect(planned.target).toEqual({ kind: 'percent_1rm', percent: 85, reps: 5, amrap: true })
-    const suggestion = suggestionFor(planned, { equipment: 'barbell', tracking: 'weight_reps' }, [], new Date(), { oneRmKg: 140, setAt: '2026-01-01T00:00:00.000Z' }, {})
-    expect(suggestion.weightKg).toBe(117.5)
+    const proposal = weightFor({ exerciseId: planned.exerciseId, target: planned.target, exercise: { equipment: 'barbell', tracking: 'weight_reps' }, history: [], now: new Date(), override: { oneRmKg: 140, setAt: '2026-01-01T00:00:00.000Z' } })
+    expect(proposal.weightKg).toBe(117.5)
     const model = (await programModel(store, programId))!
     expect(planSession(model.engine, { run: 1, blockId: block, week: 3, dayId: day, completed: false }).slots[0].target).toMatchObject({ percent: 95, reps: 1 })
   })
