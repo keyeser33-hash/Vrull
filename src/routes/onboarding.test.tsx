@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { language } from '@/i18n/language'
 import { OnboardingPage } from './onboarding'
+import { BuildStartPage, ProgramEditorPage } from './program-editor'
 
 // Një store i vërtetë (IndexedDB në memorie) me një përdorues të hyrë.
 const data = vi.hoisted(() => ({ store: null as unknown }))
@@ -12,13 +13,21 @@ vi.mock('@/data/app-data', async () => {
   data.store = createLocalStore(createDatabase(`onboarding-${crypto.randomUUID()}`), {
     userId: () => '11111111-1111-4111-8111-111111111111',
   })
-  return { store: data.store }
+  return { store: data.store, useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(data.store as never) }
 })
 
 function renderOnboarding() {
   const router = createMemoryRouter(
     [
-      { path: '/fillimi', element: <OnboardingPage /> },
+      {
+        path: '/fillimi',
+        element: <OnboardingPage />,
+        // "Ndërto timin" (V2-E1-10): ndërtuesi brenda hapave, si te router.tsx.
+        children: [
+          { path: 'programi', element: <BuildStartPage /> },
+          { path: 'programi/:programId', element: <ProgramEditorPage /> },
+        ],
+      },
       { path: '/', element: <h1>Sot</h1> },
     ],
     { initialEntries: ['/fillimi'] },
@@ -73,8 +82,11 @@ describe('hapat e parë', () => {
     expect(within(programmes).getByRole('radio', { name: /Shortcut to Size/ })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByText('12 javë + Java 0 · Jim Stoppani')).toBeInTheDocument()
     expect(screen.getByText('Java 0 për teknikën, pastaj 3 faza nga 4 javë, 4 stërvitje në javë.')).toBeInTheDocument()
-    // Programet e miqve (Etapa 4), "Ndërto timin" (E1-10) dhe "Importo nga PDF" (E1-11) nuk shfaqen ende.
-    expect(screen.queryByText(/Ose nis vetë|Ndërto timin|Importo nga PDF|Ndarë nga/)).not.toBeInTheDocument()
+    // "Ndërto timin" (E1-10) poshtë "Ose nis vetë"; programet e miqve (Etapa 4) dhe "Importo nga PDF"
+    // (E1-11) nuk shfaqen ende.
+    expect(screen.getByRole('heading', { level: 2, name: 'Ose nis vetë' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Ndërto timin/ })).toHaveTextContent('Nga e para ose nga një shabllon')
+    expect(screen.queryByText(/Importo nga PDF|Ndarë nga/)).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Fillo programin' }))
     // Ekrani pret derisa porta ta çojë te Sot (shih gate.test.tsx).
     expect(await screen.findByRole('button', { name: 'Po ruhet' })).toBeDisabled()
@@ -92,6 +104,34 @@ describe('hapat e parë', () => {
       sleepTime: '23:00',
     })
     expect(await trainingSnapshot(store)).toMatchObject({ label: 'Java 0', plan: { dayNumber: 1 } })
+  })
+
+  it('"Ndërto timin": ndërtuesi brenda hapave; "Ruaj programin" i mbyll me programin e ndërtuar', async () => {
+    const router = renderOnboarding()
+    const user = userEvent.setup()
+    await toDays(user, '82')
+    await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
+    await user.click(screen.getByRole('button', { name: /^Ndërto timin/ }))
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Ndërto programin tënd' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/fillimi/programi')
+    await user.click(screen.getByRole('button', { name: /^Upper\/Lower 4 ditë/ }))
+    const sheet = screen.getByRole('dialog', { name: 'Upper/Lower 4 ditë' })
+    expect(sheet).toHaveAccessibleDescription('8 javë · 4 ditë · sipër dhe poshtë')
+    await user.click(within(sheet).getByRole('button', { name: 'Ndërto nga shablloni' }))
+
+    expect(await screen.findByLabelText('Emri i programit')).toHaveValue('Upper/Lower 4 ditë')
+    expect(router.state.location.pathname).toMatch(/^\/fillimi\/programi\/[\w-]+$/)
+    expect(screen.getByText('Nisur nga shablloni Upper/Lower 4 ditë')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^Dita 1, Sipër A/ })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Ruaj programin' }))
+
+    const store = data.store as import('@/data/store').LocalStore
+    const active = async () => store.get('programs', String((await store.all('user_settings'))[0]?.active_program_id))
+    await vi.waitFor(async () => expect(await active()).toMatchObject({ name: 'Upper/Lower 4 ditë', template: 'upper_lower_4', draft: false }))
+    expect((await store.all('user_settings'))[0]?.onboarded_at).toBeTruthy()
+    const { trainingSnapshot } = await import('@/data/training')
+    expect(await trainingSnapshot(store)).toMatchObject({ programName: 'Upper/Lower 4 ditë', plan: { blockName: 'Bazat', week: 1, dayName: 'Sipër A' } })
   })
 
   it('gjuha ndryshon menjëherë tekstet e hapave dhe ruhet në telefon', async () => {

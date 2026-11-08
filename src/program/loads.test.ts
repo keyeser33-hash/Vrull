@@ -7,6 +7,7 @@ import {
   linearWeight,
   percentWeight,
   personalRecords,
+  progressionIncrement,
   recordThreshold,
   reference,
   roundDown,
@@ -237,11 +238,24 @@ describe('rregulli i progresit i programeve të tua (V9)', () => {
     sets.map(([weightKg, reps, rir], index) => set({ exerciseId: 'press', sessionId, setNumber: index + 1, weightKg, reps, rir, loggedAt }))
   const weight = (history: HistorySet[]) => weightFor({ exerciseId: 'press', target, exercise: dumbbell, history, now: NOW, progression })
 
-  it('çdo set në kufirin e sipërm me RIR ≥ 2: pesha e fundit + 2,5 kg', () => {
+  it('çdo set në kufirin e sipërm me RIR ≥ 2: pesha e fundit + shtesa; me dumbbell (hapi 2 kg) +2 kg', () => {
     expect(weight(session([[20, 12, 2], [20, 12, 3], [20, 12, 2]]))).toEqual({
-      weightKg: 22.5,
-      basis: { kind: 'progression', lastKg: 20, incrementKg: 2.5, minRir: 2, topReps: 12, earned: true },
+      weightKg: 22,
+      basis: { kind: 'progression', lastKg: 20, incrementKg: 2, minRir: 2, topReps: 12, earned: true },
     })
+  })
+
+  it('shtesa ndjek hapin e pajisjes: shufra +2,5, kabllo dhe makineria të paktën një hap (+5)', () => {
+    const history = session([[60, 12, 2], [60, 12, 2]])
+    const at = (equipment: 'barbell' | 'cable' | 'machine', incrementKg = 2.5) =>
+      weightFor({ exerciseId: 'press', target, exercise: { equipment, tracking: 'weight_reps' }, history, now: NOW, progression: { ...progression, rule: { minRir: 2, incrementKg } } }).weightKg
+    expect(at('barbell')).toBe(62.5)
+    expect(at('cable')).toBe(65)
+    expect(at('machine', 10)).toBe(70)
+    expect(progressionIncrement(2.5, 2)).toBe(2)
+    // Në mes të dy hapave fiton më i vogli: shtesa nuk e kalon atë që kërkoi përdoruesi.
+    expect(progressionIncrement(5, 2)).toBe(4)
+    expect(progressionIncrement(1, 2.5)).toBe(2.5)
   })
 
   it('një set nën kufirin e sipërm: pesha mbetet', () => {
@@ -254,12 +268,12 @@ describe('rregulli i progresit i programeve të tua (V9)', () => {
   })
 
   it('pesha e fundit është më e rënda e seancës', () => {
-    expect(weight(session([[22, 12, 2], [20, 12, 3]]))).toMatchObject({ weightKg: 24.5, basis: { lastKg: 22 } })
+    expect(weight(session([[22, 12, 2], [20, 12, 3]]))).toMatchObject({ weightKg: 24, basis: { lastKg: 22 } })
   })
 
   it('vlen vetëm seanca e fundit e ushtrimit', () => {
     const older = session([[17.5, 10, 0]], 'older', daysAgo(10))
-    expect(weight([...older, ...session([[20, 12, 2], [20, 12, 2]])]).weightKg).toBe(22.5)
+    expect(weight([...older, ...session([[20, 12, 2], [20, 12, 2]])]).weightKg).toBe(22)
   })
 
   it('pa javë të kaluar ose pa histori: si §7', () => {

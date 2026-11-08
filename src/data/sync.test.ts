@@ -200,6 +200,23 @@ describe('sinkronizimi', () => {
     expect(remote.rows('body_measurements')[0].weight_kg).toBe(79)
   })
 
+  it('një ndryshim gjatë dërgimit në të njëjtën milisekondë (ose me orën mbrapa) nuk humbet', async () => {
+    const phone = device(remote)
+    const row = await phone.store.put('body_measurements', { date: '2026-11-30', weight_kg: 80 })
+    const upsert = remote.upsert.bind(remote)
+    remote.upsert = async (table, rows) => {
+      // Pa lëvizur orën: dy shkrime në të njëjtën milisekondë, ose ora e telefonit u kthye mbrapa.
+      await phone.store.put('body_measurements', { id: row.id, weight_kg: 79 })
+      return upsert(table, rows)
+    }
+    await phone.sync.run()
+    remote.upsert = upsert
+
+    expect(await phone.db.body_measurements.get(row.id)).toMatchObject({ weight_kg: 79, _dirty: PENDING })
+    await phone.sync.run()
+    expect(remote.rows('body_measurements')[0].weight_kg).toBe(79)
+  })
+
   it('pa përdorues nuk prek rrjetin', async () => {
     const phone = device(remote, { userId: null })
     expect(await phone.sync.run()).toMatchObject({ status: 'signed_out' })

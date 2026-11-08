@@ -1,19 +1,14 @@
+import type { MessageKey } from '@/i18n'
 import type { Prescription, RepRange } from '@/program/types'
-import { kg } from './training-format'
 
-// Forma e recetës te editori (SPEC §4): pesë llojet, me fushat si tekst që lejojnë presjen
-// dhjetore dhe gabimet me fjalë. Kur ndërrohet lloji, fushat e tjera ruajnë vlerat e tyre.
+// Forma e recetës te ndërtuesi (SPEC §4): gjashtë llojet, me fushat si tekst që lejojnë presjen ose
+// pikën dhjetore. Gabimet janë çelësa të katalogut (`builder.recipe.error.*`) me parametrat e tyre.
+// Kur ndërrohet lloji, fushat e tjera ruajnë vlerat e tyre.
 
 export type PrescriptionType = Prescription['type']
 
-export const PRESCRIPTION_TYPES: { type: PrescriptionType; label: string; hint: string }[] = [
-  { type: 'rep_ladder', label: 'Përsëritje sipas javës', hint: 'Intervali ndryshon çdo javë dhe përsëritet në cikël.' },
-  { type: 'timed', label: 'Kohë', hint: 'Sekonda për set, si plank-u.' },
-  { type: 'percent_1rm', label: 'Përqindje e 1RM', hint: 'Përqindja dhe përsëritjet sipas javës, si 5/3/1.' },
-  { type: 'linear', label: 'Progresion linear', hint: 'Pesha rritet kur mbyllen të gjitha përsëritjet.' },
-  { type: 'rpe', label: 'Përsëritje me RPE', hint: 'Sa i rëndë duhet të ndihet seti, nga 5 deri në 10.' },
-  { type: 'rir', label: 'Përsëritje me RIR', hint: 'Sa përsëritje duhet të mbeten në rezervë.' },
-]
+/** Radha te fleta: intervali me RIR i pari, si ushtrimi i ri i ndërtuesit. */
+export const PRESCRIPTION_TYPES: PrescriptionType[] = ['rir', 'rep_ladder', 'timed', 'percent_1rm', 'linear', 'rpe']
 
 export interface RangeRow {
   min: string
@@ -47,11 +42,14 @@ export interface PrescriptionDraft {
   rirMax: string
 }
 
-const text = (value: number | null | undefined) => (value === null || value === undefined ? '' : kg(value))
-const rangeRow = (range: RepRange): RangeRow => ({ min: text(range.min), max: text(range.max), beyond: Boolean(range.beyond) })
+export type FormError = { key: Extract<MessageKey, `builder.recipe.error.${string}`>; params?: { number: number } }
+export type ParseResult = { ok: true; value: Prescription } | { ok: false; error: FormError }
+
+/** Receta e ushtrimit të ri te ndërtuesi (SPEC §4, V2-E1-10): 8–12 përsëritje me RIR 2. */
+export const DEFAULT_PRESCRIPTION: Prescription = { type: 'rir', reps: { min: 8, max: 12 }, rir: { min: 2, max: 2 } }
 
 const DEFAULT: PrescriptionDraft = {
-  type: 'rep_ladder',
+  type: 'rir',
   ladder: [
     [12, 15],
     [9, 11],
@@ -67,7 +65,7 @@ const DEFAULT: PrescriptionDraft = {
     [95, 1],
   ].map(([percent, reps]) => ({ percent: String(percent), reps: String(reps), amrap: true })),
   startKg: '20',
-  incrementKg: '2,5',
+  incrementKg: '2.5',
   linearReps: '5',
   failures: '3',
   deloadPercent: '10',
@@ -75,12 +73,20 @@ const DEFAULT: PrescriptionDraft = {
   repsMax: '12',
   repsBeyond: false,
   rpe: '8',
-  rirMin: '1',
+  rirMin: '2',
   rirMax: '2',
 }
 
-export function prescriptionDraft(prescription: Prescription | undefined | null): PrescriptionDraft {
-  const draft = { ...DEFAULT, ladder: [...DEFAULT.ladder], weeks: [...DEFAULT.weeks] }
+/** Forma e një recete; `number` i shkruan numrat sipas gjuhës (`fmt.number`: 2,5 / 2.5). */
+export function prescriptionDraft(prescription: Prescription | undefined | null, number: (value: number) => string = String): PrescriptionDraft {
+  const text = (value: number | null | undefined) => (value === null || value === undefined ? '' : number(value))
+  const rangeRow = (range: RepRange): RangeRow => ({ min: text(range.min), max: text(range.max), beyond: Boolean(range.beyond) })
+  const draft: PrescriptionDraft = {
+    ...DEFAULT,
+    ladder: [...DEFAULT.ladder],
+    weeks: [...DEFAULT.weeks],
+    incrementKg: number(2.5),
+  }
   if (!prescription) return draft
   draft.type = prescription.type
   switch (prescription.type) {
@@ -119,19 +125,23 @@ export function prescriptionDraft(prescription: Prescription | undefined | null)
   return draft
 }
 
-export type ParseResult = { ok: true; value: Prescription } | { ok: false; error: string }
+class Invalid extends Error {
+  readonly error: FormError
+  constructor(error: FormError) {
+    super(error.key)
+    this.error = error
+  }
+}
 
-class FormError extends Error {}
-
-/** Numri nga teksti: presja si pikë dhjetore; null kur fusha është bosh. */
-function number(value: string): number | null {
+/** Numri nga teksti: presja ose pika dhjetore; null kur fusha është bosh. */
+function parseNumber(value: string): number | null {
   const trimmed = value.trim().replace(',', '.')
   if (trimmed === '') return null
   return /^\d+(\.\d+)?$/.test(trimmed) ? Number(trimmed) : Number.NaN
 }
 
-function required(value: string, min: number, max: number, message: string, { integer = true, step }: { integer?: boolean; step?: number } = {}) {
-  const parsed = number(value)
+function required(value: string, min: number, max: number, error: FormError, { integer = true, step }: { integer?: boolean; step?: number } = {}) {
+  const parsed = parseNumber(value)
   const valid =
     parsed !== null &&
     !Number.isNaN(parsed) &&
@@ -139,40 +149,42 @@ function required(value: string, min: number, max: number, message: string, { in
     parsed <= max &&
     (!integer || Number.isInteger(parsed)) &&
     (step === undefined || Number.isInteger(Math.round((parsed / step) * 1000) / 1000))
-  if (!valid) throw new FormError(message)
+  if (!valid) throw new Invalid(error)
   return parsed
 }
 
-function repRange(row: RangeRow, prefix: string): RepRange {
-  const min = required(row.min, 1, 100, `${prefix}përsëritjet duhet të jenë nga 1 deri në 100.`)
-  const max = row.max.trim() === '' ? null : required(row.max, 1, 100, `${prefix}përsëritjet duhet të jenë nga 1 deri në 100.`)
-  if (max !== null && max < min) throw new FormError(`${prefix}maksimumi duhet të jetë sa minimumi ose më shumë.`)
+/** Intervali i një jave (`week`) ose i vetëm. */
+function repRange(row: RangeRow, week?: number): RepRange {
+  const reps: FormError = week ? { key: 'builder.recipe.error.weekReps', params: { number: week } } : { key: 'builder.recipe.error.reps' }
+  const min = required(row.min, 1, 100, reps)
+  const max = row.max.trim() === '' ? null : required(row.max, 1, 100, reps)
+  if (max !== null && max < min) throw new Invalid(week ? { key: 'builder.recipe.error.weekMaxBelowMin', params: { number: week } } : { key: 'builder.recipe.error.maxBelowMin' })
   return row.beyond ? { min, max, beyond: true } : { min, max }
 }
 
 function parse(draft: PrescriptionDraft): Prescription {
   switch (draft.type) {
     case 'rep_ladder': {
-      if (draft.ladder.length === 0) throw new FormError('Shto të paktën një javë.')
-      const ladder = draft.ladder.map((row, index) => repRange(row, `Java ${index + 1}: `))
+      if (draft.ladder.length === 0) throw new Invalid({ key: 'builder.recipe.error.weekRequired' })
+      const ladder = draft.ladder.map((row, index) => repRange(row, index + 1))
       const both = draft.increaseMin.trim() !== '' || draft.increaseMax.trim() !== ''
       if (!both) return { type: 'rep_ladder', ladder }
-      const message = 'Shtesa mes blloqeve duhet të jetë nga 0 deri në 50 kg.'
-      const min = required(draft.increaseMin, 0, 50, message, { integer: false })
-      const max = required(draft.increaseMax, 0, 50, message, { integer: false })
-      if (max < min) throw new FormError('Shtesa më e madhe duhet të jetë sa më e vogla ose më shumë.')
+      const increase: FormError = { key: 'builder.recipe.error.increase' }
+      const min = required(draft.increaseMin, 0, 50, increase, { integer: false })
+      const max = required(draft.increaseMax, 0, 50, increase, { integer: false })
+      if (max < min) throw new Invalid({ key: 'builder.recipe.error.increaseOrder' })
       return { type: 'rep_ladder', ladder, blockIncreaseKg: { min, max } }
     }
     case 'timed':
-      return { type: 'timed', seconds: required(draft.seconds, 5, 600, 'Kohëzgjatja duhet të jetë nga 5 deri në 600 sekonda.') }
+      return { type: 'timed', seconds: required(draft.seconds, 5, 600, { key: 'builder.recipe.error.seconds' }) }
     case 'percent_1rm': {
-      if (draft.weeks.length === 0) throw new FormError('Shto të paktën një javë.')
+      if (draft.weeks.length === 0) throw new Invalid({ key: 'builder.recipe.error.weekRequired' })
       return {
         type: 'percent_1rm',
         weeks: draft.weeks.map((week, index) => {
-          const prefix = `Java ${index + 1}: `
-          const percent = required(week.percent, 1, 100, `${prefix}përqindja duhet të jetë nga 1 deri në 100.`, { integer: false })
-          const reps = required(week.reps, 1, 30, `${prefix}përsëritjet duhet të jenë nga 1 deri në 30.`)
+          const params = { number: index + 1 }
+          const percent = required(week.percent, 1, 100, { key: 'builder.recipe.error.percent', params }, { integer: false })
+          const reps = required(week.reps, 1, 30, { key: 'builder.recipe.error.percentReps', params })
           return week.amrap ? { percent, reps, amrap: true } : { percent, reps }
         }),
       }
@@ -180,24 +192,23 @@ function parse(draft: PrescriptionDraft): Prescription {
     case 'linear':
       return {
         type: 'linear',
-        startKg: required(draft.startKg, 0, 500, 'Pesha e nisjes duhet të jetë nga 0 deri në 500 kg.', { integer: false }),
-        incrementKg: required(draft.incrementKg, 0.25, 20, 'Shtesa duhet të jetë nga 0,25 deri në 20 kg.', { integer: false }),
-        reps: required(draft.linearReps, 1, 30, 'Përsëritjet duhet të jenë nga 1 deri në 30.'),
-        failuresBeforeDeload: required(draft.failures, 1, 10, 'Dështimet para uljes duhet të jenë nga 1 deri në 10.'),
-        deloadPercent: required(draft.deloadPercent, 1, 50, 'Ulja duhet të jetë nga 1 deri në 50%.', { integer: false }),
+        startKg: required(draft.startKg, 0, 500, { key: 'builder.recipe.error.startKg' }, { integer: false }),
+        incrementKg: required(draft.incrementKg, 0.25, 20, { key: 'builder.recipe.error.incrementKg' }, { integer: false }),
+        reps: required(draft.linearReps, 1, 30, { key: 'builder.recipe.error.linearReps' }),
+        failuresBeforeDeload: required(draft.failures, 1, 10, { key: 'builder.recipe.error.failures' }),
+        deloadPercent: required(draft.deloadPercent, 1, 50, { key: 'builder.recipe.error.deload' }, { integer: false }),
       }
     case 'rpe':
     case 'rir': {
-      const reps = repRange({ min: draft.repsMin, max: draft.repsMax, beyond: draft.repsBeyond }, '')
+      const reps = repRange({ min: draft.repsMin, max: draft.repsMax, beyond: draft.repsBeyond })
       if (draft.type === 'rpe') {
-        const rpe = required(draft.rpe, 5, 10, 'RPE duhet të jetë nga 5 deri në 10.', { integer: false, step: 0.5 })
+        const rpe = required(draft.rpe, 5, 10, { key: 'builder.recipe.error.rpe' }, { integer: false, step: 0.5 })
         return { type: 'rpe', reps, rpe }
       }
-      const message = 'RIR duhet të jetë nga 0 deri në 5.'
-      const min = required(draft.rirMin, 0, 5, message)
-      const max = required(draft.rirMax, 0, 5, message)
-      if (max < min) throw new FormError('RIR: maksimumi duhet të jetë sa minimumi ose më shumë.')
-      return { type: 'rir', reps, rir: { min, max } }
+      // RIR-i zgjidhet te receta e ushtrimit (çipat 0–4+); fleta e mban siç ishte.
+      const min = parseNumber(draft.rirMin) ?? 2
+      const max = parseNumber(draft.rirMax) ?? min
+      return { type: 'rir', reps, rir: { min: Number.isNaN(min) ? 2 : min, max: Number.isNaN(max) ? min : Math.max(min, max) } }
     }
   }
 }
@@ -206,31 +217,7 @@ export function prescriptionFromDraft(draft: PrescriptionDraft): ParseResult {
   try {
     return { ok: true, value: parse(draft) }
   } catch (error) {
-    if (error instanceof FormError) {
-      const message = error.message
-      return { ok: false, error: message.charAt(0).toUpperCase() + message.slice(1) }
-    }
+    if (error instanceof Invalid) return { ok: false, error: error.error }
     throw error
-  }
-}
-
-const range = (reps: RepRange) => (reps.max === null ? `${reps.min}+` : `${reps.min}–${reps.max}`)
-
-/** Teksti i shkurtër i recetës në rreshtin e editorit. */
-export function prescriptionSummary(prescription: Prescription | undefined | null): string {
-  if (!prescription) return 'Pa recetë'
-  switch (prescription.type) {
-    case 'rep_ladder':
-      return prescription.ladder.map(range).join(', ')
-    case 'timed':
-      return `${prescription.seconds} sekonda`
-    case 'percent_1rm':
-      return prescription.weeks.map((week) => `${kg(week.percent)}% × ${week.reps}${week.amrap ? '+' : ''}`).join(', ')
-    case 'linear':
-      return `${prescription.reps} përsëritje, +${kg(prescription.incrementKg)} kg`
-    case 'rpe':
-      return `${range(prescription.reps)} me RPE ${kg(prescription.rpe)}`
-    case 'rir':
-      return `${range(prescription.reps)} me RIR ${prescription.rir.min}–${prescription.rir.max}`
   }
 }

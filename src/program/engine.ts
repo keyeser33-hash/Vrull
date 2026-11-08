@@ -73,7 +73,8 @@ export function planSession(program: Program, pointer: Pointer): SessionPlan {
       const prescription = field('prescription')
       const exerciseId = field('exerciseId') ?? slot.exerciseId
       const target = targetFor(prescription, pointer.week)
-      const progression = field('progression')
+      // Rregulli i slotit në nivelin më të saktë; pa të, ai i gjithë programit (V2-E1-10).
+      const progression = field('progression') ?? program.progression ?? undefined
       return {
         slotId: slot.id,
         position: slot.position,

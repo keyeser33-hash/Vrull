@@ -331,10 +331,12 @@ describe('editori i programeve (TH-11)', () => {
     expect(view).toMatchObject({ name: 'PPL', active: false })
     expect(view.blocks.map((block) => [block.name, block.weeks])).toEqual([['Blloku 1', 4]])
     expect(view.days.map((day) => [day.name, day.number])).toEqual([['Dita 1', 1]])
+    const pointer = { blockName: 'Blloku 1', blockWeeks: 4, week: 1, run: 1, weekOfProgram: 1, completed: false }
+    const summary = { draft: false, template: null, description: null, blocks: 1, days: 1, weeks: 4 }
     expect(await programList(store)).toEqual([
-      { id: first, name: 'Upper lower', active: true, blocks: 1, days: 1 },
-      { id: third, name: 'Arnold split', active: false, blocks: 1, days: 1 },
-      { id: second, name: 'PPL', active: false, blocks: 1, days: 1 },
+      { id: first, name: 'Upper lower', active: true, ...summary, pointer },
+      { id: third, name: 'Arnold split', active: false, ...summary, pointer: null },
+      { id: second, name: 'PPL', active: false, ...summary, pointer: null },
     ])
   })
 

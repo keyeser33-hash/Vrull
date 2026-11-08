@@ -36,6 +36,17 @@ const PROTECTED = ['user_id', 'created_at', 'updated_at', 'deleted_at', 'server_
 
 const visible = (row: LocalRow | undefined) => (row && row.deleted_at === null ? row : undefined)
 
+/**
+ * Koha e një ndryshimi: ora e tanishme, por gjithmonë pas ndryshimit të mëparshëm të rreshtit.
+ * Sinkronizimi e njeh një ndryshim gjatë dërgimit nga updated_at (sync.ts, `acceptPushed`); dy shkrime
+ * në të njëjtën milisekondë, ose ora e telefonit që kthehet mbrapa, do ta humbnin pa këtë.
+ */
+function nextTimestamp(now: string, previous: string | undefined): string {
+  if (!previous) return now
+  const after = Date.parse(previous) + 1
+  return Date.parse(now) >= after ? now : new Date(after).toISOString()
+}
+
 export function createLocalStore(db: LocalDatabase, options: StoreOptions): LocalStore {
   const clock = options.now ?? (() => new Date())
   const now = () => clock().toISOString()
@@ -57,7 +68,7 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
       const row = await db.transaction('rw', db[table], async () => {
         const existing = values.id ? await db[table].get(values.id) : undefined
         const next: LocalRow = existing
-          ? { ...existing, ...changes, id: existing.id, updated_at: timestamp, _dirty: PENDING }
+          ? { ...existing, ...changes, id: existing.id, updated_at: nextTimestamp(timestamp, existing.updated_at), _dirty: PENDING }
           : {
               ...changes,
               id: values.id ?? uuid(),
@@ -95,7 +106,11 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
     async remove(table, id) {
       requireUser()
       const timestamp = now()
-      await db[table].update(id, { deleted_at: timestamp, updated_at: timestamp, _dirty: PENDING })
+      await db.transaction('rw', db[table], async () => {
+        const existing = await db[table].get(id)
+        if (!existing) return
+        await db[table].put({ ...existing, deleted_at: timestamp, updated_at: nextTimestamp(timestamp, existing.updated_at), _dirty: PENDING })
+      })
       notify(table)
     },
 
