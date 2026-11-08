@@ -514,7 +514,8 @@ async function open() {
 const heading = (page) => page.evaluate(`document.querySelector('h1')?.textContent ?? ''`)
 const waitForHeading = (page, text, timeout) => waitFor(async () => (await heading(page)) === text, `titulli "${text}"`, timeout)
 // Teksti i faqes: innerText e jep me shkronjat e mëdha të stileve ("VAZHDO STËRVITJEN"), textContent siç shkruhet.
-const PAGE_TEXT = `(document.body.innerText + '\\n' + document.body.textContent)`
+// Hapësirat që nuk thyhen (fmt.unit: "85 cm") krahasohen si hapësira të zakonshme.
+const PAGE_TEXT = `(document.body.innerText + '\\n' + document.body.textContent).replace(/[\\u00A0\\u202F]/g, ' ')`
 const hasText = (page, text) => page.evaluate(`${PAGE_TEXT}.includes(${JSON.stringify(text)})`)
 const waitForText = (page, text, timeout) => waitFor(() => hasText(page, text), `teksti "${text}"`, timeout)
 const waitForPath = (page, path, timeout) => waitFor(async () => (await page.evaluate('location.pathname')) === path, `adresa ${path}`, timeout)
