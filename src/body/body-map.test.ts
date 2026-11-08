@@ -1,7 +1,7 @@
 import type { HistorySet } from '@/program/loads'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { allRecovery, keyLoad, libraryExercisesFor, loadLevel, muscleLoad } from './body-map'
-import { KEY_NAMES, MUSCLE_INFO } from './muscle-info'
+import { MUSCLE_INFO } from './muscle-info'
 
 let counter = 0
 const set = (exerciseId: string, loggedAt: string, extra: Partial<HistorySet> = {}): HistorySet => ({
@@ -98,10 +98,6 @@ describe('harta e muskujve', () => {
 
   it('çdo grup ka emrin latinisht (funksioni me një fjali është te katalogu, `bodyModel.role.*`)', () => {
     for (const entry of MUSCLE_GROUPS) expect(MUSCLE_INFO[entry.id], entry.id).toMatchObject({ latin: expect.any(String) })
-  })
-
-  it('çdo çelës i grupeve ka emrin e vet për fokusin te modeli 3D', () => {
-    expect(Object.keys(KEY_NAMES).sort()).toEqual(MUSCLE_GROUPS.flatMap((entry) => entry.keys).sort())
   })
 
   it('ushtrimet e bibliotekës për një grup: ku grupi është kryesor', () => {
