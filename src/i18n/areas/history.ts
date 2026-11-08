@@ -37,10 +37,6 @@ export const sq = {
   'history.weekStart.6': 'Javët nisin të shtunën',
 
   // Javët e programit dhe seancat.
-  'history.week': 'Java {week}',
-  'history.phase': 'Faza {n}',
-  'history.run': 'Xhiro {run}',
-  'history.noProgramme': 'Pa program',
   'history.weekDone': '{done} nga {total}',
   'history.workout': 'Stërvitja {n}',
   'history.todayDate': 'Sot, {date}',
@@ -54,12 +50,6 @@ export const sq = {
   'history.spoken.hours': { one: '{count} orë', other: '{count} orë' },
   'history.spoken.minutes': { one: '{count} minutë', other: '{count} minuta' },
   'history.spoken.hoursMinutes': '{hours} e {minutes}',
-
-  // Ditët e Shortcut to Size (emrat e ruajtur janë shqip; anglishtja i përkthen).
-  'history.stsDay.1': 'Gjoks, triceps, pulpa',
-  'history.stsDay.2': 'Shpinë, biceps, bark',
-  'history.stsDay.3': 'Shpatulla, trapez, pulpa',
-  'history.stsDay.4': 'Këmbë, bark',
 
   // Seanca e kaluar.
   'history.backToHistory': 'Mbrapa te historiku',
@@ -100,23 +90,6 @@ export const sq = {
   'history.recordFrom': 'nga {previous} te {label} ({set})',
   'history.setWithRir': '{set}, RIR {rir}',
   'history.editSetLabel': 'Ndrysho setin {n} të {exercise}: {value}',
-
-  // Grupet e muskujve (src/program/muscles.ts), për volumin dhe recetat e seancës.
-  'history.group.gjoksi': 'Gjoksi',
-  'history.group.shpatullat': 'Shpatullat',
-  'history.group.trapezi': 'Trapezi',
-  'history.group.shpina': 'Shpina',
-  'history.group.mesi': 'Mesi i poshtëm',
-  'history.group.bicepsi': 'Bicepsi',
-  'history.group.tricepsi': 'Tricepsi',
-  'history.group.parakrahet': 'Parakrahët',
-  'history.group.barku': 'Barku',
-  'history.group.vithet': 'Vithet',
-  'history.group.kuadricepsi': 'Kuadricepsi',
-  'history.group.kofshet-e-pasme': 'Kofshët e pasme',
-  'history.group.aduktoret': 'Aduktorët',
-  'history.group.pulpat': 'Pulpat',
-  'history.group.qafa': 'Qafa',
 
   // Fleta "Ndrysho setin".
   'history.edit.title': 'Ndrysho setin {n}',
@@ -164,10 +137,6 @@ export const en: TranslationOf<typeof sq> = {
   'history.weekStart.5': 'Weeks start on Friday',
   'history.weekStart.6': 'Weeks start on Saturday',
 
-  'history.week': 'Week {week}',
-  'history.phase': 'Phase {n}',
-  'history.run': 'Round {run}',
-  'history.noProgramme': 'No programme',
   'history.weekDone': '{done} of {total}',
   'history.workout': 'Workout {n}',
   'history.todayDate': 'Today, {date}',
@@ -181,11 +150,6 @@ export const en: TranslationOf<typeof sq> = {
   'history.spoken.hours': { one: '{count} hour', other: '{count} hours' },
   'history.spoken.minutes': { one: '{count} minute', other: '{count} minutes' },
   'history.spoken.hoursMinutes': '{hours} {minutes}',
-
-  'history.stsDay.1': 'Chest, triceps, calves',
-  'history.stsDay.2': 'Back, biceps, abs',
-  'history.stsDay.3': 'Shoulders, traps, calves',
-  'history.stsDay.4': 'Legs, abs',
 
   'history.backToHistory': 'Back to history',
   'history.notFound': 'This session no longer exists.',
@@ -225,22 +189,6 @@ export const en: TranslationOf<typeof sq> = {
   'history.recordFrom': 'from {previous} in {label} ({set})',
   'history.setWithRir': '{set}, RIR {rir}',
   'history.editSetLabel': 'Edit set {n} of {exercise}: {value}',
-
-  'history.group.gjoksi': 'Chest',
-  'history.group.shpatullat': 'Shoulders',
-  'history.group.trapezi': 'Traps',
-  'history.group.shpina': 'Back',
-  'history.group.mesi': 'Lower back',
-  'history.group.bicepsi': 'Biceps',
-  'history.group.tricepsi': 'Triceps',
-  'history.group.parakrahet': 'Forearms',
-  'history.group.barku': 'Abs',
-  'history.group.vithet': 'Glutes',
-  'history.group.kuadricepsi': 'Quads',
-  'history.group.kofshet-e-pasme': 'Hamstrings',
-  'history.group.aduktoret': 'Adductors',
-  'history.group.pulpat': 'Calves',
-  'history.group.qafa': 'Neck',
 
   'history.edit.title': 'Edit set {n}',
   'history.edit.weight': 'Weight, kg',

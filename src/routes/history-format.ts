@@ -1,43 +1,17 @@
 import type { PastSet } from '@/data/history'
 import type { Format, T } from '@/i18n'
 import type { Language } from '@/i18n/language'
-import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import { muscleName } from '@/i18n/domain'
 import type { RepRange, TargetSummary } from '@/progress/history'
 
-// Tekstet e historikut (V2-E1-15) sipas gjuhës. Emrat e blloqeve dhe të ditëve të Shortcut to Size
-// ruhen shqip në bazë; anglishtja i përkthen kur emri është ende ai i programit. Emrat që përdoruesi
-// ndryshoi te editori, dhe emrat e ushtrimeve, mbeten siç janë.
-
-const STS_DAYS: string[] = SHORTCUT_TO_SIZE.program.days.map((day) => day.name)
-const STS_BLOCKS: string[] = SHORTCUT_TO_SIZE.program.blocks.map((block) => block.name)
+// Tekstet e historikut (V2-E1-15) sipas gjuhës. Emrat e programit dhe të muskujve: `@/i18n/domain`.
 
 export const capitalize = (text: string, lang: Language) => text.charAt(0).toLocaleUpperCase(lang) + text.slice(1)
 
 /** Data lokale "YYYY-MM-DD" si mesditë e asaj dite, që ndërrimi i orës të mos e zhvendosë. */
 export const dayDate = (date: string) => new Date(`${date}T12:00:00`)
 
-export function dayNameText(t: T, name: string | null): string {
-  if (!name) return ''
-  const index = STS_DAYS.indexOf(name)
-  return index >= 0 ? t(`history.stsDay.${index + 1}` as 'history.stsDay.1') : name
-}
-
-/** "Java 0", "Faza 1" / "Week 0", "Phase 1". */
-export function blockText(t: T, name: string | null): string {
-  if (!name) return t('history.noProgramme')
-  if (!STS_BLOCKS.includes(name)) return name
-  const week = /^Java (\d+)$/.exec(name)
-  if (week) return t('history.week', { week: Number(week[1]) })
-  const phase = /^Faza (\d+)$/.exec(name)
-  return phase ? t('history.phase', { n: Number(phase[1]) }) : name
-}
-
-/** "Faza 1 · Java 2", "Java 0"; xhiro e dytë e thotë. */
-export function weekLabel(t: T, week: { blockName: string | null; blockWeeks: number; week: number; run: number }): string {
-  const block = blockText(t, week.blockName)
-  const label = week.blockName && week.blockWeeks > 1 ? `${block} · ${t('history.week', { week: week.week })}` : block
-  return week.run > 1 ? `${label} · ${t('history.run', { run: week.run })}` : label
-}
+export { programBlockName as blockText, programDayName as dayNameText, programWeekLabel as weekLabel } from '@/i18n/domain'
 
 const pad = (value: number) => String(value).padStart(2, '0')
 
@@ -123,7 +97,7 @@ const rangeText = (fmt: Format, range: RepRange) => (range.max === null ? `${fmt
 export function summaryText(t: T, fmt: Format, lang: Language, summary: TargetSummary | null): string {
   if (!summary?.main) return ''
   const others = summary.others.map((entry) => {
-    const groups = entry.groupIds.map((id) => t(`history.group.${id}` as 'history.group.gjoksi').toLocaleLowerCase(lang)).join(', ')
+    const groups = entry.groupIds.map((id) => muscleName(t, id).toLocaleLowerCase(lang)).join(', ')
     return groups ? `${groups} ${rangeText(fmt, entry.range)}` : rangeText(fmt, entry.range)
   })
   const techniques = summary.techniques.map((type) => `+ ${t(`history.technique.${type}`)}`)

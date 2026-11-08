@@ -43,6 +43,7 @@ import {
   summaryText,
   weekLabel,
 } from './history-format'
+import { muscleName } from '@/i18n/domain'
 
 // Historiku (V2-E1-15; bordet "Hist-Seancat" dhe "Hist-Seanca"), brenda Progresit: seancat sipas
 // javës së programit me kalendarin e muajit, dhe seanca e kaluar me setet, rekordet dhe volumin.
@@ -402,7 +403,7 @@ function VolumeCard({ session }: { session: PastSession }) {
       <dl className="grid grid-cols-4 gap-2">
         {session.volume.slice(0, 4).map((entry) => (
           <div key={entry.groupId} className="flex min-w-0 flex-col-reverse gap-0.5">
-            <dt className="truncate text-[13px] text-muted-foreground">{t(`history.group.${entry.groupId}` as 'history.group.gjoksi')}</dt>
+            <dt className="truncate text-[13px] text-muted-foreground">{muscleName(t, entry.groupId)}</dt>
             <dd className="font-display text-3xl leading-none font-extrabold tabular-nums">{fmt.number(entry.sets)}</dd>
           </div>
         ))}
