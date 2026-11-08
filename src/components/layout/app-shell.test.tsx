@@ -69,8 +69,9 @@ describe('korniza', () => {
 
   it('Trupi ka kaluar brenda Progresit: /trupi çon te /progresi/trupi', async () => {
     const { router } = renderAt('/trupi')
-    expect(router.state.location.pathname).toBe('/progresi/trupi')
+    // Ekrani ngarkohet kur hapet (router.tsx): adresa ndërrohet kur Trupi është gati.
     expect(await screen.findByRole('heading', { level: 1, name: 'Trupi' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/progresi/trupi')
   })
 
   it('kalon nga një tab te tjetri', async () => {

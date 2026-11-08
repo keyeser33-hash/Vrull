@@ -13,7 +13,8 @@ export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [react(), tailwindcss()],
   // App-i ngarkohet nga skedarët e APK-së, jo nga rrjeti; React, Supabase dhe Dexie bashkë
-  // kalojnë 500 kB pa qenë problem shpejtësie. Kufiri mbetet si roje për rritje të papritura.
+  // kalojnë 500 kB pa qenë problem shpejtësie. Ekranet ngarkohen kur hapen (router.tsx, V2-E1-16a),
+  // ndaj asnjë pjesë nuk i afrohet kufirit; ai mbetet si roje për rritje të papritura.
   build: { chunkSizeWarningLimit: 800 },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

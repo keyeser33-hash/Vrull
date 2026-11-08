@@ -1,38 +1,30 @@
+import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
 import type { ShellHandle, TabId } from '@/components/layout/nav-places'
 import { AppGate } from '@/routes/gate'
-import { LoginPage } from '@/routes/login'
-import { OnboardingPage } from '@/routes/onboarding'
-import { AddFoodPage } from '@/routes/add-food'
-import { NutritionPage } from '@/routes/nutrition'
-import { BodyPage } from '@/routes/body'
-import { BodyLayersPage } from '@/routes/body-layers'
-import { MeasurePage } from '@/routes/body-measure'
-import { BodyShapePage } from '@/routes/body-shape'
-import { FriendsPage } from '@/routes/friends'
-import { HistoryPage, PastSessionPage } from '@/routes/history'
 import { Moved } from '@/routes/moved'
-import { PhotosPage } from '@/routes/photos'
-import { MetricPage, ProgressPage } from '@/routes/progress'
-import { ExercisePage } from '@/routes/exercise'
-import { CreateExercisePage } from '@/routes/exercise-create'
-import { LibraryPage } from '@/routes/library'
-import { ProgramPage, WorkoutPage } from '@/routes/program'
-import { WeekWeightsPage } from '@/routes/week-weights'
-import { BuildStartPage, DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
-import { ProgramImportPage } from '@/routes/program-import'
-import { AiSettingsPage } from '@/routes/settings-ai'
-import { SessionPage } from '@/routes/session'
-import { SessionSummaryPage } from '@/routes/session-summary'
-import { SettingsPage } from '@/routes/settings'
-import { AppearancePage } from '@/routes/settings-appearance'
-import { RemindersPage } from '@/routes/settings-reminders'
-import { SlotEditorPage } from '@/routes/slot-editor'
-import { TodayPage } from '@/routes/today'
 
 /** Tab-i aktiv i një rruge te korniza; `null` pa tab-bar (cilësimet, editorët, shtimi). */
 const tab = (id: TabId | null): { handle: ShellHandle } => ({ handle: { tab: id } })
+
+/**
+ * Ekrani ngarkohet kur hapet rruga (V2-E1-16a): paketa e nisjes mban kornizën, portën dhe të dhënat.
+ * Skedarët janë në APK, ndaj asnjë ekran nuk pret rrjetin. Gjatë ngarkimit React Router mban ekranin e
+ * mëparshëm, pa gjendje ngarkimi në mes. Në hapjen e parë korniza (kreu, tab-bar-i) vizatohet menjëherë
+ * dhe vendi i ekranit mbetet bosh disa milisekonda (`hydrateFallbackElement`), pa skelet që kërcen.
+ */
+function screen<Module>(load: () => Promise<Module>, pick: (module: Module) => ComponentType) {
+  return { lazy: async () => ({ Component: pick(await load()) }), hydrateFallbackElement: <></> }
+}
+
+const today = () => import('@/routes/today')
+const program = () => import('@/routes/program')
+const library = () => import('@/routes/library')
+const exercise = () => import('@/routes/exercise')
+const editor = () => import('@/routes/program-editor')
+const history = () => import('@/routes/history')
+const progress = () => import('@/routes/progress')
 
 // Ekranet e app-it pas hyrjes (testet i përdorin pa portën). Pesë tab-et: Sot, Programi, Ushqimi,
 // Progresi, Miqtë; Trupi jeton brenda Progresit që nga v2 (V2-E1-05).
@@ -41,40 +33,40 @@ export const appRoutes: RouteObject[] = [
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <TodayPage />, ...tab('today') },
-      { path: 'programi', element: <ProgramPage />, ...tab('programme') },
-      { path: 'programi/biblioteka', element: <LibraryPage />, ...tab('programme') },
-      { path: 'programi/biblioteka/krijo', element: <CreateExercisePage />, ...tab(null) },
-      { path: 'programi/peshat', element: <WeekWeightsPage />, ...tab(null) },
-      { path: 'programi/:blockId/:week/:dayId', element: <WorkoutPage />, ...tab('programme') },
-      { path: 'ushtrimi/:exerciseId', element: <ExercisePage />, ...tab('programme') },
-      { path: 'programet', element: <ProgramsPage />, ...tab('programme') },
-      { path: 'programet/importo', element: <ProgramImportPage />, ...tab(null) },
-      { path: 'programi/editori/:programId', element: <ProgramEditorPage />, ...tab(null) },
-      { path: 'programi/editori/:programId/dita/:dayId', element: <DayEditorPage />, ...tab(null) },
-      { path: 'programi/editori/:programId/sloti/:slotId', element: <SlotEditorPage />, ...tab(null) },
-      { path: 'ushqimi', element: <NutritionPage />, ...tab('food') },
-      { path: 'ushqimi/shto/:meal', element: <AddFoodPage />, ...tab(null) },
-      { path: 'progresi', element: <ProgressPage />, ...tab('progress') },
-      { path: 'progresi/matja', element: <MeasurePage />, ...tab(null) },
-      { path: 'progresi/fotot', element: <PhotosPage />, ...tab('progress') },
-      { path: 'progresi/trupi', element: <BodyPage />, ...tab('progress') },
-      { path: 'progresi/trupi/shtresat', element: <BodyLayersPage />, ...tab('progress') },
-      { path: 'progresi/trupi/matjet', element: <BodyShapePage />, ...tab('progress') },
-      { path: 'progresi/historiku', element: <HistoryPage />, ...tab('progress') },
-      { path: 'progresi/historiku/:sessionId', element: <PastSessionPage />, ...tab('progress') },
-      { path: 'progresi/:metric', element: <MetricPage />, ...tab('progress') },
+      { index: true, ...screen(today, (m) => m.TodayPage), ...tab('today') },
+      { path: 'programi', ...screen(program, (m) => m.ProgramPage), ...tab('programme') },
+      { path: 'programi/biblioteka', ...screen(library, (m) => m.LibraryPage), ...tab('programme') },
+      { path: 'programi/biblioteka/krijo', ...screen(() => import('@/routes/exercise-create'), (m) => m.CreateExercisePage), ...tab(null) },
+      { path: 'programi/peshat', ...screen(() => import('@/routes/week-weights'), (m) => m.WeekWeightsPage), ...tab(null) },
+      { path: 'programi/:blockId/:week/:dayId', ...screen(program, (m) => m.WorkoutPage), ...tab('programme') },
+      { path: 'ushtrimi/:exerciseId', ...screen(exercise, (m) => m.ExercisePage), ...tab('programme') },
+      { path: 'programet', ...screen(editor, (m) => m.ProgramsPage), ...tab('programme') },
+      { path: 'programet/importo', ...screen(() => import('@/routes/program-import'), (m) => m.ProgramImportPage), ...tab(null) },
+      { path: 'programi/editori/:programId', ...screen(editor, (m) => m.ProgramEditorPage), ...tab(null) },
+      { path: 'programi/editori/:programId/dita/:dayId', ...screen(editor, (m) => m.DayEditorPage), ...tab(null) },
+      { path: 'programi/editori/:programId/sloti/:slotId', ...screen(() => import('@/routes/slot-editor'), (m) => m.SlotEditorPage), ...tab(null) },
+      { path: 'ushqimi', ...screen(() => import('@/routes/nutrition'), (m) => m.NutritionPage), ...tab('food') },
+      { path: 'ushqimi/shto/:meal', ...screen(() => import('@/routes/add-food'), (m) => m.AddFoodPage), ...tab(null) },
+      { path: 'progresi', ...screen(progress, (m) => m.ProgressPage), ...tab('progress') },
+      { path: 'progresi/matja', ...screen(() => import('@/routes/body-measure'), (m) => m.MeasurePage), ...tab(null) },
+      { path: 'progresi/fotot', ...screen(() => import('@/routes/photos'), (m) => m.PhotosPage), ...tab('progress') },
+      { path: 'progresi/trupi', ...screen(() => import('@/routes/body'), (m) => m.BodyPage), ...tab('progress') },
+      { path: 'progresi/trupi/shtresat', ...screen(() => import('@/routes/body-layers'), (m) => m.BodyLayersPage), ...tab('progress') },
+      { path: 'progresi/trupi/matjet', ...screen(() => import('@/routes/body-shape'), (m) => m.BodyShapePage), ...tab('progress') },
+      { path: 'progresi/historiku', ...screen(history, (m) => m.HistoryPage), ...tab('progress') },
+      { path: 'progresi/historiku/:sessionId', ...screen(history, (m) => m.PastSessionPage), ...tab('progress') },
+      { path: 'progresi/:metric', ...screen(progress, (m) => m.MetricPage), ...tab('progress') },
       { path: 'trupi', element: <Moved to="/progresi/trupi" />, ...tab('progress') },
-      { path: 'miqte', element: <FriendsPage />, ...tab('friends') },
-      { path: 'cilesimet', element: <SettingsPage />, ...tab(null) },
-      { path: 'cilesimet/pamja', element: <AppearancePage />, ...tab(null) },
-      { path: 'cilesimet/rikujtuesit', element: <RemindersPage />, ...tab(null) },
-      { path: 'cilesimet/ai', element: <AiSettingsPage />, ...tab(null) },
+      { path: 'miqte', ...screen(() => import('@/routes/friends'), (m) => m.FriendsPage), ...tab('friends') },
+      { path: 'cilesimet', ...screen(() => import('@/routes/settings'), (m) => m.SettingsPage), ...tab(null) },
+      { path: 'cilesimet/pamja', ...screen(() => import('@/routes/settings-appearance'), (m) => m.AppearancePage), ...tab(null) },
+      { path: 'cilesimet/rikujtuesit', ...screen(() => import('@/routes/settings-reminders'), (m) => m.RemindersPage), ...tab(null) },
+      { path: 'cilesimet/ai', ...screen(() => import('@/routes/settings-ai'), (m) => m.AiSettingsPage), ...tab(null) },
     ],
   },
   // Seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
-  { path: '/seanca', element: <SessionPage /> },
-  { path: '/seanca/mbyllja/:sessionId', element: <SessionSummaryPage /> },
+  { path: '/seanca', ...screen(() => import('@/routes/session'), (m) => m.SessionPage) },
+  { path: '/seanca/mbyllja/:sessionId', ...screen(() => import('@/routes/session-summary'), (m) => m.SessionSummaryPage) },
 ]
 
 // E gjithë app-i: porta vendos nëse shfaqet hyrja, hapat e para apo ekranet e mësipërme.
@@ -82,23 +74,22 @@ export const routes: RouteObject[] = [
   {
     element: <AppGate />,
     children: [
-      { path: '/hyrja', element: <LoginPage /> },
+      { path: '/hyrja', ...screen(() => import('@/routes/login'), (m) => m.LoginPage) },
       {
         path: '/fillimi',
-        element: <OnboardingPage />,
+        ...screen(() => import('@/routes/onboarding'), (m) => m.OnboardingPage),
         // "Ndërto timin" (V2-E1-10) dhe "Importo nga PDF" (V2-E1-11): ndërtuesi brenda hapave të parë, para profilit.
         children: [
-          { path: 'importo', element: <ProgramImportPage /> },
-          { path: 'programi', element: <BuildStartPage /> },
-          { path: 'programi/:programId', element: <ProgramEditorPage /> },
-          { path: 'programi/:programId/dita/:dayId', element: <DayEditorPage /> },
-          { path: 'programi/:programId/sloti/:slotId', element: <SlotEditorPage /> },
+          { path: 'importo', ...screen(() => import('@/routes/program-import'), (m) => m.ProgramImportPage) },
+          { path: 'programi', ...screen(editor, (m) => m.BuildStartPage) },
+          { path: 'programi/:programId', ...screen(editor, (m) => m.ProgramEditorPage) },
+          { path: 'programi/:programId/dita/:dayId', ...screen(editor, (m) => m.DayEditorPage) },
+          { path: 'programi/:programId/sloti/:slotId', ...screen(() => import('@/routes/slot-editor'), (m) => m.SlotEditorPage) },
         ],
       },
       ...appRoutes,
     ],
   },
-  // Faqja e brendshme e sistemit Vrull: pa lidhje nga app-i, jashtë portës (pa të dhëna), e ngarkuar
-  // vetëm kur hapet.
-  { path: '/dev/ds', lazy: async () => ({ Component: (await import('@/routes/dev-ds')).DesignSystemPage }) },
+  // Faqja e brendshme e sistemit Vrull: pa lidhje nga app-i, jashtë portës (pa të dhëna).
+  { path: '/dev/ds', ...screen(() => import('@/routes/dev-ds'), (m) => m.DesignSystemPage) },
 ]
