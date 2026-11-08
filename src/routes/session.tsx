@@ -21,6 +21,8 @@ import { restFinishedInApp } from '@/lib/rest-alarm'
 import { useRestTimer } from '@/lib/use-rest-timer'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideoScreen, type FormVideoTarget } from './form-video'
+import { type BeatContext, BodyBeatScreen, MusicConnectScreen, MusicSlot, TapSheet } from './music'
+import { useSessionBeat } from './music-beat'
 import { elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
 import { useEntrance, recordPulse } from './session-motion'
 import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
@@ -162,7 +164,16 @@ function ActiveSession({
   const videoTarget: FormVideoTarget | null =
     slot && exercise ? { exerciseId: slot.exerciseId, exerciseName: exercise.name, sessionId: session.id, setNumber } : null
 
-  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video') => setParams({ [name]: '1' })
+  // Muzika "Trupi në ritëm" (V2-E1-12): mini-player-i, ekrani i plotë dhe lidhja, mbi seancën.
+  const beat = useSessionBeat({ slots: plan.slots, exercises, phase: rest.running ? 'rest' : 'set' })
+  // Kreu i ekranit të plotë: seti në ekran; gjatë pushimit dhe pas setit të fundit, seti i ruajtur.
+  const beatContext: BeatContext | null =
+    slot && !rest.running
+      ? { exercise: exercise?.name ?? '', set: setNumber, sets: slot.sets }
+      : lastSet
+        ? { exercise: exercises[lastSet.exerciseId]?.name ?? '', set: lastSet.setNumber, sets: lastSlot?.sets ?? lastSet.setNumber }
+        : null
+  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video' | 'ritmi' | 'lidh-muziken') => setParams({ [name]: '1' })
   const closeSheet = () => navigate(-1)
   const finish = () => {
     setBusy(true)
@@ -181,7 +192,9 @@ function ActiveSession({
     if (remaining > 0) rest.start(after.restSeconds)
   }
 
-  const frame = (children: ReactNode) => (
+  const musicSlot = <MusicSlot beat={beat} sessionId={session.id} onOpen={() => openSheet('ritmi')} onConnect={() => openSheet('lidh-muziken')} />
+
+  const frame = (children: ReactNode, restNext: { exercise: string | null; text: string } | null = null) => (
     <SessionFrame
       progress={progress}
       position={position}
@@ -210,6 +223,17 @@ function ActiveSession({
       {params.has('ndrysho') && slot ? <ChangeExerciseSheet plan={plan} slot={slot} exerciseName={exercise?.name ?? ''} onClose={closeSheet} /> : null}
       {params.has('muskujt') && exercise ? <ExerciseMusclesSheet exercise={exercise} onClose={closeSheet} /> : null}
       {params.has('video') && videoTarget ? <FormVideoScreen target={videoTarget} onClose={closeSheet} /> : null}
+      {params.has('ritmi') && beatContext ? (
+        <BodyBeatScreen
+          beat={beat}
+          context={beatContext}
+          rest={rest.running ? { remaining: rest.remaining, total: rest.total, next: restNext } : null}
+          onClose={closeSheet}
+          onTap={() => setParams({ ritmi: '1', prek: '1' })}
+        />
+      ) : null}
+      {params.has('prek') && beat.session ? <TapSheet beat={beat} onClose={closeSheet} /> : null}
+      {params.has('lidh-muziken') ? <MusicConnectScreen beat={beat} sessionId={session.id} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 
@@ -232,7 +256,9 @@ function ActiveSession({
         saved={waiting ? null : lastSet}
         record={waiting ? null : savedRecord(lastSet, history.sets, plan, session.id)}
         next={waiting ? null : next}
+        music={musicSlot}
       />,
+      waiting ? null : next,
     )
   }
 
@@ -244,6 +270,7 @@ function ActiveSession({
           <p className="type-body text-muted-foreground">{t('session.allDoneText')}</p>
         </main>
         <SessionFooter>
+          {musicSlot}
           <Button variant="primary" size="xl" disabled={busy} onClick={finish}>
             {t('session.finish')}
           </Button>
@@ -344,6 +371,7 @@ function ActiveSession({
       dropTo={slot.technique.type === 'drop_set' ? drop(defaults.weightKg) : null}
       next={next ? { name: exercises[next.exerciseId]?.name ?? '', sets: next.sets } : null}
       busy={busy || waiting}
+      music={musicSlot}
       onSave={(values) => void save(values)}
       onSkipSegment={
         segment
@@ -438,10 +466,10 @@ function SessionBar({ progress }: { progress: SessionProgress }) {
 }
 
 /**
- * Fundi i ekranit: veprimi kryesor. Sipër tij rezervohet vendi i mini-player-it të muzikës
- * ("Trupi në ritëm", V2-E1-12): një kartë 68 px `surface`, `rounded-lg`, me gjoksin që pulson, titullin,
- * tempon dhe "Pauzë" / "Kënga tjetër". Deri atëherë vendi mbetet bosh, pa player të rremë; `main`
- * sipër ka `flex-1`, ndaj karta do të zërë hapësirën e lirë pa e shtyrë ekranin.
+ * Fundi i ekranit: veprimi kryesor. Sipër tij rri mini-player-i i muzikës ("Trupi në ritëm",
+ * V2-E1-12, `MusicSlot` te music.tsx): një kartë 68 px `surface`, `rounded-lg`, me gjoksin që pulson,
+ * titullin, tempon dhe "Pauzë" / "Kënga tjetër". Pa muzikë (jashtë telefonit) vendi mbetet bosh; `main`
+ * sipër ka `flex-1`, ndaj karta zë hapësirën e lirë pa e shtyrë ekranin.
  */
 function SessionFooter({ children }: { children: ReactNode }) {
   return <div className="flex shrink-0 flex-col gap-2 px-4 pt-2.5 pb-5">{children}</div>
@@ -464,6 +492,7 @@ function SetView({
   dropTo,
   next,
   busy,
+  music,
   onSave,
   onSkipSegment,
 }: {
@@ -485,6 +514,8 @@ function SetView({
   dropTo: number | null
   next: { name: string; sets: number } | null
   busy: boolean
+  /** Mini-player-i i muzikës mbi "Ruaj setin" (V2-E1-12). */
+  music?: ReactNode
   onSave: (values: SetValues) => void
   onSkipSegment?: () => void
 }) {
@@ -559,6 +590,7 @@ function SetView({
       </main>
 
       <SessionFooter>
+        {music}
         <Button
           variant="primary"
           size="xl"
@@ -662,12 +694,15 @@ function RestView({
   saved,
   record,
   next,
+  music,
 }: {
   rest: ReturnType<typeof useRestTimer>
   /** Seti i fundit; null derisa leximi i ri ta sjellë. */
   saved: SetRecord | null
   record: SetRecordResult | null
   next: { exercise: string | null; text: string } | null
+  /** Mini-player-i i muzikës poshtë (V2-E1-12); pulsi i trupit bie në gjysmë gjatë pushimit. */
+  music?: ReactNode
 }) {
   const texts = useI18n()
   const { t, fmt } = texts
@@ -725,6 +760,7 @@ function RestView({
           {t('session.rest.skip')}
         </Button>
       </div>
+      {music ? <div className="mt-auto flex flex-col pt-2">{music}</div> : null}
     </main>
   )
 }

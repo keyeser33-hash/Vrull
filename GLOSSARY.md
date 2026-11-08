@@ -290,7 +290,17 @@ Muzika e seancës, ku muskujt e stërvitjes së sotme pulsojnë në trupin 3D me
 _Avoid_: player, Shufra (koncepti i mëparshëm)
 
 **Tempo**:
-Goditjet në minutë (BPM) të një kënge; gjendet vetë ose me "Prek ritmin".
+Goditjet në minutë (BPM) të një kënge; gjendet vetë (GetSongBPM, pastaj AcousticBrainz) ose me "Prek ritmin", dhe ruhet në telefon bashkë me burimin.
+
+**Prek ritmin**:
+Tempo me dorë: përdoruesi prek në çdo goditje të këngës, të paktën katër herë; ×2 dhe ÷2 e korrigjojnë kur burimi e ngatërron oktavën. Vlen për atë këngë, me burimin "e prekur".
+
+**Pulsi**:
+Ndezja e muskujve të sotëm në trupin 3D, një herë çdo 60/BPM sekonda; gjatë pushimit në gjysmën e tempos. Ndjek tempon, jo goditjet, dhe ndalet kur app-i nuk duket.
+_Avoid_: ritmi i zemrës (zemra vjen nga ora)
+
+**Mini-player-i**:
+Karta e muzikës te seanca, mbi "Ruaj setin" dhe poshtë pushimit: kënga, tempo, "Pauzë" dhe "Kënga tjetër"; prekja hap "Trupi në ritëm".
 
 **Kënga e setit**:
 Kënga më energjike nga radha e app-it të muzikës, që Vrull e sugjeron kur fillon një set dhe e luan vetëm me prekjen e përdoruesit. Kur app-i nuk e jep radhën, oferta është vetëm "Kalo këngën".

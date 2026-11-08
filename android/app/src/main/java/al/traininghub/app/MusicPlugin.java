@@ -1,8 +1,12 @@
 package al.traininghub.app;
 
+import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.media.MediaMetadata;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
@@ -10,6 +14,7 @@ import android.media.session.MediaSessionManager;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -22,17 +27,20 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Muzika (SPEC V29, spike E1-03, docs/research/muzika.md): lexon app-in e muzikës që luan
- * (Spotify, YouTube Music ose çdo tjetër) përmes sesioneve të medias së Android-it dhe i dërgon
- * vetëm komandat që vetë sesioni i shpall te PlaybackState.getActions(). Kërkon "Qasjen te
- * njoftimet" për MusicListenerService; pa të, çdo metodë që lexon sesionet kthen NO_ACCESS.
+ * Muzika "Trupi në ritëm" (SPEC V29, V2-E1-12, docs/research/muzika.md): lexon app-in e muzikës që
+ * luan (Spotify, YouTube Music ose çdo tjetër) përmes sesioneve të medias së Android-it dhe i dërgon
+ * vetëm komandat që vetë sesioni i shpall te PlaybackState.getActions(): luaj, pauzë, para, mbrapa,
+ * pozicioni, dhe kënga e radhës kur app-i e jep radhën. Kërkon "Qasjen te njoftimet" për
+ * MusicListenerService; pa të, çdo metodë që lexon sesionet kthen NO_ACCESS. Vrull nuk lexon asnjë
+ * njoftim. JS-i: src/lib/music.ts (edhe për njoftimin e seancës, E1-08).
  *
- * Ky është eksperimenti i spike-ut: diagnose() tregon për çdo sesion veprimet dhe radhën, që të
- * matet në telefon çfarë jep secili app. Ndërfaqja e plotë ndërtohet te E1-12.
+ * Ngjarja "nowPlaying" vjen sa herë ndryshon kënga, gjendja, radha ose app-i që luan, nga
+ * startListening deri te stopListening (seanca e hapur); nuk ka pyetje periodike.
  */
 @CapacitorPlugin(name = "Music")
 public class MusicPlugin extends Plugin {
@@ -76,10 +84,16 @@ public class MusicPlugin extends Plugin {
         listener = new ComponentName(getContext(), MusicListenerService.class);
     }
 
+    /**
+     * Leja, versioni i Android-it dhe kush e instaloi app-in: një APK nga një lidhje (jo nga një dyqan)
+     * ka "cilësime të kufizuara" në Android 13+ (CDD 15 §9.8), që JS-i t'i shpjegojë hapat.
+     */
     @PluginMethod
     public void getAccess(PluginCall call) {
         JSObject result = new JSObject();
         result.put("granted", hasAccess(getContext()));
+        result.put("sdk", Build.VERSION.SDK_INT);
+        result.put("installer", installer(getContext()));
         call.resolve(result);
     }
 
@@ -124,11 +138,14 @@ public class MusicPlugin extends Plugin {
         }
         MediaController controller = pick(activeControllers());
         JSObject result = new JSObject();
-        result.put("session", controller == null ? null : describe(controller));
+        result.put("session", controller == null ? null : describe(getContext(), controller));
         call.resolve(result);
     }
 
-    /** Eksperimenti: çdo sesion aktiv, me veprimet dhe radhën që shpall. Shkruhet edhe te logcat. */
+    /**
+     * Diagnostikimi (docs/research/muzika.md §1.5): çdo sesion aktiv, me veprimet dhe radhën që
+     * shpall. Shkruhet edhe te logcat (VrullMusic).
+     */
     @PluginMethod
     public void diagnose(PluginCall call) {
         if (!hasAccess(getContext())) {
@@ -144,7 +161,7 @@ public class MusicPlugin extends Plugin {
 
     /**
      * Një komandë te sesioni që luan: play, pause, next, previous, seekTo (positionMs) ose
-     * skipToQueueItem (queueItemId). Refuzohet kur sesioni nuk e shpall veprimin.
+     * skipToQueueItem (queueItemId). Refuzohet me UNSUPPORTED kur sesioni nuk e shpall veprimin.
      */
     @PluginMethod
     public void control(PluginCall call) {
@@ -184,7 +201,8 @@ public class MusicPlugin extends Plugin {
             case "seekTo": {
                 Long position = call.getLong("positionMs");
                 if (!has(actions, PlaybackState.ACTION_SEEK_TO) || position == null || position < 0) break;
-                transport.seekTo(position);
+                long duration = durationOf(controller);
+                transport.seekTo(duration > 0 ? Math.min(position, duration) : position);
                 call.resolve();
                 return;
             }
@@ -200,6 +218,31 @@ public class MusicPlugin extends Plugin {
                 break;
         }
         call.reject("App-i i muzikës nuk e pranon këtë veprim", "UNSUPPORTED");
+    }
+
+    /** Hap app-in e muzikës që luan, te faqja e vet (getSessionActivity), pa leje për paketat e tjera. */
+    @PluginMethod
+    public void openApp(PluginCall call) {
+        if (!hasAccess(getContext())) {
+            call.reject("Mungon qasja te njoftimet", "NO_ACCESS");
+            return;
+        }
+        MediaController controller = pick(activeControllers());
+        if (controller == null) {
+            call.reject("Asnjë app muzike nuk luan", "NO_SESSION");
+            return;
+        }
+        PendingIntent activity = controller.getSessionActivity();
+        if (activity == null) {
+            call.reject("App-i i muzikës nuk e pranon këtë veprim", "UNSUPPORTED");
+            return;
+        }
+        try {
+            activity.send(getContext(), 0, null, null, null, null, sendOptions());
+            call.resolve();
+        } catch (PendingIntent.CanceledException e) {
+            call.reject("App-i i muzikës nuk u hap", "UNSUPPORTED");
+        }
     }
 
     /** Ngjarja "nowPlaying" sa herë ndryshon kënga, gjendja, radha ose app-i që luan. */
@@ -256,8 +299,9 @@ public class MusicPlugin extends Plugin {
     }
 
     private void emit() {
+        if (!listening) return;
         JSObject event = new JSObject();
-        event.put("session", current == null ? null : describe(current));
+        event.put("session", current == null ? null : describe(getContext(), current));
         notifyListeners("nowPlaying", event);
     }
 
@@ -269,14 +313,24 @@ public class MusicPlugin extends Plugin {
         return NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.getPackageName());
     }
 
+    /**
+     * Sesionet aktive të app-eve të tjera, sipas radhës së sistemit. Sesionet e vetë Vrullit (p.sh.
+     * videoja e formës te WebView-i) nuk janë muzikë dhe nuk kontrollohen.
+     */
     static List<MediaController> controllers(Context context) {
         MediaSessionManager sessions = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
         if (sessions == null) return Collections.emptyList();
+        List<MediaController> active;
         try {
-            return sessions.getActiveSessions(new ComponentName(context, MusicListenerService.class));
+            active = sessions.getActiveSessions(new ComponentName(context, MusicListenerService.class));
         } catch (SecurityException e) {
             return Collections.emptyList();
         }
+        List<MediaController> others = new ArrayList<>();
+        for (MediaController controller : active) {
+            if (!context.getPackageName().equals(controller.getPackageName())) others.add(controller);
+        }
+        return others;
     }
 
     /** Sesioni që luan, sipas radhës së sistemit (më i rëndësishmi i pari); përndryshe i pari. */
@@ -290,13 +344,15 @@ public class MusicPlugin extends Plugin {
 
     static JSArray describeAll(Context context) {
         JSArray sessions = new JSArray();
-        for (MediaController controller : controllers(context)) sessions.put(describe(controller));
+        for (MediaController controller : controllers(context)) sessions.put(describe(context, controller));
         return sessions;
     }
 
-    static JSObject describe(MediaController controller) {
+    static JSObject describe(Context context, MediaController controller) {
         JSObject session = new JSObject();
         session.put("packageName", controller.getPackageName());
+        session.put("appName", appName(context, controller.getPackageName()));
+        session.put("canOpen", controller.getSessionActivity() != null);
         // Flamujt e sesionit: 4 (FLAG_HANDLES_QUEUE_COMMANDS i compat) do të thoshte që radha pranon shtime.
         session.put("flags", controller.getFlags());
 
@@ -307,10 +363,6 @@ public class MusicPlugin extends Plugin {
             session.put("album", text(metadata, MediaMetadata.METADATA_KEY_ALBUM, null));
             long duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION);
             session.put("durationMs", duration > 0 ? duration : null);
-            session.put("hasArtwork", metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART) != null
-                || metadata.getBitmap(MediaMetadata.METADATA_KEY_ART) != null
-                || metadata.getString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI) != null
-                || metadata.getString(MediaMetadata.METADATA_KEY_ART_URI) != null);
         }
 
         PlaybackState state = controller.getPlaybackState();
@@ -360,6 +412,47 @@ public class MusicPlugin extends Plugin {
         return session;
     }
 
+    /** Emri i app-it sipas sistemit; null kur paketa nuk duket (Android 11+, pa <queries> për të). */
+    private static String appName(Context context, String packageName) {
+        try {
+            PackageManager packages = context.getPackageManager();
+            ApplicationInfo info = packages.getApplicationInfo(packageName, 0);
+            CharSequence label = packages.getApplicationLabel(info);
+            return label == null ? null : label.toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
+    }
+
+    /** Paketa që instaloi Vrullin (dyqan app-esh, shfletues, skedar); null kur nuk dihet. */
+    private static String installer(Context context) {
+        try {
+            PackageManager packages = context.getPackageManager();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return packages.getInstallSourceInfo(context.getPackageName()).getInstallingPackageName();
+            }
+            return packages.getInstallerPackageName(context.getPackageName());
+        } catch (PackageManager.NameNotFoundException | IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Android 14+ kërkon që dërguesi i një PendingIntent ta lejojë hapjen e faqes; Vrull është përpara
+     * kur përdoruesi prek "Hap app-in e muzikës".
+     */
+    @SuppressWarnings("deprecation")
+    private static Bundle sendOptions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return null;
+        ActivityOptions options = ActivityOptions.makeBasic();
+        options.setPendingIntentBackgroundActivityStartMode(
+            Build.VERSION.SDK_INT >= 36
+                ? ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOW_IF_VISIBLE
+                : ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+        );
+        return options.toBundle();
+    }
+
     private static String text(MediaMetadata metadata, String key, String fallback) {
         CharSequence value = metadata.getText(key);
         if ((value == null || value.length() == 0) && fallback != null) value = metadata.getText(fallback);
@@ -369,6 +462,11 @@ public class MusicPlugin extends Plugin {
     private static long actionsOf(MediaController controller) {
         PlaybackState state = controller.getPlaybackState();
         return state == null ? 0 : state.getActions();
+    }
+
+    private static long durationOf(MediaController controller) {
+        MediaMetadata metadata = controller.getMetadata();
+        return metadata == null ? 0 : metadata.getLong(MediaMetadata.METADATA_KEY_DURATION);
     }
 
     private static boolean has(long actions, long wanted) {
@@ -418,5 +516,9 @@ public class MusicPlugin extends Plugin {
             default:
                 return "other";
         }
+    }
+
+    static boolean debuggable(Context context) {
+        return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 }

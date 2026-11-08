@@ -47,4 +47,11 @@ export const VRULL_ICONS = {
   // Importi nga PDF dhe Cilësimet › AI (bordet "Importo nga PDF", "Cilësimet · AI", V2-E1-11).
   skedari: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
   pyetje: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5h.01"/>',
+  // Muzika "Trupi në ritëm" (bordet "Muzika · *", V2-E1-12).
+  pauze: '<path d="M9 5v14M15 5v14"/>',
+  'kenga-para': '<path d="M6 6l9 6-9 6V6zM18 6v12"/>',
+  'kenga-mbrapa': '<path d="M18 6L9 12l9 6V6zM6 6v12"/>',
+  metronomi: '<path d="M7 21h10L14 3h-4L7 21z"/><path d="M12 16l5-8"/>',
+  muzika: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  vale: '<path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/>',
 } as const

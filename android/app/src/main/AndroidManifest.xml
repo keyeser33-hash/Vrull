@@ -84,4 +84,12 @@
          fotot e progresit e kërkojnë një herë para se të hapin kamerën e sistemit. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- Muzika (V2-E1-12): emri i app-it të muzikës që luan ("Luhet te Spotify"). Android 11+ i fsheh
+         paketat e tjera; app-et e muzikës me shërbimin e shfletimit të medias bëhen të dukshme vetëm
+         për emrin, pa QUERY_ALL_PACKAGES. -->
+    <queries>
+        <intent>
+            <action android:name="android.media.browse.MediaBrowserService" />
+        </intent>
+    </queries>
 </manifest>
