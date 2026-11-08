@@ -3,6 +3,9 @@
 # përdor dy build-e debug me të njëjtin çelës debug. Skripti: scripts/android-smoke.mjs.
 name: Prova e Android-it
 
+# v2 (SPEC §0.1): prova në emulator bëhet në fund të etapës (versioni i ri te package.json) dhe kur
+# ndryshon pjesa native, jo në çdo ndryshim të kodit web; testet, lint-i dhe build-i mbeten te CI.
+# Me dorë: Actions → Prova e Android-it → Run workflow.
 on:
   workflow_dispatch:
   push:
@@ -10,14 +13,6 @@ on:
     paths:
       - 'android/**'
       - 'capacitor.config.ts'
-      - 'index.html'
-      - 'src/main.tsx'
-      - 'src/lib/**'
-      - 'src/components/**'
-      - 'src/program/**'
-      - 'src/routes/**'
-      - 'src/data/**'
-      - 'src/router.tsx'
       - 'package.json'
       - 'scripts/android-smoke.mjs'
       - '.github/workflows/android-smoke.yml'
