@@ -50,6 +50,9 @@ const V1_SCHEMA: Record<string, string> = {
   user_settings: 'id, _dirty',
 }
 
+/** Tabelat e sinkronizuara të v1: v2 shton të reja (p.sh. week_weights), që baza e v1 nuk i ka. */
+const V1_TABLES = TABLES.filter((table) => table in V1_SCHEMA)
+
 function openV1(name: string): LocalDatabase {
   const db = new Dexie(name) as LocalDatabase
   db.version(1).stores(V1_SCHEMA)
@@ -90,7 +93,7 @@ async function useV1(store: LocalStore, db: LocalDatabase) {
 }
 
 async function snapshotOf(db: LocalDatabase) {
-  const entries = await Promise.all([...TABLES, '_meta', '_photo_files'].map(async (table) => [table, await db.table(table).toArray()] as const))
+  const entries = await Promise.all([...V1_TABLES, '_meta', '_photo_files'].map(async (table) => [table, await db.table(table).toArray()] as const))
   return Object.fromEntries(entries)
 }
 
@@ -165,7 +168,7 @@ describe('të dhënat e v1 në v2', () => {
     const v1 = openV1(`v1-phone-${crypto.randomUUID()}`)
     const v1Store = storeFor(v1)
     await useV1(v1Store, v1)
-    expect(await createSync({ db: v1, remote, userId: () => USER, now }).run()).toMatchObject({ status: 'ok', rejected: 0 })
+    expect(await createSync({ db: v1, remote, userId: () => USER, now, tables: V1_TABLES }).run()).toMatchObject({ status: 'ok', rejected: 0 })
     const seen = await whatTheUserSees(v1Store, v1)
     const [serverSettings] = remote.rows('user_settings')
     expect(serverSettings).not.toHaveProperty('language')

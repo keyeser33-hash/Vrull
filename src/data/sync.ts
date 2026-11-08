@@ -54,6 +54,8 @@ export interface SyncOptions {
   now?: () => Date
   pageSize?: number
   pullLagMs?: number
+  /** Tabelat që sinkronizohen; parazgjedhje të gjitha. Provat e bazës së v1 japin vetëm tabelat e saj. */
+  tables?: readonly TableName[]
 }
 
 const MIN_UUID = '00000000-0000-0000-0000-000000000000'
@@ -98,6 +100,7 @@ export function createSync(options: SyncOptions) {
   const now = () => (options.now ?? (() => new Date()))()
   const pageSize = options.pageSize ?? 200
   const lagMs = options.pullLagMs ?? 60_000
+  const tables = options.tables ?? TABLES
   let inflight: Promise<SyncResult> | null = null
 
   /** Vendos versionin e serverit vetëm kur rreshti lokal nuk ka ndryshuar që nga dërgimi. */
@@ -204,13 +207,13 @@ export function createSync(options: SyncOptions) {
     const result: SyncResult = { status: 'ok', at: now().toISOString(), pushed: 0, pulled: 0, rejected: 0 }
     if (!options.userId()) return { ...result, status: 'signed_out' }
     try {
-      for (const table of TABLES) {
+      for (const table of tables) {
         const { pushed, rejected } = await push(table)
         result.pushed += pushed
         result.rejected += rejected
       }
       // Marrja nuk ka varësi mes tabelave: kërkesat shkojnë paralelisht, 5 njëkohësisht.
-      const pulled = await inPool(TABLES, 5, pull)
+      const pulled = await inPool(tables, 5, pull)
       result.pulled = pulled.reduce((sum, count) => sum + count, 0)
       await db._meta.put({ key: PULLED_KEY, value: options.userId() })
       if (result.rejected > 0) {
