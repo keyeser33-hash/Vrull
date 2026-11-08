@@ -15,12 +15,6 @@ export async function saveMeasurement(store: LocalStore, date: string, values: M
   await store.put('body_measurements', { id: existing?.id, date, ...values })
 }
 
-export async function measurementsOn(store: LocalStore, date: string): Promise<MeasurementValues> {
-  const [row] = await store.where('body_measurements', 'date', date)
-  if (!row) return {}
-  return Object.fromEntries(METRICS.map((metric) => [metric.key, row[metric.key] === null || row[metric.key] === undefined ? null : Number(row[metric.key])]))
-}
-
 /** Vlerat e një matjeje sipas datës, nga e vjetra te e reja. */
 export async function metricHistory(store: LocalStore, key: MetricKey): Promise<Point[]> {
   const rows = await store.all('body_measurements')

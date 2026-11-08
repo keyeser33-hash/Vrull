@@ -1,6 +1,8 @@
 import type { T } from './index'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import type { Equipment } from '@/program/types'
+import type { DayTheme } from '@/progress/history'
 
 // Emrat e domenit sipas gjuhës, për çdo ekran. Emrat e blloqeve dhe të ditëve të Shortcut to Size
 // ruhen shqip në bazë; anglishtja i përkthen kur emri është ende ai i programit. Emrat që përdoruesi
@@ -39,4 +41,14 @@ export function programWeekLabel(t: T, week: { blockName: string | null; blockWe
   const block = programBlockName(t, week.blockName)
   const label = week.blockName && week.blockWeeks > 1 ? `${block} · ${t('plan.week', { week: week.week })}` : block
   return week.run > 1 ? `${label} · ${t('plan.run', { run: week.run })}` : label
+}
+
+/** "Dita e gjoksit" / "Chest day": tema e ditës nga muskuli kryesor i ushtrimit të parë (`dayTheme`). */
+export function dayThemeName(t: T, theme: DayTheme): string {
+  return t(`plan.theme.${theme}`)
+}
+
+/** "Shufër" / "Barbell". */
+export function equipmentName(t: T, equipment: Equipment): string {
+  return t(`equipment.${equipment}`)
 }

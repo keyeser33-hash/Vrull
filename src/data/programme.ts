@@ -7,7 +7,7 @@ import { upcomingDates, workoutMinutes } from '@/program/week-plan'
 import type { WeekRef, WeekWeightRow } from '@/progress/week-weights'
 import type { LocalStore } from './store'
 import { programView, type TrainingHistory, trainingHistory, trainingSnapshot } from './training'
-import { weekWeightsView } from './week-weights'
+import { weekWeightsView, workoutWeights } from './week-weights'
 
 // Ekrani Programi (V2-E1-09, bordi "Programi"): blloqet me javët, java e treguesit me ditët, datat e
 // parashikuara dhe kohën, stërvitja e radhës me ushtrimin e parë dhe peshën e javës (§7, V23), dhe
@@ -76,7 +76,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
     store.where('workout_sessions', 'program_id', view.programId),
     store.get('programs', view.programId),
   ])
-  const { overview, pointer, exercises } = view
+  const { programId, overview, pointer, exercises } = view
   const current = overview.weeks[overview.currentWeek]
   const today = localDate(now)
   const trainedToday = sessions.some((session) => session.status === 'completed' && session.ended_at && localDay(String(session.ended_at)) === today)
@@ -113,9 +113,9 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
   })
 
   let next: ProgrammeHome['next'] = null
-  if (snapshot && !snapshot.completed) {
+  if (snapshot && snapshot.programId === programId && !snapshot.completed) {
     const [slot] = snapshot.plan.slots
-    const weights = slot ? await weekWeightsView(store, { blockId: pointer.blockId, week: pointer.week }) : null
+    const weights = slot ? await workoutWeights(store, snapshot.plan) : null
     next = {
       dayId: pointer.dayId,
       inProgress: snapshot.session !== null,
@@ -125,7 +125,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
             name: snapshot.exercises[slot.exerciseId]?.name ?? '',
             sets: slot.sets,
             target: slot.target,
-            weightKg: weights?.rows.find((row) => row.slotId === slot.slotId)?.weightKg ?? null,
+            weightKg: weights?.get(slot.slotId)?.weightKg ?? null,
           }
         : null,
     }
@@ -156,11 +156,13 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
   async function reviewOf(): Promise<ProgrammeHome['review']> {
     if (pointer.completed) return null
     const weights = await weekWeightsView(store)
-    if (!weights || weights.rows.length === 0) return null
+    // Programi aktiv mund të ndërrohet ndërkohë (editori, sinkronizimi): peshat e një programi tjetër
+    // nuk tregohen; leximi i radhës sjell programin e ri të tërë.
+    const block = blocks.find((candidate) => candidate.id === weights?.week.blockId)
+    if (!weights || weights.programId !== programId || !block || weights.rows.length === 0) return null
     const decided = weights.rows.filter((row) => row.decision)
     const status = decided.length === 0 ? 'pending' : decided.some((row) => row.decision?.status === 'postponed') ? 'postponed' : 'accepted'
     const sameWeek = weights.week.blockId === pointer.blockId && weights.week.week === pointer.week
-    const block = blocks.find((candidate) => candidate.id === weights.week.blockId)!
     const reviewDates = Object.fromEntries(
       current.days.map((day, index) => [day.dayId, sameWeek ? (days[index].date ?? null) : (dates[ahead.length + index] ?? null)]),
     )
@@ -210,9 +212,11 @@ export interface WeekReview {
 export async function weekReview(store: LocalStore, now: Date): Promise<WeekReview | null> {
   const [home, weights, view, history] = await Promise.all([programmeHome(store, now), weekWeightsView(store), programView(store), trainingHistory(store)])
   const review = home?.review
-  if (!review || !weights || !view) return null
+  // Të katër leximet duhet të jenë i njëjti program: ndërrimi i tij në mes nuk jep pamje të përzier.
+  if (!review || !weights || !view || home.programId !== view.programId || weights.programId !== view.programId) return null
   const index = view.overview.weeks.findIndex((entry) => entry.blockId === weights.week.blockId && entry.week === weights.week.week)
   const entry = view.overview.weeks[index]
+  if (!entry) return null
   const before = view.overview.weeks[index - 1]
   const blockWeeks = (blockId: string) => view.overview.weeks.filter((candidate) => candidate.blockId === blockId).length
   const firstWeighted = entry.days

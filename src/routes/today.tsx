@@ -12,7 +12,7 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type TodayView, todayView } from '@/data/today'
 import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
-import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
+import { dayThemeName, muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { facesBack } from '@/body/model-focus'
 import { cn } from '@/lib/cn'
@@ -87,7 +87,7 @@ function TodayHeader({ view }: { view: TodayView }) {
     subtitle = next
   } else {
     const theme = workout?.theme
-    title = theme ? t(`today.theme.${theme}`) : t('today.workoutTitle', { day: plan!.dayNumber })
+    title = theme ? dayThemeName(t, theme) : t('today.workoutTitle', { day: plan!.dayNumber })
     subtitle =
       mode === 'session'
         ? t('today.subtitle.session')

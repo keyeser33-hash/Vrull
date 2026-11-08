@@ -167,6 +167,21 @@ describe('peshat e javës (V23, §7)', () => {
       expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { topReps: 10 } } })
     })
 
+    it('rregulli i gjithë programit (Program.progression) vlen për slotin pa rregull të vetin', () => {
+      const whole: Program = { ...custom, overrides: custom.overrides.filter((override) => !override.progression), progression: { minRir: 2, incrementKg: 2.5 } }
+      const rows = weekWeights(input({ program: whole, week: { blockId: 'b1', week: 2 }, history: [press(12, 2), press(12, 2)] }))
+      expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { kind: 'progression', topReps: 12, incrementKg: 2, earned: true } } })
+    })
+
+    it('lexon vetëm seancat para javës që shqyrtohet: seanca e saj nuk i shton shtesën vetes (V2-E1-18)', () => {
+      const weekTwo = (reps: number) => set({ exerciseId: 'press', sessionId: 'java-2', weightKg: 22, reps, rir: 2, loggedAt: daysAgo(1) })
+      const history = [press(12, 2), press(12, 2), weekTwo(12), weekTwo(12)]
+      const rows = weekWeights(input({ program: custom, week: { blockId: 'b1', week: 2 }, history, weekStartedAt: daysAgo(2) }))
+      expect(rows[0]).toMatchObject({ weightKg: 22, proposal: { basis: { kind: 'progression', lastKg: 20, earned: true } } })
+      // Pa seancë në javën që shqyrtohet, gjithë historia vlen.
+      expect(weekWeights(input({ program: custom, week: { blockId: 'b1', week: 2 }, history: [press(12, 2)], weekStartedAt: null }))[0].weightKg).toBe(22)
+    })
+
     it('java e parë e programit: pa javë të kaluar, si §7', () => {
       const rows = weekWeights(input({ program: custom, week: { blockId: 'b1', week: 1 }, history: [press(12, 2)] }))
       expect(rows[0].proposal.basis?.kind).toBe('one_rm')

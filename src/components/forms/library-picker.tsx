@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { store } from '@/data/app-data'
 import { exerciseChoices } from '@/data/exercises'
+import { equipmentName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { type LibraryExercise, searchLibrary } from '@/program/library'
@@ -53,7 +54,7 @@ export function LibraryPicker({ onPick, busy = false }: { onPick: (exercise: Lib
                 <span lang="en" className="flex-1 type-body-strong">
                   {item.name}
                 </span>
-                <span className="type-caption text-muted-foreground">{t(`programme.equipment.${item.equipment}`)}</span>
+                <span className="type-caption text-muted-foreground">{equipmentName(t, item.equipment)}</span>
               </button>
             </li>
           ))}

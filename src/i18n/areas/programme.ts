@@ -8,22 +8,10 @@ import type { Messages, TranslationOf } from '../translate'
 export const sq = {
   // Termat e përbashkët të programit; grupet e muskujve dhe emrat e Shortcut to Size janë te areas/domain.ts.
   'programme.workout': 'Stërvitja {number}',
-  'programme.noPhoto': 'Pa foto',
   'programme.own': 'I yti',
   'programme.technique.rest_pause': 'rest-pause',
   'programme.technique.drop_set': 'drop set',
   'programme.technique.to_failure': 'deri në dështim',
-
-  // Pajisjet (emër domeni që mungon te areas/domain.ts).
-  'programme.equipment.barbell': 'Shufër',
-  'programme.equipment.ez_bar': 'Shufër EZ',
-  'programme.equipment.dumbbell': 'Dumbbell',
-  'programme.equipment.cable': 'Kabëll',
-  'programme.equipment.machine': 'Makineri',
-  'programme.equipment.bodyweight': 'Pesha e trupit',
-  'programme.equipment.kettlebell': 'Kettlebell',
-  'programme.equipment.band': 'Llastik',
-  'programme.equipment.other': 'Tjetër',
 
   // Programi (bordi "Programi").
   'programme.active': 'Programi aktiv',
@@ -191,21 +179,10 @@ export const sq = {
 
 export const en: TranslationOf<typeof sq> = {
   'programme.workout': 'Workout {number}',
-  'programme.noPhoto': 'No photo',
   'programme.own': 'Yours',
   'programme.technique.rest_pause': 'rest-pause',
   'programme.technique.drop_set': 'drop set',
   'programme.technique.to_failure': 'to failure',
-
-  'programme.equipment.barbell': 'Barbell',
-  'programme.equipment.ez_bar': 'EZ bar',
-  'programme.equipment.dumbbell': 'Dumbbell',
-  'programme.equipment.cable': 'Cable',
-  'programme.equipment.machine': 'Machine',
-  'programme.equipment.bodyweight': 'Bodyweight',
-  'programme.equipment.kettlebell': 'Kettlebell',
-  'programme.equipment.band': 'Band',
-  'programme.equipment.other': 'Other',
 
   'programme.active': 'Active programme',
   'programme.activeBy': 'Active programme · {author}',

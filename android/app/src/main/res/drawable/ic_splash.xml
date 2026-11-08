@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Krijuar nga tools/app-icon/build.mjs nga shenja te src/components/ui/logo.tsx; mos e ndrysho me dorë.
+     Shenja e plotë për ekranin e nisjes (Android 12+ dhe core-splashscreen), brenda rrethit 192 dp. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="121"
+    android:viewportHeight="121">
+    <group android:translateX="28.5" android:translateY="28.5">
+        <path
+            android:pathData="M16,0H48A16,16 0,0 1,64,16V48A16,16 0,0 1,48,64H16A16,16 0,0 1,0,48V16A16,16 0,0 1,16,0Z"
+            android:fillColor="@color/ic_launcher_background"
+            />
+        <path
+            android:pathData="M15,43L49,21"
+            android:strokeColor="@color/ic_launcher_line"
+            android:strokeWidth="7"
+            android:strokeLineCap="round"
+            />
+    </group>
+</vector>

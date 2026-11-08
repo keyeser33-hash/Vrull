@@ -17,6 +17,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `npm run build`: kontrolli i tipave + build.
 - `node scripts/ds-screens.mjs <dosja>`: prova e pamjes së `/dev/ds` në 390 px me Chrome headless (pa scroll anësor, fontet pa rrjet, prekjet 44 px), shqip dhe anglisht, me pamjet e tri temave.
 - `npx cap sync android`: kopjon `dist` te projekti Android (`android/`). APK-ja dhe Release-i: `docs/INSTALL.md`, pika 6.
+- `node tools/app-icon/build.mjs [--preview <dosja>]`: rikrijon ikonën e app-it, nisjen dhe `favicon.svg` nga shenja te `components/ui/logo.tsx`; skedarët që krijon nuk ndryshohen me dorë.
 - `E2E_EMAIL=… E2E_PASSWORD=… npx vitest run src/data/sync.e2e.test.ts`: sinkronizimi kundrejt Supabase të vërtetë, me një përdorues prove të përkohshëm (pa këto, prova kapërcehet).
 
 ## Rregullat

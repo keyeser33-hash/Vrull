@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ikona me një ngjyrë për ikonat me temë të Android 13+; sistemi e ngjyros vetë. -->
+<!-- Krijuar nga tools/app-icon/build.mjs nga shenja te src/components/ui/logo.tsx; mos e ndrysho me dorë.
+     Ikona me një ngjyrë për ikonat me temë të Android 13+: sistemi e ngjyros vetë. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="60"
-    android:viewportHeight="60">
-    <group android:translateX="6" android:translateY="6">
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <group android:translateX="16" android:translateY="16">
         <path
-            android:pathData="M17,15v18M31,15v18M11,19v10M37,19v10M17,24h14"
+            android:pathData="M15,43L49,21"
             android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="7"
             android:strokeLineCap="round"
-            android:strokeWidth="3" />
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M21,24a3,3 0,1 1,6 0a3,3 0,1 1,-6 0z" />
+            />
     </group>
 </vector>

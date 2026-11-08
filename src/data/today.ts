@@ -2,27 +2,19 @@ import { localDate, weekRange } from '@/lib/calendar'
 import { dayTheme, type DayTheme } from '@/progress/history'
 import { MUSCLE_GROUPS, type MuscleGroup } from '@/program/muscles'
 import { recoveryFor, type RecoveryStatus } from '@/program/recovery'
+import { workoutMinutes } from '@/program/week-plan'
 import type { Target, Tracking } from '@/program/types'
 import { nutritionDay } from './nutrition'
 import { readProfile } from './profile'
 import type { LocalStore } from './store'
 import { trainingHistory, trainingSnapshot, type TrainingSnapshot } from './training'
-import { weekWeightsView } from './week-weights'
+import { workoutWeights } from './week-weights'
 
 // Ekrani Sot (V2-E1-06, bordi "Sot"): çfarë i duhet nga baza lokale, në një vend. Java kalendarike
-// me ditët e bëra dhe të pushimit, stërvitja e radhës me kohëzgjatjen, grupin kryesor, rikuperimin
-// e tij dhe ushtrimin ku nis (me peshën e javës, §7 dhe V23), dhe proteina e sotme (§9).
+// me ditët e bëra dhe të pushimit, stërvitja e radhës me kohëzgjatjen (`workoutMinutes`, si te
+// Programi), grupin kryesor, rikuperimin e tij dhe ushtrimin ku nis (me peshën e javës nga
+// `workoutWeights`, si te seanca dhe Programi), dhe proteina e sotme (§9).
 // Gatishmëria, uji, faktet, sfida dhe miqtë vijnë me Etapat 3 dhe 4.
-
-/** Koha e punës së një seti pa pushimin, për kohëzgjatjen e stërvitjes. */
-const SET_SECONDS = 45
-
-/** Kohëzgjatja e stërvitjes në minuta: çdo set 45 s plus pushimi i slotit, te 5 minutat më të afërta. */
-export function workoutMinutes(slots: { sets: number; restSeconds: number }[]): number {
-  const seconds = slots.reduce((total, slot) => total + slot.sets * (SET_SECONDS + slot.restSeconds), 0)
-  if (seconds === 0) return 0
-  return Math.max(5, Math.round(seconds / 300) * 5)
-}
 
 export type TodayDayState = 'done' | 'rest' | 'planned'
 
@@ -188,13 +180,11 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
   let first: TodayExercise | null = null
   if (current) {
     const exercise = exercises[current.exerciseId]
-    const weights = exercise?.tracking === 'weight_reps' ? await weekWeightsView(store, { blockId: plan.blockId, week: plan.week }) : null
-    const row = weights?.rows.find((candidate) => candidate.slotId === current.slotId && candidate.dayId === plan.dayId)
     first = {
       name: exercise?.name ?? '',
       tracking: exercise?.tracking ?? 'weight_reps',
       target: current.target,
-      weightKg: row?.weightKg ?? null,
+      weightKg: (await workoutWeights(store, plan)).get(current.slotId)?.weightKg ?? null,
     }
   }
   return {

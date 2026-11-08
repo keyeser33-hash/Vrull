@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
-import { calendarWeek, mainGroup, nextTrainingDate, todayView, workoutMinutes } from './today'
+import { calendarWeek, mainGroup, nextTrainingDate, todayView } from './today'
 import { finishWorkout, saveSet, startWorkout, trainingSnapshot } from './training'
 
 const USER = '11111111-1111-4111-8111-111111111111'
@@ -9,21 +9,6 @@ const USER = '11111111-1111-4111-8111-111111111111'
 // Ora lokale e telefonit, e njëjtë në çdo zonë kohore (bordi "Sot": e diel 8 nëntor 2026).
 const at = (day: number, month: number, hours = 10, minutes = 0) => new Date(2026, month - 1, day, hours, minutes)
 const SUNDAY = at(8, 11)
-
-describe('kohëzgjatja e stërvitjes', () => {
-  it('setet me 45 s punë plus pushimin, te 5 minutat më të afërta: Faza 1 · Java 2 · Stërvitja 1 del ~65 min', () => {
-    const main = (sets: number) => ({ sets, restSeconds: 90 })
-    const calves = (sets: number) => ({ sets, restSeconds: 60 })
-    // 22 sete me 90 s dhe 8 sete pulpash me 60 s: 2 970 + 840 = 3 810 s = 63,5 min.
-    expect(workoutMinutes([main(4), main(3), main(3), main(3), main(3), main(3), main(3), calves(4), calves(4)])).toBe(65)
-  })
-
-  it('Java 0 me më pak sete del më e shkurtër, dhe asnjëherë nën 5 minuta', () => {
-    expect(workoutMinutes([{ sets: 3, restSeconds: 90 }, ...Array(6).fill({ sets: 2, restSeconds: 90 }), { sets: 3, restSeconds: 60 }, { sets: 3, restSeconds: 60 }])).toBe(45)
-    expect(workoutMinutes([{ sets: 1, restSeconds: 0 }])).toBe(5)
-    expect(workoutMinutes([])).toBe(0)
-  })
-})
 
 describe('java kalendarike te Sot', () => {
   it('nga e hëna te e diela: e bërë, pushim sipas ditëve të stërvitjes, sot e shënuar', () => {

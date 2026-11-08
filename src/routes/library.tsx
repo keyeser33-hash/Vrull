@@ -6,6 +6,7 @@ import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { exerciseCatalog } from '@/data/exercises'
+import { equipmentName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import {
@@ -18,7 +19,7 @@ import {
   type LibraryArea,
 } from '@/program/exercise-catalog'
 import { Chip } from './programme-parts'
-import { dotted, equipmentName, musclesLine } from './programme-format'
+import { dotted, musclesLine } from './programme-format'
 
 // Biblioteka (bordi "Biblioteka", V2-E1-09): free-exercise-db (Unlicense) bashkë me ushtrimet në
 // telefon, me kërkim dhe filtrat "Muskujt" dhe "Pajisja". Filtrat mbahen në adresë, që kthimi nga

@@ -14,12 +14,6 @@ export const sq = {
   'today.restTitle': 'Ditë pushimi',
   'today.doneTitle': 'U krye për sot',
   'today.workoutTitle': 'Stërvitja {day}',
-  'today.theme.chest': 'Dita e gjoksit',
-  'today.theme.back': 'Dita e shpinës',
-  'today.theme.shoulders': 'Dita e shpatullave',
-  'today.theme.arms': 'Dita e krahëve',
-  'today.theme.legs': 'Dita e këmbëve',
-  'today.theme.abs': 'Dita e barkut',
 
   // Java (shkronja mbi rrethin; 1 = e hënë).
   'today.weekLetter.1': 'H',
@@ -80,12 +74,6 @@ export const en: TranslationOf<typeof sq> = {
   'today.restTitle': 'Rest day',
   'today.doneTitle': 'Done for today',
   'today.workoutTitle': 'Workout {day}',
-  'today.theme.chest': 'Chest day',
-  'today.theme.back': 'Back day',
-  'today.theme.shoulders': 'Shoulder day',
-  'today.theme.arms': 'Arm day',
-  'today.theme.legs': 'Leg day',
-  'today.theme.abs': 'Abs day',
 
   'today.weekLetter.1': 'M',
   'today.weekLetter.2': 'T',

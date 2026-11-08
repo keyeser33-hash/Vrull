@@ -1,6 +1,5 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
@@ -10,7 +9,7 @@ import { language } from '@/i18n/language'
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, clock: new Date(2026, 10, 8, 10, 0) }))
 
 vi.mock('@/lib/webgl', () => ({ webglAvailable: () => false }))
-vi.mock('@/data/app-data', () => {
+vi.mock('@/data/app-data', async () => {
   // Çdo provë ka bazën e vet; ekrani e lexon përmes `store`, si te app-i.
   const store = new Proxy({} as LocalStore, {
     get: (_, key: keyof LocalStore) => {
@@ -22,16 +21,7 @@ vi.mock('@/data/app-data', () => {
     store,
     updater: {},
     useAppUpdate: () => ({ status: 'idle' }),
-    useLocalQuery<T>(query: () => Promise<T>) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        const run = () => void query().then((result) => setValue(() => result))
-        run()
-        return data.store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 
