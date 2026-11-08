@@ -544,14 +544,16 @@ const clickButtonStarting = async (page, prefix) => {
 }
 
 // Vendos vlerën si tastiera, që React ta marrë (setter-i native dhe ngjarja input).
-const type = (page, selector, value) =>
-  page.evaluate(`(() => {
+const type = async (page, selector, value) => {
+  await waitFor(() => page.evaluate(`!!document.querySelector(${JSON.stringify(selector)})`), selector, 20_000)
+  await page.evaluate(`(() => {
     const input = document.querySelector(${JSON.stringify(selector)})
     input.focus()
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set
     setter.call(input, ${JSON.stringify(value)})
     input.dispatchEvent(new Event('input', { bubbles: true }))
   })()`)
+}
 
 /** Rreshtat e bazës lokale (IndexedDB "training-hub") drejtpërdrejt, pa kodin e app-it; ArrayBuffer → madhësia. */
 const readDb = (page, stores) =>
