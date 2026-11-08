@@ -69,6 +69,25 @@ vi.mock('@/lib/form-camera', async (importOriginal) => {
   }
 })
 
+// Capacitor: në shfletues si parazgjedhje; prova e Home në Android ndez telefonin dhe thërret pause/resume.
+const native = vi.hoisted(() => ({ isNative: false, listeners: [] as { event: string; listener: () => void }[] }))
+vi.mock('@capacitor/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@capacitor/core')>()
+  return { ...actual, Capacitor: { ...actual.Capacitor, isNativePlatform: () => native.isNative } }
+})
+vi.mock('@capacitor/app', () => ({
+  App: {
+    addListener: (event: string, listener: () => void) => {
+      const entry = { event, listener }
+      native.listeners.push(entry)
+      return Promise.resolve({ remove: () => Promise.resolve(void native.listeners.splice(native.listeners.indexOf(entry), 1)) })
+    },
+  },
+}))
+const appEvent = (event: string) => {
+  for (const entry of native.listeners.filter((item) => item.event === event)) entry.listener()
+}
+
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
 
 async function reset() {
@@ -248,6 +267,30 @@ describe('videot e formës (V2-E1-13)', () => {
     } finally {
       // Kthehet getter-i i jsdom-it (te Document.prototype).
       Reflect.deleteProperty(document, 'visibilityState')
+    }
+  })
+
+  it('Home në Android: pause i Capacitor-it e ndal regjistrimin edhe pa visibilitychange; resume e rihap kamerën', async () => {
+    // Prova në emulator: WebView-ja nuk e dha visibilitychange dhe regjistrimi vazhdoi në sfond.
+    native.isNative = true
+    try {
+      await openSession()
+      const user = userEvent.setup()
+      await renderAt('/seanca?video=1')
+      const dialog = await screen.findByRole('dialog', { name: 'Video e formës' })
+      await user.click(await within(dialog).findByRole('button', { name: 'Regjistro' }))
+      const first = camera.current!
+
+      act(() => appEvent('pause'))
+      expect(first.stop).toHaveBeenCalled()
+      expect(await within(dialog).findByText('Regjistruar 0:24')).toBeInTheDocument()
+      await waitFor(() => expect(first.close).toHaveBeenCalled())
+
+      act(() => appEvent('resume'))
+      await waitFor(() => expect(camera.opened).toEqual(['environment', 'environment']))
+      expect(await within(dialog).findByRole('button', { name: 'Regjistro përsëri' })).toBeEnabled()
+    } finally {
+      native.isNative = false
     }
   })
 

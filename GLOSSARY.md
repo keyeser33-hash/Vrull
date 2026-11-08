@@ -108,7 +108,7 @@ Pjesa e setit të fundit pas pushimit të rest-pause ose pas uljes së peshës t
 Koha mes seteve të një sloti, që mat timer-i; te rest-pause është 15 s.
 
 **Njoftimi i seancës**:
-Njoftimi i Android-it gjatë një **Seance** të hapur: seti i radhës me peshën dhe përsëritjet e propozuara, "Ruaj setin", −/+, "Ndrysho" dhe **Pushimi**; punon edhe me ekran të kyçur. "Seti nga njoftimi" është seti i ruajtur prej tij.
+Njoftimi i Android-it gjatë një **Seance** të hapur: seti i radhës me peshën dhe përsëritjet e propozuara, "Ruaj setin", −/+, "Ndrysho" dhe **Pushimi**; punon edhe me ekran të kyçur. "Seti nga njoftimi" është seti i ruajtur prej tij. "Rreshti i muzikës" nën "Ruaj setin" tregon këngën që luan me kontrollet e app-it të muzikës (si **Mini-player-i**, pa tempon).
 _Avoid_: widget, njoftimi i pushimit (është "Pushimi mbaroi")
 
 **RIR**:

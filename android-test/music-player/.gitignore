@@ -1,0 +1,4 @@
+# Ndërtimi i app-it të provës, kurrë në repo.
+/build/
+/.gradle/
+/local.properties

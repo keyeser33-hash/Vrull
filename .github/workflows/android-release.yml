@@ -4,6 +4,7 @@
 #   Nëse versioni ka tashmë Release, nuk ndërtohet asgjë.
 # - Tag vX.Y.Z i krijuar me dorë (i njëjtë me package.json): e njëjta gjë.
 # - "Run workflow" me dorë: ndërton dhe e lë si artifact, pa Release.
+# - Para publikimit: prova në emulator (android-smoke.yml); kur dështon, Release-i nuk krijohet.
 # Udhëzimi për secret-et dhe instalimin: docs/INSTALL.md.
 name: APK për Android
 
@@ -68,9 +69,18 @@ jobs:
             echo "publish=$publish"
           } >> "$GITHUB_OUTPUT"
 
-  apk:
+  # Prova në emulator para çdo publikimi (android-smoke.yml: v1 → ky version, seanca, njoftimi, kamera, muzika,
+  # instalimi i ri): një version i ri nuk del pa të. Ndërtimi me dorë, pa Release, nuk e pret.
+  smoke:
     needs: plan
-    if: needs.plan.outputs.build == 'true'
+    if: needs.plan.outputs.publish == 'true'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/android-smoke.yml
+
+  apk:
+    needs: [plan, smoke]
+    if: ${{ !cancelled() && needs.plan.outputs.build == 'true' && (needs.smoke.result == 'success' || needs.smoke.result == 'skipped') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:

@@ -37,7 +37,7 @@ import java.util.List;
  * vetëm komandat që vetë sesioni i shpall te PlaybackState.getActions(): luaj, pauzë, para, mbrapa,
  * pozicioni, dhe kënga e radhës kur app-i e jep radhën. Kërkon "Qasjen te njoftimet" për
  * MusicListenerService; pa të, çdo metodë që lexon sesionet kthen NO_ACCESS. Vrull nuk lexon asnjë
- * njoftim. JS-i: src/lib/music.ts (edhe për njoftimin e seancës, E1-08).
+ * njoftim. JS-i: src/lib/music.ts; rreshti i muzikës te njoftimi i seancës: SessionMusic.java.
  *
  * Ngjarja "nowPlaying" vjen sa herë ndryshon kënga, gjendja, radha ose app-i që luan, nga
  * startListening deri te stopListening (seanca e hapur); nuk ka pyetje periodike.
@@ -82,6 +82,8 @@ public class MusicPlugin extends Plugin {
     public void load() {
         manager = (MediaSessionManager) getContext().getSystemService(Context.MEDIA_SESSION_SERVICE);
         listener = new ComponentName(getContext(), MusicListenerService.class);
+        // Rreshti i muzikës te njoftimi i seancës (V29, V2-E1-16a).
+        SessionMusic.install();
     }
 
     /**
@@ -179,27 +181,14 @@ public class MusicPlugin extends Plugin {
         MediaController.TransportControls transport = controller.getTransportControls();
         switch (action) {
             case "play":
-                if (!has(actions, PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE)) break;
-                transport.play();
-                call.resolve();
-                return;
             case "pause":
-                if (!has(actions, PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE)) break;
-                transport.pause();
-                call.resolve();
-                return;
             case "next":
-                if (!has(actions, PlaybackState.ACTION_SKIP_TO_NEXT)) break;
-                transport.skipToNext();
-                call.resolve();
-                return;
             case "previous":
-                if (!has(actions, PlaybackState.ACTION_SKIP_TO_PREVIOUS)) break;
-                transport.skipToPrevious();
+                if (!transport(controller, action)) break;
                 call.resolve();
                 return;
             case "seekTo": {
-                Long position = call.getLong("positionMs");
+                Long position = CallNumbers.longOf(call, "positionMs");
                 if (!has(actions, PlaybackState.ACTION_SEEK_TO) || position == null || position < 0) break;
                 long duration = durationOf(controller);
                 transport.seekTo(duration > 0 ? Math.min(position, duration) : position);
@@ -208,7 +197,7 @@ public class MusicPlugin extends Plugin {
             }
             case "skipToQueueItem": {
                 // Id-ja duhet të jetë te radha e tanishme: përndryshe sjellja është e papërcaktuar.
-                Long id = call.getLong("queueItemId");
+                Long id = CallNumbers.longOf(call, "queueItemId");
                 if (!has(actions, PlaybackState.ACTION_SKIP_TO_QUEUE_ITEM) || id == null || !inQueue(controller, id)) break;
                 transport.skipToQueueItem(id);
                 call.resolve();
@@ -262,6 +251,8 @@ public class MusicPlugin extends Plugin {
             }
         }
         follow(activeControllers());
+        // Leja mund të ketë ardhur tani: njoftimi i seancës merr rreshtin e muzikës.
+        SessionNotifier.refresh(getContext());
         call.resolve();
     }
 
@@ -464,12 +455,41 @@ public class MusicPlugin extends Plugin {
         return state == null ? 0 : state.getActions();
     }
 
+    /**
+     * Luaj, pauzë, para ose mbrapa te sesioni, vetëm kur ai e shpall veprimin (seanca dhe njoftimi i
+     * seancës, SessionMusic); false kur nuk e pranon.
+     */
+    static boolean transport(MediaController controller, String action) {
+        long actions = actionsOf(controller);
+        MediaController.TransportControls transport = controller.getTransportControls();
+        switch (action) {
+            case "play":
+                if (!has(actions, PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE)) return false;
+                transport.play();
+                return true;
+            case "pause":
+                if (!has(actions, PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE)) return false;
+                transport.pause();
+                return true;
+            case "next":
+                if (!has(actions, PlaybackState.ACTION_SKIP_TO_NEXT)) return false;
+                transport.skipToNext();
+                return true;
+            case "previous":
+                if (!has(actions, PlaybackState.ACTION_SKIP_TO_PREVIOUS)) return false;
+                transport.skipToPrevious();
+                return true;
+            default:
+                return false;
+        }
+    }
+
     private static long durationOf(MediaController controller) {
         MediaMetadata metadata = controller.getMetadata();
         return metadata == null ? 0 : metadata.getLong(MediaMetadata.METADATA_KEY_DURATION);
     }
 
-    private static boolean has(long actions, long wanted) {
+    static boolean has(long actions, long wanted) {
         return (actions & wanted) != 0;
     }
 

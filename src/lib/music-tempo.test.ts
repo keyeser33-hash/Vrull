@@ -3,8 +3,10 @@ import {
   acousticBrainzTempo,
   cleanArtist,
   cleanTitle,
+  createTempoFetch,
   lookupTempo,
   musicBrainzQuery,
+  musicBrainzUserAgent,
   octave,
   recordingIds,
   saveTappedTempo,
@@ -127,6 +129,99 @@ describe('AcousticBrainz përmes MusicBrainz', () => {
     const none = vi.fn(async () => ({ recordings: [] }))
     expect(await acousticBrainzTempo({ title: 'X', artist: 'Y' }, none)).toBeNull()
     expect(none).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('kërkesat e MusicBrainz (V2-E1-16a)', () => {
+  const MB_URL = 'https://musicbrainz.org/ws/2/recording?query=x&limit=25&fmt=json'
+  const AB_URL = 'https://acousticbrainz.org/api/v1/low-level?recording_ids=a&features=rhythm.bpm'
+
+  function client(options: { native: boolean }) {
+    let clock = 0
+    const started: { url: string; at: number }[] = []
+    const native = vi.fn(async (request: { url: string; headers: Record<string, string>; timeoutMs: number }): Promise<{ status: number; data: unknown }> => {
+      started.push({ url: request.url, at: clock })
+      return { status: 200, data: { recordings: [] } }
+    })
+    const fetch = vi.fn(async (url: string, _init?: RequestInit) => {
+      started.push({ url, at: clock })
+      return new Response(JSON.stringify({ ok: true }), { status: 200 })
+    })
+    const sleep = vi.fn(async (ms: number) => {
+      clock += ms
+    })
+    return { started, native, fetch, http: { native: options.native ? native : null, fetch, sleep } }
+  }
+
+  it('User-Agent: emri, versioni dhe faqja e projektit si kontakt, pa email', () => {
+    expect(musicBrainzUserAgent('0.20.0')).toBe('Vrull/0.20.0 ( https://github.com/keyeser33-hash/Vrull )')
+    expect(musicBrainzUserAgent('0.20.0')).not.toMatch(/@/)
+  })
+
+  it('në telefon MusicBrainz pyetet nga native-i me User-Agent-in; AcousticBrainz si më parë', async () => {
+    const fake = client({ native: true })
+    const fetchJson = createTempoFetch(fake.http, { version: '0.20.0' })
+    expect(await fetchJson(MB_URL)).toEqual({ recordings: [] })
+    expect(fake.native).toHaveBeenCalledWith({
+      url: MB_URL,
+      headers: { Accept: 'application/json', 'User-Agent': 'Vrull/0.20.0 ( https://github.com/keyeser33-hash/Vrull )' },
+      timeoutMs: 8000,
+    })
+    expect(await fetchJson(AB_URL)).toEqual({ ok: true })
+    expect(fake.fetch).toHaveBeenCalledTimes(1)
+    expect(fake.fetch.mock.calls[0][0]).toBe(AB_URL)
+  })
+
+  it('në shfletues (pa native) MusicBrainz pyetet me fetch, si sot', async () => {
+    const fake = client({ native: false })
+    const fetchJson = createTempoFetch(fake.http, { version: '0.20.0' })
+    expect(await fetchJson(MB_URL)).toEqual({ ok: true })
+    expect(fake.fetch.mock.calls[0][0]).toBe(MB_URL)
+  })
+
+  it('MusicBrainz: të shumtën një kërkesë në sekondë, edhe kur kërkohen njëherësh', async () => {
+    vi.useFakeTimers({ now: 0 })
+    try {
+      const started: { url: string; at: number }[] = []
+      const fetchJson = createTempoFetch(
+        {
+          native: async (request) => {
+            started.push({ url: request.url, at: Date.now() })
+            return { status: 200, data: {} }
+          },
+          fetch: async (url) => {
+            started.push({ url, at: Date.now() })
+            return new Response('{}', { status: 200 })
+          },
+          sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+        },
+        { version: '0.20.0' },
+      )
+      const all = Promise.all([fetchJson(MB_URL), fetchJson(MB_URL), fetchJson(AB_URL), fetchJson(MB_URL)])
+      await vi.runAllTimersAsync()
+      await all
+      expect(started.filter((request) => request.url === MB_URL).map((request) => request.at)).toEqual([0, 1100, 2200])
+      // AcousticBrainz nuk pret radhën e MusicBrainz.
+      expect(started.find((request) => request.url === AB_URL)?.at).toBe(0)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('një përgjigje gabim (503, 429) hidhet si gabim, që zinxhiri të mos ruajë "nuk u gjet"', async () => {
+    const fake = client({ native: true })
+    fake.native.mockResolvedValueOnce({ status: 503, data: 'Service Unavailable' })
+    const fetchJson = createTempoFetch(fake.http, { version: '0.20.0' })
+    await expect(fetchJson(MB_URL)).rejects.toThrow('musicbrainz.org: 503')
+    fake.fetch.mockResolvedValueOnce(new Response('', { status: 429 }))
+    await expect(fetchJson(AB_URL)).rejects.toThrow('acousticbrainz.org: 429')
+  })
+
+  it('JSON-i si tekst nga native-i lexohet', async () => {
+    const fake = client({ native: true })
+    fake.native.mockResolvedValueOnce({ status: 200, data: '{"recordings":[{"id":"a"}]}' })
+    const fetchJson = createTempoFetch(fake.http, { version: '0.20.0' })
+    expect(await fetchJson(MB_URL)).toEqual({ recordings: [{ id: 'a' }] })
   })
 })
 

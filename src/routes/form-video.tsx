@@ -9,6 +9,7 @@ import { formVideos, store, useLocalQuery } from '@/data/app-data'
 import { exerciseVideos, FORM_VIDEO_LIMITS, type FormVideoRef, setComparison, storageUsage, type StorageUsage, type VideoSet, VideoTooLargeError } from '@/data/form-videos'
 import type { I18n } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
+import { onAppVisibility } from '@/lib/app-visibility'
 import { localDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
 import { type Camera, type CameraErrorReason, cameraErrorReason, clipTime, type Facing, openCamera, type Take } from '@/lib/form-camera'
@@ -240,7 +241,8 @@ type TakeWithUrl = Take & { url: string }
 /**
  * A është faqja në plan të parë (kamera fiket kur app-i del në sfond), dhe `epoch`, që rritet me çdo
  * ndërrim: një kamerë e hapur para tij nuk vlen më. `onHide` thirret në vetë ngjarjen, para çdo
- * rivizatimi, që regjistrimi të ndalet ndërsa kamera është ende e hapur.
+ * rivizatimi, që regjistrimi të ndalet ndërsa kamera është ende e hapur. Sinjali vjen nga
+ * `onAppVisibility` (edhe pause/resume i Capacitor-it: WebView-ja nuk e jep gjithmonë visibilitychange).
  */
 function usePageVisible(onHide: () => void) {
   const [page, setPage] = useState(() => ({ visible: document.visibilityState !== 'hidden', epoch: 0 }))
@@ -248,15 +250,14 @@ function usePageVisible(onHide: () => void) {
   useEffect(() => {
     hide.current = onHide
   })
-  useEffect(() => {
-    const update = () => {
-      const visible = document.visibilityState !== 'hidden'
-      if (!visible) hide.current()
-      setPage((current) => ({ visible, epoch: current.epoch + 1 }))
-    }
-    document.addEventListener('visibilitychange', update)
-    return () => document.removeEventListener('visibilitychange', update)
-  }, [])
+  useEffect(
+    () =>
+      onAppVisibility((visible) => {
+        if (!visible) hide.current()
+        setPage((current) => ({ visible, epoch: current.epoch + 1 }))
+      }),
+    [],
+  )
   return page
 }
 

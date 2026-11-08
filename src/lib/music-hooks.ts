@@ -1,6 +1,7 @@
 import { App } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
+import { onAppVisibility } from './app-visibility'
 import { music, type NowPlaying, type QueueEntry } from './music'
 import { type SongRef, type SongTempo, songKey, type TempoLookup } from './music-tempo'
 
@@ -50,15 +51,7 @@ export function onResume(listener: () => void): () => void {
 /** Faqja duket dhe app-i është përpara; false kur app-i del në sfond ose ekrani fiket. */
 export function usePageActive(): boolean {
   const [active, setActive] = useState(() => document.visibilityState !== 'hidden')
-  useEffect(() => {
-    const update = () => setActive(document.visibilityState !== 'hidden')
-    document.addEventListener('visibilitychange', update)
-    const handles = Capacitor.isNativePlatform() ? [App.addListener('pause', () => setActive(false)), App.addListener('resume', update)] : []
-    return () => {
-      document.removeEventListener('visibilitychange', update)
-      for (const handle of handles) void handle.then((value) => value.remove())
-    }
-  }, [])
+  useEffect(() => onAppVisibility(setActive), [])
   return active
 }
 

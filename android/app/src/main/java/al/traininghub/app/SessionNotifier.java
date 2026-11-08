@@ -52,15 +52,19 @@ final class SessionNotifier {
     static final String EXTRA_KEY = "key";
 
     /**
-     * Rreshti i muzikës te njoftimi i seancës (V29, E1-12). Kush e zbaton e regjistron me
-     * {@link #setMusicRow} (p.sh. te MusicPlugin.load) dhe thërret {@link #refresh} kur ndryshon
-     * kënga ose gjendja; njoftimi e vendos te {@code music_slot} i notification_session_big.xml,
-     * nën "Ruaj setin". Butonat e rreshtit të jenë PendingIntent broadcast, që të punojnë edhe me
-     * ekran të kyçur. Pa rresht (null), vendi mbetet i fshehur.
+     * Rreshti i muzikës te njoftimi i seancës (V29; SessionMusic, V2-E1-16a). Regjistrohet me
+     * {@link #setMusicRow} (MusicPlugin.load dhe SessionActionReceiver, edhe kur procesi nis nga një
+     * prekje) dhe thërret {@link #refresh} kur ndryshon kënga ose gjendja; njoftimi e vendos te
+     * {@code music_slot} i notification_session_big.xml, nën "Ruaj setin". Butonat e rreshtit janë
+     * PendingIntent broadcast, që punojnë edhe me ekran të kyçur. Pa rresht (null), vendi mbetet i fshehur.
      */
     interface MusicRow {
+        /** Rreshti me tekstet e gjendjes së fundit të JS-it (gjuha e app-it); null pa muzikë. */
         @Nullable
-        RemoteViews build(Context context);
+        RemoteViews build(Context context, JSONObject texts);
+
+        /** Njoftimi i seancës u shfaq ose u hoq: rreshti ndjek app-in e muzikës vetëm sa kohë duket. */
+        void showing(Context context, boolean visible);
     }
 
     private static final String PREFS = "vrull_session";
@@ -126,6 +130,8 @@ final class SessionNotifier {
         }
         cancelRest(context);
         NotificationManagerCompat.from(context).cancel(ID_SESSION);
+        MusicRow row = musicRow;
+        if (row != null) row.showing(context, false);
     }
 
     static JSONArray pending(Context context) {
@@ -316,8 +322,11 @@ final class SessionNotifier {
                 dismissed = state != null && state.sessionId.equals(prefs.getString(KEY_DISMISSED, ""));
             }
             NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-            if (state == null || dismissed || !manager.areNotificationsEnabled()) manager.cancel(ID_SESSION);
+            boolean visible = state != null && !dismissed && manager.areNotificationsEnabled();
+            if (!visible) manager.cancel(ID_SESSION);
             else notify(context, ID_SESSION, sessionNotification(context, state));
+            MusicRow row = musicRow;
+            if (row != null) row.showing(context, visible);
             long endsAt = rest.optLong("endsAt");
             // Pushimi pa tekstet e njoftimit (JS-i s'e ka dërguar ende gjendjen): vetëm alarmi.
             if (state == null || endsAt <= System.currentTimeMillis() || !manager.areNotificationsEnabled()) manager.cancel(ID_REST);
@@ -413,7 +422,7 @@ final class SessionNotifier {
         }
 
         MusicRow row = musicRow;
-        RemoteViews music = row == null ? null : row.build(context);
+        RemoteViews music = row == null ? null : row.build(context, texts);
         if (music != null) {
             big.removeAllViews(R.id.music_slot);
             big.addView(R.id.music_slot, music);
@@ -474,8 +483,11 @@ final class SessionNotifier {
         }
     }
 
-    /** Një PendingIntent për çdo veprim dhe set: një prekje e vjetër mbart setin e vet, jo të riun. */
-    private static PendingIntent broadcast(Context context, String action, @Nullable String key) {
+    /**
+     * Një PendingIntent për çdo veprim dhe set (ose komandë muzike): një prekje e vjetër mbart setin e vet,
+     * jo të riun.
+     */
+    static PendingIntent broadcast(Context context, String action, @Nullable String key) {
         Intent intent = new Intent(context, SessionActionReceiver.class).setAction(action);
         if (key != null) {
             intent.setData(new Uri.Builder().scheme("vrull-session").authority(action).appendPath(key).build());

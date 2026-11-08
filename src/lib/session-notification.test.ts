@@ -139,6 +139,8 @@ describe('njoftimi i seancës: çfarë tregon', () => {
       canSave: true,
     })
     expect(state.texts).toMatchObject({ save: 'Ruaj setin', edit: 'Ndrysho', skipRest: 'Kapërce pushimin', restEnds: 'Pushimi mbaron për %s' })
+    // Rreshti i muzikës (V29): native-i e vizaton vetë kur ndërrohet kënga, me tekstet e gjendjes së fundit.
+    expect(state.texts).toMatchObject({ musicPlay: 'Luaj', musicPause: 'Pauzë', musicNext: 'Kënga tjetër', musicPrevious: 'Kënga e mëparshme', musicUntitled: 'Kënga pa titull' })
   })
 
   it('pesha e ndryshuar te "Peshat e javës" është pesha e njoftimit', async () => {
@@ -201,6 +203,7 @@ describe('njoftimi i seancës: çfarë tregon', () => {
     const state = fake.last()!
     expect(state.steps[0]).toMatchObject({ title: 'Bench Press · Set 1 of 4', weight: '62.5', target: 'Target 9–11' })
     expect(state.texts).toMatchObject({ save: 'Log set', skipRest: 'Skip rest', repsOne: 'rep', repsOther: 'reps', restEnds: 'Rest ends in %s' })
+    expect(state.texts).toMatchObject({ musicPlay: 'Play', musicPause: 'Pause', musicNext: 'Next song', musicPrevious: 'Previous song', musicUntitled: 'Untitled song' })
   })
 
   it('pa seancë të hapur njoftimi hiqet', async () => {
