@@ -195,6 +195,9 @@ Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kal
 **Kufiri i AI-së**:
 Shuma mujore që AI mund të harxhojë për një përdorues (parazgjedhje €10); kur arrihet, AI ndalet deri në muajin tjetër.
 
+**Versioni i listës**:
+Një publikim i ndryshimeve të **Adminit** te lista vendase e ushqimeve; përdoruesit e marrin në sinkronizimin e radhës.
+
 ## Suplementet, rikujtuesit, matjet
 
 **Suplementi**:
@@ -235,12 +238,12 @@ _Avoid_: streak (në UI shqip)
 
 ## Muzika
 
-**Shufra**:
-Playlist-a e seancës, e paraqitur si shufër me disqe; kontrollon app-in e muzikës që përdor përdoruesi.
-_Avoid_: player, lista e këngëve
+**Trupi në ritëm**:
+Muzika e seancës, ku muskujt e stërvitjes së sotme pulsojnë në trupin 3D me tempon e këngës; kontrollon app-in e muzikës që përdor përdoruesi.
+_Avoid_: player, Shufra (koncepti i mëparshëm)
 
-**Disku**:
-Një këngë në Shufër; madhësia tregon tempon, ngjyra fazën e seancës.
+**Tempo**:
+Goditjet në minutë (BPM) të një kënge; gjendet vetë ose me "Prek ritmin".
 
 **Kënga e setit**:
 Kënga më energjike e radhës, që del përpara kur fillon një set.
@@ -257,7 +260,7 @@ Pesë pyetje nga ushtrimet dhe ushqimet e përdoruesit në atë javë, me përgj
 ## Miqtë
 
 **Admini**:
-Përdoruesi që krijon ftesat dhe ndryshon **Kufirin e AI-së** së miqve; është pronari i app-it.
+Përdoruesi që krijon ftesat, ndryshon **Kufirin e AI-së** së miqve dhe mirëmban listën vendase të ushqimeve, fotot dhe ikonat; është pronari i app-it.
 
 **Miku**:
 Një përdorues i ftuar; ka të dhënat e veta dhe sheh nga të tjerët vetëm stërvitjet, rekordet, vargjet dhe sfidat.
