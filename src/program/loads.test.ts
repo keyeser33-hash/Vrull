@@ -2,14 +2,17 @@ import {
   currentOneRm,
   dropWeight,
   e1rm,
+  e1rmRecord,
   type HistorySet,
   linearWeight,
   percentWeight,
   personalRecords,
+  recordThreshold,
   reference,
   roundDown,
   suggestedWeight,
   suggestionFor,
+  weightFor,
   weightStep,
 } from './loads'
 
@@ -196,9 +199,101 @@ describe('rekordet personale', () => {
     expect(personalRecords(set({ weightKg: 51, reps: 11 }), history).e1rm).toBe(false) // 69,7
   })
 
+  it('rekordi i e1RM-së me shtesën: Bench Press 62,5 × 12 pas 60 × 13 → 87,5, +1,5', () => {
+    const java1 = [set({ weightKg: 60, reps: 13, week: 1, loggedAt: daysAgo(7) })]
+    const record = e1rmRecord(set({ weightKg: 62.5, reps: 12, week: 2, loggedAt: daysAgo(0) }), java1)
+    expect(record?.e1rmKg).toBeCloseTo(87.5, 5)
+    expect(record?.previousBestKg).toBeCloseTo(86, 5)
+    expect(record?.gainKg).toBeCloseTo(1.5, 5)
+  })
+
+  it('seti i ruajtur, që është tashmë te historia, krahasohet me të tjerët, jo me veten', () => {
+    const java1 = [set({ weightKg: 60, reps: 13, loggedAt: daysAgo(7) })]
+    const saved = set({ weightKg: 62.5, reps: 12, loggedAt: daysAgo(0) })
+    expect(e1rmRecord(saved, [...java1, saved])?.gainKg).toBeCloseTo(1.5, 5)
+  })
+
+  it('seti i parë i ushtrimit nuk është rekord i e1RM-së', () => {
+    expect(e1rmRecord(set({ weightKg: 62.5, reps: 12 }), [])).toBeNull()
+  })
+
   it('pa histori për ushtrimin, as setet e ngrohjes: asnjë rekord', () => {
     expect(personalRecords(set({ exerciseId: 'squat', weightKg: 100, reps: 5 }), history)).toEqual({ weightForReps: false, e1rm: false })
     expect(personalRecords(set({ weightKg: 80, reps: 12, isWarmup: true }), history)).toEqual({ weightForReps: false, e1rm: false })
+  })
+})
+
+describe('rregulli i progresit i programeve të tua (V9)', () => {
+  const dumbbell = { equipment: 'dumbbell' as const, tracking: 'weight_reps' as const }
+  const target = { kind: 'reps' as const, min: 8, max: 12, beyond: false }
+  const progression = { rule: { minRir: 2, incrementKg: 2.5 }, topReps: 12 }
+  const session = (sets: [kg: number, reps: number, rir: number | null][], sessionId = 'last', loggedAt = daysAgo(3)) =>
+    sets.map(([weightKg, reps, rir], index) => set({ exerciseId: 'press', sessionId, setNumber: index + 1, weightKg, reps, rir, loggedAt }))
+  const weight = (history: HistorySet[]) => weightFor({ exerciseId: 'press', target, exercise: dumbbell, history, now: NOW, progression })
+
+  it('çdo set në kufirin e sipërm me RIR ≥ 2: pesha e fundit + 2,5 kg', () => {
+    expect(weight(session([[20, 12, 2], [20, 12, 3], [20, 12, 2]]))).toEqual({
+      weightKg: 22.5,
+      basis: { kind: 'progression', lastKg: 20, incrementKg: 2.5, minRir: 2, topReps: 12, earned: true },
+    })
+  })
+
+  it('një set nën kufirin e sipërm: pesha mbetet', () => {
+    expect(weight(session([[20, 12, 2], [20, 11, 2], [20, 12, 2]]))).toMatchObject({ weightKg: 20, basis: { earned: false } })
+  })
+
+  it('RIR nën prag, ose i paregjistruar (0), mban peshën', () => {
+    expect(weight(session([[20, 12, 2], [20, 12, 1], [20, 12, 2]]))).toMatchObject({ weightKg: 20, basis: { earned: false } })
+    expect(weight(session([[20, 12, 2], [20, 12, null], [20, 12, 2]]))).toMatchObject({ weightKg: 20, basis: { earned: false } })
+  })
+
+  it('pesha e fundit është më e rënda e seancës', () => {
+    expect(weight(session([[22, 12, 2], [20, 12, 3]]))).toMatchObject({ weightKg: 24.5, basis: { lastKg: 22 } })
+  })
+
+  it('vlen vetëm seanca e fundit e ushtrimit', () => {
+    const older = session([[17.5, 10, 0]], 'older', daysAgo(10))
+    expect(weight([...older, ...session([[20, 12, 2], [20, 12, 2]])]).weightKg).toBe(22.5)
+  })
+
+  it('pa javë të kaluar ose pa histori: si §7', () => {
+    const history = session([[20, 12, 2]]) // e1RM 28,8 → 28,8 / 1,4 = 20,6 → 20 (hapi 2)
+    const firstWeek = weightFor({ exerciseId: 'press', target, exercise: dumbbell, history, now: NOW, progression: { ...progression, topReps: null } })
+    expect(firstWeek).toMatchObject({ weightKg: 20, basis: { kind: 'one_rm' } })
+    expect(weight([])).toEqual({ weightKg: null, basis: { kind: 'choose', min: 8, max: 12 } })
+  })
+})
+
+describe('pragu i rekordit (§0.3a)', () => {
+  const java1 = [set({ weightKg: 60, reps: 13, loggedAt: daysAgo(7) })] // e1RM 86,0
+
+  it('Bench Press 62,5 kg në Javën 2 (9–11): 12 përsëritje japin rekord, 11 japin vetëm 85,4', () => {
+    const threshold = recordThreshold(java1, { exerciseId: 'bench', weightKg: 62.5, min: 9, max: 11 })
+    expect(threshold?.reps).toBe(12)
+    expect(threshold?.e1rmKg).toBeCloseTo(87.5, 5)
+    expect(e1rm(62.5, 11)).toBeCloseTo(85.4, 1)
+  })
+
+  it('shfaqet deri në 2 përsëritje mbi kufirin e sipërm, jo më larg', () => {
+    // 60 kg: 13 përsëritje japin sa rekordi (86,0), 14 e kalojnë: 3 mbi 11.
+    expect(recordThreshold(java1, { exerciseId: 'bench', weightKg: 60, min: 9, max: 11 })).toBeNull()
+    expect(recordThreshold(java1, { exerciseId: 'bench', weightKg: 60, min: 9, max: 12 })?.reps).toBe(14)
+  })
+
+  it('nën intervalin nuk shfaqet: 70 kg e kalojnë 86,0 me 7, para 9–11', () => {
+    expect(recordThreshold(java1, { exerciseId: 'bench', weightKg: 70, min: 9, max: 11 })).toBeNull()
+    expect(recordThreshold(java1, { exerciseId: 'bench', weightKg: 70, min: 7, max: 11 })?.reps).toBe(7)
+  })
+
+  it('rekordet e ushtrimeve të tjera nuk vlejnë', () => {
+    const squat = set({ exerciseId: 'squat', weightKg: 100, reps: 10 })
+    expect(recordThreshold([...java1, squat], { exerciseId: 'bench', weightKg: 62.5, min: 9, max: 11 })?.reps).toBe(12)
+  })
+
+  it('pa histori (ose vetëm me sete ngrohjeje) s\'ka rekord për të kaluar', () => {
+    const warmup = [set({ weightKg: 40, reps: 10, isWarmup: true })]
+    expect(recordThreshold([], { exerciseId: 'bench', weightKg: 62.5, min: 1, max: 5 })).toBeNull()
+    expect(recordThreshold(warmup, { exerciseId: 'bench', weightKg: 62.5, min: 1, max: 5 })).toBeNull()
   })
 })
 
@@ -241,6 +336,12 @@ describe('sugjerimi për slotin e seancës', () => {
     expect(suggestionFor({ exerciseId: 'bench', target: reps(10, null) }, barbell, history, NOW, null, steps).weightKg).toBe(60)
   })
 
+  it('seanca: pulpat me histori pa e1RM marrin peshën e fundit, jo "Zgjidh peshën"', () => {
+    const machine = { equipment: 'machine' as const, tracking: 'weight_reps' as const }
+    const calves = [set({ exerciseId: 'calf', weightKg: 80, reps: 27, loggedAt: daysAgo(7) })]
+    expect(suggestionFor({ exerciseId: 'calf', target: reps(15, 20) }, machine, calves, NOW, null, steps)).toEqual({ weightKg: 80, hint: null })
+  })
+
   it('ushtrim pa histori: "Zgjidh peshën ku mbyll X–Y përsëritje"', () => {
     expect(suggestionFor({ exerciseId: 'squat', target: reps(12, 15) }, barbell, history, NOW, null, steps)).toEqual({
       weightKg: null,
@@ -267,6 +368,59 @@ describe('sugjerimi për slotin e seancës', () => {
     const missed = [...done, set({ sessionId: 'b', weightKg: 62.5, reps: 5, loggedAt: daysAgo(2) }), set({ sessionId: 'b', setNumber: 2, weightKg: 62.5, reps: 3, loggedAt: daysAgo(2) })]
     expect(suggestionFor({ exerciseId: 'bench', target }, barbell, missed, NOW, null, steps).weightKg).toBe(62.5)
     expect(suggestionFor({ exerciseId: 'squat', target }, barbell, missed, NOW, null, steps).weightKg).toBe(40)
+  })
+
+  it('pesha me arsyen e §7: Bench Press 60 × 13 te Java 1 jep 62,5 kg për 9–11', () => {
+    const java1 = [set({ weightKg: 60, reps: 13, loggedAt: daysAgo(7) })] // e1RM 86,0
+    const proposal = weightFor({ exerciseId: 'bench', target: reps(9, 11), exercise: barbell, history: java1, now: NOW, steps })
+    expect(proposal.weightKg).toBe(62.5)
+    expect(proposal.basis).toMatchObject({ kind: 'one_rm', reps: 11, stepKg: 2.5 })
+    if (proposal.basis?.kind !== 'one_rm') throw new Error('pa arsye')
+    expect(proposal.basis.oneRmKg).toBeCloseTo(86, 5)
+    expect(proposal.basis.exactKg).toBeCloseTo(62.93, 2)
+  })
+
+  it('me histori por pa e1RM (pulpat mbi 15 përsëritje): pesha e fundit e përdorur', () => {
+    const machine = { equipment: 'machine' as const, tracking: 'weight_reps' as const }
+    const calves = [
+      set({ exerciseId: 'calf', weightKg: 70, reps: 28, loggedAt: daysAgo(14) }),
+      set({ exerciseId: 'calf', weightKg: 80, reps: 26, loggedAt: daysAgo(7) }),
+      set({ exerciseId: 'calf', weightKg: 100, reps: 20, isWarmup: true, loggedAt: daysAgo(6) }),
+    ]
+    expect(weightFor({ exerciseId: 'calf', target: reps(15, 20), exercise: machine, history: calves, now: NOW, steps })).toEqual({
+      weightKg: 80,
+      basis: { kind: 'last_weight', weightKg: 80 },
+    })
+    const withoutWeight = [...calves, set({ exerciseId: 'calf', weightKg: null, reps: 30, loggedAt: daysAgo(5) })]
+    expect(weightFor({ exerciseId: 'calf', target: reps(15, 20), exercise: machine, history: withoutWeight, now: NOW, steps }).weightKg).toBe(80)
+  })
+
+  it('pa histori: pa peshë, me intervalin ku zgjidhet pesha', () => {
+    expect(weightFor({ exerciseId: 'squat', target: reps(12, 15), exercise: barbell, history, now: NOW, steps })).toEqual({
+      weightKg: null,
+      basis: { kind: 'choose', min: 12, max: 15 },
+    })
+  })
+
+  it('%1RM me arsyen; pa 1RM, kërkon 1RM-në', () => {
+    const target = { kind: 'percent_1rm' as const, percent: 75, reps: 5, amrap: false }
+    expect(weightFor({ exerciseId: 'bench', target, exercise: barbell, history, now: NOW, steps })).toEqual({
+      weightKg: 60,
+      basis: { kind: 'percent_1rm', oneRmKg: 80, percent: 75, exactKg: 60, stepKg: 2.5 },
+    })
+    expect(weightFor({ exerciseId: 'squat', target, exercise: barbell, history, now: NOW, steps })).toEqual({
+      weightKg: null,
+      basis: { kind: 'needs_one_rm' },
+    })
+  })
+
+  it('progresion çdo seancë përmes së njëjtës rrugë', () => {
+    const target = { kind: 'linear' as const, reps: 5, startKg: 40, incrementKg: 2.5, failuresBeforeDeload: 3, deloadPercent: 10 }
+    const done = [set({ sessionId: 'a', weightKg: 60, reps: 5, loggedAt: daysAgo(4) })]
+    expect(weightFor({ exerciseId: 'bench', target, exercise: barbell, history: done, now: NOW, steps })).toEqual({
+      weightKg: 62.5,
+      basis: { kind: 'linear' },
+    })
   })
 
   it('pa sugjerim për kohën dhe për peshën e trupit', () => {

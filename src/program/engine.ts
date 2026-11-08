@@ -73,6 +73,7 @@ export function planSession(program: Program, pointer: Pointer): SessionPlan {
       const prescription = field('prescription')
       const exerciseId = field('exerciseId') ?? slot.exerciseId
       const target = targetFor(prescription, pointer.week)
+      const progression = field('progression')
       return {
         slotId: slot.id,
         position: slot.position,
@@ -84,6 +85,7 @@ export function planSession(program: Program, pointer: Pointer): SessionPlan {
         ...(prescription?.type === 'rep_ladder' && prescription.blockIncreaseKg
           ? { blockIncreaseKg: prescription.blockIncreaseKg }
           : {}),
+        ...(progression ? { progression } : {}),
       }
     }),
   }

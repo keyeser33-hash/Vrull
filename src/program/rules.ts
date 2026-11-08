@@ -11,7 +11,7 @@ export interface Scope {
   week: number | null
 }
 
-export type RuleField = 'exerciseId' | 'sets' | 'restSeconds' | 'prescription' | 'technique'
+export type RuleField = 'exerciseId' | 'sets' | 'restSeconds' | 'prescription' | 'technique' | 'progression'
 
 export interface Resolved<T> {
   value: T
@@ -39,6 +39,7 @@ export function slotRules(program: Program, slotId: string, scope: Scope): SlotR
     restSeconds: { value: restSeconds.value ?? slot.restSeconds, from: restSeconds.from },
     prescription: field('prescription'),
     technique: field('technique'),
+    progression: field('progression'),
   } as SlotRules
 }
 

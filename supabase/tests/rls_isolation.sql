@@ -20,7 +20,7 @@ declare
     'exercises', 'programs', 'program_blocks', 'program_days', 'program_slots',
     'slot_prescriptions', 'program_state', 'workout_sessions', 'set_logs', 'one_rm_overrides',
     'body_measurements', 'progress_photos', 'foods', 'recipes', 'recipe_items', 'meal_templates',
-    'diary_entries', 'nutrition_targets', 'supplements', 'supplement_logs', 'user_settings'
+    'diary_entries', 'nutrition_targets', 'supplements', 'supplement_logs', 'user_settings', 'week_weights'
   ];
 begin
   insert into auth.users (id, aud, role, email, created_at, updated_at)
@@ -36,8 +36,8 @@ begin
   insert into public.program_blocks (program_id, position, name, weeks) values (prog, 0, 'Java 0', 1) returning id into blk;
   insert into public.program_days (program_id, position, name) values (prog, 0, 'Gjoks, triceps, pulpa') returning id into dy;
   insert into public.program_slots (program_id, day_id, position, exercise_id, sets) values (prog, dy, 0, ex, 4) returning id into slot;
-  insert into public.slot_prescriptions (program_id, slot_id, block_id, prescription)
-    values (prog, slot, blk, '{"type": "rep_ladder", "ranges": [[12, 15]]}');
+  insert into public.slot_prescriptions (program_id, slot_id, block_id, prescription, progression)
+    values (prog, slot, blk, '{"type": "rep_ladder", "ranges": [[12, 15]]}', '{"minRir": 2, "incrementKg": 2.5}');
   insert into public.program_state (program_id, block_id, day_id) values (prog, blk, dy);
   insert into public.workout_sessions (program_id, block_id, week, day_id, date) values (prog, blk, 1, dy, '2026-11-30') returning id into sess;
   insert into public.set_logs (session_id, slot_id, exercise_id, position, set_number, weight_kg, reps, rir)
@@ -55,6 +55,8 @@ begin
   insert into public.supplements (name, dose_amount, dose_unit, timing, evidence) values ('Creatine', 5, 'g', '{pre_workout,post_workout}', 'strong') returning id into supp;
   insert into public.supplement_logs (supplement_id, date, timing) values (supp, '2026-11-30', 'post_workout');
   insert into public.user_settings default values;
+  insert into public.week_weights (program_id, block_id, week, slot_id, exercise_id, weight_kg, status)
+    values (prog, blk, 1, slot, ex, 62.5, 'accepted');
   insert into storage.objects (bucket_id, name) values ('progress-photos', user_a || '/front.jpg');
 
   foreach t in array tables loop

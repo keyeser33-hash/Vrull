@@ -11,6 +11,7 @@ import type {
   PlannedSlot,
   Prescription,
   Program,
+  ProgressionRule,
   SessionPlan,
   SlotOverride,
   Technique,
@@ -233,6 +234,7 @@ export async function programModel(store: LocalStore, programId: string) {
         restSeconds: numberOrNull(row.rest_seconds),
         prescription: (row.prescription as Prescription | null) ?? null,
         technique: (row.technique as Technique | null) ?? null,
+        progression: (row.progression as ProgressionRule | null | undefined) ?? null,
       }),
     ),
     exercises,
@@ -254,7 +256,8 @@ async function loadProgram(store: LocalStore, programId: string) {
   return { ...model, state, pointer }
 }
 
-async function activeProgram(store: LocalStore) {
+/** Programi aktiv si model i motorit, me treguesin; null pa program aktiv. */
+export async function activeProgram(store: LocalStore) {
   const programId = (await settings(store))?.active_program_id as string | undefined
   return programId ? loadProgram(store, programId) : null
 }
