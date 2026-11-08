@@ -1,10 +1,12 @@
 import * as body from './areas/body'
+import * as builder from './areas/builder'
 import * as domain from './areas/domain'
 import * as entry from './areas/entry'
 import * as history from './areas/history'
 import * as programme from './areas/programme'
 import * as session from './areas/session'
 import * as today from './areas/today'
+import * as videos from './areas/videos'
 import type { base as sqBase, Translation } from './sq'
 import type { TranslationOf } from './translate'
 
@@ -260,4 +262,4 @@ const base: TranslationOf<typeof sqBase> = {
   'ui.quickAdd.aiLimit': 'This month’s limit has been reached',
 }
 
-export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en }
+export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en, ...builder.en, ...videos.en }
