@@ -63,7 +63,7 @@ describe('editori i programit', () => {
   it('nga Programi te editori i programit aktiv dhe te lista e programeve', async () => {
     await renderAt('/programi')
     // Programi në Vrull (V2-E1-09): editori nga kreu, lista e programeve në fund të ekranit.
-    expect(await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Ndrysho programin' })).toHaveAttribute('href', expect.stringMatching(/^\/programi\/editori\//))
     expect(screen.getByRole('link', { name: 'Shiko të gjitha programet' })).toHaveAttribute('href', '/programet')
   })

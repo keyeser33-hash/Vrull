@@ -105,7 +105,7 @@ describe('Shto ushqim', () => {
     await user.type(await screen.findByLabelText('Kërko ushqimin'), 'zez')
     expect(await screen.findByRole('region', { name: 'Ushqimet e tua' })).toHaveTextContent('Bukë e zezë')
     await user.type(screen.getByLabelText('Kërko ushqimin'), '{Backspace>3}nutella')
-    const results = await screen.findByRole('region', { name: 'Open Food Facts' }, { timeout: 3000 })
+    const results = await screen.findByRole('region', { name: 'Open Food Facts' })
     expect(off.search).toHaveBeenLastCalledWith('nutella', expect.any(AbortSignal))
     expect(await screen.findByRole('region', { name: 'USDA · ushqime të përgjithshme' })).toHaveTextContent('Hazelnuts, raw')
     expect(off.usda).toHaveBeenLastCalledWith('nutella')

@@ -25,5 +25,10 @@ export default defineConfig({
     globals: true,
     // Worktree-t e nënagjentëve (.claude/worktrees) janë kopje të repo-s me provat e veta.
     exclude: [...configDefaults.exclude, '.claude/**'],
+    // Nën ngarkesë (disa `npm test` njëherësh, `--maxWorkers` sa bërthamat) një provë ekrani me
+    // seancë të plotë zgjat dhjetëfish; 5 s e parazgjedhjes nuk mjaftonin. Kufiri vlen vetëm kur
+    // diçka ngec. Pritjet e Testing Library: src/test/setup.ts.
+    testTimeout: 120_000,
+    hookTimeout: 120_000,
   },
 })
