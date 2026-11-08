@@ -69,5 +69,17 @@ describe('ushqimet', () => {
     await logTemplateMeal(store, DAY, 'lunch')
     expect((await searchFoods(store, 'buke')).map((food) => food.name)).toEqual(['Bukë integrale'])
     expect((await recentFoods(store)).map((food) => food.name)).toContain('Bukë integrale')
+    expect((await recentFoods(store)).find((food) => food.name === 'Mollë')).toMatchObject({ source: 'template', sourceId: 'jim:apple' })
+  })
+
+  it('kërkimi gjen edhe emrin që sheh përdoruesi (shablloni në anglisht), dhe e rendit sipas tij', async () => {
+    const store = await setup()
+    await logTemplateMeal(store, DAY, 'lunch')
+    const english: Record<string, string> = { 'Bukë integrale': 'Wholemeal bread', Mollë: 'Apple', 'Majonezë light': 'Light mayonnaise' }
+    const shown = (food: { name: string }) => english[food.name] ?? food.name
+    expect((await searchFoods(store, 'whole', shown)).map((food) => food.name)).toEqual(['Bukë integrale'])
+    expect((await searchFoods(store, 'buke', shown)).map((food) => food.name)).toEqual(['Bukë integrale'])
+    // Fillimi i emrit që shihet del i pari; pastaj sipas emrit që shihet.
+    expect((await searchFoods(store, 'l', shown)).map(shown)).toEqual(['Light mayonnaise', 'Apple', 'Ton albacore në ujë', 'Wholemeal bread'])
   })
 })

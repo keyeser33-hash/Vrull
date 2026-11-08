@@ -7,10 +7,11 @@ import type { Macros } from './targets'
 // rreth 3700 kcal, sa totalet e PDF-së.
 
 export interface FoodDef extends Macros {
+  /** Emri shqip, si ruhet te `foods` (burimi `template`, `jim:<çelësi>`); ekrani e përkthen (`foodName`). */
   name: string
 }
 
-export const JIM_FOODS: Record<string, FoodDef> = {
+export const JIM_FOODS = {
   protein: { name: 'Pluhur proteine', kcal: 400, proteinG: 80, carbsG: 10, fatG: 5 },
   cantaloupe: { name: 'Pjepër', kcal: 34, proteinG: 0.84, carbsG: 8.16, fatG: 0.19 },
   egg: { name: 'Vezë', kcal: 143, proteinG: 12.56, carbsG: 0.72, fatG: 9.51 },
@@ -32,60 +33,72 @@ export const JIM_FOODS: Record<string, FoodDef> = {
   greens: { name: 'Sallatë jeshile e përzier', kcal: 15, proteinG: 1.36, carbsG: 2.87, fatG: 0.15 },
   dressing: { name: 'Salcë me vaj ulliri dhe uthull', kcal: 449, proteinG: 0, carbsG: 2.5, fatG: 50.1 },
   gummies: { name: 'Karamele gummy', kcal: 343, proteinG: 6.9, carbsG: 77, fatG: 0 },
+} satisfies Record<string, FoodDef>
+
+export type JimFoodKey = keyof typeof JIM_FOODS
+
+/** Njësia e sasisë si në PDF ("1 kanoçe", "2 feta"); teksti vjen nga katalogu (`portionText`). */
+export type PortionUnit = 'scoop' | 'scoopShake' | 'halfMelon' | 'egg' | 'eggWhite' | 'tbsp' | 'slice' | 'cup' | 'piece' | 'can' | 'large' | 'gram'
+
+export interface Portion {
+  count: number
+  unit: PortionUnit
 }
 
 export interface TemplateItem {
-  food: keyof typeof JIM_FOODS
+  food: JimFoodKey
   grams: number
-  /** Sasia si në PDF: "1 kanoçe", "2 feta". */
-  amount: string
+  /** Sasia si në PDF: 1 kanoçe, 2 feta. */
+  portion: Portion
 }
+
+const portion = (count: number, unit: PortionUnit): Portion => ({ count, unit })
 
 export const JIM_MEALS: Partial<Record<MealKey, TemplateItem[]>> = {
   breakfast_1: [
-    { food: 'protein', grams: 30, amount: '1 scoop' },
-    { food: 'cantaloupe', grams: 276, amount: '½ pjepër' },
+    { food: 'protein', grams: 30, portion: portion(1, 'scoop') },
+    { food: 'cantaloupe', grams: 276, portion: portion(1, 'halfMelon') },
   ],
   breakfast_2: [
-    { food: 'egg', grams: 150, amount: '3 vezë' },
-    { food: 'egg_white', grams: 99, amount: '3 të bardha' },
-    { food: 'olive_oil', grams: 13.5, amount: '1 lugë gjelle' },
-    { food: 'american_cheese', grams: 21, amount: '1 fetë' },
-    { food: 'oatmeal', grams: 468, amount: '2 gota' },
+    { food: 'egg', grams: 150, portion: portion(3, 'egg') },
+    { food: 'egg_white', grams: 99, portion: portion(3, 'eggWhite') },
+    { food: 'olive_oil', grams: 13.5, portion: portion(1, 'tbsp') },
+    { food: 'american_cheese', grams: 21, portion: portion(1, 'slice') },
+    { food: 'oatmeal', grams: 468, portion: portion(2, 'cup') },
   ],
   snack_am: [
-    { food: 'cottage_cheese', grams: 226, amount: '1 gotë' },
-    { food: 'pineapple', grams: 165, amount: '1 gotë' },
-    { food: 'clif_bar', grams: 68, amount: '1 copë' },
+    { food: 'cottage_cheese', grams: 226, portion: portion(1, 'cup') },
+    { food: 'pineapple', grams: 165, portion: portion(1, 'cup') },
+    { food: 'clif_bar', grams: 68, portion: portion(1, 'piece') },
   ],
   lunch: [
-    { food: 'tuna', grams: 142, amount: '1 kanoçe' },
-    { food: 'wheat_bread', grams: 64, amount: '2 feta' },
-    { food: 'light_mayo', grams: 15, amount: '1 lugë gjelle' },
-    { food: 'apple', grams: 223, amount: '1 e madhe' },
+    { food: 'tuna', grams: 142, portion: portion(1, 'can') },
+    { food: 'wheat_bread', grams: 64, portion: portion(2, 'slice') },
+    { food: 'light_mayo', grams: 15, portion: portion(1, 'tbsp') },
+    { food: 'apple', grams: 223, portion: portion(1, 'large') },
   ],
   snack_pm: [
-    { food: 'protein', grams: 30, amount: '1 scoop' },
-    { food: 'peanut_butter', grams: 16, amount: '1 lugë gjelle' },
-    { food: 'jam', grams: 20, amount: '1 lugë gjelle' },
-    { food: 'wheat_bread', grams: 64, amount: '2 feta' },
+    { food: 'protein', grams: 30, portion: portion(1, 'scoop') },
+    { food: 'peanut_butter', grams: 16, portion: portion(1, 'tbsp') },
+    { food: 'jam', grams: 20, portion: portion(1, 'tbsp') },
+    { food: 'wheat_bread', grams: 64, portion: portion(2, 'slice') },
   ],
   dinner: [
-    { food: 'salmon', grams: 227, amount: '227 g' },
-    { food: 'broccoli', grams: 91, amount: '1 gotë' },
-    { food: 'greens', grams: 70, amount: '2 gota' },
-    { food: 'dressing', grams: 32, amount: '2 lugë gjelle' },
+    { food: 'salmon', grams: 227, portion: portion(227, 'gram') },
+    { food: 'broccoli', grams: 91, portion: portion(1, 'cup') },
+    { food: 'greens', grams: 70, portion: portion(2, 'cup') },
+    { food: 'dressing', grams: 32, portion: portion(2, 'tbsp') },
   ],
   bedtime: [
-    { food: 'protein', grams: 30, amount: '1 scoop' },
-    { food: 'peanut_butter', grams: 16, amount: '1 lugë gjelle' },
+    { food: 'protein', grams: 30, portion: portion(1, 'scoop') },
+    { food: 'peanut_butter', grams: 16, portion: portion(1, 'tbsp') },
   ],
   // Shake-u para/gjatë/pas stërvitjes: ⅓ 10–15 min para, ⅓ gjatë, ⅓ në fund.
   pre_workout: [
-    { food: 'apple', grams: 223, amount: '1 e madhe' },
-    { food: 'protein', grams: 60, amount: '2 scoop në shake' },
+    { food: 'apple', grams: 223, portion: portion(1, 'large') },
+    { food: 'protein', grams: 60, portion: portion(2, 'scoopShake') },
   ],
-  post_workout: [{ food: 'gummies', grams: 69, amount: '30 copë' }],
+  post_workout: [{ food: 'gummies', grams: 69, portion: portion(30, 'piece') }],
 }
 
 export const macrosFor = (food: Macros, grams: number): Macros => ({

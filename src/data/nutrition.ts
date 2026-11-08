@@ -1,5 +1,5 @@
-import { JIM_FOODS, JIM_MEALS, macrosFor, sumMacros } from '@/nutrition/jim'
-import { MEAL_LABEL, type MealKey } from '@/nutrition/meals'
+import { JIM_FOODS, JIM_MEALS, type JimFoodKey, macrosFor, type Portion, sumMacros } from '@/nutrition/jim'
+import type { MealKey } from '@/nutrition/meals'
 import { mealSchedule } from '@/nutrition/schedule'
 import type { Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros, nutritionTargets } from '@/nutrition/targets'
@@ -15,13 +15,18 @@ import type { LocalRow } from './tables'
 
 export interface DiaryEntry extends Macros {
   id: string
-  name: string
+  /** Emri i ushqimit si ruhet; null kur ushqimi nuk gjendet më. Ekrani e thotë me `foodName`. */
+  name: string | null
+  /** `jim:<çelësi>` për ushqimet e shabllonit, kodi i produktit për Open Food Facts dhe USDA. */
+  sourceId: string | null
   grams: number | null
 }
 
 export interface TemplateLine extends Macros {
+  food: JimFoodKey
+  /** Emri shqip i shabllonit; ekrani e përkthen sipas `food`. */
   name: string
-  amount: string
+  portion: Portion
   grams: number
 }
 
@@ -30,6 +35,7 @@ export type MealStatus = 'done' | 'next' | 'todo' | 'missed'
 
 export interface MealSupplement {
   id: string
+  /** Emri si ruhet; ekrani e përkthen me `supplementName` kur është ai i planit. */
   name: string
   doseText: string
   evidence: Evidence
@@ -38,7 +44,6 @@ export interface MealSupplement {
 
 export interface MealSlot {
   meal: MealKey
-  label: string
   time: string
   status: MealStatus
   entries: DiaryEntry[]
@@ -117,7 +122,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     supplementList(store),
     store.where('supplement_logs', 'date', date),
   ])
-  const foodNames = new Map(foods.map((food) => [food.id, String(food.name)]))
+  const foodsById = new Map(foods.map((food) => [food.id, food]))
   const schedule = mealSchedule({ wakeTime: profile.wakeTime, sleepTime: profile.sleepTime, trainingTime: dayType === 'training' ? profile.trainingTime : null })
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
 
@@ -125,21 +130,25 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const nowMinutes = now.getHours() * 60 + now.getMinutes()
   const meals: MealSlot[] = schedule.map(({ meal, time }) => {
     const rows = entries.filter((row) => row.meal === meal).sort(byLoggedAt)
-    const list = rows.map((row) => ({
-      id: row.id,
-      name: foodNames.get(String(row.food_id)) ?? 'Ushqim',
-      grams: row.grams === null || row.grams === undefined ? null : Number(row.grams),
-      ...entryMacros(row),
-    }))
+    const list = rows.map((row) => {
+      const food = foodsById.get(String(row.food_id))
+      return {
+        id: row.id,
+        name: food ? String(food.name) : null,
+        sourceId: (food?.source_id as string | null | undefined) ?? null,
+        grams: row.grams === null || row.grams === undefined ? null : Number(row.grams),
+        ...entryMacros(row),
+      }
+    })
     const template = (JIM_MEALS[meal] ?? []).map((item) => ({
+      food: item.food,
       name: JIM_FOODS[item.food].name,
-      amount: item.amount,
+      portion: item.portion,
       grams: item.grams,
       ...macrosFor(JIM_FOODS[item.food], item.grams),
     }))
     return {
       meal,
-      label: MEAL_LABEL[meal],
       time,
       status: list.length > 0 ? 'done' : 'todo',
       entries: list,
@@ -208,7 +217,7 @@ export async function setDayType(store: LocalStore, date: string, dayType: DayTy
 }
 
 /** Ushqimi i shabllonit si ushqim i përdoruesit, një herë për çdo artikull. */
-async function templateFood(store: LocalStore, key: string) {
+async function templateFood(store: LocalStore, key: JimFoodKey) {
   const [existing] = await store.where('foods', '[source+source_id]', ['template', `jim:${key}`])
   if (existing) return existing.id
   const food = JIM_FOODS[key]

@@ -1,11 +1,12 @@
 import type { MealKey } from '@/nutrition/meals'
-import { type Evidence, EVIDENCE_LABEL, SUPPLEMENTS, type SupplementDef } from '@/nutrition/supplements'
+import { type Evidence, SUPPLEMENTS, supplementByName, type SupplementDef } from '@/nutrition/supplements'
 import type { LocalStore } from './store'
 
 // Suplementet (SPEC §10, TH-17): lista e planit shtohet një herë; çdo ditë ato dalin te vaktet e
 // tyre si checklist (`supplement_logs`). Përdoruesi mund të çaktivizojë çdo suplement.
 
-export interface Supplement extends SupplementDef {
+/** Një rresht i `supplements`; emri dhe doza si ruhen (ekrani i përkthen me `@/i18n/domain`). */
+export interface Supplement extends Omit<SupplementDef, 'key'> {
   id: string
   enabled: boolean
 }
@@ -38,8 +39,7 @@ export async function supplementList(store: LocalStore): Promise<Supplement[]> {
     const name = String(row.name)
     if (seen.has(name)) return []
     seen.add(name)
-    const known = SUPPLEMENTS.find((supplement) => supplement.name === name)
-    const evidence = (row.evidence as Evidence | null) ?? known?.evidence ?? 'weak'
+    const known = supplementByName(name)
     return [
       {
         id: row.id,
@@ -48,8 +48,7 @@ export async function supplementList(store: LocalStore): Promise<Supplement[]> {
         doseUnit: (row.dose_unit as Supplement['doseUnit']) ?? known?.doseUnit ?? 'dose',
         doseText: (row.notes as string | null) ?? known?.doseText ?? '',
         timing: (row.timing as MealKey[] | null) ?? [],
-        evidence,
-        evidenceText: known?.evidenceText ?? EVIDENCE_LABEL[evidence],
+        evidence: (row.evidence as Evidence | null) ?? known?.evidence ?? 'weak',
         enabled: row.enabled !== false,
       },
     ]

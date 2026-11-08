@@ -36,8 +36,10 @@ describe('suplementet sipas orarit (§10)', () => {
     expect(plan(null, ['ZMA', 'Pluhur proteine'])).toEqual(['13:00 Multivitaminë'])
   })
 
-  it('çdo suplement ka dozën dhe evidencën me fjalë', () => {
-    expect(SUPPLEMENTS.map((supplement) => `${supplement.name}: ${supplement.doseText} · ${supplement.evidenceText}`)).toContain('Kreatinë: 1,5–5 g · E fortë')
+  it('çdo suplement ka çelësin, dozën dhe evidencën; emrat dhe çelësat janë të vetëm', () => {
+    expect(SUPPLEMENTS.map((supplement) => `${supplement.key} ${supplement.name}: ${supplement.doseText} · ${supplement.evidence}`)).toContain('creatine Kreatinë: 1,5–5 g · strong')
     expect(SUPPLEMENTS).toHaveLength(10)
+    expect(new Set(SUPPLEMENTS.map((supplement) => supplement.key)).size).toBe(10)
+    expect(new Set(SUPPLEMENTS.map((supplement) => supplement.name)).size).toBe(10)
   })
 })

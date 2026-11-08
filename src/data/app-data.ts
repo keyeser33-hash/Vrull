@@ -12,6 +12,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
+import { currentI18n } from '@/i18n'
 import { planReminders } from '@/reminders/plan'
 import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
@@ -310,7 +311,8 @@ export function useFormVideoUploader(ready: boolean) {
 /** Rikujtuesit e 7 ditëve të ardhshme, të planifikuar përsëri në telefon (SPEC §13). */
 export async function planRemindersNow() {
   if (!Capacitor.isNativePlatform()) return
-  await scheduleReminders(planReminders(await reminderInput(store, new Date())))
+  // Tekstet në gjuhën e app-it tani; ndërrimi i gjuhës i planifikon përsëri (user_settings).
+  await scheduleReminders(planReminders(await reminderInput(store, new Date()), currentI18n()))
 }
 
 const REMINDER_TABLES = new Set(['user_settings', 'program_state', 'workout_sessions', 'supplements', 'nutrition_targets'])

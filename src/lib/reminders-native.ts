@@ -1,24 +1,29 @@
 import { Capacitor } from '@capacitor/core'
 import { LocalNotifications } from '@capacitor/local-notifications'
+import { currentI18n, type Language } from '@/i18n'
 import { type Reminder, REMINDER_IDS } from '@/reminders/plan'
 
 // Rikujtuesit në telefon (SPEC §13): njoftime lokale në kanalin e tyre. Çdo planifikim i ri heq
-// ata të mëparshëm (id 5000–5199) dhe vendos të rinjtë; timer-i i pushimit nuk preket.
+// ata të mëparshëm (id 5000–5199) dhe vendos të rinjtë; timer-i i pushimit nuk preket. Emri i
+// kanalit ndjek gjuhën e app-it: Android-i e përditëson kur kanali krijohet përsëri me të njëjtën id.
 
 const CHANNEL = 'rikujtuesit'
-let channelReady: Promise<void> | null = null
+let channelReady: { lang: Language; ready: Promise<void> } | null = null
 
 function ensureChannel() {
-  channelReady ??= LocalNotifications.createChannel({
+  const { t, lang } = currentI18n()
+  if (channelReady?.lang === lang) return channelReady.ready
+  const ready = LocalNotifications.createChannel({
     id: CHANNEL,
-    name: 'Rikujtuesit',
-    description: 'Vaktet, suplementet, stërvitja dhe matja javore',
+    name: t('reminders.notify.channel'),
+    description: t('reminders.notify.channelText'),
     importance: 3,
     visibility: 1,
   }).catch(() => {
     channelReady = null
   })
-  return channelReady
+  channelReady = { lang, ready }
+  return ready
 }
 
 export type ReminderPermission = 'granted' | 'denied' | 'prompt' | 'unavailable'

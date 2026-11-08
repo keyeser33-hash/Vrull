@@ -4,9 +4,24 @@ import { checkSource, findViolations, LEGACY_FILES } from '../../scripts/check-d
 const NEW = 'src/components/ui/new-thing.tsx'
 const rules = (path: string, text: string) => checkSource(path, text).map((violation) => violation.split(': ')[0].split(' ').slice(1).join(' '))
 
+/** Lista e v1 është bosh që nga V2-E1-16b; rregullat e saj provohen me një skedar të përkohshëm në listë. */
+function withLegacy<T>(run: (path: string) => T): T {
+  const legacy = 'src/routes/v1-screen.tsx'
+  LEGACY_FILES.add(legacy)
+  try {
+    return run(legacy)
+  } finally {
+    LEGACY_FILES.delete(legacy)
+  }
+}
+
 describe('roja e dizajnit të Vrullit', () => {
   it('asnjë shkelje në repo', () => {
     expect(findViolations()).toEqual([])
+  })
+
+  it('asnjë ekran i v1 nuk mbetet: aliaset e Omal nuk lejohen më askund (0.20.0)', () => {
+    expect([...LEGACY_FILES]).toEqual([])
   })
 
   it('ngjyrat e shkruara: hex, rgb(), hsl() dhe klasat arbitrare', () => {
@@ -56,12 +71,10 @@ describe('roja e dizajnit të Vrullit', () => {
     expect(rules(NEW, '<Button variant="brand">Ruaj</Button>')).toEqual(['alias i v1'])
     expect(rules(NEW, "buttonVariants({ variant: 'on-panel' })")).toEqual(['alias i v1'])
     expect(rules(NEW, 'className="text-muted-foreground bg-surface-2 border-border"')).toEqual([])
-    const legacy = [...LEGACY_FILES][0]
-    expect(checkSource(legacy, 'className="bg-card text-panel-foreground"')).toEqual([])
+    withLegacy((legacy) => expect(checkSource(legacy, 'className="bg-card text-panel-foreground"')).toEqual([]))
   })
 
   it('tekst amber mbetet i ndaluar edhe te skedarët e v1', () => {
-    const legacy = [...LEGACY_FILES][0]
-    expect(rules(legacy, 'className="text-brand"')).toEqual(['tekst amber (text-brand)'])
+    withLegacy((legacy) => expect(rules(legacy, 'className="text-brand"')).toEqual(['tekst amber (text-brand)']))
   })
 })
