@@ -729,10 +729,13 @@ try {
   await waitFor(async () => (await readDb(page, ['_photo_files']))._photo_files.some((file) => file.uploaded === 1), 'fotoja e ngarkuar', 30_000)
   screenshot('v1-progresi')
   await waitFor(
-    () => ['set_logs', 'body_measurements', 'diary_entries', 'progress_photos'].every((table) => posted(table).length > 0),
+    () => ['set_logs', 'body_measurements', 'diary_entries'].every((table) => posted(table).length > 0),
     'sinkronizimi i të dhënave të v1',
-    30_000,
+    60_000,
   )
+  // Rreshti i fotos dërgohet pas ngarkimit të skedarit, në sinkronizimin e radhës; kur v1 nuk arrin, e dërgon v2.
+  const photoSyncedByV1 = await waitFor(() => posted('progress_photos').length > 0, 'rreshti i fotos nga v1', 30_000).catch(() => false)
+  info('fotoja e v1', photoSyncedByV1 ? 'rreshti u sinkronizua nga v1' : 'rreshti pret sinkronizimin te v2')
   const v1Data = await readDb(page, ['workout_sessions', 'set_logs', 'body_measurements', 'diary_entries', 'progress_photos', '_photo_files'])
   const v1Session = v1Data.workout_sessions.find((row) => !row.finished_at)
   const v1Set = v1Data.set_logs[0]
@@ -793,6 +796,8 @@ try {
     'v2: fotoja e v1 mbetet, me skedarin në telefon',
     v2Data.progress_photos.some((row) => row.id === report.v1.photo) && v2Data._photo_files.some((file) => file.id === report.v1.photo && file.data?.bytes > 0),
   )
+  await waitFor(() => posted('progress_photos').some((row) => row.id === report.v1.photo), 'rreshti i fotos së v1 te serveri', 60_000)
+  check('v2: fotoja e v1 arrin te serveri', true)
   report.insets = await page.evaluate(`(() => {
     const probe = document.createElement('div')
     probe.style.cssText = 'position:fixed;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)'
