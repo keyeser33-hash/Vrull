@@ -1014,8 +1014,18 @@ try {
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     await sleep(1000)
     await expandShade()
-    screenshot('njoftimi-muzika')
+    // Rreshti i muzikës është te pamja e zgjeruar: njoftimi i seancës hapet me shigjetën e vet kur është i mbledhur.
     let nodes = uiNodes()
+    if (nodes && !nodes.some((node) => node.id.endsWith(':id/music_title'))) {
+      const sessionTitle = nodes.find((node) => node.text === notification(4200)?.title)
+      const expand = sessionTitle && nodes.filter((node) => node.id === 'android:id/expand_button').sort((a, b) => Math.abs(a.y - sessionTitle.y) - Math.abs(b.y - sessionTitle.y))[0]
+      if (expand) {
+        adb('shell', 'input', 'tap', String(expand.x), String(expand.y))
+        await sleep(1200)
+        nodes = uiNodes()
+      }
+    }
+    screenshot('njoftimi-muzika')
     if (nodes) {
       const title = nodes.find((node) => node.id.endsWith(':id/music_title'))
       check('njoftimi: rreshti i muzikës tregon këngën', title?.text === 'Kënga e dytë', title?.text ?? 'pa rresht')
