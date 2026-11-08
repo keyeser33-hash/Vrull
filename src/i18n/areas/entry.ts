@@ -70,12 +70,13 @@ export const sq = {
   'entry.times.hint': 'Prek orën për ta shkruar',
 
   // Hapi 4. Programet e ndara nga miqtë vijnë me Etapën 4; "Ndërto timin" dhe "Importo nga PDF" me E1-10 dhe E1-11.
+  // {firstBlock}: blloku i parë sipas gjuhës ("Java 0" / "Week 0"), nga programBlockName (@/i18n/domain).
   'entry.programme.title': 'Zgjidh programin',
   'entry.programme.recommended': 'I rekomanduar për fillestarë',
-  'entry.programme.stsMeta': '{weeks} javë + Java 0 · {author}',
-  'entry.programme.stsText': 'Java 0 për teknikën, pastaj {phases} faza nga {phaseWeeks} javë, {workouts} stërvitje në javë.',
+  'entry.programme.stsMeta': '{weeks} javë + {firstBlock} · {author}',
+  'entry.programme.stsText': '{firstBlock} për teknikën, pastaj {phases} faza nga {phaseWeeks} javë, {workouts} stërvitje në javë.',
   'entry.programme.orStartOwn': 'Ose nis vetë',
-  'entry.programme.footnote': 'Nis te Java 0 · Stërvitja 1. Programin e ndryshon më vonë te Programi.',
+  'entry.programme.footnote': 'Nis te {firstBlock} · Stërvitja 1. Programin e ndryshon më vonë te Programi.',
   'entry.programme.start': 'Fillo programin',
   'entry.programme.saving': 'Po ruhet',
 } as const satisfies Messages
@@ -141,10 +142,10 @@ export const en: TranslationOf<typeof sq> = {
 
   'entry.programme.title': 'Choose your programme',
   'entry.programme.recommended': 'Recommended for beginners',
-  'entry.programme.stsMeta': '{weeks} weeks + Week 0 · {author}',
-  'entry.programme.stsText': 'Week 0 for technique, then {phases} phases of {phaseWeeks} weeks, {workouts} workouts a week.',
+  'entry.programme.stsMeta': '{weeks} weeks + {firstBlock} · {author}',
+  'entry.programme.stsText': '{firstBlock} for technique, then {phases} phases of {phaseWeeks} weeks, {workouts} workouts a week.',
   'entry.programme.orStartOwn': 'Or start your own',
-  'entry.programme.footnote': 'You start at Week 0 · Workout 1. You can change the programme later in Programme.',
+  'entry.programme.footnote': 'You start at {firstBlock} · Workout 1. You can change the programme later in Programme.',
   'entry.programme.start': 'Start the programme',
   'entry.programme.saving': 'Saving',
 }

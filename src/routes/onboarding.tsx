@@ -9,6 +9,7 @@ import { store } from '@/data/app-data'
 import { chooseLanguage } from '@/data/language'
 import { completeOnboarding, DEFAULT_PROFILE, isTime, parseWeight } from '@/data/profile'
 import type { MessageKey } from '@/i18n'
+import { programBlockName } from '@/i18n/domain'
 import { LANGUAGE_NAMES, LANGUAGES, LOCALES } from '@/i18n/language'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
@@ -438,6 +439,7 @@ function TimeSheet({
 function ChooseProgramme() {
   const { t } = useI18n()
   const ownTitle = useId()
+  const firstBlock = programBlockName(t, STS_WEEK_0.name)
   return (
     <>
       <h1 className="type-display-m">{t('entry.programme.title')}</h1>
@@ -458,10 +460,10 @@ function ChooseProgramme() {
           </span>
           <span className="relative mt-1 max-w-[200px] type-display-s">{SHORTCUT_TO_SIZE.name}</span>
           <span className="relative max-w-[210px] type-caption text-muted-foreground tabular-nums">
-            {t('entry.programme.stsMeta', { weeks: STS_PHASE_WEEKS, author: STS_AUTHOR })}
+            {t('entry.programme.stsMeta', { weeks: STS_PHASE_WEEKS, firstBlock, author: STS_AUTHOR })}
           </span>
           <span className="relative max-w-[196px] type-body tabular-nums">
-            {t('entry.programme.stsText', { phases: STS_PHASES.length, phaseWeeks: STS_PHASES[0].weeks, workouts: STS_WORKOUTS })}
+            {t('entry.programme.stsText', { firstBlock, phases: STS_PHASES.length, phaseWeeks: STS_PHASES[0].weeks, workouts: STS_WORKOUTS })}
           </span>
         </button>
       </div>
@@ -475,7 +477,7 @@ function ChooseProgramme() {
         </section>
       ) : null}
 
-      <p className="type-caption text-muted-foreground">{t('entry.programme.footnote')}</p>
+      <p className="type-caption text-muted-foreground">{t('entry.programme.footnote', { firstBlock })}</p>
     </>
   )
 }
