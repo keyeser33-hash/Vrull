@@ -1,215 +1,209 @@
 @import "tailwindcss";
 
-/* Omal UI v2. Prodhuar nga Claude (AI); rishikohet nga Andi. Not yet tested in the repository.
-   Values mirror tokens.json (the canonical source); hex is the source of truth.
-   Themes: nothing = light; <html class="dark"> = dark; <html class="dark oled"> = OLED
-   (keep .dark with .oled so every dark: utility still applies; the .oled block comes last and wins).
-   Prototypes may use [data-theme="dark"] / [data-theme="oled"] instead.
-   Roles: primary = ink action, brand = amber money/seat action, accent = hover ground (shadcn). */
+/* Vrull: sistemi i dizajnit i Training Hub v2 (drejtimi B, 08.11.2026). Vlerat vijnë nga tokens.json
+   i sistemit dhe nga "Rregullat e temave" të README-së; src/styles/tokens.test.ts i krahason dhe mat
+   kontrastin. Hex-i jeton vetëm këtu.
+   Temat: <html> pa klasë = Ditë; class="dark" = Natë; class="dark oled" = OLED (parazgjedhja).
+   Një pjesë e faqes mund të marrë temën e vet me data-theme="light" | "dark" | "oled" (faqja /dev/ds).
+   Komponentët nuk zgjedhin temën: përdorin tokenat, që ndryshojnë vetë. */
 
-@custom-variant dark (&:is(.dark *));
-@custom-variant oled (&:is(.oled *));
-
+/* Të njëjta në çdo temë. */
 :root {
-  --radius: 12px;
-
-  --background: #FAFAFA;
-  --foreground: #171717;
-  --card: #FFFFFF;
-  --card-foreground: #171717;
-  --popover: #FFFFFF;
-  --popover-foreground: #171717;
-  --muted: #F5F5F5;
-  --muted-foreground: #666666;
-  --secondary: #F0F0F0;
-  --secondary-foreground: #171717;
-  --primary: #171717;
-  --primary-hover: #333333;
-  --primary-foreground: #FFFFFF;
-  --accent: #F5F5F5;
-  --accent-foreground: #171717;
-
-  --brand: #F1A335;
-  --brand-hover: #E8952A;
-  --brand-foreground: #2A2520;
-  --brand-soft: #FEF3E2;
-  --selected: #FEF3E2;
-
-  --inverse-foreground: #FAFAFA;
-  --inverse-muted-foreground: #A3A3A3;
-  --border: #E5E5E5;
-  --border-subtle: #ECECEC;
-  --border-decorative: #B5B5B5;
-  --input: #8F8F8F;
-  --ring: #171717;
-  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.45);
-  --skeleton: #F5F5F5;
-  --link: #171717;
-  --star: #171717;
-
-  --exclusive: #FFFFFF;
-  --exclusive-soft: #171717;
-  --exclusive-border: #171717;
-  --success: #1E6B34;
-  --success-soft: #E6F4EA;
-  --warning: #7A4A06;
-  --warning-soft: #FEF3E2;
-  --destructive: #B83A3A;
-  --destructive-foreground: #FFFFFF;
-  --destructive-soft: #FBEDED;
-
-  --chart-1: #F1A335;
-  --chart-track: #E5E5E5;
-
-  /* panel: the one surface that stays dark in every theme (login hero, dark strips) */
-  --panel: #171717;
-  --panel-foreground: #FAFAFA;
-  --panel-muted-foreground: #A3A3A3;
-  --panel-border: #2A2A2A;
-  --panel-button: #6B6B6B;
-
-  --overlay: rgba(23, 23, 23, 0.45);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.10);
-  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.18);
-  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.18);
+  --ember: #FF5B2E;
+  --on-ember: #0B0B0C;
+  --sand: #E0B48A;
+  --scrim: #00000099;
+  --model-light: #FFFFFF;
+  --volume-3: #FF5B2E;
+  /* Çifti i kundërt: butoni i errët mbi kartën me prush, me tekst fiks (jo foreground, që në Ditë
+     do të dilte i zi mbi të zi). */
+  --ink: #0B0B0C;
+  --on-ink: #FAFAFA;
 }
 
+/* Ditë */
+:root,
+[data-theme="light"] {
+  --background: #F4F4F5;
+  --surface: #FFFFFF;
+  --surface-2: #EDEDEF;
+  --border: #E4E4E7;
+  --foreground: #0B0B0C;
+  --muted-foreground: #52525B;
+  --subtle: #D4D4D8;
+  --ember-text: #C2410C;
+  --data: #5B4BDB;
+  --success: #15803D;
+  --danger: #B91C1C;
+  --insight: #FFF1EA;
+  --insight-border: #FFD2C2;
+  --track: #D4D4D8;
+  --volume-1: #FFCEC0;
+  --volume-2: #FF9D82;
+  --surface-border: transparent;
+  --nav: var(--surface);
+  --mark: var(--surface);
+  color-scheme: light;
+}
+
+/* Natë */
 .dark,
 [data-theme="dark"] {
-  --background: #0F0F0F;
+  --background: #0B0B0C;
+  --surface: #18181B;
+  --surface-2: #222226;
+  --border: #27272A;
   --foreground: #FAFAFA;
-  --card: #171717;
-  --card-foreground: #FAFAFA;
-  --popover: #171717;
-  --popover-foreground: #FAFAFA;
-  --muted: #141414;
-  --muted-foreground: #A3A3A3;
-  --secondary: #222222;
-  --secondary-foreground: #FAFAFA;
-  --primary: #FAFAFA;
-  --primary-hover: #E5E5E5;
-  --primary-foreground: #171717;
-  --accent: #222222;
-  --accent-foreground: #FAFAFA;
-
-  --brand: #F1A335;
-  --brand-hover: #E8952A;
-  --brand-foreground: #2A2520;
-  --brand-soft: #2B2112;
-  --selected: #2B2112;
-
-  --inverse-foreground: #0F0F0F;
-  --inverse-muted-foreground: #6B6B6B;
-  --border: #2A2A2A;
-  --border-subtle: #222222;
-  --border-decorative: #444444;
-  --input: #6B6B6B;
-  --ring: #FAFAFA;
-  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.45);
-  --skeleton: #141414;
-  --link: #FAFAFA;
-  --star: #FAFAFA;
-
-  --exclusive: #171717;
-  --exclusive-soft: #FAFAFA;
-  --exclusive-border: #FAFAFA;
-  --success: #8FD1A6;
-  --success-soft: #14301F;
-  --warning: #F2C58A;
-  --warning-soft: #2B2112;
-  --destructive: #F4978E;
-  --destructive-foreground: #171717;
-  --destructive-soft: #3A1A17;
-
-  --chart-1: #F1A335;
-  --chart-track: #2A2A2A;
-
-  --panel: #171717;
-  --panel-foreground: #FAFAFA;
-  --panel-muted-foreground: #A3A3A3;
-  --panel-border: #2A2A2A;
-  --panel-button: #6B6B6B;
-
-  --overlay: rgba(0, 0, 0, 0.6);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.6);
-  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
-  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+  --muted-foreground: #A1A1AA;
+  --subtle: #3F3F46;
+  --ember-text: #FF5B2E;
+  --data: #8B7CFF;
+  --success: #4ADE80;
+  --danger: #F87171;
+  --insight: #1A1206;
+  --insight-border: #5A2A12;
+  --track: #27272A;
+  --volume-1: #542316;
+  --volume-2: #9D3B20;
+  --surface-border: transparent;
+  --nav: var(--surface);
+  --mark: var(--surface-2);
+  color-scheme: dark;
 }
 
+/* OLED (parazgjedhja): vjen e fundit, që në <html class="dark oled"> të fitojë mbi Natën. */
 .oled,
 [data-theme="oled"] {
   --background: #000000;
-  --foreground: #F5F5F5;
-  --card: #0B0B0B;
-  --card-foreground: #F5F5F5;
-  --popover: #0B0B0B;
-  --popover-foreground: #F5F5F5;
-  --muted: #050505;
-  --muted-foreground: #A3A3A3;
-  --secondary: #1A1A1A;
-  --secondary-foreground: #F5F5F5;
-  --primary: #FAFAFA;
-  --primary-hover: #E5E5E5;
-  --primary-foreground: #171717;
-  --accent: #0F0F0F;
-  --accent-foreground: #F5F5F5;
+  --surface: #121214;
+  --surface-2: #1C1C1F;
+  --border: #27272A;
+  --foreground: #FAFAFA;
+  --muted-foreground: #A1A1AA;
+  --subtle: #3F3F46;
+  --ember-text: #FF5B2E;
+  --data: #8B7CFF;
+  --success: #4ADE80;
+  --danger: #F87171;
+  --insight: #1A1206;
+  --insight-border: #5A2A12;
+  --track: #27272A;
+  --volume-1: #4C1B0E;
+  --volume-2: #99371B;
+  --surface-border: var(--border);
+  --nav: var(--background);
+  --mark: var(--surface-2);
+  color-scheme: dark;
+}
 
-  --brand: #F1A335;
-  --brand-hover: #E8952A;
-  --brand-foreground: #2A2520;
-  --brand-soft: #1C150A;
-  --selected: #1C150A;
+/* Aliaset e v1 (emrat e Omal UI v2 që ekranet e v1 përdorin ende), drejt tokenave të Vrullit.
+   Deklarohen edhe te [data-theme], që të zgjidhen me temën e asaj pjese. Hiqen kur ekranet kalojnë
+   te Vrull (E1-05 … E1-15); roja e dizajnit nuk i lejon në kod të ri (LEGACY_FILES). */
+:root,
+[data-theme] {
+  --card: var(--surface);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --muted: var(--surface-2);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-hover: var(--foreground);
+  --primary-foreground: var(--background);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--foreground);
+  --brand: var(--ember);
+  --brand-hover: var(--ember);
+  --brand-foreground: var(--on-ember);
+  --brand-soft: var(--insight);
+  --selected: var(--insight);
+  --border-subtle: var(--border);
+  --input: var(--subtle);
+  --ring: var(--foreground);
+  --skeleton: var(--surface-2);
+  --success-soft: var(--surface-2);
+  --warning: var(--foreground);
+  --warning-soft: var(--insight);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--background);
+  --destructive-soft: var(--surface-2);
+  --chart-1: var(--ember);
+  --chart-track: var(--track);
+  --panel: var(--surface);
+  --panel-foreground: var(--foreground);
+  --panel-muted-foreground: var(--muted-foreground);
+  --panel-border: var(--border);
+  --panel-button: var(--surface-2);
+  --overlay: var(--scrim);
+}
 
-  --inverse-foreground: #000000;
-  --inverse-muted-foreground: #555555;
-  --border: #262626;
-  --border-subtle: #1C1C1C;
-  --border-decorative: #3D3D3D;
-  --input: #666666;
-  --ring: #F5F5F5;
-  --ring-halo: 0 0 0 4px rgba(241, 163, 53, 0.55);
-  --skeleton: #1E1E1E;
-  --link: #F5F5F5;
-  --star: #F5F5F5;
+@theme {
+  /* Pa paletën e Tailwind-it: çdo ngjyrë vjen nga tokenat (text-white, bg-red-500 nuk ekzistojnë). */
+  --color-*: initial;
 
-  --exclusive: #171717;
-  --exclusive-soft: #FAFAFA;
-  --exclusive-border: #FAFAFA;
-  --success: #8FD1A6;
-  --success-soft: #0B2415;
-  --warning: #F2C58A;
-  --warning-soft: #1F1608;
-  --destructive: #F4978E;
-  --destructive-foreground: #171717;
-  --destructive-soft: #2A0F0C;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-text: Barlow, system-ui, sans-serif;
+  --font-sans: Barlow, system-ui, sans-serif;
 
-  --chart-1: #F1A335;
-  --chart-track: #262626;
+  /* radius-s 10, radius-m 12, radius-l 16, radius-xl 20 (emrat e Tailwind-it, pa përplasje me rounded-s/l). */
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
 
-  --panel: #0B0B0B;
-  --panel-foreground: #F5F5F5;
-  --panel-muted-foreground: #A3A3A3;
-  --panel-border: #333333;
-  --panel-button: #666666;
+  /* Madhësitë: h-touch 44, h-button 52, h-button-l 58, h-tab-bar 72, min-h-row 56. Hapësira space-1…8
+     është shkalla e Tailwind-it (p-4 = 16 px). */
+  --spacing-touch: 44px;
+  --spacing-button: 52px;
+  --spacing-button-l: 58px;
+  --spacing-tab-bar: 72px;
+  --spacing-row: 56px;
 
-  --overlay: rgba(0, 0, 0, 0.7);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 6px 16px -4px rgba(0, 0, 0, 0.6);
-  --shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
-  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+  --ease-vrull: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-fill: fill 320ms ease-out both;
+
+  @keyframes fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
+  --color-ember: var(--ember);
+  --color-on-ember: var(--on-ember);
+  --color-ember-text: var(--ember-text);
+  --color-data: var(--data);
+  --color-sand: var(--sand);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-insight: var(--insight);
+  --color-insight-border: var(--insight-border);
+  --color-scrim: var(--scrim);
+  --color-track: var(--track);
+  --color-model-light: var(--model-light);
+  --color-volume-1: var(--volume-1);
+  --color-volume-2: var(--volume-2);
+  --color-volume-3: var(--volume-3);
+  --color-surface-border: var(--surface-border);
+  --color-nav: var(--nav);
+  --color-mark: var(--mark);
+  --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
+
+  /* Aliaset e v1 (shih më lart). */
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-primary: var(--primary);
@@ -222,20 +216,10 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-soft: var(--brand-soft);
   --color-selected: var(--selected);
-  --color-inverse-foreground: var(--inverse-foreground);
-  --color-inverse-muted-foreground: var(--inverse-muted-foreground);
-  --color-border: var(--border);
   --color-border-subtle: var(--border-subtle);
-  --color-border-decorative: var(--border-decorative);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-skeleton: var(--skeleton);
-  --color-link: var(--link);
-  --color-star: var(--star);
-  --color-exclusive: var(--exclusive);
-  --color-exclusive-soft: var(--exclusive-soft);
-  --color-exclusive-border: var(--exclusive-border);
-  --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
   --color-warning-soft: var(--warning-soft);
@@ -250,36 +234,131 @@
   --color-panel-border: var(--panel-border);
   --color-panel-button: var(--panel-button);
   --color-overlay: var(--overlay);
+}
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-pill: 9999px;
-
-  /* next/font: Inter({ variable: "--font-inter" }) on <html>; falls back to a Google Fonts "Inter" link. */
-  --font-sans: var(--font-inter, "Inter"), system-ui, -apple-system, "Segoe UI", sans-serif;
-
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-pop: var(--shadow-pop);
-  --shadow-ring-halo: var(--ring-halo);
-
-  --spacing-control-sm: 32px;
-  --spacing-control-md: 40px;
-  --spacing-control-lg: 44px;
-  --spacing-row: 56px;
+/* Tipografia: një klasë mban familjen, madhësinë, rreshtin, peshën dhe uppercase-in. Teksti shkruhet
+   në sentence case; shkronjat e mëdha vijnë vetëm nga këto stile. */
+@utility type-display-hero {
+  font-family: var(--font-display);
+  font-size: 112px;
+  line-height: 0.85;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+@utility type-display-xl {
+  font-family: var(--font-display);
+  font-size: 88px;
+  line-height: 0.85;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+@utility type-display-l {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 0.92;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+@utility type-display-m {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+@utility type-display-s {
+  font-family: var(--font-display);
+  font-size: 34px;
+  line-height: 0.95;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+@utility type-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+@utility type-label {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@utility type-body-l {
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+@utility type-body {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+@utility type-body-strong {
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+@utility type-caption {
+  font-family: var(--font-text);
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 400;
+}
+@utility type-tab {
+  font-family: var(--font-text);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
 }
 
 @layer base {
-  * { @apply border-border; }
-  body { @apply bg-background text-foreground font-sans antialiased; }
-  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-  /* inside panel the ring follows the panel text (ink on ink would vanish in light) */
-  .panel, [data-surface="panel"] { --ring: var(--panel-foreground); }
-  /* icon accent point (icons.tsx) */
-  .ic .ac { fill: var(--brand); stroke: none; }
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Fokusi: vijë 2 px `foreground`, 2 px larg. */
+  :focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
+  /* Parazgjedhja e shfletuesit del 2,2:1 në Ditë. */
+  ::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+  /* Ikonat janë njëngjyrëshe: pika e një shenje mbushet me ngjyrën e vijës. */
+  .ic .ac {
+    fill: currentColor;
+    stroke: none;
+  }
+  /* Lëvizje e reduktuar: vetëm zbehje e shkurtër, pa kërcim e pa rrotullim. */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 120ms !important;
+      transition-property: opacity !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

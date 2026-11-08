@@ -1,5 +1,6 @@
 import { SystemBarsStyle } from '@capacitor/core'
-import { applyPanelTop, applyTheme, DEFAULT_THEME, readTheme, saveTheme } from './theme'
+import { i18nFor } from '@/i18n'
+import { applyPanelTop, applyTheme, DEFAULT_THEME, readTheme, saveTheme, THEMES } from './theme'
 
 // SystemBars është proxy i Capacitor-it, prandaj zëvendësohet i tëri.
 const native = vi.hoisted(() => ({
@@ -50,16 +51,24 @@ describe('shiritat e sistemit në Android', () => {
     ])
   })
 
-  it('ekranet me panel sipër (hyrja): ikona të çelëta dhe dritarja me ngjyrën e panelit, edhe në temën e çelët', async () => {
+  it('ekranet me kartë sipër (hyrja): dritarja me ngjyrën `surface`, ikonat sipas temës', async () => {
     native.isNative = true
-    document.documentElement.style.setProperty('--panel', '#171717')
+    document.documentElement.style.setProperty('--surface', '#FFFFFF')
     applyTheme('light')
     native.setStyle.mockClear()
     native.setColor.mockClear()
     applyPanelTop(true)
-    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#171717' }))
+    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#FFFFFF' }))
+    // Në Vrull `surface` ndjek temën: në Ditë është e bardhë, ndaj ora dhe bateria mbeten të errëta.
+    expect(native.setStyle).toHaveBeenCalledWith({ style: SystemBarsStyle.Light })
+
+    document.documentElement.style.setProperty('--surface', '#121214')
+    applyTheme('oled')
+    native.setStyle.mockClear()
+    applyPanelTop(true)
+    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#121214' }))
     expect(native.setStyle).toHaveBeenCalledWith({ style: SystemBarsStyle.Dark })
-    document.documentElement.style.removeProperty('--panel')
+    document.documentElement.style.removeProperty('--surface')
   })
 
   it('në shfletues nuk thërret plugin-in', () => {
@@ -110,6 +119,13 @@ describe('tema', () => {
   it('parazgjedhja është OLED', () => {
     expect(DEFAULT_THEME).toBe('oled')
     expect(readTheme()).toBe('oled')
+  })
+
+  it('emrat e temave të Vrullit; vlerat e ruajtura të v1 mbeten të vlefshme', () => {
+    expect(THEMES.map((theme) => i18nFor('sq').t(`settings.theme.${theme}`))).toEqual(['OLED', 'Natë', 'Ditë'])
+    expect(THEMES.map((theme) => i18nFor('en').t(`settings.theme.${theme}`))).toEqual(['OLED', 'Night', 'Day'])
+    window.localStorage.setItem('th-theme', 'dark')
+    expect(readTheme()).toBe('dark')
   })
 
   it('OLED mban edhe klasën dark', () => {

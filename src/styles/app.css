@@ -1,20 +1,28 @@
-/* Shtesat e Training Hub mbi Omal UI v2. Asnjë ngjyrë këtu: ngjyrat jetojnë vetëm te globals.css. */
-@import "@fontsource-variable/inter/opsz.css";
+/* Shtesat e Training Hub mbi sistemin Vrull. Asnjë ngjyrë këtu: ngjyrat jetojnë vetëm te globals.css. */
+
+/* Barlow (400–700) dhe Barlow Condensed (600–800), OFL-1.1, nga Fontsource (versione të fiksuara te
+   package.json). Skedarët paketohen në APK: app-i nuk pret rrjetin për fontet. Vetëm latin dhe
+   latin-ext (shqipja dhe anglishtja); unicode-range zgjedh skedarin. */
+@import "@fontsource/barlow/latin-400.css";
+@import "@fontsource/barlow/latin-ext-400.css";
+@import "@fontsource/barlow/latin-500.css";
+@import "@fontsource/barlow/latin-ext-500.css";
+@import "@fontsource/barlow/latin-600.css";
+@import "@fontsource/barlow/latin-ext-600.css";
+@import "@fontsource/barlow/latin-700.css";
+@import "@fontsource/barlow/latin-ext-700.css";
+@import "@fontsource/barlow-condensed/latin-600.css";
+@import "@fontsource/barlow-condensed/latin-ext-600.css";
+@import "@fontsource/barlow-condensed/latin-700.css";
+@import "@fontsource/barlow-condensed/latin-ext-700.css";
+@import "@fontsource/barlow-condensed/latin-800.css";
+@import "@fontsource/barlow-condensed/latin-ext-800.css";
 @import "./globals.css";
 
 :root {
-  --font-inter: "Inter Variable";
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
   --bottom-nav-h: 56px;
-}
-
-/* Kontrollet native (ora, kalendari, shiriti i lëvizjes) ndjekin temën. */
-:root {
-  color-scheme: light;
-}
-:root.dark {
-  color-scheme: dark;
 }
 
 @layer base {

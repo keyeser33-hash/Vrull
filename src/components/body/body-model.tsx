@@ -104,9 +104,10 @@ export default function BodyModel({
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 20)
-    // Drita nga tokenat e panelit: e bardhë sipër, gri poshtë, që forma e muskujve të lexohet.
-    scene.add(new THREE.HemisphereLight(toneColor(element, SOLID('--panel-foreground')), toneColor(element, SOLID('--panel-muted-foreground')), 2.2))
-    const light = new THREE.DirectionalLight(toneColor(element, SOLID('--panel-foreground')), 1.6)
+    // Drita nga `model-light` (e bardhë në çdo temë, kurrë ngjyra e tekstit, që në Ditë është e zezë),
+    // gri poshtë, që forma e muskujve të lexohet.
+    scene.add(new THREE.HemisphereLight(toneColor(element, SOLID('--model-light')), toneColor(element, SOLID('--panel-muted-foreground')), 2.2))
+    const light = new THREE.DirectionalLight(toneColor(element, SOLID('--model-light')), 1.6)
     light.position.set(1.5, 2.5, 3)
     camera.add(light)
     scene.add(camera)

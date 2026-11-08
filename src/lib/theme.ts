@@ -1,5 +1,6 @@
-// Tema e app-it: light, dark ose OLED (parazgjedhje). OLED mban edhe klasën `dark`,
-// që çdo utility `dark:` të vlejë; blloku `.oled` te globals.css vjen i fundit dhe fiton.
+// Tema e app-it, me emrat e Vrullit: OLED (parazgjedhje), Natë (`dark`) dhe Ditë (`light`). Vlerat
+// e ruajtura mbeten ato të v1, që zgjedhja e përdoruesit të kalojë e paprekur. OLED mban edhe
+// klasën `dark`; blloku `.oled` te globals.css vjen i fundit dhe fiton.
 
 import { Capacitor, registerPlugin, SystemBars, SystemBarsStyle } from '@capacitor/core'
 import { safeStorage } from './safe-storage'
@@ -59,18 +60,19 @@ function syncSystemBars(theme: Theme, background: string) {
 }
 
 /**
- * Ekranet që nisin me `panel` sipër (hyrja): `panel` mbetet i errët në çdo temë, ndaj ora dhe
- * bateria duhen të çelëta edhe në temën e çelët. false i kthen shiritat te tema.
+ * Ekranet që nisin me një kartë `surface` sipër (hyrja): rripi i orës merr ngjyrën e kartës.
+ * Në Vrull `surface` ndjek temën, ndaj ikonat e orës dhe të baterisë ndjekin temën aktive.
+ * false i kthen shiritat te sfondi i temës.
  */
 export function applyPanelTop(on: boolean, root: HTMLElement = document.documentElement) {
   if (!on) {
     applyTheme(readTheme(), root)
     return
   }
-  const panel = getComputedStyle(root).getPropertyValue('--panel').trim()
+  const surface = getComputedStyle(root).getPropertyValue('--surface').trim()
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta && panel) meta.setAttribute('content', panel)
-  syncSystemBars('dark', panel)
+  if (meta && surface) meta.setAttribute('content', surface)
+  syncSystemBars(root.classList.contains('dark') ? 'dark' : 'light', surface)
 }
 
 // Android (Color.parseColor) pranon vetëm formën me gjashtë shifra; build-i i shkurton tokenat
