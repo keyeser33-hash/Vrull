@@ -397,7 +397,6 @@ async function templateExercises(store: LocalStore, template: ProgramTemplate): 
  */
 export async function createFromTemplate(store: LocalStore, templateId: TemplateId, names: TemplateNames): Promise<string> {
   const template = templateById(templateId)
-  const { program: definition } = template
   const label = (kind: 'block' | 'day', name: string) => (template.localized ? (names[kind][name] ?? name) : name)
   const firstSts = templateId === 'shortcut_to_size' && !(await store.all('programs')).some((row) => row.source === 'shortcut_to_size')
   const exerciseIds = await templateExercises(store, template)
@@ -408,22 +407,37 @@ export async function createFromTemplate(store: LocalStore, templateId: Template
     draft: true,
     progression: template.progression,
   })
+  await insertProgramParts(store, program.id, template.program, exerciseIds, label)
+  return program.id
+}
+
+/**
+ * Blloqet, ditët, slotet dhe rregullat e një programi të motorit (shablloni, PDF-ja) te programi
+ * `programId`, me id të reja; `exerciseIds` kthen ushtrimet e përkufizimit në rreshtat e `exercises`.
+ */
+export async function insertProgramParts(
+  store: LocalStore,
+  programId: string,
+  definition: Program,
+  exerciseIds: Map<string, string>,
+  label: (kind: 'block' | 'day', name: string) => string = (_kind, name) => name,
+) {
   const blocks = [...definition.blocks].sort((a, b) => a.position - b.position)
   const days = [...definition.days].sort((a, b) => a.position - b.position)
   const blockRows = await store.insertMany(
     'program_blocks',
-    blocks.map((block, position) => ({ program_id: program.id, position, name: label('block', block.name), weeks: block.weeks })),
+    blocks.map((block, position) => ({ program_id: programId, position, name: label('block', block.name), weeks: block.weeks })),
   )
   const dayRows = await store.insertMany(
     'program_days',
-    days.map((day, position) => ({ program_id: program.id, position, name: label('day', day.name) })),
+    days.map((day, position) => ({ program_id: programId, position, name: label('day', day.name) })),
   )
   const blockId = new Map(blocks.map((block, index) => [block.id, blockRows[index].id]))
   const dayId = new Map(days.map((day, index) => [day.id, dayRows[index].id]))
   const slotRows = await store.insertMany(
     'program_slots',
     definition.slots.map((slot) => ({
-      program_id: program.id,
+      program_id: programId,
       day_id: dayId.get(slot.dayId),
       position: slot.position,
       exercise_id: exerciseIds.get(slot.exerciseId),
@@ -435,7 +449,7 @@ export async function createFromTemplate(store: LocalStore, templateId: Template
   await store.insertMany(
     'slot_prescriptions',
     definition.overrides.map((row) => ({
-      program_id: program.id,
+      program_id: programId,
       slot_id: slotId.get(row.slotId),
       block_id: row.blockId ? blockId.get(row.blockId) : null,
       week: row.week,
@@ -447,7 +461,6 @@ export async function createFromTemplate(store: LocalStore, templateId: Template
       progression: row.progression ?? null,
     })),
   )
-  return program.id
 }
 
 /** Program i ri nga e para, draft: një bllok me 4 javë, një ditë dhe progresi i zgjuar i ndezur. */
@@ -456,6 +469,19 @@ export async function createBlankProgram(store: LocalStore, names: { program: st
   await addBlock(store, programId, { name: names.block, weeks: 4 })
   await addDay(store, programId, names.day)
   return programId
+}
+
+/**
+ * Draftet bosh (V2-E1-11): "Ndërto program" e krijon draftin menjëherë, ndaj një draft pa asnjë ushtrim
+ * mbetej te "Të mitë" kur përdoruesi dilte pa bërë asgjë. Fshihen kur përdoruesi kthehet te Programet ose
+ * te "Ndërto timin"; drafti me ushtrime mbetet, si dhe programi aktiv.
+ */
+export async function discardEmptyDrafts(store: LocalStore) {
+  const [programs, slots, [settings]] = await Promise.all([store.all('programs'), store.all('program_slots'), store.all('user_settings')])
+  const used = new Set(slots.map((slot) => slot.program_id))
+  for (const program of programs) {
+    if (program.draft && !used.has(program.id) && settings?.active_program_id !== program.id) await deleteProgram(store, program.id)
+  }
 }
 
 /** "Ruaj programin": drafti bëhet program i zakonshëm (ndryshimet ruhen gjithsesi menjëherë). */

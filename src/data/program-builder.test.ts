@@ -1,7 +1,10 @@
 import { createDatabase } from './db'
 import {
+  addDay,
+  addSlot,
   copyDay,
   createBlankProgram,
+  discardEmptyDrafts,
   createFromTemplate,
   programEditor,
   programList,
@@ -142,6 +145,29 @@ describe('ndërtuesi i programeve (V2-E1-10)', () => {
       ['Upper/Lower 4 ditë', false, true, 2, 4, 8],
     ])
     expect(list.find((program) => program.id === draft)?.template).toBe('upper_lower_4')
+  })
+
+  it('draftet bosh fshihen kur përdoruesi del pa shtuar asnjë ushtrim; draftet me ushtrime dhe programet e ruajtura mbeten', async () => {
+    const { store } = setup()
+    await completeOnboarding(store, PROFILE)
+    const empty = await createBlankProgram(store, BLANK)
+    const renamed = await createBlankProgram(store, { ...BLANK, program: 'Vetëm ditët' })
+    await addDay(store, renamed, 'Dita 2')
+    const withExercise = await createBlankProgram(store, { ...BLANK, program: 'Me një ushtrim' })
+    const [bench] = await store.all('exercises')
+    await addSlot(store, (await programEditor(store, withExercise))!.days[0].id, { exerciseId: bench.id, sets: 3, restSeconds: 90 })
+    const savedEmpty = await createBlankProgram(store, { ...BLANK, program: 'I ruajtur' })
+    await saveDraft(store, savedEmpty)
+    const template = await createFromTemplate(store, 'upper_lower_4', NAMES)
+
+    await discardEmptyDrafts(store)
+    const left = (await store.all('programs')).map((row) => row.id)
+    expect(left).not.toContain(empty)
+    expect(left).not.toContain(renamed)
+    expect(left).toEqual(expect.arrayContaining([withExercise, savedEmpty, template]))
+    expect(await store.where('program_blocks', 'program_id', empty)).toEqual([])
+    expect(await store.where('program_days', 'program_id', renamed)).toEqual([])
+    expect((await programList(store)).map((program) => program.name)).toEqual(['Shortcut to Size', 'I ruajtur', 'Me një ushtrim', 'Upper/Lower 4 ditë'])
   })
 
   it('radha e ushtrimeve me tërheqje: pozicionet ndjekin listën e re', async () => {

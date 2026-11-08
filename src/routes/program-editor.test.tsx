@@ -71,12 +71,13 @@ describe('ndërtuesi i programeve', () => {
     expect(screen.getByRole('link', { name: 'Shiko të gjitha programet' })).toHaveAttribute('href', '/programet')
   })
 
-  it('Programet: aktivi me javën, të mitë me draftet dhe shabllonet; pa PDF dhe pa miqtë ende', async () => {
+  it('Programet: aktivi me javën, të mitë me draftet dhe shabllonet, "Importo nga PDF"; pa miqtë ende', async () => {
     await upperLower()
     await renderAt('/programet')
     expect(await screen.findByRole('heading', { level: 1, name: 'Programet' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Ndërto program' })).toBeInTheDocument()
-    expect(screen.queryByText(/Importo nga PDF|Nga miqtë/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Importo nga PDF' })).toBeInTheDocument()
+    expect(screen.queryByText(/Nga miqtë/)).not.toBeInTheDocument()
 
     const active = await screen.findByRole('link', { name: /^Shortcut to Size/ })
     expect(active).toHaveTextContent('Java 0 · 4 ditë në javë')
@@ -92,6 +93,19 @@ describe('ndërtuesi i programeve', () => {
       'Full body 3 ditë8 javë · 3 ditë · për fillestarë',
       'Upper/Lower 4 ditë8 javë · 4 ditë · sipër dhe poshtë',
     ])
+  })
+
+  it('"Ndërto program" dhe "Mbyll" pa asnjë ushtrim: drafti bosh nuk mbetet te "Të mitë"', async () => {
+    const user = userEvent.setup()
+    const router = await renderAt('/programi|/programet')
+    await user.click(await screen.findByRole('button', { name: 'Ndërto program' }))
+    expect(await screen.findByText('Program i ri · struktura')).toBeInTheDocument()
+    const programId = router.state.location.pathname.split('/').at(-1)!
+    expect(await data.store.get('programs', programId)).toMatchObject({ draft: true })
+    await user.click(screen.getByRole('button', { name: 'Mbyll ndërtuesin' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Programet' })).toBeInTheDocument()
+    await waitFor(async () => expect(await data.store.get('programs', programId)).toBeUndefined())
+    await waitFor(() => expect(screen.getAllByRole('link').some((link) => link.getAttribute('href')?.endsWith(programId))).toBe(false))
   })
 
   it('Ndërto nga shablloni: struktura, javët e blloqeve, progresi i zgjuar, "Ruaj programin" dhe "Fillo programin"', async () => {

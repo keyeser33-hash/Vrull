@@ -90,7 +90,9 @@ describe('cilësimet', () => {
   it('seksionet e bordit me vlerat e tanishme; ato të etapave të tjera mungojnë', async () => {
     await renderSettings()
     expect(screen.getByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
-    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Njoftimet', 'Sinkronizimi', 'Versioni'])
+    // AI (V2-E1-11): përdorimi i muajit, që hap Cilësimet › AI.
+    expect(await screen.findByRole('link', { name: 'Përdorimi këtë muaj, €0,00 nga €10' })).toHaveAttribute('href', '/cilesimet/ai')
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Njoftimet', 'AI', 'Sinkronizimi', 'Versioni'])
     expect(row(/^Pesha sot/)).toHaveTextContent('80,5 kg')
     expect(row(/^Ditët e stërvitjes/)).toHaveTextContent('Hën, Mar, Enj, Pre')
     expect(row(/^Oraret/)).toHaveTextContent('18:00 · zgjimi 07:00 · gjumi 23:00')
@@ -99,7 +101,7 @@ describe('cilësimet', () => {
     expect(within(appearance).getByRole('link', { name: 'Sfondi, I plotë' })).toHaveAttribute('href', '/cilesimet/pamja')
     expect(within(appearance).getByRole('link', { name: 'Gjuha, Shqip' })).toHaveAttribute('href', '/cilesimet/pamja')
     expect(within(group('Njoftimet')).getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, vaktet, suplementet, matjet')
-    for (const later of ['AI', 'Admini', 'Ora dhe Health Connect']) expect(screen.queryByRole('region', { name: later })).toBeNull()
+    for (const later of ['Admini', 'Ora dhe Health Connect']) expect(screen.queryByRole('region', { name: later })).toBeNull()
   })
 
   it('mbrapa kthehet aty nga erdhi përdoruesi', async () => {
@@ -218,7 +220,8 @@ describe('cilësimet', () => {
     await renderSettings()
     act(() => language.set('en'))
     expect(await screen.findByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
-    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profile', 'Appearance', 'Notifications', 'Sync', 'Version'])
+    expect(await screen.findByRole('link', { name: 'Use this month, €0.00 of €10' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profile', 'Appearance', 'Notifications', 'AI', 'Sync', 'Version'])
     // Provat e mësipërme kanë ndryshuar peshën, ditët dhe oraret: formatet britanike kontrollohen këtu.
     expect(row(/^Weight today/)).toHaveTextContent(/^Weight today\d+\.\d\skg$/)
     expect(row(/^Training days/)).toHaveTextContent(/^Training daysMon, Tue, Thu, Fri/)

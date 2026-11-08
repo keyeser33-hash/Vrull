@@ -1,4 +1,4 @@
-import type { Draft, Target } from '../../supabase/functions/program-import/logic'
+import type { Draft, Target } from '../../supabase/functions/program-import/shared'
 import type { LibraryExercise } from './library'
 import type { Equipment, Prescription, Program, RepRange, SlotOverride, Technique, Tracking } from './types'
 
@@ -9,7 +9,7 @@ import type { Equipment, Prescription, Program, RepRange, SlotOverride, Techniqu
 // 2. drafti bëhet program i motorit (blloqe, ditë, slote dhe rregulla sipas bllokut dhe javës), me id
 //    të përkohshme që `data/pdf-import.ts` i kthen në rreshta.
 
-export type { Draft as PdfDraft } from '../../supabase/functions/program-import/logic'
+export type { Draft as PdfDraft } from '../../supabase/functions/program-import/shared'
 
 /** Ushtrimi i përdoruesit në telefon, kandidat për përputhje. */
 export interface OwnExercise {

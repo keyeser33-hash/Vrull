@@ -1,4 +1,4 @@
-import type { Draft, Target } from '../../supabase/functions/program-import/logic'
+import type { Draft, Target } from '../../supabase/functions/program-import/shared'
 import { planSession } from './engine'
 import { type LibraryExercise, loadLibrary } from './library'
 import { buildProgram, type Choice, matchExercises, type OwnExercise, previewDays } from './pdf-import'

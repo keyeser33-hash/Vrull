@@ -8,6 +8,12 @@
 // - Modeli dhe çmimet: https://platform.claude.com/docs/en/about-claude/pricing
 // - Stream-i (message_start me tokenat e hyrjes, message_delta me tokenat e daljes, kumulativë):
 //   https://platform.claude.com/docs/en/build-with-claude/streaming
+// Kufijtë dhe tipet që i lexon edhe app-i jetojnë te shared.ts, që skema dhe udhëzimet e modelit të mos
+// hyjnë në app.
+import { AI_MONTHLY_LIMIT_EUR, type Draft, type Language, MAX_PDF_BYTES } from './shared.ts'
+
+export { AI_MONTHLY_LIMIT_EUR, MAX_PDF_BYTES }
+export type { Draft, Language, Target } from './shared.ts'
 
 /**
  * Claude Sonnet 5.5: lexon tabelat e një programi (fazat, javët, setet, përsëritjet, teknikat) mirë dhe
@@ -30,14 +36,9 @@ export const PRICE_USD_PER_MTOK = { input: 2, output: 10, cacheWrite: 2.5, cache
  */
 export const USD_PER_EUR = 1.1165
 
-/** Kufiri i AI-së për person në muaj (V25). Faqja e Adminit e bën për person me Etapën 2 (V31). */
-export const AI_MONTHLY_LIMIT_EUR = 10
-
 /** Muaji i kufirit sipas orës së Tiranës: AI-ja rinis më 1 të muajit atje. */
 export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 
-/** 15 MB: PDF-ja, base64-ja dhe kërkesa rrinë bashkë në 256 MB memorie të funksionit. */
-export const MAX_PDF_BYTES = 15 * 1024 * 1024
 /** Dalja (mendimi dhe JSON-i); programi i Shortcut to Size zë rreth 7 000. */
 export const MAX_TOKENS = 32_000
 /** Leximi është transkriptim i strukturuar: `low` mban kohën brenda kufirit 150 s të planit falas. */
@@ -239,8 +240,7 @@ How to fill it:
 - exercises: each distinct exercise once, with its name exactly as written (keep typos), and the page where it first appears. For match, use the exact name from the known exercise list below when it is the same movement (same equipment and body position); otherwise an empty string. Set sure to false whenever you hesitate between names, the PDF wording is unclear, or the closest known name is a different variation. Never invent sets, reps or exercises that are not in the PDF.`
 
 /** Gjuha e emrave të blloqeve dhe ditëve; emrat e ushtrimeve mbeten si në PDF. */
-const LANGUAGE_NAME = { sq: 'Albanian', en: 'British English' } as const
-export type Language = keyof typeof LANGUAGE_NAME
+const LANGUAGE_NAME: Record<Language, string> = { sq: 'Albanian', en: 'British English' }
 export const isLanguage = (value: unknown): value is Language => value === 'sq' || value === 'en'
 
 export function buildRequest({ pdfBase64, known, language }: { pdfBase64: string; known: string[]; language: Language }) {
@@ -341,36 +341,6 @@ export function createStreamReader() {
 }
 
 // ——— Drafti ———
-
-export interface Target {
-  reps_min: number
-  reps_max: number
-  to_failure: boolean
-  seconds: number
-  rir_min: number
-  rir_max: number
-  last_set: 'none' | 'rest_pause' | 'drop_set' | 'to_failure'
-}
-
-export interface Draft {
-  found: boolean
-  name: string
-  pages: number
-  blocks: { name: string; weeks: number }[]
-  plans: { weeks: Target[] }[]
-  exercises: { pdf_name: string; page: number; match: string; alternative: string; sure: boolean; equipment: string; muscles: string[]; timed: boolean }[]
-  days: {
-    name: string
-    slots: {
-      exercise: number
-      sets: number
-      rest_seconds: number
-      plan: number
-      blocks: { block: number; exercise: number; sets: number; plan: number }[]
-      weeks: { block: number; week: number; exercise: number }[]
-    }[]
-  }[]
-}
 
 const within = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max
 
