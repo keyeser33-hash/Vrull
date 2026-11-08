@@ -2,6 +2,7 @@ import type { Tone } from '@/body/model-math'
 import { loadLevel, WEEKLY_TARGET } from '@/body/body-map'
 import type { BodyGroup } from '@/data/body'
 import type { I18n } from '@/i18n'
+import { muscleName } from '@/i18n/domain'
 import { weekRange } from '@/lib/calendar'
 import type { RecoveryStatus } from '@/program/recovery'
 
@@ -109,16 +110,6 @@ export const oneDecimal = ({ fmt }: I18n, value: number) => fmt.number(value, { 
 /** Ndryshimi me shenjë: "+0,4", "−0,5", "0,0". */
 export const signedDecimal = (i18n: I18n, delta: number) => `${delta > 0 ? '+' : delta < 0 ? '−' : ''}${oneDecimal(i18n, Math.abs(delta))}`
 
-/**
- * Emri i një blloku të Shortcut to Size sipas gjuhës ("Java 0" → "Week 0", "Faza 1" → "Phase 1");
- * emrat e blloqeve të programeve të përdoruesit mbeten siç i shkroi.
- */
-export function blockName({ t }: I18n, name: string) {
-  const match = /^(Java|Faza) (\d+)$/.exec(name)
-  if (!match) return name
-  return match[1] === 'Java' ? t('bodyModel.block.week', { number: match[2] }) : t('bodyModel.block.phase', { number: match[2] })
-}
-
 /** Bashkon emrat: "vithet dhe kofshët e pasme", "A, B dhe C". */
 export function joinNames({ t }: I18n, names: string[]) {
   if (names.length <= 1) return names.join('')
@@ -133,7 +124,7 @@ export function volumeNote(i18n: I18n, groups: { id: string; load: number }[], n
   const { t, lang } = i18n
   const levels = groups.map((group) => loadLevel(group.load))
   const below = groups.filter((group) => loadLevel(group.load) < 2).sort((a, b) => b.load - a.load)
-  const names = below.slice(0, 2).map((group) => t(`bodyModel.group.${group.id}` as GroupKey).toLocaleLowerCase(lang))
+  const names = below.slice(0, 2).map((group) => muscleName(t, group.id).toLocaleLowerCase(lang))
   const note = t('bodyModel.volumeNote', {
     range: weekText(i18n, now),
     count: groups.length,
@@ -145,12 +136,8 @@ export function volumeNote(i18n: I18n, groups: { id: string; load: number }[], n
   return `${note} ${t('bodyModel.targetSource', { min: WEEKLY_TARGET.min, max: WEEKLY_TARGET.max })}`
 }
 
-type GroupKey = Extract<Parameters<I18n['t']>[0], `bodyModel.group.${string}`>
 type KeyName = Extract<Parameters<I18n['t']>[0], `bodyModel.key.${string}`>
 type RoleKey = Extract<Parameters<I18n['t']>[0], `bodyModel.role.${string}`>
-
-/** Emri i grupit sipas gjuhës (program/muscles.ts mban vetëm id-në dhe emrin shqip). */
-export const groupName = ({ t }: I18n, id: string) => t(`bodyModel.group.${id}` as GroupKey)
 
 /** Çfarë bën grupi, me një fjali (SPEC §11, "Prek muskulin"). */
 export const groupRole = ({ t }: I18n, id: string) => t(`bodyModel.role.${id}` as RoleKey)

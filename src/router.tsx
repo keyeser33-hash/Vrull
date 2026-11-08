@@ -11,6 +11,7 @@ import { BodyLayersPage } from '@/routes/body-layers'
 import { MeasurePage } from '@/routes/body-measure'
 import { BodyShapePage } from '@/routes/body-shape'
 import { FriendsPage } from '@/routes/friends'
+import { HistoryPage, PastSessionPage } from '@/routes/history'
 import { Moved } from '@/routes/moved'
 import { PhotosPage } from '@/routes/photos'
 import { MetricPage, ProgressPage } from '@/routes/progress'
@@ -49,6 +50,8 @@ export const appRoutes: RouteObject[] = [
       { path: 'progresi/trupi', element: <BodyPage />, ...tab('progress') },
       { path: 'progresi/trupi/shtresat', element: <BodyLayersPage />, ...tab('progress') },
       { path: 'progresi/trupi/matjet', element: <BodyShapePage />, ...tab('progress') },
+      { path: 'progresi/historiku', element: <HistoryPage />, ...tab('progress') },
+      { path: 'progresi/historiku/:sessionId', element: <PastSessionPage />, ...tab('progress') },
       { path: 'progresi/:metric', element: <MetricPage />, ...tab('progress') },
       { path: 'trupi', element: <Moved to="/progresi/trupi" />, ...tab('progress') },
       { path: 'miqte', element: <FriendsPage />, ...tab('friends') },

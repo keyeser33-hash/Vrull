@@ -10,10 +10,11 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { shapeView } from '@/data/body'
 import type { I18n } from '@/i18n'
+import { programBlockName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
-import { blockName, oneDecimal, signedDecimal } from './body-format'
+import { oneDecimal, signedDecimal } from './body-format'
 
 // Trupi sipas matjeve (V12, V2-E1-14; bordi "Trupi sipas matjeve"). Dy pamje të modelit 3D, Java 0
 // dhe sot, ku muskujt e çdo zone ndjekin raportin e perimetrit (body/body-shape.ts); në mes, ndryshimi
@@ -63,7 +64,7 @@ export function BodyShapePage() {
       </div>
     )
   }
-  const label = baselineKind(comparison.from, view.start) === 'start' && view.startLabel ? blockName(i18n, view.startLabel) : t('bodyModel.shape.first')
+  const label = baselineKind(comparison.from, view.start) === 'start' && view.startLabel ? programBlockName(t, view.startLabel) : t('bodyModel.shape.first')
   const from = dayText(i18n, comparison.from)
   const to = dayText(i18n, comparison.to)
 

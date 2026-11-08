@@ -3,7 +3,7 @@ import { SHAPE_MEASURES } from '@/body/body-shape'
 import { i18nFor } from '@/i18n'
 import { sq as catalog } from '@/i18n/sq'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { agoText, blockName, focusDetail, LEVEL_STYLE, levelLabel, modeStyle, RECOVERY_STYLE, setsText, sinceText, volumeNote } from './body-format'
+import { agoText, focusDetail, LEVEL_STYLE, levelLabel, modeStyle, RECOVERY_STYLE, setsText, sinceText, volumeNote } from './body-format'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -118,17 +118,11 @@ describe('tekstet e Trupit', () => {
     expect(focusDetail(sq, 'volumi', mixed, 'pectoralis_minor')).toBe('7 sete · nën objektiv')
   })
 
-  it('emrat e blloqeve të Shortcut to Size sipas gjuhës; të tjerët siç janë', () => {
-    expect(blockName(sq, 'Java 0')).toBe('Java 0')
-    expect(blockName(en, 'Java 0')).toBe('Week 0')
-    expect(blockName(en, 'Faza 2')).toBe('Phase 2')
-    expect(blockName(en, 'Blloku im')).toBe('Blloku im')
-  })
 
-  it('katalogu ka emrin dhe funksionin e çdo grupi, emrin e çdo çelësi, çdo muskul të thellë dhe çdo perimetër', () => {
+  it('katalogu ka funksionin e çdo grupi (emri vjen nga @/i18n/domain), emrin e çdo çelësi, çdo muskul të thellë dhe çdo perimetër', () => {
     const keys = new Set(Object.keys(catalog))
     for (const group of MUSCLE_GROUPS) {
-      expect(keys.has(`bodyModel.group.${group.id}`), group.id).toBe(true)
+      expect(keys.has(`muscle.${group.id}`), group.id).toBe(true)
       expect(keys.has(`bodyModel.role.${group.id}`), group.id).toBe(true)
       for (const key of group.keys) expect(keys.has(`bodyModel.key.${key}`), key).toBe(true)
     }

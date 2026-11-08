@@ -1,5 +1,5 @@
 // Emri latinisht i çdo grupi muskujsh (SPEC §11, "Prek muskulin"); emri dhe funksioni sipas gjuhës
-// janë te katalogu (`bodyModel.group.*`, `bodyModel.role.*`, src/i18n/areas/body.ts).
+// janë te katalogu (`muscleName` nga `@/i18n/domain`; funksioni `bodyModel.role.*` te src/i18n/areas/body.ts).
 
 export const MUSCLE_INFO: Record<string, { latin: string }> = {
   gjoksi: { latin: 'Pectoralis major et minor' },

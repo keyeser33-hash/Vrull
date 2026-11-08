@@ -12,13 +12,13 @@ import { type BodyGroup, bodyView } from '@/data/body'
 import { libraryExercisesFor, WEEKLY_TARGET } from '@/body/body-map'
 import { type LibraryExercise, loadLibrary } from '@/program/library'
 import { MUSCLE_GROUPS } from '@/program/muscles'
+import { muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
 import {
   type BodyMode,
   focusDetail,
-  groupName,
   groupRole,
   keyName,
   LEVEL_STYLE,
@@ -165,7 +165,7 @@ export function BodyPage() {
                       detail={focusDetail(i18n, mode, focused, focus.key)}
                       swatch={modeStyle(i18n, mode, focused).swatch}
                       onOpen={() => open(focused.group.id)}
-                      openLabel={t('bodyModel.chip.more', { name: groupName(i18n, focused.group.id) })}
+                      openLabel={t('bodyModel.chip.more', { name: muscleName(t, focused.group.id) })}
                       onClear={() => setFocus(null)}
                     />
                   ) : null
@@ -200,7 +200,7 @@ export function BodyPage() {
             }}
             pickLabel={(keys) => {
               const entry = entryOf(keys)
-              return entry ? `${groupName(i18n, entry.group.id)}, ${modeStyle(i18n, mode, entry).text}` : ''
+              return entry ? `${muscleName(t, entry.group.id)}, ${modeStyle(i18n, mode, entry).text}` : ''
             }}
           />
         )}
@@ -219,7 +219,7 @@ export function BodyPage() {
         <ul className="flex flex-col">
           {sorted.map((entry) => {
             const style = modeStyle(i18n, mode, entry)
-            const name = groupName(i18n, entry.group.id)
+            const name = muscleName(t, entry.group.id)
             return (
               <li key={entry.group.id}>
                 <button
@@ -270,7 +270,7 @@ function MuscleSheet({ entry, onClose }: { entry: BodyGroup; onClose: () => void
   const exercises = library ? libraryExercisesFor(library, entry.group) : []
   const row = 'flex min-h-12 items-center justify-between gap-3 border-t border-border first:border-t-0'
   return (
-    <Sheet title={groupName(i18n, entry.group.id)} onClose={onClose}>
+    <Sheet title={muscleName(t, entry.group.id)} onClose={onClose}>
       <p className="type-caption text-muted-foreground italic">{entry.latin}</p>
       <p className="type-body-l">{groupRole(i18n, entry.group.id)}</p>
       <dl className="flex flex-col tabular-nums">
