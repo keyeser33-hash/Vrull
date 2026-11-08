@@ -40,6 +40,18 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+        <!-- Muzika (V29, spike E1-03): "Qasja te njoftimet" i jep Vrullit sesionet e medias së app-it
+             të muzikës. Shërbimi nuk lexon njoftime: vlera bosh e default_filter_types i kërkon
+             sistemit zero lloje njoftimesh (Android 12+). docs/research/muzika.md -->
+        <service
+            android:name=".MusicListenerService"
+            android:exported="false"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+            <meta-data android:name="android.service.notification.default_filter_types" android:value="" />
+        </service>
         <!-- Skaneri i barkodit i Google Play Services (scan(), pa leje kamere); moduli shkarkohet me instalimin. -->
         <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />
     </application>
