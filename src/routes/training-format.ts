@@ -1,4 +1,4 @@
-import type { Equipment, Target, Technique } from '@/program/types'
+import type { Target } from '@/program/types'
 
 // Tekstet e stërvitjes sipas DESIGN.md: presje dhjetore, data "e hënë 07.12", ora 24h.
 
@@ -24,48 +24,6 @@ export function targetText(target: Target): string {
   }
 }
 
-/** "4 × 12–15", "3 × 60 s" */
-export function setsText(sets: number, target: Target): string {
-  switch (target.kind) {
-    case 'reps':
-      if (target.min === 0 && target.max === null) return sets === 1 ? '1 set' : `${sets} sete`
-      return `${sets} × ${range(target.min, target.max)}`
-    case 'timed':
-      return `${sets} × ${target.seconds} s`
-    case 'percent_1rm':
-    case 'linear':
-      return `${sets} × ${target.reps}`
-  }
-}
-
-/** Emri i plotë te editori: "Rest-pause, 15 s", "Drop set, 70%". */
-export function techniqueLabel(technique: Technique | undefined | null): string {
-  switch (technique?.type) {
-    case undefined:
-    case 'none':
-      return 'Asnjë'
-    case 'rest_pause':
-      return `Rest-pause, ${technique.restSeconds ?? 15} s`
-    case 'drop_set':
-      return technique.percent ? `Drop set, ${technique.percent}%` : 'Drop set'
-    case 'to_failure':
-      return 'Deri në dështim'
-  }
-}
-
-export function techniqueText(technique: Technique): string | null {
-  switch (technique.type) {
-    case 'rest_pause':
-      return 'rest-pause'
-    case 'drop_set':
-      return 'drop set'
-    case 'to_failure':
-      return 'deri në dështim'
-    case 'none':
-      return null
-  }
-}
-
 const WEEKDAYS = ['e diel', 'e hënë', 'e martë', 'e mërkurë', 'e enjte', 'e premte', 'e shtunë']
 
 /** "e hënë 07.12" */
@@ -81,16 +39,4 @@ export function clock(totalSeconds: number) {
   const minutes = Math.floor((seconds % 3600) / 60)
   const rest = String(seconds % 60).padStart(2, '0')
   return hours > 0 ? `${hours}:${String(minutes).padStart(2, '0')}:${rest}` : `${minutes}:${rest}`
-}
-
-export const EQUIPMENT_LABEL: Record<Equipment, string> = {
-  barbell: 'Shufër',
-  ez_bar: 'Shufër EZ',
-  dumbbell: 'Dumbbell',
-  cable: 'Kabëll',
-  machine: 'Makineri',
-  bodyweight: 'Pesha e trupit',
-  kettlebell: 'Kettlebell',
-  band: 'Llastik',
-  other: 'Tjetër',
 }

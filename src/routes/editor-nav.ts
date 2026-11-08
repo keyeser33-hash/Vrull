@@ -8,7 +8,6 @@ import { useNavigate, useOutletContext, useSearchParams } from 'react-router'
 
 export const editorPath = (programId: string) => `/programi/editori/${programId}`
 export const dayPath = (programId: string, dayId: string) => `${editorPath(programId)}/dita/${dayId}`
-export const slotPath = (programId: string, slotId: string) => `${editorPath(programId)}/sloti/${slotId}`
 
 /** Hapat e parë, kur ndërtuesi hapet prej tyre: mbyll hapat me programin e ndërtuar si aktiv. */
 export interface OnboardingBuild {

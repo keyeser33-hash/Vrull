@@ -327,7 +327,7 @@ export async function startProgram(store: LocalStore, name: string): Promise<str
 }
 
 /** "Progresi i zgjuar" që merr një program i ri nga e para (bordi "Ndërto"): RIR ≥ 2, +2,5 kg. */
-export const DEFAULT_PROGRESSION: ProgressionRule = { minRir: 2, incrementKg: 2.5 }
+const DEFAULT_PROGRESSION: ProgressionRule = { minRir: 2, incrementKg: 2.5 }
 
 /** Emrat e programit, blloqeve dhe ditëve të një shablloni, në gjuhën e përdoruesit (`builder.template.*`). */
 export interface TemplateNames {
