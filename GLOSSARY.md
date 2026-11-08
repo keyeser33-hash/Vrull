@@ -54,6 +54,9 @@ Një program i gatshëm nga i cili nis ndërtuesi; kopjohet, nuk lidhet me origj
 Rregull që propozon peshën ose vëllimin e seancës së radhës nga RIR-i i seteve të fundit dhe nga **Gatishmëria**; propozimi pranohet nga përdoruesi.
 _Avoid_: autoregulim (në UI)
 
+**Xhiro**:
+Një kalim i plotë i programit; rinisja pas përfundimit nis xhiron e radhës ("Xhiro 2").
+
 **Treguesi**:
 Stërvitja e radhës (blloku, java, dita); lëviz përpara vetëm kur mbyllet një seancë ose kur stërvitja kapërcehet me dorë.
 _Avoid_: progresi, pozicioni
@@ -74,6 +77,9 @@ _Avoid_: lëvizje
 
 **Seti**:
 Një seri përsëritjesh (ose sekondash) me një peshë në një slot të seancës.
+
+**Historiku**:
+Seancat e mbyllura sipas javës së programit, ku një set i kaluar mund të ndryshohet; rekordet rillogariten nga setet.
 
 **Seti i ngrohjes**:
 Set që nuk numërohet as për volumin, as për e1RM-në, as për rekordet.

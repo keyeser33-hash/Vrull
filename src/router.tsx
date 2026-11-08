@@ -8,6 +8,7 @@ import { AddFoodPage } from '@/routes/add-food'
 import { NutritionPage } from '@/routes/nutrition'
 import { BodyPage } from '@/routes/body'
 import { FriendsPage } from '@/routes/friends'
+import { HistoryPage, PastSessionPage } from '@/routes/history'
 import { Moved } from '@/routes/moved'
 import { PhotosPage } from '@/routes/photos'
 import { MeasurementPage, MetricPage, ProgressPage } from '@/routes/progress'
@@ -45,6 +46,8 @@ export const appRoutes: RouteObject[] = [
       { path: 'progresi/matja', element: <MeasurementPage />, ...tab(null) },
       { path: 'progresi/fotot', element: <PhotosPage />, ...tab('progress') },
       { path: 'progresi/trupi', element: <BodyPage />, ...tab('progress') },
+      { path: 'progresi/historiku', element: <HistoryPage />, ...tab('progress') },
+      { path: 'progresi/historiku/:sessionId', element: <PastSessionPage />, ...tab('progress') },
       { path: 'progresi/:metric', element: <MetricPage />, ...tab('progress') },
       { path: 'trupi', element: <Moved to="/progresi/trupi" />, ...tab('progress') },
       { path: 'miqte', element: <FriendsPage />, ...tab('friends') },

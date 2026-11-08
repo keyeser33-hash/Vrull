@@ -49,11 +49,11 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 
 Tekstet e UI-së vijnë nga katalogu `src/i18n` (SPEC V22, §0.3a); ekranet që kanë mbetur kalojnë një nga një, me detyrën e secilit.
 
-- Një tekst i ri: çelësi në shqip (burimi i çelësave, emri sipas vendit: `login.title`) dhe i njëjti çelës në anglishten britanike (Programme, yoghurt, litres). Zonat e Etapës 1 (Sot, seanca, programi, trupi, historiku) kanë skedarin e tyre te `src/i18n/areas/`, me të dyja gjuhët; korniza dhe pjesa tjetër te `sq.ts` dhe `en.ts`. Zonë e re: skedar te `areas/`, i shtuar te `AREAS` dhe te bashkimet e `sq.ts`/`en.ts`. Tipet dhe `catalog.test.ts` kapin çelësin që mungon, parametrin ose çelësin e dyfishtë.
+- Një tekst i ri: çelësi në shqip (burimi i çelësave, emri sipas vendit: `login.title`) dhe i njëjti çelës në anglishten britanike (Programme, yoghurt, litres). Zonat e Etapës 1 (Sot, seanca, programi, trupi, historiku, hyrja) kanë skedarin e tyre te `src/i18n/areas/`, me të dyja gjuhët; korniza dhe pjesa tjetër te `sq.ts` dhe `en.ts`. Zonë e re: skedar te `areas/`, i shtuar te `AREAS` dhe te bashkimet e `sq.ts`/`en.ts`. Tipet dhe `catalog.test.ts` kapin çelësin që mungon, parametrin ose çelësin e dyfishtë.
 - Në komponentë: `const { t, fmt } = useI18n()` (`@/i18n/use-i18n`), që ndërrimi i gjuhës t'i rivizatojë; jashtë React-it: `currentI18n()` nga `@/i18n`.
 - Parametrat: `'{count} sete'` me `t('x', { count })`. Një numër te parametri formatohet sipas gjuhës (62,5 / 62.5, 2 900 / 2,900); vitet dhe kodet jepen si tekst.
 - Shumësi: mesazh me forma (`{ one, other }`, `'=0'`, `ordinal: true`), që rregullat e gjuhës zgjedhin formën.
 - Numrat, njësitë, datat dhe orët me `fmt`: `fmt.unit(62.5, 'kg')` (hapësirë që nuk thyhet), `fmt.date(d)` ("e diel, 8 nëntor"), `fmt.time(d)` (24 orë). Chrome dhe WebView nuk e kanë shqipen në `Intl`; `format.ts` e plotëson.
-- Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët.
+- Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët. Grupet e muskujve dhe emrat e Shortcut to Size (blloqet, ditët, që ruhen shqip në bazë) vijnë nga `@/i18n/domain` (`muscleName`, `programDayName`, `programBlockName`, `programWeekLabel`), jo nga çelësa të rinj te çdo zonë.
 - Gjuha ruhet në telefon (`i18n/language.ts`) dhe te `user_settings.language` (`data/language.ts`), që sinkronizohet. Sfondi njësoj: `lib/background.ts` dhe `user_settings.background` (`data/background.ts`). Tema mbetet vetëm në telefon (`lib/theme.ts`), si te v1.
 - Provat e një ekrani të kaluar kontrollojnë edhe anglishten: `language.set('en')`, dhe `language.set('sq')` në `afterEach`.
