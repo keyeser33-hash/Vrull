@@ -10,7 +10,7 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   backgroundColor: '#000000',
   // Open Food Facts kërkon që app-i të njihet (SPEC §9); pa të dhëna personale.
-  appendUserAgent: `TrainingHub/${version}`,
+  appendUserAgent: `Vrull/${version}`,
   android: {
     // Përmbajtja nga http:// nuk lejohet; gjithçka vjen nga app-i ose përmes https.
     allowMixedContent: false,
