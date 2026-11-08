@@ -46,7 +46,7 @@ export interface ProgrammeHome {
   /** Java e treguesit në gjithë programin (nga 1) dhe sa javë ka programi. */
   weekNumber: number
   totalWeeks: number
-  week: { blockId: string; blockName: string; blockWeeks: number; week: number }
+  week: { blockId: string; blockName: string; blockWeeks: number; week: number; run: number }
   days: ProgrammeDay[]
   doneDays: number
   next: {
@@ -57,7 +57,7 @@ export interface ProgrammeHome {
   /** Peshat e javës që shqyrtohet (§7): presin vendimin, të pranuara ose për më vonë. */
   review: {
     week: WeekRef
-    block: { blockName: string; blockWeeks: number; week: number }
+    block: { blockName: string; blockWeeks: number; week: number; run: number }
     startsOn: Date | null
     /** Datat e parashikuara të ditëve të asaj jave. */
     dates: Record<string, Date | null>
@@ -139,7 +139,13 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
     blocks,
     weekNumber: overview.currentWeek + 1,
     totalWeeks: overview.weeks.length,
-    week: { blockId: current.blockId, blockName: current.blockName, blockWeeks: blocks.find((block) => block.id === current.blockId)!.weeks, week: current.week },
+    week: {
+      blockId: current.blockId,
+      blockName: current.blockName,
+      blockWeeks: blocks.find((block) => block.id === current.blockId)!.weeks,
+      week: current.week,
+      run: pointer.run,
+    },
     days,
     doneDays: current.days.filter((day) => day.status === 'done').length,
     next,
@@ -160,7 +166,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
     )
     return {
       week: weights.week,
-      block: { blockName: block.name, blockWeeks: block.weeks, week: weights.week.week },
+      block: { blockName: block.name, blockWeeks: block.weeks, week: weights.week.week, run: pointer.run },
       status,
       startsOn: reviewDates[current.days[0].dayId] ?? null,
       dates: reviewDates,
@@ -184,7 +190,7 @@ function leadExercises(list: ({ name: string; primary: string[] } | undefined)[]
 
 export interface WeekReview {
   week: WeekRef
-  block: { blockName: string; blockWeeks: number; week: number }
+  block: { blockName: string; blockWeeks: number; week: number; run: number }
   /** Java para saj në program, edhe në bllokun e mëparshëm; null te java e parë. */
   previous: { blockName: string; blockWeeks: number; week: number } | null
   /** Treguesi është te dita e parë e kësaj jave: java e kaluar sapo u mbyll. */

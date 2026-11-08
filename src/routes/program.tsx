@@ -9,11 +9,12 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type ProgrammeBlock, type ProgrammeDay, type ProgrammeHome, programmeHome } from '@/data/programme'
 import { programView, startWorkout } from '@/data/training'
+import { programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
 import { editorPath } from './editor-nav'
-import { blockName, capitalize, dayName, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
+import { capitalize, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
 
 // Programi (bordi "Programi", V2-E1-09): programi aktiv me blloqet dhe javët, java e treguesit me
 // ditët, stërvitja e radhës me ushtrimin e parë dhe "Fillo stërvitjen" (prushi i vetëm i ekranit), dhe
@@ -94,7 +95,7 @@ function Blocks({ home }: { home: ProgrammeHome }) {
   const { t } = useI18n()
   const label = home.completed ? t('programme.completed') : weekLabel(t, home.week)
   const spoken = [
-    ...home.blocks.map((block) => t('programme.blockDone', { count: block.doneWeeks, block: blockName(t, block.name), total: block.weeks })),
+    ...home.blocks.map((block) => t('programme.blockDone', { count: block.doneWeeks, block: programBlockName(t, block.name), total: block.weeks })),
     home.completed ? null : t('programme.now', { label }),
   ]
   return (
@@ -140,7 +141,7 @@ function BlockBar({ block }: { block: ProgrammeBlock }) {
           )
         })}
       </div>
-      <span className={cn('truncate text-xs leading-4', current ? 'font-bold text-foreground' : 'text-muted-foreground')}>{blockName(t, block.name)}</span>
+      <span className={cn('truncate text-xs leading-4', current ? 'font-bold text-foreground' : 'text-muted-foreground')}>{programBlockName(t, block.name)}</span>
     </div>
   )
 }
@@ -188,12 +189,12 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
 
   return (
     <article
-      aria-label={`${t('programme.workout', { number: day.dayNumber })}, ${dayName(t, day.name)}`}
+      aria-label={`${t('programme.workout', { number: day.dayNumber })}, ${programDayName(t, day.name)}`}
       className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-xl p-3.5')}
     >
       <Link
         to={dayPath(home, day.dayId)}
-        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: dayName(t, day.name), when: dotted([when, t('programme.minutes', { minutes: day.minutes })]) })}
+        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: programDayName(t, day.name), when: dotted([when, t('programme.minutes', { minutes: day.minutes })]) })}
         className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         <span aria-hidden className="flex size-[34px] shrink-0 items-center justify-center rounded-pill border-2 border-ember-text text-sm font-bold tabular-nums">
@@ -201,7 +202,7 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
         </span>
         <span className="flex min-w-0 flex-col">
           <span className="type-caption text-muted-foreground tabular-nums">{dotted([when, t('programme.minutes', { minutes: day.minutes })])}</span>
-          <span className="font-display text-[26px] leading-none font-extrabold uppercase">{dayName(t, day.name)}</span>
+          <span className="font-display text-[26px] leading-none font-extrabold uppercase">{programDayName(t, day.name)}</span>
         </span>
       </Link>
       {first ? (
@@ -237,8 +238,8 @@ function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
       to={dayPath(home, day.dayId)}
       aria-label={
         when
-          ? t('programme.dayLabel', { number: day.dayNumber, name: dayName(t, day.name), when })
-          : `${t('programme.workout', { number: day.dayNumber })}, ${dayName(t, day.name)}`
+          ? t('programme.dayLabel', { number: day.dayNumber, name: programDayName(t, day.name), when })
+          : `${t('programme.workout', { number: day.dayNumber })}, ${programDayName(t, day.name)}`
       }
       className={cn(surfaceClass, 'flex min-h-row items-center gap-3 rounded-lg px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
     >
@@ -247,7 +248,7 @@ function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
       </span>
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="flex justify-between gap-2">
-          <span className="type-body-strong">{dayName(t, day.name)}</span>
+          <span className="type-body-strong">{programDayName(t, day.name)}</span>
           {when ? <span className="text-[13px] leading-5 whitespace-nowrap text-muted-foreground">{when}</span> : null}
         </span>
         <span className="truncate text-sm leading-5 text-muted-foreground">{dotted(day.lead)}</span>
@@ -294,7 +295,7 @@ export function WorkoutPage() {
   return (
     <div className="flex flex-col gap-3">
       <BackHeader title={t('programme.workout', { number: day.dayNumber })} back={t('programme.backToProgramme')} fallback="/programi" />
-      <p className="-mt-2 type-body text-muted-foreground">{dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), dayName(t, day.name)])}</p>
+      <p className="-mt-2 type-body text-muted-foreground">{dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), programDayName(t, day.name)])}</p>
       <ol className={cn(surfaceClass, 'flex flex-col rounded-lg px-3.5')}>
         {plan.slots.map((slot, index) => {
           const exercise = view.exercises[slot.exerciseId]

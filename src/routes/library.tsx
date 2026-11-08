@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'rea
 import { Link, useSearchParams } from 'react-router'
 import { BackButton } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { exerciseCatalog } from '@/data/exercises'
@@ -16,7 +17,7 @@ import {
   LIBRARY_AREAS,
   type LibraryArea,
 } from '@/program/exercise-catalog'
-import { Chip, ExerciseThumb } from './programme-parts'
+import { Chip } from './programme-parts'
 import { dotted, equipmentName, musclesLine } from './programme-format'
 
 // Biblioteka (bordi "Biblioteka", V2-E1-09): free-exercise-db (Unlicense) bashkë me ushtrimet në
@@ -177,7 +178,7 @@ function LibraryRow({ item }: { item: CatalogItem }) {
         to={`/ushtrimi/${encodeURIComponent(item.key)}`}
         className="flex min-h-16 items-center gap-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
-        <ExerciseThumb libraryId={item.libraryId} />
+        <ExercisePhoto libraryId={item.libraryId} />
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="type-body-strong">{item.name}</span>
           {detail ? <span className="truncate type-caption text-muted-foreground">{detail}</span> : null}

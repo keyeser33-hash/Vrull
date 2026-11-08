@@ -12,6 +12,7 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type ExerciseDetail, exerciseDetail, exerciseRowFor } from '@/data/exercises'
 import { programView, setExerciseVideo, trainingHistory } from '@/data/training'
 import type { I18n } from '@/i18n'
+import { muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useExercisePhoto } from '@/lib/exercise-photo'
@@ -21,7 +22,7 @@ import { groupsOf } from '@/program/exercise-catalog'
 import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
 import { ExerciseMusclesSheet } from './exercise-muscles'
-import { capitalize, dotted, equipmentName, groupList, groupName, weekShort } from './programme-format'
+import { capitalize, dotted, equipmentName, groupList, weekShort } from './programme-format'
 import { ChangeExerciseSheet } from './session-sheets'
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi (SPEC §0.3a), muskujt me figurën dhe
@@ -96,7 +97,7 @@ export function ExercisePage() {
 function eyebrow(detail: ExerciseDetail, { t, fmt }: I18n) {
   const [group] = groupsOf(detail.primary)
   const text = dotted([
-    group ? groupName(t, group) : null,
+    group ? muscleName(t, group) : null,
     equipmentName(t, detail.equipment).toLocaleLowerCase(fmt.locale),
     detail.programSets ? t('programme.setsIn', { count: detail.programSets.sets, programme: detail.programSets.programName }) : null,
   ])

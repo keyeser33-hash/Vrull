@@ -2,18 +2,20 @@ import { type FormEvent, useId, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
+import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { createExercise, exerciseCatalog } from '@/data/exercises'
+import { muscleName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { youtubeId } from '@/lib/youtube'
 import { nameStatus, volumeShare } from '@/program/exercise-catalog'
 import { weightStep } from '@/program/loads'
 import type { Equipment, Tracking } from '@/program/types'
-import { Chip, ExerciseThumb } from './programme-parts'
-import { equipmentName, groupName, musclesLine } from './programme-format'
+import { Chip } from './programme-parts'
+import { equipmentName, musclesLine } from './programme-format'
 
 // "Krijo ushtrim" (bordi "KrijoUshtrim", V2-E1-09): ushtrimi i përdoruesit me emrin në anglisht,
 // pajisjen, muskujt kryesorë dhe ndihmës sipas grupeve (si ushtrimet e bibliotekës që dinë vetëm
@@ -173,7 +175,7 @@ export function CreateExercisePage() {
         <div role="group" aria-label={t('programme.musclesGroups')} className="flex flex-wrap gap-1.5">
           {GROUPS.map((group) => {
             const role = roles[group]
-            const label = groupName(t, group)
+            const label = muscleName(t, group)
             return (
               <button
                 key={group}
@@ -210,7 +212,7 @@ export function CreateExercisePage() {
               <span className="flex flex-wrap gap-x-4 gap-y-1 text-[15px]">
                 {volumeShare(primary, secondary).map((entry) => (
                   <span key={entry.group}>
-                    {groupName(t, entry.group)}{' '}
+                    {muscleName(t, entry.group)}{' '}
                     <b className="font-display text-xl font-bold tabular-nums">+{fmt.number(entry.sets)}</b>
                   </span>
                 ))}
@@ -280,7 +282,7 @@ export function CreateExercisePage() {
           {t('programme.preview')}
         </h2>
         <div className={cn(surfaceClass, 'flex min-h-16 items-center gap-3 rounded-lg px-3 py-2')}>
-          <ExerciseThumb libraryId={null} ground="card" />
+          <ExercisePhoto libraryId={null} ground="card" />
           <span className="flex min-w-0 flex-1 flex-col">
             <span className="type-body-strong">{cleanName || t('programme.name')}</span>
             {previewDetail ? <span className="truncate type-caption text-muted-foreground">{previewDetail}</span> : null}
