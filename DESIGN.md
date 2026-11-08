@@ -168,7 +168,7 @@ Në kod (V2-E1-05): zgjedhja është te Cilësimet › Pamja, ruhet te `user_set
 
 ## Aliaset e v1
 
-Ekranet e v1 përdorin ende emrat e Omal UI v2. `globals.css` i mban si alias drejt tokenave të Vrullit, vetëm për skedarët e `LEGACY_FILES` te `scripts/check-design.mjs`. Kur një ekran kalon te Vrull (E1-05 … E1-15), hiqet nga lista; kur lista mbetet bosh, hiqen edhe aliaset.
+Ekranet e v1 përdornin emrat e Omal UI v2. `globals.css` i mban si alias drejt tokenave të Vrullit, vetëm për skedarët e `LEGACY_FILES` te `scripts/check-design.mjs`. Kur një ekran kalon te Vrull (E1-05 … E1-15), hiqet nga lista; kur lista mbetet bosh, hiqen edhe aliaset. Që nga V2-E1-16b (0.20.0) lista është bosh: asnjë skedar nuk i përdor, dhe roja nuk i lejon askund; aliaset dhe variantet e v1 të butonave presin heqjen nga `globals.css` dhe `button-variants.ts`.
 
 | v1 | Vrull |
 |---|---|

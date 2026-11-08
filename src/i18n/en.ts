@@ -3,10 +3,14 @@ import * as body from './areas/body'
 import * as builder from './areas/builder'
 import * as domain from './areas/domain'
 import * as entry from './areas/entry'
+import * as food from './areas/food'
 import * as history from './areas/history'
 import * as music from './areas/music'
 import * as notify from './areas/notify'
+import * as photos from './areas/photos'
 import * as programme from './areas/programme'
+import * as progress from './areas/progress'
+import * as reminders from './areas/reminders'
 import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
@@ -67,19 +71,6 @@ const base: TranslationOf<typeof sqBase> = {
   'friends.shared': 'Workouts and records',
   'friends.sharedText': 'Friends see your workouts, records and streaks. Your weight, measurements and food stay yours.',
 
-  'progress.emptyTitle': 'Charts start with your first set',
-  'progress.emptyIntro': 'After your first workout, this is where you will see:',
-  'progress.strength': 'Strength · e1RM',
-  'progress.strengthText': 'For every exercise, from the very first set.',
-  'progress.volume': 'Weekly volume',
-  'progress.volumeText': 'Sets for each muscle group, against the 10–⁠20 target.',
-  'progress.body': '3D body',
-  'progress.bodyText': 'The muscles you worked and how they are recovering.',
-  'progress.measurements': 'Weight and measurements',
-  'progress.measurementsText': 'Add measurements and photos whenever you like.',
-  'progress.measurementsWeight': '{weight} today. Add measurements and photos whenever you like.',
-  'progress.startFirst': 'Start your first workout',
-  'progress.nextWorkout': '{label} · Workout {day} · {name}',
   'body.backToProgress': 'Back to Progress',
 
   'body.front': 'Front',
@@ -167,24 +158,6 @@ const base: TranslationOf<typeof sqBase> = {
   'appearance.themeHint': 'OLED: true black. Night: softer. Day: light.',
   'appearance.backgroundHint': 'Both work with every theme. The lines only show in the background, never behind text.',
 
-  'reminders.allow': 'Allow notifications',
-  'reminders.allowDenied': 'Allow them in the phone’s settings',
-  'reminders.allowPrompt': 'Without permission, reminders do not arrive',
-  'reminders.training': 'Workout',
-  'reminders.trainingDetail': 'In the morning, the next workout',
-  'reminders.meals': 'Meals',
-  'reminders.mealsDetail': 'At each meal time, with the items in the plan',
-  'reminders.supplements': 'Supplements',
-  'reminders.supplementsDetail': 'Together with the meal they go with',
-  'reminders.measurements': 'Weekly measurement',
-  'reminders.measurementsDetail': 'Weight, measurements and photos',
-  'reminders.list.training': 'workouts',
-  'reminders.list.meals': 'meals',
-  'reminders.list.supplements': 'supplements',
-  'reminders.list.measurements': 'measurements',
-  'reminders.measurementDay': 'Measurement day',
-  'reminders.measurementDayHint': 'The reminder comes at your wake time, so you weigh yourself before breakfast.',
-
   'sources.program.use': 'The 12-week programme, the food and the supplements of the sample day.',
   'sources.program.license': 'Jim Stoppani, Bodybuilding.com. For personal use.',
   'sources.anatomy.use': 'The 3D muscle model in Body, simplified for the phone.',
@@ -265,4 +238,22 @@ const base: TranslationOf<typeof sqBase> = {
   'ui.quickAdd.aiLimit': 'This month’s limit has been reached',
 }
 
-export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en, ...builder.en, ...videos.en, ...ai.en, ...music.en, ...notify.en }
+export const en: Translation = {
+  ...base,
+  ...today.en,
+  ...session.en,
+  ...programme.en,
+  ...body.en,
+  ...history.en,
+  ...entry.en,
+  ...domain.en,
+  ...builder.en,
+  ...videos.en,
+  ...ai.en,
+  ...music.en,
+  ...notify.en,
+  ...food.en,
+  ...photos.en,
+  ...progress.en,
+  ...reminders.en,
+}

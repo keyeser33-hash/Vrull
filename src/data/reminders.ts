@@ -54,7 +54,16 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     trainingDays: profile.trainingDays,
     toggles: settings.toggles,
     measurementDay: settings.measurementDay,
-    nextWorkoutLabel: snapshot && !snapshot.pointer.completed ? `${snapshot.label} · Stërvitja ${snapshot.plan.dayNumber}` : null,
+    nextWorkout:
+      snapshot && !snapshot.pointer.completed
+        ? {
+            blockName: snapshot.plan.blockName,
+            blockWeeks: snapshot.plan.blockWeeks,
+            week: snapshot.plan.week,
+            run: snapshot.plan.run,
+            dayNumber: snapshot.plan.dayNumber,
+          }
+        : null,
     supplements,
     dayTypes: Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date), row.day_type as DayType])),
   }

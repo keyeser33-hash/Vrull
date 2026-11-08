@@ -21,12 +21,9 @@ const LEGACY_TOKENS = [
 ]
 
 // Skedarët e v1 që përdorin ende aliaset. Kur një ekran kalon te Vrull, hiqet nga lista; kur lista
-// mbetet bosh, hiqen edhe aliaset nga globals.css.
-export const LEGACY_FILES = new Set([
-  'src/components/charts/trend-chart.tsx',
-  'src/routes/add-food.tsx',
-  'src/routes/photos.tsx',
-])
+// mbetet bosh, hiqen edhe aliaset nga globals.css. Që nga V2-E1-16b (0.20.0) asnjë skedar nuk i
+// përdor më: rregulli "alias i v1" vlen për gjithë `src/`.
+export const LEGACY_FILES = new Set([])
 
 const PREFIX = '(?<![\\w-])(?:bg|text|border|fill|stroke|outline|ring|divide|placeholder|decoration|shadow|from|via|to|caret)'
 const legacyNames = LEGACY_TOKENS.join('|')

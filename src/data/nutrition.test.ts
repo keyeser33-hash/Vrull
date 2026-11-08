@@ -21,17 +21,21 @@ describe('dita e ushqimit', () => {
     const store = await setup()
     const day = await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '06:30'))
     expect(day).toMatchObject({ dayType: 'rest', dayTypeManual: false, weightKg: 80, targets: { kcal: 3037, proteinG: 260, carbsG: 255, fatG: 108 } })
-    expect(day.meals.map((meal) => `${meal.time} ${meal.label}`)).toEqual([
-      '07:00 Mëngjesi 1',
-      '07:45 Mëngjesi 2',
-      '10:30 Snack paradite',
-      '13:00 Dreka',
-      '15:30 Snack pasdite',
-      '18:30 Darka',
-      '22:30 Para gjumit',
+    expect(day.meals.map((meal) => `${meal.time} ${meal.meal}`)).toEqual([
+      '07:00 breakfast_1',
+      '07:45 breakfast_2',
+      '10:30 snack_am',
+      '13:00 lunch',
+      '15:30 snack_pm',
+      '18:30 dinner',
+      '22:30 bedtime',
     ])
     expect(day.next?.meal).toBe('breakfast_1')
-    expect(day.next?.template.map((item) => `${item.name} · ${item.amount}`)).toEqual(['Pluhur proteine · 1 scoop', 'Pjepër · ½ pjepër'])
+    // Emri shqip i shabllonit me çelësin dhe sasinë, që ekrani t'i thotë në gjuhën e app-it.
+    expect(day.next?.template.map(({ food, name, portion }) => [food, name, portion])).toEqual([
+      ['protein', 'Pluhur proteine', { count: 1, unit: 'scoop' }],
+      ['cantaloupe', 'Pjepër', { count: 1, unit: 'halfMelon' }],
+    ])
     expect(Math.round(day.next!.templateTotals.kcal)).toBe(214)
   })
 
@@ -71,11 +75,11 @@ describe('dita e ushqimit', () => {
     const day = await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '13:10'))
     const lunch = day.meals.find((meal) => meal.meal === 'lunch')!
     expect(lunch.status).toBe('done')
-    expect(lunch.entries.map((entry) => [entry.name, entry.grams])).toEqual([
-      ['Ton albacore në ujë', 142],
-      ['Bukë integrale', 64],
-      ['Majonezë light', 15],
-      ['Mollë', 223],
+    expect(lunch.entries.map((entry) => [entry.name, entry.sourceId, entry.grams])).toEqual([
+      ['Ton albacore në ujë', 'jim:tuna', 142],
+      ['Bukë integrale', 'jim:wheat_bread', 64],
+      ['Majonezë light', 'jim:light_mayo', 15],
+      ['Mollë', 'jim:apple', 223],
     ])
     expect(Math.round(lunch.totals.kcal)).toBe(495)
     expect(Math.round(day.totals.kcal)).toBe(495 + 431)

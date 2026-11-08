@@ -33,7 +33,7 @@ describe('cilësimet e rikujtuesve', () => {
       trainingTime: '18:00',
       trainingDays: [1, 2, 4, 5],
       measurementDay: 7,
-      nextWorkoutLabel: 'Java 0 · Stërvitja 1',
+      nextWorkout: { blockName: 'Java 0', blockWeeks: 1, week: 1, run: 1, dayNumber: 1 },
       dayTypes: { '2026-12-09': 'training' },
     })
     expect(input.supplements).toHaveLength(10)
