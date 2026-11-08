@@ -34,8 +34,8 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 ## Struktura
 
 - `src/components/ui`: komponentët e Vrullit (Button, Stepper, ListRow, StatTile, InsightCard, FactCard, ProgressBar, WeekStrip, TabBar, RirPicker, QuickAdd, ikonat), sipas modelit shadcn (cva + `cn`). Shtohen me dorë: `npx shadcn` mos u përdor, sepse mbishkruan tokenat te `globals.css`.
-- `src/components/layout`: korniza, navigimi poshtë, kokat e faqeve.
-- `src/routes`: ekranet. `src/router.tsx`: rrugët; `routes/gate.tsx` është i vetmi vend që vendos rrugën sipas fazës (hyrja, marrja e të dhënave, hapat e para, app-i).
+- `src/components/layout`: korniza (`app-shell.tsx`: tab-bar-i, rripi "Pa internet", sfondi), kreu i pesë ekraneve kryesore me butonin e profilit (`screen-header.tsx`), `BackHeader` (`page.tsx`), grupet e rreshtave, fleta, gjendja bosh (DESIGN.md › Korniza).
+- `src/routes`: ekranet. `src/router.tsx`: rrugët; çdo rrugë brenda kornizës thotë tab-in aktiv me `handle: { tab }` (`null` = pa tab-bar). Tab-et: `/`, `/programi`, `/ushqimi`, `/progresi` (Trupi: `/progresi/trupi`), `/miqte`; Cilësimet: `/cilesimet`, `/cilesimet/pamja`, `/cilesimet/rikujtuesit`. `routes/gate.tsx` është i vetmi vend që vendos rrugën sipas fazës (hyrja, marrja e të dhënave, hapat e para, app-i).
 - `src/components/forms`, `src/components/ui/field.tsx`: fushat dhe zgjedhja e ditëve (të v1, me tokenat e Vrullit).
 - `src/lib`: logjika e përbashkët (tema, `cn`, butoni mbrapa).
 - `src/program`: logjika e programit pa UI dhe pa bazë: motori (`engine.ts`), Shortcut to Size si të dhëna, biblioteka e ushtrimeve (`library.json`, nga `tools/exercise-library/build.mjs`).
@@ -55,5 +55,5 @@ Tekstet e UI-së vijnë nga katalogu `src/i18n` (SPEC V22, §0.3a); ekranet që 
 - Shumësi: mesazh me forma (`{ one, other }`, `'=0'`, `ordinal: true`), që rregullat e gjuhës zgjedhin formën.
 - Numrat, njësitë, datat dhe orët me `fmt`: `fmt.unit(62.5, 'kg')` (hapësirë që nuk thyhet), `fmt.date(d)` ("e diel, 8 nëntor"), `fmt.time(d)` (24 orë). Chrome dhe WebView nuk e kanë shqipen në `Intl`; `format.ts` e plotëson.
 - Emrat e ushtrimeve mbeten jashtë katalogut, në anglisht në të dyja gjuhët.
-- Gjuha ruhet në telefon (`i18n/language.ts`) dhe te `user_settings.language` (`data/language.ts`), që sinkronizohet.
+- Gjuha ruhet në telefon (`i18n/language.ts`) dhe te `user_settings.language` (`data/language.ts`), që sinkronizohet. Sfondi njësoj: `lib/background.ts` dhe `user_settings.background` (`data/background.ts`). Tema mbetet vetëm në telefon (`lib/theme.ts`), si te v1.
 - Provat e një ekrani të kaluar kontrollojnë edhe anglishten: `language.set('en')`, dhe `language.set('sq')` në `afterEach`.
