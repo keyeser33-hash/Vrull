@@ -244,8 +244,11 @@ export interface WeightInput {
   now: Date
   override?: { oneRmKg: number; setAt: string } | null
   steps?: Partial<Record<Equipment, number>>
-  /** Rregulli i progresit të slotit dhe kufiri i sipërm i intervalit të seancës së kaluar (V9). */
-  progression?: { rule: ProgressionRule; topReps: number | null } | null
+  /**
+   * Rregulli i progresit të slotit, kufiri i sipërm i intervalit të javës së kaluar (V9) dhe setet që
+   * lexon rregulli: ato para javës që shqyrtohet (V2-E1-18); pa to, gjithë `history`.
+   */
+  progression?: { rule: ProgressionRule; topReps: number | null; history?: HistorySet[] } | null
 }
 
 /** Setet e punës me peshë të seancës më të fundit të ushtrimit, i fundit i pari. */
@@ -276,7 +279,7 @@ export function progressionIncrement(incrementKg: number, stepKg: number): numbe
 function progressionWeight(input: WeightInput): WeightProposal | null {
   const rule = input.progression?.rule
   const topReps = input.progression?.topReps ?? null
-  const last = lastSessionSets(input.history, input.exerciseId)
+  const last = lastSessionSets(input.progression?.history ?? input.history, input.exerciseId)
   if (!rule || topReps === null || last.length === 0) return null
   const lastKg = Math.max(...last.map((set) => set.weightKg ?? 0))
   const incrementKg = progressionIncrement(rule.incrementKg, weightStep(input.exercise.equipment, input.steps ?? {}))
@@ -321,31 +324,4 @@ export function weightFor(input: WeightInput): WeightProposal {
   const reps = target.max ?? target.min
   const exactKg = exactWeight(oneRmKg, reps)
   return { weightKg: roundDown(exactKg, stepKg), basis: { kind: 'one_rm', oneRmKg, reps, exactKg, stepKg } }
-}
-
-export interface Suggestion {
-  weightKg: number | null
-  /** Kur s'ka sugjerim: si të zgjidhet pesha. */
-  hint: string | null
-}
-
-function hintFor(basis: WeightBasis | null): string | null {
-  if (basis?.kind === 'needs_one_rm') return 'Vendos 1RM-në e ushtrimit për peshën e javës'
-  if (basis?.kind !== 'choose') return null
-  const range = basis.max === null ? `${basis.min}` : `${basis.min}–${basis.max}`
-  return `Zgjidh peshën ku mbyll ${range} përsëritje`
-}
-
-/** Pesha e sugjeruar e §7 për slotin e seancës, ose si të zgjidhet kur s'ka 1RM. */
-export function suggestionFor(
-  slot: { exerciseId: string; target: Target },
-  exercise: { equipment: Equipment; tracking: Tracking },
-  history: HistorySet[],
-  now: Date,
-  override: { oneRmKg: number; setAt: string } | null,
-  steps: Partial<Record<Equipment, number>>,
-): Suggestion {
-  if (exercise.tracking !== 'weight_reps') return { weightKg: null, hint: null }
-  const { weightKg, basis } = weightFor({ exerciseId: slot.exerciseId, target: slot.target, exercise, history, now, override, steps })
-  return { weightKg, hint: hintFor(basis) }
 }

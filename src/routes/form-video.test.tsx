@@ -1,6 +1,5 @@
-import { act, configure, render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalDatabase } from '@/data/db'
 import type { LocalStore } from '@/data/store'
@@ -36,25 +35,7 @@ vi.mock('@/data/app-data', async () => {
       remove: (id: string) => videos.removeFormVideo(store, db, id),
       data: (video: Parameters<typeof videos.formVideoData>[2]) => videos.formVideoData(db, storage, video),
     },
-    useLocalQuery<T>(query: () => Promise<T>, deps: unknown[] = []) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        let started = 0
-        let shown = 0
-        const run = () => {
-          const ticket = ++started
-          void query().then((result) => {
-            if (ticket < shown) return
-            shown = ticket
-            setValue(() => result)
-          })
-        }
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, deps)
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 
@@ -89,12 +70,12 @@ vi.mock('@/lib/form-camera', async (importOriginal) => {
 })
 
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
-configure({ asyncUtilTimeout: 5000 })
 
 async function reset() {
   const { completeOnboarding } = await import('@/data/profile')
   for (const table of ['form_videos', 'set_logs', 'workout_sessions', 'program_state', 'slot_prescriptions', 'program_slots', 'program_days', 'program_blocks', 'programs', 'exercises', 'user_settings'] as const) {
-    for (const row of await data.store.all(table)) await data.store.remove(table, row.id)
+    // Zbrazje e vërtetë: një rresht i fshirë butë nga prova e mëparshme nuk duhet të ndikojë te tjetra.
+    await data.db[table].clear()
   }
   await data.db._video_files.clear()
   localStorage.clear()
@@ -150,7 +131,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(fetchSpy).not.toHaveBeenCalled()
   })
 
-  it('nga kreu i seancës: kamera për ushtrimin dhe setin, regjistrimi dhe "Ruaj te seti 1"', { timeout: 20_000 }, async () => {
+  it('nga kreu i seancës: kamera për ushtrimin dhe setin, regjistrimi dhe "Ruaj te seti 1"', async () => {
     const { sessionId, slot, name } = await openSession()
     const user = userEvent.setup()
     const router = await renderAt('/seanca')
@@ -204,10 +185,10 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(again).getByRole('button', { name: 'Ruaj te seti 1' })).toBeDisabled()
   })
 
-  it('krahasimi me herën e kaluar, kufiri 1:00 dhe mesazhi i hapësirës nga 80%', { timeout: 20_000 }, async () => {
+  it('krahasimi me herën e kaluar, kufiri 1:00 dhe mesazhi i hapësirës nga 80%', async () => {
     const { slot } = await openSession()
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
-    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 1, weight_kg: 60, reps: 12, is_warmup: false })
+    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 1, weight_kg: 60, reps: 12, is_warmup: false, logged_at: '2026-11-01T18:10:00.000Z' })
     await data.store.put('form_videos', video({ exercise_id: slot.exerciseId, session_id: 'last-week', set_number: 1, bytes: 850_000_000 }))
     const user = userEvent.setup()
     await renderAt('/seanca?video=1')
@@ -223,7 +204,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(dialog).getByRole('button', { name: 'Ruaj te seti 1' })).toBeEnabled()
   })
 
-  it('pa leje kamere: mesazhi me "Provo përsëri"; ndërrimi i kamerës hap kamerën e përparme', { timeout: 20_000 }, async () => {
+  it('pa leje kamere: mesazhi me "Provo përsëri"; ndërrimi i kamerës hap kamerën e përparme', async () => {
     await openSession()
     camera.failWith = 'denied'
     const user = userEvent.setup()
@@ -241,7 +222,7 @@ describe('videot e formës (V2-E1-13)', () => {
     await waitFor(() => expect(camera.opened).toEqual(['environment', 'environment', 'user']))
   })
 
-  it('app-i në sfond: regjistrimi ndalet dhe mbahet, kamera fiket dhe rihapet kur kthehet', { timeout: 20_000 }, async () => {
+  it('app-i në sfond: regjistrimi ndalet dhe mbahet, kamera fiket dhe rihapet kur kthehet', async () => {
     await openSession()
     let visibility: DocumentVisibilityState = 'visible'
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
@@ -270,7 +251,7 @@ describe('videot e formës (V2-E1-13)', () => {
     }
   })
 
-  it('në anglisht', { timeout: 20_000 }, async () => {
+  it('në anglisht', async () => {
     const { name } = await openSession()
     act(() => language.set('en'))
     const user = userEvent.setup()
@@ -288,11 +269,11 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(dialog).getByRole('button', { name: 'Save to set 1' })).toBeEnabled()
   })
 
-  it('faqja e ushtrimit: videot, luajtja dhe fshirja nga telefoni dhe nga Storage', { timeout: 20_000 }, async () => {
+  it('faqja e ushtrimit: videot, luajtja dhe fshirja nga telefoni dhe nga Storage', async () => {
     const { slot } = await openSession()
     const { addFormVideo, syncFormVideoFiles } = await import('@/data/form-videos')
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
-    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 2, weight_kg: 60, reps: 12, is_warmup: false })
+    await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 2, weight_kg: 60, reps: 12, is_warmup: false, logged_at: '2026-11-01T18:14:00.000Z' })
     const id = await addFormVideo(data.store, data.db, {
       exerciseId: slot.exerciseId,
       sessionId: 'last-week',

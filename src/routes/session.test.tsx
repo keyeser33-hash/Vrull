@@ -1,6 +1,5 @@
-import { act, configure, render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalDatabase } from '@/data/db'
 import type { LocalStore } from '@/data/store'
@@ -25,39 +24,18 @@ vi.mock('@/data/app-data', async () => {
     store,
     useAppUpdate: () => ({ status: 'idle' }),
     updater: {},
-    useLocalQuery<T>(query: () => Promise<T>) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        // Si useLocalQuery i vërtetë: një lexim i vjetër nuk mbishkruan një më të ri.
-        let started = 0
-        let shown = 0
-        const run = () => {
-          const ticket = ++started
-          void query().then((result) => {
-            if (ticket < shown) return
-            shown = ticket
-            setValue(() => result)
-          })
-        }
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
-// IndexedDB në memorie ngadalësohet me rreshtat e provave të mëparshme: leximet e ekranit presin më gjatë.
-configure({ asyncUtilTimeout: 5000 })
 
 async function reset() {
   await import('@/data/app-data')
   const { completeOnboarding } = await import('@/data/profile')
-  for (const table of ['set_logs', 'workout_sessions', 'week_weights', 'slot_prescriptions', 'program_slots', 'program_state', 'program_days', 'program_blocks', 'programs', 'exercises', 'user_settings', 'body_measurements'] as const) {
-    for (const row of await data.store.all(table)) await data.store.remove(table, row.id)
-  }
+  // Tabelat zbrazen vërtet: fshirja e butë rresht për rresht linte programet e provave të mëparshme
+  // në bazë, dhe çdo lexim i ekranit i kalonte të gjitha (provat ngadalësoheshin një nga një).
+  await Promise.all(data.db.tables.map((table) => table.clear()))
   localStorage.clear()
   await completeOnboarding(data.store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' })
 }
@@ -107,7 +85,6 @@ async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
         expect(button).toBeEnabled()
         return { button, save: true }
       },
-      { timeout: 5000 },
     ).catch(() => {
       throw new Error(`Pa set për të ruajtur: ${document.body.textContent?.slice(0, 400)}`)
     })
@@ -116,7 +93,7 @@ async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
     if (!next.save) continue
     saved += 1
     // Pas ruajtjes vjen pushimi, segmenti, seti tjetër ose mbyllja: butoni i këtij seti largohet.
-    await waitFor(() => expect(next.button.isConnected).toBe(false), { timeout: 5000 })
+    await waitFor(() => expect(next.button.isConnected).toBe(false))
   }
   throw new Error(`Seanca nuk mbaroi: ${document.body.textContent?.slice(0, 300)}`)
 }
@@ -128,7 +105,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(fetchSpy).not.toHaveBeenCalled()
   })
 
-  it('seti: "Herën e kaluar", pragu i rekordit dhe rekordi në moment te pushimi', { timeout: 30_000 }, async () => {
+  it('seti: "Herën e kaluar", pragu i rekordit dhe rekordi në moment te pushimi', async () => {
     await atPhaseOneWeekTwo()
     const user = userEvent.setup()
     await renderApp()
@@ -173,7 +150,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(saved).toMatchObject({ set_number: 1, technique: 'none', rir: null })
   })
 
-  it('pesha nga "Peshat e javës", tastiera numerike dhe pesha e fundit kur s\'ka e1RM', { timeout: 30_000 }, async () => {
+  it('pesha nga "Peshat e javës", tastiera numerike dhe pesha e fundit kur s\'ka e1RM', async () => {
     const { bench } = await atPhaseOneWeekTwo()
     const { changeWeekWeight } = await import('@/data/week-weights')
     const { trainingSnapshot } = await import('@/data/training')
@@ -208,7 +185,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.queryByText(/rekord të ri/)).not.toBeInTheDocument()
   })
 
-  it('pranimi: Stërvitja 1 e plotë pa internet, me rest-pause si segmente, mbyllja me rekordin dhe sinkronizimi', { timeout: 120_000 }, async () => {
+  it('pranimi: Stërvitja 1 e plotë pa internet, me rest-pause si segmente, mbyllja me rekordin dhe sinkronizimi', async () => {
     const { sessionId } = await atPhaseOneWeekTwo()
     const { createSync } = await import('@/data/sync')
     const remote = createFakeRemote()
@@ -286,7 +263,7 @@ describe('seanca (V2-E1-07)', () => {
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
   })
 
-  it('Java 0: RIR-i i recetës zgjidhet te seti; mbyllja pa rekord', { timeout: 30_000 }, async () => {
+  it('Java 0: RIR-i i recetës zgjidhet te seti; mbyllja pa rekord', async () => {
     const { startWorkout } = await import('@/data/training')
     const sessionId = await startWorkout(data.store)
     const user = userEvent.setup()
@@ -319,7 +296,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('group', { name: '1 set pune' })).toBeInTheDocument()
   })
 
-  it('Faza 1 · Java 3: seti i fundit me drop set te pesha e javës 1, pa internet', { timeout: 60_000 }, async () => {
+  it('Faza 1 · Java 3: seti i fundit me drop set te pesha e javës 1, pa internet', async () => {
     const { finishWorkout, saveSet, skipWorkout, startWorkout, trainingSnapshot } = await import('@/data/training')
     for (let workout = 0; workout < 4; workout++) await skipWorkout(data.store)
     // Faza 1 · Java 1 · Stërvitja 1: Bench Press me 50 kg.
@@ -363,7 +340,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(lastSets.every((set) => Array.isArray(set.segments) && set.segments.length === 1)).toBe(true)
   })
 
-  it('anglisht: seti, pushimi dhe mbyllja me tekstet e bordit "EN · Seanca"', { timeout: 30_000 }, async () => {
+  it('anglisht: seti, pushimi dhe mbyllja me tekstet e bordit "EN · Seanca"', async () => {
     language.set('en')
     await atPhaseOneWeekTwo()
     const user = userEvent.setup()
@@ -404,7 +381,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument()
   })
 
-  it('segmenti i rest-pause kapërcehet; "Mbrapa" e lë seancën të hapur', { timeout: 30_000 }, async () => {
+  it('segmenti i rest-pause kapërcehet; "Mbrapa" e lë seancën të hapur', async () => {
     const { bench, sessionId } = await atPhaseOneWeekTwo()
     const { saveSet } = await import('@/data/training')
     for (const setNumber of [1, 2, 3]) await saveSet(data.store, { sessionId, slot: bench, setNumber, weightKg: 62.5, reps: 10 })

@@ -26,6 +26,11 @@ export interface WeekWeightsInput {
   overrides: Record<string, { oneRmKg: number; setAt: string }>
   steps: Partial<Record<Equipment, number>>
   decisions: WeekWeightDecision[]
+  /**
+   * Kur nisi seanca e parë e javës që shqyrtohet (null: ende asnjë). Rregulli i progresit krahason
+   * javën e kaluar, ndaj lexon vetëm setet para saj: seanca e kësaj jave nuk i shton shtesën vetes.
+   */
+  weekStartedAt?: string | null
 }
 
 export interface WeekWeightRow {
@@ -100,6 +105,8 @@ function topReps(program: Program, week: WeekRef | null, dayId: string, slotId: 
 export function weekWeights(input: WeekWeightsInput): WeekWeightRow[] {
   const { program, week, history, now } = input
   const before = previousWeek(program, week)
+  const startedAt = input.weekStartedAt
+  const earlier = startedAt ? history.filter((set) => set.loggedAt < startedAt) : history
   return [...program.days].sort(byPosition).flatMap((day) => {
     const plan = planOf(program, week, day.id)
     const weighted = plan.slots.filter((slot) => program.exercises[slot.exerciseId]?.tracking === 'weight_reps')
@@ -113,7 +120,7 @@ export function weekWeights(input: WeekWeightsInput): WeekWeightRow[] {
         now,
         override: input.overrides[slot.exerciseId] ?? null,
         steps: input.steps,
-        progression: slot.progression ? { rule: slot.progression, topReps: topReps(program, before, day.id, slot.slotId) } : null,
+        progression: slot.progression ? { rule: slot.progression, topReps: topReps(program, before, day.id, slot.slotId), history: earlier } : null,
       })
       // Një vendim vlen vetëm për ushtrimin për të cilin u mor (editori mund ta ketë ndërruar).
       const decision = input.decisions.find((candidate) => candidate.slotId === slot.slotId && candidate.exerciseId === slot.exerciseId) ?? null

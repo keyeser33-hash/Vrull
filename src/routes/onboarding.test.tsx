@@ -138,9 +138,10 @@ describe('hapat e parë', () => {
     renderOnboarding()
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'English' }))
+    // chooseLanguage shkruan rreshtin e cilësimeve para ndërrimit: tekstet vijnë pas leximit të bazës.
+    expect(await screen.findByRole('heading', { level: 1, name: 'Language and weight' })).toBeInTheDocument()
     expect(language.get()).toBe('en')
     expect(window.localStorage.getItem('th-language')).toBe('en')
-    expect(screen.getByRole('heading', { level: 1, name: 'Language and weight' })).toBeInTheDocument()
     expect(screen.getByText('Step 1 of 4')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'English' })).toHaveAttribute('aria-pressed', 'true')
     await user.type(screen.getByLabelText('Weight today'), '80.5')
@@ -162,7 +163,7 @@ describe('hapat e parë', () => {
     await user.click(screen.getByRole('button', { name: 'Back' }))
     await user.click(screen.getByRole('button', { name: 'Back' }))
     await user.click(screen.getByRole('button', { name: 'Shqip' }))
-    expect(screen.getByRole('heading', { level: 1, name: 'Gjuha dhe pesha' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Gjuha dhe pesha' })).toBeInTheDocument()
     expect(screen.getByLabelText('Pesha sot')).toHaveValue('80,5')
   })
 

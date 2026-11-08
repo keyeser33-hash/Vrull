@@ -268,7 +268,7 @@ export async function activeProgram(store: LocalStore) {
 }
 
 /** Seanca e nisur për treguesin e tanishëm, nëse ka. */
-async function openSession(store: LocalStore, programId: string, pointer: Pointer) {
+export async function openSession(store: LocalStore, programId: string, pointer: Pointer) {
   const sessions = await store.where('workout_sessions', 'program_id', programId)
   return sessions.find(
     (row) =>
@@ -372,10 +372,6 @@ export async function saveSet(store: LocalStore, input: SetInput) {
       logged_at: existing?.logged_at ?? store.now().toISOString(),
     }),
   )
-}
-
-export async function removeSet(store: LocalStore, id: string) {
-  await store.remove('set_logs', id)
 }
 
 /** Treguesi kalon përpara; pas stërvitjes së fundit programi shënohet "Përfunduar". */

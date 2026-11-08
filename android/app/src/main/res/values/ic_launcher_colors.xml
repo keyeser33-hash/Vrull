@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Krijuar nga tools/app-icon/build.mjs nga shenja te src/components/ui/logo.tsx; mos e ndrysho me dorë.
+     Prushi (tokeni ember) dhe vija mbi të (on-ember) nga src/styles/globals.css. -->
+<resources>
+    <color name="ic_launcher_background">#FF5B2E</color>
+    <color name="ic_launcher_line">#0B0B0C</color>
+</resources>

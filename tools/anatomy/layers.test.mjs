@@ -56,5 +56,5 @@ describe('shtresat kundrejt modelit 3D', () => {
       expect(after - before, `${key}: sa fshehin mbulesat (${before.toFixed(2)} -> ${after.toFixed(2)})`).toBeGreaterThanOrEqual(0.3)
       expect(after, `${key} pa mbulesat`).toBeGreaterThanOrEqual(0.8)
     }
-  }, 60_000)
+  })
 })

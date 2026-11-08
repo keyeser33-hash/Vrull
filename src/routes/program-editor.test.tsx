@@ -66,7 +66,7 @@ describe('ndërtuesi i programeve', () => {
 
   it('nga Programi te struktura e programit aktiv dhe te Programet', async () => {
     await renderAt('/programi')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Shortcut to Size' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Ndrysho programin' })).toHaveAttribute('href', expect.stringMatching(/^\/programi\/editori\//))
     expect(screen.getByRole('link', { name: 'Shiko të gjitha programet' })).toHaveAttribute('href', '/programet')
   })

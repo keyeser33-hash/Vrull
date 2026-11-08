@@ -1,8 +1,9 @@
 import type { Messages, TranslationOf } from '../translate'
 
 // Termat e domenit që i përdorin shumë ekrane (Sot, seanca, programi, trupi, historiku, hyrja):
-// grupet e muskujve dhe emrat e Shortcut to Size, që ruhen shqip në bazë. Funksionet: `src/i18n/domain.ts`.
-// Çelësat: 'muscle.*', 'plan.*'.
+// grupet e muskujve, emrat e Shortcut to Size që ruhen shqip në bazë, tema e ditës, pajisjet dhe
+// vend-mbajtësi i fotos së ushtrimit. Funksionet: `src/i18n/domain.ts`.
+// Çelësat: 'muscle.*', 'plan.*', 'equipment.*', 'exercise.*'.
 
 export const sq = {
   // Grupet e muskujve (src/program/muscles.ts), sipas id-së.
@@ -31,6 +32,25 @@ export const sq = {
   'plan.stsDay.2': 'Shpinë, biceps, bark',
   'plan.stsDay.3': 'Shpatulla, trapez, pulpa',
   'plan.stsDay.4': 'Këmbë, bark',
+  // Tema e ditës ("Dita e gjoksit"), nga muskuli kryesor i ushtrimit të parë (`dayTheme`): Sot dhe historiku.
+  'plan.theme.chest': 'Dita e gjoksit',
+  'plan.theme.back': 'Dita e shpinës',
+  'plan.theme.shoulders': 'Dita e shpatullave',
+  'plan.theme.arms': 'Dita e krahëve',
+  'plan.theme.legs': 'Dita e këmbëve',
+  'plan.theme.abs': 'Dita e barkut',
+  // Pajisjet (`Equipment`): programi, biblioteka, ushtrimi dhe trupi 3D.
+  'equipment.barbell': 'Shufër',
+  'equipment.ez_bar': 'Shufër EZ',
+  'equipment.dumbbell': 'Dumbbell',
+  'equipment.cable': 'Kabëll',
+  'equipment.machine': 'Makineri',
+  'equipment.bodyweight': 'Pesha e trupit',
+  'equipment.kettlebell': 'Kettlebell',
+  'equipment.band': 'Llastik',
+  'equipment.other': 'Tjetër',
+  // Vend-mbajtësi i fotos së ushtrimit (`ExercisePhoto`, faqja e ushtrimit).
+  'exercise.noPhoto': 'Pa foto',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -58,4 +78,20 @@ export const en: TranslationOf<typeof sq> = {
   'plan.stsDay.2': 'Back, biceps, abs',
   'plan.stsDay.3': 'Shoulders, traps, calves',
   'plan.stsDay.4': 'Legs, abs',
+  'plan.theme.chest': 'Chest day',
+  'plan.theme.back': 'Back day',
+  'plan.theme.shoulders': 'Shoulder day',
+  'plan.theme.arms': 'Arm day',
+  'plan.theme.legs': 'Leg day',
+  'plan.theme.abs': 'Abs day',
+  'equipment.barbell': 'Barbell',
+  'equipment.ez_bar': 'EZ bar',
+  'equipment.dumbbell': 'Dumbbell',
+  'equipment.cable': 'Cable',
+  'equipment.machine': 'Machine',
+  'equipment.bodyweight': 'Bodyweight',
+  'equipment.kettlebell': 'Kettlebell',
+  'equipment.band': 'Band',
+  'equipment.other': 'Other',
+  'exercise.noPhoto': 'No photo',
 }

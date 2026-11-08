@@ -1,6 +1,5 @@
 import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import pkg from '../../package.json'
 import type { LocalStore } from '@/data/store'
@@ -35,25 +34,7 @@ vi.mock('@/data/app-data', async () => {
     updatesSupported: () => true,
     useAppUpdate: () => data.update,
     updater: { check: data.check, update: vi.fn(), allowInstall: vi.fn() },
-    useLocalQuery<T>(query: () => Promise<T>) {
-      const [value, setValue] = useState<T>()
-      useEffect(() => {
-        let started = 0
-        let shown = 0
-        const run = () => {
-          const ticket = ++started
-          void query().then((result) => {
-            if (ticket < shown) return
-            shown = ticket
-            setValue(() => result)
-          })
-        }
-        run()
-        return store.subscribe(run)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-      return value
-    },
+    useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
 

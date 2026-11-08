@@ -11,7 +11,7 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type WeekReview, weekReview } from '@/data/programme'
 import { acceptWeekWeights, changeWeekWeight, postponeWeekWeights } from '@/data/week-weights'
 import type { I18n } from '@/i18n'
-import { programBlockName, programDayName } from '@/i18n/domain'
+import { equipmentName, programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { roundDown, weightStep } from '@/program/loads'
@@ -19,7 +19,7 @@ import type { Equipment } from '@/program/types'
 import { oneRmSource } from '@/progress/exercise-records'
 import { daySummary, rowChange } from '@/progress/week-review'
 import type { WeekWeightRow } from '@/progress/week-weights'
-import { dotted, equipmentName, rangeText, techniqueName, weekLabel, weekShort } from './programme-format'
+import { dotted, rangeText, techniqueName, weekLabel, weekShort } from './programme-format'
 
 // Peshat e javës (bordi "Sugjerimi", V2-E1-09; SPEC §7, V23): për javën që shqyrtohet, çdo ushtrim me
 // peshë merr propozimin me llogarinë që e jep. "Prano peshat" i bën propozimet pesha të javës, "Më

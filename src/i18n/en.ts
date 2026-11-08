@@ -5,6 +5,7 @@ import * as domain from './areas/domain'
 import * as entry from './areas/entry'
 import * as history from './areas/history'
 import * as music from './areas/music'
+import * as notify from './areas/notify'
 import * as programme from './areas/programme'
 import * as session from './areas/session'
 import * as today from './areas/today'
@@ -189,7 +190,7 @@ const base: TranslationOf<typeof sqBase> = {
   'sources.anatomy.use': 'The 3D muscle model in Body, simplified for the phone.',
   'sources.anatomy.license':
     'BodyParts3D, (c) The Database Center for Life Science, CC BY 4.0 (version 4.0). Latissimus dorsi and rectus abdominis come from version 3.0, CC BY-SA 2.1 Japan, so the app’s model is shared under CC BY-SA 2.1 Japan.',
-  'sources.exercises.use': 'The exercise library with primary and secondary muscles.',
+  'sources.exercises.use': 'The exercise library with primary and secondary muscles, and the exercise photos.',
   'sources.exercises.license': 'yuhonas/free-exercise-db, Unlicense (public domain).',
   'sources.off.use': 'Products with barcodes and their nutrition values.',
   'sources.off.license': 'Data under the Open Database License (ODbL), (c) Open Food Facts contributors.',
@@ -264,4 +265,4 @@ const base: TranslationOf<typeof sqBase> = {
   'ui.quickAdd.aiLimit': 'This month’s limit has been reached',
 }
 
-export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en, ...builder.en, ...videos.en, ...ai.en, ...music.en }
+export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en, ...builder.en, ...videos.en, ...ai.en, ...music.en, ...notify.en }
