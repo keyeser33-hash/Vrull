@@ -22,6 +22,7 @@ export const TABLES = [
   'supplements',
   'supplement_logs',
   'user_settings',
+  'week_weights',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -76,4 +77,5 @@ export const INDEXES: Record<TableName, string[]> = {
   supplements: [],
   supplement_logs: ['date', 'supplement_id'],
   user_settings: [],
+  week_weights: ['program_id'],
 }

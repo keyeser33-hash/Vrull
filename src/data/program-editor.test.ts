@@ -291,6 +291,36 @@ describe('editori i programeve (TH-11)', () => {
     expect(view.rules(slot, { blockId: block, week: 1 }).sets).toEqual({ value: 5, from: null })
   })
 
+  it('rregulli i progresit (V9) ruhet në nivelin e zgjedhur dhe e lexon motori', async () => {
+    const store = setup()
+    const press = await store.put('exercises', { name: 'Dumbbell Shoulder Press', equipment: 'dumbbell' })
+    const programId = await createProgram(store, 'Sipër/poshtë')
+    const one = await addBlock(store, programId, { name: 'Blloku 1', weeks: 2 })
+    const two = await addBlock(store, programId, { name: 'Blloku 2', weeks: 2 })
+    const day = await addDay(store, programId, 'Sipër')
+    const slot = await addSlot(store, day, { exerciseId: press.id, sets: 3, restSeconds: 90 })
+    await editSlot(store, slot, { blockId: null, week: null }, { progression: { minRir: 2, incrementKg: 2.5 } })
+    await editSlot(store, slot, { blockId: two, week: null }, { progression: { minRir: 1, incrementKg: 2 } })
+    const view = (await programEditor(store, programId))!
+    expect(view.plan(one, 2, day).slots[0].progression).toEqual({ minRir: 2, incrementKg: 2.5 })
+    expect(view.plan(two, 1, day).slots[0].progression).toEqual({ minRir: 1, incrementKg: 2 })
+    expect(view.rules(slot, { blockId: two, week: 1 }).progression.from).toEqual({ blockId: two, week: null })
+  })
+
+  it('kopja e programit dhe një ndryshim tjetër në të njëjtin nivel e mbajnë rregullin e progresit', async () => {
+    const store = setup()
+    const press = await store.put('exercises', { name: 'Dumbbell Shoulder Press', equipment: 'dumbbell' })
+    const programId = await createProgram(store, 'Sipër/poshtë')
+    const block = await addBlock(store, programId, { name: 'Blloku 1', weeks: 2 })
+    const day = await addDay(store, programId, 'Sipër')
+    const slot = await addSlot(store, day, { exerciseId: press.id, sets: 3, restSeconds: 90 })
+    await setRule(store, slot, { blockId: block, week: null }, { progression: { minRir: 2, incrementKg: 2.5 } })
+    await setRule(store, slot, { blockId: block, week: null }, { sets: 4 })
+    const copy = await duplicateProgram(store, programId, 'Kopje')
+    const view = (await programEditor(store, copy))!
+    expect(view.plan(view.blocks[0].id, 1, view.days[0].id).slots[0]).toMatchObject({ sets: 4, progression: { minRir: 2, incrementKg: 2.5 } })
+  })
+
   it('programi i ri ka një bllok dhe një ditë; lista tregon cili është aktiv', async () => {
     const store = setup()
     const first = await startProgram(store, '  Upper lower ')

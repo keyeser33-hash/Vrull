@@ -21,14 +21,19 @@ export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> 
   _photo_files: Table<PhotoFile, string>
 }
 
+// Tabelat e sinkronizuara që erdhën pas versionit 1, me versionin ku hynë.
+const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3 }
+
+const tableSchema = (table: TableName) => ['id', '_dirty', ...INDEXES[table]].join(', ')
+
 export function createDatabase(name = 'training-hub'): LocalDatabase {
   const db = new Dexie(name) as LocalDatabase
   const schema: Record<string, string> = { _meta: 'key' }
-  for (const table of TABLES) {
-    schema[table] = ['id', '_dirty', ...INDEXES[table]].join(', ')
-  }
+  for (const table of TABLES.filter((candidate) => !ADDED_LATER[candidate])) schema[table] = tableSchema(table)
   db.version(1).stores(schema)
   // Versioni 2: skedarët e fotove të progresit, vetëm në telefon (rreshtat sinkronizohen te progress_photos).
   db.version(2).stores({ _photo_files: 'id, uploaded' })
+  // Versioni 3: peshat e javës (V23).
+  db.version(3).stores({ week_weights: tableSchema('week_weights') })
   return db
 }

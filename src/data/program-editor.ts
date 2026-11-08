@@ -1,7 +1,7 @@
 import { planSession } from '@/program/engine'
 import type { LibraryExercise } from '@/program/library'
 import { type Scope, slotRules, type SlotRules } from '@/program/rules'
-import type { Block, Prescription, Program, SessionPlan, Technique } from '@/program/types'
+import type { Block, Prescription, Program, ProgressionRule, SessionPlan, Technique } from '@/program/types'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { exerciseFromLibrary, type ExerciseRecord, programModel } from './training'
@@ -240,6 +240,8 @@ export interface RuleFields {
   restSeconds?: number | null
   prescription?: Prescription | null
   technique?: Technique | null
+  /** Rregulli i progresit të programeve të tua (V9); ruhet si rregull në çdo nivel. */
+  progression?: ProgressionRule | null
 }
 
 const FIELD_COLUMNS: Record<keyof RuleFields, string> = {
@@ -248,6 +250,7 @@ const FIELD_COLUMNS: Record<keyof RuleFields, string> = {
   restSeconds: 'rest_seconds',
   prescription: 'prescription',
   technique: 'technique',
+  progression: 'progression',
 }
 
 const ruleValues = (rule: LocalRow) => ({
@@ -256,6 +259,7 @@ const ruleValues = (rule: LocalRow) => ({
   rest_seconds: rule.rest_seconds ?? null,
   prescription: rule.prescription ?? null,
   technique: rule.technique ?? null,
+  progression: rule.progression ?? null,
 })
 
 const sameScope = (rule: LocalRow, scope: RuleScope) => (rule.block_id ?? null) === scope.blockId && (rule.week ?? null) === scope.week
