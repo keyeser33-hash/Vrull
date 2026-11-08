@@ -223,6 +223,10 @@ Objektivat e një date të ngrira me regjistrimin e parë ose me ndryshimin e ll
 Një vend me orë në orarin e ditës (Mëngjesi 1, Dreka, Para stërvitjes…), me artikujt e shabllonit të Jimit.
 _Avoid_: ushqim (për vendin në orar)
 
+**Dita e ushqimit**:
+Dita së cilës i përkasin ushqimi, uji dhe suplementet; nuk ndërrohet në mesnatë, por pak orë para zgjimit, që vakti para gjumit pas mesnate t'i përkasë ditës që po mbaron.
+_Avoid_: dita kalendarike (për ushqimin)
+
 **Orari i vakteve**:
 Orët e vakteve të një dite, nga ora e zgjimit, e gjumit dhe e stërvitjes.
 

@@ -7,7 +7,7 @@ const owner: ProfileInput = {
   birthYear: null,
   heightCm: 185,
   weightKg: 88,
-  activity: 'light',
+  activity: 'sedentary',
   sessionsPerWeek: 4,
   goal: 'gain',
   today: '2026-11-08',
@@ -18,26 +18,26 @@ describe('calculateTargets', () => {
     const result = calculateTargets(owner)
     expect(result.formula).toBe('mifflin')
     expect(result.age).toBe(30)
-    expect(result.rest).toEqual({ kcal: 2820, proteinG: 176, carbsG: 351, fatG: 79 })
-    expect(result.training).toEqual({ kcal: 3120, proteinG: 176, carbsG: 426, fatG: 79 })
+    expect(result.rest).toEqual({ kcal: 2630, proteinG: 176, carbsG: 304, fatG: 79 })
+    expect(result.training).toEqual({ kcal: 2930, proteinG: 176, carbsG: 379, fatG: 79 })
   })
 
   it('i jep rreshtat e "Si u llogarit" që mblidhen saktë', () => {
     expect(calculateTargets(owner).breakdown).toEqual({
       bmr: 1890,
-      maintenanceRest: 2650,
+      maintenanceRest: 2460,
       adjustment: 170,
-      rest: 2820,
+      rest: 2630,
       trainingExtra: 300,
-      training: 3120,
+      training: 2930,
     })
   })
 
   it('aktiviteti ndryshon mirëmbajtjen', () => {
-    const sedentary = calculateTargets({ ...owner, activity: 'sedentary' })
-    expect(sedentary.rest.kcal).toBe(2630)
-    expect(sedentary.training.kcal).toBe(2930)
-    expect(calculateTargets({ ...owner, activity: 'standing' }).rest.kcal).toBeGreaterThan(calculateTargets(owner).rest.kcal)
+    const light = calculateTargets({ ...owner, activity: 'light' })
+    expect(light.rest.kcal).toBe(2820)
+    expect(light.training.kcal).toBe(3120)
+    expect(calculateTargets({ ...owner, activity: 'standing' }).rest.kcal).toBeGreaterThan(light.rest.kcal)
     expect(calculateTargets({ ...owner, activity: 'physical' }).rest.kcal).toBeGreaterThan(
       calculateTargets({ ...owner, activity: 'standing' }).rest.kcal,
     )
@@ -58,8 +58,8 @@ describe('calculateTargets', () => {
     const lean = calculateTargets({ ...owner, bodyFatPct: 20 })
     expect(lean.formula).toBe('cunningham')
     expect(lean.bmrKcal).toBeCloseTo(500 + 22 * 70.4, 5)
-    expect(lean.rest.kcal).toBe(3040)
-    expect(lean.training.kcal).toBe(3340)
+    expect(lean.rest.kcal).toBe(2840)
+    expect(lean.training.kcal).toBe(3140)
   })
 
   it('mirëmbajtja e njohur zëvendëson vlerësimin', () => {
@@ -73,14 +73,14 @@ describe('calculateTargets', () => {
   it('mirëmbajtja nuk ka tepricë', () => {
     const maintain = calculateTargets({ ...owner, goal: 'maintain' })
     expect(maintain.adjustmentKcal).toBe(0)
-    expect(maintain.rest.kcal).toBe(2650)
+    expect(maintain.rest.kcal).toBe(2460)
   })
 
   it('humbja: −0,5% në javë dhe 2,2 g/kg proteinë si parazgjedhje', () => {
     const lose = calculateTargets({ ...owner, goal: 'lose' })
     expect(lose.ratePctPerWeek).toBe(0.5)
     expect(lose.adjustmentKcal).toBeCloseTo(-484, 5)
-    expect(lose.rest.kcal).toBe(2160)
+    expect(lose.rest.kcal).toBe(1970)
     expect(lose.rest.proteinG).toBe(194)
   })
 
@@ -132,8 +132,8 @@ describe('calculateTargets', () => {
 
   it('mesatarja javore ndjek seancat në javë', () => {
     const result = calculateTargets(owner)
-    expect(result.averageKcal).toBeCloseTo((2820 * 3 + 3120 * 4) / 7, 5)
-    expect(calculateTargets({ ...owner, sessionsPerWeek: 0 }).averageKcal).toBe(2820)
+    expect(result.averageKcal).toBeCloseTo((2630 * 3 + 2930 * 4) / 7, 5)
+    expect(calculateTargets({ ...owner, sessionsPerWeek: 0 }).averageKcal).toBe(2630)
   })
 })
 

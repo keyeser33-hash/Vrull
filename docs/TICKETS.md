@@ -218,7 +218,7 @@ Borde të shpejta në stilin Vrull, në tri temat, shqip, në 390 px: faqja Obje
 
 ## V2-E2-02 · Kalkulatori i objektivave
 
-Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: Mifflin-St Jeor, Cunningham me yndyrën, US Navy nga perimetrat, aktiviteti, dita e stërvitjes, ritmi, makrot, kufijtë, rrumbullakimi, mirëmbajtja e njohur. **Pranimi:** shembulli i Shtojcës C del saktë (2 820 / 3 120 kcal, 176 g P, 79 g Y); kufijtë (1 500 / 1 200 kcal, karbohidratet ≥ 50 g, yndyra ≥ 20%) kanë prova; të njëjtat hyrje japin të njëjtat numra në të dy gjuhët.
+Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: Mifflin-St Jeor, Cunningham me yndyrën, US Navy nga perimetrat, aktiviteti, dita e stërvitjes, ritmi, makrot, kufijtë, rrumbullakimi, mirëmbajtja e njohur. **Pranimi:** shembulli i Shtojcës C del saktë (2 630 / 2 930 kcal, 176 g P, 79 g Y, 304 / 379 g K); kufijtë (1 500 / 1 200 kcal, karbohidratet ≥ 50 g, yndyra ≥ 20%) kanë prova; të njëjtat hyrje japin të njëjtat numra në të dy gjuhët.
 
 **Gjendja (08.11.2026):** gati: `src/nutrition/calculator.ts` (`calculateTargets`, `navyBodyFat`) me 17 prova përpara kodit, të kontrolluara me mutacion (stërvitja 3,4 kcal/kg, yndyra 20%, 7 700 kcal/kg, kufiri i kalorive). Ekranet ende përdorin `nutritionTargets` deri te E2-03.
 
@@ -236,7 +236,7 @@ Plani i përdoruesit për ditën e stërvitjes dhe të pushimit, nga shablloni i
 
 ## V2-E2-06 · Oraret e vakteve
 
-Sipas §9 dhe bordit: zgjedhja e numrit të vakteve (3–9), lëvizja dhe heqja e secilit, ora e stërvitjes për çdo ditë (jo vetëm e ditës së parë, siç bën sot `settings.tsx`), ndryshimi nga dita tjetër. Rregulli i vaktit pranë stërvitjes mbetet. **Pranimi:** prova të logjikës për 3, 5 dhe 9 vakte dhe për stërvitjen në mëngjes dhe në mbrëmje; orari i ri del te Ushqimi dhe te rikujtuesit nga dita tjetër.
+Sipas §9 dhe bordit: zgjedhja e numrit të vakteve (3–9), lëvizja dhe heqja e secilit, ora e stërvitjes për çdo ditë (jo vetëm e ditës së parë, siç bën sot `settings.tsx`), ndryshimi nga dita tjetër. Rregulli i vaktit pranë stërvitjes mbetet. Dita e ushqimit ndërrohet 3 orë para zgjimit (V46): një funksion i vetëm jep "datën e ushqimit" për një çast dhe e përdorin Ushqimi, regjistrimi, uji, suplementet, rikujtuesit dhe dita e humbur. Ndreq edhe defektin e 0.20: `src/reminders/plan.ts` e vendos vaktin pas mesnate ("Para gjumit" në 00:30) me datën e ditës, jo të nesërmes (`at(day, time)`); `mealSchedule` duhet të kthejë edhe ditën. **Pranimi:** prova të logjikës për 3, 5 dhe 9 vakte, për stërvitjen në mëngjes dhe në mbrëmje, dhe për gjumin pas mesnate (zgjimi 08:20, gjumi 01:00: "Para gjumit" del në 00:30 të ditës tjetër kalendarike, por i përket ditës së ushqimit që mbaron); orari i ri del te Ushqimi dhe te rikujtuesit nga dita tjetër.
 
 ## V2-E2-07 · Uji
 
