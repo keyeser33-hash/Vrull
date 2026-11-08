@@ -1,9 +1,15 @@
-import type { Translation } from './sq'
+import * as body from './areas/body'
+import * as history from './areas/history'
+import * as programme from './areas/programme'
+import * as session from './areas/session'
+import * as today from './areas/today'
+import type { base as sqBase, Translation } from './sq'
+import type { TranslationOf } from './translate'
 
 // Katalogu anglisht, britanik (SPEC §0.3a): Programme, yoghurt, litres; 17:00, 2,900, 62.5.
 // Sentence case, pa pikëçuditje, si në shqip. Çelësat dhe parametrat ndjekin sq.ts.
 
-export const en: Translation = {
+const base: TranslationOf<typeof sqBase> = {
   'tab.today': 'Today',
   'tab.programme': 'Programme',
   'tab.food': 'Food',
@@ -267,3 +273,5 @@ export const en: Translation = {
   'ui.quickAdd.barcode': 'Scan barcode',
   'ui.quickAdd.aiLimit': 'This month’s limit has been reached',
 }
+
+export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en }

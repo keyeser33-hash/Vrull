@@ -22,6 +22,8 @@ export type PluralForms = {
 
 export type Message = string | PluralForms
 export type Messages = Readonly<Record<string, Message>>
+/** Forma e një katalogu në gjuhën tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */
+export type TranslationOf<C extends Messages> = { readonly [K in keyof C]: C[K] extends string ? string : PluralForms }
 export type ParamValue = string | number
 export type Params = Readonly<Record<string, ParamValue>>
 

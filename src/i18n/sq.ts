@@ -1,10 +1,16 @@
-import type { Messages, PluralForms } from './translate'
+import * as body from './areas/body'
+import * as history from './areas/history'
+import * as programme from './areas/programme'
+import * as session from './areas/session'
+import * as today from './areas/today'
+import type { Messages, TranslationOf } from './translate'
 
-// Katalogu shqip: burimi i çelësave. Çdo çelës i ri shtohet këtu dhe te en.ts (tipet e kërkojnë).
+// Katalogu shqip: burimi i çelësave. Korniza dhe ekranet e v1 janë këtu (base, me anglishten te en.ts);
+// zonat e Etapës 1 kanë skedarin e tyre te areas/, me të dyja gjuhët. Tipet kërkojnë çdo çelës në të dyja.
 // Çelësat sipas vendit ku shfaqen ('login.title'); termat e fjalorit te 'tab.*' dhe 'term.*'.
 // Emrat e ushtrimeve nuk hyjnë këtu: mbeten në anglisht në të dyja gjuhët.
 
-export const sq = {
+export const base = {
   // Tab-et dhe termat kryesorë (SPEC §0.3a, GLOSSARY.md).
   'tab.today': 'Sot',
   'tab.programme': 'Programi',
@@ -286,5 +292,10 @@ export const sq = {
   'ui.quickAdd.aiLimit': 'Kufiri i këtij muaji u arrit',
 } as const satisfies Messages
 
+/** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
+export const AREAS = { today, session, programme, body, history }
+
+export const sq = { ...base, ...today.sq, ...session.sq, ...programme.sq, ...body.sq, ...history.sq } as const satisfies Messages
+
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */
-export type Translation = { readonly [K in keyof typeof sq]: (typeof sq)[K] extends string ? string : PluralForms }
+export type Translation = TranslationOf<typeof sq>

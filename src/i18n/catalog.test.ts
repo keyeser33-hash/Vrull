@@ -1,6 +1,6 @@
 import { en } from './en'
 import { i18nFor } from './index'
-import { sq } from './sq'
+import { AREAS, base, sq } from './sq'
 import type { Message } from './translate'
 
 // Rregullat e katalogut: anglishtja ka çdo çelës të shqipes me të njëjtat parametra; tekstet
@@ -18,6 +18,13 @@ const placeholders = (message: Message) => {
 const catalogs = { sq, en } as Record<'sq' | 'en', Record<string, Message>>
 
 describe('katalogu', () => {
+  it('çdo çelës jeton në një pjesë të vetme të katalogut (baza ose një zonë te areas/)', () => {
+    const parts = [base, ...Object.values(AREAS).map((area) => area.sq)]
+    const keys = parts.flatMap((part) => Object.keys(part))
+    expect(keys.length).toBe(new Set(keys).size)
+    for (const area of Object.values(AREAS)) expect(Object.keys(area.en).sort()).toEqual(Object.keys(area.sq).sort())
+  })
+
   it('anglishtja ka saktësisht çelësat e shqipes', () => {
     expect(Object.keys(en).sort()).toEqual(Object.keys(sq).sort())
   })
