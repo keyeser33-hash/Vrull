@@ -1,4 +1,5 @@
 import { localDate, weekRange } from '@/lib/calendar'
+import { dayTheme, type DayTheme } from '@/progress/history'
 import { MUSCLE_GROUPS, type MuscleGroup } from '@/program/muscles'
 import { recoveryFor, type RecoveryStatus } from '@/program/recovery'
 import type { Target, Tracking } from '@/program/types'
@@ -34,6 +35,8 @@ export interface TodayWeekDay {
   day: number
   state: TodayDayState
   today: boolean
+  /** Seanca e mbyllur e ditës (e fundit, kur janë disa), që prekja e ditës ta hapë te historiku. */
+  sessionId: string | null
 }
 
 const isoWeekday = (date: Date) => date.getDay() || 7
@@ -42,12 +45,13 @@ const addDays = (date: Date, days: number) => new Date(date.getFullYear(), date.
 
 /**
  * Java kalendarike (e hënë–e diel) që përmban `now`: një ditë me seancë të mbyllur është e bërë;
- * një ditë jashtë ditëve të stërvitjes është pushim; të tjerat janë ditë stërvitjeje.
+ * një ditë jashtë ditëve të stërvitjes është pushim; të tjerat janë ditë stërvitjeje. Seancat vijnë
+ * me radhën e mbylljes: e fundit e një dite është ajo që hapet.
  */
-export function calendarWeek(now: Date, trainingDays: number[], doneDates: string[]): TodayWeekDay[] {
+export function calendarWeek(now: Date, trainingDays: number[], completed: { date: string; id: string }[]): TodayWeekDay[] {
   const [monday] = weekRange(now)
   const today = localDate(now)
-  const done = new Set(doneDates)
+  const done = new Map(completed.map((session) => [session.date, session.id]))
   return Array.from({ length: 7 }, (_, index) => {
     const date = addDays(atNoon(monday), index)
     const key = localDate(date)
@@ -58,6 +62,7 @@ export function calendarWeek(now: Date, trainingDays: number[], doneDates: strin
       day: date.getDate(),
       state: done.has(key) ? 'done' : trainingDays.includes(weekday) ? 'planned' : 'rest',
       today: key === today,
+      sessionId: done.get(key) ?? null,
     }
   })
 }
@@ -79,8 +84,8 @@ export interface FocusGroup {
 }
 
 /**
- * Grupi që i jep emrin ditës ("Dita e gjoksit"): grupi i muskujve kryesorë të ushtrimit të parë
- * që ka muskuj të njohur, me të gjithë çelësat kryesorë të stërvitjes që bien brenda tij.
+ * Grupi kryesor: grupi i muskujve kryesorë të ushtrimit të parë që ka muskuj të njohur, me të gjithë
+ * çelësat kryesorë të stërvitjes që bien brenda tij. Jep rikuperimin e kartës dhe ku shikon modeli 3D.
  */
 export function mainGroup(slots: { exerciseId: string }[], exercises: Record<string, { primary: string[] } | undefined>): FocusGroup | null {
   const primary = [...new Set(slots.flatMap((slot) => exercises[slot.exerciseId]?.primary ?? []))]
@@ -108,6 +113,8 @@ export interface TodayExercise {
 }
 
 export interface TodayWorkout {
+  /** "Dita e gjoksit": si te historiku, nga muskuli kryesor i ushtrimit të parë. */
+  theme: DayTheme | null
   exercises: number
   sets: number
   minutes: number
@@ -146,8 +153,11 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     store.all('workout_sessions'),
     nutritionDay(store, today, now),
   ])
-  const doneDates = sessions.filter((row) => row.status === 'completed').map((row) => String(row.date))
-  const week = calendarWeek(now, profile.trainingDays, doneDates)
+  const completed = sessions
+    .filter((row) => row.status === 'completed')
+    .sort((a, b) => String(a.ended_at).localeCompare(String(b.ended_at)))
+    .map((row) => ({ date: String(row.date), id: row.id }))
+  const week = calendarWeek(now, profile.trainingDays, completed)
   const base = {
     now,
     snapshot,
@@ -163,7 +173,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     ? 'completed'
     : session
       ? 'session'
-      : doneDates.includes(today)
+      : completed.some((session) => session.date === today)
         ? 'done'
         : profile.trainingDays.includes(isoWeekday(now))
           ? 'train'
@@ -191,6 +201,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     ...base,
     mode,
     workout: {
+      theme: dayTheme(exercises[plan.slots[0]?.exerciseId ?? '']?.primary ?? []),
       exercises: plan.slots.length,
       sets: plan.slots.reduce((total, slot) => total + slot.sets, 0),
       minutes: workoutMinutes(plan.slots),

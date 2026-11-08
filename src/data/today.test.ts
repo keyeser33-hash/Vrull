@@ -27,20 +27,31 @@ describe('kohëzgjatja e stërvitjes', () => {
 
 describe('java kalendarike te Sot', () => {
   it('nga e hëna te e diela: e bërë, pushim sipas ditëve të stërvitjes, sot e shënuar', () => {
-    const week = calendarWeek(SUNDAY, [7, 1, 2, 4], ['2026-11-02', '2026-11-03', '2026-11-05', '2026-10-29'])
-    expect(week.map((day) => [day.date, day.weekday, day.day, day.state, day.today])).toEqual([
-      ['2026-11-02', 1, 2, 'done', false],
-      ['2026-11-03', 2, 3, 'done', false],
-      ['2026-11-04', 3, 4, 'rest', false],
-      ['2026-11-05', 4, 5, 'done', false],
-      ['2026-11-06', 5, 6, 'rest', false],
-      ['2026-11-07', 6, 7, 'rest', false],
-      ['2026-11-08', 7, 8, 'planned', true],
+    const done = [
+      { date: '2026-11-02', id: 'h' },
+      { date: '2026-11-03', id: 'm' },
+      { date: '2026-11-05', id: 'e' },
+      { date: '2026-10-29', id: 'java-e-kaluar' },
+    ]
+    const week = calendarWeek(SUNDAY, [7, 1, 2, 4], done)
+    expect(week.map((day) => [day.date, day.weekday, day.day, day.state, day.today, day.sessionId])).toEqual([
+      ['2026-11-02', 1, 2, 'done', false, 'h'],
+      ['2026-11-03', 2, 3, 'done', false, 'm'],
+      ['2026-11-04', 3, 4, 'rest', false, null],
+      ['2026-11-05', 4, 5, 'done', false, 'e'],
+      ['2026-11-06', 5, 6, 'rest', false, null],
+      ['2026-11-07', 6, 7, 'rest', false, null],
+      ['2026-11-08', 7, 8, 'planned', true, null],
     ])
   })
 
   it('një seancë e bërë në ditë pushimi del e bërë; java nis të hënën edhe kur sot është e hënë', () => {
-    const week = calendarWeek(at(9, 11), [1], ['2026-11-11'])
+    // Dy seanca në të njëjtën ditë: dita hap të fundit.
+    const week = calendarWeek(at(9, 11), [1], [
+      { date: '2026-11-11', id: 'e-para' },
+      { date: '2026-11-11', id: 'e-fundit' },
+    ])
+    expect(week[2].sessionId).toBe('e-fundit')
     expect(week[0]).toMatchObject({ date: '2026-11-09', state: 'planned', today: true })
     expect(week[2]).toMatchObject({ date: '2026-11-11', state: 'done', today: false })
     expect(week[6]).toMatchObject({ date: '2026-11-15', state: 'rest' })
@@ -127,6 +138,7 @@ describe('pamja e Sot nga baza lokale', () => {
     expect(view.firstEver).toBe(false)
     expect(view.snapshot?.plan).toMatchObject({ blockName: 'Faza 1', week: 2, dayNumber: 1, dayName: 'Gjoks, triceps, pulpa' })
     expect(view.workout).toMatchObject({
+      theme: 'chest',
       exercises: 9,
       sets: 30,
       minutes: 65,
@@ -136,6 +148,8 @@ describe('pamja e Sot nga baza lokale', () => {
       first: { name: 'Bench Press', tracking: 'weight_reps', weightKg: 62.5, target: expect.objectContaining({ kind: 'reps', min: 9, max: 11 }) },
     })
     expect(view.week.map((day) => day.state)).toEqual(['done', 'done', 'rest', 'done', 'rest', 'rest', 'planned'])
+    const sessions = await store.all('workout_sessions')
+    expect(view.week[0].sessionId).toBe(sessions.find((row) => row.date === '2026-11-02')?.id)
     expect(view.week[6].today).toBe(true)
     expect(view.nextDate).toBe('2026-11-09')
     expect(view.protein.eatenG).toBe(38)
@@ -186,7 +200,7 @@ describe('pamja e Sot nga baza lokale', () => {
     expect(view.snapshot?.plan.dayNumber).toBe(2)
     expect(view.nextDate).toBe('2026-11-09')
     // Gjoksi u punua sot: i lodhur deri pas 48 orësh.
-    expect(view.workout?.focus?.group.id).toBe('shpina')
+    expect(view.workout).toMatchObject({ theme: 'back', focus: { group: expect.objectContaining({ id: 'shpina' }) } })
   })
 
   it('para setit të parë: Java 0, pa peshë të sugjeruar', async () => {

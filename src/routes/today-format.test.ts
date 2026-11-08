@@ -1,7 +1,6 @@
 import { i18nFor } from '@/i18n'
-import { MUSCLE_GROUPS } from '@/program/muscles'
 import type { Target } from '@/program/types'
-import { programDayName, programLabel, repsText, targetLine } from './today-format'
+import { repsText, targetLine } from './today-format'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -11,36 +10,6 @@ const exercise = (target: Target, weightKg: number | null, tracking: 'weight_rep
   tracking,
   target,
   weightKg,
-})
-
-describe('emrat e programit te Sot', () => {
-  it('blloku dhe java: "Faza 1 · Java 2" / "Phase 1 · Week 2"; Java 0 pa javë', () => {
-    expect(programLabel(sq.t, { blockName: 'Faza 1', blockWeeks: 4, week: 2 })).toBe('Faza 1 · Java 2')
-    expect(programLabel(en.t, { blockName: 'Faza 1', blockWeeks: 4, week: 2 })).toBe('Phase 1 · Week 2')
-    expect(programLabel(en.t, { blockName: 'Java 0', blockWeeks: 1, week: 1 })).toBe('Week 0')
-    // Blloqet e programeve të tua mbeten si i shkroi përdoruesi.
-    expect(programLabel(en.t, { blockName: 'Hipertrofi', blockWeeks: 3, week: 1 })).toBe('Hipertrofi · Week 1')
-  })
-
-  it('ditët e Shortcut to Size në anglisht; ditët e tua mbeten', () => {
-    expect(programDayName(sq.t, 'Gjoks, triceps, pulpa')).toBe('Gjoks, triceps, pulpa')
-    expect(programDayName(en.t, 'Gjoks, triceps, pulpa')).toBe('Chest, triceps, calves')
-    expect(programDayName(en.t, 'Shpinë, biceps, bark')).toBe('Back, biceps, abs')
-    expect(programDayName(en.t, 'Shpatulla, trapez, pulpa')).toBe('Shoulders, traps, calves')
-    expect(programDayName(en.t, 'Këmbë, bark')).toBe('Legs, abs')
-    expect(programDayName(en.t, 'Sipër A')).toBe('Sipër A')
-  })
-
-  it('çdo grup muskujsh ka titullin e ditës dhe emrin në të dyja gjuhët', () => {
-    for (const group of MUSCLE_GROUPS) {
-      // Shqip, emri i grupit është ai i Trupit.
-      expect(sq.t(`today.group.${group.id}` as 'today.group.gjoksi')).toBe(group.name)
-      for (const key of [`today.dayOf.${group.id}`, `today.group.${group.id}`]) {
-        expect(sq.t(key as 'today.dayOf.gjoksi'), key).not.toBe(key)
-        expect(en.t(key as 'today.dayOf.gjoksi'), key).not.toBe(sq.t(key as 'today.dayOf.gjoksi'))
-      }
-    }
-  })
 })
 
 describe('rreshti i ushtrimit të parë', () => {

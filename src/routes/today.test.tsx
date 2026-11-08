@@ -89,6 +89,7 @@ async function renderToday() {
       { path: '/seanca', element: <h1>Seanca</h1> },
       { path: '/programet', element: <h1>Programet</h1> },
       { path: '/ushqimi', element: <h1>Ushqimi</h1> },
+      { path: '/progresi/historiku/:sessionId', element: <h1>Seanca e kaluar</h1> },
     ],
     { initialEntries: ['/'] },
   )
@@ -97,6 +98,11 @@ async function renderToday() {
 }
 
 const banner = () => screen.getByRole('banner')
+/** Çdo ditë e javës me emrin që lexon lexuesi i ekranit: butoni (ditë e bërë) ose rrethi. */
+const weekLabels = (name: string) =>
+  within(screen.getByRole('list', { name }))
+    .getAllByRole('listitem')
+    .map((item) => item.querySelector('button, [role="img"]')?.getAttribute('aria-label'))
 /** Teksti i plotë i një paragrafi, me hapësirat që nuk thyhen (getByText i bën hapësira të zakonshme). */
 const paragraph = (text: string) => (_: string, element: Element | null) => element?.tagName === 'P' && element.textContent === text
 /** Butonat me prush: veprimi kryesor i ekranit, një ose asnjë. */
@@ -113,8 +119,7 @@ describe('Sot', () => {
     expect(banner()).toHaveTextContent('Je gati. Shko fort.')
     expect(within(banner()).getByRole('link', { name: 'Profili dhe cilësimet' })).toHaveAttribute('href', '/cilesimet')
 
-    const week = screen.getByRole('list', { name: 'Java' })
-    expect(within(week).getAllByRole('img').map((day) => day.getAttribute('aria-label'))).toEqual([
+    expect(weekLabels('Java')).toEqual([
       'E hënë 2, e bërë',
       'E martë 3, e bërë',
       'E mërkurë 4, pushim',
@@ -139,7 +144,7 @@ describe('Sot', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Chest day' })).toBeInTheDocument()
     expect(banner()).toHaveTextContent('Sunday, 8 November · Phase 1 · Week 2')
     expect(banner()).toHaveTextContent("You're ready. Go hard.")
-    expect(within(screen.getByRole('list', { name: 'This week' })).getAllByRole('img').map((day) => day.getAttribute('aria-label'))).toEqual([
+    expect(weekLabels('This week')).toEqual([
       'Monday 2, done',
       'Tuesday 3, done',
       'Wednesday 4, rest day',
@@ -169,6 +174,16 @@ describe('Sot', () => {
     await act(() => router.navigate('/'))
     await user.click(await screen.findByRole('button', { name: /^Proteina 38 gramë/ }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/ushqimi'))
+  })
+
+  it('një ditë e bërë e javës hap seancën e saj te historiku', async () => {
+    const user = userEvent.setup()
+    const { store } = await boardWeek()
+    const router = await renderToday()
+    await user.click(await screen.findByRole('button', { name: 'E enjte 5, e bërë' }))
+    const thursday = (await store.all('workout_sessions')).find((row) => row.date === '2026-11-05')
+    await waitFor(() => expect(router.state.location.pathname).toBe(`/progresi/historiku/${thursday?.id}`))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Seanca e kaluar' })).toBeInTheDocument()
   })
 
   it('seanca e hapur: "Vazhdo stërvitjen" me setet e ruajtura, pa "Kapërce"', async () => {
@@ -213,7 +228,7 @@ describe('Sot', () => {
     await renderToday()
     expect(await screen.findByRole('heading', { level: 1, name: 'U krye për sot' })).toBeInTheDocument()
     expect(banner()).toHaveTextContent('Stërvitja e radhës: e hënë, 9 nëntor.')
-    expect(screen.getByRole('img', { name: 'Sot, e diel 8, e bërë' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sot, e diel 8, e bërë' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Shpinë, biceps, bark' })).toBeInTheDocument()
     expect(emberButtons()).toEqual([])
     act(() => language.set('en'))

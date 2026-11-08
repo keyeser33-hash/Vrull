@@ -12,16 +12,17 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type TodayView, todayView } from '@/data/today'
 import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
+import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { facesBack } from '@/body/model-focus'
 import { cn } from '@/lib/cn'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
 import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
-import { blockText, programDayName, programLabel, targetLine } from './today-format'
+import { targetLine } from './today-format'
 
-// Sot (V2-E1-06, bordi "Sot", pamja energjike): kreu me datën dhe javën e programit, titulli sipas
-// grupit kryesor ("Dita e gjoksit"), java kalendarike, karta e stërvitjes me muskujt e saj në 3D dhe
+// Sot (V2-E1-06, bordi "Sot", pamja energjike): kreu me datën dhe javën e programit, titulli si te
+// historiku ("Dita e gjoksit"), java kalendarike, karta e stërvitjes me muskujt e saj në 3D dhe
 // një veprim prushi ("Fillo stërvitjen" ose "Vazhdo stërvitjen"), dhe proteina e sotme.
 // Gjendjet: dita e stërvitjes, dita e pushimit (pa prush: stërvitja e radhës me datën), stërvitja e
 // sotme e mbyllur, seanca e hapur, para setit të parë, programi i përfunduar dhe pa program.
@@ -38,6 +39,7 @@ export function TodayPage() {
   const view = useLocalQuery(() => todayView(store), [])
   const i18n = useI18n()
   const { t } = i18n
+  const navigate = useNavigate()
   if (!view) {
     return (
       <div className="flex flex-col gap-3.5">
@@ -50,7 +52,7 @@ export function TodayPage() {
   return (
     <div className="flex flex-col gap-3.5">
       <TodayHeader view={view} />
-      {view.mode === 'none' || view.mode === 'completed' ? null : <WeekStrip days={weekDays(view, i18n)} />}
+      {view.mode === 'none' || view.mode === 'completed' ? null : <WeekStrip days={weekDays(view, i18n, (id) => navigate(`/progresi/historiku/${id}`))} />}
       <UpdateNotice />
       {view.mode === 'none' ? (
         <NoProgramme />
@@ -72,7 +74,7 @@ function TodayHeader({ view }: { view: TodayView }) {
   const { mode, snapshot, workout } = view
   const date = capitalize(fmt.date(view.now))
   const plan = snapshot && !snapshot.completed ? snapshot.plan : null
-  const eyebrow = plan ? `${date} · ${programLabel(t, plan)}` : date
+  const eyebrow = plan ? `${date} · ${programWeekLabel(t, plan)}` : date
   const next = view.nextDate ? t('today.subtitle.next', { day: fmt.date(atNoon(view.nextDate)) }) : undefined
   let title: string
   let subtitle: string | undefined
@@ -84,8 +86,8 @@ function TodayHeader({ view }: { view: TodayView }) {
     title = t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')
     subtitle = next
   } else {
-    const group = workout?.focus?.group.id
-    title = group ? t(`today.dayOf.${group}` as 'today.dayOf.gjoksi') : t('today.workoutTitle', { day: plan!.dayNumber })
+    const theme = workout?.theme
+    title = theme ? t(`today.theme.${theme}`) : t('today.workoutTitle', { day: plan!.dayNumber })
     subtitle =
       mode === 'session'
         ? t('today.subtitle.session')
@@ -98,7 +100,8 @@ function TodayHeader({ view }: { view: TodayView }) {
   return <ScreenHeader eyebrow={eyebrow} title={title} subtitle={subtitle} />
 }
 
-function weekDays(view: TodayView, { t, fmt }: I18n): WeekDay[] {
+/** Java e bordit; një ditë e bërë hap seancën e saj te historiku. */
+function weekDays(view: TodayView, { t, fmt }: I18n, open: (sessionId: string) => void): WeekDay[] {
   return view.week.map((day) => ({
     key: day.date,
     letter: t(`today.weekLetter.${day.weekday}` as 'today.weekLetter.1'),
@@ -106,6 +109,7 @@ function weekDays(view: TodayView, { t, fmt }: I18n): WeekDay[] {
     day: day.day,
     state: day.state,
     today: day.today,
+    onSelect: day.sessionId ? () => open(day.sessionId!) : undefined,
   }))
 }
 
@@ -160,7 +164,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
           <p className="flex items-center gap-1.5 type-caption text-muted-foreground">
             <span aria-hidden className={cn('size-2 shrink-0 rounded-pill', workout.recovery === 'gati' ? 'bg-success' : 'bg-sand')} />
             {t('today.recovery', {
-              group: t(`today.group.${workout.focus.group.id}` as 'today.group.gjoksi'),
+              group: muscleName(t, workout.focus.group.id),
               status: t(`today.recovery.${workout.recovery}`),
             })}
           </p>
@@ -269,7 +273,7 @@ function ProgrammeCompleted({ snapshot }: { snapshot: TrainingSnapshot }) {
   const { t } = useI18n()
   const [busy, setBusy] = useState(false)
   const restartFrom = snapshot.blocks.find((block) => block.position === 1) ?? snapshot.blocks[0]
-  const block = blockText(t, restartFrom.name)
+  const block = programBlockName(t, restartFrom.name)
   return (
     <section aria-label={t('today.completedTitle')} className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-4')}>
       <p className="type-body-l text-foreground">{t('today.completedText', { block })}</p>
