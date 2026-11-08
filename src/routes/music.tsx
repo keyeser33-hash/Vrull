@@ -537,7 +537,7 @@ function Queue({ beat, queue, tempos, onPlay }: { beat: SessionBeat; queue: { id
               >
                 <span className={cn('flex size-[52px] flex-col items-center justify-center gap-px rounded-md', picked ? 'border border-subtle bg-background' : 'bg-surface-2')}>
                   <b className="font-display text-[22px] leading-none font-extrabold tabular-nums">{bpmText ?? '–'}</b>
-                  <span className="text-xs leading-none text-muted-foreground">BPM</span>
+                  <span className="text-xs leading-none text-muted-foreground">{t('music.bpmUnit')}</span>
                 </span>
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <b className="truncate type-body-strong">{song.title}</b>
@@ -690,6 +690,8 @@ export function TapSheet({ beat, onClose }: { beat: SessionBeat; onClose: () => 
   const [state, setState] = useState(emptyTaps)
   const [adjusted, setAdjusted] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
+  const active = usePageActive()
+  const reducedMotion = useReducedMotion()
   const tapped = tapTempo(state)
   const existing = beat.tempo.tempo?.bpm ?? null
   // Vlera në rreth: e prekura (pas ×2 / ÷2), përndryshe tempo që ka kënga.
@@ -711,7 +713,8 @@ export function TapSheet({ beat, onClose }: { beat: SessionBeat; onClose: () => 
       setSaving(false)
     }
   }
-  const tapPulse = pulseOf({ bpm: value, phase: 'set', playing: true, active: beat.pulse.running || !beat.pulse.animate, reducedMotion: false })
+  // Rrethi pulson me tempon që po prek përdoruesi; ndalet në sfond dhe me "lëvizje të reduktuar".
+  const tapPulse = pulseOf({ bpm: value, phase: 'set', playing: true, active, reducedMotion })
   const title = session?.title ?? t('music.untitled')
   const song = session ? (session.artist ? t('music.tap.song', { title, artist: session.artist }) : t('music.tap.songOnly', { title })) : undefined
   const shift = (direction: 'double' | 'half') => {

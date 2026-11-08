@@ -166,11 +166,12 @@ function ActiveSession({
 
   // Muzika "Trupi në ritëm" (V2-E1-12): mini-player-i, ekrani i plotë dhe lidhja, mbi seancën.
   const beat = useSessionBeat({ slots: plan.slots, exercises, phase: rest.running ? 'rest' : 'set' })
+  // Kreu i ekranit të plotë: seti në ekran; gjatë pushimit dhe pas setit të fundit, seti i ruajtur.
   const beatContext: BeatContext | null =
-    rest.running && lastSet
-      ? { exercise: exercises[lastSet.exerciseId]?.name ?? '', set: lastSet.setNumber, sets: lastSlot?.sets ?? lastSet.setNumber }
-      : slot
-        ? { exercise: exercise?.name ?? '', set: setNumber, sets: slot.sets }
+    slot && !rest.running
+      ? { exercise: exercise?.name ?? '', set: setNumber, sets: slot.sets }
+      : lastSet
+        ? { exercise: exercises[lastSet.exerciseId]?.name ?? '', set: lastSet.setNumber, sets: lastSlot?.sets ?? lastSet.setNumber }
         : null
   const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video' | 'ritmi' | 'lidh-muziken') => setParams({ [name]: '1' })
   const closeSheet = () => navigate(-1)
