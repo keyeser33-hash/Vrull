@@ -84,6 +84,12 @@ export interface NotificationTexts {
   restDoneBody: string
   restChannel: string
   restChannelText: string
+  /** Rreshti i muzikës (V29): kontrollet për lexuesin e ekranit dhe kënga pa titull (SessionMusic.java). */
+  musicPlay: string
+  musicPause: string
+  musicNext: string
+  musicPrevious: string
+  musicUntitled: string
 }
 
 /** Gjithçka që i duhet njoftimit, edhe kur WebView-i nuk jeton (ruhet te telefoni). */
@@ -353,6 +359,11 @@ export function notificationTexts({ t }: Texts): NotificationTexts {
     restDoneBody: t('session.notify.body'),
     restChannel: t('settings.restTimer'),
     restChannelText: t('session.notify.channelText'),
+    musicPlay: t('music.play'),
+    musicPause: t('music.pause'),
+    musicNext: t('music.next'),
+    musicPrevious: t('music.previous'),
+    musicUntitled: t('music.untitled'),
   }
 }
 

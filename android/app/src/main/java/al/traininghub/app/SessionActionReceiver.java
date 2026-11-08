@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * Prekjet te njoftimi i seancës ("Ruaj setin", −/+, "Kapërce pushimin", heqja) dhe alarmi i
- * pushimit (V2-E1-08). PendingIntent-et janë të qarta (explicit), ndaj Android-i e nis procesin për
+ * Prekjet te njoftimi i seancës ("Ruaj setin", −/+, "Kapërce pushimin", heqja, kontrollet e muzikës)
+ * dhe alarmi i pushimit (V2-E1-08, V2-E1-16a). PendingIntent-et janë të qarta (explicit), ndaj Android-i e nis procesin për
  * to edhe kur është vrarë, dhe punojnë me ekran të kyçur pa e shkyçur telefonin.
  */
 public class SessionActionReceiver extends BroadcastReceiver {
@@ -16,6 +16,8 @@ public class SessionActionReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action == null) return;
         String key = intent.getStringExtra(SessionNotifier.EXTRA_KEY);
+        // Procesi mund të ketë nisur nga kjo prekje, pa WebView: rreshti i muzikës regjistrohet këtu.
+        SessionMusic.install();
         switch (action) {
             case SessionNotifier.ACTION_SAVE:
                 if (key != null) SessionNotifier.onSave(context, key);
@@ -34,6 +36,9 @@ public class SessionActionReceiver extends BroadcastReceiver {
                 break;
             case SessionNotifier.ACTION_DISMISSED:
                 SessionNotifier.onDismissed(context);
+                break;
+            case SessionMusic.ACTION_MUSIC:
+                SessionMusic.control(context, key);
                 break;
             default:
                 break;
