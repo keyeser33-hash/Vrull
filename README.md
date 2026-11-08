@@ -1,4 +1,4 @@
-# Training Hub
+# Vrull
 
 App personal për Android që ndjek programin Shortcut to Size të Jim Stoppani dhe programe të tjera, peshat, matjet e trupit, ushqimin dhe suplementet. Funksionon pa internet dhe sinkronizon me Supabase.
 
