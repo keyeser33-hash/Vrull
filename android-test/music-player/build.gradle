@@ -1,0 +1,20 @@
+// I njëjti Android Gradle Plugin si app-i (android/build.gradle), që CI ta ketë në cache.
+plugins {
+    id 'com.android.application' version '8.13.0'
+}
+
+android {
+    namespace = 'al.traininghub.musictest'
+    compileSdk = 36
+    defaultConfig {
+        applicationId 'al.traininghub.musictest'
+        minSdkVersion 26
+        targetSdkVersion 36
+        versionCode 1
+        versionName '1.0'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+}

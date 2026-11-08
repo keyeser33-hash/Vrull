@@ -1,17 +1,19 @@
-# Prova e APK-së në Android virtual: instalimi, hapja, seanca dhe timer-i me ekran të kyçur,
-# butoni mbrapa, tema, dhe përditësimi v1 -> v2 pa humbur të dhënat. Nuk ka nevojë për secret-et:
-# përdor dy build-e debug me të njëjtin çelës debug. Skripti: scripts/android-smoke.mjs.
+# Prova e APK-së në Android virtual (V2-E1-16): v1 0.16.0 me të dhënat e veta përditësohet nga vetë app-i te
+# v2 (kjo degë), pastaj seanca, seti nga njoftimi (ekrani i kyçur, procesi i vrarë), videot e formës, muzika,
+# butoni mbrapa, tema, hyrja e re me gjuhën dhe përditësimi v2 -> v3. Nuk ka nevojë për secret-et: të gjitha
+# build-et janë debug me të njëjtin çelës debug. Skripti: scripts/android-smoke.mjs.
 name: Prova e Android-it
 
 # v2 (SPEC §0.1): prova në emulator bëhet në fund të etapës (versioni i ri te package.json) dhe kur
 # ndryshon pjesa native, jo në çdo ndryshim të kodit web; testet, lint-i dhe build-i mbeten te CI.
-# Me dorë: Actions → Prova e Android-it → Run workflow.
+# Me dorë: Actions → Prova e Android-it → Run workflow (edhe për një degë).
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'android/**'
+      - 'android-test/**'
       - 'capacitor.config.ts'
       - 'package.json'
       - 'scripts/android-smoke.mjs'
@@ -27,24 +29,25 @@ concurrency:
 env:
   # API 35: nga cepi në cep i detyrueshëm si në telefonat e rinj, dhe më i qëndrueshëm se 36 në runner-at me 2 bërthama.
   SYSTEM_IMAGE: system-images;android-35;google_apis;x86_64
+  # Versioni i v1 që kanë telefonat sot: përditësimi te 0.20.0 nis prej tij.
+  V1_TAG: v0.16.0
 
 jobs:
   smoke:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Liro hapësirë
+        run: |
+          # Mjetet e parainstaluara që prova nuk i përdor (.NET, Haskell, Boost) zënë rreth 10 GB; dy
+          # node_modules, tre build-e dhe emulatori kanë nevojë për to.
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          df -h / | tail -1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      # Supabase i imituar: build-i i provës nuk flet kurrë me projektin e vërtetë.
-      - run: npm run build
-        env:
-          VITE_SUPABASE_URL: https://smoke.invalid
-      - run: npx cap sync android
-
       - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
@@ -52,20 +55,40 @@ jobs:
           java-version: 21
           cache: gradle
 
-      - name: Dy versione debug me të njëjtin çelës
+      # v1: kodi i tag-ut, si në telefonat e përdoruesve, por me Supabase-n e imituar.
+      - name: v1 nga tag-u
         run: |
+          git fetch --no-tags --depth=1 origin "refs/tags/$V1_TAG:refs/tags/$V1_TAG"
+          git worktree add ../v1 "$V1_TAG"
+          cd ../v1
+          npm ci
+          VITE_SUPABASE_URL=https://smoke.invalid npm run build
+          npx cap sync android
           (cd android && ./gradlew --no-daemon assembleDebug)
-          mkdir -p apks
-          cp android/app/build/outputs/apk/debug/app-debug.apk apks/v1.apk
-          npm version patch --no-git-tag-version
-          (cd android && ./gradlew --no-daemon assembleDebug)
-          cp android/app/build/outputs/apk/debug/app-debug.apk apks/v2.apk
+          mkdir -p "$GITHUB_WORKSPACE/apks"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/apks/v1.apk"
 
-      - name: Aktivizo KVM dhe liro hapësirë
+      # v2 dhe v3: kjo degë, me dy versione më të larta se v1 (vetëm në CI; package.json nuk ndryshon te repo).
+      - name: v2 dhe v3 nga kjo degë
         run: |
-          # Mjetet e parainstaluara që prova nuk i përdor (.NET, Haskell, Boost) zënë rreth 10 GB.
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
-          df -h / | tail -1
+          npm ci
+          for apk in v2 v3; do
+            npm version patch --no-git-tag-version
+            VITE_SUPABASE_URL=https://smoke.invalid npm run build
+            npx cap sync android
+            (cd android && ./gradlew --no-daemon assembleDebug)
+            cp android/app/build/outputs/apk/debug/app-debug.apk "apks/$apk.apk"
+          done
+          git checkout -- package.json package-lock.json
+
+      - name: App-i i muzikës për provën
+        run: |
+          android/gradlew --no-daemon -p android-test/music-player assembleDebug
+          cp android-test/music-player/build/outputs/apk/debug/vrull-music-player-debug.apk apks/muzika.apk
+          ls -la apks
+
+      - name: Aktivizo KVM
+        run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
@@ -90,8 +113,9 @@ jobs:
           sed -i '/^disk\.dataPartition\.size=/d' "$config"
           echo "disk.dataPartition.size=2G" >> "$config"
           grep -n "dataPartition" "$config"
+          # Kamera e pasme virtuale (një pamje prove që lëviz): videot e formës e hapin me getUserMedia.
           nohup "$ANDROID_HOME/emulator/emulator" -avd th -no-window -no-audio -no-boot-anim \
-            -no-snapshot -gpu swiftshader_indirect -camera-back none > emulator.log 2>&1 &
+            -no-snapshot -gpu swiftshader_indirect -camera-back emulated -camera-front none > emulator.log 2>&1 &
           # Çdo pritje ka afat, që një emulator që s'nis të mos e mbajë punën deri në fund të kohës.
           if ! timeout 300 adb wait-for-device \
             || ! timeout 600 bash -c 'until [ "$(adb shell getprop sys.boot_completed | tr -d "\r")" = "1" ]; do sleep 5; done'; then
@@ -110,12 +134,14 @@ jobs:
             adb shell settings put global "$setting" 0 || true
           done
           adb shell settings put global hide_error_dialogs 1 || true
+          # Ekrani nuk fiket vetë gjatë provës (prova e fik dhe e ndez kur do).
+          adb shell settings put system screen_off_timeout 1800000 || true
           adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS > /dev/null || true
           adb shell input keyevent KEYCODE_WAKEUP || true
           adb shell wm dismiss-keyguard || true
 
       - name: Prova
-        run: node scripts/android-smoke.mjs smoke-out apks/v1.apk apks/v2.apk
+        run: node scripts/android-smoke.mjs smoke-out apks/v1.apk apks/v2.apk apks/v3.apk apks/muzika.apk
 
       - name: Logcat dhe pamja e ekranit për diagnozë
         if: always()
@@ -124,6 +150,7 @@ jobs:
           adb logcat -d > smoke-out/logcat.txt 2>&1 || true
           adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 && adb shell cat /sdcard/ui.xml > smoke-out/ui.xml || true
 
+      # Pamjet e ekranit të çdo hapi (NN-emri.png), report.json dhe logcat-i.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
