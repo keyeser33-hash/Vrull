@@ -69,18 +69,20 @@ jobs:
           path: |
             apks/v1.apk
             apks/debug.keystore
-          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-3
-      # Një çelës debug i vetëm për v1, v2 dhe v3, aty ku Gradle e kërkon. Krijohet kur cache-i nuk e ka.
+          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-4
+      # Një çelës debug i vetëm për v1, v2 dhe v3. Krijohet kur cache-i nuk e ka dhe i jepet Gradle-s drejtpërdrejt
+      # (android.injected.signing.*, si Android Studio), edhe v1-it të tag-ut: çelësi te ~/.android nuk u përdor.
       - name: Çelësi debug i provës
         run: |
-          mkdir -p apks "$HOME/.android"
+          mkdir -p apks
           if [ ! -f apks/debug.keystore ]; then
             rm -f apks/v1.apk
             keytool -genkeypair -keystore apks/debug.keystore -storepass android -alias androiddebugkey \
               -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
-          cp apks/debug.keystore "$HOME/.android/debug.keystore"
-          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android | grep -i "SHA-256" || true
+          store="$GITHUB_WORKSPACE/apks/debug.keystore"
+          echo "SMOKE_SIGNING=-Pandroid.injected.signing.store.file=$store -Pandroid.injected.signing.store.password=android -Pandroid.injected.signing.key.alias=androiddebugkey -Pandroid.injected.signing.key.password=android" >> "$GITHUB_ENV"
+          keytool -list -v -keystore apks/debug.keystore -storepass android | grep -m1 "SHA256:" | awk '{print $2}' | tr -d ':' | tr 'A-F' 'a-f' | tee apks/debug-cert.txt
       - name: v1 nga tag-u
         run: |
           if [ -f apks/v1.apk ]; then echo "v1 nga cache, me çelësin e vet"; exit 0; fi
@@ -90,7 +92,7 @@ jobs:
           npm ci
           VITE_SUPABASE_URL=https://smoke.invalid npm run build
           npx cap sync android
-          (cd android && ./gradlew --no-daemon assembleDebug)
+          (cd android && ./gradlew --no-daemon assembleDebug $SMOKE_SIGNING)
           mkdir -p "$GITHUB_WORKSPACE/apks"
           cp android/app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/apks/v1.apk"
 
@@ -102,7 +104,7 @@ jobs:
             npm version patch --no-git-tag-version
             VITE_SUPABASE_URL=https://smoke.invalid npm run build
             npx cap sync android
-            (cd android && ./gradlew --no-daemon assembleDebug)
+            (cd android && ./gradlew --no-daemon assembleDebug $SMOKE_SIGNING)
             cp android/app/build/outputs/apk/debug/app-debug.apk "apks/$apk.apk"
           done
           git checkout -- package.json package-lock.json
@@ -114,8 +116,10 @@ jobs:
           for apk in v1 v2 v3; do
             echo "$apk $("$tools/apksigner" verify --print-certs "apks/$apk.apk" | grep -m1 'SHA-256 digest' | awk '{print $NF}')"
           done | tee certs.txt
-          if [ "$(awk '{print $2}' certs.txt | sort -u | wc -l)" != 1 ]; then
-            echo "::error title=Çelësa të ndryshëm::v2 nuk do të instalohet mbi v1. Shih certs.txt."
+          expected=$(cat apks/debug-cert.txt)
+          echo "çelësi i provës $expected"
+          if [ -z "$expected" ] || [ "$(awk '{print $2}' certs.txt | sort -u)" != "$expected" ]; then
+            echo "::error title=Çelësa të ndryshëm::v1, v2 dhe v3 duhet të kenë çelësin e provës, ndryshe v2 nuk instalohet mbi v1."
             exit 1
           fi
 
