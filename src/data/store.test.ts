@@ -81,6 +81,20 @@ describe('shkrimet lokale', () => {
     expect(stored).toMatchObject({ deleted_at: '2026-11-30T08:00:01.000Z', updated_at: '2026-11-30T08:00:01.000Z', _dirty: PENDING })
   })
 
+  it('revive: një rresht me id nga çelësi natyror kthehet pas fshirjes; pa revive mbetet i fshirë', async () => {
+    const { store, tick } = setup()
+    const id = '22222222-2222-4222-8222-222222222222'
+    await store.put('week_weights', { id, status: 'accepted' })
+    tick()
+    await store.remove('week_weights', id)
+    tick()
+    await store.put('week_weights', { id, status: 'changed' })
+    expect(await store.get('week_weights', id)).toBeUndefined()
+    tick()
+    await store.put('week_weights', { id, status: 'postponed' }, { revive: true })
+    expect(await store.get('week_weights', id)).toMatchObject({ status: 'postponed', deleted_at: null, _dirty: PENDING })
+  })
+
   it('kërkon përdoruesin: pa hyrje nuk shkruan asgjë', async () => {
     const { store } = setup({ userId: null })
     await expect(store.put('foods', { name: 'Vezë' })).rejects.toThrow('Pa përdorues')

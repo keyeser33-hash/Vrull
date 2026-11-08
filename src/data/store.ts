@@ -8,7 +8,11 @@ type Values = Record<string, unknown> & { id?: string }
 
 export interface LocalStore {
   /** Krijon ose ndryshon (pjesërisht) një rresht dhe e shënon për dërgim. */
-  put(table: TableName, values: Values): Promise<LocalRow>
+  /**
+   * Shton ose ndryshon një rresht. `revive`: një rresht i fshirë me këtë id kthehet (për id-të nga një çelës
+   * natyror, p.sh. `weekWeightId`); pa të, një rresht i fshirë mbetet i fshirë.
+   */
+  put(table: TableName, values: Values, options?: { revive?: boolean }): Promise<LocalRow>
   /** Shumë rreshta të rinj në një transaksion, me një njoftim të vetëm (p.sh. një program i plotë). */
   insertMany(table: TableName, rows: Values[]): Promise<LocalRow[]>
   /** Fshirje e butë: rreshti mbetet me deleted_at, që fshirja të arrijë edhe në Supabase. */
@@ -61,14 +65,21 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
   }
 
   return {
-    async put(table, values) {
+    async put(table, values, { revive = false } = {}) {
       const userId = requireUser()
       const timestamp = now()
       const changes = Object.fromEntries(Object.entries(values).filter(([key]) => !PROTECTED.includes(key)))
       const row = await db.transaction('rw', db[table], async () => {
         const existing = values.id ? await db[table].get(values.id) : undefined
         const next: LocalRow = existing
-          ? { ...existing, ...changes, id: existing.id, updated_at: nextTimestamp(timestamp, existing.updated_at), _dirty: PENDING }
+          ? {
+              ...existing,
+              ...changes,
+              id: existing.id,
+              ...(revive ? { deleted_at: null } : {}),
+              updated_at: nextTimestamp(timestamp, existing.updated_at),
+              _dirty: PENDING,
+            }
           : {
               ...changes,
               id: values.id ?? uuid(),

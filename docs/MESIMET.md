@@ -45,6 +45,6 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Kufiri i kostos së AI-së kontrollohej para thirrjes dhe kostoja shkruhej pas saj (deri në 140 s): kërkesa paralele e kapërcenin pa fund → çdo kufi që mbron para rezervon para se të nisë punën (`program-import/handler.ts`); prova nis 50 kërkesa njëkohësisht dhe kontrollohet me mutacion (pa rezervim, prova duhet të bjerë).
 - Edge Functions nuk kishin kontroll tipesh (Deno nuk është në ambient) → `tsc -p supabase/functions/tsconfig.json` me `deno-shim.d.ts` është pjesë e `npm run lint`; logjika e funksionit rri në module pa Deno, që Vitest t'i provojë.
 - Një cikël sinkronizimi lexonte çdo video të telefonit në kujtesë → mbi tabelat me skedarë, kërkimet bëhen me indekset dhe skedari lexohet vetëm kur duhet, një nga një.
-- Dy vendime njëkohësisht krijonin dy rreshta me id të rastit, që indeksi unik i serverit i refuzonte përgjithmonë → rreshtat që kanë një çelës natyror unik marrin id nga ai çelës (`weekWeightId`).
+- Dy vendime njëkohësisht krijonin dy rreshta me id të rastit, që indeksi unik i serverit i refuzonte përgjithmonë → rreshtat që kanë një çelës natyror unik marrin id nga ai çelës (`weekWeightId`). Një id nga çelësi natyror bie mbi rreshtin e fshirë (fshirja është e butë) → `store.put(..., { revive: true })` e kthen; prova e plotë e kapi, provat e skedarit jo.
 - Provat që imitojnë kthimin në app me një `visibilitychange` "visible" pa "hidden" para tij nuk janë realiste → kthimi provohet me të dy hapat (`backFromSettings` te `music.test.tsx`).
 

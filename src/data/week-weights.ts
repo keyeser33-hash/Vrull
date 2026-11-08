@@ -108,8 +108,8 @@ async function save(store: LocalStore, view: WeekWeightsView, decisions: WeekWei
   const existing = await decisionRows(store, view.programId, view.run, view.week)
   for (const decision of decisions) {
     const key = { programId: view.programId, run: view.run, blockId: view.week.blockId, week: view.week.week, slotId: decision.slotId }
-    await store.put('week_weights', {
-      id: existing.find((row) => row.slot_id === decision.slotId)?.id ?? (await weekWeightId(key)),
+    const row = {
+      id: existing.find((saved) => saved.slot_id === decision.slotId)?.id ?? (await weekWeightId(key)),
       program_id: view.programId,
       run: view.run,
       block_id: view.week.blockId,
@@ -118,7 +118,9 @@ async function save(store: LocalStore, view: WeekWeightsView, decisions: WeekWei
       exercise_id: decision.exerciseId,
       weight_kg: decision.weightKg,
       status: decision.status,
-    })
+    }
+    // Id-ja vjen nga java dhe sloti: një vendim pas fshirjes së të mëparshmit e kthen rreshtin.
+    await store.put('week_weights', row, { revive: true })
   }
 }
 

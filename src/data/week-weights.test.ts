@@ -61,6 +61,15 @@ describe('peshat e javës në telefon (V23)', () => {
     expect((await store.all('week_weights')).filter((saved) => saved.slot_id === bench.slotId)).toHaveLength(1)
   })
 
+  it('një vendim pas fshirjes së vendimit të mëparshëm e kthen rreshtin (id-ja është e njëjtë)', async () => {
+    const { store, bench } = await atPhaseOneWeekTwo()
+    const { week } = (await weekWeightsView(store))!
+    await acceptWeekWeights(store, week)
+    for (const row of await store.all('week_weights')) await store.remove('week_weights', String(row.id))
+    await postponeWeekWeights(store, week)
+    expect((await store.all('week_weights')).filter((saved) => saved.slot_id === bench.slotId)).toEqual([expect.objectContaining({ status: 'postponed' })])
+  })
+
   it('id-ja e vendimit vjen nga java dhe sloti: e njëjtë në çdo telefon, tjetër për një javë tjetër', async () => {
     const key = { programId: 'p', run: 1, blockId: 'b', week: 2, slotId: 's' }
     const id = await weekWeightId(key)
