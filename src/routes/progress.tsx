@@ -13,6 +13,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
 import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from '@/data/progress'
+import { historyGlance } from '@/data/history'
 import { startWorkout, trainingSnapshot } from '@/data/training'
 import { useI18n } from '@/i18n/use-i18n'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
@@ -113,6 +114,8 @@ export function ProgressPage() {
 
       <BodyLink />
 
+      <HistoryLink />
+
       <PhotoSection />
 
       <TrainingSections />
@@ -150,6 +153,37 @@ function BodyLink() {
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="type-title">{t('progress.body')}</span>
         <span className="type-caption text-muted-foreground">{t('progress.bodyText')}</span>
+      </span>
+      <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
+    </Link>
+  )
+}
+
+/** Historiku i seancave (V2-E1-15): sa seanca të mbyllura dhe kur ishte e fundit. */
+function HistoryLink() {
+  const { t, fmt } = useI18n()
+  const glance = useLocalQuery(() => historyGlance(store), [])
+  const [today] = useState(() => localDate(new Date()))
+  const [yesterday] = useState(() => localDate(new Date(Date.now() - 86_400_000)))
+  if (!glance) return null
+  const when = !glance.last
+    ? null
+    : glance.last === today
+      ? t('history.when.today')
+      : glance.last === yesterday
+        ? t('history.when.yesterday')
+        : t('history.when.on', { date: fmt.date(new Date(`${glance.last}T12:00:00`), { weekday: false }) })
+  return (
+    <Link
+      to="/progresi/historiku"
+      className={cn(
+        surfaceClass,
+        'flex min-h-row items-center gap-3 rounded-lg py-3 pr-3 pl-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+      )}
+    >
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="type-title">{t('history.title')}</span>
+        <span className="type-caption text-muted-foreground tabular-nums">{when ? t('history.linkText', { count: glance.total, when }) : t('history.linkEmpty')}</span>
       </span>
       <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
     </Link>
