@@ -6,7 +6,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 
 - `docs/SPEC.md`: e vërteta për çfarë ndërtohet. Çdo ndryshim vendimi shkruhet aty.
 - `docs/TICKETS.md`: radha e detyrave dhe kriteret e pranimit.
-- `DESIGN.md`: Omal UI v2. Lexoje para se të shkruash UI.
+- `DESIGN.md`: sistemi i dizajnit Vrull (tokenat, temat, komponentët). Lexoje para se të shkruash UI. Komponentët në tri temat: faqja e brendshme `/dev/ds`.
 - `GLOSSARY.md`: fjalori i domenit (bllok, stërvitje, seancë, slot, receta, gatim…). Emrat e rinj në UI, specifikim dhe kod ndjekin atë.
 
 ## Komandat
@@ -15,25 +15,28 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `npm test`: Vitest (jsdom).
 - `npm run lint`: oxlint + roja e dizajnit (`scripts/check-design.mjs`).
 - `npm run build`: kontrolli i tipave + build.
+- `node scripts/ds-screens.mjs <dosja>`: prova e pamjes së `/dev/ds` në 390 px me Chrome headless (pa scroll anësor, fontet pa rrjet, prekjet 44 px), shqip dhe anglisht, me pamjet e tri temave.
 - `npx cap sync android`: kopjon `dist` te projekti Android (`android/`). APK-ja dhe Release-i: `docs/INSTALL.md`, pika 6.
 - `E2E_EMAIL=… E2E_PASSWORD=… npx vitest run src/data/sync.e2e.test.ts`: sinkronizimi kundrejt Supabase të vërtetë, me një përdorues prove të përkohshëm (pa këto, prova kapërcehet).
 
 ## Rregullat
 
 - Teksti i UI në shqip, sentence case, pa emoji dhe pa pikëçuditje. Emrat e ushtrimeve mbeten në anglisht.
-- Ngjyrat vijnë vetëm nga tokenat e `src/styles/globals.css` (kopje e pandryshuar e Omal UI v2). Asnjë hex, `rgb()` ose `text-brand` në komponentë; `npm run lint` dhe testet i kapin.
-- Përshtatja e DESIGN.md për këtë app: `brand` (amber) i përket veprimit kryesor të ekranit ("Fillo stërvitjen", "Ruaj setin", "Mbyll stërvitjen"), një për ekran. Rregullat e "Rezervo" dhe të parave te DESIGN.md nuk vlejnë këtu.
-- Çdo gjë që preket ka 44 px; ekranet kontrollohen në 390 px pa scroll anësor dhe në tri temat (OLED është parazgjedhja).
+- Ngjyrat vijnë vetëm nga tokenat e Vrullit te `src/styles/globals.css` (vlerat e `tokens.json`; `src/styles/tokens.test.ts` i krahason dhe mat kontrastin ≥ 4,5:1 në çdo temë). Asnjë hex, `rgb()`, paletë Tailwind ose variant `dark:` në komponentë; `npm run lint` dhe testet i kapin.
+- `ember` (prushi) është sfondi i veprimit kryesor të ekranit ("Fillo stërvitjen", "Ruaj setin", "Mbyll stërvitjen"), një për ekran, me tekst `on-ember`; në ditë të lodhura `sand`. Prushi si tekst, ikonë ose vijë e hollë është `ember-text`.
+- Aliaset e v1 (`card`, `panel`, `brand`…) mbeten vetëm te skedarët e `LEGACY_FILES` te `scripts/check-design.mjs`: kur një ekran kalon te Vrull, hiqet nga lista; kod i ri përdor vetëm tokenat dhe komponentët e Vrullit.
+- Uppercase vjen vetëm nga stilet (`type-display-*`, `type-title`, `type-label`, butonat); teksti shkruhet në sentence case. Numrat me `tabular-nums`.
+- Çdo gjë që preket ka 44 px; ekranet kontrollohen në 390 px pa scroll anësor dhe në tri temat OLED, Natë, Ditë (OLED është parazgjedhja).
 - Lokale-së-pari: asnjë ekran nuk pret rrjetin.
 - Logjika pa UI (motori i programit, e1RM, ushqimi) ndërtohet me teste përpara kodit.
 - Çdo varësi e re verifikohet para instalimit (burimi, mirëmbajtja, licenca).
 
 ## Struktura
 
-- `src/components/ui`: komponentët e Omal UI v2 (ikonat, butonat), sipas modelit shadcn (cva + `cn`). Shtohen me dorë: `npx shadcn` mos u përdor, sepse mbishkruan tokenat te `globals.css`.
+- `src/components/ui`: komponentët e Vrullit (Button, Stepper, ListRow, StatTile, InsightCard, FactCard, ProgressBar, WeekStrip, TabBar, RirPicker, QuickAdd, ikonat), sipas modelit shadcn (cva + `cn`). Shtohen me dorë: `npx shadcn` mos u përdor, sepse mbishkruan tokenat te `globals.css`.
 - `src/components/layout`: korniza, navigimi poshtë, kokat e faqeve.
 - `src/routes`: ekranet. `src/router.tsx`: rrugët; `routes/gate.tsx` është i vetmi vend që vendos rrugën sipas fazës (hyrja, marrja e të dhënave, hapat e para, app-i).
-- `src/components/forms`, `src/components/ui/field.tsx`: fushat dhe zgjedhja e ditëve sipas Omal UI v2.
+- `src/components/forms`, `src/components/ui/field.tsx`: fushat dhe zgjedhja e ditëve (të v1, me tokenat e Vrullit).
 - `src/lib`: logjika e përbashkët (tema, `cn`, butoni mbrapa).
 - `src/program`: logjika e programit pa UI dhe pa bazë: motori (`engine.ts`), Shortcut to Size si të dhëna, biblioteka e ushtrimeve (`library.json`, nga `tools/exercise-library/build.mjs`).
 - `src/nutrition`: logjika e ushqimit pa UI: objektivat (Shtojca C), orari i vakteve (§13), shablloni i Jimit me makrot e ushqimeve.

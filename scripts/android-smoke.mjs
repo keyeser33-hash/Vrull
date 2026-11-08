@@ -344,8 +344,9 @@ try {
   check('pa sesion hapet hyrja', (await page.evaluate('location.pathname')) === '/hyrja')
   check('tema OLED si parazgjedhje', (await page.evaluate('document.documentElement.className')) === 'dark oled')
   check('pa shirit veprimesh mbi faqe', !hasActionBar())
-  const bandLogin = await waitForBand('#0B0B0B')
-  check('rripi i orës te hyrja merr ngjyrën e panelit', sameColor(bandLogin, '#0B0B0B'), bandLogin.join(','))
+  // Vrull: pjesa e sipërme e hyrjes është `surface` (OLED #121214).
+  const bandLogin = await waitForBand('#121214')
+  check('rripi i orës te hyrja merr ngjyrën e kartës', sameColor(bandLogin, '#121214'), bandLogin.join(','))
   screenshot('1-hyrja')
 
   // 2. Hyrja: fjalëkalimi i gabuar thuhet me fjalë; pastaj hyrja e saktë.
@@ -539,9 +540,10 @@ try {
   await page.evaluate(`document.querySelector('input[type="radio"][value="light"]').click()`)
   await waitFor(async () => (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light', 'ruajtja e temës')
   check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
-  const bandLight = await waitForBand('#FAFAFA')
+  // Vrull: sfondi i Ditës është #F4F4F5.
+  const bandLight = await waitForBand('#F4F4F5')
   screenshot('5-cilesimet-light-v1')
-  check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#FAFAFA'), bandLight.join(','))
+  check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#F4F4F5'), bandLight.join(','))
   await pressBack()
   await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
   check('mbrapa mbyll fletën dhe mbetet te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
@@ -616,9 +618,9 @@ try {
   check('pas përditësimit: pa hyrje të re, direkt te Sot me programin', true)
   check('tema e çelët mbetet pas përditësimit', (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light')
   check('tema aplikohet para vizatimit', (await page.evaluate('document.documentElement.className')) === '')
-  const bandAfterUpdate = await waitForBand('#FAFAFA')
+  const bandAfterUpdate = await waitForBand('#F4F4F5')
   screenshot('6-sot-light-v2')
-  check('rripi i orës mbetet i çelët pas përditësimit', sameColor(bandAfterUpdate, '#FAFAFA'), bandAfterUpdate.join(','))
+  check('rripi i orës mbetet i çelët pas përditësimit', sameColor(bandAfterUpdate, '#F4F4F5'), bandAfterUpdate.join(','))
   page.close()
 
   // 8. Pa internet: app-i hapet direkt te Sot.

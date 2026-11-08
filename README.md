@@ -4,7 +4,7 @@ App personal për Android që ndjek programin Shortcut to Size të Jim Stoppani 
 
 - Specifikimi: [`docs/SPEC.md`](docs/SPEC.md)
 - Detyrat: [`docs/TICKETS.md`](docs/TICKETS.md)
-- Dizajni: [`DESIGN.md`](DESIGN.md) (Omal UI v2)
+- Dizajni: [`DESIGN.md`](DESIGN.md) (sistemi Vrull)
 
 ## Nisja
 
