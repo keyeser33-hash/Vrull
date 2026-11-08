@@ -217,6 +217,11 @@ describe('rekordet personale', () => {
     expect(e1rmRecord(set({ weightKg: 62.5, reps: 12 }), [])).toBeNull()
   })
 
+  it('pa e1RM të mëparshme (pulpat me 25–30 përsëritje), e1RM-ja e parë nuk është rekord', () => {
+    const java1 = [set({ exerciseId: 'calf', weightKg: 70, reps: 30, loggedAt: daysAgo(7) }), set({ exerciseId: 'calf', weightKg: 70, reps: 25, loggedAt: daysAgo(7) })]
+    expect(e1rmRecord(set({ exerciseId: 'calf', weightKg: 70, reps: 15, loggedAt: daysAgo(0) }), java1)).toBeNull()
+  })
+
   it('pa histori për ushtrimin, as setet e ngrohjes: asnjë rekord', () => {
     expect(personalRecords(set({ exerciseId: 'squat', weightKg: 100, reps: 5 }), history)).toEqual({ weightForReps: false, e1rm: false })
     expect(personalRecords(set({ weightKg: 80, reps: 12, isWarmup: true }), history)).toEqual({ weightForReps: false, e1rm: false })

@@ -33,12 +33,12 @@ export type SetRecordResult =
 
 /**
  * Rekordi i një seti në moment (§6): e1RM më e lartë, ose pesha më e madhe për këto përsëritje.
- * Rekordi i e1RM-së kërkon një e1RM të mëparshme për të kaluar, si pragu: ushtrimi pa e1RM (p.sh.
+ * Rekordi i e1RM-së kërkon një e1RM të mëparshme për të kaluar (`e1rmRecord`): ushtrimi pa e1RM (p.sh.
  * pulpat me 30 përsëritje) nuk merr "rekord +105 kg" me e1RM-në e parë.
  */
 export function setRecord(set: HistorySet, history: HistorySet[]): SetRecordResult | null {
   const gain = e1rmRecord(set, history)
-  if (gain && gain.previousBestKg > 0) return { kind: 'e1rm', ...gain }
+  if (gain) return { kind: 'e1rm', ...gain }
   return personalRecords(set, history).weightForReps && set.weightKg && set.reps ? { kind: 'weight', weightKg: set.weightKg, reps: set.reps } : null
 }
 
@@ -46,10 +46,8 @@ export const isRecord = (set: HistorySet, history: HistorySet[]) => setRecord(se
 
 /**
  * Rekordet e seancës (`sessionRecords` i historikut: seti më i mirë që theu rekord, kundrejt më të
- * mirit para seancës), vetëm me një e1RM të mëparshme për të kaluar; më i madhi i pari.
+ * mirit para seancës); më i madhi i pari.
  */
 export function sessionBests(history: HistorySet[], sessionId: string): ExerciseRecord[] {
-  return sessionRecords(history, sessionId)
-    .filter((record) => record.previousBestKg > 0)
-    .sort((a, b) => b.gainKg - a.gainKg)
+  return sessionRecords(history, sessionId).sort((a, b) => b.gainKg - a.gainKg)
 }

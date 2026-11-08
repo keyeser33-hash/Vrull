@@ -171,6 +171,9 @@ export function e1rmRecord(set: HistorySet, history: HistorySet[]): { e1rmKg: nu
   const value = setE1rm(set)
   if (value === null || previous.length === 0) return null
   const best = Math.max(0, ...previous.map((other) => setE1rm(other) ?? 0))
+  // Rekordi kërkon një e1RM të mëparshme për të kaluar (§0.3a): pulpat me 30 përsëritje nuk kanë e1RM,
+  // ndaj e1RM-ja e parë me 15 nuk është "rekord +105 kg". Seanca dhe historiku e marrin nga këtu.
+  if (best <= 0) return null
   return value > best ? { e1rmKg: value, previousBestKg: best, gainKg: value - best } : null
 }
 
