@@ -1,4 +1,4 @@
-import { act, configure, render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -89,7 +89,6 @@ vi.mock('@/lib/form-camera', async (importOriginal) => {
 })
 
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
-configure({ asyncUtilTimeout: 5000 })
 
 async function reset() {
   const { completeOnboarding } = await import('@/data/profile')
@@ -150,7 +149,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(fetchSpy).not.toHaveBeenCalled()
   })
 
-  it('nga kreu i seancës: kamera për ushtrimin dhe setin, regjistrimi dhe "Ruaj te seti 1"', { timeout: 20_000 }, async () => {
+  it('nga kreu i seancës: kamera për ushtrimin dhe setin, regjistrimi dhe "Ruaj te seti 1"', async () => {
     const { sessionId, slot, name } = await openSession()
     const user = userEvent.setup()
     const router = await renderAt('/seanca')
@@ -204,7 +203,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(again).getByRole('button', { name: 'Ruaj te seti 1' })).toBeDisabled()
   })
 
-  it('krahasimi me herën e kaluar, kufiri 1:00 dhe mesazhi i hapësirës nga 80%', { timeout: 20_000 }, async () => {
+  it('krahasimi me herën e kaluar, kufiri 1:00 dhe mesazhi i hapësirës nga 80%', async () => {
     const { slot } = await openSession()
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
     await data.store.put('set_logs', { session_id: 'last-week', exercise_id: slot.exerciseId, position: 0, set_number: 1, weight_kg: 60, reps: 12, is_warmup: false })
@@ -223,7 +222,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(dialog).getByRole('button', { name: 'Ruaj te seti 1' })).toBeEnabled()
   })
 
-  it('pa leje kamere: mesazhi me "Provo përsëri"; ndërrimi i kamerës hap kamerën e përparme', { timeout: 20_000 }, async () => {
+  it('pa leje kamere: mesazhi me "Provo përsëri"; ndërrimi i kamerës hap kamerën e përparme', async () => {
     await openSession()
     camera.failWith = 'denied'
     const user = userEvent.setup()
@@ -241,7 +240,7 @@ describe('videot e formës (V2-E1-13)', () => {
     await waitFor(() => expect(camera.opened).toEqual(['environment', 'environment', 'user']))
   })
 
-  it('app-i në sfond: regjistrimi ndalet dhe mbahet, kamera fiket dhe rihapet kur kthehet', { timeout: 20_000 }, async () => {
+  it('app-i në sfond: regjistrimi ndalet dhe mbahet, kamera fiket dhe rihapet kur kthehet', async () => {
     await openSession()
     let visibility: DocumentVisibilityState = 'visible'
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
@@ -270,7 +269,7 @@ describe('videot e formës (V2-E1-13)', () => {
     }
   })
 
-  it('në anglisht', { timeout: 20_000 }, async () => {
+  it('në anglisht', async () => {
     const { name } = await openSession()
     act(() => language.set('en'))
     const user = userEvent.setup()
@@ -288,7 +287,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(within(dialog).getByRole('button', { name: 'Save to set 1' })).toBeEnabled()
   })
 
-  it('faqja e ushtrimit: videot, luajtja dhe fshirja nga telefoni dhe nga Storage', { timeout: 20_000 }, async () => {
+  it('faqja e ushtrimit: videot, luajtja dhe fshirja nga telefoni dhe nga Storage', async () => {
     const { slot } = await openSession()
     const { addFormVideo, syncFormVideoFiles } = await import('@/data/form-videos')
     await data.store.put('workout_sessions', { id: 'last-week', date: '2026-11-01', status: 'completed' })
