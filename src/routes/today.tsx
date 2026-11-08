@@ -1,93 +1,136 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
-import { BodyFigure } from '@/components/body/body-figure'
-import { ProfileButton } from '@/components/layout/screen-header'
+import { lazy, Suspense, useCallback, useMemo, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router'
+import { MUSCLE_ROLE } from '@/components/body/roles'
+import { ScreenHeader } from '@/components/layout/screen-header'
+import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button-variants'
+import { StatTile } from '@/components/ui/stat-tile'
+import { surfaceClass } from '@/components/ui/surface'
+import { type WeekDay, WeekStrip } from '@/components/ui/week-strip'
 import { store, useLocalQuery } from '@/data/app-data'
-import { restartProgram, skipWorkout, startWorkout, trainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
+import { type TodayView, todayView } from '@/data/today'
+import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
+import type { I18n } from '@/i18n'
+import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
+import { useI18n } from '@/i18n/use-i18n'
+import { facesBack } from '@/body/model-focus'
+import { cn } from '@/lib/cn'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
-import { reference, suggestionFor } from '@/program/loads'
-import { MUSCLE_GROUPS } from '@/program/muscles'
-import { recoveryFor, type GroupRecovery } from '@/program/recovery'
+import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
-import { dateLabel, kg, setsText, targetText, techniqueText } from './training-format'
+import { targetLine } from './today-format'
 
-// Ekrani Sot, drejtimi C "Fokus" (SPEC §14): një panel me stërvitjen e radhës, rikuperimi i
-// muskujve të saj, ushtrimi i parë me peshën, dhe një veprim amber: "Fillo stërvitjen".
+// Sot (V2-E1-06, bordi "Sot", pamja energjike): kreu me datën dhe javën e programit, titulli si te
+// historiku ("Dita e gjoksit"), java kalendarike, karta e stërvitjes me muskujt e saj në 3D dhe
+// një veprim prushi ("Fillo stërvitjen" ose "Vazhdo stërvitjen"), dhe proteina e sotme.
+// Gjendjet: dita e stërvitjes, dita e pushimit (pa prush: stërvitja e radhës me datën), stërvitja e
+// sotme e mbyllur, seanca e hapur, para setit të parë, programi i përfunduar dhe pa program.
+// Të bordit që vijnë më vonë, pa të dhëna të shpikura: pllakat "Gati" dhe "Uji" dhe pamja e lodhur
+// (Etapa 3: gatishmëria, uji), "A e dije?" (Etapa 3: Mëso), sfida e javës (Etapa 4: miqtë).
+
+const BodyModel = lazy(() => import('@/components/body/body-model'))
+
+const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1)
+const atNoon = (date: string) => new Date(`${date}T12:00:00`)
+const noop = () => {}
 
 export function TodayPage() {
-  const snapshot = useLocalQuery(() => trainingSnapshot(store), [])
-  const history = useLocalQuery(() => trainingHistory(store), [])
-  const trainingDays = useLocalQuery(async () => ((await store.all('user_settings'))[0]?.training_days as number[] | undefined) ?? [], [])
-  const [now] = useState(() => new Date())
-
+  const view = useLocalQuery(() => todayView(store), [])
+  const i18n = useI18n()
+  const { t } = i18n
+  const navigate = useNavigate()
+  if (!view) {
+    return (
+      <div className="flex flex-col gap-3.5">
+        <h1 className="sr-only">{t('tab.today')}</h1>
+        <div aria-hidden className="h-[132px] rounded-lg bg-surface" />
+        <div aria-hidden className="h-[276px] rounded-xl bg-surface" />
+      </div>
+    )
+  }
   return (
     <div className="flex flex-col gap-3.5">
-      <header className="flex min-h-11 items-center justify-between gap-3 text-sm leading-5 text-muted-foreground tabular-nums">
-        <span>{dateLabel(now)}</span>
-        <div className="flex items-center gap-1">
-          {snapshot ? <span>{snapshot.label}</span> : null}
-          <ProfileButton />
-        </div>
-      </header>
+      <TodayHeader view={view} />
+      {view.mode === 'none' || view.mode === 'completed' ? null : <WeekStrip days={weekDays(view, i18n, (id) => navigate(`/progresi/historiku/${id}`))} />}
       <UpdateNotice />
-      {snapshot === undefined ? (
-        <TodaySkeleton />
-      ) : snapshot === null ? (
-        <section className="rounded-xl border border-border bg-card p-4">
-          <h1 className="text-lg leading-7 font-semibold">Pa program aktiv</h1>
-          <p className="mt-1 text-sm leading-5 text-muted-foreground">Programi i zgjedhur shfaqet këtu me stërvitjen e radhës.</p>
-        </section>
-      ) : snapshot.completed ? (
-        <ProgramCompleted snapshot={snapshot} />
+      {view.mode === 'none' ? (
+        <NoProgramme />
+      ) : view.mode === 'completed' ? (
+        <ProgrammeCompleted snapshot={view.snapshot!} />
       ) : (
-        <NextWorkout
-          snapshot={snapshot}
-          history={history}
-          isTrainingDay={(trainingDays ?? []).includes(((now.getDay() + 6) % 7) + 1)}
-          now={now}
-        />
+        <>
+          <WorkoutCard view={view} />
+          <Tiles view={view} />
+          {view.mode === 'session' ? null : <SkipWorkout />}
+        </>
       )}
     </div>
   )
 }
 
-function TodaySkeleton() {
-  return (
-    <div className="flex flex-col gap-3.5">
-      <h1 className="sr-only">Sot</h1>
-      <div aria-hidden className="h-[186px] rounded-xl bg-skeleton" />
-      <div aria-hidden className="h-36 rounded-lg bg-skeleton" />
-      <div aria-hidden className="h-14 rounded-full bg-skeleton" />
-    </div>
-  )
+function TodayHeader({ view }: { view: TodayView }) {
+  const { t, fmt } = useI18n()
+  const { mode, snapshot, workout } = view
+  const date = capitalize(fmt.date(view.now))
+  const plan = snapshot && !snapshot.completed ? snapshot.plan : null
+  const eyebrow = plan ? `${date} · ${programWeekLabel(t, plan)}` : date
+  const next = view.nextDate ? t('today.subtitle.next', { day: fmt.date(atNoon(view.nextDate)) }) : undefined
+  let title: string
+  let subtitle: string | undefined
+  if (mode === 'none') title = t('tab.today')
+  else if (mode === 'completed') {
+    title = t('today.completedTitle')
+    subtitle = snapshot?.programName
+  } else if (mode === 'rest' || mode === 'done') {
+    title = t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')
+    subtitle = next
+  } else {
+    const theme = workout?.theme
+    title = theme ? t(`today.theme.${theme}`) : t('today.workoutTitle', { day: plan!.dayNumber })
+    subtitle =
+      mode === 'session'
+        ? t('today.subtitle.session')
+        : view.firstEver
+          ? t('today.subtitle.first')
+          : workout?.recovery && workout.recovery !== 'gati'
+            ? t('today.subtitle.recovering')
+            : t('today.subtitle.ready')
+  }
+  return <ScreenHeader eyebrow={eyebrow} title={title} subtitle={subtitle} />
 }
 
-type History = Awaited<ReturnType<typeof trainingHistory>> | undefined
+/** Java e bordit; një ditë e bërë hap seancën e saj te historiku. */
+function weekDays(view: TodayView, { t, fmt }: I18n, open: (sessionId: string) => void): WeekDay[] {
+  return view.week.map((day) => ({
+    key: day.date,
+    letter: t(`today.weekLetter.${day.weekday}` as 'today.weekLetter.1'),
+    name: t('today.weekDay', { weekday: fmt.weekday(atNoon(day.date)), day: String(day.day) }),
+    day: day.day,
+    state: day.state,
+    today: day.today,
+    onSelect: day.sessionId ? () => open(day.sessionId!) : undefined,
+  }))
+}
 
-function NextWorkout({
-  snapshot,
-  history,
-  isTrainingDay,
-  now,
-}: {
-  snapshot: TrainingSnapshot
-  history: History
-  isTrainingDay: boolean
-  now: Date
-}) {
+function WorkoutCard({ view }: { view: TodayView }) {
+  const i18n = useI18n()
+  const { t } = i18n
   const navigate = useNavigate()
   const [busy, setBusy] = useState(false)
-  const [confirmSkip, setConfirmSkip] = useState(false)
-  const { plan, exercises, session } = snapshot
-  const totalSets = plan.slots.reduce((total, slot) => total + slot.sets, 0)
-  const primary = [...new Set(plan.slots.flatMap((slot) => exercises[slot.exerciseId]?.primary ?? []))]
-  const secondary = [...new Set(plan.slots.flatMap((slot) => exercises[slot.exerciseId]?.secondary ?? []))]
-  const recovery = recoveryFor(MUSCLE_GROUPS, primary, history?.worked ?? [], now)
-  const [first] = plan.slots
-  const technique = first ? techniqueText(first.technique) : null
-  const reserve = first?.target.kind === 'reps' && first.target.rir ? `${first.target.rir.min}–${first.target.rir.max} në rezervë` : null
-  const groupsLabel = recovery.map((entry) => entry.group.name.toLowerCase())
+  const { mode, workout } = view
+  const plan = view.snapshot!.plan
+  if (!workout) return null
+  const upcoming = mode === 'rest' || mode === 'done'
+  // Te pushimi dhe pas mbylljes kreu e thotë që kjo është stërvitja e radhës, me datën.
+  const meta = [
+    t('today.workoutTitle', { day: plan.dayNumber }),
+    ...(mode === 'session'
+      ? [t('today.setsLogged', { done: workout.loggedSets, count: workout.sets })]
+      : [t('today.exercises', { count: workout.exercises }), t('today.minutes', { minutes: workout.minutes })]),
+  ].join(' · ')
+  const model = webglAvailable() && workout.focus !== null
+  const action = mode === 'session' ? t('today.resume') : view.firstEver ? t('today.startFirst') : t('today.start')
 
   async function start() {
     setBusy(true)
@@ -102,137 +145,168 @@ function NextWorkout({
   }
 
   return (
-    <>
-      <section aria-labelledby="today-title" className="flex gap-3 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <span className="text-xs leading-4 font-medium text-panel-muted-foreground">{isTrainingDay ? 'Sot' : 'E radhës'}</span>
-          <h1 id="today-title" className="text-4xl leading-10 font-bold tracking-[-0.03em]">
-            Stërvitja {plan.dayNumber}
-          </h1>
-          <span className="text-lg leading-[26px] font-medium">{plan.dayName}</span>
-          <span className="mt-2.5 flex flex-col text-sm leading-5 text-panel-muted-foreground tabular-nums">
-            <span>
-              {plan.slots.length} ushtrime · {totalSets} sete
-            </span>
-            {first ? <span>{targetText(first.target)}</span> : null}
-            {technique ?? reserve ? <span>{technique ?? reserve}</span> : null}
-          </span>
-        </div>
-        <BodyFigure
-          primary={primary}
-          secondary={secondary}
-          label={`Muskujt e sotëm: ${groupsLabel.length > 1 ? `${groupsLabel.slice(0, -1).join(', ')} dhe ${groupsLabel.at(-1)}` : (groupsLabel[0] ?? 'asnjë')}`}
-        />
-      </section>
-
-      {recovery.length > 0 ? <Recovery entries={recovery} /> : null}
-
-      {first ? <FirstExercise snapshot={snapshot} history={history} now={now} /> : null}
-
-      <Button variant="brand" size="xl" disabled={busy || plan.slots.length === 0} onClick={() => void start()}>
-        {session ? 'Vazhdo stërvitjen' : 'Fillo stërvitjen'}
-      </Button>
-
-      {session ? null : confirmSkip ? (
-        <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3">
-          <p className="text-sm leading-5">Kalon te stërvitja tjetër pa e bërë këtë. Stërvitja shënohet si e kapërcyer.</p>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" onClick={() => setConfirmSkip(false)}>
-              Anulo
-            </Button>
-            <Button variant="outline" onClick={() => void skipWorkout(store).then(() => setConfirmSkip(false))}>
-              Kapërce
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <Button variant="ghost" className="self-center" onClick={() => setConfirmSkip(true)}>
-          Kapërce këtë stërvitje
+    <section
+      aria-label={t(upcoming ? 'today.nextLabel' : 'today.workoutLabel')}
+      className={cn(surfaceClass, 'relative flex flex-col overflow-hidden rounded-xl p-4', model && 'min-h-[276px]')}
+    >
+      {model ? (
+        <>
+          <WorkoutModel primary={workout.primary} focus={workout.focus!.keys} />
+          {/* Teksti mbi model: karta zbehet drejt së tejdukshmes me ngjyrën e vet (DESIGN.md › Rregullat e temave). */}
+          <div aria-hidden className="absolute inset-0 bg-linear-to-r from-surface from-40% to-surface/0 to-72%" />
+        </>
+      ) : null}
+      <div className="relative flex flex-1 flex-col gap-2">
+        <span className="max-w-[250px] type-caption text-muted-foreground tabular-nums">{meta}</span>
+        <h2 className="max-w-[216px] type-display-s">{programDayName(t, plan.dayName)}</h2>
+        {workout.first ? <p className="max-w-[190px] type-body text-foreground tabular-nums">{targetLine(i18n, workout.first)}</p> : null}
+        {workout.focus && workout.recovery ? (
+          <p className="flex items-center gap-1.5 type-caption text-muted-foreground">
+            <span aria-hidden className={cn('size-2 shrink-0 rounded-pill', workout.recovery === 'gati' ? 'bg-success' : 'bg-sand')} />
+            {t('today.recovery', {
+              group: muscleName(t, workout.focus.group.id),
+              status: t(`today.recovery.${workout.recovery}`),
+            })}
+          </p>
+        ) : null}
+        <Button
+          variant={upcoming ? 'secondary' : 'primary'}
+          size="lg"
+          className="mt-auto w-full"
+          disabled={busy || workout.exercises === 0}
+          onClick={() => void start()}
+        >
+          {action}
         </Button>
-      )}
-    </>
-  )
-}
-
-const STATUS = {
-  gati: { label: 'Gati', className: 'bg-success-soft text-success' },
-  pothuajse_gati: { label: 'Pothuajse gati', className: 'bg-warning-soft text-warning' },
-  i_lodhur: { label: 'I lodhur', className: 'bg-destructive-soft text-destructive' },
-} as const
-
-function sinceText(hours: number | null) {
-  if (hours === null) return 'Pa stërvitje ende'
-  if (hours < 24) return 'Sot'
-  return `${Math.floor(hours / 24)} ditë nga e fundit`
-}
-
-function Recovery({ entries }: { entries: GroupRecovery[] }) {
-  return (
-    <section aria-labelledby="recovery-title" className="flex flex-col">
-      <h2 id="recovery-title" className="mb-1.5 text-sm leading-5 font-semibold">
-        Rikuperimi i muskujve të sotëm
-      </h2>
-      <ul>
-        {entries.map(({ group, hours, status }) => (
-          <li key={group.id} className="flex min-h-12 items-center gap-3 border-t border-border-subtle tabular-nums">
-            <span className="flex-1 text-base leading-6">{group.name}</span>
-            <span className="text-xs leading-4 text-muted-foreground">{sinceText(hours)}</span>
-            <span className={`rounded-full px-2.5 py-1 text-xs leading-4 font-medium ${STATUS[status].className}`}>{STATUS[status].label}</span>
-          </li>
-        ))}
-      </ul>
+      </div>
     </section>
   )
 }
 
-function FirstExercise({ snapshot, history, now }: { snapshot: TrainingSnapshot; history: History; now: Date }) {
-  const [slot] = snapshot.plan.slots
-  const exercise = snapshot.exercises[slot.exerciseId]
-  const sets = history?.sets ?? []
-  const suggestion = exercise
-    ? suggestionFor(slot, exercise, sets, now, history?.overrides[slot.exerciseId] ?? null, history?.weightSteps ?? {})
-    : null
-  const previous = reference(sets, { exerciseId: slot.exerciseId, blockPosition: snapshot.plan.blockPosition, week: snapshot.plan.week, setNumber: 1 })
-  const weight = suggestion?.weightKg ?? previous?.weightKg ?? null
+/**
+ * Modeli 3D i trupit si figurë e kartës (bordi "Sot"): muskujt kryesorë të stërvitjes në prush,
+ * kamera te grupi kryesor, i prerë në të djathtë pas tekstit. Vetëm zbukurim: nuk preket dhe nuk
+ * lexohet (fjalët e kartës e thonë); tekstet e ngarkimit të modelit nuk shfaqen këtu.
+ */
+function WorkoutModel({ primary, focus }: { primary: string[]; focus: string[] }) {
+  const { t } = useI18n()
+  const primaryKey = primary.join(',')
+  const keys = useMemo(() => new Set(primaryKey.split(',')), [primaryKey])
+  const paint = useCallback((key: string) => (keys.has(key) ? MUSCLE_ROLE.primary.tone : null), [keys])
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-3 tabular-nums">
-      <div className="flex min-w-0 flex-1 flex-col">
-        <span className="text-xs leading-4 text-muted-foreground">Ushtrimi i parë</span>
-        <span className="text-base leading-6 font-semibold">
-          {exercise?.name}
-          {weight ? ` · ${kg(weight)} kg` : ''}
-        </span>
-      </div>
-      <span className="text-sm leading-5 text-muted-foreground">{setsText(slot.sets, slot.target)}</span>
+    <div aria-hidden className="pointer-events-none absolute -top-1.5 -right-[76px] size-[284px] [&_span]:hidden">
+      <Suspense fallback={null}>
+        <BodyModel
+          className="h-full"
+          paint={paint}
+          face={focus}
+          focus={focus}
+          back={facesBack(focus)}
+          onBackChange={noop}
+          onPick={noop}
+          label={t('today.muscles')}
+        />
+      </Suspense>
     </div>
   )
 }
 
-function ProgramCompleted({ snapshot }: { snapshot: TrainingSnapshot }) {
+/** Pllakat e bordit. Tani proteina e sotme; "Gati" dhe "Uji" zënë vendin e tyre me Etapën 3. */
+function Tiles({ view }: { view: TodayView }) {
+  const { t, fmt } = useI18n()
+  const navigate = useNavigate()
+  const { eatenG, targetG } = view.protein
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <StatTile
+        label={t('today.protein')}
+        value={fmt.unit(eatenG, 'g')}
+        ariaLabel={targetG ? t('today.proteinSpokenOf', { count: eatenG, target: targetG }) : t('today.proteinSpoken', { count: eatenG })}
+        tone="data"
+        onSelect={() => navigate('/ushqimi')}
+      />
+    </div>
+  )
+}
+
+/** "Kapërce këtë stërvitje" (SPEC §4): vetëm me dorë, pas konfirmimit në fletë. */
+function SkipWorkout() {
+  const { t } = useI18n()
+  const [params, setParams] = useSearchParams()
+  const navigate = useNavigate()
   const [busy, setBusy] = useState(false)
-  const restartFrom = snapshot.blocks.find((block) => block.position === 1) ?? snapshot.blocks[0]
+  const open = params.get('veprim') === 'kaperce'
+  const close = () => navigate(-1)
   return (
     <>
-      <section aria-labelledby="done-title" className="flex flex-col gap-1.5 rounded-xl border border-panel-border bg-panel p-5 text-panel-foreground">
-        <span className="text-xs leading-4 font-medium text-panel-muted-foreground">{snapshot.programName}</span>
-        <h1 id="done-title" className="text-4xl leading-10 font-bold tracking-[-0.03em]">
-          Përfunduar
-        </h1>
-        <p className="mt-2 text-sm leading-5 text-panel-muted-foreground">
-          Rinise nga {restartFrom.name}: peshat e sugjeruara dalin nga 1RM-të e reja.
-        </p>
-      </section>
+      <Button variant="ghost" className="self-center text-muted-foreground" onClick={() => setParams({ veprim: 'kaperce' })}>
+        {t('today.skip')}
+      </Button>
+      {open ? (
+        <Sheet title={t('today.skip')} description={t('today.skipText')} onClose={close}>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="secondary" size="lg" onClick={close}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              disabled={busy}
+              onClick={() => {
+                setBusy(true)
+                void skipWorkout(store)
+                  .then(close)
+                  .finally(() => setBusy(false))
+              }}
+            >
+              {t('today.skipConfirm')}
+            </Button>
+          </div>
+        </Sheet>
+      ) : null}
+    </>
+  )
+}
+
+/** Pas stërvitjes së fundit (SPEC §4): rinis nga Faza 1, ose zgjidh një program tjetër. */
+function ProgrammeCompleted({ snapshot }: { snapshot: TrainingSnapshot }) {
+  const { t } = useI18n()
+  const [busy, setBusy] = useState(false)
+  const restartFrom = snapshot.blocks.find((block) => block.position === 1) ?? snapshot.blocks[0]
+  const block = programBlockName(t, restartFrom.name)
+  return (
+    <section aria-label={t('today.completedTitle')} className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-4')}>
+      <p className="type-body-l text-foreground">{t('today.completedText', { block })}</p>
       <Button
-        variant="brand"
-        size="xl"
+        variant="primary"
+        size="lg"
+        className="w-full"
         disabled={busy}
         onClick={() => {
           setBusy(true)
           void restartProgram(store, restartFrom.id).finally(() => setBusy(false))
         }}
       >
-        Rinis nga {restartFrom.name}
+        {t('today.restart', { block })}
       </Button>
-    </>
+      <Link to="/programet" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full')}>
+        {t('today.otherProgramme')}
+      </Link>
+    </section>
+  )
+}
+
+function NoProgramme() {
+  const { t } = useI18n()
+  return (
+    <section aria-labelledby="today-no-programme" className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-4')}>
+      <h2 id="today-no-programme" className="type-display-s">
+        {t('today.noProgrammeTitle')}
+      </h2>
+      <p className="type-body text-muted-foreground">{t('today.noProgrammeText')}</p>
+      <Link to="/programet" className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'w-full')}>
+        {t('today.chooseProgramme')}
+      </Link>
+    </section>
   )
 }

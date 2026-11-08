@@ -4,6 +4,130 @@ import type { Messages, TranslationOf } from '../translate'
 // Një skedar për zonë, që detyrat paralele të mos prekin të njëjtin skedar; sq.ts dhe en.ts i bashkojnë.
 // Shqipja është burimi i çelësave; anglishtja britanike ndjek të njëjtat çelësa dhe parametra.
 
-export const sq = {} as const satisfies Messages
+export const sq = {
+  // Kreu: titulli si te historiku, nga muskuli kryesor i ushtrimit të parë (dayTheme), ose sipas ditës.
+  'today.subtitle.ready': 'Je gati. Shko fort.',
+  'today.subtitle.recovering': 'Dëgjo trupin sot.',
+  'today.subtitle.first': 'Seanca e parë: gjej peshën e çdo ushtrimi.',
+  'today.subtitle.session': 'Seanca është e hapur.',
+  'today.subtitle.next': 'Stërvitja e radhës: {day}.',
+  'today.restTitle': 'Ditë pushimi',
+  'today.doneTitle': 'U krye për sot',
+  'today.workoutTitle': 'Stërvitja {day}',
+  'today.theme.chest': 'Dita e gjoksit',
+  'today.theme.back': 'Dita e shpinës',
+  'today.theme.shoulders': 'Dita e shpatullave',
+  'today.theme.arms': 'Dita e krahëve',
+  'today.theme.legs': 'Dita e këmbëve',
+  'today.theme.abs': 'Dita e barkut',
 
-export const en: TranslationOf<typeof sq> = {}
+  // Java (shkronja mbi rrethin; 1 = e hënë).
+  'today.weekLetter.1': 'H',
+  'today.weekLetter.2': 'M',
+  'today.weekLetter.3': 'M',
+  'today.weekLetter.4': 'E',
+  'today.weekLetter.5': 'P',
+  'today.weekLetter.6': 'Sh',
+  'today.weekLetter.7': 'D',
+  'today.weekDay': '{weekday} {day}',
+
+  // Karta e stërvitjes.
+  'today.workoutLabel': 'Stërvitja e sotme',
+  'today.nextLabel': 'Stërvitja e radhës',
+  'today.exercises': { one: '{count} ushtrim', other: '{count} ushtrime' },
+  'today.minutes': '~{minutes} min',
+  'today.setsLogged': { one: '{done} nga {count} set', other: '{done} nga {count} sete' },
+  'today.target.weight': '{exercise}: synim {weight}\u00A0×\u00A0{reps}.',
+  'today.target.reps': '{exercise}: synim {reps} përsëritje.',
+  'today.target.choose': '{exercise}: zgjidh peshën ku mbyll {reps}.',
+  'today.target.seconds': '{exercise}: synim {seconds}\u00A0s.',
+  'today.target.percent': '{exercise}: {reps} përsëritje me {percent}% të 1RM.',
+  'today.recovery': '{group}: {status}',
+  'today.recovery.gati': 'gati',
+  'today.recovery.pothuajse_gati': 'pothuajse gati',
+  'today.recovery.i_lodhur': 'i lodhur',
+  'today.muscles': 'Muskujt kryesorë të stërvitjes',
+  'today.start': 'Fillo stërvitjen',
+  'today.startFirst': 'Fillo stërvitjen e parë',
+  'today.resume': 'Vazhdo stërvitjen',
+
+  // Pllakat: proteina tani; gatishmëria dhe uji vijnë me Etapën 3.
+  'today.protein': 'Proteina',
+  'today.proteinSpoken': { one: 'Proteina {count} gram', other: 'Proteina {count} gramë' },
+  'today.proteinSpokenOf': { one: 'Proteina {count} gram nga {target}', other: 'Proteina {count} gramë nga {target}' },
+
+  // Kapërce (SPEC §4: vetëm me dorë).
+  'today.skip': 'Kapërce këtë stërvitje',
+  'today.skipText': 'Kalon te stërvitja tjetër pa e bërë këtë. Stërvitja shënohet si e kapërcyer.',
+  'today.skipConfirm': 'Kapërce',
+
+  // Programi i përfunduar dhe pa program.
+  'today.completedTitle': 'Programi u përfundua',
+  'today.completedText': 'Rinise nga {block}: peshat e sugjeruara dalin nga 1RM-të e reja.',
+  'today.restart': 'Rinis nga {block}',
+  'today.otherProgramme': 'Zgjidh një program tjetër',
+  'today.noProgrammeTitle': 'Pa program aktiv',
+  'today.noProgrammeText': 'Zgjidh një program dhe stërvitja e radhës del këtu.',
+  'today.chooseProgramme': 'Zgjidh programin',
+} as const satisfies Messages
+
+export const en: TranslationOf<typeof sq> = {
+  'today.subtitle.ready': "You're ready. Go hard.",
+  'today.subtitle.recovering': 'Listen to your body today.',
+  'today.subtitle.first': 'First session: find your weight for each exercise.',
+  'today.subtitle.session': 'Your session is open.',
+  'today.subtitle.next': 'Next workout: {day}.',
+  'today.restTitle': 'Rest day',
+  'today.doneTitle': 'Done for today',
+  'today.workoutTitle': 'Workout {day}',
+  'today.theme.chest': 'Chest day',
+  'today.theme.back': 'Back day',
+  'today.theme.shoulders': 'Shoulder day',
+  'today.theme.arms': 'Arm day',
+  'today.theme.legs': 'Leg day',
+  'today.theme.abs': 'Abs day',
+
+  'today.weekLetter.1': 'M',
+  'today.weekLetter.2': 'T',
+  'today.weekLetter.3': 'W',
+  'today.weekLetter.4': 'T',
+  'today.weekLetter.5': 'F',
+  'today.weekLetter.6': 'S',
+  'today.weekLetter.7': 'S',
+  'today.weekDay': '{weekday} {day}',
+
+  'today.workoutLabel': "Today's workout",
+  'today.nextLabel': 'Next workout',
+  'today.exercises': { one: '{count} exercise', other: '{count} exercises' },
+  'today.minutes': '~{minutes} min',
+  'today.setsLogged': { one: '{done} of {count} set', other: '{done} of {count} sets' },
+  'today.target.weight': '{exercise}: target {weight}\u00A0×\u00A0{reps}.',
+  'today.target.reps': '{exercise}: target {reps} reps.',
+  'today.target.choose': '{exercise}: pick a weight you can lift for {reps}.',
+  'today.target.seconds': '{exercise}: target {seconds}\u00A0s.',
+  'today.target.percent': '{exercise}: {reps} reps at {percent}% of 1RM.',
+  'today.recovery': '{group}: {status}',
+  'today.recovery.gati': 'ready',
+  'today.recovery.pothuajse_gati': 'almost ready',
+  'today.recovery.i_lodhur': 'tired',
+  'today.muscles': 'Main muscles of the workout',
+  'today.start': 'Start workout',
+  'today.startFirst': 'Start your first workout',
+  'today.resume': 'Continue workout',
+
+  'today.protein': 'Protein',
+  'today.proteinSpoken': { one: 'Protein {count} gram', other: 'Protein {count} grams' },
+  'today.proteinSpokenOf': { one: 'Protein {count} gram of {target}', other: 'Protein {count} grams of {target}' },
+
+  'today.skip': 'Skip this workout',
+  'today.skipText': 'You move on to the next workout without doing this one. It is marked as skipped.',
+  'today.skipConfirm': 'Skip',
+
+  'today.completedTitle': 'Programme complete',
+  'today.completedText': 'Restart from {block}: suggested weights come from your new 1RMs.',
+  'today.restart': 'Restart from {block}',
+  'today.otherProgramme': 'Choose another programme',
+  'today.noProgrammeTitle': 'No active programme',
+  'today.noProgrammeText': 'Choose a programme and your next workout shows up here.',
+  'today.chooseProgramme': 'Choose a programme',
+}

@@ -126,6 +126,9 @@ Emri i një muskuli ose pjese muskuli sipas Shtojcës D (p.sh. `deltoid_lateral`
 Një nga grupet që sheh përdoruesi (Gjoksi, Shpina, Barku…), i përbërë nga disa çelësa.
 _Avoid_: pjesa e trupit
 
+**Grupi kryesor**:
+**Grupi i muskujve** të ushtrimit të parë të një **Stërvitjeje**; te Sot jep **Rikuperimin** e kartës ("Gjoksi: gati") dhe pjesën e trupit ku shikon modeli 3D.
+
 **Muskuli kryesor**:
 Muskuli që punon më shumë te një ushtrim; numërohet 1 për çdo set.
 

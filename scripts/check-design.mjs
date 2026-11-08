@@ -34,7 +34,6 @@ export const LEGACY_FILES = new Set([
   'src/routes/program-editor.tsx',
   'src/routes/program.tsx',
   'src/routes/slot-editor.tsx',
-  'src/routes/today.tsx',
 ])
 
 const PREFIX = '(?<![\\w-])(?:bg|text|border|fill|stroke|outline|ring|divide|placeholder|decoration|shadow|from|via|to|caret)'
