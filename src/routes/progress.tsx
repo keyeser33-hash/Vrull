@@ -1,5 +1,5 @@
-import { useId, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
+import { useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router'
 import { TrendChart } from '@/components/charts/trend-chart'
 import { EmptyState } from '@/components/layout/empty-state'
 import { Group, LinkRow } from '@/components/layout/list-group'
@@ -7,18 +7,17 @@ import { BackButton } from '@/components/layout/page'
 import { ScreenHeader } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
-import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
-import { type ComplianceDay, type MeasurementValues, measurementsOn, metricHistory, progressStart, progressView, saveMeasurement, trainingProgress } from '@/data/progress'
+import { type ComplianceDay, metricHistory, progressStart, progressView, trainingProgress } from '@/data/progress'
 import { historyGlance } from '@/data/history'
 import { startWorkout, trainingSnapshot } from '@/data/training'
 import { useI18n } from '@/i18n/use-i18n'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
-import { METRICS, type Metric, type MetricKey, metricByKey, movingAverage, parseMetric } from '@/progress/metrics'
+import { METRICS, type Metric, metricByKey, movingAverage } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
 import { PhotoSection } from './photos'
 import { dateLabel, kg } from './training-format'
@@ -282,126 +281,6 @@ export function MetricPage() {
       <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full')}>
         Shto matjen
       </Link>
-    </div>
-  )
-}
-
-const GROUPS: { title: string; keys: MetricKey[]; pairs?: boolean }[] = [
-  { title: 'Pesha dhe yndyra', keys: ['weight_kg', 'body_fat_pct'] },
-  { title: 'Trupi', keys: ['neck_cm', 'shoulders_cm', 'chest_cm', 'waist_cm', 'hips_cm'] },
-  {
-    title: 'Krahët dhe këmbët',
-    keys: ['arm_left_cm', 'arm_right_cm', 'forearm_left_cm', 'forearm_right_cm', 'thigh_left_cm', 'thigh_right_cm', 'calf_left_cm', 'calf_right_cm'],
-    pairs: true,
-  },
-]
-
-const toText = (value: number | null | undefined) => (value === null || value === undefined ? '' : String(value).replace('.', ','))
-
-export function MeasurementPage() {
-  const [params] = useSearchParams()
-  const [today] = useState(() => localDate(new Date()))
-  const date = params.get('data') ?? today
-  const saved = useLocalQuery(() => measurementsOn(store, date), [date])
-  if (!saved) return <h1 className="sr-only">Matja</h1>
-  return <MeasurementForm key={date} date={date} saved={saved} />
-}
-
-function MeasurementForm({ date, saved }: { date: string; saved: MeasurementValues }) {
-  const navigate = useNavigate()
-  const [texts, setTexts] = useState<Record<string, string>>(() => Object.fromEntries(METRICS.map((metric) => [metric.key, toText(saved[metric.key])])))
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [busy, setBusy] = useState(false)
-
-  async function save() {
-    const values: MeasurementValues = {}
-    const problems: Record<string, string> = {}
-    for (const metric of METRICS) {
-      const parsed = parseMetric(metric, texts[metric.key] ?? '')
-      if (parsed.ok) values[metric.key] = parsed.value
-      else problems[metric.key] = parsed.error
-    }
-    setErrors(problems)
-    if (Object.keys(problems).length > 0) return
-    if (Object.values(values).every((value) => value === null) && Object.values(saved).every((value) => value === null || value === undefined)) {
-      setErrors({ form: 'Shkruaj të paktën një matje.' })
-      return
-    }
-    setBusy(true)
-    await saveMeasurement(store, date, values)
-    navigate(-1)
-  }
-
-  return (
-    <div className="flex flex-col gap-5">
-      <header className="flex min-h-11 items-center">
-        <BackButton label="Kthehu" fallback="/progresi" />
-      </header>
-      <div className="flex flex-col gap-1">
-        <h1 className="type-display-m">Matja</h1>
-        <span className="type-body text-muted-foreground">{dayText(date)}</span>
-      </div>
-      <p className="-mt-2 type-caption text-muted-foreground">Pesha më mirë në mëngjes, para ushqimit. Perimetrat me centimetër, në të njëjtin vend çdo herë. Fushat bosh nuk ruhen.</p>
-      {GROUPS.map((group) => (
-        <fieldset key={group.title} className="flex flex-col gap-3">
-          <legend className="mb-1 type-label text-muted-foreground">{group.title}</legend>
-          <div className={cn('grid gap-3', group.pairs || group.keys.length === 2 ? 'grid-cols-2' : 'grid-cols-1')}>
-            {group.keys.map((key) => {
-              const metric = metricByKey(key)!
-              return (
-                <MetricField
-                  key={key}
-                  metric={metric}
-                  value={texts[key] ?? ''}
-                  error={errors[key]}
-                  onChange={(value) => {
-                    setTexts((current) => ({ ...current, [key]: value }))
-                    setErrors((current) => {
-                      const { [key]: _removed, form: _form, ...rest } = current
-                      return rest
-                    })
-                  }}
-                />
-              )
-            })}
-          </div>
-        </fieldset>
-      ))}
-      {errors.form ? (
-        <p role="alert" className="type-caption text-danger">
-          {errors.form}
-        </p>
-      ) : null}
-      <Button variant="primary" size="xl" disabled={busy} onClick={() => void save()}>
-        Ruaj matjen
-      </Button>
-    </div>
-  )
-}
-
-function MetricField({ metric, value, error, onChange }: { metric: Metric; value: string; error?: string; onChange: (value: string) => void }) {
-  const id = useId()
-  const errorId = useId()
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="type-caption font-medium">
-        {metric.label}, {metric.unit}
-      </label>
-      <input
-        id={id}
-        inputMode="decimal"
-        autoComplete="off"
-        value={value}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? errorId : undefined}
-        onChange={(event) => onChange(event.currentTarget.value)}
-        className={inputClass}
-      />
-      {error ? (
-        <p id={errorId} role="alert" className="type-caption text-danger">
-          {error}
-        </p>
-      ) : null}
     </div>
   )
 }

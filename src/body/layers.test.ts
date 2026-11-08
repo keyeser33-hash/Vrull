@@ -1,4 +1,4 @@
-import { DEEP_MUSCLES, ghostKeys } from './layers'
+import { DEEP_ENTRIES, DEEP_MUSCLES, deepEntry, ghostKeys, programRoles } from './layers'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 
 describe('shtresat e modelit 3D', () => {
@@ -32,5 +32,31 @@ describe('shtresat e modelit 3D', () => {
       new Set(['trapezius', 'deltoid_posterior']),
     )
     expect(ghostKeys(false, ['biceps_brachii'])).toEqual(new Set())
+  })
+
+  it('zgjedhjet e ekranit "Shtresat": çdo muskul i thellë një herë, romboidët bashkë', () => {
+    expect(DEEP_ENTRIES.flatMap((entry) => entry.keys).sort()).toEqual(DEEP_MUSCLES.map((muscle) => muscle.key).sort())
+    expect(DEEP_ENTRIES.slice(0, 4).map((entry) => entry.id)).toEqual(['pectoralis_minor', 'rhomboids', 'brachialis', 'soleus'])
+    expect(deepEntry('rhomboids')).toMatchObject({ keys: ['rhomboid_major', 'rhomboid_minor'], covers: ['trapezius'], side: 'back' })
+    expect(deepEntry('pectoralis_minor')!.covers).toEqual(['pectoralis_major_sternocostal', 'pectoralis_major_clavicular'])
+    expect(deepEntry('nuk-ekziston')).toBeUndefined()
+  })
+
+  it('"Te programi yt": ushtrimet ku muskuli është kryesor ose ndihmës, pa përsëritje', () => {
+    const exercises = [
+      { name: 'Bench Press', primary: ['pectoralis_major_sternocostal'], secondary: ['triceps_brachii'] },
+      { name: 'Cable Crossover', primary: ['pectoralis_major_sternocostal'], secondary: ['pectoralis_minor', 'deltoid_anterior'] },
+      { name: 'Cable Crossover', primary: ['pectoralis_major_sternocostal'], secondary: ['pectoralis_minor', 'deltoid_anterior'] },
+      { name: 'Seated Calf Raise', primary: ['soleus'], secondary: ['gastrocnemius'] },
+      { name: 'Standing Calf Raise', primary: ['gastrocnemius'], secondary: ['soleus'] },
+    ]
+    expect(programRoles(['pectoralis_minor'], exercises)).toEqual({ primary: [], secondary: ['Cable Crossover'] })
+    expect(programRoles(['soleus'], exercises)).toEqual({ primary: ['Seated Calf Raise'], secondary: ['Standing Calf Raise'] })
+    // Një ushtrim ku një pjesë është kryesore dhe tjetra ndihmëse numërohet si kryesor.
+    expect(programRoles(['rhomboid_major', 'rhomboid_minor'], [{ name: 'Row', primary: ['rhomboid_major'], secondary: ['rhomboid_minor'] }])).toEqual({
+      primary: ['Row'],
+      secondary: [],
+    })
+    expect(programRoles(['brachialis'], exercises)).toEqual({ primary: [], secondary: [] })
   })
 })

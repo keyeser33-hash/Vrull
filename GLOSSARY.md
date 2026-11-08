@@ -147,6 +147,10 @@ Një çelës muskuli që, nga ana ku shihet, fshihet kryesisht nga muskuj të tj
 **Mbulesa**:
 Muskuli që fsheh një **Muskul të thellë** (p.sh. trapezi për romboidët).
 
+**Trupi sipas matjeve**:
+Pamja e modelit 3D që ndjek **Perimetrat**: trupi i **Javës 0** pranë atij të sotëm, me ndryshimin në cm për çdo zonë.
+_Avoid_: trupi i personalizuar, avatari
+
 **Rikuperimi**:
 Gjendja e një grupi muskujsh sipas orëve nga seanca e fundit ku ishte kryesor: I lodhur (nën 48), Pothuajse gati (48–72), Gati (mbi 72).
 
@@ -215,6 +219,10 @@ _Avoid_: alarmi (është i timer-it të pushimit)
 
 **Matja**:
 Një vlerë e trupit në një datë: pesha, % e yndyrës ose një perimetër.
+
+**Perimetri**:
+Një matje me shirit në cm: qafa, shpatullat, gjoksi, beli, vithet, krahu, parakrahu, kofsha, pulpa. Te krahët dhe këmbët ana kryesore është e djathta; "ana tjetër" është e majta.
+_Avoid_: përmasa, rrethi
 
 **Dita e matjes**:
 Dita e javës kur kujtohet matja javore: pesha para mëngjesit, perimetrat dhe fotot.

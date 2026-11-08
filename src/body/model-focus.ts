@@ -8,7 +8,9 @@ export const MAX_DISTANCE = 3.75
 export const MIN_DISTANCE = 1.1
 /** Lartësia e qendrës së trupit, ku shikon kamera pa fokus. */
 export const BODY_CENTER = 0.86
-const FIELD_OF_VIEW = (28 * Math.PI) / 180
+/** Fusha vertikale e kamerës, në gradë. */
+export const FIELD_OF_VIEW_DEGREES = 28
+const FIELD_OF_VIEW = (FIELD_OF_VIEW_DEGREES * Math.PI) / 180
 
 const FRONT_KEYS = new Set(FRONT.flatMap((region) => region.keys))
 const BACK_KEYS = new Set(BACK.flatMap((region) => region.keys))
@@ -41,6 +43,18 @@ export function focusView(box: { min: number[]; max: number[] }) {
   const size = Math.max(box.max[1] - box.min[1], box.max[0] - box.min[0], box.max[2] - box.min[2])
   const distance = (size * 1.6) / (2 * Math.tan(FIELD_OF_VIEW / 2))
   return { height, distance: Math.min(MAX_DISTANCE, Math.max(MIN_DISTANCE, distance)) }
+}
+
+/**
+ * Kamera për një imazh të palëvizshëm (`aspect` = gjerësia / lartësia): kutia e plotë hyn në
+ * lartësi dhe në gjerësi, me pak hapësirë rreth saj. Pa kufijtë e zmadhimit me gisht.
+ */
+export function fitView(box: { min: number[]; max: number[] }, aspect: number, margin = 1.04) {
+  const height = (box.min[1] + box.max[1]) / 2
+  const tan = Math.tan(FIELD_OF_VIEW / 2)
+  const byHeight = ((box.max[1] - box.min[1]) / 2 / tan) * margin
+  const byWidth = ((box.max[0] - box.min[0]) / 2 / (tan * aspect)) * margin
+  return { height, distance: Math.max(byHeight, byWidth) }
 }
 
 /** Largësia pas një gjesti me dy gishta: `scale` > 1 afron. */

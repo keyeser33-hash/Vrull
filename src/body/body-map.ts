@@ -40,23 +40,12 @@ export function muscleLoad(
  */
 export const WEEKLY_TARGET = { min: 10, max: 20 } as const
 
-export const LOAD_LEVELS = [
-  { level: 0, label: 'Pa sete' },
-  { level: 1, label: `Nën ${WEEKLY_TARGET.min}` },
-  { level: 2, label: `${WEEKLY_TARGET.min}–${WEEKLY_TARGET.max} · objektivi` },
-  { level: 3, label: `Mbi ${WEEKLY_TARGET.max}` },
-] as const
-
+/** Niveli i hartës: 0 pa sete, 1 nën objektiv, 2 në objektiv, 3 mbi të (tekstet: routes/body-format.ts). */
 export function loadLevel(load: number): 0 | 1 | 2 | 3 {
   if (load <= 0) return 0
   if (load < WEEKLY_TARGET.min) return 1
   if (load <= WEEKLY_TARGET.max) return 2
   return 3
-}
-
-/** Ku bie volumi i javës kundrejt objektivit, me fjalë; pa sete është nën objektiv. */
-export function targetText(load: number) {
-  return ['Nën objektiv', 'Nën objektiv', 'Në objektiv', 'Mbi objektiv'][loadLevel(load)]
 }
 
 /** Setet e kësaj jave për çdo çelës muskuli (kryesori 1, ndihmësi 0,5): pjesët brenda një grupi. */

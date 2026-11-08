@@ -151,7 +151,7 @@ Në kod (V2-E1-05): zgjedhja është te Cilësimet › Pamja, ruhet te `user_set
 
 ## Modeli 3D, fotot, Mëso
 
-- Modeli i trupit ndriçohet nga `model-light`, kurrë nga `foreground` (në Ditë do të dilte i zi). Muskujt pa vlerë `muted-foreground` mbi `surface`, kryesorët `ember`, ndihmësit gri; volumi me `volume-1…3`.
+- Modeli i trupit ndriçohet nga `model-light`, kurrë nga `foreground` (në Ditë do të dilte i zi); edhe theksimi i muskulit në fokus shkon drejt `model-light`. Muskujt pa vlerë `muted-foreground` mbi `surface`, kryesorët `ember`, ndihmësit gri; volumi me `volume-1…3`, "Pa sete" me `subtle`; mbulesat e Shtresave gri të tejdukshme. Tokenat lexohen nga CSS-i (`components/body/body-scene.ts`), kurrë hex në kod. Çipi i muskulit rri sipër modelit, mbi `background` me kufi `subtle`, me vijën `foreground` te muskuli (bordi "Trupi").
 - Fotot e ushtrimeve bardh e zi (`grayscale`); foto që mungon: vend-mbajtës `surface-2` me "Pa foto", kurrë imazh i shpikur.
 - Kartat "A e dije?" (`FactCard`): etiketa në `data`, burimi gjithnjë i pranishëm.
 

@@ -1,6 +1,6 @@
 import type { HistorySet } from '@/program/loads'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { allRecovery, keyLoad, libraryExercisesFor, LOAD_LEVELS, loadLevel, muscleLoad, targetText } from './body-map'
+import { allRecovery, keyLoad, libraryExercisesFor, loadLevel, muscleLoad } from './body-map'
 import { KEY_NAMES, MUSCLE_INFO } from './muscle-info'
 
 let counter = 0
@@ -46,8 +46,6 @@ describe('harta e muskujve', () => {
 
   it('nivelet sipas objektivit javor (10–20 sete për grup): pa sete, nën, brenda, mbi', () => {
     expect([0, 0.5, 9.5, 10, 15, 20, 20.5, 30].map(loadLevel)).toEqual([0, 1, 1, 2, 2, 2, 3, 3])
-    expect(LOAD_LEVELS.map((level) => level.label)).toEqual(['Pa sete', 'Nën 10', '10–20 · objektivi', 'Mbi 20'])
-    expect([0, 4, 12, 24].map(targetText)).toEqual(['Nën objektiv', 'Nën objektiv', 'Në objektiv', 'Mbi objektiv'])
   })
 
   it('volumi i javës për çdo çelës: kryesori 1, ndihmësi 0,5, pa ngrohjen dhe javët e tjera', () => {
@@ -98,10 +96,8 @@ describe('harta e muskujve', () => {
     expect(group('gjoksi').name).toBe('Gjoksi')
   })
 
-  it('çdo grup ka emrin latinisht dhe funksionin me një fjali', () => {
-    for (const entry of MUSCLE_GROUPS) {
-      expect(MUSCLE_INFO[entry.id], entry.id).toMatchObject({ latin: expect.any(String), role: expect.stringMatching(/\.$/) })
-    }
+  it('çdo grup ka emrin latinisht (funksioni me një fjali është te katalogu, `bodyModel.role.*`)', () => {
+    for (const entry of MUSCLE_GROUPS) expect(MUSCLE_INFO[entry.id], entry.id).toMatchObject({ latin: expect.any(String) })
   })
 
   it('çdo çelës i grupeve ka emrin e vet për fokusin te modeli 3D', () => {
