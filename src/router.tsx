@@ -14,6 +14,7 @@ import { MeasurementPage, MetricPage, ProgressPage } from '@/routes/progress'
 import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
 import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
 import { SessionPage } from '@/routes/session'
+import { SessionSummaryPage } from '@/routes/session-summary'
 import { SettingsPage } from '@/routes/settings'
 import { AppearancePage } from '@/routes/settings-appearance'
 import { RemindersPage } from '@/routes/settings-reminders'
@@ -52,8 +53,9 @@ export const appRoutes: RouteObject[] = [
       { path: 'cilesimet/rikujtuesit', element: <RemindersPage />, ...tab(null) },
     ],
   },
-  // Seanca e stërvitjes zë gjithë ekranin, pa navigimin poshtë.
+  // Seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
   { path: '/seanca', element: <SessionPage /> },
+  { path: '/seanca/mbyllja/:sessionId', element: <SessionSummaryPage /> },
 ]
 
 // E gjithë app-i: porta vendos nëse shfaqet hyrja, hapat e para apo ekranet e mësipërme.

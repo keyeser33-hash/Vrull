@@ -17,4 +17,8 @@ export const VRULL_ICONS = {
   'shkarko-vrull': '<path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>',
   'pa-internet':
     '<path d="M3 3l18 18"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 4.3-2.6"/><path d="M19 12.9a10 10 0 0 0-2.2-1.6"/><path d="M2 9.3a15 15 0 0 1 4-2.6"/><path d="M22 9.3A15 15 0 0 0 11 5.1"/><path d="M12 20h.01"/>',
+  // Seanca (bordet "Seanca" dhe "Ushtrimet"): lista e ushtrimeve, muskujt e ushtrimit, ndërrimi.
+  poshte: '<path d="M6 9l6 6 6-6"/>',
+  muskujt: '<circle cx="12" cy="6" r="3"/><path d="M6 21v-6a6 6 0 0 1 12 0v6"/>',
+  nderro: '<path d="M7 4L3 8l4 4"/><path d="M3 8h14"/><path d="M17 12l4 4-4 4"/><path d="M21 16H7"/>',
 } as const

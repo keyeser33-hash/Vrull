@@ -7,6 +7,7 @@ import {
   replaceExerciseForBlock,
   restartProgram,
   saveSet,
+  sessionSummary,
   skipWorkout,
   startWorkout,
   switchProgram,
@@ -291,5 +292,73 @@ describe('pamja e programit dhe ushtrimet', () => {
     expect((await programView(store))!.exercises[bench.id].videoUrl).toBe('https://youtu.be/dQw4w9WgXcQ')
     await setExerciseVideo(store, bench.id, null)
     expect((await programView(store))!.exercises[bench.id].videoUrl).toBeNull()
+  })
+})
+
+describe('përmbledhja e seancës së mbyllur (V2-E1-07)', () => {
+  it('Faza 1 · Java 2 · Stërvitja 1: kohëzgjatja, setet e punës dhe rekordi i Bench Press', async () => {
+    const { store, advanceMinutes } = await onboarded()
+    for (let day = 0; day < 4; day++) await skipWorkout(store) // Java 0
+    const java1 = await startWorkout(store)
+    const [bench, incline] = (await trainingSnapshot(store))!.plan.slots
+    await saveSet(store, { sessionId: java1, slot: bench, setNumber: 1, weightKg: 60, reps: 13 })
+    await saveSet(store, { sessionId: java1, slot: incline, setNumber: 1, weightKg: 50, reps: 11 })
+    await finishWorkout(store, java1)
+    for (let day = 0; day < 3; day++) await skipWorkout(store)
+
+    advanceMinutes(7 * 24 * 60)
+    const java2 = await startWorkout(store)
+    await saveSet(store, { sessionId: java2, slot: bench, setNumber: 1, weightKg: 62.5, reps: 12 })
+    advanceMinutes(3)
+    await saveSet(store, { sessionId: java2, slot: bench, setNumber: 2, weightKg: 62.5, reps: 9, technique: 'rest_pause', segments: [{ weightKg: 62.5, reps: 3 }] })
+    await saveSet(store, { sessionId: java2, slot: incline, setNumber: 1, weightKg: 50, reps: 10 })
+    advanceMinutes(63)
+    await finishWorkout(store, java2)
+
+    const summary = await sessionSummary(store, java2)
+    expect(summary).toMatchObject({
+      id: java2,
+      status: 'completed',
+      blockName: 'Faza 1',
+      blockWeeks: 4,
+      week: 2,
+      dayNumber: 1,
+      dayName: 'Gjoks, triceps, pulpa',
+      durationSeconds: 66 * 60,
+      workSets: 3,
+    })
+    // Volumi i javës për grupin kryesor të seancës: tri sete gjoksi sot; Java 1 ishte javën e kaluar.
+    expect(summary?.volume).toEqual({ groupId: 'gjoksi', week: 3, today: 3 })
+    expect(summary?.records).toHaveLength(1)
+    expect(summary?.records[0]).toMatchObject({ exerciseName: 'Bench Press', setNumber: 1, weightKg: 62.5, reps: 12 })
+    expect(summary?.records[0].e1rmKg).toBeCloseTo(87.5, 5)
+    expect(summary?.records[0].gainKg).toBeCloseTo(1.5, 5)
+  })
+
+  it('volumi i grupit kryesor të seancës: java deri te mbyllja e saj, ndihmësit me 0,5', async () => {
+    const { store, advanceMinutes } = await onboarded()
+    // E hënë: Stërvitja 1 e Javës 0 me 2 sete Bench Press; e enjte: Stërvitja 3 me Dumbbell Shoulder Press,
+    // ku shpatullat janë kryesore dhe tricepsi ndihmës.
+    const monday = await startWorkout(store)
+    const [bench] = (await trainingSnapshot(store))!.plan.slots
+    await saveSet(store, { sessionId: monday, slot: bench, setNumber: 1, weightKg: 50, reps: 12 })
+    await saveSet(store, { sessionId: monday, slot: bench, setNumber: 2, weightKg: 50, reps: 12 })
+    await finishWorkout(store, monday)
+    await skipWorkout(store)
+    advanceMinutes(3 * 24 * 60)
+    const thursday = await startWorkout(store)
+    const plan = (await trainingSnapshot(store))!.plan
+    const press = plan.slots[0]
+    await saveSet(store, { sessionId: thursday, slot: press, setNumber: 1, weightKg: 16, reps: 12 })
+    await finishWorkout(store, thursday)
+    // Përmbledhja e së hënës nuk merr setet që erdhën pas saj.
+    expect((await sessionSummary(store, monday))?.volume).toEqual({ groupId: 'gjoksi', week: 2, today: 2 })
+    // Shpatullat e së enjtes: 1 set kryesor sot, plus 2 × 0,5 nga Bench Press i së hënës.
+    expect((await sessionSummary(store, thursday))?.volume).toEqual({ groupId: 'shpatullat', week: 2, today: 1 })
+  })
+
+  it('një seancë që nuk ekziston: null', async () => {
+    const { store } = await onboarded()
+    expect(await sessionSummary(store, crypto.randomUUID())).toBeNull()
   })
 })

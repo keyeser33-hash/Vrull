@@ -1,6 +1,7 @@
 import { Capacitor, registerPlugin } from '@capacitor/core'
 import { Haptics } from '@capacitor/haptics'
 import { LocalNotifications } from '@capacitor/local-notifications'
+import { currentI18n } from '@/i18n'
 import type { RestAlarm } from './rest-timer'
 
 // Njoftimi native i timer-it të pushimit (SPEC §6, TH-09): alarm i saktë që bie me zë dhe dridhje
@@ -11,10 +12,11 @@ const REST_ID = 4201
 let channelReady: Promise<void> | null = null
 
 function ensureChannel() {
+  const { t } = currentI18n()
   channelReady ??= LocalNotifications.createChannel({
     id: CHANNEL,
-    name: 'Timer-i i pushimit',
-    description: 'Kur mbaron pushimi mes seteve',
+    name: t('settings.restTimer'),
+    description: t('session.notify.channelText'),
     // IMPORTANCE_HIGH: del sipër ekranit, me zë dhe dridhje.
     importance: 4,
     visibility: 1,
@@ -34,7 +36,7 @@ export const nativeRestAlarm: RestAlarm = {
         notifications: [
           {
             id: REST_ID,
-            title: 'Pushimi mbaroi',
+            title: currentI18n().t('session.notify.title'),
             body,
             channelId: CHANNEL,
             smallIcon: 'ic_stat_pushimi',

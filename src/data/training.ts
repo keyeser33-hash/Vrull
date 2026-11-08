@@ -1,7 +1,10 @@
+import { muscleLoad } from '@/body/body-map'
 import { advance, blockWeekLabel, planSession, restart } from '@/program/engine'
+import { MUSCLE_GROUPS } from '@/program/muscles'
 import { programOverview, type ProgramOverview, type SessionMark } from '@/program/overview'
 import { type LibraryExercise, muscleKeys } from '@/program/library'
 import type { HistorySet } from '@/program/loads'
+import { type SessionRecord, sessionRecords } from '@/program/records'
 import type { WorkedSession } from '@/program/recovery'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import type {
@@ -593,4 +596,79 @@ export async function programView(store: LocalStore): Promise<ProgramView | null
 /** Link-u i videos së ushtrimit; null e heq. */
 export async function setExerciseVideo(store: LocalStore, exerciseId: string, url: string | null) {
   await store.put('exercises', { id: exerciseId, video_url: url })
+}
+
+export interface SessionSummary {
+  id: string
+  status: string
+  blockName: string
+  blockWeeks: number
+  /** Java brenda bllokut, nga 1. */
+  week: number
+  /** "Stërvitja N". */
+  dayNumber: number
+  dayName: string
+  startedAt: string | null
+  endedAt: string | null
+  /** Nga fillimi te mbyllja; null kur seanca s'ka të dyja. */
+  durationSeconds: number | null
+  /** Setet e regjistruara pa ngrohjet; segmentet janë pjesë e setit të tyre. */
+  workSets: number
+  /** Rekordet e e1RM-së kundrejt historisë para seancës, më i madhi i pari. */
+  records: (SessionRecord & { exerciseName: string })[]
+  /**
+   * Volumi javor i grupit kryesor të seancës (kryesori 1, ndihmësi 0,5; SPEC §11): java kalendarike
+   * deri te mbyllja e seancës dhe pjesa e vetë seancës. Null pa sete pune.
+   */
+  volume: { groupId: string; week: number; today: number } | null
+}
+
+/** Grupi me më shumë sete si kryesor në seancë, me volumin e javës deri te mbyllja e saj. */
+function sessionVolume(history: HistorySet[], sessionId: string, exercises: LocalRow[], at: Date): SessionSummary['volume'] {
+  const primary = Object.fromEntries(exercises.map((row) => [row.id, (row.primary_muscles as string[] | undefined) ?? []]))
+  const secondary = Object.fromEntries(exercises.map((row) => [row.id, (row.secondary_muscles as string[] | undefined) ?? []]))
+  const mine = history.filter((set) => set.sessionId === sessionId && !set.isWarmup)
+  const main = MUSCLE_GROUPS.map((group) => ({ group, sets: mine.filter((set) => primary[set.exerciseId]?.some((key) => group.keys.includes(key))).length }))
+    .filter((entry) => entry.sets > 0)
+    .sort((a, b) => b.sets - a.sets)[0]?.group
+  if (!main) return null
+  const until = history.filter((set) => set.loggedAt <= at.toISOString())
+  return {
+    groupId: main.id,
+    week: muscleLoad(until, primary, secondary, [main], at).get(main.id) ?? 0,
+    today: muscleLoad(mine, primary, secondary, [main], at).get(main.id) ?? 0,
+  }
+}
+
+/** Mbyllja e seancës (bordi "Mbyll"): stërvitja, kohëzgjatja, setet e punës dhe rekordet. */
+export async function sessionSummary(store: LocalStore, sessionId: string): Promise<SessionSummary | null> {
+  const session = await store.get('workout_sessions', sessionId)
+  if (!session) return null
+  const [block, days, sets, exercises, history] = await Promise.all([
+    store.get('program_blocks', String(session.block_id)),
+    store.where('program_days', 'program_id', String(session.program_id)),
+    store.where('set_logs', 'session_id', sessionId),
+    store.all('exercises'),
+    trainingHistory(store),
+  ])
+  const ordered = days.sort(byPosition)
+  const dayIndex = ordered.findIndex((day) => day.id === session.day_id)
+  const names = new Map(exercises.map((row) => [row.id, String(row.name)]))
+  const startedAt = (session.started_at as string | null | undefined) ?? null
+  const endedAt = (session.ended_at as string | null | undefined) ?? null
+  return {
+    id: session.id,
+    status: String(session.status),
+    blockName: String(block?.name ?? ''),
+    blockWeeks: Number(block?.weeks ?? 1),
+    week: Number(session.week ?? 1),
+    dayNumber: dayIndex + 1,
+    dayName: String(ordered[dayIndex]?.name ?? ''),
+    startedAt,
+    endedAt,
+    durationSeconds: startedAt && endedAt ? Math.max(0, Math.round((Date.parse(endedAt) - Date.parse(startedAt)) / 1000)) : null,
+    workSets: sets.filter((set) => !set.is_warmup).length,
+    records: sessionRecords(history.sets, sessionId).map((record) => ({ ...record, exerciseName: names.get(record.exerciseId) ?? '' })),
+    volume: sessionVolume(history.sets, sessionId, exercises, new Date(endedAt ?? store.now().toISOString())),
+  }
 }
