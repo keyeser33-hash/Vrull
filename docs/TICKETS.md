@@ -38,8 +38,8 @@ Detyrat e çdo etape shkruhen këtu në fillim të saj, me kriteret e pranimit, 
 | V2-D2 | Sistemi i dizajnit i drejtimit të zgjedhur | V2-D1 |
 | V2-D3 | Të gjitha ekranet e v2 në sistemin e ri | V2-D2 |
 | V2-E1 | Etapa 1 (0.20.0): sistemi i ri, dy gjuhët, stërvitja, ndërtuesi, PDF me AI, videot e formës, 3D | V2-D3 |
-| V2-E2 | Etapa 2 (0.30.0): ushqimi me AI, lista vendase, "Plotëso makrot", rikujtuesit e zgjuar | V2-E1 |
-| V2-E3 | Etapa 3 (0.40.0): uji, gjendja dhe gatishmëria, zakonet, Health Connect, raporti PDF | V2-E1 |
+| V2-E2 | Etapa 2 (0.21–0.23): objektivat personale, Plani im, uji, rikujtuesit e zgjuar, dita e humbur, suplementet e mia; kutia e AI-së dhe trajneri; motivimi, pamja e re dhe lëvizja | V2-E1 |
+| V2-E3 | Etapa 3 (0.40.0): uji sipas motit, gjendja dhe gatishmëria, zakonet, Health Connect, raporti PDF | V2-E1 |
 | V2-E4 | Etapa 4 (0.50.0): miqtë, ftesat, sfidat, ndarja, kartat | V2-E1 |
 | V2-E5 | Etapa 5 (0.60.0): app-i në Galaxy Watch | V2-E3 |
 
@@ -173,6 +173,138 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 
 **Gjendja (08.11.2026):** 0.20.0 u publikua (GitHub Release dhe përditësimi brenda app-it, "Çfarë ka të re" nga `docs/whats-new/0.20.0.txt`), pas provës në emulator në të gjitha pjesët dhe rishikimit në tri boshtet (ndreqjet te "Pas rishikimit të E1"). Migrimet dhe RLS (133/133) në Supabase; funksionet `program-import` dhe `song-tempo` me JWT. Importi nga PDF u provua me çelësin e vërtetë dhe PDF-në e Shortcut to Size (08.11.2026, me përdorues prove të përkohshëm, i fshirë pas provës): 3 faza × 4 javë, 4 ditë me 9/10/7/8 slote, 67 ushtrime (29 të shënuara si të pasigurta për t'u parë), 86 s, €0,25, kostoja e ruajtur një herë. Mbeten te përdoruesi: çelësi `GETSONGBPM_API_KEY` si secret, lista `docs/PROVA-NE-TELEFON.md` në telefon, dhe (sipas dëshirës) titulli i Release-it v0.20.0 "Vrull 0.20.0" me dorë; workflow-i i jep titullin Vrull nga versioni tjetër.
 
+
+### Etapa 2 · 0.21, 0.22, 0.23 (plani i 08.11.2026)
+
+**Mënyra e punës.** Tri versione të vogla, secili me bordet e dizajnit para kodit: bordet → komentet e përdoruesit → kodi me prova përpara (logjika pa UI) → rishikimi në tri boshtet → prova në emulator vetëm për pjesët native që ndryshuan (`skip` për të tjerat) → pyetet përdoruesi → publikimi. Lexo `docs/MESIMET.md` para çdo detyre. Çdo tabelë e re: migrim, `TABLES`/`INDEXES`, version i ri te `db.ts`, RLS e provuar. Çdo veçori me AI provohet me të dhëna të vërteta para lëshimit. Muzika është në pauzë (V45).
+
+| ID | Detyra | Varet nga |
+|---|---|---|
+| V2-E2-00 | Pastrimi i E1 (lista te "Pas rishikimit të E1") | – |
+| V2-E2-01 | Bordet e dizajnit 0.21 | – |
+| V2-E2-02 | Kalkulatori i objektivave (logjika) | – |
+| V2-E2-03 | Faqja Objektivat dhe hapi te hapat e parë | E2-01, E2-02 |
+| V2-E2-04 | Kontrolli javor | E2-02, E2-03 |
+| V2-E2-05 | Plani im | E2-01, E2-02 |
+| V2-E2-06 | Oraret e vakteve | E2-01, E2-05 |
+| V2-E2-07 | Uji | E2-01 |
+| V2-E2-08 | Rikujtuesit e zgjuar | E2-05, E2-06, E2-07 |
+| V2-E2-09 | Dita e humbur | E2-01 |
+| V2-E2-10 | Suplementet e mia dhe etiketa me AI | E2-01 |
+| V2-E2-11 | Lëshimi 0.21.0 | E2-00 … E2-10 |
+| V2-E2-12 | Bordet e dizajnit 0.22 | E2-11 |
+| V2-E2-13 | Kutia e AI-së: ushqimi, uji, suplementet | E2-12 |
+| V2-E2-14 | Kutia e AI-së: setet | E2-13 |
+| V2-E2-15 | Trajneri | E2-13 |
+| V2-E2-16 | Foto e ushqimit, makrot e shpejta, të fundit, të preferuarat, "Si dje" | E2-12 |
+| V2-E2-17 | Kufiri i AI-së për person dhe Admini | E2-13 |
+| V2-E2-18 | Lëshimi 0.22.0 | E2-12 … E2-17 |
+| V2-E2-19 | Bordet e dizajnit 0.23 | E2-18 |
+| V2-E2-20 | Qëllimet javore dhe "Mirë se u ktheve" | E2-19 |
+| V2-E2-21 | Rekordet, përmbledhja e së dielës, distinktivët | E2-19, E2-20 |
+| V2-E2-22 | Pamja e re: Sot, Ushqimi, Seanca, Progresi | E2-19 |
+| V2-E2-23 | Lëvizja | E2-22 |
+| V2-E2-24 | Lëshimi 0.23.0 | E2-19 … E2-23 |
+
+## V2-E2-00 · Pastrimi i E1
+
+Lista te "Pas rishikimit të E1", si detyrë e parë e etapës, pa ndryshuar sjelljen. **Pranimi:** `npm test`, `npm run lint`, `npm run build` kalojnë; provat e2e të reja për `week_weights`, `form_videos` dhe `ai_usage` kalojnë me përdorues prove të përkohshëm, i fshirë pas provës.
+
+## V2-E2-01 · Bordet e dizajnit 0.21
+
+Borde të shpejta në stilin Vrull, në tri temat, shqip, në 390 px: faqja Objektivat (me "Di yndyrën time"), hapi i objektivave te hapat e parë, karta e kontrollit javor te Sot, Plani im (vakti, ndërrimi i ushqimit, porcioni, shto/hiq vakt), oraret e vakteve, karta e ujit te Sot, njoftimi i vaktit me dy butona (edhe në ekranin e kyçur), dita e humbur te Sot dhe te java, "Shto suplement" me "Fotografo etiketën". **Pranimi:** përdoruesi i komenton; ndryshimet shkruhen te SPEC para kodit.
+
+## V2-E2-02 · Kalkulatori i objektivave
+
+Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: Mifflin-St Jeor, Cunningham me yndyrën, US Navy nga perimetrat, aktiviteti, dita e stërvitjes, ritmi, makrot, kufijtë, rrumbullakimi, mirëmbajtja e njohur. **Pranimi:** shembulli i Shtojcës C del saktë (2 820 / 3 120 kcal, 176 g P, 79 g Y); kufijtë (1 500 / 1 200 kcal, karbohidratet ≥ 50 g, yndyra ≥ 20%) kanë prova; të njëjtat hyrje japin të njëjtat numra në të dy gjuhët.
+
+## V2-E2-03 · Faqja Objektivat
+
+Sipas bordit dhe §9: Ushqimi › Objektivat, hapi te hapat e parë për përdoruesit e rinj, fushat e reja te `user_settings` (gjinia, viti i lindjes, gjatësia, aktiviteti, qëllimi, ritmi, proteina dhe yndyra g/kg, mirëmbajtja e njohur), të sinkronizuara. "Ruaj" vlen nga sot; objektivat e ruajtura të ditëve të kaluara mbeten. Përdoruesi ekzistues pa këto fusha sheh te Ushqimi një kartë "Llogarit objektivat e tua" dhe deri atëherë objektivat e vjetra. **Pranimi:** pas "Ruaj", Sot dhe Ushqimi tregojnë objektivat e reja; dje mbetet me të vjetrat (provë); shqip dhe anglisht; tri temat në 390 px.
+
+## V2-E2-04 · Kontrolli javor
+
+Logjika pa UI (pesha trend, mirëmbajtja e vërtetë, propozimi me gjysmën e diferencës dhe ±150 kcal, kushtet 4 ditë + 1 peshim) dhe karta te Sot dhe te Objektivat; pranimi ruhet si korrigjim me datë, i sinkronizuar. **Pranimi:** prova me javë sintetike: shtim i ngadaltë → +kcal, shtim i shpejtë → −kcal, të dhëna të pakta → pa propozim; "Po" ndryshon objektivat nga sot, "Jo tani" e heq kartën deri të hënën tjetër.
+
+## V2-E2-05 · Plani im
+
+Plani i përdoruesit për ditën e stërvitjes dhe të pushimit, nga shablloni i Jimit (tabelat `meal_templates` dhe `recipe_items` ose tabelë e re, sipas asaj që i përshtatet më mirë sinkronizimit). Shkallëzimi i porcioneve te objektivat me rrumbullakimin në njësi (logjika me prova përpara), ndërrimi i ushqimit (zëvendësimet e PDF-së së pari, pastaj ushqimet me makro të afërta), ndryshimi i porcionit, shto/hiq artikull dhe vakt, "Kthe planin e Jimit". "Regjistro <vaktin>" te Ushqimi regjistron artikujt e Planit tim. **Pranimi:** me objektivat e shembullit totali i Planit tim bie brenda ±5% te kcal dhe ±10 g te proteina (provë); një ndërrim ruhet dhe sinkronizohet; plani i ditës së pushimit nuk prek atë të stërvitjes.
+
+## V2-E2-06 · Oraret e vakteve
+
+Sipas §9 dhe bordit: zgjedhja e numrit të vakteve (3–9), lëvizja dhe heqja e secilit, ora e stërvitjes për çdo ditë (jo vetëm e ditës së parë, siç bën sot `settings.tsx`), ndryshimi nga dita tjetër. Rregulli i vaktit pranë stërvitjes mbetet. **Pranimi:** prova të logjikës për 3, 5 dhe 9 vakte dhe për stërvitjen në mëngjes dhe në mbrëmje; orari i ri del te Ushqimi dhe te rikujtuesit nga dita tjetër.
+
+## V2-E2-07 · Uji
+
+Tabela e re e ujit (ml, ora, data), karta te Sot me një prekje dhe "Kthe mbrapsht", totali te Ushqimi, objektivi sipas §9. **Pranimi:** një gotë ruhet pa internet dhe sinkronizohet; objektivi ndryshon me llojin e ditës; prekja 44 px, tri temat.
+
+## V2-E2-08 · Rikujtuesit e zgjuar
+
+Sipas §13 (V37): pa rikujtues për atë që është regjistruar (edhe pas sinkronizimit), butonat te njoftimi, kufiri ditor dhe bashkimi, orët e qeta, uji sipas ritmit, heshtja pas 3 ditëve të injoruara. Butonat ndjekin modelin e `SessionActionReceiver` (E1-08): PendingIntent i qartë, veprimi ruhet në radhë native, app-i e zbaton sapo hapet ose kthehet, njoftimi bëhet "U regjistrua"; punojnë edhe me ekran të kyçur. **Pranimi:** prova të planit për çdo rregull; në emulator (pjesë e re e provës së Android-it, `rikujtuesit`): "Hëngra si në plan" nga ekrani i kyçur regjistron vaktin dhe rikujtuesi tjetër i tij nuk vjen; "Shty 30 min" e rikthen njoftimin.
+
+## V2-E2-09 · Dita e humbur
+
+Sipas §13 (V38): gjendja "E humbur" te java (Sot, Programi), karta dhe njoftimi i mëngjesit "Dje nuk u stërvite. Stërvitja N sot?", "Po" e bën sot ditë stërvitjeje (lloji i ditës, objektivat, orari), "Jo" e lë. **Pranimi:** prova me kalendarë: një ditë e humbur, dy rresht, dita e humbur e shtunë me javën që mbyllet; treguesi nuk lëviz pa seancë.
+
+## V2-E2-10 · Suplementet e mia
+
+Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushqimi për pluhurin e proteinës, ndryshimi dhe heqja; funksioni `supplement-label` (Supabase, JWT, kufiri dhe rezervimi i AI-së si te `program-import`, logjika në modul pa Deno me prova, `tsc` i funksioneve) që lexon foton e etiketës. Fotoja nuk ruhet. **Pranimi:** etiketa e vërtetë e një whey-i lexohet saktë (provë me përdorues të përkohshëm, si te importi); pa internet fleta punon me dorë; "E mora" te proteina shton makrot te vakti një herë.
+
+## V2-E2-11 · Lëshimi 0.21.0
+
+Rishikimi në tri boshtet, provat e plota, prova në emulator (pjesët e reja dhe `instalimi`), `docs/whats-new/0.21.0.txt`, pyetet përdoruesi, publikimi. **Pranimi:** të gjitha kontrollet jeshile; përdoruesi e merr 0.21.0 nga app-i.
+
+## V2-E2-12 · Bordet e dizajnit 0.22
+
+Kutia e AI-së te Sot (shkrimi, mikrofoni i tastierës, pyetja kur mungon diçka, përmbledhja për konfirmim), trajneri, foto e ushqimit, makrot e shpejta, të fundit dhe të preferuarat, "Si dje", kufiri te Admini. **Pranimi:** përdoruesi i komenton para kodit.
+
+## V2-E2-13 · Kutia e AI-së: ushqimi, uji, suplementet
+
+Funksioni `log-parse` (JWT, kufiri, rezervimi, prompt caching me kontekstin e përdoruesit: Plani im, ushqimet dhe porcionet e tij, suplementet, të shpeshtat, shembuj në shqip) kthen një draft me ushqime (me gramë dhe vakt), ujë dhe suplemente; pyet vetëm kur mungon ora ose sasia; përmbledhja te Sot konfirmohet me një prekje dhe çdo rresht ndryshohet ose hiqet. **Pranimi:** mesazhi shembull i përdoruesit (08.11.2026, proteina në 07:00, tostet dhe vezët në 12:00, gjysmë pule dhe panetone në darkë, kreatina) jep regjistrimet e duhura pas një konfirmimi (provë me AI-në e vërtetë); pa internet kutia thotë që kërkon rrjet dhe ruan tekstin.
+
+## V2-E2-14 · Kutia e AI-së: setet
+
+Po ajo kuti regjistron sete te seanca e sotme ose e kaluar ("dje bëra 3×10 Bench 60 kg"), me përmbledhjen dhe konfirmimin; ushtrimet përputhen me programin dhe bibliotekën, të pasigurtat pyeten. **Pranimi:** setet e konfirmuara dalin te seanca dhe rillogarisin e1RM-në dhe rekordet; provë me AI-në e vërtetë.
+
+## V2-E2-15 · Trajneri
+
+Pyetjet e lira te po ajo kuti marrin përgjigje të shkurtra nga të dhënat e përdoruesit (objektivat, ushqimi i ditës, plani, stërvitjet e fundit), pa këshilla mjekësore. **Pranimi:** "Sa proteinë më mbetet sot?" dhe "Çfarë stërvitje kam nesër?" përgjigjen saktë nga të dhënat; kostoja numërohet te kufiri.
+
+## V2-E2-16 · Ushqimi më i shpejtë
+
+Foto e ushqimit me AI (vlerësim, gjithmonë me konfirmim), makrot e shpejta (kcal dhe makro pa ushqim), të fundit dhe të preferuarat me një prekje, "Si dje" për një vakt. **Pranimi:** secila regjistron me ≤ 2 prekje pas hapjes së vaktit; foto provohet me të dhëna të vërteta.
+
+## V2-E2-17 · Kufiri i AI-së për person
+
+Kufiri mujor për person (pronari €40, miqtë €10) në server, i ndryshueshëm nga pronari te Admini; kostot e të gjitha funksioneve me AI numërohen bashkë. **Pranimi:** prova e rezervimit me 50 kërkesa paralele për çdo funksion të ri; RLS: një mik nuk e ndryshon kufirin e vet.
+
+## V2-E2-18 · Lëshimi 0.22.0
+
+Si E2-11. **Pranimi:** përdoruesi e merr 0.22.0 nga app-i.
+
+## V2-E2-19 · Bordet e dizajnit 0.23
+
+Qëllimet javore, "Mirë se u ktheve", banderola e rekordit, përmbledhja e së dielës me kartën për ndarje, distinktivët, pamja e re e katër ekraneve, shembujt e lëvizjes (video të shkurtra ose prototip). **Pranimi:** përdoruesi i komenton para kodit.
+
+## V2-E2-20 · Qëllimet javore
+
+Sipas V43: stërvitja sipas programit, ushqimi ≥ 5 ditë nga 7, uji; një ditë rezervë për fazë; "Mirë se u ktheve" pas një pushimi, pa faj. **Pranimi:** prova të logjikës për javë të plota, me ditë rezervë dhe pas pushimit.
+
+## V2-E2-21 · Festimet dhe distinktivët
+
+Banderola e rekordit te seanca, përmbledhja e së dielës (stërvitjet, volumi, rekordet, ushqimi, uji) me kartë për ndarje si imazh, distinktivët me rregulla të qarta. **Pranimi:** karta ndahet nga Android-i; distinktivët jepen një herë dhe sinkronizohen.
+
+## V2-E2-22 · Pamja e re
+
+Sot, Ushqimi, Seanca dhe Progresi sipas bordeve, me komponentët e Vrullit. **Pranimi:** tri temat, dy gjuhët, 390 px pa scroll anësor, prekjet 44 px (`ds-screens` dhe provat e ekraneve).
+
+## V2-E2-23 · Lëvizja
+
+Sipas V44: kalimi rresht → detaj, numrat që rrotullohen, dridhjet e shkurtra, shtypja 100 ms, festimet vetëm te rekordet dhe qëllimet; "lëvizje e reduktuar" i fik. Pa librari të re, ose me një të verifikuar. **Pranimi:** me "lëvizje e reduktuar" asgjë nuk lëviz (provë); asnjë animacion nuk vonon një prekje.
+
+## V2-E2-24 · Lëshimi 0.23.0
+
+Si E2-11. **Pranimi:** përdoruesi e merr 0.23.0 nga app-i.
 
 ---
 

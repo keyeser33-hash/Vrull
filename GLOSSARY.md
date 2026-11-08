@@ -69,6 +69,10 @@ Një kalim i plotë i programit; rinisja pas përfundimit nis xhiron e radhës (
 Stërvitja e radhës (blloku, java, dita); lëviz përpara vetëm kur mbyllet një seancë ose kur stërvitja kapërcehet me dorë.
 _Avoid_: progresi, pozicioni
 
+**Dita e humbur**:
+Një ditë stërvitjeje e kaluar pa seancë; **Treguesi** nuk lëviz, dhe të nesërmen përdoruesi zgjedh nëse e bën stërvitjen sot.
+_Avoid_: dita e kapërcyer (kapërcimi është me dorë)
+
 ## Stërvitja dhe regjistrimi
 
 **Stërvitja**:
@@ -198,8 +202,19 @@ Ditët e javës kalendarike kur përdoruesi planifikon të stërvitet, me orën 
 _Avoid_: ditët e programit
 
 **Objektivat**:
-Kaloritë, proteina, karbohidratet dhe yndyrat e një date, nga totalet e Jimit të shkallëzuara sipas peshës dhe llojit të ditës.
+Kaloritë, proteina, karbohidratet dhe yndyrat e një date, nga **Mirëmbajtja** e përdoruesit, qëllimi dhe ritmi, sipas **Llojit të ditës**.
 _Avoid_: makrot e synuara, buxheti
+
+**Mirëmbajtja**:
+Sa kalori djeg përdoruesi në një ditë pa e ndryshuar peshën: fillimisht vlerësim nga trupi dhe aktiviteti, pastaj nga pesha dhe ushqimi i regjistruar.
+_Avoid_: TDEE (në UI), metabolizmi
+
+**Ritmi**:
+Sa synon të ndryshojë pesha në javë, si përqindje e peshës (+0,25% për masë muskulore).
+
+**Kontrolli javor**:
+Krahasimi i së hënës mes ndryshimit të peshës dhe ritmit, me propozimin për të korrigjuar **Objektivat**, që përdoruesi e pranon ose e lë.
+_Avoid_: check-in
 
 **Objektivat e ruajtura**:
 Objektivat e një date të ngrira me regjistrimin e parë ose me ndryshimin e llojit të ditës; ndryshimi i peshës më vonë nuk i prek.
@@ -212,8 +227,12 @@ _Avoid_: ushqim (për vendin në orar)
 Orët e vakteve të një dite, nga ora e zgjimit, e gjumit dhe e stërvitjes.
 
 **Shablloni i Jimit**:
-Artikujt e ditës shembull të PDF-së për çdo vakt, me zëvendësimet e lejuara; regjistrohet me një prekje.
+Artikujt e ditës shembull të PDF-së për çdo vakt, me zëvendësimet e lejuara; pikënisja e **Planit tim**.
 _Avoid_: menyja
+
+**Plani im**:
+Vaktet dhe artikujt e përdoruesit për ditën e stërvitjes dhe të pushimit, me porcionet sipas **Objektivave**; nis nga **Shablloni i Jimit** dhe ndryshohet lirisht. "Hëngra si në plan" regjistron artikujt e tij për një vakt.
+_Avoid_: dieta, menyja
 
 **Ushqimi**:
 Një artikull me vlerat për 100 g: nga Open Food Facts, nga USDA ose i krijuar nga përdoruesi.
@@ -246,6 +265,9 @@ Sa kushtoi një thirrje te AI-ja, nga tokenat që kthen ofruesi, në euro; ruhet
 Një publikim i ndryshimeve të **Adminit** te lista vendase e ushqimeve; përdoruesit e marrin në sinkronizimin e radhës.
 
 ## Suplementet, rikujtuesit, matjet
+
+**Gota**:
+250 ml ujë, njësia e regjistrimit të ujit me një prekje.
 
 **Suplementi**:
 Një produkt i planit me dozën, vaktin ku merret dhe etiketën e evidencës; mund të çaktivizohet.
