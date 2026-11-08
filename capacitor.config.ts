@@ -6,7 +6,7 @@ const { version } = JSON.parse(readFileSync(new URL('./package.json', import.met
 const config: CapacitorConfig = {
   // appId nuk ndryshon më pas: Android e njeh përditësimin nga ky id dhe nga çelësi i nënshkrimit.
   appId: 'al.traininghub.app',
-  appName: 'Training Hub',
+  appName: 'Vrull',
   webDir: 'dist',
   backgroundColor: '#000000',
   // Open Food Facts kërkon që app-i të njihet (SPEC §9); pa të dhëna personale.

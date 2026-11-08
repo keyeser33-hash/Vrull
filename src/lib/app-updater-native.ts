@@ -1,4 +1,5 @@
 import { registerPlugin, type PluginListenerHandle } from '@capacitor/core'
+import type { Language } from '@/i18n/language'
 import type { InstallStatus } from '@/update/updater'
 
 // Plugin-i lokal i app-it: android/app/src/main/java/al/traininghub/app/AppUpdaterPlugin.java.
@@ -7,6 +8,7 @@ interface AppUpdaterPlugin {
   openInstallSettings(): Promise<void>
   download(options: { url: string; sha256: string }): Promise<{ path: string }>
   install(options: { path: string; sha256: string }): Promise<void>
+  setLanguage(options: { language: Language }): Promise<void>
   addListener(event: 'downloadProgress', listener: (progress: { bytes: number; total: number }) => void): Promise<PluginListenerHandle>
   addListener(event: 'installStatus', listener: (status: InstallStatus) => void): Promise<PluginListenerHandle>
 }
@@ -30,4 +32,6 @@ export const nativeUpdater = {
   },
   install: (path: string, sha256: string) => AppUpdater.install({ path, sha256 }),
   onInstallStatus: (listener: (status: InstallStatus) => void) => AppUpdater.addListener('installStatus', listener),
+  /** Gjuha e njoftimit "Vrull u përditësua" (lib/native-language.ts). */
+  setLanguage: (language: Language) => AppUpdater.setLanguage({ language }),
 }

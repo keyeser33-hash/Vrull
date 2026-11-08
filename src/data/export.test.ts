@@ -16,7 +16,7 @@ describe('eksporti i të dhënave', () => {
 
     const file = await buildExport(db, { version: '0.1.0', userId: USER, now: () => new Date('2026-11-30T09:15:00.000Z') })
 
-    expect(file).toMatchObject({ app: 'Training Hub', version: '0.1.0', exported_at: '2026-11-30T09:15:00.000Z', user_id: USER })
+    expect(file).toMatchObject({ app: 'Vrull', version: '0.1.0', exported_at: '2026-11-30T09:15:00.000Z', user_id: USER })
     expect(Object.keys(file.tables)).toEqual([...TABLES])
     expect(file.tables.body_measurements).toEqual([
       expect.objectContaining({ id: kept.id, weight_kg: 80 }),
@@ -28,6 +28,6 @@ describe('eksporti i të dhënave', () => {
   })
 
   it('emri i skedarit mban datën lokale', () => {
-    expect(exportFileName(new Date(2026, 10, 30, 23, 30))).toBe('training-hub-2026-11-30.json')
+    expect(exportFileName(new Date(2026, 10, 30, 23, 30))).toBe('vrull-2026-11-30.json')
   })
 })

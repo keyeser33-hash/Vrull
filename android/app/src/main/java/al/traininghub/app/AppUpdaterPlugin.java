@@ -37,6 +37,8 @@ public class AppUpdaterPlugin extends Plugin {
 
     static final String ACTION_STATUS = "al.traininghub.app.UPDATE_STATUS";
     private static final String FILE_NAME = "perditesimi.apk";
+    private static final String PREFS = "vrull";
+    private static final String KEY_LANGUAGE = "language";
     private static AppUpdaterPlugin instance;
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
 
@@ -54,6 +56,26 @@ public class AppUpdaterPlugin extends Plugin {
         event.put("aborted", aborted);
         event.put("message", message);
         plugin.notifyListeners("installStatus", event);
+    }
+
+    /**
+     * Gjuha e app-it ("sq" ose "en"), që app-i e dërgon në nisje dhe kur ndërrohet
+     * (lib/native-language.ts). AppReplacedReceiver e lexon për njoftimin pas përditësimit.
+     */
+    @PluginMethod
+    public void setLanguage(PluginCall call) {
+        String language = call.getString("language");
+        if (!"sq".equals(language) && !"en".equals(language)) {
+            call.reject("Gjuhë e panjohur", "INVALID");
+            return;
+        }
+        getContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY_LANGUAGE, language).apply();
+        call.resolve();
+    }
+
+    /** Gjuha e fundit e app-it; shqip kur app-i s'e ka dërguar ende (p.sh. pas përditësimit nga v1). */
+    static String language(Context context) {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_LANGUAGE, "sq");
     }
 
     @PluginMethod

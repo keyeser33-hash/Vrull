@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/lib/app-name'
 import type { LocalDatabase } from './db'
 import { type Row, TABLES, type TableName } from './tables'
 
@@ -5,7 +6,7 @@ import { type Row, TABLES, type TableName } from './tables'
 // i Supabase nuk ka kopje ditore automatike, ndaj ky është rrjeti i sigurisë.
 
 export interface ExportFile {
-  app: 'Training Hub'
+  app: typeof APP_NAME
   version: string
   exported_at: string
   user_id: string | null
@@ -24,7 +25,7 @@ export async function buildExport(
     )
   }
   return {
-    app: 'Training Hub',
+    app: APP_NAME,
     version: options.version,
     exported_at: (options.now ?? (() => new Date()))().toISOString(),
     user_id: options.userId,
@@ -34,5 +35,5 @@ export async function buildExport(
 
 export function exportFileName(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0')
-  return `training-hub-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.json`
+  return `${APP_NAME.toLowerCase()}-${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}.json`
 }

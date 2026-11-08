@@ -75,7 +75,7 @@
          te Cilësimet (timer-i vonon me ekran të kyçur te disa prodhues). -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <!-- Përditësimi brenda app-it (TH-23): instalimi i APK-së së re, pasi përdoruesi lejon një herë
-         "Instalo app të panjohura" për Training Hub. Me lejen e dytë, Android 12+ e lejon app-in të
+         "Instalo app të panjohura" për Vrull. Me lejen e dytë, Android 12+ e lejon app-in të
          përditësojë veten pa dritare konfirmimi. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION" />
