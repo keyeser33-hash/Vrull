@@ -36,6 +36,8 @@ type Phase =
 
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
 const isPdfFile = (file: File) => file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+/** Kufiri i skedarit me fjalë: "15 MB". */
+const maxSize = (fmt: ReturnType<typeof useI18n>['fmt']) => fmt.unit(MAX_PDF_BYTES / (1024 * 1024), 'MB')
 /** Gabimet ku "Provo përsëri" me të njëjtin skedar ka kuptim. */
 const RETRY: ReadError[] = ['offline', 'bad_request', 'timeout', 'ai_failed']
 
@@ -70,12 +72,17 @@ export function ProgramImportPage() {
     if (!isPdfFile(file)) return setPhase({ kind: 'failed', file, error: 'not_pdf' })
     if (file.size > MAX_PDF_BYTES) return setPhase({ kind: 'failed', file, error: 'too_large' })
     setPhase({ kind: 'reading', file, started: Date.now() })
-    const library = await loadLibrary()
-    const known = await knownExercises(store, library)
-    const result = await programImportRemote.read({ file, fileName: file.name, known: known.names, language: lang })
-    if (!alive.current) return
-    if (!result.ok) return setPhase({ kind: 'failed', file, error: result.error, month: result.month, costEur: result.costEur })
-    setPhase({ kind: 'read', file, result, matching: matchExercises(result.draft, { own: known.own, library }) })
+    try {
+      const library = await loadLibrary()
+      const known = await knownExercises(store, library)
+      const result = await programImportRemote.read({ file, fileName: file.name, known: known.names, language: lang })
+      if (!alive.current) return
+      if (!result.ok) return setPhase({ kind: 'failed', file, error: result.error, month: result.month, costEur: result.costEur })
+      setPhase({ kind: 'read', file, result, matching: matchExercises(result.draft, { own: known.own, library }) })
+    } catch {
+      // Një gabim i papritur (p.sh. biblioteka nuk u ngarkua) nuk e lë ekranin te "AI po e lexon".
+      if (alive.current) setPhase({ kind: 'failed', file, error: 'ai_failed' })
+    }
   }
 
   async function create(current: Extract<Phase, { kind: 'read' }>) {
@@ -135,7 +142,7 @@ export function ProgramImportPage() {
       {phase.kind === 'failed' && phase.error !== 'limit' ? (
         <div role="alert" className={cn(surfaceClass, 'flex flex-col gap-1 rounded-lg p-3.5')}>
           <h2 className="type-title">{t('ai.error.title')}</h2>
-          <p className="type-body text-muted-foreground">{t(`ai.error.${phase.error}`, { size: fileSize(fmt, MAX_PDF_BYTES) })}</p>
+          <p className="type-body text-muted-foreground">{t(`ai.error.${phase.error}`, { size: maxSize(fmt) })}</p>
           {phase.costEur ? <p className="type-caption text-muted-foreground tabular-nums">{t('ai.error.cost', { cost: euro(fmt, phase.costEur) })}</p> : null}
         </div>
       ) : null}
@@ -224,7 +231,7 @@ function ChooseCard({ spend }: { spend: MonthSpend | null }) {
         </div>
       </div>
       <p className="border-t border-border pt-2.5 type-caption text-muted-foreground tabular-nums">
-        {t('ai.import.limits', { size: fileSize(fmt, MAX_PDF_BYTES) })}
+        {t('ai.import.limits', { size: maxSize(fmt) })}
         {spend ? ` ${t('ai.import.monthSoFar', { spent: euro(fmt, spend.spentEur), limit: euroLimit(fmt, spend.limitEur) })}` : null}
       </p>
     </section>

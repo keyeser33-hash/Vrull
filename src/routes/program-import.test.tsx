@@ -89,7 +89,7 @@ describe('importi nga PDF', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Importo nga PDF' })).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/programet/importo')
     expect(screen.getByRole('heading', { level: 2, name: 'Programi nga një PDF' })).toBeInTheDocument()
-    expect(await screen.findByText(/Deri në 15,0 MB\. .* Këtë muaj: €1,24 nga €10/)).toBeInTheDocument()
+    expect(await screen.findByText(/Deri në 15 MB\. .* Këtë muaj: €1,24 nga €10/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Zgjidh PDF-në' })).toBeInTheDocument()
 
     await user.upload(screen.getByLabelText('PDF-ja e programit'), pdf())
@@ -214,7 +214,7 @@ describe('importi nga PDF', () => {
     await user.upload(await screen.findByLabelText('PDF-ja e programit'), new File(['x'], 'foto.jpg', { type: 'image/jpeg' }))
     expect(await screen.findByText('Ky skedar nuk është PDF.')).toBeInTheDocument()
     await user.upload(screen.getByLabelText('PDF-ja e programit'), pdf('i-madh.pdf', 16 * 1024 * 1024))
-    expect(await screen.findByText('PDF-ja kalon 15,0 MB. Zgjidh një më të vogël.')).toBeInTheDocument()
+    expect(await screen.findByText('PDF-ja kalon 15 MB. Zgjidh një më të vogël.')).toBeInTheDocument()
     expect(data.read).not.toHaveBeenCalled()
   })
 

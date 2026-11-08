@@ -103,7 +103,7 @@ export function ProgramsPage() {
   const template = isTemplateId(requested) ? requested : null
   // Një draft bosh nga "Ndërto program" (përdoruesi doli pa shtuar asnjë ushtrim) nuk mbetet te "Të mitë".
   useEffect(() => {
-    void discardEmptyDrafts(store)
+    discardEmptyDrafts(store).catch(() => {})
   }, [])
 
   async function build() {
@@ -241,7 +241,7 @@ export function BuildStartPage() {
   const requested = params.get('shablloni')
   const template = isTemplateId(requested) ? requested : null
   useEffect(() => {
-    void discardEmptyDrafts(store)
+    discardEmptyDrafts(store).catch(() => {})
   }, [])
 
   async function blank() {
