@@ -528,7 +528,7 @@ function cors(request) {
 }
 
 // Lidhet me WebView-në e app-it (vetëm build-et debug e lejojnë) dhe kthen një evaluate().
-async function connect() {
+async function connectOnce() {
   const socket = await waitFor(() => {
     const pid = pidOf()
     const name = `webview_devtools_remote_${pid}`
@@ -627,10 +627,31 @@ async function connect() {
     if (response.result?.exceptionDetails) throw new Error(response.result.exceptionDetails.exception?.description ?? response.result.exceptionDetails.text)
     return response.result?.result?.value
   }
-  await send('Fetch.enable', { patterns: [{ urlPattern: `*${SUPABASE}*`, requestStage: 'Request' }] })
-  await send('Runtime.enable')
-  await send('Log.enable')
+  try {
+    await send('Fetch.enable', { patterns: [{ urlPattern: `*${SUPABASE}*`, requestStage: 'Request' }] })
+    await send('Runtime.enable')
+    await send('Log.enable')
+  } catch (error) {
+    ws.close()
+    throw error
+  }
   return { send, evaluate, close: () => ws.close() }
+}
+
+/**
+ * Lidhja me WebView-në. WebView-ja e nisur për herë të parë pas ndezjes së emulatorit mund të mos përgjigjet
+ * brenda afatit ("Log.enable pa përgjigje"): lidhja mbyllet dhe provohet sërish, deri në 3 herë.
+ */
+async function connect() {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await connectOnce()
+    } catch (error) {
+      if (attempt === 3) throw error
+      info('lidhja me WebView', `përpjekja ${attempt}: ${error.message}; provohet sërish`)
+      await sleep(3000)
+    }
+  }
 }
 
 /** Hap app-in (ose e sjell përpara) dhe lidhet me WebView-në e tij. */

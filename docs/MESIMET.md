@@ -15,6 +15,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Home gjatë regjistrimit të videos: WebView-ja e Android-it nuk e dha `visibilitychange` dhe kamera vazhdoi të regjistronte në sfond → gjendja përpara/sfond vjen vetëm nga `onAppVisibility` (`lib/app-visibility.ts`: visibilitychange + pause/resume i Capacitor-it), jo nga `visibilitychange` vetëm.
 - Ekrani i kyçur i sapozgjuar nuk i tregon menjëherë njoftimet; butoni kërkohej një herë dhe prova dështonte rastësisht → elementet e ekranit priten me `waitFor`, nuk kërkohen një herë.
 - Kur një pjesë dështon, njoftimet e saj mbeten ("Pushimi mbaroi") dhe e shtyjnë njoftimin e seancës poshtë, i palosur → pjesa që prek rreshtin e muzikës fsheh (snooze) njoftimet e tjera të app-it para se të nisë; çdo pjesë i përgatit vetë kushtet që i duhen.
+- WebView-ja e nisur për herë të parë pas ndezjes së emulatorit nuk iu përgjigj CDP-së brenda 15 s ("Log.enable pa përgjigje") → lidhja me WebView-në provohet deri në 3 herë dhe përpjekjet shënohen te raporti.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
 
 ## Provat (Vitest)
