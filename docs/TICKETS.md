@@ -214,6 +214,8 @@ Lista te "Pas rishikimit të E1", si detyrë e parë e etapës, pa ndryshuar sje
 
 Borde të shpejta në stilin Vrull, në tri temat, shqip, në 390 px: faqja Objektivat (me "Di yndyrën time"), hapi i objektivave te hapat e parë, karta e kontrollit javor te Sot, Plani im (vakti, ndërrimi i ushqimit, porcioni, shto/hiq vakt), oraret e vakteve, karta e ujit te Sot, njoftimi i vaktit me dy butona (edhe në ekranin e kyçur), dita e humbur te Sot dhe te java, "Shto suplement" me "Fotografo etiketën". **Pranimi:** përdoruesi i komenton; ndryshimet shkruhen te SPEC para kodit.
 
+**Gjendja (08.11.2026):** 12 bordet janë te kanavaca "Training Hub v2 · Vrull", faqja "0.21 · Ushqimi dhe dita" (OLED, shqip, me numrat e përdoruesit); presin komentet. Temat Natë dhe Ditë dhe anglishtja vijnë pas komenteve, që të mos përsëriten ndryshimet.
+
 ## V2-E2-02 · Kalkulatori i objektivave
 
 Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: Mifflin-St Jeor, Cunningham me yndyrën, US Navy nga perimetrat, aktiviteti, dita e stërvitjes, ritmi, makrot, kufijtë, rrumbullakimi, mirëmbajtja e njohur. **Pranimi:** shembulli i Shtojcës C del saktë (2 820 / 3 120 kcal, 176 g P, 79 g Y); kufijtë (1 500 / 1 200 kcal, karbohidratet ≥ 50 g, yndyra ≥ 20%) kanë prova; të njëjtat hyrje japin të njëjtat numra në të dy gjuhët.
