@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { currentI18n } from '@/i18n'
 import { createRestTimer, type RestAlarm, remainingSeconds } from './rest-timer'
 
 // Timer-i i pushimit për një seancë, me orën që rifreskohet sa kohë numëron.
@@ -35,7 +36,8 @@ export function useRestTimer(sessionId: string, onFinished?: () => void) {
     running: Boolean(state) && remaining > 0,
     remaining,
     total: state?.totalSeconds ?? 0,
-    start: (seconds: number) => timer.start(seconds, 'Pushimi mbaroi. Koha për setin tjetër.'),
+    // Teksti i njoftimit në gjuhën e app-it në momentin kur nis pushimi.
+    start: (seconds: number) => timer.start(seconds, currentI18n().t('session.notify.body')),
     add: (seconds: number) => timer.add(seconds),
     skip: () => timer.skip(),
   }
