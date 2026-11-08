@@ -46,7 +46,9 @@ export const tempoDeps: TempoDeps = {
   async getSongBpm(song: CleanSong) {
     const { data, error } = await supabase.functions.invoke('song-tempo', { body: { title: song.title, artist: song.artist } })
     if (error) throw error
-    const value = (data ?? {}) as { bpm?: unknown; url?: unknown }
+    const value = (data ?? {}) as { bpm?: unknown; url?: unknown; configured?: unknown }
+    // Pa çelësin GetSongBPM nuk u pyet fare: nuk është "nuk u gjet" (lib/music-tempo.ts).
+    if (value.configured === false) throw new Error('GetSongBPM pa çelës')
     return typeof value.bpm === 'number' ? { bpm: value.bpm, url: typeof value.url === 'string' ? value.url : null } : null
   },
   acousticBrainz: (song) => acousticBrainzTempo(song, fetchJson),

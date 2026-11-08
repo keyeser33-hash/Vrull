@@ -89,12 +89,27 @@ async function decisionRows(store: LocalStore, programId: string, run: number, w
   )
 }
 
+/**
+ * Id-ja e vendimit të një sloti për një javë, nga java dhe sloti (UUID versioni 8 nga SHA-256): dy vendime
+ * njëkohësisht, në një telefon ose në dy, ndryshojnë të njëjtin rresht në vend që të krijojnë dy, që indeksi
+ * unik i serverit do t'i refuzonte (sinkronizimi do të mbetej me një ndryshim të papranuar).
+ */
+export async function weekWeightId(key: { programId: string; run: number; blockId: string; week: number; slotId: string }): Promise<string> {
+  const text = ['week_weights', key.programId, key.run, key.blockId, key.week, key.slotId].join('|')
+  const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))).slice(0, 16)
+  hash[6] = (hash[6] & 0x0f) | 0x80
+  hash[8] = (hash[8] & 0x3f) | 0x80
+  const hex = [...hash].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
 /** Shkruan vendimet e javës; një slot ka një rresht për javë, që ndryshohet, nuk dyfishohet. */
 async function save(store: LocalStore, view: WeekWeightsView, decisions: WeekWeightDecision[]) {
   const existing = await decisionRows(store, view.programId, view.run, view.week)
   for (const decision of decisions) {
+    const key = { programId: view.programId, run: view.run, blockId: view.week.blockId, week: view.week.week, slotId: decision.slotId }
     await store.put('week_weights', {
-      id: existing.find((row) => row.slot_id === decision.slotId)?.id,
+      id: existing.find((row) => row.slot_id === decision.slotId)?.id ?? (await weekWeightId(key)),
       program_id: view.programId,
       run: view.run,
       block_id: view.week.blockId,

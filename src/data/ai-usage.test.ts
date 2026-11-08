@@ -11,7 +11,7 @@ function setup(now = new Date(2026, 10, 8, 10, 0)) {
   const db = createDatabase(`ai-${crypto.randomUUID()}`)
   const store = createLocalStore(db, { userId: () => USER, now: () => now })
   /** Një rresht siç vjen nga serveri (i sinkronizuar, pa ndryshime që presin). */
-  const pulled = (month: string, feature: string, cost: number) =>
+  const pulled = (month: string, feature: string, cost: number, tokens = { input: 120000, output: 6000 }) =>
     db.ai_usage.put({
       id: crypto.randomUUID(),
       user_id: USER,
@@ -22,8 +22,8 @@ function setup(now = new Date(2026, 10, 8, 10, 0)) {
       month,
       feature,
       model: 'claude-sonnet-5-5',
-      input_tokens: 120000,
-      output_tokens: 6000,
+      input_tokens: tokens.input,
+      output_tokens: tokens.output,
       cost_usd: cost * 1.1165,
       cost_eur: cost,
       _dirty: CLEAN,
@@ -58,5 +58,13 @@ describe('përdorimi i AI-së', () => {
     await pulled('2026-12-01', 'program_pdf', 0.31)
     expect(await aiMonth(store)).toMatchObject({ spentEur: 10.11, remainingEur: 0, reached: true })
     expect((await aiMonth(store)).resetsOn).toEqual(new Date(2027, 0, 1))
+  })
+
+  it('rezervimi i një leximi që është ende në punë (pa tokena) nuk numërohet si shpenzim', async () => {
+    // Funksioni shkruan €2 para thirrjes dhe e zëvendëson me koston e vërtetë pas saj (handler.ts).
+    const { store, pulled } = setup()
+    await pulled('2026-11-01', 'program_pdf', 0.27)
+    await pulled('2026-11-01', 'program_pdf', 2, { input: 0, output: 0 })
+    expect(await aiMonth(store)).toMatchObject({ spentEur: 0.27, byFeature: { program_pdf: 0.27 } })
   })
 })

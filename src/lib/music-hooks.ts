@@ -1,7 +1,5 @@
-import { App } from '@capacitor/app'
-import { Capacitor } from '@capacitor/core'
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
-import { onAppVisibility } from './app-visibility'
+import { onAppResume, onAppVisibility } from './app-visibility'
 import { music, type NowPlaying, type QueueEntry } from './music'
 import { type SongRef, type SongTempo, songKey, type TempoLookup } from './music-tempo'
 
@@ -35,18 +33,8 @@ export function useNowPlaying(enabled: boolean): { status: MusicStatus; session:
   return { status: available ? state : 'unavailable', session: state === 'listening' ? session : null }
 }
 
-/** Thërret `listener` kur app-i kthehet përpara (faqja duket sërish ose `resume` i Capacitor-it). */
-export function onResume(listener: () => void): () => void {
-  const visible = () => {
-    if (document.visibilityState === 'visible') listener()
-  }
-  document.addEventListener('visibilitychange', visible)
-  const handle = Capacitor.isNativePlatform() ? App.addListener('resume', listener) : null
-  return () => {
-    document.removeEventListener('visibilitychange', visible)
-    void handle?.then((value) => value.remove())
-  }
-}
+/** Thërret `listener` një herë kur app-i kthehet përpara (`onAppResume`). */
+export const onResume = onAppResume
 
 /** Faqja duket dhe app-i është përpara; false kur app-i del në sfond ose ekrani fiket. */
 export function usePageActive(): boolean {

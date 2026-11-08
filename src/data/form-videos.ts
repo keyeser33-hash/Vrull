@@ -218,7 +218,7 @@ export async function formVideoData(db: LocalDatabase, remote: VideoRemote, vide
 export async function syncFormVideoFiles(db: LocalDatabase, remote: VideoRemote): Promise<{ uploaded: number; removed: number }> {
   let uploaded = 0
   let removed = 0
-  const forget = async (file: VideoFile) => {
+  const forget = async (file: Pick<VideoFile, 'id' | 'uploaded' | 'storagePath'>) => {
     try {
       if (file.uploaded) await remote.remove(file.storagePath)
       await db._video_files.delete(file.id)
@@ -227,18 +227,23 @@ export async function syncFormVideoFiles(db: LocalDatabase, remote: VideoRemote)
       // Mbetet në radhë.
     }
   }
-  for (const file of await db._video_files.toArray()) {
-    if (file.removed) {
-      await forget(file)
-      continue
-    }
-    const row = await db.form_videos.get(file.id)
-    // Rreshti i fshirë nga telefoni tjetër: hiqet edhe kopja këtu (dhe objekti, nëse mbeti).
-    if (row?.deleted_at) {
-      await forget({ ...file, uploaded: 1 })
-      continue
-    }
-    if (!row || file.uploaded || !file.data) continue
+  // Videot (qindra MB pas disa javësh) nuk lexohen në kujtesë të gjitha: vetëm çelësat me indekset, dhe
+  // skedari vetëm kur ngarkohet, një nga një.
+  // Varret e këtij telefoni (skedari është hequr; mbetet rruga dhe nëse u ngarkua).
+  for (const id of await db._video_files.where('removed').equals(1).primaryKeys()) {
+    const file = await db._video_files.get(id)
+    if (file) await forget(file)
+  }
+  // Rreshti i fshirë nga telefoni tjetër: hiqet edhe kopja këtu (dhe objekti, nëse mbeti).
+  const local = new Set(await db._video_files.toCollection().primaryKeys())
+  const deleted = await db.form_videos.filter((row) => Boolean(row.deleted_at) && local.has(String(row.id))).toArray()
+  for (const row of deleted) await forget({ id: String(row.id), uploaded: 1, storagePath: String(row.storage_path) })
+  // Ato që presin ngarkimin.
+  for (const id of await db._video_files.where('uploaded').equals(0).primaryKeys()) {
+    const row = await db.form_videos.get(id)
+    if (!row || row.deleted_at) continue
+    const file = await db._video_files.get(id)
+    if (!file || file.removed || file.uploaded || !file.data) continue
     try {
       await remote.upload(file.storagePath, file.data, file.type)
       await db._video_files.update(file.id, { uploaded: 1 })

@@ -37,6 +37,8 @@ export async function aiMonth(store: LocalStore, now = store.now()): Promise<AiM
   const byFeature: Partial<Record<AiFeature, number>> = {}
   let spent = 0
   for (const row of rows) {
+    // Rezervimi i një leximi që është ende në punë (pa tokena; program-import/handler.ts): jo shpenzim.
+    if (!Number(row.input_tokens) && !Number(row.output_tokens)) continue
     const cost = Number(row.cost_eur) || 0
     spent += cost
     const feature = row.feature as AiFeature

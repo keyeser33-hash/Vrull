@@ -35,7 +35,7 @@ export type TempoLookup = { status: 'found'; tempo: SongTempo } | { status: 'mis
 export interface TempoDeps {
   read(key: string): Promise<TempoRecord | null>
   write(key: string, record: TempoRecord): Promise<void>
-  /** GetSongBPM përmes Edge Function; null = nuk u gjet (ose çelësi mungon). Hedh gabim kur s'arrihet. */
+  /** GetSongBPM përmes Edge Function; null = nuk u gjet. Hedh gabim kur s'arrihet ose kur çelësi mungon. */
   getSongBpm(song: CleanSong): Promise<{ bpm: number; url: string | null } | null>
   /** AcousticBrainz; null = nuk u gjet. Hedh gabim kur s'arrihet. */
   acousticBrainz(song: CleanSong): Promise<number | null>
@@ -114,7 +114,11 @@ export async function lookupTempo(song: SongRef, deps: TempoDeps): Promise<Tempo
   if (saved && saved.bpm !== null) return { status: 'found', tempo: saved }
   if (saved && deps.now() - saved.at < MISS_RETRY_MS) return { status: 'missing' }
 
-  let reached = false
+  // Cili burim u përgjigj. "Nuk u gjet" ruhet 7 ditë vetëm kur u përgjigj AcousticBrainz, burimi i fundit:
+  // GetSongBPM pa çelës nuk numërohet (hedh gabim te data/song-tempo.ts), dhe një 503 ose 429 i MusicBrainz
+  // nuk e fsheh tempon e një kënge për një javë.
+  let answered = false
+  let finalAnswer = false
   const found = async (bpm: number, source: TempoSource, url: string | null): Promise<TempoLookup> => {
     const tempo: SongTempo = { bpm: round1(bpm), source, url, at: deps.now() }
     await deps.write(key, tempo).catch(() => {})
@@ -122,20 +126,21 @@ export async function lookupTempo(song: SongRef, deps: TempoDeps): Promise<Tempo
   }
   try {
     const result = await deps.getSongBpm(clean)
-    reached = true
+    answered = true
     if (result && validTempo(result.bpm)) return found(result.bpm, 'getsongbpm', result.url)
   } catch {
     // GetSongBPM nuk u arrit (pa rrjet, kufi, gabim): provohet AcousticBrainz.
   }
   try {
     const bpm = await deps.acousticBrainz(clean)
-    reached = true
+    answered = true
+    finalAnswer = true
     if (bpm !== null && validTempo(bpm)) return found(bpm, 'acousticbrainz', null)
   } catch {
     // AcousticBrainz ose MusicBrainz nuk u arritën.
   }
-  if (!reached) return { status: 'offline' }
-  await deps.write(key, { bpm: null, at: deps.now() }).catch(() => {})
+  if (!answered) return { status: 'offline' }
+  if (finalAnswer) await deps.write(key, { bpm: null, at: deps.now() }).catch(() => {})
   return { status: 'missing' }
 }
 

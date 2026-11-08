@@ -291,6 +291,16 @@ describe('zinxhiri i tempos', () => {
     expect(missing.getSongBpm).toHaveBeenCalledTimes(2)
   })
 
+  it('"nuk u gjet" ruhet 7 ditë vetëm kur AcousticBrainz u përgjigj; një 503 i MusicBrainz nuk e fsheh tempon', async () => {
+    // Rishikimi i E1: GetSongBPM pa çelës ose pa këngën, pastaj një 503 i MusicBrainz, e ruante "nuk u gjet".
+    const deps = memory()
+    deps.acousticBrainz = vi.fn(async () => Promise.reject(new Error('503')))
+    expect(await lookupTempo(SONG, deps)).toEqual({ status: 'missing' })
+    expect(deps.records.size).toBe(0)
+    deps.acousticBrainz = vi.fn(async () => 120)
+    expect(await lookupTempo(SONG, deps)).toMatchObject({ status: 'found', tempo: { bpm: 120 } })
+  })
+
   it('pa rrjet asnjë burim nuk arrihet: "pa rrjet", pa ruajtur "nuk u gjet"', async () => {
     const deps = memory()
     deps.getSongBpm = vi.fn(async () => Promise.reject(new Error('offline')))

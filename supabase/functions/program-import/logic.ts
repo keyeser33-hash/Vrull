@@ -45,6 +45,11 @@ export const MAX_TOKENS = 32_000
 export const EFFORT = 'low'
 /** Edge Function-i në planin falas ka 150 s (wall clock dhe pritja e përgjigjes); 10 s mbeten për ruajtjen. */
 export const AI_TIMEOUT_MS = 140_000
+/**
+ * Rezervimi para çdo thirrjeje (handler.ts): kostoja më e keqe e një thirrjeje, me rezervë. Një PDF 15 MB
+ * me 100 faqe zë rreth 500 000 tokena hyrje ($1,00) dhe dalja deri në MAX_TOKENS ($0,32): rreth €1,20.
+ */
+export const AI_CALL_RESERVE_EUR = 2
 const MAX_KNOWN = 3000
 
 export type ImportError = 'ai_failed' | 'unreadable' | 'too_long' | 'no_programme'

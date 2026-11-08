@@ -1,4 +1,4 @@
-import { onAppVisibility } from './app-visibility'
+import { onAppResume, onAppVisibility } from './app-visibility'
 
 // App-i përpara ose në sfond: WebView-ja e Android-it nuk e jep gjithmonë `visibilitychange` kur shtypet
 // Home (prova në emulator: regjistrimi i videos vazhdoi në sfond), ndaj vlejnë edhe pause/resume i Capacitor-it.
@@ -80,5 +80,16 @@ describe('onAppVisibility', () => {
     native.listeners.get('pause')!()
     await vi.waitFor(() => expect(native.removed.sort()).toEqual(['pause', 'resume']))
     expect(calls).toEqual([])
+  })
+
+  it('onAppResume: një thirrje për një rikthim, edhe kur vijnë të dy sinjalet', () => {
+    // Rishikimi i E1: onResume i muzikës thirrej dy herë (visibilitychange dhe resume), music.restart() dy herë.
+    const calls: string[] = []
+    onAppResume(() => calls.push('resume'))
+    native.listeners.get('pause')!()
+    changeVisibility('hidden')
+    changeVisibility('visible')
+    native.listeners.get('resume')!()
+    expect(calls).toEqual(['resume'])
   })
 })

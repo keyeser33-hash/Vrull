@@ -14,23 +14,8 @@
 //   Gabimet: { error, month?, costEur? } me 400 (not_pdf, too_large, bad_request), 401, 429 (limit),
 //   502 (ai_failed, unreadable, too_long, no_programme, timeout), 503 (not_configured).
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0'
-import {
-  AI_MONTHLY_LIMIT_EUR,
-  AI_TIMEOUT_MS,
-  API_VERSION,
-  buildRequest,
-  costOf,
-  createStreamReader,
-  interpret,
-  isLanguage,
-  isPdf,
-  MAX_PDF_BYTES,
-  MODEL,
-  monthStart,
-  parseKnown,
-  type StreamState,
-  toBase64,
-} from './logic.ts'
+import { runImport, type UsageStore } from './handler.ts'
+import { API_VERSION, buildRequest, isLanguage, isPdf, MAX_PDF_BYTES, MODEL, monthStart, parseKnown, toBase64, USD_PER_EUR } from './logic.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -41,8 +26,6 @@ const corsHeaders = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
 
-const round2 = (value: number) => Math.round(value * 100) / 100
-
 /** Çelësi sekret i projektit: i ri (SUPABASE_SECRET_KEYS.default) ose ai i vjetër (service role). */
 function secretKey(): string | undefined {
   try {
@@ -52,24 +35,6 @@ function secretKey(): string | undefined {
     // Pa çelësat e rinj: mbetet çelësi i vjetër.
   }
   return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-}
-
-/** Lexon përgjigjen me stream deri në fund ose deri te koha; tokenat e numëruar mbeten edhe pas ndërprerjes. */
-async function readStream(response: Response, signal: AbortSignal): Promise<{ state: StreamState; timedOut: boolean }> {
-  const reader = createStreamReader()
-  const decoder = new TextDecoder()
-  const body = response.body!.getReader()
-  try {
-    while (true) {
-      const { done, value } = await body.read()
-      if (done) break
-      reader.push(decoder.decode(value, { stream: true }))
-    }
-    return { state: reader.state(), timedOut: false }
-  } catch (error) {
-    if (signal.aborted) return { state: reader.state(), timedOut: true }
-    throw error
-  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -106,66 +71,49 @@ Deno.serve(async (req: Request) => {
   const known = parseKnown(typeof form.get('known') === 'string' ? (form.get('known') as string) : null)
   const language = isLanguage(form.get('language')) ? (form.get('language') as 'sq' | 'en') : 'sq'
 
-  // Kufiri i muajit, para thirrjes: shuma e kostove të përdoruesit këtë muaj (RLS: vetëm të vetat).
-  const month = monthStart(new Date())
-  const { data: rows, error: sumError } = await userClient.from('ai_usage').select('cost_eur').eq('month', month).is('deleted_at', null)
-  if (sumError) return json({ error: 'ai_failed' }, 502)
-  const spentBefore = (rows ?? []).reduce((sum: number, row: { cost_eur: number | string }) => sum + Number(row.cost_eur), 0)
-  const monthInfo = (spent: number) => ({ month, spentEur: round2(spent), limitEur: AI_MONTHLY_LIMIT_EUR })
-  if (spentBefore >= AI_MONTHLY_LIMIT_EUR) return json({ error: 'limit', month: monthInfo(spentBefore) }, 429)
-
-  const started = Date.now()
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), AI_TIMEOUT_MS)
-  let state: StreamState | null = null
-  let timedOut = false
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': API_VERSION },
-      body: JSON.stringify(buildRequest({ pdfBase64: toBase64(bytes), known, language })),
-      signal: controller.signal,
-    })
-    if (!response.ok || !response.body) {
-      // Kërkesa u refuzua para leximit (p.sh. PDF me fjalëkalim, mbingarkesë): AI-ja nuk harxhoi tokena.
-      console.error(`program-import: Claude API ${response.status}`)
-      const error = response.status === 413 ? 'too_large' : response.status === 400 ? 'unreadable' : 'ai_failed'
-      return json({ error, month: monthInfo(spentBefore) }, error === 'too_large' ? 400 : 502)
-    }
-    ;({ state, timedOut } = await readStream(response, controller.signal))
-  } catch {
-    if (!controller.signal.aborted) return json({ error: 'ai_failed', month: monthInfo(spentBefore) }, 502)
-    timedOut = true
-  } finally {
-    clearTimeout(timer)
+  // Kufiri i muajit me rezervim, thirrja dhe kostoja: handler.ts (provat: handler.test.ts). Rreshtat e
+  // ai_usage shkruhen me çelësin sekret, vetëm për përdoruesin e hyrë; përdoruesi i lexon (RLS).
+  const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
+  const touched = () => new Date().toISOString()
+  const usage: UsageStore = {
+    async reserve(month, eur) {
+      const { data, error } = await admin
+        .from('ai_usage')
+        .insert({ user_id: userId, month, feature: 'program_pdf', model: MODEL, input_tokens: 0, output_tokens: 0, cost_usd: Math.round(eur * USD_PER_EUR * 1e6) / 1e6, cost_eur: eur })
+        .select('id')
+        .single()
+      if (error || !data) throw new Error(`rezervimi: ${error?.code ?? 'pa rresht'}`)
+      return data.id as string
+    },
+    async spent(month, except) {
+      const { data, error } = await admin.from('ai_usage').select('cost_eur').eq('user_id', userId).eq('month', month).is('deleted_at', null).neq('id', except)
+      if (error) throw new Error(`shuma: ${error.code ?? 'pa kod'}`)
+      return (data ?? []).reduce((sum: number, row: { cost_eur: number | string }) => sum + Number(row.cost_eur), 0)
+    },
+    async settle(id, cost) {
+      const { error } = await admin
+        .from('ai_usage')
+        .update({ input_tokens: cost.inputTokens, output_tokens: cost.outputTokens, cost_usd: cost.usd, cost_eur: cost.eur, updated_at: touched() })
+        .eq('id', id)
+      if (error) throw new Error(`kostoja: ${error.code ?? 'pa kod'}`)
+    },
+    async cancel(id) {
+      const now = touched()
+      const { error } = await admin.from('ai_usage').update({ deleted_at: now, updated_at: now }).eq('id', id)
+      if (error) throw new Error(`heqja: ${error.code ?? 'pa kod'}`)
+    },
   }
-  const ms = Date.now() - started
-
-  // Kostoja nga tokenat e kthyer, e ruajtur për përdoruesin dhe muajin.
-  const cost = state ? costOf(state) : { usd: 0, eur: 0 }
-  if (state && (state.inputTokens > 0 || state.outputTokens > 0)) {
-    const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
-    const { error } = await admin.from('ai_usage').insert({
-      user_id: userId,
-      month,
-      feature: 'program_pdf',
-      model: MODEL,
-      input_tokens: state.inputTokens,
-      output_tokens: state.outputTokens,
-      cost_usd: cost.usd,
-      cost_eur: cost.eur,
-    })
-    if (error) console.error(`program-import: kostoja nuk u ruajt (${error.code ?? 'pa kod'})`)
-  }
-  const spent = monthInfo(spentBefore + cost.eur)
-
-  if (timedOut || !state) return json({ error: 'timeout', month: spent, costEur: cost.eur }, 502)
-  const outcome = interpret(state)
-  if (!outcome.ok) return json({ error: outcome.error, month: spent, costEur: cost.eur }, 502)
-  return json({
-    draft: outcome.draft,
-    uncertain: outcome.uncertain,
-    usage: { inputTokens: state.inputTokens, outputTokens: state.outputTokens, costEur: cost.eur, ms },
-    month: spent,
+  const reply = await runImport({
+    month: monthStart(new Date()),
+    request: buildRequest({ pdfBase64: toBase64(bytes), known, language }),
+    usage,
+    callClaude: (request, signal) =>
+      fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': API_VERSION },
+        body: JSON.stringify(request),
+        signal,
+      }),
   })
+  return json(reply.body, reply.status)
 })

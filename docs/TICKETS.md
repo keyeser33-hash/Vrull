@@ -68,6 +68,8 @@ Detyrat e çdo etape shkruhen këtu në fillim të saj, me kriteret e pranimit, 
 | V2-E1-17 | Hyrja dhe emri Vrull: hyrja, marrja e të dhënave, hapat e parë, emri i app-it | E1-05 |
 | V2-E1-18 | Pastrimi pas valës B: një burim për peshat e javës dhe kohëzgjatjen, emrat e përbashkët, fotot e ushtrimeve, ikona e app-it, provat nën ngarkesë | E1-06, E1-07, E1-09, E1-14, E1-15, E1-17 |
 
+**Pas rishikimit të E1 (08.11.2026), për fillimin e Etapës 2.** Rishikimi në tri boshtet mbi pjesët me rrezik (native, të dhënat dhe sinkronizimi, Supabase, `src/lib`) u ndreq te 0.20.0: kufiri i AI-së me rezervim dhe kostoja e stream-it të ndërprerë (me prova, `program-import/handler.ts`), videot pa u lexuar të gjitha në kujtesë, id-ja e qëndrueshme e peshave të javës, "nuk u gjet" i tempos, gjuha te rikujtuesit, `onResume` një herë, kontrolli i tipeve të funksioneve te `npm run lint`. Mbeten, si detyrë e parë pastrimi e E2: një helper për `numberOrNull` (5 kopje) dhe `settingsRow` (5 kopje), një fabrikë për cilësimet e sinkronizuara (gjuha dhe sfondi), `describeSync` pa përdorues, `label` vetëm shqip te `weekWeightsView`, kopjet `follow()`/`text()` te `SessionMusic.java` dhe `MusicPlugin.java`, ngjyra `EMBER` nga `@color/notification_ember`, kodet e gabimeve të importit në një vend (`shared.ts`), një tip për `{ blockName, blockWeeks, week, run }`, `programmeHome` sipas fjalorit; prova e2e me Supabase për `week_weights`, `form_videos` dhe `ai_usage`.
+
 ## V2-E1-01 · Sistemi Vrull në kod
 
 - `globals.css` me tokenat e Vrullit për OLED, Natë dhe Ditë (përfshirë `track`, `model-light`, `volume-1..3`), nga `tokens.json` i sistemit të dizajnit; asnjë token i Omal nuk mbetet.

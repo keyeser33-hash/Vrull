@@ -124,6 +124,14 @@ afterEach(() => {
   Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' })
 })
 
+/** Kthimi nga cilësimet e Android-it: faqja fshihet kur hapen cilësimet dhe duket sërish kur kthehet. */
+function backFromSettings() {
+  for (const state of ['hidden', 'visible'] as const) {
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state })
+    act(() => void document.dispatchEvent(new Event('visibilitychange')))
+  }
+}
+
 describe('mini-player-i te seanca', () => {
   it('kënga që luan me tempon, "Pauzë" dhe "Kënga tjetër" mbi "Ruaj setin"; prekja dërgon kërkesën te app-i', async () => {
     const user = userEvent.setup()
@@ -310,14 +318,14 @@ describe('lidhja dhe leja', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Lidh muzikën' }))
     expect(native.bridge.openAccessSettings).toHaveBeenCalled()
     // Kthimi nga cilësimet pa leje.
-    act(() => void document.dispatchEvent(new Event('visibilitychange')))
+    backFromSettings()
     const blocked = await screen.findByRole('dialog', { name: 'Lejo cilësimet e kufizuara' })
     expect(within(blocked).getByText('Prek ⋮ lart djathtas, pastaj "Allow restricted settings" dhe konfirmo.')).toBeInTheDocument()
     await user.click(within(blocked).getByRole('button', { name: 'Hap info e app-it' }))
     expect(native.bridge.openAppInfo).toHaveBeenCalled()
     await user.click(within(blocked).getByRole('button', { name: 'Lidh muzikën' }))
     native.state.granted = true
-    act(() => void document.dispatchEvent(new Event('visibilitychange')))
+    backFromSettings()
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     await within(await music()).findByText('138 BPM · Kaltrina V.')
   })
@@ -329,7 +337,7 @@ describe('lidhja dhe leja', () => {
     await renderSession('/seanca?lidh-muziken=1')
     const dialog = await screen.findByRole('dialog', { name: 'Lidh muzikën tënde' })
     await user.click(within(dialog).getByRole('button', { name: 'Lidh muzikën' }))
-    act(() => void document.dispatchEvent(new Event('visibilitychange')))
+    backFromSettings()
     expect(await within(dialog).findByRole('status')).toHaveTextContent('Leja nuk erdhi ende.')
     expect(screen.queryByRole('dialog', { name: 'Lejo cilësimet e kufizuara' })).toBeNull()
   })

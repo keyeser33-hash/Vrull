@@ -145,6 +145,29 @@ describe('videot e formës', () => {
     expect(remote.rows('form_videos')).toEqual([expect.objectContaining({ id, deleted_at: expect.any(String) })])
   })
 
+  it('sinkronizimi nuk i lexon në kujtesë videot e ngarkuara: vetëm ato që presin, një nga një', async () => {
+    // Rishikimi i E1: çdo sinkronizim lexonte çdo video të telefonit (qindra MB pas disa javësh).
+    const remote = createFakeRemote()
+    const storage = createFakeStorage({ userId: () => USER, remote })
+    const { db, store, now } = phone()
+    const sync = createSync({ db, remote, userId: () => USER, now })
+    for (let set = 1; set <= 3; set++) await addFormVideo(store, db, clip({ setNumber: set }))
+    await sync.run()
+    expect(await syncFormVideoFiles(db, storage)).toEqual({ uploaded: 3, removed: 0 })
+    const pending = await addFormVideo(store, db, clip({ setNumber: 4 }))
+    await sync.run()
+
+    const toArray = vi.spyOn(db._video_files, 'toArray')
+    const get = vi.spyOn(db._video_files, 'get')
+    expect(await syncFormVideoFiles(db, storage)).toEqual({ uploaded: 1, removed: 0 })
+    expect(toArray).not.toHaveBeenCalled()
+    expect(get.mock.calls.map(([id]) => id)).toEqual([pending])
+
+    get.mockClear()
+    expect(await syncFormVideoFiles(db, storage)).toEqual({ uploaded: 0, removed: 0 })
+    expect(get).not.toHaveBeenCalled()
+  })
+
   it('një video e fshirë para ngarkimit nuk shkon kurrë në Storage', async () => {
     const storage = createFakeStorage({ userId: () => USER })
     const { db, store } = phone()

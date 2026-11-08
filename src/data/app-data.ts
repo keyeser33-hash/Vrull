@@ -12,7 +12,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
-import { currentI18n } from '@/i18n'
+import { currentI18n, language } from '@/i18n'
 import { planReminders } from '@/reminders/plan'
 import { scheduleReminders } from '@/lib/reminders-native'
 import { reminderInput } from './reminders'
@@ -317,7 +317,10 @@ export async function planRemindersNow() {
 
 const REMINDER_TABLES = new Set(['user_settings', 'program_state', 'workout_sessions', 'supplements', 'nutrition_targets'])
 
-/** Rinovon rikujtuesit kur hapet app-i dhe kur ndryshojnë oraret, stërvitja e radhës ose suplementet. */
+/**
+ * Rinovon rikujtuesit kur hapet app-i, kur ndryshojnë oraret, stërvitja e radhës ose suplementet, dhe kur
+ * ndërrohet gjuha, edhe kur vjen me sinkronizimin nga telefoni tjetër (gjuha e telefonit nuk shkruhet te store).
+ */
 export function useReminderPlanner(ready: boolean) {
   const { userId } = useAuth()
   useEffect(() => {
@@ -331,10 +334,12 @@ export function useReminderPlanner(ready: boolean) {
     const stop = store.subscribe((table) => {
       if (REMINDER_TABLES.has(table)) plan()
     })
+    const stopLanguage = language.subscribe(plan)
     const resume = App.addListener('resume', plan)
     return () => {
       clearTimeout(timer)
       stop()
+      stopLanguage()
       void resume.then((handle) => handle.remove())
     }
   }, [ready, userId])

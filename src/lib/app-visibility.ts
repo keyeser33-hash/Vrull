@@ -24,3 +24,10 @@ export function onAppVisibility(listener: (visible: boolean) => void): () => voi
     for (const handle of handles) void handle.then((value) => value.remove())
   }
 }
+
+/** Thërret `listener` një herë kur app-i kthehet përpara (njëri nga dy sinjalet, jo të dy). */
+export function onAppResume(listener: () => void): () => void {
+  return onAppVisibility((visible) => {
+    if (visible) listener()
+  })
+}

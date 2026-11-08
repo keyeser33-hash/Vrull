@@ -1,5 +1,4 @@
 import { nativeMusicBridge } from './music-native'
-import type { SongTempo } from './music-tempo'
 
 // Muzika "Trupi në ritëm" (SPEC V29, V2-E1-12, docs/research/muzika.md): app-i i muzikës së
 // përdoruesit (Spotify, YouTube Music ose çdo tjetër) përmes sesioneve të medias së Android-it, me
@@ -15,7 +14,7 @@ import type { SongTempo } from './music-tempo'
 // - `music.control('play' | 'pause' | 'next' | 'previous' | 'seekTo' | 'skipToQueueItem')` dërgon
 //   kërkesën; app-i i muzikës vendos. Refuzimi kthehet si vlerë ('unsupported', 'no-session',
 //   'no-access'), pa hedhur gabim. Kënga ndërrohet vetëm me prekje.
-// - `tempoOf(session)`: tempo e këngës ("138 BPM") me burimin, nga telefoni ose nga rrjeti.
+// - Tempo e këngës: `useSongTempo` (music-hooks.ts) mbi `data/song-tempo.ts`.
 
 export type MusicAction = 'play' | 'pause' | 'next' | 'previous' | 'seekTo' | 'skipToQueueItem'
 export type PlaybackStatus = 'playing' | 'paused' | 'buffering' | 'stopped' | 'none' | 'other'
@@ -278,16 +277,6 @@ export function createMusic(bridge: MusicBridge) {
 }
 
 export type Music = ReturnType<typeof createMusic>
-
-/**
- * Tempo e këngës që luan (e ruajtur në telefon, GetSongBPM, AcousticBrainz; `data/song-tempo.ts`),
- * p.sh. "138 BPM" në njoftimin e seancës. null kur nuk gjendet ose pa rrjet. Ngarkohet vetëm kur thirret.
- */
-export async function tempoOf(session: Pick<NowPlaying, 'title' | 'artist' | 'durationMs'>): Promise<SongTempo | null> {
-  const { findTempo } = await import('@/data/song-tempo')
-  const lookup = await findTempo({ title: session.title, artist: session.artist, durationMs: session.durationMs })
-  return lookup.status === 'found' ? lookup.tempo : null
-}
 
 /** Muzika e app-it: plugin-i native i Android-it (MusicPlugin.java); jashtë telefonit nuk ofrohet. */
 export const music = createMusic(nativeMusicBridge)

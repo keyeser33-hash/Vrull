@@ -5,7 +5,7 @@ import { programmeHome } from './programme'
 import { createLocalStore } from './store'
 import { todayView } from './today'
 import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
-import { acceptWeekWeights, changeWeekWeight, postponeWeekWeights, weekWeightsView, workoutWeights } from './week-weights'
+import { acceptWeekWeights, changeWeekWeight, postponeWeekWeights, weekWeightId, weekWeightsView, workoutWeights } from './week-weights'
 
 const USER = '11111111-1111-4111-8111-111111111111'
 const profile = { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' }
@@ -50,6 +50,24 @@ describe('peshat e javës në telefon (V23)', () => {
     const row = (await weekWeightsView(store, week))?.rows.find((candidate) => candidate.slotId === bench.slotId)
     expect(row).toMatchObject({ weightKg: 65, proposal: { weightKg: 62.5 }, decision: { status: 'changed' } })
     expect((await store.all('week_weights')).filter((saved) => saved.slot_id === bench.slotId)).toHaveLength(1)
+  })
+
+  it('dy "Prano të gjitha" njëkohësisht (ose dy telefona): një rresht për slotin, jo dy që serveri refuzon', async () => {
+    // Rishikimi i E1: dy rreshta me id të ndryshme për të njëjtën javë dhe slot thyenin indeksin unik te
+    // serveri, dhe sinkronizimi mbetej me "1 ndryshim i papranuar".
+    const { store, bench } = await atPhaseOneWeekTwo()
+    const { week } = (await weekWeightsView(store))!
+    await Promise.all([acceptWeekWeights(store, week), acceptWeekWeights(store, week)])
+    expect((await store.all('week_weights')).filter((saved) => saved.slot_id === bench.slotId)).toHaveLength(1)
+  })
+
+  it('id-ja e vendimit vjen nga java dhe sloti: e njëjtë në çdo telefon, tjetër për një javë tjetër', async () => {
+    const key = { programId: 'p', run: 1, blockId: 'b', week: 2, slotId: 's' }
+    const id = await weekWeightId(key)
+    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+    expect(await weekWeightId({ ...key })).toBe(id)
+    expect(await weekWeightId({ ...key, week: 3 })).not.toBe(id)
+    expect(await weekWeightId({ ...key, run: 2 })).not.toBe(id)
   })
 
   it('"Më vonë" mban peshën e javës së kaluar; vendimi vlen vetëm për atë javë', async () => {
