@@ -45,7 +45,7 @@ export const sq = {
 
   // Parapamja e programit.
   'ai.preview.blocks': 'Blloqet: {list}',
-  'ai.preview.blockWeeks': '{name} · {weeks} j',
+  'ai.preview.blockWeeks': '· {weeks} j',
   'ai.preview.blockWeeksLabel': { one: '{name} {count} javë', other: '{name} {count} javë' },
   'ai.preview.day': 'Dita {number} · {name}',
   'ai.preview.known': { one: '{count} e njohur', other: '{count} të njohura' },
@@ -152,7 +152,7 @@ export const en: TranslationOf<typeof sq> = {
   'ai.check.missing': { one: 'Pick an answer for the exercise above.', other: 'Pick an answer for the {count} exercises above.' },
 
   'ai.preview.blocks': 'Blocks: {list}',
-  'ai.preview.blockWeeks': '{name} · {weeks} wk',
+  'ai.preview.blockWeeks': '· {weeks} wk',
   'ai.preview.blockWeeksLabel': { one: '{name} {count} week', other: '{name} {count} weeks' },
   'ai.preview.day': 'Day {number} · {name}',
   'ai.preview.known': { one: '{count} recognised', other: '{count} recognised' },

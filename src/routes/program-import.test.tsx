@@ -236,7 +236,7 @@ describe('importi nga PDF', () => {
     expect(screen.getByText('4 blocks · 13 weeks · 4 days · 66 exercises')).toBeInTheDocument()
     // Emrat e blloqeve dhe ditëve të Shortcut to Size përkthehen si te programi (`@/i18n/domain`).
     expect(screen.getByRole('button', { name: /^Day 1 · Chest, triceps, calves/ })).toHaveTextContent('8 recognised · 1 to check')
-    expect(screen.getByText('Phase 1 · 4 wk')).toBeInTheDocument()
+    expect(screen.getByText('Phase 1').parentElement).toHaveTextContent('Phase 1· 4 wk')
     expect(screen.getByRole('button', { name: 'Create programme' })).toBeInTheDocument()
   })
 })

@@ -107,7 +107,8 @@ export function ProgramImportPage() {
   const pickQuestion = phase.kind === 'read' && sheet === 'tjeter' ? phase.matching.questions.find((question) => question.index === pickIndex) : undefined
 
   return (
-    <div className="flex flex-col gap-4">
+    // Lartësia e ekranit pa kornizën (pt-5, pb safe + 24 px), që veprimi të rrijë poshtë edhe kur faqja është e shkurtër.
+    <div className="flex min-h-[calc(100dvh-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-4">
       <EditorBar icon="back" label={t('ai.import.back')} fallback={back} title={t('ai.import.title')} heading />
       <input
         ref={input}
@@ -148,6 +149,7 @@ export function ProgramImportPage() {
         </>
       ) : null}
 
+      <div aria-hidden className="-mt-4 flex-1" />
       {phase.kind === 'reading' || limitReached ? null : (
         <EditorFooter>
           {phase.kind === 'read' ? (
@@ -435,7 +437,11 @@ function Preview({ result, days }: { result: ReadSuccess; days: PreviewDay[] }) 
                 <span key={week} className="h-2.5 min-w-0 flex-1 rounded-[3px] bg-subtle" />
               ))}
             </div>
-            <span className="truncate text-[13px] leading-[1.35] tabular-nums">{t('ai.preview.blockWeeks', { name: block.name, weeks: block.weeks })}</span>
+            {/* "Faza 1 · 4 j" në një rresht; kur nuk nxë, javët kalojnë poshtë të plota. */}
+            <span className="flex flex-wrap gap-x-1 text-[13px] leading-[1.35] tabular-nums">
+              <span className="min-w-0 break-words">{block.name}</span>
+              <span className="whitespace-nowrap">{t('ai.preview.blockWeeks', { weeks: block.weeks })}</span>
+            </span>
           </div>
         ))}
       </div>
@@ -483,9 +489,9 @@ function OpenDay({ day, number, onToggle }: { day: PreviewDay; number: number; o
       </button>
       <ul className="flex flex-col">
         {day.slots.map((slot, index) => (
-          <li key={index} className={cn('flex min-h-[30px] items-center gap-2.5 type-body', slot.check && '-mx-2 rounded-sm bg-insight px-2')}>
+          <li key={index} className={cn('flex min-h-[30px] items-center gap-2.5 py-0.5 type-body', slot.check && '-mx-2 rounded-sm bg-insight px-2')}>
             {slot.check ? <Icon name="pyetje" size={18} /> : <Icon name="zgjedhur" size={18} label={t('ai.preview.knownIcon')} className="text-success" />}
-            <span lang="en" className="min-w-0 flex-1 truncate">
+            <span lang="en" className="line-clamp-2 min-w-0 flex-1">
               {slot.pdfName ? t('ai.preview.quoted', { name: slot.name }) : slot.name}
             </span>
             {slot.check ? (
