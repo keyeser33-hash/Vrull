@@ -1,10 +1,13 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { act, configure, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
 import { sampleWeek, type TestClock } from './programme-test-setup'
+
+// Leximet e bibliotekës dhe të historisë zgjasin kur provat ecin paralelisht.
+configure({ asyncUtilTimeout: 5000 })
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi, muskujt, rekordet me grafikun e
 // e1RM-së, historia e seteve dhe videoja; edhe për ushtrimet e bibliotekës që s'janë në telefon.

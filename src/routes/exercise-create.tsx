@@ -13,7 +13,7 @@ import { nameStatus, volumeShare } from '@/program/exercise-catalog'
 import { weightStep } from '@/program/loads'
 import type { Equipment, Tracking } from '@/program/types'
 import { Chip, ExerciseThumb } from './programme-parts'
-import { dotted, equipmentName, groupName } from './programme-format'
+import { equipmentName, groupName, musclesLine } from './programme-format'
 
 // "Krijo ushtrim" (bordi "KrijoUshtrim", V2-E1-09): ushtrimi i përdoruesit me emrin në anglisht,
 // pajisjen, muskujt kryesorë dhe ndihmës sipas grupeve (si ushtrimet e bibliotekës që dinë vetëm
@@ -21,7 +21,8 @@ import { dotted, equipmentName, groupName } from './programme-format'
 // numërohet te volumi javor: kryesori 1 set, ndihmësi 0,5 (SPEC §11). Foto e ushtrimit të përdoruesit
 // nuk ruhet ende: ushtrimi del me "Pa foto".
 
-const EQUIPMENT: Equipment[] = ['barbell', 'dumbbell', 'cable', 'machine', 'bodyweight', 'band', 'kettlebell', 'other']
+// Si te bordi; kettlebell-i dhe të tjerat hyjnë te "Tjetër".
+const EQUIPMENT: Equipment[] = ['barbell', 'dumbbell', 'cable', 'machine', 'bodyweight', 'band', 'other']
 // Nga koka te këmbët, si te bordi.
 const GROUPS = ['qafa', 'trapezi', 'shpatullat', 'gjoksi', 'shpina', 'mesi', 'bicepsi', 'tricepsi', 'parakrahet', 'barku', 'vithet', 'kuadricepsi', 'kofshet-e-pasme', 'aduktoret', 'pulpat']
 const TRACKING: Tracking[] = ['weight_reps', 'timed', 'bodyweight_reps']
@@ -86,10 +87,7 @@ export function CreateExercisePage() {
     timed: fmt.unit(60, 's'),
     bodyweight_reps: fmt.number(15),
   }
-  const previewDetail = dotted([
-    primary.map((group) => groupName(t, group)).join(', '),
-    secondary.map((group) => groupName(t, group).toLowerCase()).join(', '),
-  ])
+  const previewDetail = musclesLine(t, primary, secondary)
 
   return (
     <form aria-label={t('programme.createTitle')} noValidate onSubmit={(event) => void save(event)} className="flex flex-col gap-3.5">

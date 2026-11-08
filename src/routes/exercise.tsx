@@ -21,7 +21,7 @@ import { groupsOf } from '@/program/exercise-catalog'
 import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
 import { ExerciseMusclesSheet } from './exercise-muscles'
-import { capitalize, dotted, equipmentName, groupName, weekShort } from './programme-format'
+import { capitalize, dotted, equipmentName, groupList, groupName, weekShort } from './programme-format'
 import { ChangeExerciseSheet } from './session-sheets'
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi (SPEC §0.3a), muskujt me figurën dhe
@@ -133,7 +133,7 @@ function Muscles({ detail, onRotate }: { detail: ExerciseDetail; onRotate: () =>
   const { t } = useI18n()
   const primary = groupsOf(detail.primary)
   const secondary = groupsOf(detail.secondary).filter((group) => !primary.includes(group))
-  const names = (groups: string[]) => groups.map((group, index) => (index === 0 ? groupName(t, group) : groupName(t, group).toLowerCase())).join(', ')
+  const names = (groups: string[]) => groupList(t, groups)
   const latin = primary.length === 1 ? MUSCLE_INFO[primary[0]]?.latin : null
   return (
     <section aria-labelledby="exercise-muscles" className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-3.5')}>

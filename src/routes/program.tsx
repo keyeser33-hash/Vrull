@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
-import { ScreenHeader } from '@/components/layout/screen-header'
+import { ProfileButton, ScreenHeader } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -13,7 +13,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { prepareRestNotifications } from '@/lib/rest-alarm'
 import { editorPath } from './editor-nav'
-import { blockName, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
+import { blockName, capitalize, dayName, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
 
 // Programi (bordi "Programi", V2-E1-09): programi aktiv me blloqet dhe javët, java e treguesit me
 // ditët, stërvitja e radhës me ushtrimin e parë dhe "Fillo stërvitjen" (prushi i vetëm i ekranit), dhe
@@ -43,22 +43,24 @@ export function ProgramPage() {
   const author = home.source === 'custom' ? null : AUTHORS[home.source]
   return (
     <div className="flex flex-col gap-3">
-      <ScreenHeader
-        eyebrow={author ? t('programme.activeBy', { author }) : t('programme.active')}
-        title={home.programName}
-        actions={
-          <>
+      {/* Kreu si te bordi: rreshti i vogël me veprimet dhe profilin, titulli në gjithë gjerësinë. */}
+      <header className="flex flex-col gap-0.5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="min-w-0 type-caption text-muted-foreground">{author ? t('programme.activeBy', { author }) : t('programme.active')}</span>
+          <div className="flex shrink-0 items-center gap-1.5">
             <LibraryButton />
             <Link
               to={editorPath(home.programId)}
               aria-label={t('programme.edit')}
-              className={buttonVariants({ variant: 'secondary', ground: 'page', size: 'icon', className: 'rounded-md' })}
+              className={cn(buttonVariants({ variant: 'secondary', ground: 'page', size: 'icon' }), 'rounded-md')}
             >
               <Icon name="laps" size={22} />
             </Link>
-          </>
-        }
-      />
+            <ProfileButton />
+          </div>
+        </div>
+        <h1 className="type-display-m">{home.programName}</h1>
+      </header>
       <Blocks home={home} />
       {home.completed ? (
         <p className="type-body text-muted-foreground">{t('programme.completedText')}</p>
@@ -80,7 +82,7 @@ function LibraryButton() {
     <Link
       to="/programi/biblioteka"
       aria-label={t('programme.library')}
-      className={buttonVariants({ variant: 'secondary', ground: 'page', size: 'icon', className: 'rounded-md' })}
+      className={cn(buttonVariants({ variant: 'secondary', ground: 'page', size: 'icon' }), 'rounded-md')}
     >
       <Icon name="libri" size={22} />
     </Link>
@@ -170,7 +172,7 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
   const [busy, setBusy] = useState(false)
   const next = home.next!
   const first = next.first
-  const when = day.date ? (sameDay(day.date, now) ? t('programme.todayOn', { date: fmt.date(day.date) }) : fmt.date(day.date)) : null
+  const when = day.date ? (sameDay(day.date, now) ? t('programme.todayOn', { date: fmt.date(day.date) }) : capitalize(fmt.date(day.date), fmt.locale)) : null
 
   async function start() {
     setBusy(true)
@@ -186,12 +188,12 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
 
   return (
     <article
-      aria-label={`${t('programme.workout', { number: day.dayNumber })}, ${day.name}`}
+      aria-label={`${t('programme.workout', { number: day.dayNumber })}, ${dayName(t, day.name)}`}
       className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-xl p-3.5')}
     >
       <Link
         to={dayPath(home, day.dayId)}
-        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: day.name, when: dotted([when, t('programme.minutes', { minutes: day.minutes })]) })}
+        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: dayName(t, day.name), when: dotted([when, t('programme.minutes', { minutes: day.minutes })]) })}
         className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         <span aria-hidden className="flex size-[34px] shrink-0 items-center justify-center rounded-pill border-2 border-ember-text text-sm font-bold tabular-nums">
@@ -199,7 +201,7 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
         </span>
         <span className="flex min-w-0 flex-col">
           <span className="type-caption text-muted-foreground tabular-nums">{dotted([when, t('programme.minutes', { minutes: day.minutes })])}</span>
-          <span className="font-display text-[26px] leading-none font-extrabold uppercase">{day.name}</span>
+          <span className="font-display text-[26px] leading-none font-extrabold uppercase">{dayName(t, day.name)}</span>
         </span>
       </Link>
       {first ? (
@@ -233,7 +235,11 @@ function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
   return (
     <Link
       to={dayPath(home, day.dayId)}
-      aria-label={t('programme.dayLabel', { number: day.dayNumber, name: day.name, when: when ?? '' }).replace(/, $/, '')}
+      aria-label={
+        when
+          ? t('programme.dayLabel', { number: day.dayNumber, name: dayName(t, day.name), when })
+          : `${t('programme.workout', { number: day.dayNumber })}, ${dayName(t, day.name)}`
+      }
       className={cn(surfaceClass, 'flex min-h-row items-center gap-3 rounded-lg px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
     >
       <span aria-hidden className="flex size-[34px] shrink-0 items-center justify-center rounded-pill bg-surface-2 text-sm text-muted-foreground tabular-nums">
@@ -241,7 +247,7 @@ function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
       </span>
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="flex justify-between gap-2">
-          <span className="type-body-strong">{day.name}</span>
+          <span className="type-body-strong">{dayName(t, day.name)}</span>
           {when ? <span className="text-[13px] leading-5 whitespace-nowrap text-muted-foreground">{when}</span> : null}
         </span>
         <span className="truncate text-sm leading-5 text-muted-foreground">{dotted(day.lead)}</span>
@@ -288,7 +294,7 @@ export function WorkoutPage() {
   return (
     <div className="flex flex-col gap-3">
       <BackHeader title={t('programme.workout', { number: day.dayNumber })} back={t('programme.backToProgramme')} fallback="/programi" />
-      <p className="-mt-2 type-body text-muted-foreground">{dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), day.name])}</p>
+      <p className="-mt-2 type-body text-muted-foreground">{dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), dayName(t, day.name)])}</p>
       <ol className={cn(surfaceClass, 'flex flex-col rounded-lg px-3.5')}>
         {plan.slots.map((slot, index) => {
           const exercise = view.exercises[slot.exerciseId]

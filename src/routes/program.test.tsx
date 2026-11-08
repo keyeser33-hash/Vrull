@@ -1,10 +1,13 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, configure, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
 import { sampleWeek, type TestClock, TODAY } from './programme-test-setup'
+
+// Leximet e bibliotekës dhe të historisë zgjasin kur provat ecin paralelisht.
+configure({ asyncUtilTimeout: 5000 })
 
 // Programi (bordi "Programi", V2-E1-09) dhe stërvitja e një jave, me store të vërtetë dhe mostrën e
 // bordeve: e diel 8 nëntor, Faza 1 · Java 2 · Stërvitja 1.
@@ -116,8 +119,10 @@ describe('Programi', () => {
     const week = screen.getByRole('region', { name: 'Week 2 · days' })
     expect(week).toHaveTextContent('0 of 4 done')
     expect(week).toHaveTextContent('Today · Sunday, 8 November · ~65 min')
+    // Emrat e ditëve të Shortcut to Size përkthehen si te bordi "EN · Sot".
+    expect(within(week).getByRole('article', { name: 'Workout 1, Chest, triceps, calves' })).toBeInTheDocument()
     expect(week).toHaveTextContent('Bench Press · 4 × 9–11 · 62.5 kg')
-    expect(within(week).getByRole('link', { name: 'Workout 2, Shpinë, biceps, bark, Monday 9' })).toBeInTheDocument()
+    expect(within(week).getByRole('link', { name: 'Workout 2, Back, biceps, abs, Monday 9' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start workout' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Week weights/ })).toHaveTextContent('Phase 1 · Week 2 · waiting for you')
     expect(screen.getByRole('link', { name: 'See all programmes' })).toBeInTheDocument()
@@ -154,7 +159,7 @@ describe('Programi', () => {
     const week = view.overview.weeks[1]
     await renderAt(`/programi/${week.blockId}/1/${week.days[0].dayId}`)
     expect(await screen.findByRole('heading', { level: 1, name: 'Workout 1' })).toBeInTheDocument()
-    expect(screen.getByText('Phase 1 · Week 1 · Gjoks, triceps, pulpa')).toBeInTheDocument()
+    expect(screen.getByText('Phase 1 · Week 1 · Chest, triceps, calves')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('4 × 12–15 · last set rest-pause')
     expect(screen.getByRole('button', { name: 'Back to programme' })).toBeInTheDocument()
   })

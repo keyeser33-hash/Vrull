@@ -89,6 +89,12 @@ describe('historia e seteve', () => {
     ])
     expect(recentSessions(history, 'bench', 5)).toHaveLength(3)
   })
+
+  it('setet e së njëjtës kohë dalin sipas numrit të setit', () => {
+    const at = '2026-11-08T16:05:00Z'
+    const same = [3, 1, 2].map((setNumber) => set({ sessionId: 'x', setNumber, reps: 10 + setNumber, loggedAt: at }))
+    expect(recentSessions(same, 'bench', 1)[0].sets.map((entry) => entry.reps)).toEqual([11, 12, 13])
+  })
 })
 
 describe('nga vjen 1RM aktuale (peshat e javës)', () => {

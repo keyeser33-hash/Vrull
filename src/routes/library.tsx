@@ -1,4 +1,4 @@
-import { type ReactNode, useId, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { BackButton } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -17,7 +17,7 @@ import {
   type LibraryArea,
 } from '@/program/exercise-catalog'
 import { Chip, ExerciseThumb } from './programme-parts'
-import { dotted, equipmentName, groupName } from './programme-format'
+import { dotted, equipmentName, musclesLine } from './programme-format'
 
 // Biblioteka (bordi "Biblioteka", V2-E1-09): free-exercise-db (Unlicense) bashkë me ushtrimet në
 // telefon, me kërkim dhe filtrat "Muskujt" dhe "Pajisja". Filtrat mbahen në adresë, që kthimi nga
@@ -84,7 +84,7 @@ export function LibraryPage() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <FilterRow label={t('programme.filterMuscles')} group={t('programme.filterMusclesGroup')}>
+        <FilterRow label={t('programme.filterMuscles')} group={t('programme.filterMusclesGroup')} selected={area}>
           <Chip selected={area === null} aria-pressed={area === null} onClick={() => update('muskujt', null)}>
             {t('programme.allMuscles')}
           </Chip>
@@ -94,7 +94,7 @@ export function LibraryPage() {
             </Chip>
           ))}
         </FilterRow>
-        <FilterRow label={t('programme.filterEquipment')} group={t('programme.filterEquipment')}>
+        <FilterRow label={t('programme.filterEquipment')} group={t('programme.filterEquipment')} selected={equipment}>
           <Chip selected={equipment === null} aria-pressed={equipment === null} onClick={() => update('pajisja', null)}>
             {t('programme.allEquipment')}
           </Chip>
@@ -147,13 +147,21 @@ export function LibraryPage() {
 }
 
 /** Një rresht filtrash: etiketa majtas dhe çipat që lëvizin anash, brenda kufirit të faqes. */
-function FilterRow({ label, group, children }: { label: string; group: string; children: ReactNode }) {
+function FilterRow({ label, group, selected, children }: { label: string; group: string; selected: string | null; children: ReactNode }) {
+  const row = useRef<HTMLDivElement>(null)
+  // Filtri i zgjedhur (edhe kur vjen nga adresa) duket pa lëvizur rreshtin me dorë.
+  useEffect(() => {
+    const scroller = row.current
+    const chip = scroller?.querySelector<HTMLElement>('[aria-pressed="true"]')
+    if (!scroller || !chip) return
+    if (chip.offsetLeft + chip.offsetWidth > scroller.scrollLeft + scroller.clientWidth) scroller.scrollLeft = chip.offsetLeft - 16
+  }, [selected])
   return (
     <div className="flex items-center gap-1.5">
       <span aria-hidden className="w-[62px] shrink-0 text-[13px] leading-4 text-muted-foreground">
         {label}
       </span>
-      <div role="group" aria-label={group} className="-mr-4 flex min-w-0 flex-1 gap-1.5 overflow-x-auto pr-4 [scrollbar-width:none]">
+      <div ref={row} role="group" aria-label={group} className="-mr-4 flex min-w-0 flex-1 gap-1.5 overflow-x-auto pr-4 [scrollbar-width:none]">
         {children}
       </div>
     </div>
@@ -162,12 +170,7 @@ function FilterRow({ label, group, children }: { label: string; group: string; c
 
 function LibraryRow({ item }: { item: CatalogItem }) {
   const { t } = useI18n()
-  const primary = groupsOf(item.primary)
-  const secondary = groupsOf(item.secondary).filter((group) => !primary.includes(group))
-  const detail = dotted([
-    primary.map((group) => groupName(t, group)).join(', '),
-    secondary.map((group) => groupName(t, group).toLowerCase()).join(', '),
-  ])
+  const detail = musclesLine(t, groupsOf(item.primary), groupsOf(item.secondary))
   return (
     <li className="border-b border-border last:border-b-0">
       <Link

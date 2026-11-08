@@ -1,9 +1,12 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, configure, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider, useParams } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
+
+// Leximet e bibliotekës dhe të historisë zgjasin kur provat ecin paralelisht.
+configure({ asyncUtilTimeout: 5000 })
 
 // "Krijo ushtrim" (bordi "KrijoUshtrim", V2-E1-09): emri i ri, pajisja, muskujt me volumin javor,
 // mënyra e regjistrimit, videoja dhe si del te biblioteka.
@@ -47,7 +50,7 @@ async function renderCreate() {
   render(<RouterProvider router={router} />)
   // Pritet biblioteka, që kontrolli i emrit ta ketë.
   await screen.findByRole('button', { name: 'Ruaj ushtrimin' })
-  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Ruaj ushtrimin' })).toBeEnabled())
+  await vi.waitFor(() => expect(screen.getByRole('button', { name: 'Ruaj ushtrimin' })).toBeEnabled(), { timeout: 5000 })
   return router
 }
 

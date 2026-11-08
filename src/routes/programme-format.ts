@@ -15,6 +15,20 @@ export function blockName(t: T, name: string): string {
   return week ? t('programme.week', { number: week[1] }) : name
 }
 
+// Emrat e ditëve të Shortcut to Size (të dhënat janë shqip, shortcut-to-size.ts); të tjerët mbeten.
+const STS_DAYS = {
+  'Gjoks, triceps, pulpa': 'programme.stsDay.1',
+  'Shpinë, biceps, bark': 'programme.stsDay.2',
+  'Shpatulla, trapez, pulpa': 'programme.stsDay.3',
+  'Këmbë, bark': 'programme.stsDay.4',
+} as const
+
+/** "Gjoks, triceps, pulpa" → "Chest, triceps, calves" në anglisht; emrat e përdoruesit mbeten. */
+export function dayName(t: T, name: string): string {
+  const key = STS_DAYS[name as keyof typeof STS_DAYS]
+  return key ? t(key) : name
+}
+
 /** "Faza 1 · Java 2", ose emri i bllokut kur ka një javë ("Java 0"). */
 export function weekLabel(t: T, block: { blockName: string; blockWeeks: number; week: number }): string {
   const name = blockName(t, block.blockName)
@@ -45,6 +59,14 @@ export const setsText = (fmt: Fmt, sets: number, target: Target) => `${fmt.numbe
 
 export const groupName = (t: T, group: string) => t(`programme.group.${group}` as 'programme.group.gjoksi')
 export const equipmentName = (t: T, equipment: Equipment) => t(`programme.equipment.${equipment}`)
+
+/** "Shpatullat, trapezi": grupet me radhë, vetëm i pari me shkronjë të madhe. */
+export const groupList = (t: T, groups: string[], lower = false) =>
+  groups.map((group, index) => (index === 0 && !lower ? groupName(t, group) : groupName(t, group).toLowerCase())).join(', ')
+
+/** "Shpatullat · gjoksi, tricepsi": kryesorët, pastaj ndihmësit. */
+export const musclesLine = (t: T, primary: string[], secondary: string[]) =>
+  dotted([groupList(t, primary), groupList(t, secondary.filter((group) => !primary.includes(group)), primary.length > 0)])
 
 export function techniqueName(t: T, technique: Technique): string | null {
   return technique.type === 'none' ? null : t(`programme.technique.${technique.type}`)

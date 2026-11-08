@@ -18,7 +18,7 @@ import { oneRmSource } from '@/progress/exercise-records'
 import { daySummary, rowChange } from '@/progress/week-review'
 import type { WeekWeightRow } from '@/progress/week-weights'
 import { ExerciseThumb } from './programme-parts'
-import { blockName, dotted, equipmentName, rangeText, techniqueName, weekLabel, weekShort } from './programme-format'
+import { blockName, dayName, dotted, equipmentName, rangeText, techniqueName, weekLabel, weekShort } from './programme-format'
 
 // Peshat e javës (bordi "Sugjerimi", V2-E1-09; SPEC §7, V23): për javën që shqyrtohet, çdo ushtrim me
 // peshë merr propozimin me llogarinë që e jep. "Prano peshat" i bën propozimet pesha të javës, "Më
@@ -136,7 +136,11 @@ function formulaText(review: WeekReview, { t, fmt }: I18n) {
   const fromOneRm = review.rows.filter((row) => row.proposal.basis?.kind === 'one_rm')
   const reps = fromOneRm[0]?.proposal.basis?.kind === 'one_rm' ? fromOneRm[0].proposal.basis.reps : null
   if (reps === null) return null
-  const equipment = [...new Set(fromOneRm.map((row) => review.exercises[row.exerciseId]?.equipment).filter((value): value is Equipment => Boolean(value)))]
+  // Shufra EZ ka hapin e shufrës: një emër, jo dy.
+  const family = (value: Equipment): Equipment => (value === 'ez_bar' && weightStep('ez_bar', review.steps) === weightStep('barbell', review.steps) ? 'barbell' : value)
+  const equipment = [
+    ...new Set(fromOneRm.map((row) => review.exercises[row.exerciseId]?.equipment).filter((value): value is Equipment => Boolean(value)).map(family)),
+  ]
   const steps = equipment.map((value) => `${equipmentName(t, value).toLocaleLowerCase(fmt.locale)} ${fmt.number(weightStep(value, review.steps))}`)
   return t('programme.weights.formula', { reps: String(reps), steps: `${steps.join(' · ')} kg` })
 }
@@ -168,11 +172,11 @@ function DaySection({
         type="button"
         aria-expanded={false}
         onClick={() => setOpen(true)}
-        aria-label={t('programme.weights.dayLabel', { number: day.dayNumber, name: day.name, weights: t('programme.weights.count', { count }) })}
+        aria-label={t('programme.weights.dayLabel', { number: day.dayNumber, name: dayName(t, day.name), weights: t('programme.weights.count', { count }) })}
         className={cn(surfaceClass, 'flex min-h-12 items-center justify-between gap-2.5 rounded-lg py-0.5 pr-1 pl-3.5 text-left')}
       >
         <span className="min-w-0 truncate text-[15px] font-semibold">
-          {title} · <span className="font-normal text-muted-foreground">{day.name.toLowerCase()}</span>
+          {title} · <span className="font-normal text-muted-foreground">{dayName(t, day.name).toLocaleLowerCase(fmt.locale)}</span>
         </span>
         <span className="flex shrink-0 items-center gap-1 type-caption text-muted-foreground tabular-nums">
           {t('programme.weights.count', { count })}
@@ -194,7 +198,7 @@ function DaySection({
     summary.none ? t('programme.weights.noneCount', { count: summary.none }) : null,
   ])
   return (
-    <section aria-label={`${title} · ${day.name}`} className="flex flex-col">
+    <section aria-label={`${title} · ${dayName(t, day.name)}`} className="flex flex-col">
       <div className="flex items-baseline justify-between gap-2 pb-0.5">
         <h2 className="type-title font-extrabold">{dotted([title, day.date ? fmt.weekday(day.date) : null])}</h2>
         <span className="text-[13px] leading-5 text-muted-foreground tabular-nums">{counts}</span>

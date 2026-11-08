@@ -68,25 +68,28 @@ export interface SessionSets {
   blockName: string
   blockWeeks: number
   week: number
+  /** Setet e punës sipas numrit të setit. */
   sets: { weightKg: number | null; reps: number | null; rir: number | null }[]
 }
 
-/** Seancat më të reja të ushtrimit, me setet e punës sipas radhës. */
+/** Seancat më të reja të ushtrimit, me setet e punës sipas numrit të setit. */
 export function recentSessions(history: HistorySet[], exerciseId: string, limit: number): SessionSets[] {
-  const sessions = new Map<string, SessionSets>()
-  for (const set of work(history, exerciseId)) {
-    const entry = sessions.get(set.sessionId) ?? {
-      sessionId: set.sessionId,
-      at: set.loggedAt,
-      blockName: set.blockName,
-      blockWeeks: set.blockWeeks,
-      week: set.week,
-      sets: [],
-    }
-    entry.sets.push({ weightKg: set.weightKg, reps: set.reps, rir: set.rir })
-    sessions.set(set.sessionId, entry)
-  }
-  return [...sessions.values()].sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit)
+  const sessions = new Map<string, HistorySet[]>()
+  for (const set of work(history, exerciseId)) sessions.set(set.sessionId, [...(sessions.get(set.sessionId) ?? []), set])
+  return [...sessions.values()]
+    .map((sets): SessionSets => {
+      const [first] = sets
+      return {
+        sessionId: first.sessionId,
+        at: first.loggedAt,
+        blockName: first.blockName,
+        blockWeeks: first.blockWeeks,
+        week: first.week,
+        sets: [...sets].sort((a, b) => a.setNumber - b.setNumber).map((set) => ({ weightKg: set.weightKg, reps: set.reps, rir: set.rir })),
+      }
+    })
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, limit)
 }
 
 /**
