@@ -168,6 +168,48 @@
       transform: scaleX(0);
     }
   }
+
+  /* "Trupi në ritëm" (V2-E1-12, SPEC V29): pamja "e ndezur" e trupit shuhet brenda një goditjeje
+     (--beat = 60 000 / BPM ms), aura merr frymë me të, unazat dalin nga muskujt çdo tri goditje.
+     Vetëm opacity dhe transform, që i bën compositor-i pa WebGL në çdo goditje. */
+  --animate-beat: beat var(--beat, 1s) cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  --animate-beat-aura: beat-aura var(--beat, 1s) ease-out infinite;
+  --animate-beat-ring: beat-ring calc(var(--beat, 1s) * 3) cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+
+  @keyframes beat {
+    0% {
+      opacity: 1;
+    }
+    16% {
+      opacity: 0.9;
+    }
+    62%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes beat-aura {
+    0% {
+      opacity: 1;
+    }
+    55%,
+    100% {
+      opacity: 0.4;
+    }
+  }
+  @keyframes beat-ring {
+    0% {
+      transform: scale(0.72);
+      opacity: 0;
+    }
+    6% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+  }
 }
 
 @theme inline {

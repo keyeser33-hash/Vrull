@@ -6,8 +6,9 @@ import { addLights, boxOf, disposeScene, loadBody, paintMuscles, regionPoints, s
 
 // Imazhe të palëvizshme të modelit 3D (V2-E1-14): trupi i plotë përpara (ose mbrapa), me ngjyrat dhe
 // formën e çdo kuadri, i renderuar një herë dhe i shfaqur si <img>. "Trupi sipas matjeve" krahason
-// kështu Javën 0 me sot; "Trupi në ritëm" (E1-12, SPEC V29) mund të renderojë dy pamjet e pulsit dhe
-// t'i ndërrojë me CSS, pa WebGL në çdo goditje. Ngarkohet me `import()` vetëm kur ka WebGL.
+// kështu Javën 0 me sot; "Trupi në ritëm" (E1-12, SPEC V29, `beat-stills.ts`) renderon dy pamjet e
+// pulsit me kamerën te muskujt e sotëm (`focus`) dhe i ndërron me CSS, pa WebGL në çdo goditje.
+// Ngarkohet me `import()` vetëm kur ka WebGL.
 
 export interface StillFrame {
   /** Toni i çdo çelësi; pa të, muskujt pa vlerë. */
@@ -27,11 +28,20 @@ export interface Still {
   points: Partial<Record<ShapeMeasure, { mid: StillPoint; sides: StillPoint[] }>>
 }
 
+export interface StillView {
+  /**
+   * Çelësat që kamera i nxë në mes të imazhit ("Trupi në ritëm": muskujt kryesorë të grupit të sotëm),
+   * me `margin` rreth tyre (1 = sa kutia); pa to, i gjithë trupi.
+   */
+  focus?: string[]
+  margin?: number
+}
+
 /**
  * Renderon kuadrot me një kontekst WebGL dhe e liron menjëherë (WebView-i lejon pak kontekste).
  * `element` jep tokenat e temës (ngjyrat lexohen nga CSS-i i tij); `size` në px CSS.
  */
-export async function renderBodyStills(element: Element, frames: StillFrame[], size: { width: number; height: number }): Promise<Still[]> {
+export async function renderBodyStills(element: Element, frames: StillFrame[], size: { width: number; height: number }, view: StillView = {}): Promise<Still[]> {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: 'low-power' })
   const scene = new THREE.Scene()
   try {
@@ -42,9 +52,10 @@ export async function renderBodyStills(element: Element, frames: StillFrame[], s
     addLights(scene, camera, element)
     const body = await loadBody(element)
     scene.add(body.root)
-    // Kamera e nxë gjithë trupin (lëkurën), me krahët, në formën e imazhit.
-    const outline = body.skin ? new THREE.Box3().setFromObject(body.skin) : boxOf(body.muscles, [...body.muscles.keys()])!
-    const fit = fitView({ min: outline.min.toArray(), max: outline.max.toArray() }, size.width / size.height)
+    // Kamera e nxë gjithë trupin (lëkurën), me krahët, në formën e imazhit; ose muskujt e fokusit.
+    const focus = view.focus?.length ? boxOf(body.muscles, view.focus) : null
+    const outline = focus ?? (body.skin ? new THREE.Box3().setFromObject(body.skin) : boxOf(body.muscles, [...body.muscles.keys()])!)
+    const fit = fitView({ min: outline.min.toArray(), max: outline.max.toArray() }, size.width / size.height, focus ? (view.margin ?? 2) : undefined)
     camera.position.set(0, fit.height, fit.distance)
     camera.lookAt(0, fit.height, 0)
     camera.updateMatrixWorld()

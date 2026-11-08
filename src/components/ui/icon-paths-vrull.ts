@@ -44,4 +44,11 @@ export const VRULL_ICONS = {
   'kamera-kthe': '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20v-4h-4"/>',
   luaj: '<path d="M8 5.5v13l10.5-6.5z"/>',
   kyc: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  // Muzika "Trupi në ritëm" (bordet "Muzika · *", V2-E1-12).
+  pauze: '<path d="M9 5v14M15 5v14"/>',
+  'kenga-para': '<path d="M6 6l9 6-9 6V6zM18 6v12"/>',
+  'kenga-mbrapa': '<path d="M18 6L9 12l9 6V6zM6 6v12"/>',
+  metronomi: '<path d="M7 21h10L14 3h-4L7 21z"/><path d="M12 16l5-8"/>',
+  muzika: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  vale: '<path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/>',
 } as const
