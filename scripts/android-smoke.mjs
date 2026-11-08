@@ -323,7 +323,7 @@ function sessionPrefs() {
 }
 
 /** Prekja e "Ruaj setin" te njoftimi i dukshëm (ekrani i kyçur ose paneli). `times` 2 = prekja e dyfishtë. */
-function tapSave(label, times = 1) {
+function tapSaveOnce(label, times) {
   const button = emberButton()
   if (!button) {
     screenshot(`gabim-${label}`)
@@ -334,6 +334,24 @@ function tapSave(label, times = 1) {
   // Dy prekje njëherësh: dy procese `input` që nisin bashkë, para se njoftimi të vizatohet sërish.
   shell(times === 2 ? `${tap} & ${tap} & wait` : tap)
   return { at, button }
+}
+
+/**
+ * Prekja e "Ruaj setin" derisa njoftimi të kalojë te `nextTitle`. Paneli ose ekrani i kyçur mund të lëvizë
+ * nga një njoftim tjetër që sapo erdhi (prekja bie jashtë butonit dhe nuk ruan asgjë): butoni gjendet sërish
+ * dhe prekja përsëritet, deri në 3 herë. Një prekje që nuk ruajti asgjë nuk ndikon te numri i seteve.
+ */
+async function tapSave(label, nextTitle, times = 1) {
+  for (let attempt = 1; ; attempt++) {
+    await sleep(800)
+    const result = tapSaveOnce(label, times)
+    const moved = await waitFor(() => notification(4200)?.title === nextTitle, `njoftimi 4200: "${nextTitle}"`, 15_000).catch(() => false)
+    if (moved) {
+      if (attempt > 1) info(label, `prekja u përsërit ${attempt} herë (paneli lëvizi)`)
+      return result
+    }
+    if (attempt === 3) throw new Error(`Prekja te njoftimi nuk e ruajti setin (${label}); njoftimi: "${notification(4200)?.title ?? 'asnjë'}"`)
+  }
 }
 
 // ---- Supabase i imituar -------------------------------------------------------------------
@@ -847,7 +865,7 @@ try {
   await sleep(1000)
   await expandShade()
   screenshot('njoftimi-paneli')
-  const doubleTap = tapSave('prekja-e-dyfishte', 2)
+  const doubleTap = await tapSave('prekja-e-dyfishte', 'Bench Press · Seti 3 nga 3', 2)
   await waitForNotificationTitle(4200, 'Bench Press · Seti 3 nga 3')
   await sleep(2500)
   collapseShade()
@@ -866,7 +884,7 @@ try {
   await sleep(1500)
   check('ekrani i kyçur me PIN', keyguardShowing() !== false)
   screenshot('ekrani-kycur')
-  const lockTap = tapSave('ekrani-kycur')
+  const lockTap = await tapSave('ekrani-kycur', 'Incline Bench Press · Seti 1 nga 2')
   await waitForNotificationTitle(4200, 'Incline Bench Press · Seti 1 nga 2')
   await waitFor(() => notification(4202), 'njoftimi i pushimit (4202)', 10_000)
   check('ekrani i kyçur: "Ruaj setin" kalon te seti tjetër dhe nis pushimin, pa shkyçur', keyguardShowing() !== false, notification(4202)?.title)
@@ -914,7 +932,7 @@ try {
   await waitFor(() => pidOf() === '', 'procesi i vrarë', 10_000)
   check('procesi i app-it është vrarë, njoftimi mbetet', notification(4200)?.title === 'Incline Bench Press · Seti 2 nga 2')
   await expandShade()
-  const killedTap = tapSave('procesi-i-vrare')
+  const killedTap = await tapSave('procesi-i-vrare', 'Incline Dumbbell Flye · Seti 1 nga 2')
   await waitFor(() => pidOf() !== '', 'procesi nis nga prekja', 15_000)
   await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
   const queued = sessionPrefs().queue.filter((action) => action.type === 'save')
