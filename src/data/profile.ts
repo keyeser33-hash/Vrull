@@ -1,6 +1,6 @@
 import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
-import { ensureShortcutToSize } from './training'
+import { ensureProgramState, ensureShortcutToSize } from './training'
 
 // Profili i stërvitjes (SPEC §3a): pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi,
 // programi aktiv. Hyrja e parë i vendos; Cilësimet i ndryshojnë. Programi: training.ts.
@@ -52,8 +52,14 @@ export async function completeOnboarding(
   store: LocalStore,
   profile: Omit<Profile, 'weightKg'> & { weightKg: number },
   now: () => Date = () => new Date(),
+  /** Programi i ndërtuar te "Ndërto timin" (V2-E1-10); pa të, Shortcut to Size. */
+  programId?: string,
 ) {
-  const program = await ensureShortcutToSize(store)
+  const program = programId ? { id: programId } : await ensureShortcutToSize(store)
+  if (programId) {
+    await store.put('programs', { id: programId, draft: false })
+    await ensureProgramState(store, programId)
+  }
   await saveTodayWeight(store, profile.weightKg, now)
   const existing = await settingsRow(store)
   await store.put('user_settings', {

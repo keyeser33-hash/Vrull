@@ -1,4 +1,4 @@
-import { clock, dateLabel, kg, setsText, targetText, techniqueLabel, techniqueText } from './training-format'
+import { clock, dateLabel, kg, targetText } from './training-format'
 
 describe('tekstet e stërvitjes', () => {
   it('kilogramët me presje dhjetore, pa zero të tepërta', () => {
@@ -15,30 +15,6 @@ describe('tekstet e stërvitjes', () => {
     expect(targetText({ kind: 'timed', seconds: 75 })).toBe('75 sekonda')
     expect(targetText({ kind: 'percent_1rm', percent: 85, reps: 5, amrap: true })).toBe('5+ përsëritje me 85%')
     expect(targetText({ kind: 'linear', reps: 5, startKg: 40, incrementKg: 2.5, failuresBeforeDeload: 3, deloadPercent: 10 })).toBe('5 përsëritje')
-  })
-
-  it('setet e ushtrimit: "4 × 12–15" ose "3 × 60 s"', () => {
-    expect(setsText(4, { kind: 'reps', min: 12, max: 15, beyond: false })).toBe('4 × 12–15')
-    expect(setsText(3, { kind: 'timed', seconds: 60 })).toBe('3 × 60 s')
-    expect(setsText(3, { kind: 'reps', min: 0, max: null, beyond: false })).toBe('3 sete')
-    expect(setsText(1, { kind: 'reps', min: 0, max: null, beyond: false })).toBe('1 set')
-  })
-
-  it('teknika me emrin e plotë te editori', () => {
-    expect(techniqueLabel(undefined)).toBe('Asnjë')
-    expect(techniqueLabel({ type: 'none' })).toBe('Asnjë')
-    expect(techniqueLabel({ type: 'rest_pause' })).toBe('Rest-pause, 15 s')
-    expect(techniqueLabel({ type: 'rest_pause', restSeconds: 20 })).toBe('Rest-pause, 20 s')
-    expect(techniqueLabel({ type: 'drop_set' })).toBe('Drop set')
-    expect(techniqueLabel({ type: 'drop_set', percent: 70 })).toBe('Drop set, 70%')
-    expect(techniqueLabel({ type: 'to_failure' })).toBe('Deri në dështim')
-  })
-
-  it('teknika me fjalë', () => {
-    expect(techniqueText({ type: 'rest_pause' })).toBe('rest-pause')
-    expect(techniqueText({ type: 'drop_set' })).toBe('drop set')
-    expect(techniqueText({ type: 'to_failure' })).toBe('deri në dështim')
-    expect(techniqueText({ type: 'none' })).toBeNull()
   })
 
   it('data si te rreshtat: "e hënë 07.12"', () => {

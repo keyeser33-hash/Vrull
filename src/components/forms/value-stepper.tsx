@@ -2,9 +2,9 @@ import { useId, useState } from 'react'
 import { Icon } from '@/components/ui/icons'
 import { cn } from '@/lib/cn'
 
-// Vlera me − dhe + (SPEC §14, drejtimi Fokus): butonat 52 px, vlera e madhe që mund edhe të
-// shkruhet me tastierë. `row` rri në një rresht me etiketën (seanca); `hero` mban vlerën në
-// qendër të ekranit (hapat e parë).
+// Vlera me − dhe + në Vrull (V2-E1-10): butonat 52 px, vlera e madhe që mund edhe të shkruhet me
+// tastierë. `row` rri në një rresht me etiketën (Cilësimet, shtimi i ushqimit); `hero` mban vlerën në
+// qendër të fletës.
 
 export interface ValueStepperProps {
   label: string
@@ -58,7 +58,7 @@ export function ValueStepper({
       type="button"
       aria-label={aria}
       onClick={onClick}
-      className="flex size-[52px] shrink-0 items-center justify-center rounded-full border border-input text-foreground hover:bg-accent"
+      className="flex size-[52px] shrink-0 items-center justify-center rounded-pill border border-subtle bg-surface-2 text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
     >
       <Icon name={name} size={28} />
     </button>
@@ -88,9 +88,9 @@ export function ValueStepper({
           }
         }}
         className={cn(
-          'h-11 min-w-0 bg-transparent font-bold outline-none placeholder:text-muted-foreground',
-          hero ? 'h-16 text-center text-5xl leading-[52px] tracking-[-0.03em]' : 'text-right text-3xl leading-9 tracking-[-0.025em]',
-          invalid && 'text-destructive',
+          'h-11 min-w-0 rounded-sm bg-transparent font-display font-extrabold placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+          hero ? 'h-16 text-center text-[52px] leading-none' : 'text-right text-[34px] leading-none',
+          invalid && 'text-danger',
         )}
         style={{ width: `${Math.max(2, (shown || placeholder || '').length) + 0.5}ch` }}
       />
@@ -114,7 +114,7 @@ export function ValueStepper({
   }
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_52px_minmax(0,112px)_52px] items-center gap-2 rounded-full border border-border bg-card py-1.5 pr-1.5 pl-5 tabular-nums">
+    <div className="grid grid-cols-[minmax(0,1fr)_52px_minmax(0,112px)_52px] items-center gap-2 rounded-pill border border-surface-border bg-surface py-1.5 pr-1.5 pl-5 tabular-nums">
       <label htmlFor={id} className="text-sm leading-5 text-muted-foreground">
         {label}
       </label>

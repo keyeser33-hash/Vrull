@@ -260,6 +260,16 @@ export function lastWeight(history: HistorySet[], exerciseId: string): number | 
 }
 
 /**
+ * Shtesa e rregullit të progresit sipas hapit të pajisjes (bordi "Ndërto", V2-E1-10): shumëfishi i
+ * hapit më afër shtesës (në mes, më i vogli), të paktën një hap. Me dumbbell (2 kg) +2,5 bëhet +2;
+ * me kabllo (5 kg) +5.
+ */
+export function progressionIncrement(incrementKg: number, stepKg: number): number {
+  const steps = Math.max(1, Math.round(incrementKg / stepKg - 1e-9))
+  return Math.round(steps * stepKg * 100) / 100
+}
+
+/**
  * Rregulli i progresit (V9): pesha më e rëndë e seancës së kaluar, plus shtesa kur çdo set arriti
  * kufirin e sipërm me RIR të mjaftueshëm. Null pa rregull, pa javë të kaluar ose pa seancë.
  */
@@ -269,11 +279,12 @@ function progressionWeight(input: WeightInput): WeightProposal | null {
   const last = lastSessionSets(input.history, input.exerciseId)
   if (!rule || topReps === null || last.length === 0) return null
   const lastKg = Math.max(...last.map((set) => set.weightKg ?? 0))
+  const incrementKg = progressionIncrement(rule.incrementKg, weightStep(input.exercise.equipment, input.steps ?? {}))
   // RIR-i i paregjistruar vlen 0, si te e1RM-ja (§7).
   const earned = last.every((set) => (set.reps ?? 0) >= topReps && (set.rir ?? 0) >= rule.minRir)
   return {
-    weightKg: earned ? lastKg + rule.incrementKg : lastKg,
-    basis: { kind: 'progression', lastKg, incrementKg: rule.incrementKg, minRir: rule.minRir, topReps, earned },
+    weightKg: earned ? Math.round((lastKg + incrementKg) * 100) / 100 : lastKg,
+    basis: { kind: 'progression', lastKg, incrementKg, minRir: rule.minRir, topReps, earned },
   }
 }
 

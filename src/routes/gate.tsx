@@ -16,6 +16,8 @@ import {
 import { useI18n } from '@/i18n/use-i18n'
 import { APP_NAME } from '@/lib/app-name'
 
+const onboardingPath = (pathname: string) => pathname === '/fillimi' || pathname.startsWith('/fillimi/')
+
 // Porta e app-it: i vetmi vend që vendos rrugën sipas fazës (data/phase.ts).
 export function AppGate() {
   const phase = useAppPhase()
@@ -36,10 +38,11 @@ export function AppGate() {
     case 'fetching':
     case 'fetch_failed':
       return <FetchingScreen failed={phase === 'fetch_failed'} />
+    // Hapat e parë dhe ndërtuesi brenda tyre ("Ndërto timin", `/fillimi/programi/…`, V2-E1-10).
     case 'onboarding':
-      return pathname === '/fillimi' ? <Outlet /> : <Navigate to="/fillimi" replace />
+      return onboardingPath(pathname) ? <Outlet /> : <Navigate to="/fillimi" replace />
     case 'ready':
-      return pathname === '/hyrja' || pathname === '/fillimi' ? <Navigate to="/" replace /> : <Outlet />
+      return pathname === '/hyrja' || onboardingPath(pathname) ? <Navigate to="/" replace /> : <Outlet />
   }
 }
 

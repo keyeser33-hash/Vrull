@@ -227,6 +227,87 @@ describe('radha e stërvitjeve', () => {
   })
 })
 
+describe('programet e përdoruesit (V2-E1-10)', () => {
+  // Sipër/poshtë: tre blloqe (4, 4, 1 javë) dhe katër ditë, me ditët e shkruara jashtë radhës.
+  const upperLower = (overrides: SlotOverride[] = [], progression: Program['progression'] = null): Program => ({
+    id: 'ul',
+    blocks: [
+      { id: 'force', position: 1, name: 'Forca', weeks: 4 },
+      { id: 'base', position: 0, name: 'Bazat', weeks: 4 },
+      { id: 'deload', position: 2, name: 'Shkarkim', weeks: 1 },
+    ],
+    days: [
+      { id: 'lowerB', position: 3, name: 'Poshtë B' },
+      { id: 'upperA', position: 0, name: 'Sipër A' },
+      { id: 'upperB', position: 2, name: 'Sipër B' },
+      { id: 'lowerA', position: 1, name: 'Poshtë A' },
+    ],
+    slots: [
+      { id: 'bench', dayId: 'upperA', position: 0, exerciseId: 'bench', sets: 4, restSeconds: 150 },
+      { id: 'curl', dayId: 'upperA', position: 1, exerciseId: 'curl', sets: 3, restSeconds: 60 },
+      { id: 'squat', dayId: 'lowerA', position: 0, exerciseId: 'squat', sets: 4, restSeconds: 180 },
+      { id: 'row', dayId: 'upperB', position: 0, exerciseId: 'row', sets: 4, restSeconds: 120 },
+      { id: 'rdl', dayId: 'lowerB', position: 0, exerciseId: 'rdl', sets: 3, restSeconds: 150 },
+    ],
+    overrides,
+    exercises: {
+      bench: { tracking: 'weight_reps', equipment: 'barbell' },
+      curl: { tracking: 'weight_reps', equipment: 'dumbbell' },
+      squat: { tracking: 'weight_reps', equipment: 'barbell' },
+      row: { tracking: 'weight_reps', equipment: 'cable' },
+      rdl: { tracking: 'weight_reps', equipment: 'barbell' },
+    },
+    progression,
+  })
+
+  it('ditët dhe blloqet sipas pozicionit: Sipër A, Poshtë A, Sipër B, Poshtë B, pastaj java tjetër', () => {
+    const p = upperLower()
+    const order: string[] = []
+    let pointer: Pointer = at('base', 1, 'upperA')
+    for (let step = 0; step < 6; step++) {
+      order.push(`${pointer.blockId}:${pointer.week}:${planSession(p, pointer).dayName}:${planSession(p, pointer).dayNumber}`)
+      pointer = advance(p, pointer)
+    }
+    expect(order).toEqual([
+      'base:1:Sipër A:1',
+      'base:1:Poshtë A:2',
+      'base:1:Sipër B:3',
+      'base:1:Poshtë B:4',
+      'base:2:Sipër A:1',
+      'base:2:Poshtë A:2',
+    ])
+    expect(advance(p, at('base', 4, 'lowerB'))).toEqual(at('force', 1, 'upperA'))
+    expect(advance(p, at('force', 4, 'lowerB'))).toEqual(at('deload', 1, 'upperA'))
+    expect(advance(p, at('deload', 1, 'lowerB'))).toEqual({ ...at('deload', 1, 'lowerB'), completed: true })
+  })
+
+  it('receta me RIR sipas bllokut: 4 × 6–8 · RIR 2 te Bazat, 4 × 4–6 · RIR 1 te Forca', () => {
+    const p = upperLower([
+      { slotId: 'bench', blockId: null, week: null, prescription: { type: 'rir', reps: { min: 6, max: 8 }, rir: { min: 2, max: 2 } } },
+      { slotId: 'bench', blockId: 'force', week: null, prescription: { type: 'rir', reps: { min: 4, max: 6 }, rir: { min: 1, max: 1 } } },
+    ])
+    expect(planSession(p, at('base', 3, 'upperA')).slots[0]).toMatchObject({ sets: 4, restSeconds: 150, target: { kind: 'reps', min: 6, max: 8, rir: { min: 2, max: 2 } } })
+    expect(planSession(p, at('force', 1, 'upperA')).slots[0].target).toMatchObject({ min: 4, max: 6, rir: { min: 1, max: 1 } })
+  })
+
+  it('progresi i zgjuar i gjithë programit vlen për çdo slot pa rregull më vete', () => {
+    const p = upperLower([{ slotId: 'curl', blockId: 'force', week: null, progression: { minRir: 1, incrementKg: 1 } }], { minRir: 2, incrementKg: 2.5 })
+    const rules = (blockId: string) => planSession(p, at(blockId, 1, 'upperA')).slots.map((slot) => slot.progression)
+    expect(rules('base')).toEqual([
+      { minRir: 2, incrementKg: 2.5 },
+      { minRir: 2, incrementKg: 2.5 },
+    ])
+    expect(rules('force')).toEqual([
+      { minRir: 2, incrementKg: 2.5 },
+      { minRir: 1, incrementKg: 1 },
+    ])
+  })
+
+  it('pa progres të zgjuar në program dhe pa rregull te sloti: pa rregull', () => {
+    expect(planSession(upperLower(), at('base', 1, 'upperA')).slots[0].progression).toBeUndefined()
+  })
+})
+
 describe('emërtimi', () => {
   it('blloku me një javë pa numër jave; të tjerët me javën', () => {
     expect(blockWeekLabel(planSession(program(), at('b0', 1, 'd1')))).toBe('Java 0')
