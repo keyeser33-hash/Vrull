@@ -58,10 +58,8 @@ const pad = (value: number) => String(value).padStart(2, '0')
 const isoDate = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 const at = (day: Date, time: string) => {
   const [hours, minutes] = time.split(':').map(Number)
-  const result = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hours, minutes)
-  // Pas mesnate (gjumi pas orës 24): dita e nesërme.
-  if (hours < 4) result.setDate(result.getDate() + 1)
-  return result
+  // Zgjimi dhe stërvitja e mëngjesit; vaktet pas mesnate vijnë nga minutat e orarit (V46).
+  return new Date(day.getFullYear(), day.getMonth(), day.getDate(), hours, minutes)
 }
 const addMinutes = (time: string, minutes: number) => {
   const [hours, mins] = time.split(':').map(Number)
@@ -95,16 +93,18 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
       const trainingAt = fmt.time(new Date(day.getFullYear(), day.getMonth(), day.getDate(), hours, minutes))
       dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body: t('reminders.notify.workoutAt', { time: trainingAt }), kind: 'training' })
     }
-    for (const { meal, time } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? input.trainingTime : null })) {
+    for (const { meal, minutes } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? input.trainingTime : null })) {
+      // Minutat e ditës: një vakt pas mesnate bie të nesërmen kalendarike, por i përket kësaj dite (V46).
+      const mealAt = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, minutes)
       const supplements = input.toggles.supplements
         ? input.supplements.filter((item) => item.enabled && item.timing.includes(meal)).map((item) => supplementName(t, item.name))
         : []
       const foods = (JIM_MEALS[meal] ?? []).map((item) => foodName(t, { name: JIM_FOODS[item.food].name, sourceId: `jim:${item.food}` }))
       if (input.toggles.meals && foods.length > 0) {
         const body = supplements.length > 0 ? t('reminders.notify.mealWith', { foods: sentence(foods), supplements: supplements.map(lower).join(', ') }) : sentence(foods)
-        dayItems.push({ at: at(day, time), title: mealName(t, meal), body, kind: 'meal' })
+        dayItems.push({ at: mealAt, title: mealName(t, meal), body, kind: 'meal' })
       } else if (supplements.length > 0) {
-        dayItems.push({ at: at(day, time), title: t('reminders.notify.supplements', { meal: mealName(t, meal) }), body: supplements.join(', '), kind: 'supplements' })
+        dayItems.push({ at: mealAt, title: t('reminders.notify.supplements', { meal: mealName(t, meal) }), body: supplements.join(', '), kind: 'supplements' })
       }
     }
     dayItems.forEach((item, index) => {

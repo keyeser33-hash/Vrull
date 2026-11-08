@@ -4,7 +4,7 @@ import { MUSCLE_GROUPS, type MuscleGroup } from '@/program/muscles'
 import { recoveryFor, type RecoveryStatus } from '@/program/recovery'
 import { workoutMinutes } from '@/program/week-plan'
 import type { Target, Tracking } from '@/program/types'
-import { nutritionDay } from './nutrition'
+import { currentFoodDate, nutritionDay } from './nutrition'
 import { readProfile } from './profile'
 import type { LocalStore } from './store'
 import { trainingHistory, trainingSnapshot, type TrainingSnapshot } from './training'
@@ -141,12 +141,14 @@ export interface TodayView {
 export async function todayView(store: LocalStore): Promise<TodayView> {
   const now = store.now()
   const today = localDate(now)
+  // Ushqimi dhe uji ndjekin ditën e ushqimit (V46); stërvitja dhe java mbeten sipas kalendarit.
+  const eatingDate = await currentFoodDate(store, now)
   const [snapshot, history, profile, sessions, nutrition] = await Promise.all([
     trainingSnapshot(store),
     trainingHistory(store),
     readProfile(store),
     store.all('workout_sessions'),
-    nutritionDay(store, today, now),
+    nutritionDay(store, eatingDate, now),
   ])
   const completed = sessions
     .filter((row) => row.status === 'completed')
@@ -160,7 +162,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     nextDate: nextTrainingDate(now, profile.trainingDays),
     firstEver: history.sets.length === 0,
     protein: { eatenG: Math.round(nutrition.totals.proteinG), targetG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null },
-    date: today,
+    date: eatingDate,
     trainingDay: nutrition.dayType === 'training',
   }
   if (!snapshot) return { ...base, mode: 'none', workout: null }

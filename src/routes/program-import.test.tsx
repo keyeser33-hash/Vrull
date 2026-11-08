@@ -95,7 +95,8 @@ describe('importi nga PDF', () => {
     await user.upload(screen.getByLabelText('PDF-ja e programit'), pdf())
     expect(await screen.findByRole('status')).toHaveTextContent('AI po e lexon')
     expect(screen.getByText('shortcut-to-size.pdf')).toBeInTheDocument()
-    expect(data.read).toHaveBeenCalledTimes(1)
+    // Gjendja del para thirrjes (ushtrimet e njohura lexohen më parë): prit thirrjen, mos e supozo.
+    await vi.waitFor(() => expect(data.read).toHaveBeenCalledTimes(1))
     const [request] = data.read.mock.calls[0]
     expect(request).toMatchObject({ fileName: 'shortcut-to-size.pdf', language: 'sq' })
     expect(request.known).toContain('Barbell Bench Press - Medium Grip')

@@ -9,6 +9,8 @@ import type { MealKey } from './meals'
 export interface ScheduledMeal {
   meal: MealKey
   time: string
+  /** Minutat nga mesnata e ditës; pas mesnate kalojnë 1440 (vakti i përket po kësaj dite, V46). */
+  minutes: number
 }
 
 const REGULAR: [MealKey, number][] = [
@@ -54,5 +56,5 @@ export function mealSchedule({ wakeTime, sleepTime, trainingTime }: { wakeTime: 
   meals = meals.map((entry) => ({ ...entry, minutes: Math.min(entry.minutes, bedtime - 30) }))
   return [...meals, ...extra, { meal: 'bedtime' as MealKey, minutes: bedtime }]
     .sort((a, b) => a.minutes - b.minutes)
-    .map((entry) => ({ meal: entry.meal, time: toTime(entry.minutes) }))
+    .map((entry) => ({ meal: entry.meal, time: toTime(entry.minutes), minutes: Math.round(entry.minutes) }))
 }

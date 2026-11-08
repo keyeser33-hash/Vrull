@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { logTemplateMeal, nutritionDay, removeDiaryEntry, setDayType } from './nutrition'
+import { currentFoodDate, logTemplateMeal, nutritionDay, removeDiaryEntry, setDayType } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
 
@@ -134,5 +134,33 @@ describe('dita e ushqimit', () => {
     const day = await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '09:00'))
     expect(day.targets).toBeNull()
     expect(day.meals).toHaveLength(7)
+  })
+})
+
+// V46: gjumi pas mesnate; vakti para gjumit në 00:30 i përket ditës që mbaron.
+describe('dita e ushqimit pas mesnate', () => {
+  async function lateSetup() {
+    const store = createLocalStore(createDatabase(`nutrition-late-${crypto.randomUUID()}`), { userId: () => USER })
+    await completeOnboarding(store, { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00', wakeTime: '08:20', sleepTime: '01:00' }, () =>
+      at('2026-12-01', '08:00'),
+    )
+    return store
+  }
+
+  it('në 14:00 vakti para gjumit nuk del "Pa regjistruar"', async () => {
+    const store = await lateSetup()
+    const day = await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '14:00'))
+    expect(day.meals.at(-1)).toMatchObject({ meal: 'bedtime', time: '00:30', status: 'todo' })
+    expect(day.meals.find((meal) => meal.meal === 'breakfast_1')?.status).toBe('missed')
+  })
+
+  it('në 00:20 dita e ushqimit është ende e mërkura dhe vakti para gjumit është i radhës', async () => {
+    const store = await lateSetup()
+    const now = at('2026-12-10', '00:20')
+    expect(await currentFoodDate(store, now)).toBe(WEDNESDAY)
+    const day = await nutritionDay(store, WEDNESDAY, now)
+    expect(day.isToday).toBe(true)
+    expect(day.next?.meal).toBe('bedtime')
+    expect(await currentFoodDate(store, at('2026-12-10', '06:00'))).toBe('2026-12-10')
   })
 })

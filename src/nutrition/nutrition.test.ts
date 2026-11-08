@@ -84,7 +84,7 @@ describe('orari i vakteve (§13)', () => {
   it('stërvitje sapo zgjohesh: vakti para stërvitjes është i pari; asnjë vakt pas vaktit para gjumit', () => {
     const schedule = mealSchedule({ wakeTime: '06:30', sleepTime: '22:30', trainingTime: '07:00' })
     expect(at(schedule).slice(0, 4)).toEqual(['06:45 pre_workout', '08:30 post_workout', '09:30 breakfast_1', '10:15 breakfast_2'])
-    expect(schedule.at(-1)).toEqual({ meal: 'bedtime', time: '22:00' })
+    expect(schedule.at(-1)).toEqual({ meal: 'bedtime', time: '22:00', minutes: 1320 })
     const times = schedule.map((entry) => entry.time)
     expect([...times].sort()).toEqual(times)
   })

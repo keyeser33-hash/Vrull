@@ -8,10 +8,9 @@ import { Icon } from '@/components/ui/icons'
 import { InsightCard } from '@/components/ui/insight-card'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
-import { localDate } from '@/lib/calendar'
 import { setSupplementEnabled, supplementList, toggleSupplement } from '@/data/supplements'
 import { waterDay } from '@/data/water'
-import { logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
+import { currentFoodDate, logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
 import { type I18n, NBSP } from '@/i18n'
 import { foodName, mealName, nameInSentence, portionText, supplementDose, supplementEvidence, supplementName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -39,8 +38,8 @@ function useNow() {
 
 export function NutritionPage() {
   const now = useNow()
-  const date = localDate(now)
-  const day = useLocalQuery(() => nutritionDay(store, date, now), [date, now.getTime()])
+  // Dita e ushqimit (V46): pas mesnate, deri 3 orë para zgjimit, mbetet dita e djeshme.
+  const day = useLocalQuery(async () => nutritionDay(store, await currentFoodDate(store, now), now), [now.getTime()])
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const opened = params.get('vakti') as MealKey | null
@@ -139,7 +138,7 @@ function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlo
   const i18n = useI18n()
   const { t } = i18n
   const [busy, setBusy] = useState(false)
-  const today = day.date === localDate(now)
+  const today = day.isToday
   return (
     <section aria-labelledby="next-meal" className={cn(surfaceClass, 'flex flex-col gap-3.5 rounded-xl p-4')}>
       <div className="flex flex-col gap-1">

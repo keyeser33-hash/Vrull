@@ -96,4 +96,11 @@ describe('rikujtuesit (§13)', () => {
     const [last] = planReminders(base({ sleepTime: '00:30' }), sq).slice(-1)
     expect([last.title, last.at.getDate(), hhmm(last.at)]).toEqual(['Para gjumit', 10, '00:00'])
   })
+  // V46: vaktet pas mesnate bien të nesërmen kalendarike, edhe kur gjumi është pas orës 04:00.
+  it('gjumi pas mesnate: vakti para gjumit të nesërmen në orën e duhur', () => {
+    const late = planReminders(base({ wakeTime: '08:20', sleepTime: '01:00' }), sq).filter((item) => item.kind === 'meal')
+    expect(late.at(-1)).toMatchObject({ title: 'Para gjumit', at: new Date('2026-12-10T00:30:00') })
+    const night = planReminders(base({ wakeTime: '12:00', sleepTime: '05:00' }), sq).filter((item) => item.kind === 'meal')
+    expect(night.at(-1)).toMatchObject({ title: 'Para gjumit', at: new Date('2026-12-10T04:30:00') })
+  })
 })

@@ -24,6 +24,8 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova që varet nga rreshti i lënë nga prova e mëparshme (`form-video.test`) → çdo provë pastron tabelat që lexon (`db[table].clear()`), fixture-t kanë të gjitha fushat që lexon ekrani.
 - Prova që dështon vetëm kur punojnë disa agjentë njëkohësisht → nis vetëm atë skedar përsëri para se ta quash gabim; afatet jetojnë te `src/test/setup.ts` dhe `vite.config.ts`, jo te secila provë.
 
+- `program-import.test` dështonte rastësisht: kontrollonte thirrjen e AI-së menjëherë pas gjendjes "AI po e lexon", që del para thirrjes → një thirrje async pritet me `vi.waitFor`, nuk supozohet nga gjendja e ekranit.
+
 ## Bashkimet (merge) e degëve paralele
 
 - Çelësa të dyfishtë te `icon-paths-vrull.ts` (TS1117) dhe një rresht i humbur te `session.tsx` (`lastSlot`) pas merge-ve → pas çdo merge: `tsc`, pastaj provat e skedarëve në konflikt, pastaj të gjitha.

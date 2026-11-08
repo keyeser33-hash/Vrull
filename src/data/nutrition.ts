@@ -1,9 +1,9 @@
 import { JIM_FOODS, JIM_MEALS, type JimFoodKey, macrosFor, type Portion, sumMacros } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
+import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
 import { mealSchedule } from '@/nutrition/schedule'
 import type { Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
-import { localDate } from '@/lib/calendar'
 import { readProfile } from './profile'
 import { supplementList } from './supplements'
 import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
@@ -57,6 +57,8 @@ export interface MealSlot {
 
 export interface NutritionDay {
   date: string
+  /** Data është dita e ushqimit e tanishme (V46), jo domosdoshmërisht data kalendarike. */
+  isToday: boolean
   dayType: DayType
   dayTypeManual: boolean
   weightKg: number | null
@@ -85,10 +87,6 @@ const savedMacros = (row: LocalRow): Macros => ({
   fatG: toNumber(row.fat_g),
 })
 
-const minutesOf = (time: string) => {
-  const [hours, minutes] = time.split(':').map(Number)
-  return hours * 60 + minutes
-}
 
 /** Dita ISO e javës (1 = e hënë ... 7 = e diel) e një date "2026-12-07". */
 const isoWeekday = (date: string) => new Date(`${date}T12:00:00`).getDay() || 7
@@ -129,8 +127,11 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const schedule = mealSchedule({ wakeTime: profile.wakeTime, sleepTime: profile.sleepTime, trainingTime: dayType === 'training' ? profile.trainingTime : null })
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
 
-  const today = date === localDate(now)
-  const nowMinutes = now.getHours() * 60 + now.getMinutes()
+  // Dita e ushqimit (V46): pas mesnate, deri 3 orë para zgjimit, është ende dita e djeshme.
+  const current = foodDate(now, profile.wakeTime)
+  const today = date === current
+  const nowMinutes = minutesInFoodDay(now, date)
+  const minutesByMeal = new Map(schedule.map((entry) => [entry.meal, entry.minutes]))
   const meals: MealSlot[] = schedule.map(({ meal, time }) => {
     const rows = entries.filter((row) => row.meal === meal).sort(byLoggedAt)
     const list = rows.map((row) => {
@@ -172,11 +173,12 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
 
   // I radhës: vakti i parë pa regjistrim që nuk ka kaluar më shumë se 1 orë. Për ditët e kaluara
   // asnjë; për ato të ardhshme i pari pa regjistrim.
-  const past = date < localDate(now)
-  const next = past ? undefined : meals.find((meal) => meal.status === 'todo' && (!today || minutesOf(meal.time) >= nowMinutes - 60))
+  const past = date < current
+  const minutesOf = (meal: MealSlot) => minutesByMeal.get(meal.meal) ?? 0
+  const next = past ? undefined : meals.find((meal) => meal.status === 'todo' && (!today || minutesOf(meal) >= nowMinutes - 60))
   for (const meal of meals) {
     if (meal === next) meal.status = 'next'
-    else if (meal.status === 'todo' && (past || (today && minutesOf(meal.time) < nowMinutes - 60))) meal.status = 'missed'
+    else if (meal.status === 'todo' && (past || (today && minutesOf(meal) < nowMinutes - 60))) meal.status = 'missed'
   }
 
   // Pesha e objektivave të ruajtura, që shënimet e ditës të përputhen me to.
@@ -185,6 +187,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const targetsSource = computed?.source ?? (targetsProfile.from !== null && date >= targetsProfile.from ? 'personal' : 'jim')
   return {
     date,
+    isToday: today,
     dayType,
     dayTypeManual: manual,
     weightKg,
@@ -308,4 +311,9 @@ export async function dayBasics(store: LocalStore, date: string): Promise<{ dayT
   const [{ dayType, saved }, measuredKg] = await Promise.all([dayTypeFor(store, date, profile.trainingDays), weightFor(store, date)])
   const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
   return { dayType, weightKg }
+}
+
+/** Dita e ushqimit e tanishme sipas orës së zgjimit (V46). */
+export async function currentFoodDate(store: LocalStore, now: Date): Promise<string> {
+  return foodDate(now, (await readProfile(store)).wakeTime)
 }
