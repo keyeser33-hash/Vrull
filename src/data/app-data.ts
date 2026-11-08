@@ -8,6 +8,8 @@ import { createSupabaseRemote } from './remote-supabase'
 import { createSyncScheduler } from './scheduler'
 import { createLocalStore } from './store'
 import { supabase } from './supabase'
+import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
+import { type ImportRemote, readResultFrom } from './pdf-import'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
 import { planReminders } from '@/reminders/plan'
@@ -170,6 +172,33 @@ export async function searchUsda(query: string): Promise<ExternalFood[]> {
   const { data, error } = await supabase.functions.invoke('usda-search', { body: { query } })
   if (error) throw error
   return usdaFromJson((data ?? {}) as Record<string, unknown>)
+}
+
+/**
+ * Leximi i PDF-së së një programi me AI, përmes funksionit `program-import` (V2-E1-11; vetëm me sesion).
+ * Kostoja ruhet në server; sinkronizimi e sjell te Cilësimet › AI menjëherë pas leximit.
+ */
+export const programImportRemote: ImportRemote = {
+  async read({ file, fileName, known, language }) {
+    if (!navigator.onLine) return readResultFrom(null, null)
+    const form = new FormData()
+    form.append('file', file, fileName)
+    form.append('known', JSON.stringify(known))
+    form.append('language', language)
+    const { data, error } = await supabase.functions.invoke('program-import', { body: form })
+    let result
+    if (!error) {
+      result = readResultFrom(200, data)
+    } else if (error instanceof FunctionsHttpError) {
+      const response = error.context as Response
+      result = readResultFrom(response.status, await response.json().catch(() => null))
+    } else {
+      // Pa lidhje (FunctionsFetchError) ose relay-i i Supabase-it pa përgjigje.
+      result = readResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
+    }
+    if (result.ok || result.costEur !== undefined) void scheduler.syncNow()
+    return result
+  },
 }
 
 /** Fotot e progresit për ekranet: përmes store-it dhe bucket-it, pa thirrje direkte te Supabase. */

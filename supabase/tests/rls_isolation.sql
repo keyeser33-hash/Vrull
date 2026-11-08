@@ -1,6 +1,7 @@
 -- Prova e izolimit (TH-03): një përdorues tjetër nuk sheh, nuk ndryshon dhe nuk fshin asnjë rresht
 -- dhe asnjë foto ose video të përdoruesit të parë (bucket-et progress-photos dhe form-videos);
--- anon nuk ka qasje; fiton ndryshimi i fundit.
+-- anon nuk ka qasje; fiton ndryshimi i fundit. Kostoja e AI-së (ai_usage, V2-E1-11) shkruhet vetëm me
+-- service role: pronari e lexon, por nuk e shton, nuk e ndryshon dhe nuk e fshin.
 -- Gjithçka ndodh në një transaksion që kthehet mbrapsht: projekti nuk ndryshon.
 -- Ekzekutimi: psql "$DATABASE_URL" -f supabase/tests/rls_isolation.sql (ose SQL Editor / MCP).
 -- Rezultati: një rresht për çdo kontroll, me ok = true. Çdo ok = false është gabim.
@@ -31,6 +32,12 @@ begin
   insert into auth.users (id, aud, role, email, created_at, updated_at)
   values (user_a, 'authenticated', 'authenticated', 'a@test.invalid', now(), now()),
          (user_b, 'authenticated', 'authenticated', 'b@test.invalid', now(), now());
+
+  -- Kostoja e një leximi të PDF-së për A, si e shkruan funksioni program-import (service role).
+  set local role service_role;
+  insert into public.ai_usage (user_id, month, feature, model, input_tokens, output_tokens, cost_usd, cost_eur)
+    values (user_a, '2026-11-01', 'program_pdf', 'claude-sonnet-5-5', 120000, 6000, 0.3, 0.268698);
+  reset role;
 
   -- Përdoruesi A shkruan një rresht në çdo tabelë përmes rolit authenticated (si nga app-i).
   perform set_config('request.jwt.claims', json_build_object('sub', user_a, 'role', 'authenticated')::text, true);
@@ -72,6 +79,29 @@ begin
     results := results || format('A sheh rreshtin e vet te %s|%s|%s', t, n = 1, n);
   end loop;
 
+  -- Kostoja e AI-së: A e lexon, por nuk e shton, nuk e ndryshon dhe nuk e fshin (vetëm funksioni).
+  select count(*) into n from public.ai_usage;
+  results := results || format('A sheh koston e vet te ai_usage|%s|%s', n = 1, n);
+  begin
+    insert into public.ai_usage (month, feature, model, input_tokens, output_tokens, cost_usd, cost_eur)
+      values ('2026-11-01', 'program_pdf', 'x', 0, 0, 0, 0);
+    results := results || 'A nuk shton kosto te ai_usage|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk shton kosto te ai_usage|true|refuzohet'::text;
+  end;
+  begin
+    update public.ai_usage set cost_eur = 0;
+    results := results || 'A nuk ndryshon koston te ai_usage|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk ndryshon koston te ai_usage|true|refuzohet'::text;
+  end;
+  begin
+    delete from public.ai_usage;
+    results := results || 'A nuk fshin koston te ai_usage|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk fshin koston te ai_usage|true|refuzohet'::text;
+  end;
+
   -- A nuk shkruan dot në emër të B, as në dosjen e fotove të B.
   begin
     insert into public.exercises (name, equipment, user_id) values ('Squat', 'barbell', user_b);
@@ -110,6 +140,9 @@ begin
     results := results || format('B nuk fshin asgjë te %s|%s|%s', t, n = 0, n);
   end loop;
 
+  select count(*) into n from public.ai_usage;
+  results := results || format('B nuk sheh koston e A te ai_usage|%s|%s', n = 0, n);
+
   foreach bucket in array buckets loop
     select count(*) into n from storage.objects where bucket_id = bucket;
     results := results || format('B nuk sheh asnjë skedar te %s|%s|%s', bucket, n = 0, n);
@@ -134,6 +167,12 @@ begin
       results := results || format('anon pa qasje te %s|true|refuzohet', t);
     end;
   end loop;
+  begin
+    select count(*) into n from public.ai_usage;
+    results := results || format('anon pa qasje te ai_usage|false|lexoi %s', n);
+  exception when insufficient_privilege then
+    results := results || 'anon pa qasje te ai_usage|true|refuzohet'::text;
+  end;
   foreach bucket in array buckets loop
     select count(*) into n from storage.objects where bucket_id = bucket;
     results := results || format('anon nuk sheh asnjë skedar te %s|%s|%s', bucket, n = 0, n);

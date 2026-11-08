@@ -51,12 +51,13 @@ const STS_WORKOUTS = SHORTCUT_TO_SIZE.program.days.length
 const STS_IMAGE = '/anatomy/shortcut-to-size.webp'
 
 /**
- * Mënyrat e tjera të nisjes, poshtë "Ose nis vetë": "Ndërto timin" (E1-10); "Importo nga PDF" (E1-11)
- * shtohet këtu kur të jetë gati. Para profilit porta (gate.tsx) lejon vetëm `/fillimi` dhe adresat nën
- * të, ndaj `to` është një adresë brenda hapave (`/fillimi/…`). Pa asnjë, seksioni nuk shfaqet.
+ * Mënyrat e tjera të nisjes, poshtë "Ose nis vetë": "Ndërto timin" (E1-10) dhe "Importo nga PDF" (E1-11).
+ * Para profilit porta (gate.tsx) lejon vetëm `/fillimi` dhe adresat nën të, ndaj `to` është një adresë
+ * brenda hapave (`/fillimi/…`). Pa asnjë, seksioni nuk shfaqet.
  */
 const OWN_STARTS: readonly { to: string; icon: IconName; title: MessageKey; text: MessageKey }[] = [
   { to: ONBOARDING_BUILD, icon: 'nderto', title: 'builder.onboarding.title', text: 'builder.onboarding.text' },
+  { to: '/fillimi/importo', icon: 'skedari', title: 'ai.entry.import', text: 'ai.entry.importText' },
 ]
 
 export function OnboardingPage() {
@@ -504,7 +505,7 @@ function ChooseProgramme() {
   )
 }
 
-/** "Ndërto timin" dhe "Importo nga PDF" si pllaka (bordi "Programi"), kur E1-10 dhe E1-11 i shtojnë te OWN_STARTS. */
+/** "Ndërto timin" dhe "Importo nga PDF" si pllaka (bordi "Programi"). */
 function OwnStarts() {
   const { t } = useI18n()
   const navigate = useNavigate()

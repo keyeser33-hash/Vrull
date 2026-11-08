@@ -51,8 +51,12 @@ Një vlerë e ndryshuar (ushtrimi, setet, pushimi, receta ose teknika) në një 
 Një program i gatshëm nga i cili nis ndërtuesi; kopjohet, nuk lidhet me origjinalin.
 
 **Drafti**:
-Programi që po ndërtohet dhe ende pa "Ruaj programin"; ndryshimet e tij ruhen, por nuk ofrohet si program për t'u nisur.
+Programi që po ndërtohet dhe ende pa "Ruaj programin"; ndryshimet e tij ruhen, por nuk ofrohet si program për t'u nisur. Një draft pa asnjë ushtrim (**Drafti bosh**) fshihet kur përdoruesi kthehet te Programet.
 _Avoid_: skicë
+
+**Importi nga PDF**:
+AI-ja lexon PDF-në e një programi dhe e kthen në **Draft** te ndërtuesi; ushtrimet ku nuk është e sigurt i pyet ("A është kjo X?") para se programi të krijohet.
+_Avoid_: skanim, OCR (në UI)
 
 **Progresi i zgjuar**:
 Rregull që propozon peshën ose vëllimin e seancës së radhës nga RIR-i i seteve të fundit dhe nga **Gatishmëria**; propozimi pranohet nga përdoruesi. Vendoset për gjithë programin ose për një ushtrim në një **Nivel**.
@@ -230,6 +234,9 @@ Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kal
 
 **Kufiri i AI-së**:
 Shuma mujore që AI mund të harxhojë për një përdorues (parazgjedhje €10); kur arrihet, AI ndalet deri në muajin tjetër.
+
+**Kostoja e AI-së**:
+Sa kushtoi një thirrje te AI-ja, nga tokenat që kthen ofruesi, në euro; ruhet në server për përdoruesin dhe muajin dhe numërohet te **Kufiri i AI-së**, edhe kur leximi dështon.
 
 **Versioni i listës**:
 Një publikim i ndryshimeve të **Adminit** te lista vendase e ushqimeve; përdoruesit e marrin në sinkronizimin e radhës.

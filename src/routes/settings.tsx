@@ -31,11 +31,12 @@ import { batteryUnrestricted, requestBatteryExemption } from '@/lib/rest-alarm'
 import { readTheme } from '@/lib/theme'
 import type { ReminderToggles } from '@/reminders/plan'
 import { UpdateSheet } from './app-update'
+import { AiUsageGroup } from './settings-ai'
 import { versionRowDetail } from './update-format'
 
-// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, Sinkronizimi, Versioni dhe
-// "Dil" në fund. Seksionet e etapave të tjera (AI, ora dhe Health Connect, Admini) mungojnë deri
-// atëherë. Një rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll, ose një
+// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, AI (V2-E1-11), Sinkronizimi,
+// Versioni dhe "Dil" në fund. Seksionet e etapave të tjera (ora dhe Health Connect, Admini) mungojnë
+// deri atëherë. Një rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll, ose një
 // ekran (Pamja, Rikujtuesit).
 
 type ProfileEditor = 'pesha' | 'dite' | 'oraret'
@@ -99,6 +100,8 @@ export function SettingsPage() {
         <LinkRow to="/cilesimet/rikujtuesit" label={t('settings.reminders')} detail={reminders ? remindersDetail : undefined} />
         <TimerRow />
       </Group>
+
+      <AiUsageGroup />
 
       <SyncGroup />
 

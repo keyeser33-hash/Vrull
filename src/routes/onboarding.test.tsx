@@ -82,11 +82,12 @@ describe('hapat e parë', () => {
     expect(within(programmes).getByRole('radio', { name: /Shortcut to Size/ })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByText('12 javë + Java 0 · Jim Stoppani')).toBeInTheDocument()
     expect(screen.getByText('Java 0 për teknikën, pastaj 3 faza nga 4 javë, 4 stërvitje në javë.')).toBeInTheDocument()
-    // "Ndërto timin" (E1-10) poshtë "Ose nis vetë"; programet e miqve (Etapa 4) dhe "Importo nga PDF"
-    // (E1-11) nuk shfaqen ende.
+    // "Ndërto timin" (E1-10) dhe "Importo nga PDF" (E1-11) poshtë "Ose nis vetë"; programet e miqve
+    // (Etapa 4) nuk shfaqen ende.
     expect(screen.getByRole('heading', { level: 2, name: 'Ose nis vetë' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^Ndërto timin/ })).toHaveTextContent('Nga e para ose nga një shabllon')
-    expect(screen.queryByText(/Importo nga PDF|Ndarë nga/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Importo nga PDF/ })).toHaveTextContent('AI e lexon dhe mbush ndërtuesin')
+    expect(screen.queryByText(/Ndarë nga/)).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Fillo programin' }))
     // Ekrani pret derisa porta ta çojë te Sot (shih gate.test.tsx).
     expect(await screen.findByRole('button', { name: 'Po ruhet' })).toBeDisabled()

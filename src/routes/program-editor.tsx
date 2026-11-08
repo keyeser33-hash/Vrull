@@ -19,6 +19,7 @@ import {
   createBlankProgram,
   createFromTemplate,
   deleteProgram,
+  discardEmptyDrafts,
   duplicateProgram,
   editSlot,
   moveBlock,
@@ -100,6 +101,10 @@ export function ProgramsPage() {
   const mine = programs?.filter((program) => !program.active) ?? []
   const requested = params.get('shablloni')
   const template = isTemplateId(requested) ? requested : null
+  // Një draft bosh nga "Ndërto program" (përdoruesi doli pa shtuar asnjë ushtrim) nuk mbetet te "Të mitë".
+  useEffect(() => {
+    discardEmptyDrafts(store).catch(() => {})
+  }, [])
 
   async function build() {
     setBusy(true)
@@ -118,10 +123,16 @@ export function ProgramsPage() {
         <h1 className="type-display-m">{t('builder.programmes.title')}</h1>
       </div>
 
-      {/* "Importo nga PDF" vjen me V2-E1-11 (AI dhe kufiri mujor); deri atëherë butoni zë gjithë rreshtin. */}
-      <Button variant="primary" size="lg" className="w-full" disabled={busy} onClick={() => void build()}>
-        {t('builder.programmes.build')}
-      </Button>
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant="primary" size="lg" className="px-3 text-xl" disabled={busy} onClick={() => void build()}>
+          {t('builder.programmes.build')}
+        </Button>
+        {/* "Importo nga PDF" (V2-E1-11): AI-ja lexon PDF-në dhe e hap si draft te ndërtuesi. */}
+        <Button variant="outline" size="lg" className="px-3 text-xl" onClick={() => navigate('/programet/importo')}>
+          <Icon name="skedari" size={20} />
+          {t('ai.entry.import')}
+        </Button>
+      </div>
 
       {programs === undefined ? (
         <div aria-hidden className="h-40 rounded-xl bg-surface" />
@@ -229,6 +240,9 @@ export function BuildStartPage() {
   const [busy, setBusy] = useState(false)
   const requested = params.get('shablloni')
   const template = isTemplateId(requested) ? requested : null
+  useEffect(() => {
+    discardEmptyDrafts(store).catch(() => {})
+  }, [])
 
   async function blank() {
     setBusy(true)

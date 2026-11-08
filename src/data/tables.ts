@@ -24,6 +24,8 @@ export const TABLES = [
   'user_settings',
   'week_weights',
   'form_videos',
+  // Kostoja e AI-së (V2-E1-11): e shkruan vetëm funksioni program-import; telefoni vetëm e merr.
+  'ai_usage',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -80,4 +82,5 @@ export const INDEXES: Record<TableName, string[]> = {
   user_settings: [],
   week_weights: ['program_id'],
   form_videos: ['exercise_id', 'session_id'],
+  ai_usage: ['month'],
 }

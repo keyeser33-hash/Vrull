@@ -21,6 +21,8 @@ import { LibraryPage } from '@/routes/library'
 import { ProgramPage, WorkoutPage } from '@/routes/program'
 import { WeekWeightsPage } from '@/routes/week-weights'
 import { BuildStartPage, DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
+import { ProgramImportPage } from '@/routes/program-import'
+import { AiSettingsPage } from '@/routes/settings-ai'
 import { SessionPage } from '@/routes/session'
 import { SessionSummaryPage } from '@/routes/session-summary'
 import { SettingsPage } from '@/routes/settings'
@@ -47,6 +49,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'programi/:blockId/:week/:dayId', element: <WorkoutPage />, ...tab('programme') },
       { path: 'ushtrimi/:exerciseId', element: <ExercisePage />, ...tab('programme') },
       { path: 'programet', element: <ProgramsPage />, ...tab('programme') },
+      { path: 'programet/importo', element: <ProgramImportPage />, ...tab(null) },
       { path: 'programi/editori/:programId', element: <ProgramEditorPage />, ...tab(null) },
       { path: 'programi/editori/:programId/dita/:dayId', element: <DayEditorPage />, ...tab(null) },
       { path: 'programi/editori/:programId/sloti/:slotId', element: <SlotEditorPage />, ...tab(null) },
@@ -66,6 +69,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'cilesimet', element: <SettingsPage />, ...tab(null) },
       { path: 'cilesimet/pamja', element: <AppearancePage />, ...tab(null) },
       { path: 'cilesimet/rikujtuesit', element: <RemindersPage />, ...tab(null) },
+      { path: 'cilesimet/ai', element: <AiSettingsPage />, ...tab(null) },
     ],
   },
   // Seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
@@ -82,8 +86,9 @@ export const routes: RouteObject[] = [
       {
         path: '/fillimi',
         element: <OnboardingPage />,
-        // "Ndërto timin" (V2-E1-10): ndërtuesi brenda hapave të parë, para profilit.
+        // "Ndërto timin" (V2-E1-10) dhe "Importo nga PDF" (V2-E1-11): ndërtuesi brenda hapave të parë, para profilit.
         children: [
+          { path: 'importo', element: <ProgramImportPage /> },
           { path: 'programi', element: <BuildStartPage /> },
           { path: 'programi/:programId', element: <ProgramEditorPage /> },
           { path: 'programi/:programId/dita/:dayId', element: <DayEditorPage /> },

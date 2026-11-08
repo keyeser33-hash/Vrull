@@ -36,7 +36,7 @@ export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> 
 }
 
 // Tabelat e sinkronizuara që erdhën pas versionit 1, me versionin ku hynë.
-const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4 }
+const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4, ai_usage: 5 }
 
 const tableSchema = (table: TableName) => ['id', '_dirty', ...INDEXES[table]].join(', ')
 
@@ -51,5 +51,7 @@ export function createDatabase(name = 'training-hub'): LocalDatabase {
   db.version(3).stores({ week_weights: tableSchema('week_weights') })
   // Versioni 4: videot e formës (V2-E1-13): rreshtat sinkronizohen, skedarët mbeten në telefon.
   db.version(4).stores({ form_videos: tableSchema('form_videos'), _video_files: 'id, uploaded, removed' })
+  // Versioni 5: kostoja e AI-së (V2-E1-11), vetëm për lexim: rreshtat vijnë nga serveri.
+  db.version(5).stores({ ai_usage: tableSchema('ai_usage') })
   return db
 }
