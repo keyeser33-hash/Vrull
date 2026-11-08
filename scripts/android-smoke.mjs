@@ -645,11 +645,29 @@ const restEndsAt = (page) =>
 
 /** "Pushimi mbaroi" (4201) vjen brenda 2 s nga fundi i pushimit, me ekran të fikur. */
 async function expectRestDone(label, endsAt) {
+  const before = notification(4201)?.when ?? null
+  const alarmsBefore = alarmLines()
   await sleep(Math.max(0, endsAt - deviceNow()) + 4000)
-  const done = notification(4201)
+  let done = notification(4201)
   const delta = done ? done.when - endsAt : null
-  report[label] = { endsAt, posted: done?.when ?? null, deltaMs: delta, title: done?.title ?? null }
-  check(`${label}: "Pushimi mbaroi" vjen me ekran të kyçur, brenda 2 s`, done !== null && done.title === 'Pushimi mbaroi' && Math.abs(delta) <= 2000, JSON.stringify(report[label]))
+  report[label] = { endsAt, posted: done?.when ?? null, deltaMs: delta, title: done?.title ?? null, before, alarmsBefore, prefs: sessionPrefs().rest }
+  if (!(done && Math.abs(delta) <= 2000)) {
+    // Diagnoza: alarmet e app-it dhe a vjen njoftimi më vonë.
+    report[label].alarmsAfter = alarmLines()
+    done = await waitFor(() => (notification(4201)?.when ?? 0) > endsAt - 2000 && notification(4201), 'njoftimi i vonuar', 60_000).catch(() => null)
+    report[label].late = done ? done.when - endsAt : null
+    writeFileSync(join(outDir, `alarmet-${label.replace(/\W+/g, '-')}.txt`), adb('shell', 'dumpsys', 'alarm'))
+  }
+  check(`${label}: "Pushimi mbaroi" vjen me ekran të kyçur, brenda 2 s`, delta !== null && report[label].alarmsAfter === undefined && notification(4201)?.title === 'Pushimi mbaroi', JSON.stringify(report[label]))
+}
+
+/** Alarmet e app-it te AlarmManager (për diagnozë). */
+function alarmLines() {
+  return adb('shell', 'dumpsys', 'alarm')
+    .split('\n')
+    .filter((line) => line.includes(PKG))
+    .slice(0, 8)
+    .map((line) => line.trim())
 }
 
 async function choosePhoto(page, selector) {
@@ -1040,6 +1058,10 @@ try {
     await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e dytë')), 'kënga tjetër nga seanca', 15_000)
     await waitForText(page, 'Kënga e dytë', 15_000)
     check('muzika: "Kënga tjetër" te seanca ndërron këngën', true)
+    // Pozicioni (rrëshqitësi i "Trupi në ritëm"): numri vjen si Integer nga JS-i (CallNumbers.java).
+    const seek = await page.evaluate(`Capacitor.Plugins.Music.control({ action: 'seekTo', positionMs: 30000 }).then(() => 'ok', (e) => e.code)`)
+    await waitFor(() => playerLog().some((line) => line.includes('komanda seekTo')), 'pozicioni te app-i i muzikës', 15_000)
+    check('muzika: pozicioni i këngës ndryshon nga Vrull', seek === 'ok', seek)
     // Rreshti i muzikës te njoftimi: titulli dhe kontrollet (uiautomator; ekrani me kronometër mund të mos qetësohet).
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     await sleep(1000)

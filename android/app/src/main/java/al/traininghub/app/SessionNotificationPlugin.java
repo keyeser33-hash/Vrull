@@ -82,14 +82,14 @@ public class SessionNotificationPlugin extends Plugin {
     /** Pushimi i nisur te app-i (lib/rest-alarm.ts): alarmi i saktë dhe njoftimi "Pushimi". */
     @PluginMethod
     public void scheduleRest(PluginCall call) {
-        Double at = call.getDouble("at");
+        Long at = CallNumbers.longOf(call, "at");
         if (at == null) {
             call.reject("Mungon fundi i pushimit", "INVALID");
             return;
         }
         SessionNotifier.startRest(
             getContext(),
-            at.longValue(),
+            at,
             call.getString("title", ""),
             call.getString("body", ""),
             call.getString("channel", ""),

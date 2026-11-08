@@ -188,7 +188,7 @@ public class MusicPlugin extends Plugin {
                 call.resolve();
                 return;
             case "seekTo": {
-                Long position = call.getLong("positionMs");
+                Long position = CallNumbers.longOf(call, "positionMs");
                 if (!has(actions, PlaybackState.ACTION_SEEK_TO) || position == null || position < 0) break;
                 long duration = durationOf(controller);
                 transport.seekTo(duration > 0 ? Math.min(position, duration) : position);
@@ -197,7 +197,7 @@ public class MusicPlugin extends Plugin {
             }
             case "skipToQueueItem": {
                 // Id-ja duhet të jetë te radha e tanishme: përndryshe sjellja është e papërcaktuar.
-                Long id = call.getLong("queueItemId");
+                Long id = CallNumbers.longOf(call, "queueItemId");
                 if (!has(actions, PlaybackState.ACTION_SKIP_TO_QUEUE_ITEM) || id == null || !inQueue(controller, id)) break;
                 transport.skipToQueueItem(id);
                 call.resolve();
