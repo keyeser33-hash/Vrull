@@ -37,6 +37,8 @@ Data: 08.11.2026. v2.0 shton vendimet e seancës së pyetjeve të 08.11.2026 (V1
 | V24 | Emër dhe logo e re, të propozuara bashkë me drejtimet vizuale. `appId` (`al.traininghub.app`) nuk ndryshon. |
 | V26 | Ndarja jashtë app-it: karta (foto e një rekordi, seance ose jave), raport PDF mujor, videot e formës. Videot e YouTube mbeten (§12). |
 | V27 | Videot e formës ruhen në telefon dhe në cloud (Supabase Storage, private si fotot). Plani falas ka kufi hapësire; me shumë video dhe miq duhet plani me pagesë. |
+| V28 | "Mëso": përdoruesi mëson nga vetë përdorimi. Karta "A e dije?" në kontekst (Sot, pushimi mes seteve, pas regjistrimit të një ushqimi); faqja e ushtrimit (si punon, muskujt 3D, gabimet e zakonshme, pak histori) dhe e pjatës (prejardhja, makrot me fjalë); kuiz javor me 5 pyetje nga ushtrimet dhe ushqimet e asaj jave, me varg dhe arritje. Çdo fakt ka burim të verifikuar; shpjegimet me AI shënohen si të tilla dhe hyjnë te kufiri i AI-së (V25). |
+| D1 | Drejtimi vizual: **B · Vrull** (08.11.2026), nga pesë drejtime (Puls, Vrull, Hap, Flaka, Arena) te kanavaca "Training Hub v2 · Drejtimet vizuale". Emri i ri i app-it: **Vrull**; logo me vijën e shpejtësisë. Ngjyrat: prush `#FF5B2E` (veprimi, tekst i errët mbi të), vjollcë `#8B7CFF` (të dhënat), rërë `#E0B48A` (ditë e lodhur), natë `#0B0B0C`, asfalt `#18181B`; Barlow Condensed për titujt dhe numrat, Barlow për tekstin. |
 
 ### 0.3 Sistemi i ri vizual
 
@@ -52,7 +54,7 @@ Data: 08.11.2026. v2.0 shton vendimet e seancës së pyetjeve të 08.11.2026 (V1
 | D | pa version | D1–D3 (§0.3), specifikimi i etapave. |
 | 1 | 0.20.0 | Sistemi i ri në gjithë app-in, dy gjuhët, Sot, seanca me setin nga njoftimi, ndërtuesi i programeve me shabllone, progresin e zgjuar dhe PDF-në me AI, videot e formës, trupi 3D me shtresat dhe sipas matjeve. |
 | 2 | 0.30.0 | Ushqimi: AI me tekst dhe foto, kufiri mujor, lista vendase, të shpeshtat me një prekje, "Plotëso makrot", rikujtuesit e zgjuar me "Si zakonisht". |
-| 3 | 0.40.0 | Uji (sipas motit), gjendja dhe gatishmëria me sugjerimet për seancën, zakonet, Health Connect, raporti PDF mujor. |
+| 3 | 0.40.0 | Uji (sipas motit), gjendja dhe gatishmëria me sugjerimet për seancën, zakonet, Health Connect, raporti PDF mujor, "Mëso" (faktet, faqet e ushtrimit dhe të pjatës, kuizi javor). |
 | 4 | 0.50.0 | Miqtë: ftesat, lidhja e shkarkimit, profilet, progresi i ndarë, sfidat, programet dhe recetat e ndara, kartat. |
 | 5 | 0.60.0 | App-i në Galaxy Watch (Wear OS). |
 

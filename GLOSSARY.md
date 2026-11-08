@@ -233,6 +233,15 @@ Një veprim ditor që përdoruesi zgjedh ta ndjekë (p.sh. 10 mijë hapa, gjumë
 Ditët ose javët radhazi pa ndërprerje në një zakon, në stërvitje ose në një sfidë.
 _Avoid_: streak (në UI shqip)
 
+## Mëso
+
+**Fakti**:
+Një e vërtetë e shkurtër me burim për një ushtrim, ushqim, pjatë ose për trupin, që shfaqet aty ku është e dobishme ("A e dije?").
+_Avoid_: këshillë, kur ka burim dhe nuk është udhëzim
+
+**Kuizi javor**:
+Pesë pyetje nga ushtrimet dhe ushqimet e përdoruesit në atë javë, me përgjigje dhe shpjegim.
+
 ## Miqtë
 
 **Admini**:
