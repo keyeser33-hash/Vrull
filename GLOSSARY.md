@@ -246,7 +246,7 @@ _Avoid_: player, Shufra (koncepti i mëparshëm)
 Goditjet në minutë (BPM) të një kënge; gjendet vetë ose me "Prek ritmin".
 
 **Kënga e setit**:
-Kënga më energjike e radhës, që del përpara kur fillon një set.
+Kënga më energjike nga radha e app-it të muzikës, që Vrull e sugjeron kur fillon një set dhe e luan vetëm me prekjen e përdoruesit. Kur app-i nuk e jep radhën, oferta është vetëm "Kalo këngën".
 
 ## Mëso
 
