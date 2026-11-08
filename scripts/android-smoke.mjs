@@ -627,6 +627,16 @@ async function sessionStep(page) {
   return page.evaluate(`({ exercise: document.querySelector('h1')?.textContent ?? '', set: (document.body.innerText.match(/Seti \\d+ nga \\d+/) ?? [''])[0] })`)
 }
 
+/** Pret që seanca të tregojë ushtrimin dhe setin (setet nga njoftimi zbatohen pak pas hapjes). */
+const atStep = (page, expected) =>
+  waitFor(async () => JSON.stringify(await sessionStep(page)) === JSON.stringify(expected), `${expected.exercise}, ${expected.set}`, 15_000).then(
+    () => true,
+    async () => {
+      info('seanca', JSON.stringify(await sessionStep(page)))
+      return false
+    },
+  )
+
 const restEndsAt = (page) =>
   page.evaluate(`(() => {
     const key = Object.keys(localStorage).find((name) => name.startsWith('th:rest:'))
@@ -853,7 +863,7 @@ try {
   await openSession(page)
   const ids = await exerciseIds(page)
   const sessionId = report.v1.session
-  check('seanca e v1 vazhdon te v2: Bench Press, seti 2 nga 3', JSON.stringify(await sessionStep(page)) === JSON.stringify({ exercise: 'Bench Press', set: 'Seti 2 nga 3' }))
+  check('seanca e v1 vazhdon te v2: Bench Press, seti 2 nga 3', await atStep(page, { exercise: 'Bench Press', set: 'Seti 2 nga 3' }))
   await waitForNotificationTitle(4200, 'Bench Press · Seti 2 nga 3')
   check('njoftimi i seancës: Bench Press · Seti 2 nga 3, me peshën e setit 1', notification(4200).text.startsWith('60 kg × 12'), notification(4200).text)
   // Muzika pa leje: karta "Lidh muzikën tënde" (V2-E1-12).
@@ -872,9 +882,11 @@ try {
   page.close()
   page = await open()
   await openSession(page)
-  let bench = await setsOf(page, sessionId, ids['Bench Press'])
+  check('njoftimi: seti i ruajtur del te seanca', await atStep(page, { exercise: 'Bench Press', set: 'Seti 3 nga 3' }))
+  // Pritet pak, që një prekje e dytë e vonuar të kishte kohë të dilte si set i ri.
+  await sleep(2000)
+  const bench = await setsOf(page, sessionId, ids['Bench Press'])
   check('njoftimi: prekja e dyfishtë ruan një set', bench.map((set) => set.set_number).join(',') === '1,2', `setet ${bench.map((set) => set.set_number).join(',')}, prekja ${doubleTap.at}`)
-  check('njoftimi: seti i ruajtur del te seanca', JSON.stringify(await sessionStep(page)) === JSON.stringify({ exercise: 'Bench Press', set: 'Seti 3 nga 3' }))
 
   // D2. Ekrani i kyçur me PIN: "Ruaj setin" pa e shkyçur telefonin; pushimi nis nga njoftimi dhe
   // "Pushimi mbaroi" vjen me ekran të fikur.
@@ -896,13 +908,12 @@ try {
   page.close()
   page = await open()
   await openSession(page)
-  bench = await setsOf(page, sessionId, ids['Bench Press'])
-  const lockSet = bench.find((set) => set.set_number === 3)
+  const lockSet = await waitFor(async () => (await setsOf(page, sessionId, ids['Bench Press'])).find((set) => set.set_number === 3), 'seti 3 nga ekrani i kyçur', 20_000)
   check('ekrani i kyçur: seti 3 ruhet me kohën e prekjes', lockSet && Math.abs(Date.parse(lockSet.logged_at) - lockTap.at) <= 3000, `${lockSet?.logged_at} vs ${new Date(lockTap.at).toISOString()}`)
   await waitFor(() => posted('set_logs').some((row) => row.id === lockSet.id), 'sinkronizimi i setit nga ekrani i kyçur', 30_000)
 
   // D3. Seanca: "Ruaj setin" te app-i (Incline Bench Press seti 1, 40 kg) dhe pushimi me ekran të kyçur.
-  check('pas Bench Press seanca kalon te Incline Bench Press', JSON.stringify(await sessionStep(page)) === JSON.stringify({ exercise: 'Incline Bench Press', set: 'Seti 1 nga 2' }))
+  check('pas Bench Press seanca kalon te Incline Bench Press', await atStep(page, { exercise: 'Incline Bench Press', set: 'Seti 1 nga 2' }))
   for (let i = 0; i < 16; i++) await clickButton(page, 'Rrit peshën me 2,5 kg')
   await waitFor(() => hasButton(page, 'Shkruaj peshën, 40 kg'), 'pesha 40 kg')
   await clickButton(page, 'Ruaj setin')
