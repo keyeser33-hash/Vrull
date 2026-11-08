@@ -1,6 +1,71 @@
-# Training Hub · Specifikimi v1.4
+# Training Hub · Specifikimi v2.0
 
-Data: 07.11.2026 (v1.2 pas rishikimit përfundimtar; v1.3 me detajet e Android-it nga TH-02; v1.4 me vendimet e dizajnit dhe radhën e ekraneve). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt), vendimet e seancës së pyetjeve (Q1–Q18) të së njëjtës ditë dhe krahasimi i tri drejtimeve të dizajnit në kanavasin "Training Hub · Drejtimet e dizajnit". Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu.
+Data: 08.11.2026. v2.0 shton vendimet e seancës së pyetjeve të 08.11.2026 (V1–V27, §0) mbi v1.4 të 07.11.2026 (v1.2 pas rishikimit përfundimtar; v1.3 me detajet e Android-it nga TH-02; v1.4 me vendimet e dizajnit dhe radhën e ekraneve). Burimet: programi "Jim Stoppani's 12-Week Shortcut to Size" (PDF në projekt), vendimet e seancave të pyetjeve (Q1–Q18 të 07.11, V1–V27 të 08.11) dhe krahasimi i tri drejtimeve të dizajnit në kanavasin "Training Hub · Drejtimet e dizajnit". Ky dokument është burimi i së vërtetës për ndërtimin; çdo ndryshim vendimi shkruhet këtu. Ku §0 ndryshon nga seksionet e v1, vlen §0 derisa seksioni përkatës të rishkruhet në etapën e vet (§0.4).
+
+## 0. Versioni 2 (vendimet e 08.11.2026)
+
+### 0.1 Mënyra e punës
+
+- **Dizajni para ndërtimit.** I gjithë app-i dizajnohet dhe aprovohet para se të ndërtohet: tri drejtime vizuale me emër dhe logo (D1), sistemi i dizajnit (D2), çdo ekran (D3). Pastaj ndërtohet në etapa (§0.4).
+- **Publikimet vetëm në etapa.** Një version i ri në telefon del vetëm në fund të një etape; mes etapave përdoruesi merr pamje dhe video nga app-i. Prova në emulator (`scripts/android-smoke.mjs`) bëhet në fund të etapës, jo në çdo shtytje; testet, lint-i dhe build-i mbeten në çdo shtytje.
+- **Orkestruesi me nënagjentë.** Çdo etapë ndahet në module; çdo modul e ndërton një nënagjent në kopjen e vet të repo-s (worktree), me TDD dhe QA, dhe e rishikojnë agjentë që nuk e kanë parë punën. Pjesët e përbashkëta (migrimet, `tables.ts`, `db.ts`, `router.tsx`, `app-data.ts`, tokenat) ndërtohen me radhë, para moduleve që varen prej tyre.
+
+### 0.2 Vendimet
+
+| # | Vendimi |
+|---|---|
+| V1 | Për përdoruesin dhe disa miq. Secili ka llogarinë dhe të dhënat e veta; përdoruesi është admini. |
+| V2 | Dizajni i plotë më parë, pastaj etapat, me publikim vetëm në fund të çdo etape (§0.1). |
+| V3 | Sistem i ri vizual vetëm për Training Hub, në vend të Omal UI v2 (§0.3). |
+| V4, V17 | Ora: Samsung Galaxy Watch4 ose më e re (Wear OS). |
+| V5, V11 | Miqtë: shohin stërvitjet, rekordet, vargjet dhe sfidat; pesha, matjet, fotot, videot dhe ushqimi mbeten private, përveç kur përdoruesi i ndan një nga një. Programet dhe recetat ndahen me lidhje. |
+| V6, V21, V25 | AI për ushqimin (tekst dhe foto e pjatës) dhe për leximin e programeve nga PDF, për çdo përdorues, me kufi €10 në muaj për person që e ndryshon admini. Kur kufiri arrihet, AI ndalet deri në muajin tjetër dhe mbeten rrugët e tjera. Rregullat në telefon (sugjerimet, të shpeshtat, kujtesat, gatishmëria) punojnë pa AI dhe pa internet. |
+| V7 | Gjurmime të reja: uji, gjendja dhe gatishmëria, zakonet, dhe gjumi, hapat dhe zemra nga ora. |
+| V8 | Referencat vizuale: Whoop/Oura, Apple Fitness+/Strava, Headspace/Calm, Nike Training Club. |
+| V9 | Ndërtues i plotë programesh me shabllone dhe progres automatik i zgjuar (rregulla që ndryshojnë peshat dhe vëllimin sipas RIR-it dhe gatishmërisë, si sugjerim). PDF-ja e mbush ndërtuesin. |
+| V10 | Ilustrimet e ushtrimeve: fotot e free-exercise-db dhe muskujt e modelit 3D, të paraqitura në stilin e ri. |
+| V12 | Ide të reja: trupi 3D sipas matjeve, "Plotëso makrot", seti nga njoftimi, uji sipas motit. |
+| V13 | Miqtë e marrin app-in me një lidhje shkarkimi dhe hyjnë me kod ftese; përditësimet vijnë brenda app-it (§3b). |
+| V14 | Listë e gatshme me rreth 150 ushqime dhe pjata shqiptare e ballkanike, me makrot nga burime të besueshme, plus AI. |
+| V15 | Rikujtuesit e ushqimit vijnë vetëm kur vakti nuk është regjistruar, me "Hëngra si zakonisht" në njoftim; në mbrëmje, një kujtesë vetëm kur mungojnë proteinat. |
+| V16 | Ora: Health Connect (gjumi, hapat, zemra në qetësi; stërvitjet shkruhen edhe te Samsung Health) dhe një app në orë (Wear OS): seti nga dora, timer-i i pushimit me dridhje, ritmi i zemrës gjatë seancës. |
+| V18 | Sfidat: javore të gatshme dhe të krijuara nga çdo mik. |
+| V19 | Radha e etapave: stërvitja, ushqimi, gjurmimet, miqtë, ora (§0.4). |
+| V20 | Sfonde të zgjedhshme për çdo temë; pamja ndjek gjendjen e ditës: më e qetë në ditë të lodhura, më e fortë në ditë me energji (ngjyrat, lëvizja, tekstet). |
+| V22 | Gjuha: shqip dhe anglisht, me zgjedhje te Cilësimet; shqipja parazgjedhje. Emrat e ushtrimeve mbeten në anglisht. |
+| V23 | Gatishmëria e ulët sugjeron ndryshime në seancë (p.sh. −1 set, RIR 3); përdoruesi i pranon, i ndryshon ose i injoron. Programi nuk ndryshon pa të. |
+| V24 | Emër dhe logo e re, të propozuara bashkë me drejtimet vizuale. `appId` (`al.traininghub.app`) nuk ndryshon. |
+| V26 | Ndarja jashtë app-it: karta (foto e një rekordi, seance ose jave), raport PDF mujor, videot e formës. Videot e YouTube mbeten (§12). |
+| V27 | Videot e formës ruhen në telefon dhe në cloud (Supabase Storage, private si fotot). Plani falas ka kufi hapësire; me shumë video dhe miq duhet plani me pagesë. |
+
+### 0.3 Sistemi i ri vizual
+
+- **D1:** tri drejtime nga referencat e V8, secili me emër, logo, ngjyra, tipografi, forma, sfonde, lëvizje dhe pamjen e gjendjes, në ekranet Sot, seanca, ushqimi dhe trupi 3D. Përdoruesi zgjedh një, ose përzien.
+- **D2:** sistemi i dizajnit i drejtimit të zgjedhur: tokenat për tri temat (OLED parazgjedhje), sfondet, variantet e gjendjes, tipografia, komponentët, ikonat, lëvizja (me "lëvizje e reduktuar"), kontrasti WCAG AA, 44 px për çdo prekje, 390 px pa scroll anësor.
+- **D3:** çdo ekran i v2 në sistemin e ri, edhe gjendjet bosh, ngarkimi, gabimi dhe pa internet.
+- Kalimi në kod bëhet në Etapën 1: `globals.css` dhe `DESIGN.md` i sistemit të ri zëvendësojnë Omal UI v2, dhe rregullat e `CLAUDE.md` dhe roja e dizajnit (`scripts/check-design.mjs`) përditësohen bashkë me to.
+
+### 0.4 Etapat
+
+| Etapa | Versioni | Përmbajtja |
+|---|---|---|
+| D | pa version | D1–D3 (§0.3), specifikimi i etapave. |
+| 1 | 0.20.0 | Sistemi i ri në gjithë app-in, dy gjuhët, Sot, seanca me setin nga njoftimi, ndërtuesi i programeve me shabllone, progresin e zgjuar dhe PDF-në me AI, videot e formës, trupi 3D me shtresat dhe sipas matjeve. |
+| 2 | 0.30.0 | Ushqimi: AI me tekst dhe foto, kufiri mujor, lista vendase, të shpeshtat me një prekje, "Plotëso makrot", rikujtuesit e zgjuar me "Si zakonisht". |
+| 3 | 0.40.0 | Uji (sipas motit), gjendja dhe gatishmëria me sugjerimet për seancën, zakonet, Health Connect, raporti PDF mujor. |
+| 4 | 0.50.0 | Miqtë: ftesat, lidhja e shkarkimit, profilet, progresi i ndarë, sfidat, programet dhe recetat e ndara, kartat. |
+| 5 | 0.60.0 | App-i në Galaxy Watch (Wear OS). |
+
+Në fillim të çdo etape, seksionet përkatëse të këtij dokumenti rishkruhen me detajet dhe kriteret e pranimit, dhe detyrat shkruhen te `docs/TICKETS.md`.
+
+### 0.5 Çfarë ndryshon nga v1
+
+- **§1 dhe §2 (Gjuha, Dizajni):** jo më "një përdorues" dhe "UI në shqip"; V1, V22, V3.
+- **§3 (Supabase):** regjistrimet mbeten të mbyllura, por llogaritë e miqve krijohen me kod ftese (Etapa 4); RLS mbetet `user_id = auth.uid()`, plus leje leximi për të dhënat që V5 i bën të dukshme te miqtë.
+- **§3b:** miqtë e marrin APK-në e parë nga një lidhje shkarkimi, jo nga GitHub Releases (repo-ja është private). Llogaria "limited distribution" e Google-it (§18) mban deri në 20 pajisje.
+- **§11:** shtresat dhe trupi sipas matjeve (V12).
+- **§14:** sistemi i ri vizual (§0.3) zëvendëson Omal UI v2 dhe drejtimin "Fokus".
+- **§16:** miqtë, ora dhe AI për ushqimin e PDF-të hyjnë në plan; mbeten jashtë Play Store, iOS dhe trajneri AI me bisedë.
 
 ## 1. Qëllimi
 
@@ -232,7 +297,7 @@ Skema jeton te `supabase/migrations/`. Kolonat e përbashkëta: `id` (UUID nga t
 
 ## 16. Jashtë planit
 
-Play Store, iOS, përdorues të tjerë ose ndarje, superset-e dhe qarqe, deload automatik, sinkronizim me ora inteligjente, trajner me AI.
+Play Store, iOS, superset-e dhe qarqe, deload automatik, bisedë me trajner AI, përdorues publikë jashtë miqve të ftuar, sinkronizim me ora përveç Galaxy Watch (v2: miqtë, ora dhe AI për ushqimin e PDF-të janë në plan, §0).
 
 ## 17. Radha e ndërtimit
 
@@ -281,6 +346,9 @@ Spike-u 3D kalon nga hapi 2 në fund (shih §18).
 - Shto në GitHub secret-et e nënshkrimit `TH_KEYSTORE_BASE64` dhe `TH_KEYSTORE_PASSWORD` dhe ruaj një kopje rezervë të çelësit (`docs/INSTALL.md`, pika 1). Proxy-i i sesionit nuk lejon shkrimin e secret-eve.
 - Për çdo version të ri: shkarko APK-në nga Releases dhe përditëso app-in. Release-in e krijon vetë workflow-i (`docs/INSTALL.md`, pika 6).
 - Kur rregulli i Google-it të vlejë në vendin tënd: regjistro app-in me llogarinë falas "limited distribution" (`docs/INSTALL.md`, pika 5).
+- Për AI-në (Etapa 1 dhe 2): krijo një çelës API dhe shtoje vetë si secret te Supabase (Edge Functions → Secrets); çelësi nuk kalon nëpër bisedë.
+- Për videot e formës: kur hapësira e planit falas të Supabase-it mbaron, zgjidh nëse kalon në planin me pagesë.
+- Për app-in në orë: aktivizo "Developer options" dhe "ADB debugging" në Galaxy Watch kur të vijë Etapa 5.
 
 ## Shtojca A · Ushtrimet sipas fazës
 

@@ -28,6 +28,21 @@ Burimi: `docs/SPEC.md`. Çdo detyrë mbyllet kur kalojnë kriteret e pranimit. L
 | TH-20 | Videot e YouTube | TH-07 | |
 | TH-21 | QA në telefon dhe rishikimi përfundimtar | të gjitha | |
 
+### v2 (SPEC §0)
+
+Detyrat e çdo etape shkruhen këtu në fillim të saj, me kriteret e pranimit, nga seksionet e rishkruara të specifikimit.
+
+| ID | Detyra | Varet nga |
+|---|---|---|
+| V2-D1 | Tri drejtime vizuale me emër dhe logo; përdoruesi zgjedh | – |
+| V2-D2 | Sistemi i dizajnit i drejtimit të zgjedhur | V2-D1 |
+| V2-D3 | Të gjitha ekranet e v2 në sistemin e ri | V2-D2 |
+| V2-E1 | Etapa 1 (0.20.0): sistemi i ri, dy gjuhët, stërvitja, ndërtuesi, PDF me AI, videot e formës, 3D | V2-D3 |
+| V2-E2 | Etapa 2 (0.30.0): ushqimi me AI, lista vendase, "Plotëso makrot", rikujtuesit e zgjuar | V2-E1 |
+| V2-E3 | Etapa 3 (0.40.0): uji, gjendja dhe gatishmëria, zakonet, Health Connect, raporti PDF | V2-E1 |
+| V2-E4 | Etapa 4 (0.50.0): miqtë, ftesat, sfidat, ndarja, kartat | V2-E1 |
+| V2-E5 | Etapa 5 (0.60.0): app-i në Galaxy Watch | V2-E3 |
+
 ---
 
 ## TH-01 · Skeleti i projektit dhe Omal UI v2

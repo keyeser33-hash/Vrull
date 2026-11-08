@@ -1,6 +1,6 @@
 # Training Hub
 
-App personal për palestrën: një përdorues ndjek Shortcut to Size, regjistron stërvitjet, ushqimin dhe matjet, dhe sheh trupin. Ky fjalor fiksohet që ekranet, specifikimi dhe kodi të thonë të njëjtën gjë me të njëjtën fjalë.
+App për palestrën, për përdoruesin dhe disa miq të ftuar: secili ndjek një program, regjistron stërvitjet, ushqimin dhe matjet, dhe sheh trupin. Ky fjalor fiksohet që ekranet, specifikimi dhe kodi të thonë të njëjtën gjë me të njëjtën fjalë.
 
 ## Programi
 
@@ -46,6 +46,13 @@ _Avoid_: scope, override
 
 **Rregulli**:
 Një vlerë e ndryshuar (ushtrimi, setet, pushimi, receta ose teknika) në një nivel më të ngushtë se gjithë programi.
+
+**Shablloni i programit**:
+Një program i gatshëm nga i cili nis ndërtuesi; kopjohet, nuk lidhet me origjinalin.
+
+**Progresi i zgjuar**:
+Rregull që propozon peshën ose vëllimin e seancës së radhës nga RIR-i i seteve të fundit dhe nga **Gatishmëria**; propozimi pranohet nga përdoruesi.
+_Avoid_: autoregulim (në UI)
 
 **Treguesi**:
 Stërvitja e radhës (blloku, java, dita); lëviz përpara vetëm kur mbyllet një seancë ose kur stërvitja kapërcehet me dorë.
@@ -125,6 +132,15 @@ _Avoid_: ngarkesa, tonazhi
 Intervali i **Volumit javor** që synohet për një grup muskujsh: 10–20 sete. Te Trupi thuhet shkurt "objektiv" (Nën objektiv, Në objektiv, Mbi objektiv).
 _Avoid_: objektivat (u përkasin ushqimit)
 
+**Shtresat**:
+Pamja e modelit 3D ku **Mbulesat** bëhen të tejdukshme që të duken **Muskujt e thellë**.
+
+**Muskuli i thellë**:
+Një çelës muskuli që, nga ana ku shihet, fshihet kryesisht nga muskuj të tjerë (p.sh. Pectoralis minor nën gjoksin e madh).
+
+**Mbulesa**:
+Muskuli që fsheh një **Muskul të thellë** (p.sh. trapezi për romboidët).
+
 **Rikuperimi**:
 Gjendja e një grupi muskujsh sipas orëve nga seanca e fundit ku ishte kryesor: I lodhur (nën 48), Pothuajse gati (48–72), Gati (mbi 72).
 
@@ -167,6 +183,18 @@ _Avoid_: receta (është e slotit)
 Një ushqim me gramët e tij në një vakt të një date.
 _Avoid_: hyrje, log
 
+**Ushqimi vendas**:
+Një ushqim ose pjatë shqiptare a ballkanike nga lista e gatshme e app-it (p.sh. byrek me spinaq, fërgesë), me makrot për 100 g.
+
+**Vakti i zakonshëm**:
+Regjistrimet që përdoruesi bën më shpesh në një vakt; "Hëngra si zakonisht" i regjistron me një prekje.
+
+**Plotëso makrot**:
+Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kalorinë që mbeten nga **Objektivat** e ditës.
+
+**Kufiri i AI-së**:
+Shuma mujore që AI mund të harxhojë për një përdorues (parazgjedhje €10); kur arrihet, AI ndalet deri në muajin tjetër.
+
 ## Suplementet, rikujtuesit, matjet
 
 **Suplementi**:
@@ -185,6 +213,43 @@ Dita e javës kur kujtohet matja javore: pesha para mëngjesit, perimetrat dhe f
 **Foto e progresit**:
 Një foto e një poze (para, anash, mbrapa) në një datë; një foto e re e së njëjtës ditë dhe pozë zëvendëson të mëparshmen.
 
+## Gjurmimet
+
+**Objektivi i ujit**:
+Sasia e ujit për sot, nga pesha, stërvitja dhe moti; regjistrohet me gota ose shishe.
+
+**Gjendja e ditës**:
+Check-in-i i mëngjesit: gjendja shpirtërore, energjia, gjumi dhe dhimbjet.
+_Avoid_: humori, mood (në UI shqip)
+
+**Gatishmëria**:
+Sa gati është përdoruesi sot për stërvitje, në përqindje, nga **Gjendja e ditës**, gjumi dhe zemra nga ora, dhe **Rikuperimi**; kur është e ulët, sugjeron ndryshime në seancë.
+_Avoid_: readiness (në UI shqip)
+
+**Zakoni**:
+Një veprim ditor që përdoruesi zgjedh ta ndjekë (p.sh. 10 mijë hapa, gjumë para 23:00).
+
+**Vargu**:
+Ditët ose javët radhazi pa ndërprerje në një zakon, në stërvitje ose në një sfidë.
+_Avoid_: streak (në UI shqip)
+
+## Miqtë
+
+**Admini**:
+Përdoruesi që krijon ftesat dhe ndryshon **Kufirin e AI-së** së miqve; është pronari i app-it.
+
+**Miku**:
+Një përdorues i ftuar; ka të dhënat e veta dhe sheh nga të tjerët vetëm stërvitjet, rekordet, vargjet dhe sfidat.
+
+**Kodi i ftesës**:
+Kod që e krijon **Admini** dhe që lejon një mik të hapë llogari.
+
+**Sfida**:
+Një objektiv i përbashkët me afat mes miqve (p.sh. seancat e javës, hapat, uji), e gatshme çdo të hënë ose e krijuar nga një mik, me renditje.
+
+**Karta**:
+Një foto e gatshme për t'u ndarë jashtë app-it: një rekord, një seancë ose një javë.
+
 ## Relationships
 
 - Një **Program** ka një ose më shumë **Blloqe** dhe një ose më shumë **Ditë programi**; çdo **Ditë programi** ka **Slote** me radhë.
@@ -194,3 +259,5 @@ Një foto e një poze (para, anash, mbrapa) në një datë; një foto e re e së
 - Një **Ushtrim** ka **Muskuj kryesorë** dhe **ndihmës** si **Çelësa muskujsh**; çdo **Çelës** i përket një **Grupi muskujsh**.
 - **Volumi javor** dhe **Rikuperimi** llogariten për **Grupin e muskujve** nga **Setet** e **Seancave**, pa **Setet e ngrohjes**.
 - Një datë ka një **Lloj dite**, prej tij **Objektivat** dhe **Orarin e vakteve**; çdo **Vakt** ka **Regjistrime** dhe **Suplemente**.
+- **Gatishmëria** del nga **Gjendja e ditës**, të dhënat e orës dhe **Rikuperimi**; ajo dhe RIR-i ushqejnë **Progresin e zgjuar**.
+- Një **Mik** hyn me një **Kod ftese** të **Adminit**; **Sfidat** dhe **Vargjet** shihen nga miqtë, **Matjet** dhe **Regjistrimet** jo.
