@@ -11,7 +11,11 @@ import { FriendsPage } from '@/routes/friends'
 import { Moved } from '@/routes/moved'
 import { PhotosPage } from '@/routes/photos'
 import { MeasurementPage, MetricPage, ProgressPage } from '@/routes/progress'
-import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
+import { ExercisePage } from '@/routes/exercise'
+import { CreateExercisePage } from '@/routes/exercise-create'
+import { LibraryPage } from '@/routes/library'
+import { ProgramPage, WorkoutPage } from '@/routes/program'
+import { WeekWeightsPage } from '@/routes/week-weights'
 import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
 import { SessionPage } from '@/routes/session'
 import { SettingsPage } from '@/routes/settings'
@@ -32,6 +36,9 @@ export const appRoutes: RouteObject[] = [
     children: [
       { index: true, element: <TodayPage />, ...tab('today') },
       { path: 'programi', element: <ProgramPage />, ...tab('programme') },
+      { path: 'programi/biblioteka', element: <LibraryPage />, ...tab('programme') },
+      { path: 'programi/biblioteka/krijo', element: <CreateExercisePage />, ...tab(null) },
+      { path: 'programi/peshat', element: <WeekWeightsPage />, ...tab(null) },
       { path: 'programi/:blockId/:week/:dayId', element: <WorkoutPage />, ...tab('programme') },
       { path: 'ushtrimi/:exerciseId', element: <ExercisePage />, ...tab('programme') },
       { path: 'programet', element: <ProgramsPage />, ...tab('programme') },

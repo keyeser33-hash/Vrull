@@ -17,4 +17,15 @@ export const VRULL_ICONS = {
   'shkarko-vrull': '<path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>',
   'pa-internet':
     '<path d="M3 3l18 18"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 4.3-2.6"/><path d="M19 12.9a10 10 0 0 0-2.2-1.6"/><path d="M2 9.3a15 15 0 0 1 4-2.6"/><path d="M22 9.3A15 15 0 0 0 11 5.1"/><path d="M12 20h.01"/>',
+  // Programi, ushtrimi, biblioteka dhe peshat e javës (bordet "Prog-*", V2-E1-09).
+  libri: '<path d="M5 5a2 2 0 0 1 2-2h12v15H7a2 2 0 0 0-2 2z"/><path d="M5 20a2 2 0 0 0 2 1h12v-3"/>',
+  laps: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  kerko: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  video: '<rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/>',
+  jashte: '<path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5"/>',
+  rrotullo: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/>',
+  rritje: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  poshte: '<path d="M6 9l6 6 6-6"/>',
+  'kamera-foto': '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
 } as const
