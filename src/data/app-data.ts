@@ -16,6 +16,7 @@ import { reminderInput } from './reminders'
 import { adoptSavedLanguage } from './language'
 import { adoptSavedBackground } from './background'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
+import { addFormVideo, type FormVideoRef, formVideoData, type NewFormVideo, removeFormVideo, syncFormVideoFiles, type VideoRemote } from './form-videos'
 import { ensureSupplements } from './supplements'
 import { usdaFromJson } from '@/nutrition/usda'
 import type { ExternalFood } from '@/nutrition/off'
@@ -203,6 +204,75 @@ export function usePhotoUploader(ready: boolean) {
     return () => {
       stop()
       window.removeEventListener('online', upload)
+      void resume.then((handle) => handle.remove())
+    }
+  }, [ready, userId])
+}
+
+/** Bucket-i privat i videove të formës (V2-E1-13, V27): çdo përdorues vetëm te dosja e tij. */
+export const videoRemote: VideoRemote = {
+  async upload(path, data, type) {
+    const { error } = await supabase.storage.from('form-videos').upload(path, new Blob([data], { type }), { contentType: type, upsert: true })
+    if (error) throw error
+  },
+  async download(path) {
+    const { data, error } = await supabase.storage.from('form-videos').download(path)
+    if (error || !data) throw error ?? new Error('Videoja nuk u shkarkua')
+    return data.arrayBuffer()
+  },
+  async remove(path) {
+    const { error } = await supabase.storage.from('form-videos').remove([path])
+    if (error) throw error
+  },
+}
+
+/** Videot e formës për ekranet: përmes store-it dhe bucket-it, pa thirrje direkte te Supabase. */
+export const formVideos = {
+  add: (input: NewFormVideo) => addFormVideo(store, db, input),
+  remove: (id: string) => removeFormVideo(store, db, id),
+  data: (video: Pick<FormVideoRef, 'id' | 'storagePath' | 'type'>) => formVideoData(db, videoRemote, video),
+}
+
+/**
+ * Ngarkon videot që presin dhe heq nga bucket-i ato të fshira: kur hapet app-i, kur kthehet interneti
+ * dhe kur ndryshon një video (edhe pas sinkronizimit, kur një fshirje vjen nga telefoni tjetër).
+ */
+export function useFormVideoUploader(ready: boolean) {
+  const { userId } = useAuth()
+  useEffect(() => {
+    if (!ready || !userId) return
+    let running = false
+    let again = false
+    const run = () => {
+      if (!navigator.onLine) return
+      if (running) {
+        again = true
+        return
+      }
+      running = true
+      void syncFormVideoFiles(db, videoRemote)
+        .catch(() => undefined)
+        .finally(() => {
+          running = false
+          if (again) {
+            again = false
+            run()
+          }
+        })
+    }
+    run()
+    const stopStore = store.subscribe((table) => {
+      if (table === 'form_videos') run()
+    })
+    const stopSync = scheduler.subscribe(() => {
+      if (!scheduler.getStatus().syncing) run()
+    })
+    window.addEventListener('online', run)
+    const resume = App.addListener('resume', run)
+    return () => {
+      stopStore()
+      stopSync()
+      window.removeEventListener('online', run)
       void resume.then((handle) => handle.remove())
     }
   }, [ready, userId])

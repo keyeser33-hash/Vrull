@@ -1,5 +1,6 @@
 -- Prova e izolimit (TH-03): një përdorues tjetër nuk sheh, nuk ndryshon dhe nuk fshin asnjë rresht
--- dhe asnjë foto të përdoruesit të parë; anon nuk ka qasje; fiton ndryshimi i fundit.
+-- dhe asnjë foto ose video të përdoruesit të parë (bucket-et progress-photos dhe form-videos);
+-- anon nuk ka qasje; fiton ndryshimi i fundit.
 -- Gjithçka ndodh në një transaksion që kthehet mbrapsht: projekti nuk ndryshon.
 -- Ekzekutimi: psql "$DATABASE_URL" -f supabase/tests/rls_isolation.sql (ose SQL Editor / MCP).
 -- Rezultati: një rresht për çdo kontroll, me ok = true. Çdo ok = false është gabim.
@@ -20,8 +21,12 @@ declare
     'exercises', 'programs', 'program_blocks', 'program_days', 'program_slots',
     'slot_prescriptions', 'program_state', 'workout_sessions', 'set_logs', 'one_rm_overrides',
     'body_measurements', 'progress_photos', 'foods', 'recipes', 'recipe_items', 'meal_templates',
-    'diary_entries', 'nutrition_targets', 'supplements', 'supplement_logs', 'user_settings', 'week_weights'
+    'diary_entries', 'nutrition_targets', 'supplements', 'supplement_logs', 'user_settings', 'week_weights',
+    'form_videos'
   ];
+  -- Bucket-et private me një dosje për përdorues (fotot e progresit, videot e formës).
+  bucket text;
+  buckets text[] := array['progress-photos', 'form-videos'];
 begin
   insert into auth.users (id, aud, role, email, created_at, updated_at)
   values (user_a, 'authenticated', 'authenticated', 'a@test.invalid', now(), now()),
@@ -57,7 +62,10 @@ begin
   insert into public.user_settings default values;
   insert into public.week_weights (program_id, block_id, week, slot_id, exercise_id, weight_kg, status)
     values (prog, blk, 1, slot, ex, 62.5, 'accepted');
+  insert into public.form_videos (exercise_id, session_id, set_number, date, storage_path, mime_type, duration_s, bytes)
+    values (ex, sess, 1, '2026-11-30', user_a || '/video.mp4', 'video/mp4', 24.2, 6000000);
   insert into storage.objects (bucket_id, name) values ('progress-photos', user_a || '/front.jpg');
+  insert into storage.objects (bucket_id, name) values ('form-videos', user_a || '/video.mp4');
 
   foreach t in array tables loop
     execute format('select count(*) from public.%I', t) into n;
@@ -71,12 +79,16 @@ begin
   exception when insufficient_privilege then
     results := results || 'A nuk shkruan rresht për B|true|refuzohet'::text;
   end;
-  begin
-    insert into storage.objects (bucket_id, name) values ('progress-photos', user_b || '/x.jpg');
-    results := results || 'A nuk ngarkon foto te dosja e B|false|u lejua'::text;
-  exception when insufficient_privilege then
-    results := results || 'A nuk ngarkon foto te dosja e B|true|refuzohet'::text;
-  end;
+  foreach bucket in array buckets loop
+    select count(*) into n from storage.objects where bucket_id = bucket;
+    results := results || format('A sheh skedarin e vet te %s|%s|%s', bucket, n = 1, n);
+    begin
+      insert into storage.objects (bucket_id, name) values (bucket, user_b || '/x');
+      results := results || format('A nuk ngarkon te dosja e B te %s|false|u lejua', bucket);
+    exception when insufficient_privilege then
+      results := results || format('A nuk ngarkon te dosja e B te %s|true|refuzohet', bucket);
+    end;
+  end loop;
 
   -- Fiton ndryshimi i fundit: një version më i vjetër nuk mbishkruan.
   update public.exercises set name = 'Bench Press (i ri)', updated_at = now() + interval '1 minute' where id = ex;
@@ -98,15 +110,17 @@ begin
     results := results || format('B nuk fshin asgjë te %s|%s|%s', t, n = 0, n);
   end loop;
 
-  select count(*) into n from storage.objects where bucket_id = 'progress-photos';
-  results := results || format('B nuk sheh asnjë foto|%s|%s', n = 0, n);
-  begin
-    with gone as (delete from storage.objects where bucket_id = 'progress-photos' returning 1) select count(*) into n from gone;
-    results := results || format('B nuk fshin asnjë foto|%s|%s', n = 0, n);
-  exception when others then
-    -- Storage mund ta ndalojë fshirjen me SQL; atëherë vlen vetëm rruga e API-së, që kalon nga RLS.
-    results := results || format('B nuk fshin asnjë foto|true|SQL i bllokuar: %s', sqlerrm);
-  end;
+  foreach bucket in array buckets loop
+    select count(*) into n from storage.objects where bucket_id = bucket;
+    results := results || format('B nuk sheh asnjë skedar te %s|%s|%s', bucket, n = 0, n);
+    begin
+      with gone as (delete from storage.objects where bucket_id = bucket returning 1) select count(*) into n from gone;
+      results := results || format('B nuk fshin asnjë skedar te %s|%s|%s', bucket, n = 0, n);
+    exception when others then
+      -- Storage mund ta ndalojë fshirjen me SQL; atëherë vlen vetëm rruga e API-së, që kalon nga RLS.
+      results := results || format('B nuk fshin asnjë skedar te %s|true|SQL i bllokuar: %s', bucket, sqlerrm);
+    end;
+  end loop;
 
   -- Pa sesion (anon): asnjë qasje në asnjë tabelë.
   reset role;
@@ -120,8 +134,10 @@ begin
       results := results || format('anon pa qasje te %s|true|refuzohet', t);
     end;
   end loop;
-  select count(*) into n from storage.objects where bucket_id = 'progress-photos';
-  results := results || format('anon nuk sheh asnjë foto|%s|%s', n = 0, n);
+  foreach bucket in array buckets loop
+    select count(*) into n from storage.objects where bucket_id = bucket;
+    results := results || format('anon nuk sheh asnjë skedar te %s|%s|%s', bucket, n = 0, n);
+  end loop;
 
   reset role;
   insert into test_results
@@ -133,7 +149,7 @@ select
   count(*) filter (where ok) as passed,
   count(*) filter (where not ok) as failed,
   coalesce(string_agg(check_name || ' (' || detail || ')', '; ') filter (where not ok), '') as failures,
-  (select detail from test_results where check_name = 'B nuk fshin asnjë foto') as photo_delete_detail
+  (select string_agg(detail, '; ') from test_results where check_name like 'B nuk fshin asnjë skedar%') as storage_delete_detail
 from test_results;
 
 rollback;

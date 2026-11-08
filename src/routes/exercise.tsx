@@ -22,14 +22,15 @@ import { groupsOf } from '@/program/exercise-catalog'
 import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
 import { ExerciseMusclesSheet } from './exercise-muscles'
+import { FormVideosSection } from './form-video'
 import { capitalize, dotted, groupList, weekShort } from './programme-format'
 import { ChangeExerciseSheet } from './session-sheets'
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi (SPEC §0.3a), muskujt me figurën dhe
-// modelin 3D (§11), "Rekordet e tua" me grafikun e e1RM-së sipas javës, historia e seteve dhe videoja e
-// YouTube që shtoi përdoruesi (§12). "Si punon", "Gabimet e zakonshme" dhe "Pak histori" vijnë me
-// "Mëso" (V28, Etapa 3) dhe deri atëherë mungojnë. Hapet edhe për ushtrimet e bibliotekës që s'janë
-// ende në telefon (me ID-në e free-exercise-db).
+// modelin 3D (§11), "Rekordet e tua" me grafikun e e1RM-së sipas javës, historia e seteve, videot e
+// formës (V2-E1-13, `form-video.tsx`) dhe videoja e YouTube që shtoi përdoruesi (§12). "Si punon",
+// "Gabimet e zakonshme" dhe "Pak histori" vijnë me "Mëso" (V28, Etapa 3) dhe deri atëherë mungojnë.
+// Hapet edhe për ushtrimet e bibliotekës që s'janë ende në telefon (me ID-në e free-exercise-db).
 
 export function ExercisePage() {
   const i18n = useI18n()
@@ -72,6 +73,7 @@ export function ExercisePage() {
       <Muscles detail={detail} onRotate={() => open('muskujt')} />
       <Records sets={sets} exerciseId={detail.exerciseId} tracking={detail.tracking} />
       <History sets={sets} exerciseId={detail.exerciseId} />
+      <FormVideosSection exerciseId={detail.exerciseId} />
       <Video detail={detail} onEdit={() => open('video')} />
       {plan && slot ? (
         <Button variant="outline" className="w-full" onClick={() => open('ushtrimi')}>

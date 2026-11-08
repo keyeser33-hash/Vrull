@@ -34,6 +34,7 @@ vi.mock('@/data/app-data', () => ({
   useDataUpgrades: () => undefined,
   useReminderPlanner: () => undefined,
   usePhotoUploader: () => undefined,
+  useFormVideoUploader: () => undefined,
   useUpdateChecker: () => undefined,
   useLanguageSync: () => undefined,
   useBackgroundSync: () => undefined,

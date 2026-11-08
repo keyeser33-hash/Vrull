@@ -20,6 +20,7 @@ import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { useRestTimer } from '@/lib/use-rest-timer'
 import { ExerciseMusclesSheet } from './exercise-muscles'
+import { FormVideoScreen, type FormVideoTarget } from './form-video'
 import { elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
 import { useEntrance, recordPulse } from './session-motion'
 import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
@@ -156,8 +157,12 @@ function ActiveSession({
   const slot = current?.slot ?? null
   const exercise = slot ? exercises[slot.exerciseId] : undefined
   const position = t('session.position', { exercise: (shownIndex ?? plan.slots.length - 1) + 1, exercises: plan.slots.length, elapsed: elapsedText(elapsed) })
+  // Seti në ekran; gjatë pushimit, seti që vjen. Videoja e formës regjistrohet për të (V2-E1-13).
+  const setNumber = current ? (segment ? segment.set.setNumber : current.done + 1) : 0
+  const videoTarget: FormVideoTarget | null =
+    slot && exercise ? { exerciseId: slot.exerciseId, exerciseName: exercise.name, sessionId: session.id, setNumber } : null
 
-  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt') => setParams({ [name]: '1' })
+  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video') => setParams({ [name]: '1' })
   const closeSheet = () => navigate(-1)
   const finish = () => {
     setBusy(true)
@@ -184,6 +189,7 @@ function ActiveSession({
       onBack={() => (location.key === 'default' ? navigate('/', { replace: true }) : navigate(-1))}
       onList={() => openSheet('lista')}
       onMuscles={exercise ? () => openSheet('muskujt') : undefined}
+      onVideo={videoTarget ? () => openSheet('video') : undefined}
     >
       {children}
       {params.has('lista') ? (
@@ -203,6 +209,7 @@ function ActiveSession({
       ) : null}
       {params.has('ndrysho') && slot ? <ChangeExerciseSheet plan={plan} slot={slot} exerciseName={exercise?.name ?? ''} onClose={closeSheet} /> : null}
       {params.has('muskujt') && exercise ? <ExerciseMusclesSheet exercise={exercise} onClose={closeSheet} /> : null}
+      {params.has('video') && videoTarget ? <FormVideoScreen target={videoTarget} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 
@@ -245,7 +252,6 @@ function ActiveSession({
     )
   }
 
-  const setNumber = segment ? segment.set.setNumber : current.done + 1
   const isLastSet = setNumber === slot.sets
   const tracking: Tracking = exercise?.tracking ?? 'weight_reps'
   const step = exercise ? weightStep(exercise.equipment, history.weightSteps) : 2.5
@@ -351,13 +357,14 @@ function ActiveSession({
   )
 }
 
-/** Korniza e seancës: shiriti i seteve, kreu me "Mbrapa", listën e ushtrimeve dhe muskujt. */
+/** Korniza e seancës: shiriti i seteve, kreu me "Mbrapa", listën e ushtrimeve, videon e formës dhe muskujt. */
 function SessionFrame({
   progress,
   position,
   onBack,
   onList,
   onMuscles,
+  onVideo,
   children,
 }: {
   progress: SessionProgress
@@ -366,6 +373,7 @@ function SessionFrame({
   onBack: () => void
   onList: () => void
   onMuscles?: () => void
+  onVideo?: () => void
   children: ReactNode
 }) {
   const { t } = useI18n()
@@ -388,8 +396,12 @@ function SessionFrame({
             {position}
             <Icon name="poshte" size={18} />
           </Button>
-          {/* Ikona e videos së formës vjen me V2-E1-13, majtas muskujve. */}
           <div className="flex justify-end">
+            {onVideo ? (
+              <Button variant="ghost" size="icon" aria-label={t('videos.title')} className="rounded-pill" onClick={onVideo}>
+                <Icon name="kamera-video" size={22} />
+              </Button>
+            ) : null}
             {onMuscles ? (
               <Button variant="ghost" size="icon" aria-label={t('session.muscles')} className="rounded-pill" onClick={onMuscles}>
                 <Icon name="muskujt" size={22} />
