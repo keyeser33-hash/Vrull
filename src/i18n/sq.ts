@@ -5,6 +5,7 @@ import * as domain from './areas/domain'
 import * as entry from './areas/entry'
 import * as history from './areas/history'
 import * as music from './areas/music'
+import * as notify from './areas/notify'
 import * as programme from './areas/programme'
 import * as session from './areas/session'
 import * as today from './areas/today'
@@ -282,9 +283,9 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music }
+export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify }
 
-export const sq = { ...base, ...today.sq, ...session.sq, ...programme.sq, ...body.sq, ...history.sq, ...entry.sq, ...domain.sq, ...builder.sq, ...videos.sq, ...ai.sq, ...music.sq } as const satisfies Messages
+export const sq = { ...base, ...today.sq, ...session.sq, ...programme.sq, ...body.sq, ...history.sq, ...entry.sq, ...domain.sq, ...builder.sq, ...videos.sq, ...ai.sq, ...music.sq, ...notify.sq } as const satisfies Messages
 
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */
 export type Translation = TranslationOf<typeof sq>
