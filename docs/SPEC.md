@@ -48,6 +48,20 @@ Data: 08.11.2026. v2.0 shton vendimet e seancës së pyetjeve të 08.11.2026 (V1
 - **D3:** çdo ekran i v2 në sistemin e ri, edhe gjendjet bosh, ngarkimi, gabimi dhe pa internet.
 - Kalimi në kod bëhet në Etapën 1: `globals.css` dhe `DESIGN.md` i sistemit të ri zëvendësojnë Omal UI v2, dhe rregullat e `CLAUDE.md` dhe roja e dizajnit (`scripts/check-design.mjs`) përditësohen bashkë me to.
 
+### 0.3a Ekranet e D3 (08.11.2026)
+
+Ekranet janë te kanavaca "Training Hub v2 · Vrull", faqja "Vrull · Ekranet", sipas zonave: hyrja, Sot dhe seanca, programi, trupi 3D, Mëso, ushqimi, gjurmimet dhe progresi, miqtë, muzika, ora, cilësimet dhe gjendjet. Të gjitha tregojnë të njëjtën ditë (e diel, 8 nëntor 2026, Faza 1 · Java 2 · Stërvitja 1) me numra që dalin nga rregullat e këtij dokumenti; trupi 3D është renderuar nga app-i me një javë të vërtetë të programit.
+
+Rregullat që lindën nga ekranet. Hyjnë në fuqi kur përdoruesi i miraton ekranet; deri atëherë janë propozime:
+
+- **Uji:** objektivi i ditës = 35 ml për kg peshë + 0,5 L në ditë stërvitjeje + shtesa e motit (24°C: +0,1 L). Shtesa e motit merr formulë me burim në Etapën 3.
+- **Ftesa:** kodi i ftesës vlen 7 ditë dhe përdoret një herë.
+- **Gatishmëria:** nën 60% ekrani Sot sugjeron seancën më të lehtë (V23); përdoruesi e pranon, e ndryshon ose e injoron.
+- **Seanca:** "Ruaj setin" është veprimi kryesor; "Mbyll stërvitjen" mbetet me kontur derisa të ruhen të gjitha setet, pastaj bëhet veprimi kryesor.
+- **Pragu i rekordit:** ekrani i setit thotë sa përsëritje me peshën e zgjedhur japin rekord të ri të e1RM-së (p.sh. "12 përsëritje të japin rekord të ri: e1RM 87,5 kg"), kur pragu bie brenda intervalit ose 1–2 përsëritje mbi të. Me peshën e sugjeruar (§7) rekordi kërkon gjithnjë më shumë se kufiri i sipërm, ndaj pragu shfaqet vetëm si informacion.
+- **Fotot e ushtrimeve** shfaqen bardh e zi, që prushi të mbetet i vetmi theks.
+- **Pjatat vendase:** makrot e një pjate llogariten nga përbërësit e recetës bazë (USDA FoodData Central), dhe faqja e pjatës e thotë ("Nga përbërësit e recetës bazë").
+
 ### 0.4 Etapat
 
 | Etapa | Versioni | Përmbajtja |
