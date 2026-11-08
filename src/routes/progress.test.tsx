@@ -47,11 +47,12 @@ vi.mock('@/data/app-data', async () => {
 vi.mock('@/lib/image', () => ({ compressPhoto: async () => ({ data: new Uint8Array([1, 2, 3]).buffer, width: 1200, height: 1600 }) }))
 
 async function renderAt(path: string) {
-  const { MeasurementPage, MetricPage, ProgressPage } = await import('./progress')
+  const { MetricPage, ProgressPage } = await import('./progress')
+  const { MeasurePage } = await import('./body-measure')
   const router = createMemoryRouter(
     [
       { path: '/progresi', element: <ProgressPage /> },
-      { path: '/progresi/matja', element: <MeasurementPage /> },
+      { path: '/progresi/matja', element: <MeasurePage /> },
       { path: '/progresi/trupi', element: <h1>Trupi</h1> },
       { path: '/progresi/:metric', element: <MetricPage /> },
     ],
@@ -77,16 +78,17 @@ describe('Progresi', () => {
     expect(screen.queryByRole('button', { name: 'Fillo stërvitjen e parë' })).toBeNull()
     expect(screen.getByRole('link', { name: /^Trupi 3D/ })).toHaveAttribute('href', '/progresi/trupi')
     await user.click(screen.getByRole('link', { name: /^Pesha dhe matjet/ }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Matja' })).toBeInTheDocument()
+    // "Shto matjen" (V2-E1-14, bordi "Trupi · Shto matjen"); provat e plota janë te body-measure.test.tsx.
+    expect(await screen.findByRole('heading', { level: 1, name: 'Shto matjen' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))
     expect(screen.getByRole('alert')).toHaveTextContent('Shkruaj të paktën një matje.')
-    await user.type(screen.getByLabelText('Pesha, kg'), '15')
+    await user.type(screen.getByLabelText('Pesha e trupit'), '15')
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))
-    expect(screen.getByLabelText('Pesha, kg')).toHaveAttribute('aria-invalid', 'true')
-    expect(screen.getByRole('alert')).toHaveTextContent('Pesha duhet të jetë nga 20 deri në 400 kg.')
-    await user.clear(screen.getByLabelText('Pesha, kg'))
-    await user.type(screen.getByLabelText('Pesha, kg'), '80,4')
-    await user.type(screen.getByLabelText('Beli, cm'), '84')
+    expect(screen.getByLabelText('Pesha e trupit')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByRole('alert')).toHaveTextContent('Pesha e trupit duhet të jetë nga 20 deri në 400 kg.')
+    await user.clear(screen.getByLabelText('Pesha e trupit'))
+    await user.type(screen.getByLabelText('Pesha e trupit'), '80,4')
+    await user.type(screen.getByLabelText('Beli'), '84')
     await user.click(screen.getByRole('button', { name: 'Ruaj matjen' }))
     const updated = (await screen.findByText('Pesha · mesatarja 7-ditore')).closest('section')!
     await waitFor(() => expect(updated).toHaveTextContent('80,4kg'))

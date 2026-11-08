@@ -7,10 +7,13 @@ import { OnboardingPage } from '@/routes/onboarding'
 import { AddFoodPage } from '@/routes/add-food'
 import { NutritionPage } from '@/routes/nutrition'
 import { BodyPage } from '@/routes/body'
+import { BodyLayersPage } from '@/routes/body-layers'
+import { MeasurePage } from '@/routes/body-measure'
+import { BodyShapePage } from '@/routes/body-shape'
 import { FriendsPage } from '@/routes/friends'
 import { Moved } from '@/routes/moved'
 import { PhotosPage } from '@/routes/photos'
-import { MeasurementPage, MetricPage, ProgressPage } from '@/routes/progress'
+import { MetricPage, ProgressPage } from '@/routes/progress'
 import { ExercisePage, ProgramPage, WorkoutPage } from '@/routes/program'
 import { DayEditorPage, ProgramEditorPage, ProgramsPage } from '@/routes/program-editor'
 import { SessionPage } from '@/routes/session'
@@ -41,9 +44,11 @@ export const appRoutes: RouteObject[] = [
       { path: 'ushqimi', element: <NutritionPage />, ...tab('food') },
       { path: 'ushqimi/shto/:meal', element: <AddFoodPage />, ...tab(null) },
       { path: 'progresi', element: <ProgressPage />, ...tab('progress') },
-      { path: 'progresi/matja', element: <MeasurementPage />, ...tab(null) },
+      { path: 'progresi/matja', element: <MeasurePage />, ...tab(null) },
       { path: 'progresi/fotot', element: <PhotosPage />, ...tab('progress') },
       { path: 'progresi/trupi', element: <BodyPage />, ...tab('progress') },
+      { path: 'progresi/trupi/shtresat', element: <BodyLayersPage />, ...tab('progress') },
+      { path: 'progresi/trupi/matjet', element: <BodyShapePage />, ...tab('progress') },
       { path: 'progresi/:metric', element: <MetricPage />, ...tab('progress') },
       { path: 'trupi', element: <Moved to="/progresi/trupi" />, ...tab('progress') },
       { path: 'miqte', element: <FriendsPage />, ...tab('friends') },

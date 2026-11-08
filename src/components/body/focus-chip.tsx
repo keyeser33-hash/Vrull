@@ -1,27 +1,63 @@
-import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
+import { useI18n } from '@/i18n/use-i18n'
+import { cn } from '@/lib/cn'
 
-// Emri i muskulit të fokusuar mbi modelin 3D (SPEC §11): emri, një rresht me vlerën ose rolin,
-// "Më shumë" kur ka fletë për të, dhe "×" që heq fokusin.
+// Emri i muskulit të fokusuar mbi modelin 3D (SPEC §11; bordi "Trupi"): një shirit 46 px me pikën
+// e ngjyrës së tij, "emri · vlera" në një rresht, shigjeta kur ka fletë për të ("Më shumë") dhe "×"
+// që heq fokusin. Sfondi i faqes me kufi `subtle`, që të lexohet mbi modelin në çdo temë.
 
-export function FocusChip({ title, detail, onOpen, onClear }: { title: string; detail: string; onOpen?: () => void; onClear: () => void }) {
+export function FocusChip({
+  title,
+  detail,
+  swatch,
+  onOpen,
+  openLabel,
+  onClear,
+}: {
+  title: string
+  detail?: string
+  /** Klasa e ngjyrës së pikës (p.sh. `bg-volume-2`); pa të, pa pikë. */
+  swatch?: string
+  /** Hap fletën e grupit; pa të, emri nuk preket. */
+  onOpen?: () => void
+  /** Emri i veprimit "Më shumë" për lexuesin e ekranit. */
+  openLabel?: string
+  onClear: () => void
+}) {
+  const { t } = useI18n()
+  const text = detail ? `${title} · ${detail}` : title
+  const body = (
+    <>
+      {swatch ? <span aria-hidden className={cn('size-2.5 shrink-0 rounded-pill', swatch)} /> : null}
+      <span className="min-w-0 truncate text-sm leading-5 font-semibold tabular-nums">{text}</span>
+      {onOpen ? <Icon name="hap" size={16} className="shrink-0 text-muted-foreground" /> : null}
+    </>
+  )
   return (
     <div
       role="group"
-      aria-label="Muskuli i zgjedhur"
-      className="mb-1 flex w-full max-w-[340px] items-center gap-2 rounded-2xl bg-panel-button/95 py-1.5 pr-0.5 pl-4 text-panel-foreground shadow-md"
+      aria-label={t('bodyModel.chip.label')}
+      className="flex h-[46px] w-full max-w-[360px] items-center rounded-pill border border-subtle bg-background text-foreground"
     >
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-sm leading-5 font-semibold">{title}</span>
-        <span className="line-clamp-2 text-xs leading-4 text-panel-foreground/80">{detail}</span>
-      </span>
       {onOpen ? (
-        <button type="button" aria-label={`Më shumë për ${title}`} onClick={onOpen} className={buttonVariants({ variant: 'on-panel' })}>
-          Më shumë
+        <button
+          type="button"
+          aria-label={openLabel ? `${text}. ${openLabel}` : undefined}
+          onClick={onOpen}
+          className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-pill pr-0.5 pl-3 text-left outline-none focus-visible:outline-2 focus-visible:outline-foreground"
+        >
+          {body}
         </button>
-      ) : null}
-      <button type="button" aria-label="Hiq fokusin" onClick={onClear} className="flex size-11 shrink-0 items-center justify-center rounded-full">
-        <Icon name="mbyll" size={20} />
+      ) : (
+        <span className="flex h-11 min-w-0 flex-1 items-center gap-2 pr-0.5 pl-3">{body}</span>
+      )}
+      <button
+        type="button"
+        aria-label={t('bodyModel.chip.clear')}
+        onClick={onClear}
+        className="flex size-11 shrink-0 items-center justify-center rounded-pill text-muted-foreground outline-none focus-visible:outline-2 focus-visible:outline-foreground"
+      >
+        <Icon name="mbyll-vrull" size={18} />
       </button>
     </div>
   )

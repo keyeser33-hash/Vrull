@@ -15,6 +15,12 @@ export const VRULL_ICONS = {
   zgjedhur: '<path d="M5 12l5 5L20 7"/>',
   'mbyll-vrull': '<path d="M6 6l12 12M18 6L6 18"/>',
   'shkarko-vrull': '<path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>',
+  // Trupi 3D (V2-E1-14): shtresat, matja me shirit, rrotullimi i modelit, data, hapja e një seksioni.
+  shtresat: '<path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/>',
+  matja: '<rect x="3" y="8" width="18" height="8" rx="2"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/>',
+  rrotullo: '<path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/>',
+  kalendari: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  poshte: '<path d="M6 9l6 6 6-6"/>',
   'pa-internet':
     '<path d="M3 3l18 18"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><path d="M5 12.9a10 10 0 0 1 4.3-2.6"/><path d="M19 12.9a10 10 0 0 0-2.2-1.6"/><path d="M2 9.3a15 15 0 0 1 4-2.6"/><path d="M22 9.3A15 15 0 0 0 11 5.1"/><path d="M12 20h.01"/>',
 } as const

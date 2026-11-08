@@ -23,18 +23,12 @@ const LEGACY_TOKENS = [
 // Skedarët e v1 që përdorin ende aliaset. Kur një ekran kalon te Vrull, hiqet nga lista; kur lista
 // mbetet bosh, hiqen edhe aliaset nga globals.css.
 export const LEGACY_FILES = new Set([
-  'src/components/body/body-figure.tsx',
-  'src/components/body/body-model.tsx',
-  'src/components/body/focus-chip.tsx',
-  'src/components/body/roles.ts',
   'src/components/charts/trend-chart.tsx',
   'src/components/forms/choice.tsx',
   'src/components/forms/day-picker.tsx',
   'src/components/forms/library-picker.tsx',
   'src/components/forms/value-stepper.tsx',
   'src/routes/add-food.tsx',
-  'src/routes/body-format.ts',
-  'src/routes/body.tsx',
   'src/routes/exercise-muscles.tsx',
   'src/routes/gate.tsx',
   'src/routes/login.tsx',

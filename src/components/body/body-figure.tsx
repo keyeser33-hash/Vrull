@@ -3,9 +3,9 @@ import { MUSCLE_ROLE } from './roles'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 
-// Figura e trupit përpara dhe mbrapa (SPEC §14, ekrani Sot; rruga 2D e §18 për Trupin). Çdo
-// zonë lidhet me çelësat e muskujve të Shtojcës D. Kryesorët me `brand`, ndihmësit gri.
-// Rri mbi `panel`, që mbetet i errët në çdo temë.
+// Figura e trupit përpara dhe mbrapa (SPEC §14, ekrani Sot; rruga 2D e §18 për Trupin, kur WebView-i
+// nuk vizaton 3D). Çdo zonë lidhet me çelësat e muskujve të Shtojcës D. Kryesorët me `ember`,
+// ndihmësit gri; silueta me `border` mbi kartë (`surface`), me tokenat e temës.
 
 function ShapeEl({ shape, className }: { shape: Shape; className: string }) {
   return shape.kind === 'circle' ? (
@@ -29,7 +29,7 @@ function View({ regions, primary, secondary, paint, onPick, pickLabel }: { regio
   return (
     <>
       {SILHOUETTE.map((shape, index) => (
-        <ShapeEl key={`s${index}`} shape={shape} className="fill-panel-border" />
+        <ShapeEl key={`s${index}`} shape={shape} className="fill-border" />
       ))}
       {regions.flatMap((region, index) => {
         const value = level(region)
@@ -51,7 +51,7 @@ function View({ regions, primary, secondary, paint, onPick, pickLabel }: { regio
                   onPick(region.keys)
                 }
               }}
-              className="cursor-pointer outline-none [&:focus-visible>*]:stroke-panel-foreground [&:focus-visible>*]:stroke-1"
+              className="cursor-pointer outline-none [&:focus-visible>*]:stroke-foreground [&:focus-visible>*]:stroke-1"
             >
               {shapes}
             </g>,
@@ -98,7 +98,7 @@ export function BodyFigure({
           <View regions={BACK} primary={primarySet} secondary={secondarySet} paint={paint} onPick={onPick} pickLabel={pickLabel} />
         </g>
       </svg>
-      <figcaption aria-hidden className="flex gap-6 text-xs leading-4 text-panel-muted-foreground">
+      <figcaption aria-hidden className="flex gap-6 text-xs leading-4 text-muted-foreground">
         <span>{t('body.front')}</span>
         <span>{t('body.back')}</span>
       </figcaption>

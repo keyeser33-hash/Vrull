@@ -36,3 +36,48 @@ export function ghostKeys(deep: boolean, focus: string[] | null): Set<string> {
   for (const key of focus ?? []) for (const cover of COVERS.get(key) ?? []) if (!focus!.includes(cover)) ghosts.add(cover)
   return ghosts
 }
+
+/**
+ * Zgjedhjet e ekranit "Shtresat" (bordi "Trupi · Shtresat"), me radhën e bordit: një për çdo muskul
+ * të thellë, përveç romboidëve, që shihen bashkë nën trapez. `id` është edhe çelësi i teksteve.
+ */
+export interface DeepEntry {
+  id: string
+  keys: string[]
+  side: 'front' | 'back'
+  covers: string[]
+}
+
+const ENTRY_KEYS: [string, string[]][] = [
+  ['pectoralis_minor', ['pectoralis_minor']],
+  ['rhomboids', ['rhomboid_major', 'rhomboid_minor']],
+  ['brachialis', ['brachialis']],
+  ['soleus', ['soleus']],
+  ['infraspinatus', ['infraspinatus']],
+  ['teres_major', ['teres_major']],
+  ['erector_spinae', ['erector_spinae']],
+  ['gluteus_medius', ['gluteus_medius']],
+  ['semimembranosus', ['semimembranosus']],
+]
+
+export const DEEP_ENTRIES: DeepEntry[] = ENTRY_KEYS.map(([id, keys]) => {
+  const muscles = DEEP_MUSCLES.filter((muscle) => keys.includes(muscle.key))
+  return { id, keys, side: muscles[0].side, covers: [...new Set(muscles.flatMap((muscle) => muscle.covers))] }
+})
+
+export const deepEntry = (id: string) => DEEP_ENTRIES.find((entry) => entry.id === id)
+
+/**
+ * Ku punon një muskul i thellë te programi yt: emrat e ushtrimeve ku një nga çelësat është kryesor,
+ * pastaj ato ku është vetëm ndihmës, me radhën e programit dhe pa përsëritje.
+ */
+export function programRoles(keys: string[], exercises: { name: string; primary: string[]; secondary: string[] }[]) {
+  const primary: string[] = []
+  const secondary: string[] = []
+  for (const exercise of exercises) {
+    if (primary.includes(exercise.name) || secondary.includes(exercise.name)) continue
+    if (exercise.primary.some((key) => keys.includes(key))) primary.push(exercise.name)
+    else if (exercise.secondary.some((key) => keys.includes(key))) secondary.push(exercise.name)
+  }
+  return { primary, secondary }
+}
