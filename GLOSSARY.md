@@ -75,6 +75,14 @@ _Avoid_: stërvitja (për regjistrimin)
 Një lëvizje me emër në anglisht dhe muskujt e saj kryesorë dhe ndihmës; historia e peshave mbahet për ushtrimin, në çdo program e fazë.
 _Avoid_: lëvizje
 
+**Biblioteka**:
+Ushtrimet e free-exercise-db bashkë me ato në telefon (të programeve dhe të përdoruesit), A–Z, me filtrat "Muskujt" (zona: gjoksi, shpina, shpatullat, këmbët, krahët, barku) dhe "Pajisja".
+_Avoid_: katalogu (në UI)
+
+**Ushtrimi yt**:
+Ushtrim që e krijoi përdoruesi me "Krijo ushtrim": emër në anglisht, unik kundrejt bibliotekës; di vetëm grupet e muskujve, si ushtrimet e bibliotekës. Në UI shënohet "I yti".
+_Avoid_: ushtrim i personalizuar
+
 **Seti**:
 Një seri përsëritjesh (ose sekondash) me një peshë në një slot të seancës.
 
@@ -106,6 +114,10 @@ e1RM-ja më e lartë e 28 ditëve të fundit për një ushtrim (ose e fundit e n
 
 **Pesha e sugjeruar**:
 Pesha që del nga 1RM aktuale për kufirin e sipërm të intervalit, e rrumbullakosur poshtë sipas pajisjes.
+
+**Peshat e javës**:
+Pesha e propozuar e çdo sloti me peshë për javën që shqyrtohet, me llogarinë që e jep; përdoruesi e pranon ("Prano peshat"), e ndryshon ose e lë "Më vonë". Pa vendimin e tij vlen propozimi.
+_Avoid_: sugjerimi automatik
 
 **Referenca e fazës së kaluar**:
 Pesha dhe përsëritjet e së njëjtës javë në bllokun e mëparshëm, me shtesën që kërkon programi.

@@ -26,4 +26,13 @@ export const VRULL_ICONS = {
   // Seanca (bordet "Seanca" dhe "Ushtrimet"): lista e ushtrimeve, muskujt e ushtrimit, ndërrimi.
   muskujt: '<circle cx="12" cy="6" r="3"/><path d="M6 21v-6a6 6 0 0 1 12 0v6"/>',
   nderro: '<path d="M7 4L3 8l4 4"/><path d="M3 8h14"/><path d="M17 12l4 4-4 4"/><path d="M21 16H7"/>',
+  // Programi, ushtrimi, biblioteka dhe peshat e javës (bordet "Prog-*", V2-E1-09).
+  libri: '<path d="M5 5a2 2 0 0 1 2-2h12v15H7a2 2 0 0 0-2 2z"/><path d="M5 20a2 2 0 0 0 2 1h12v-3"/>',
+  laps: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  kerko: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  video: '<rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/>',
+  jashte: '<path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5"/>',
+  rritje: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  'kamera-foto': '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
 } as const

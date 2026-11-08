@@ -114,6 +114,7 @@ OLED (parazgjedhja, e zeza e plotë), Natë dhe Ditë. Në kod emrat e ruajtur m
 | `QuickAdd` | "Me fjalë", foto e pjatës dhe barkodi; me kufirin e AI-së foto e thotë |
 | `Icon` | Vijë 2 px në rrjetë 24, `currentColor`; ikonat e reja te `icon-paths-vrull.ts` |
 | `VrullMark` (`logo.tsx`) | Shenja e Vrullit: katror `ember` me vijën e shpejtësisë në `on-ember`; dekorative |
+| `ExercisePhoto` (`exercise-photo.tsx`) | Foto e ushtrimit sipas `library_id`: bardh e zi, 72 × 48 (`row`) ose 44 (`square`); pa foto "Pa foto", gjatë pritjes vetëm ikona; dekorative pranë emrit |
 
 Tekstet e komponentëve vijnë nga katalogu (`ui.*`); numrat i formatojnë vetë me `fmt`.
 

@@ -32,7 +32,6 @@ export const LEGACY_FILES = new Set([
   'src/routes/photos.tsx',
   'src/routes/prescription-sheet.tsx',
   'src/routes/program-editor.tsx',
-  'src/routes/program.tsx',
   'src/routes/slot-editor.tsx',
 ])
 
