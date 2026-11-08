@@ -35,4 +35,9 @@ export const VRULL_ICONS = {
   jashte: '<path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5"/>',
   rritje: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   'kamera-foto': '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  // Videot e formës (bordet "Seanca" dhe "Seanca · Video", V2-E1-13).
+  'kamera-video': '<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>',
+  'kamera-kthe': '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20v-4h-4"/>',
+  luaj: '<path d="M8 5.5v13l10.5-6.5z"/>',
+  kyc: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
 } as const
