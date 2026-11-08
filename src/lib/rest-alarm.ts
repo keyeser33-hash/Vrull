@@ -3,52 +3,29 @@ import { Haptics } from '@capacitor/haptics'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { currentI18n } from '@/i18n'
 import type { RestAlarm } from './rest-timer'
+import { nativeRest } from './session-notification-native'
 
 // Njoftimi native i timer-it të pushimit (SPEC §6, TH-09): alarm i saktë që bie me zë dhe dridhje
-// edhe me ekran të kyçur. Një njoftim i vetëm me id fikse: çdo pushim i ri e zëvendëson.
-
-const CHANNEL = 'pushimi'
-const REST_ID = 4201
-let channelReady: Promise<void> | null = null
-
-function ensureChannel() {
-  const { t } = currentI18n()
-  channelReady ??= LocalNotifications.createChannel({
-    id: CHANNEL,
-    name: t('settings.restTimer'),
-    description: t('session.notify.channelText'),
-    // IMPORTANCE_HIGH: del sipër ekranit, me zë dhe dridhje.
-    importance: 4,
-    visibility: 1,
-    vibration: true,
-  }).catch(() => {
-    channelReady = null
-  })
-  return channelReady
-}
+// edhe me ekran të kyçur. Që nga V2-E1-08 e mban plugin-i i njoftimit të seancës
+// (SessionNotifier.java), jo LocalNotifications: pushimi që nis "Ruaj setin" te njoftimi, kur
+// WebView-i fle ose procesi është vrarë, duhet të bjerë njësoj. Një alarm i vetëm: çdo pushim i ri
+// e zëvendëson. Gjatë pushimit, i njëjti alarm tregon njoftimin "Pushimi" me "Kapërce pushimin".
 
 export const nativeRestAlarm: RestAlarm = {
   schedule(at, body) {
-    void (async () => {
-      await ensureChannel()
-      await LocalNotifications.cancel({ notifications: [{ id: REST_ID }] })
-      await LocalNotifications.schedule({
-        notifications: [
-          {
-            id: REST_ID,
-            title: currentI18n().t('session.notify.title'),
-            body,
-            channelId: CHANNEL,
-            smallIcon: 'ic_stat_pushimi',
-            autoCancel: true,
-            schedule: { at, allowWhileIdle: true },
-          },
-        ],
+    const { t } = currentI18n()
+    void nativeRest
+      .schedule({
+        at: at.getTime(),
+        title: t('session.notify.title'),
+        body,
+        channel: t('settings.restTimer'),
+        channelText: t('session.notify.channelText'),
       })
-    })().catch(() => {})
+      .catch(() => {})
   },
   cancel() {
-    void LocalNotifications.cancel({ notifications: [{ id: REST_ID }] }).catch(() => {})
+    void nativeRest.cancel().catch(() => {})
   },
 }
 

@@ -15,6 +15,7 @@ import {
 } from '@/data/app-data'
 import { useI18n } from '@/i18n/use-i18n'
 import { APP_NAME } from '@/lib/app-name'
+import { useSessionNotification } from '@/lib/session-notification-hook'
 
 const onboardingPath = (pathname: string) => pathname === '/fillimi' || pathname.startsWith('/fillimi/')
 
@@ -29,6 +30,7 @@ export function AppGate() {
   useUpdateChecker(phase === 'ready')
   useLanguageSync(phase === 'ready')
   useBackgroundSync(phase === 'ready')
+  useSessionNotification(phase === 'ready')
 
   switch (phase) {
     case 'loading':

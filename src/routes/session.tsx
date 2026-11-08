@@ -12,12 +12,14 @@ import { workoutWeights } from '@/data/week-weights'
 import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
+import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
 import { isRecord, recordHint, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
 import type { WeekWeightRow } from '@/progress/week-weights'
 import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
+import { openedSet, sessionView } from '@/lib/session-notification'
 import { useRestTimer } from '@/lib/use-rest-timer'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideoScreen, type FormVideoTarget } from './form-video'
@@ -67,13 +69,6 @@ type OpenSession = NonNullable<TrainingSnapshot['session']>
 interface SegmentStep {
   set: SetRecord
   slot: PlannedSlot
-}
-
-interface SetValues {
-  weightKg: number
-  reps: number | null
-  seconds: number | null
-  rir: number | null
 }
 
 function useNow(intervalMs: number) {
@@ -135,6 +130,16 @@ function ActiveSession({
   // Pas ruajtjes, setin tjetër e lejon vetëm leximi që e ka parë setin e ruajtur (pa dyfishim).
   const [awaiting, setAwaiting] = useState<{ id: string; segments: number } | null>(null)
   const rest = useRestTimer(session.id, () => void restFinishedInApp())
+  // "Ndrysho" te njoftimi i seancës (V2-E1-08): ushtrimi i setit dhe vlerat e zgjedhura atje.
+  const opened = openedSet(location.state)
+  useEffect(() => {
+    if (opened) setSelected(opened.slotId)
+    // Vetëm kur vjen një hapje e re nga njoftimi.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key])
+  // Njoftimi tregon të njëjtin ushtrim si ekrani; pa ekran, radhën e programit.
+  useEffect(() => sessionView.set({ sessionId: session.id, selected, dismissedSegment: dismissed }), [session.id, selected, dismissed])
+  useEffect(() => () => sessionView.set(null), [])
   const now = useNow(1000)
   const { plan, exercises } = snapshot
   const progress = sessionProgress(plan, session.sets, selected)
@@ -143,17 +148,9 @@ function ActiveSession({
   const waiting = awaiting !== null && !(shown && shown.segments.length >= awaiting.segments)
 
   const lastSet = session.sets.at(-1) ?? null
-  const lastSlot = lastSet ? plan.slots.find((slot) => slot.slotId === lastSet.slotId) : undefined
-  const segment: SegmentStep | null =
-    lastSet &&
-    lastSlot &&
-    !selected &&
-    dismissed !== lastSet.id &&
-    lastSet.setNumber === lastSlot.sets &&
-    lastSet.segments.length === 0 &&
-    (lastSet.technique === 'rest_pause' || lastSet.technique === 'drop_set')
-      ? { set: lastSet, slot: lastSlot }
-      : null
+  const lastSlot = lastSet ? plan.slots.find((entry) => entry.slotId === lastSet.slotId) : undefined
+  const segmentDue = selected ? null : pendingSegment(plan, session.sets)
+  const segment: SegmentStep | null = segmentDue && dismissed !== segmentDue.set.id ? segmentDue : null
   const shownIndex = segment ? plan.slots.findIndex((slot) => slot.slotId === segment.slot.slotId) : progress.current
   const current = shownIndex === null ? null : progress.slots[shownIndex]
   const slot = current?.slot ?? null
@@ -287,20 +284,14 @@ function ActiveSession({
   const drop = (base: number) =>
     dropWeight(history.sets, { exerciseId: slot.exerciseId, run: plan.run, blockPosition: plan.blockPosition }, base, slot.technique.type === 'drop_set' ? slot.technique : {}, step)
 
-  const defaults: SetValues = segment
-    ? {
-        weightKg: segment.set.technique === 'drop_set' ? (drop(segment.set.weightKg ?? 0) ?? segment.set.weightKg ?? 0) : (segment.set.weightKg ?? 0),
-        reps: Math.max(1, Math.round((segment.set.reps ?? 3) / 3)),
-        seconds: null,
-        rir: null,
-      }
-    : {
-        // Pesha e setit të parë: rreshti i "Peshave të javës", përndryshe propozimi i §7 ose pesha e fundit.
-        weightKg: lastInSlot ? (lastInSlot.weightKg ?? 0) : (week?.weightKg ?? 0),
-        reps: lastInSlot?.reps ?? (slot.target.kind === 'reps' ? Math.max(slot.target.min, 1) : slot.target.kind === 'timed' ? null : slot.target.reps),
-        seconds: slot.target.kind === 'timed' ? (lastInSlot?.seconds ?? slot.target.seconds) : null,
-        rir: slot.target.kind === 'reps' && slot.target.rir ? (lastInSlot?.rir ?? slot.target.rir.min) : null,
-      }
+  // Vlerat e propozuara, të njëjta me njoftimin e seancës (`program/next-set.ts`). Pesha e setit të
+  // parë: rreshti i "Peshave të javës", përndryshe propozimi i §7 ose pesha e fundit.
+  const proposed: SetValues = segment
+    ? segmentDefaults(segment.set, segment.set.technique === 'drop_set' ? drop(segment.set.weightKg ?? 0) : null)
+    : setDefaults(slot, lastInSlot, week?.weightKg ?? null)
+  // "Ndrysho" te njoftimi hap këtë set me përsëritjet ose sekondat e zgjedhura atje (V2-E1-08).
+  const fromNotification = opened !== null && !segment && opened.slotId === slot.slotId && opened.setNumber === setNumber
+  const defaults: SetValues = fromNotification ? { ...proposed, ...opened.values } : proposed
   const technique: Technique = isLastSet && !segment ? slot.technique : { type: 'none' }
   const next = progress.next === null ? null : progress.slots[progress.next].slot
 
@@ -354,7 +345,7 @@ function ActiveSession({
 
   return frame(
     <SetView
-      key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}`}
+      key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}`}
       exerciseId={slot.exerciseId}
       exerciseName={exercise?.name ?? ''}
       tracking={segment && tracking !== 'weight_reps' ? 'bodyweight_reps' : tracking}

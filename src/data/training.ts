@@ -339,6 +339,8 @@ export interface SetInput {
   technique?: Technique['type']
   segments?: Segment[]
   notes?: string | null
+  /** Koha e prekjes kur seti ruhet më vonë se ajo (seti nga njoftimi, V2-E1-08); përndryshe tani. */
+  loggedAt?: string
 }
 
 export async function saveSet(store: LocalStore, input: SetInput) {
@@ -369,7 +371,7 @@ export async function saveSet(store: LocalStore, input: SetInput) {
             ? input.segments.map((segment) => ({ weight_kg: segment.weightKg, reps: segment.reps }))
             : null,
       notes: input.notes ?? null,
-      logged_at: existing?.logged_at ?? store.now().toISOString(),
+      logged_at: existing?.logged_at ?? input.loggedAt ?? store.now().toISOString(),
     }),
   )
 }

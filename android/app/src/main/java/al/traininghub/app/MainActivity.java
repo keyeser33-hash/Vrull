@@ -17,6 +17,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(BatteryPlugin.class);
         registerPlugin(AppUpdaterPlugin.class);
         registerPlugin(MusicPlugin.class);
+        registerPlugin(SessionNotificationPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }

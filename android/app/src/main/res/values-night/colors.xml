@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Njoftimi i seancës mbi sfondin e errët të njoftimeve të sistemit (V2-E1-08). -->
+    <color name="notification_key">#1FFFFFFF</color>
+    <color name="notification_key_icon">#FFFAFAFA</color>
+    <color name="notification_ripple">#33FFFFFF</color>
+</resources>

@@ -62,6 +62,23 @@ describe('timer-i i pushimit', () => {
     expect(alarm.cancel).not.toHaveBeenCalled()
   })
 
+  it('pushimi i nisur nga njoftimi i seancës vazhdon me të njëjtin fund dhe total (V2-E1-08)', () => {
+    const { make, alarm, now } = setup()
+    const timer = make()
+    timer.adopt(now() + 60_000, 90, 'Pushimi mbaroi')
+    expect(timer.get()).toEqual({ endsAt: now() + 60_000, totalSeconds: 90 })
+    expect(alarm.schedule).toHaveBeenCalledWith(new Date(now() + 60_000), 'Pushimi mbaroi')
+    expect(make().get()).toEqual({ endsAt: now() + 60_000, totalSeconds: 90 })
+  })
+
+  it('një pushim i njoftimit që ka mbaruar nuk rifillon', () => {
+    const { make, alarm, now } = setup()
+    const timer = make()
+    timer.adopt(now() - 1, 90, 'Pushimi mbaroi')
+    expect(timer.get()).toBeNull()
+    expect(alarm.schedule).not.toHaveBeenCalled()
+  })
+
   it('mbijeton rihapjen e app-it', () => {
     const { make, now } = setup()
     make().start(60, 'Pushimi mbaroi')
