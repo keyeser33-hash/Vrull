@@ -32,17 +32,24 @@ export async function weekWeightsView(store: LocalStore, week?: WeekRef): Promis
   const block = loaded.engine.blocks.find((candidate) => candidate.id === target?.blockId)
   if (!target || !block) return null
   const run = loaded.pointer.run
-  const [history, saved, open] = await Promise.all([
+  const [history, saved, open, sessions] = await Promise.all([
     trainingHistory(store),
     decisionRows(store, loaded.row.id, run, target),
     openSession(store, loaded.row.id, loaded.pointer),
+    store.where('workout_sessions', 'program_id', loaded.row.id),
   ])
+  // Seanca e parë e javës që shqyrtohet, në këtë xhiro: rregulli i progresit lexon vetëm setet para saj.
+  const weekStarts = sessions
+    .filter((row) => Number(row.run) === run && row.block_id === target.blockId && Number(row.week) === target.week && row.started_at)
+    .map((row) => String(row.started_at))
+    .sort()
   const rows = weekWeights({
     program: loaded.engine,
     week: target,
     // Setet e seancës së hapur nuk e lëvizin peshën e javës: seti i dytë i Bench Press nuk e ndryshon
     // atë që Sot dhe Programi thanë për të para seancës. Pas mbylljes hyjnë te historia.
     history: open ? history.sets.filter((set) => set.sessionId !== open.id) : history.sets,
+    weekStartedAt: weekStarts[0] ?? null,
     now: store.now(),
     overrides: history.overrides,
     steps: history.weightSteps,

@@ -1,9 +1,10 @@
 import { createDatabase } from './db'
+import { addBlock, addDay, addSlot, createProgram, setProgramProgression, setRule } from './program-editor'
 import { completeOnboarding } from './profile'
 import { programmeHome } from './programme'
 import { createLocalStore } from './store'
 import { todayView } from './today'
-import { finishWorkout, saveSet, skipWorkout, startWorkout, trainingSnapshot } from './training'
+import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
 import { acceptWeekWeights, changeWeekWeight, postponeWeekWeights, weekWeightsView, workoutWeights } from './week-weights'
 
 const USER = '11111111-1111-4111-8111-111111111111'
@@ -152,5 +153,60 @@ describe('një peshë e javës për slotin: Sot, seanca, Programi dhe Peshat e j
     const next = (await weekWeightsView(store))!
     expect(next.label).toBe('Faza 1 · Java 3')
     expect(next.rows.find((row) => row.slotId === bench.slotId)?.weightKg).toBe(70)
+  })
+})
+
+describe('rregulli i progresit te pesha e javës (V2-E1-18)', () => {
+  /**
+   * Program i përdoruesit me rregullin e gjithë programit (+2,5 kg, RIR ≥ 2; me dumbbell +2): një
+   * bllok 3-javor, dy ditë me Dumbbell Press 8–12. Java 1: dita A 20 × 12, RIR 2, dita B e kapërcyer.
+   */
+  async function customAtWeekTwo() {
+    let clock = new Date(2026, 10, 2, 18, 0)
+    const tick = () => (clock = new Date(clock.getTime() + 86_400_000))
+    const store = createLocalStore(createDatabase(`week-weights-${crypto.randomUUID()}`), { userId: () => USER, now: () => clock })
+    await completeOnboarding(store, profile, () => clock)
+    const press = await store.put('exercises', { name: 'Dumbbell Press', equipment: 'dumbbell', tracking: 'weight_reps', primary_muscles: ['pectoralis_major_sternocostal'] })
+    const programId = await createProgram(store, 'Sipër')
+    await addBlock(store, programId, { name: 'Blloku 1', weeks: 3 })
+    for (const name of ['A', 'B']) {
+      const day = await addDay(store, programId, name)
+      const slot = await addSlot(store, day, { exerciseId: press.id, sets: 2, restSeconds: 90 })
+      await setRule(store, slot, { blockId: null, week: null }, { prescription: { type: 'rep_ladder', ladder: [{ min: 8, max: 12 }] } })
+    }
+    await setProgramProgression(store, programId, { minRir: 2, incrementKg: 2.5 })
+    await switchProgram(store, programId)
+    const workout = async (weightKg: number) => {
+      tick()
+      const sessionId = await startWorkout(store)
+      const [slot] = (await trainingSnapshot(store))!.plan.slots
+      for (const setNumber of [1, 2]) await saveSet(store, { sessionId, slot, setNumber, weightKg, reps: 12, rir: 2 })
+      await finishWorkout(store, sessionId)
+    }
+    await workout(20)
+    tick()
+    await skipWorkout(store)
+    return { store, workout }
+  }
+
+  const firstWeight = async (store: Awaited<ReturnType<typeof customAtWeekTwo>>['store']) => {
+    const { plan } = (await trainingSnapshot(store))!
+    return { block: plan.blockName, week: plan.week, weightKg: (await workoutWeights(store, plan)).get(plan.slots[0].slotId)?.weightKg }
+  }
+
+  it('rregulli i gjithë programit arrin te Sot, seanca dhe Programi: Java 2 nis me 22 kg', async () => {
+    const { store } = await customAtWeekTwo()
+    expect(await firstWeight(store)).toEqual({ block: 'Blloku 1', week: 2, weightKg: 22 })
+    expect((await todayView(store)).workout?.first?.weightKg).toBe(22)
+  })
+
+  it('pas seancës së javës, dita tjetër e së njëjtës javë nuk merr shtesën mbi të: mbetet 22, Java 3 merr 24', async () => {
+    const { store, workout } = await customAtWeekTwo()
+    await workout(22)
+    expect(await firstWeight(store)).toEqual({ block: 'Blloku 1', week: 2, weightKg: 22 })
+    expect((await todayView(store)).workout?.first?.weightKg).toBe(22)
+    const next = (await weekWeightsView(store))!
+    expect(next.label).toBe('Blloku 1 · Java 3')
+    expect(next.rows.map((row) => row.weightKg)).toEqual([24, 24])
   })
 })
