@@ -1041,7 +1041,10 @@ try {
   await sleep(1000)
   launch()
   await waitFor(async () => !(await hasText(page, 'Lidh muzikën tënde')), 'karta e lidhjes ikën pas lejes', 20_000)
-  check('muzika: me lejen, pa app muzike del "Asnjë app muzike nuk luan"', await waitFor(() => hasText(page, 'Asnjë app muzike nuk luan'), 'muzika pa këngë', 15_000))
+  // Emulatori mund të ketë vetë një sesion medie pa titull (app-et e Google-it): atëherë del mini-player-i.
+  const musicIdle = await waitFor(async () => (await hasText(page, 'Asnjë app muzike nuk luan')) || (await page.evaluate(`!!document.querySelector('section[aria-label="Muzika"]')`)), 'muzika me lejen', 15_000)
+  check('muzika: me lejen, karta e lidhjes ikën dhe del muzika', Boolean(musicIdle))
+  info('muzika para app-it të provës', (await hasText(page, 'Asnjë app muzike nuk luan')) ? 'Asnjë app muzike nuk luan' : 'mini-player-i i një sesioni tjetër të emulatorit')
   if (apkPlayer) {
     adb('install', apkPlayer)
     adb('shell', 'pm', 'grant', PLAYER, 'android.permission.POST_NOTIFICATIONS')
