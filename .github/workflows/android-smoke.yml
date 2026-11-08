@@ -61,19 +61,29 @@ jobs:
 
       # v1: kodi i tag-ut, si në telefonat e përdoruesve, por me Supabase-n e imituar. Tag-u nuk ndryshon, ndaj
       # APK-ja ruhet në cache (4 minuta më pak për çdo nisje); prapashtesa rritet kur ndryshon mënyra e ndërtimit.
-      # Bashkë me të ruhet çelësi debug me të cilin u nënshkrua: çdo runner krijon një çelës të ri, dhe v2 me
-      # çelës tjetër nuk instalohet mbi v1 (përditësimi refuzohet).
+      # Bashkë me të ruhet çelësi debug i provës: v2 me çelës tjetër nuk instalohet mbi v1 (përditësimi refuzohet).
       - name: v1 nga cache
         id: v1-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             apks/v1.apk
-            ~/.android/debug.keystore
-          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-2
-      - name: v1 nga tag-u
-        if: steps.v1-cache.outputs.cache-hit != 'true'
+            apks/debug.keystore
+          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-3
+      # Një çelës debug i vetëm për v1, v2 dhe v3, aty ku Gradle e kërkon. Krijohet kur cache-i nuk e ka.
+      - name: Çelësi debug i provës
         run: |
+          mkdir -p apks "$HOME/.android"
+          if [ ! -f apks/debug.keystore ]; then
+            rm -f apks/v1.apk
+            keytool -genkeypair -keystore apks/debug.keystore -storepass android -alias androiddebugkey \
+              -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          cp apks/debug.keystore "$HOME/.android/debug.keystore"
+          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android | grep -i "SHA-256" || true
+      - name: v1 nga tag-u
+        run: |
+          if [ -f apks/v1.apk ]; then echo "v1 nga cache, me çelësin e vet"; exit 0; fi
           git fetch --no-tags --depth=1 origin "refs/tags/$V1_TAG:refs/tags/$V1_TAG"
           git worktree add ../v1 "$V1_TAG"
           cd ../v1
@@ -96,6 +106,18 @@ jobs:
             cp android/app/build/outputs/apk/debug/app-debug.apk "apks/$apk.apk"
           done
           git checkout -- package.json package-lock.json
+
+      # Përditësimi v1 → v2 → v3 kërkon të njëjtin çelës: kontrollohet këtu, para se të niset emulatori.
+      - name: Të njëjtin çelës te v1, v2 dhe v3
+        run: |
+          tools=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          for apk in v1 v2 v3; do
+            echo "$apk $("$tools/apksigner" verify --print-certs "apks/$apk.apk" | grep -m1 'SHA-256 digest' | awk '{print $NF}')"
+          done | tee certs.txt
+          if [ "$(awk '{print $2}' certs.txt | sort -u | wc -l)" != 1 ]; then
+            echo "::error title=Çelësa të ndryshëm::v2 nuk do të instalohet mbi v1. Shih certs.txt."
+            exit 1
+          fi
 
       - name: App-i i muzikës për provën
         run: |
