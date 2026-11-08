@@ -513,7 +513,9 @@ async function open() {
 
 const heading = (page) => page.evaluate(`document.querySelector('h1')?.textContent ?? ''`)
 const waitForHeading = (page, text, timeout) => waitFor(async () => (await heading(page)) === text, `titulli "${text}"`, timeout)
-const hasText = (page, text) => page.evaluate(`document.body.innerText.includes(${JSON.stringify(text)})`)
+// Teksti i faqes: innerText e jep me shkronjat e mëdha të stileve ("VAZHDO STËRVITJEN"), textContent siç shkruhet.
+const PAGE_TEXT = `(document.body.innerText + '\\n' + document.body.textContent)`
+const hasText = (page, text) => page.evaluate(`${PAGE_TEXT}.includes(${JSON.stringify(text)})`)
 const waitForText = (page, text, timeout) => waitFor(() => hasText(page, text), `teksti "${text}"`, timeout)
 const waitForPath = (page, path, timeout) => waitFor(async () => (await page.evaluate('location.pathname')) === path, `adresa ${path}`, timeout)
 const click = (page, selector) => page.evaluate(`document.querySelector(${JSON.stringify(selector)}).click()`)
@@ -927,7 +929,7 @@ try {
   await clickButton(page, await recordLabel())
   await sleep(5200)
   await clickButton(page, 'Ndalo regjistrimin')
-  await waitFor(() => page.evaluate(`/Regjistruar 0:0[456]/.test(document.body.innerText)`), 'regjistrimi 5 s')
+  await waitFor(() => page.evaluate(`/Regjistruar 0:0[456]/.test(${PAGE_TEXT})`), 'regjistrimi 5 s')
   screenshot('kamera-regjistruar')
   await clickButtonStarting(page, 'Ruaj te seti ')
   await waitFor(() => page.evaluate(`!document.querySelector('[role=dialog] video')`), 'mbyllja e kamerës pas ruajtjes')
@@ -949,7 +951,7 @@ try {
   adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
   await sleep(2000)
   launch()
-  await waitFor(() => page.evaluate(`/Regjistruar 0:0\\d/.test(document.body.innerText)`), 'regjistrimi i ndalur nga Home', 20_000)
+  await waitFor(() => page.evaluate(`/Regjistruar 0:0\\d/.test(${PAGE_TEXT})`), 'regjistrimi i ndalur nga Home', 20_000)
   await waitFor(cameraLive, 'kamera e rihapur pas Home', 30_000)
   check('video: Home gjatë regjistrimit e ndal dhe e mban regjistrimin, kamera rihapet', true)
   screenshot('kamera-pas-home')
