@@ -503,11 +503,14 @@ async function connect() {
       report.errors.push(message.params.exceptionDetails.exception?.description ?? 'exception')
     }
     if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
-      report.errors.push(message.params.args.map((arg) => arg.value ?? arg.description).join(' '))
+      // Një objekt tregohet me fushat e tij (p.sh. refuzimi i një plugin-i: { code, message }).
+      const text = (arg) =>
+        arg.value ?? (arg.preview?.properties ? `{${arg.preview.properties.map((field) => `${field.name}: ${field.value}`).join(', ')}}` : arg.description)
+      report.errors.push(message.params.args.map(text).join(' '))
     }
     if (message.method === 'Log.entryAdded' && message.params.entry.level === 'error') {
       // 400 i hyrjes me fjalëkalim të gabuar është pjesë e provës, jo gabim.
-      if (!/status of 400/.test(message.params.entry.text)) report.errors.push(message.params.entry.text)
+      if (!/status of 400/.test(message.params.entry.text)) report.errors.push(`${message.params.entry.text} ${message.params.entry.url ?? ''}`.trim())
     }
   }
   const evaluate = async (expression) => {
@@ -703,9 +706,14 @@ async function goHome(page) {
   await waitForPath(page, '/')
 }
 
-// Ndryshimet që app-i bën vetë në sfond nuk duhet të bëjnë zhurmë: një kërkesë e dështuar e Supabase
-// kur procesi rinis pa CDP (smoke.invalid nuk ekziston) nuk është gabim i app-it.
-const ignoredError = (text) => /smoke\.invalid.*(ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED)/.test(text)
+// Jo gabime të app-it:
+// - një kërkesë drejt Supabase-s së imituar para se CDP të lidhet (procesi sapo nisi; smoke.invalid nuk
+//   ekziston jashtë provës), ose pa rrjet;
+// - refuzimet e plugin-eve që app-i i pret dhe i trajton, që Capacitor i shkruan si console.error në build-in
+//   debug: muzika pa "Qasjen te njoftimet" (NO_ACCESS) dhe shkarkimi me SHA-256 të gabuar (HASH_MISMATCH).
+const ignoredError = (text) =>
+  /(ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED).*smoke\.invalid|smoke\.invalid.*(ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED)/.test(text) ||
+  /^\{.*code: (NO_ACCESS|HASH_MISMATCH)\b/.test(text)
 
 try {
   // Nis nga një pajisje pa app-in; çinstalimi dështon kur s'ka çfarë të heqë.
