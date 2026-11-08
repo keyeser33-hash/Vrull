@@ -3,9 +3,5 @@
     <!-- Pasqyrë e tokenave të Vrullit (src/styles/globals.css) për pjesët native që nuk lexojnë CSS. -->
     <!-- background i temës OLED: sfondi i nisjes dhe i dritares para se të hapet WebView. -->
     <color name="th_background">#000000</color>
-    <!-- Sfondi i ikonës, njësoj si favicon.svg. -->
-    <color name="ic_launcher_background">#0B0B0B</color>
-    <!-- foreground i OLED dhe ember (prushi). -->
-    <color name="th_foreground">#FAFAFA</color>
-    <color name="th_ember">#FF5B2E</color>
+    <!-- Ngjyrat e ikonës (prushi dhe vija): values/ic_launcher_colors.xml, nga tools/app-icon/build.mjs. -->
 </resources>
