@@ -31,6 +31,8 @@ if (!apkV1 || !apkV2 || !apkV3) {
 mkdirSync(outDir, { recursive: true })
 
 const report = { checks: [], info: [], errors: [], requests: [], posts: [] }
+/** Gabimet e konsolës me objekte, që lexohen me CDP pasi vijnë (Runtime.getProperties). */
+const errorDetails = []
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const adb = (...args) => execFileSync('adb', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
 const shell = (command) => execFileSync('adb', ['shell', command], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
@@ -503,10 +505,19 @@ async function connect() {
       report.errors.push(message.params.exceptionDetails.exception?.description ?? 'exception')
     }
     if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
-      // Një objekt tregohet me fushat e tij (p.sh. refuzimi i një plugin-i: { code, message }).
-      const text = (arg) =>
-        arg.value ?? (arg.preview?.properties ? `{${arg.preview.properties.map((field) => `${field.name}: ${field.value}`).join(', ')}}` : arg.description)
-      report.errors.push(message.params.args.map(text).join(' '))
+      // Një objekt tregohet me fushat e tij (p.sh. refuzimi i një plugin-i: { code, message }), me kontrollin
+      // e fundit që kaloi, që të dihet ku ndodhi.
+      const after = report.checks.at(-1)?.name ?? 'fillimi'
+      const text = async (arg) => {
+        if (arg.value !== undefined) return arg.value
+        if (arg.objectId) {
+          const properties = await send('Runtime.getProperties', { objectId: arg.objectId, ownProperties: true }).catch(() => null)
+          const fields = (properties?.result?.result ?? []).filter((field) => field.value && 'value' in field.value).map((field) => `${field.name}: ${field.value.value}`)
+          if (fields.length) return `{${fields.join(', ')}}`
+        }
+        return arg.description
+      }
+      errorDetails.push(Promise.all(message.params.args.map(text)).then((parts) => `${parts.join(' ')} [pas: ${after}]`))
     }
     if (message.method === 'Log.entryAdded' && message.params.entry.level === 'error') {
       // 400 i hyrjes me fjalëkalim të gabuar është pjesë e provës, jo gabim.
@@ -1291,11 +1302,8 @@ try {
     const probeSha = createHash('sha256').update(Buffer.from(probe)).digest('hex')
     const downloaded = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${probeSha}' }).then((r) => r.path, (e) => 'GABIM ' + e.code + ' ' + e.message)`)
     check('v2: shkarkimi native me SHA-256 të saktë', downloaded.endsWith('/cache/perditesimi.apk'), downloaded)
-    const before = report.errors.length
+    // Capacitor e shkruan refuzimin e qëllimshëm si console.error në build-in debug (ignoredError, HASH_MISMATCH).
     const refused = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${'1'.repeat(64)}' }).then(() => 'pranoi', (e) => e.code)`)
-    await sleep(500)
-    // Capacitor e shkruan refuzimin e qëllimshëm si console.error në build-in debug.
-    report.errors.splice(before, report.errors.length - before, ...report.errors.slice(before).filter((text) => text !== 'Object' && !/HASH_MISMATCH|nuk përputhet/.test(text)))
     check('v2: shkarkimi me SHA-256 të gabuar refuzohet', refused === 'HASH_MISMATCH', refused)
   }
   adb('push', apkV3, '/data/local/tmp/th-v3.apk')
@@ -1324,6 +1332,7 @@ try {
   page.close()
   await setNetwork(true)
 
+  report.errors.push(...(await Promise.all(errorDetails)))
   const errors = report.errors.filter((text) => !ignoredError(text))
   check('asnjë gabim JavaScript', errors.length === 0, errors.join(' | '))
   report.ok = true
