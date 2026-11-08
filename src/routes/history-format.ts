@@ -72,10 +72,14 @@ export function sessionDateText(t: T, fmt: Format, lang: Language, date: string,
   return capitalize(fmt.date(at), lang)
 }
 
-/** "Nëntor 2026" / "November 2026": emri i muajit nga data e app-it ("1 nëntor 2026"), pa ditën. */
-export function monthTitle(fmt: Format, lang: Language, year: number, monthIndex: number, withYear = true): string {
-  const text = fmt.date(new Date(year, monthIndex, 1, 12), { weekday: false, year: withYear }).replace(/^1\s/, '')
-  return capitalize(text, lang)
+/** "nëntor" / "November": emri i muajit nga data e app-it ("1 nëntor"), pa ditën. */
+export function monthName(fmt: Format, year: number, monthIndex: number): string {
+  return fmt.date(new Date(year, monthIndex, 1, 12), { weekday: false }).replace(/^1\s/, '')
+}
+
+/** "Nëntor 2026" / "November 2026". */
+export function monthTitle(fmt: Format, lang: Language, year: number, monthIndex: number): string {
+  return capitalize(`${monthName(fmt, year, monthIndex)} ${year}`, lang)
 }
 
 /** "1, 2, 3, 5 dhe 8". */

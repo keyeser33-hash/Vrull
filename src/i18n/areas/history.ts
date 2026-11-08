@@ -6,7 +6,7 @@ import type { Messages, TranslationOf } from '../translate'
 
 export const sq = {
   'history.title': 'Historiku',
-  'history.subtitle': { one: '{program} · {count} seancë që nga {date}', other: '{program} · {count} seanca që nga {date}' },
+  'history.subtitle': { one: '{programme} · {count} seancë që nga {date}', other: '{programme} · {count} seanca që nga {date}' },
   'history.subtitleNoProgramme': { one: '{count} seancë që nga {date}', other: '{count} seanca që nga {date}' },
   'history.emptyTitle': 'Ende pa seanca',
   'history.emptyText': 'Çdo stërvitje që mbyll del këtu, sipas javës së programit, me setet dhe rekordet.',
@@ -135,7 +135,7 @@ export const sq = {
 
 export const en: TranslationOf<typeof sq> = {
   'history.title': 'History',
-  'history.subtitle': { one: '{program} · {count} session since {date}', other: '{program} · {count} sessions since {date}' },
+  'history.subtitle': { one: '{programme} · {count} session since {date}', other: '{programme} · {count} sessions since {date}' },
   'history.subtitleNoProgramme': { one: '{count} session since {date}', other: '{count} sessions since {date}' },
   'history.emptyTitle': 'No sessions yet',
   'history.emptyText': 'Every workout you finish appears here by programme week, with its sets and records.',
@@ -245,7 +245,7 @@ export const en: TranslationOf<typeof sq> = {
   'history.edit.title': 'Edit set {n}',
   'history.edit.weight': 'Weight, kg',
   'history.edit.reps': 'Reps',
-  'history.edit.apply': 'Set',
+  'history.edit.apply': 'Apply',
   'history.edit.invalidWeight': 'Enter a weight from 0 to {max} kg, e.g. {example}.',
   'history.edit.invalidReps': 'Enter reps from 1 to {max}.',
   'history.edit.preview': 'e1RM {value}',

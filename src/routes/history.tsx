@@ -33,6 +33,7 @@ import {
   durationText,
   kg1,
   listText,
+  monthName,
   monthTitle,
   segmentsText,
   sessionDateText,
@@ -87,7 +88,7 @@ export function HistoryPage() {
   }
   const since = fmt.date(dayDate(overview.first!), { weekday: false })
   const subtitle = overview.programName
-    ? t('history.subtitle', { program: overview.programName, count: overview.total, date: since })
+    ? t('history.subtitle', { programme: overview.programName, count: overview.total, date: since })
     : t('history.subtitleNoProgramme', { count: overview.total, date: since })
   return (
     <div className="flex flex-col gap-3.5">
@@ -119,7 +120,7 @@ function MonthCard({ overview, today }: { overview: HistoryOverview; today: stri
   const sessions = dates.reduce((total, date) => total + overview.byDate[date].sessions, 0)
   const name = (key: string) => {
     const at = parseMonth(key)
-    return fmt.date(new Date(at.year, at.monthIndex, 1, 12), { weekday: false }).replace(/^1\s/, '')
+    return monthName(fmt, at.year, at.monthIndex)
   }
   const days = marks.filter((mark) => mark.kind === 'session').map((mark) => fmt.number(mark.day))
   const spoken = [
@@ -304,8 +305,14 @@ function PastSessionView({ session }: { session: PastSession }) {
   const others = session.exercises.filter((exercise) => exercise !== featured)
 
   const openSet = openSetId ? session.exercises.flatMap((exercise) => exercise.sets.map((set) => ({ exercise, set }))).find((entry) => entry.set.id === openSetId) : undefined
+  // Mënyra e ndryshimit dhe fleta hyjnë në histori, që butoni mbrapa i Android-it t'i mbyllë një nga një;
+  // "Mbaro" dhe "Mbyll" kthehen mbrapa, përveç kur faqja u hap drejt me parametrin.
   const closeSheet = () => (location.key === 'default' ? setParams({ ndrysho: '1' }, { replace: true }) : navigate(-1))
-  const toggleEditing = () => (editing ? setParams({}, { replace: true }) : setParams({ ndrysho: '1' }))
+  const toggleEditing = () => {
+    if (!editing) setParams({ ndrysho: '1' })
+    else if (location.key === 'default') setParams({}, { replace: true })
+    else navigate(-1)
+  }
   const pick = (set: PastSet) => setParams({ ndrysho: '1', seti: set.id })
 
   return (

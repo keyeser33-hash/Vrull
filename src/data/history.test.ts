@@ -154,7 +154,7 @@ describe('seanca e kaluar', () => {
     expect(round1(bench.bestE1rmKg)).toBe(86)
     expect(round1(bench.record?.gainKg)).toBe(9.3)
     expect(bench.record?.previous).toMatchObject({ weightKg: 50, reps: 14, rir: 2, blockName: 'Java 0', blockWeeks: 1 })
-    expect(bench).toMatchObject({ equipment: 'barbell', target: { kind: 'reps', min: 12, max: 15 }, technique: { type: 'rest_pause' }, restSeconds: 90 })
+    expect(bench).toMatchObject({ equipment: 'barbell', target: { kind: 'reps', min: 12, max: 15 }, technique: { type: 'rest_pause' } })
     expect(calf).toMatchObject({ bestE1rmKg: null, record: null })
     expect(session.volume).toEqual([
       { groupId: 'gjoksi', sets: 4 },

@@ -164,7 +164,10 @@ function HistoryLink() {
   const { t, fmt } = useI18n()
   const glance = useLocalQuery(() => historyGlance(store), [])
   const [today] = useState(() => localDate(new Date()))
-  const [yesterday] = useState(() => localDate(new Date(Date.now() - 86_400_000)))
+  const [yesterday] = useState(() => {
+    const now = new Date()
+    return localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1))
+  })
   if (!glance) return null
   const when = !glance.last
     ? null

@@ -28,7 +28,6 @@ export interface SessionRecordLine {
   exerciseId: string
   name: string
   e1rmKg: number
-  gainKg: number
 }
 
 export interface HistorySession {
@@ -68,7 +67,6 @@ export interface HistoryWeek {
 export interface HistoryOverview {
   /** Programi aktiv ("Shortcut to Size"). */
   programName: string | null
-  activeProgramId: string | null
   total: number
   /** Data e seancës së parë. */
   first: string | null
@@ -140,7 +138,6 @@ function toSession(row: LocalRow, data: Context): HistorySession {
       exerciseId: record.exerciseId,
       name: data.names.get(record.exerciseId) ?? '',
       e1rmKg: record.e1rmKg,
-      gainKg: record.gainKg,
     })),
   }
 }
@@ -179,7 +176,6 @@ export async function historyOverview(store: LocalStore): Promise<HistoryOvervie
   const startedAt = (state?.started_at as string | null | undefined) ?? sessions.map((session) => session.startedAt).filter(Boolean).sort()[0] ?? null
   return {
     programName: activeId ? (programs.get(activeId) ?? null) : null,
-    activeProgramId: activeId,
     total: sessions.length,
     first: dates[0] ?? null,
     weekStart: startedAt ? new Date(startedAt).getDay() : 1,
@@ -214,7 +210,6 @@ export interface PastExercise {
   /** Receta e javës për slotin, kur programi ekziston ende. */
   target: Target | null
   technique: Technique | null
-  restSeconds: number | null
 }
 
 export interface PastSession extends HistorySession {
@@ -297,7 +292,6 @@ export async function pastSession(store: LocalStore, id: string): Promise<PastSe
       record: records.find((record) => record.exerciseId === exerciseId) ?? null,
       target: planned?.target ?? null,
       technique: planned?.technique ?? null,
-      restSeconds: planned?.restSeconds ?? null,
     }
   })
 
@@ -338,7 +332,7 @@ export interface SetChange {
 }
 
 /** Kufijtë e kolonave të `set_logs` (numeric(6,2), smallint 0–200, RIR 0–10). */
-export function validChange({ weightKg, reps, rir }: SetChange): boolean {
+function validChange({ weightKg, reps, rir }: SetChange): boolean {
   const weightOk = weightKg === null || (Number.isFinite(weightKg) && weightKg >= 0 && weightKg <= 9999.99)
   const repsOk = Number.isInteger(reps) && reps >= 1 && reps <= 200
   const rirOk = rir === null || (Number.isInteger(rir) && rir >= 0 && rir <= 10)
