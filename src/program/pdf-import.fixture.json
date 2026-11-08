@@ -1,0 +1,1919 @@
+{
+  "found": true,
+  "name": "Shortcut to Size",
+  "pages": 18,
+  "blocks": [
+    {
+      "name": "Java 0",
+      "weeks": 1
+    },
+    {
+      "name": "Faza 1",
+      "weeks": 4
+    },
+    {
+      "name": "Faza 2",
+      "weeks": 4
+    },
+    {
+      "name": "Faza 3",
+      "weeks": 4
+    }
+  ],
+  "plans": [
+    {
+      "weeks": [
+        {
+          "reps_min": 12,
+          "reps_max": 15,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 9,
+          "reps_max": 11,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 6,
+          "reps_max": 8,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 3,
+          "reps_max": 5,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 12,
+          "reps_max": 15,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": 2,
+          "rir_max": 3,
+          "last_set": "none"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 25,
+          "reps_max": 30,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 15,
+          "reps_max": 20,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 10,
+          "reps_max": 14,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 6,
+          "reps_max": 9,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 25,
+          "reps_max": 30,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": 2,
+          "rir_max": 3,
+          "last_set": "none"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 20,
+          "reps_max": 30,
+          "to_failure": true,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 15,
+          "reps_max": 19,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 10,
+          "reps_max": 14,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 6,
+          "reps_max": 9,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 20,
+          "reps_max": 30,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": 2,
+          "rir_max": 3,
+          "last_set": "none"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 60,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 60,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 10,
+          "reps_max": 14,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 75,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 75,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 75,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 10,
+          "reps_max": 14,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 90,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 90,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 90,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "rest_pause"
+        },
+        {
+          "reps_min": 10,
+          "reps_max": 14,
+          "to_failure": false,
+          "seconds": 0,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        },
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 105,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "drop_set"
+        }
+      ]
+    },
+    {
+      "weeks": [
+        {
+          "reps_min": 0,
+          "reps_max": 0,
+          "to_failure": false,
+          "seconds": 60,
+          "rir_min": -1,
+          "rir_max": -1,
+          "last_set": "none"
+        }
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "pdf_name": "Bench Press",
+      "page": 5,
+      "match": "Barbell Bench Press - Medium Grip",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Incline Bench Press",
+      "page": 5,
+      "match": "Barbell Incline Bench Press - Medium Grip",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Incline Dumbbell Press",
+      "page": 7,
+      "match": "Incline Dumbbell Press",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Reverse-Grip Incline Dumbbell Press",
+      "page": 9,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Incline Dumbbell Flye",
+      "page": 5,
+      "match": "Incline Dumbbell Flyes",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Flye",
+      "page": 7,
+      "match": "Dumbbell Flyes",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Cable Crossover",
+      "page": 5,
+      "match": "Cable Crossover",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Incline Cable Cable Flye",
+      "page": 7,
+      "match": "Incline Cable Flye",
+      "alternative": "Cable Crossover",
+      "sure": false,
+      "equipment": "cable",
+      "muscles": [
+        "chest"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Triceps Pressdown",
+      "page": 5,
+      "match": "Triceps Pushdown",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Lying Triceps Extension",
+      "page": 5,
+      "match": "Lying Triceps Press",
+      "alternative": "",
+      "sure": true,
+      "equipment": "ez_bar",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Overhead Triceps Extension",
+      "page": 7,
+      "match": "Standing Dumbbell Triceps Extension",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Arm Overhead Cable Triceps Extension",
+      "page": 9,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Cable Overhead Triceps Extension",
+      "page": 5,
+      "match": "Cable Rope Overhead Triceps Extension",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Cable Lying Triceps Extension",
+      "page": 7,
+      "match": "Cable Lying Triceps Extension",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Close-Grip Bench Press",
+      "page": 9,
+      "match": "Close-Grip Barbell Bench Press",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "triceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Standing Calf Raise",
+      "page": 5,
+      "match": "Standing Calf Raises",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "calves"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Seated Calf Raise",
+      "page": 5,
+      "match": "Seated Calf Raise",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "calves"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Bent-Over Row",
+      "page": 5,
+      "match": "Bent Over Two-Dumbbell Row",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "lats",
+        "middle back"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Wide-Grip Pulldown",
+      "page": 5,
+      "match": "Wide-Grip Lat Pulldown",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Behind-Neck Pulldown",
+      "page": 7,
+      "match": "Wide-Grip Pulldown Behind The Neck",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Standing Pulldown",
+      "page": 5,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Seated Cable Row",
+      "page": 7,
+      "match": "Seated Cable Rows",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats",
+        "middle back"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Straight-Arm Pulldown",
+      "page": 9,
+      "match": "Straight-Arm Pulldown",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Reverse-Grip Pulldown",
+      "page": 7,
+      "match": "Underhand Cable Pulldowns",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "lats"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Barbell Curl",
+      "page": 5,
+      "match": "Barbell Curl",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Incline Curl",
+      "page": 5,
+      "match": "Incline Dumbbell Curl",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Preacher Curl",
+      "page": 7,
+      "match": "Preacher Curl",
+      "alternative": "",
+      "sure": true,
+      "equipment": "ez_bar",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Incline Cable Curl",
+      "page": 9,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Arm High Cable Curl",
+      "page": 5,
+      "match": "High Cable Curls",
+      "alternative": "",
+      "sure": false,
+      "equipment": "cable",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Behind-Back Cable Curl",
+      "page": 7,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Concentration Curl",
+      "page": 9,
+      "match": "Concentration Curls",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "biceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Hip Thrust",
+      "page": 11,
+      "match": "Barbell Hip Thrust",
+      "alternative": "",
+      "sure": false,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Hanging Leg Raise",
+      "page": 11,
+      "match": "Hanging Leg Raise",
+      "alternative": "",
+      "sure": true,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Weighted Hip Thrust",
+      "page": 11,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "other",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Smith Machine Hip Thrust",
+      "page": 11,
+      "match": "Smith Machine Hip Raise",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Crunch",
+      "page": 11,
+      "match": "Crunches",
+      "alternative": "",
+      "sure": true,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Weighted Crunch",
+      "page": 11,
+      "match": "Weighted Crunches",
+      "alternative": "",
+      "sure": true,
+      "equipment": "other",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Cable Crunch",
+      "page": 11,
+      "match": "Cable Crunch",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Machine Crunch",
+      "page": 11,
+      "match": "Ab Crunch Machine",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Oblique Crunch",
+      "page": 11,
+      "match": "Oblique Crunches",
+      "alternative": "",
+      "sure": true,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Side Bend",
+      "page": 11,
+      "match": "Dumbbell Side Bend",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Cable Oblique Crunch",
+      "page": 11,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Band Roundhouse Elbow",
+      "page": 11,
+      "match": "",
+      "alternative": "",
+      "sure": false,
+      "equipment": "band",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Shoulder Press",
+      "page": 6,
+      "match": "Dumbbell Shoulder Press",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Lateral Raise",
+      "page": 6,
+      "match": "Side Lateral Raise",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Smith Machine Upright Row",
+      "page": 8,
+      "match": "Smith Machine Upright Row",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "shoulders",
+        "traps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Arm Cable Front Raise",
+      "page": 6,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Arm Cable Lateral Raise",
+      "page": 8,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Upright Row",
+      "page": 10,
+      "match": "Standing Dumbbell Upright Row",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "shoulders",
+        "traps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "High Cable Rear Delt Fly",
+      "page": 6,
+      "match": "Cable Rear Delt Fly",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Bent-Over Lateral Raise",
+      "page": 8,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "shoulders"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Dumbbell Shrug",
+      "page": 6,
+      "match": "Dumbbell Shrug",
+      "alternative": "",
+      "sure": true,
+      "equipment": "dumbbell",
+      "muscles": [
+        "traps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Barbell Shrug",
+      "page": 8,
+      "match": "Barbell Shrug",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "traps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Arm Smith Machine Shrug",
+      "page": 10,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "traps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Leg Press Calf Raise",
+      "page": 6,
+      "match": "Calf Press On The Leg Press Machine",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "calves"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Squat",
+      "page": 6,
+      "match": "Barbell Squat",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "quadriceps",
+        "glutes"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "One-Leg Leg Press",
+      "page": 6,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "quadriceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Front Squat",
+      "page": 8,
+      "match": "Front Barbell Squat",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "quadriceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Leg Press",
+      "page": 10,
+      "match": "Leg Press",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "quadriceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Leg Extension",
+      "page": 6,
+      "match": "Leg Extensions",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "quadriceps"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Romanian Deadlift",
+      "page": 6,
+      "match": "Romanian Deadlift",
+      "alternative": "",
+      "sure": true,
+      "equipment": "barbell",
+      "muscles": [
+        "hamstrings",
+        "glutes"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Lying Leg Curl",
+      "page": 6,
+      "match": "Lying Leg Curls",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "hamstrings"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Seated Leg Curl",
+      "page": 8,
+      "match": "Seated Leg Curl",
+      "alternative": "",
+      "sure": true,
+      "equipment": "machine",
+      "muscles": [
+        "hamstrings"
+      ],
+      "timed": false
+    },
+    {
+      "pdf_name": "Plank",
+      "page": 11,
+      "match": "Plank",
+      "alternative": "",
+      "sure": true,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": true
+    },
+    {
+      "pdf_name": "Side Plank",
+      "page": 11,
+      "match": "Side Bridge",
+      "alternative": "",
+      "sure": true,
+      "equipment": "bodyweight",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": true
+    },
+    {
+      "pdf_name": "Cable Woodchopper",
+      "page": 11,
+      "match": "",
+      "alternative": "",
+      "sure": true,
+      "equipment": "cable",
+      "muscles": [
+        "abdominals"
+      ],
+      "timed": false
+    }
+  ],
+  "days": [
+    {
+      "name": "Gjoks, triceps, pulpa",
+      "slots": [
+        {
+          "exercise": 0,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 1,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 2,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 3,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 4,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 5,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 6,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 7,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 8,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 9,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 10,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 11,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 12,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 13,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 14,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 15,
+          "sets": 4,
+          "rest_seconds": 60,
+          "plan": 2,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 3
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 16,
+          "sets": 4,
+          "rest_seconds": 60,
+          "plan": 2,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 3
+            }
+          ],
+          "weeks": []
+        }
+      ]
+    },
+    {
+      "name": "Shpinë, biceps, bark",
+      "slots": [
+        {
+          "exercise": 17,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 18,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 19,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 20,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 21,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 22,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 22,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 23,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 21,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 24,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 25,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 26,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 27,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 28,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 29,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 30,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 31,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 4,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 5
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 32
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 33
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 34
+            }
+          ]
+        },
+        {
+          "exercise": 35,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 4,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 5
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 36
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 37
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 38
+            }
+          ]
+        },
+        {
+          "exercise": 39,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 4,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 5
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 40
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 41
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shpatulla, trapez, pulpa",
+      "slots": [
+        {
+          "exercise": 43,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 44,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 45,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 46,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 47,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 48,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 49,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 50,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 50,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 51,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 52,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 53,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 16,
+          "sets": 4,
+          "rest_seconds": 60,
+          "plan": 2,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 3
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 54,
+          "sets": 4,
+          "rest_seconds": 60,
+          "plan": 2,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 3
+            }
+          ],
+          "weeks": []
+        }
+      ]
+    },
+    {
+      "name": "Këmbë, bark",
+      "slots": [
+        {
+          "exercise": 55,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 56,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 57,
+              "sets": 0,
+              "plan": -1
+            },
+            {
+              "block": 4,
+              "exercise": 58,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 59,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 60,
+          "sets": 4,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 3,
+              "plan": 1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 61,
+          "sets": 3,
+          "rest_seconds": 90,
+          "plan": 0,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 1
+            },
+            {
+              "block": 3,
+              "exercise": 62,
+              "sets": 0,
+              "plan": -1
+            }
+          ],
+          "weeks": []
+        },
+        {
+          "exercise": 31,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 4,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 5
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 32
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 33
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 34
+            }
+          ]
+        },
+        {
+          "exercise": 35,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 4,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 5
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 36
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 37
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 38
+            }
+          ]
+        },
+        {
+          "exercise": 63,
+          "sets": 3,
+          "rest_seconds": 60,
+          "plan": 6,
+          "blocks": [
+            {
+              "block": 1,
+              "exercise": -1,
+              "sets": 2,
+              "plan": 9
+            },
+            {
+              "block": 3,
+              "exercise": -1,
+              "sets": 0,
+              "plan": 7
+            },
+            {
+              "block": 4,
+              "exercise": -1,
+              "sets": 0,
+              "plan": 8
+            }
+          ],
+          "weeks": [
+            {
+              "block": 0,
+              "week": 2,
+              "exercise": 64
+            },
+            {
+              "block": 0,
+              "week": 3,
+              "exercise": 65
+            },
+            {
+              "block": 0,
+              "week": 4,
+              "exercise": 63
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
