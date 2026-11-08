@@ -4,4 +4,12 @@
     <!-- background i temës OLED: sfondi i nisjes dhe i dritares para se të hapet WebView. -->
     <color name="th_background">#000000</color>
     <!-- Ngjyrat e ikonës (prushi dhe vija): values/ic_launcher_colors.xml, nga tools/app-icon/build.mjs. -->
+    <!-- Njoftimi i seancës (V2-E1-08): prushi dhe teksti mbi të (tokenat ember dhe on-ember). -->
+    <color name="notification_ember">#FF5B2E</color>
+    <color name="notification_on_ember">#0B0B0C</color>
+    <!-- −/+ dhe kronometri: sfondin e njoftimit e jep sistemi (i çelët këtu, i errët te values-night),
+         ndaj butoni është një hije e tejdukshme e tekstit. -->
+    <color name="notification_key">#14000000</color>
+    <color name="notification_key_icon">#DE0B0B0C</color>
+    <color name="notification_ripple">#1F000000</color>
 </resources>

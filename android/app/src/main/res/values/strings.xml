@@ -9,4 +9,7 @@
     <string name="update_channel">Përditësimi i app-it</string>
     <string name="update_done_title">Vrull u përditësua</string>
     <string name="update_done_text">Versioni %1$s. Prek për ta hapur.</string>
+    <!-- Njoftimi i seancës (V2-E1-08): simbolet pranë numrave; tekstet vijnë nga app-i, në gjuhën e tij. -->
+    <string name="notification_kg" translatable="false">kg</string>
+    <string name="notification_times" translatable="false">×</string>
 </resources>

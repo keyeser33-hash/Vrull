@@ -16,6 +16,8 @@ export interface RestAlarm {
 export interface RestTimer {
   get(): RestState | null
   start(seconds: number, body: string): void
+  /** Pushimi që nisi njoftimi i seancës (V2-E1-08): i njëjti fund dhe total; një pushim i mbaruar nuk rifillon. */
+  adopt(endsAt: number, totalSeconds: number, body: string): void
   add(seconds: number): void
   skip(): void
   /** Koha mbaroi: pastron gjendjen; njoftimi i planifikuar vjen gjithsesi. */
@@ -64,6 +66,12 @@ export function createRestTimer(options: {
       body = text
       write({ endsAt: now() + seconds * 1000, totalSeconds: seconds })
       options.alarm?.schedule(new Date(state!.endsAt), body)
+    },
+    adopt(endsAt, totalSeconds, text) {
+      if (endsAt <= now()) return
+      body = text
+      write({ endsAt, totalSeconds })
+      options.alarm?.schedule(new Date(endsAt), body)
     },
     add(seconds) {
       if (!state) return

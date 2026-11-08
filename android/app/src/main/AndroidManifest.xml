@@ -52,6 +52,9 @@
             </intent-filter>
             <meta-data android:name="android.service.notification.default_filter_types" android:value="" />
         </service>
+        <!-- Njoftimi i seancës (V2-E1-08): prekjet te njoftimi ("Ruaj setin", −/+, "Kapërce pushimin"), edhe
+             me ekran të kyçur dhe kur procesi është vrarë, dhe alarmi i saktë i fundit të pushimit. -->
+        <receiver android:name=".SessionActionReceiver" android:exported="false" />
         <!-- Skaneri i barkodit i Google Play Services (scan(), pa leje kamere); moduli shkarkohet me instalimin. -->
         <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />
     </application>

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { currentI18n } from '@/i18n'
-import { createRestTimer, type RestAlarm, remainingSeconds } from './rest-timer'
+import { createRestTimer, type RestAlarm, remainingSeconds, type RestTimer } from './rest-timer'
 
 // Timer-i i pushimit për një seancë, me orën që rifreskohet sa kohë numëron.
 
@@ -10,8 +10,30 @@ export function setRestAlarm(next: RestAlarm | undefined) {
   alarm = next
 }
 
+// Një timer për seancë, i përbashkët për ekranin e seancës dhe njoftimin e seancës (V2-E1-08): një
+// pushim i nisur ose i kapërcyer te njoftimi del menjëherë edhe te ekrani.
+const timers = new Map<string, RestTimer>()
+
+export function restTimer(sessionId: string): RestTimer {
+  let timer = timers.get(sessionId)
+  if (!timer) {
+    timer = createRestTimer({ key: `th:rest:${sessionId}`, alarm: proxyAlarm })
+    timers.set(sessionId, timer)
+  }
+  return timer
+}
+
+/** Pushimi i një seance për njoftimin e seancës (lib/session-notification.ts). */
+export function restControl(sessionId: string) {
+  const timer = restTimer(sessionId)
+  return {
+    adopt: (endsAt: number, totalSeconds: number) => timer.adopt(endsAt, totalSeconds, currentI18n().t('session.notify.body')),
+    skip: () => timer.skip(),
+  }
+}
+
 export function useRestTimer(sessionId: string, onFinished?: () => void) {
-  const timer = useMemo(() => createRestTimer({ key: `th:rest:${sessionId}`, alarm: proxyAlarm }), [sessionId])
+  const timer = restTimer(sessionId)
   const state = useSyncExternalStore(timer.subscribe, timer.get)
   const [now, setNow] = useState(() => Date.now())
   const remaining = remainingSeconds(state, now)
