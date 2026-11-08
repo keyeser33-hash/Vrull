@@ -61,12 +61,16 @@ jobs:
 
       # v1: kodi i tag-ut, si në telefonat e përdoruesve, por me Supabase-n e imituar. Tag-u nuk ndryshon, ndaj
       # APK-ja ruhet në cache (4 minuta më pak për çdo nisje); prapashtesa rritet kur ndryshon mënyra e ndërtimit.
+      # Bashkë me të ruhet çelësi debug me të cilin u nënshkrua: çdo runner krijon një çelës të ri, dhe v2 me
+      # çelës tjetër nuk instalohet mbi v1 (përditësimi refuzohet).
       - name: v1 nga cache
         id: v1-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: apks/v1.apk
-          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-1
+          path: |
+            apks/v1.apk
+            ~/.android/debug.keystore
+          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-2
       - name: v1 nga tag-u
         if: steps.v1-cache.outputs.cache-hit != 'true'
         run: |
