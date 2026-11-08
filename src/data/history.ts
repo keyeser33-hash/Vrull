@@ -201,6 +201,8 @@ export interface PastSet {
 export interface PastExercise {
   exerciseId: string
   name: string
+  /** ID-ja e free-exercise-db për foton (`ExercisePhoto`); null për ushtrimin e përdoruesit. */
+  libraryId: string | null
   equipment: Equipment
   tracking: Tracking
   primary: string[]
@@ -284,6 +286,7 @@ export async function pastSession(store: LocalStore, id: string): Promise<PastSe
     return {
       exerciseId,
       name: String(exercise?.name ?? ''),
+      libraryId: (exercise?.library_id as string | null | undefined) ?? null,
       equipment: (exercise?.equipment as Equipment | undefined) ?? 'other',
       tracking: (exercise?.tracking as Tracking | undefined) ?? 'weight_reps',
       primary: (exercise?.primary_muscles as string[] | undefined) ?? [],

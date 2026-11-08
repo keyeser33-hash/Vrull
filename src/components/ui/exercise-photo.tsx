@@ -39,7 +39,7 @@ export function ExercisePhoto({
         >
           {size === 'row' || photo.status === 'loading' ? <Icon name="programi" size={16} /> : null}
           {photo.status === 'missing' ? (
-            <span className={size === 'row' ? 'text-xs leading-4' : 'text-[11px] leading-[1.1]'}>{t('programme.noPhoto')}</span>
+            <span className={size === 'row' ? 'text-xs leading-4' : 'text-[11px] leading-[1.1]'}>{t('exercise.noPhoto')}</span>
           ) : null}
         </span>
       )}

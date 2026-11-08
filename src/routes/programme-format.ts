@@ -1,6 +1,6 @@
 import type { I18n } from '@/i18n'
 import { muscleName, programBlockName, programWeekLabel } from '@/i18n/domain'
-import type { Equipment, Target, Technique } from '@/program/types'
+import type { Target, Technique } from '@/program/types'
 
 // Tekstet e programit (V2-E1-09) në të dyja gjuhët: javët, setet, intervalet dhe pajisjet. Emrat e
 // domenit (grupet e muskujve, blloqet dhe ditët e Shortcut to Size) vijnë nga `@/i18n/domain`.
@@ -34,8 +34,6 @@ export function rangeText(fmt: Fmt, target: Target): string {
 
 /** "4 × 9–11", "3 × 60 s". */
 export const setsText = (fmt: Fmt, sets: number, target: Target) => `${fmt.number(sets)} × ${rangeText(fmt, target)}`
-
-export const equipmentName = (t: T, equipment: Equipment) => t(`programme.equipment.${equipment}`)
 
 /** "Shpatullat, trapezi": grupet me radhë, vetëm i pari me shkronjë të madhe. */
 export const groupList = (t: T, groups: string[], lower = false) =>
