@@ -7,7 +7,7 @@ import { upcomingDates, workoutMinutes } from '@/program/week-plan'
 import type { WeekRef, WeekWeightRow } from '@/progress/week-weights'
 import type { LocalStore } from './store'
 import { programView, type TrainingHistory, trainingHistory, trainingSnapshot } from './training'
-import { weekWeightsView } from './week-weights'
+import { weekWeightsView, workoutWeights } from './week-weights'
 
 // Ekrani Programi (V2-E1-09, bordi "Programi"): blloqet me javët, java e treguesit me ditët, datat e
 // parashikuara dhe kohën, stërvitja e radhës me ushtrimin e parë dhe peshën e javës (§7, V23), dhe
@@ -115,7 +115,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
   let next: ProgrammeHome['next'] = null
   if (snapshot && !snapshot.completed) {
     const [slot] = snapshot.plan.slots
-    const weights = slot ? await weekWeightsView(store, { blockId: pointer.blockId, week: pointer.week }) : null
+    const weights = slot ? await workoutWeights(store, snapshot.plan) : null
     next = {
       dayId: pointer.dayId,
       inProgress: snapshot.session !== null,
@@ -125,7 +125,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
             name: snapshot.exercises[slot.exerciseId]?.name ?? '',
             sets: slot.sets,
             target: slot.target,
-            weightKg: weights?.rows.find((row) => row.slotId === slot.slotId)?.weightKg ?? null,
+            weightKg: weights?.get(slot.slotId)?.weightKg ?? null,
           }
         : null,
     }

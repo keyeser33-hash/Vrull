@@ -8,7 +8,7 @@ import { Stepper } from '@/components/ui/stepper'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
-import { weekWeightsView } from '@/data/week-weights'
+import { workoutWeights } from '@/data/week-weights'
 import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
@@ -37,13 +37,12 @@ async function sessionData() {
 }
 
 /**
- * "Peshat e javës" e javës së seancës, sipas slotit (V23, §7): vendimi i përdoruesit, ose propozimi.
- * Lexim më vete, që ruajtja e një seti të mos presë llogarinë e gjithë javës.
+ * Pesha e javës e çdo sloti të seancës (`workoutWeights`, e njëjtë me Sot dhe Programin). Lexim më
+ * vete, që ruajtja e një seti të mos presë llogarinë e gjithë javës.
  */
 async function sessionWeights(): Promise<Map<string, WeekWeightRow>> {
   const snapshot = await trainingSnapshot(store)
-  const week = snapshot?.session ? await weekWeightsView(store, { blockId: snapshot.plan.blockId, week: snapshot.plan.week }) : null
-  return new Map((week?.rows ?? []).map((row) => [row.slotId, row]))
+  return snapshot?.session ? workoutWeights(store, snapshot.plan) : new Map()
 }
 
 export function SessionPage() {
