@@ -61,6 +61,7 @@ Rregullat që lindën nga ekranet. Hyjnë në fuqi kur përdoruesi i miraton ekr
 - **Gatishmëria:** nën 60% ekrani Sot sugjeron seancën më të lehtë (V23); përdoruesi e pranon, e ndryshon ose e injoron.
 - **Seanca:** "Ruaj setin" është veprimi kryesor; "Mbyll stërvitjen" mbetet me kontur derisa të ruhen të gjitha setet, pastaj bëhet veprimi kryesor.
 - **Pragu i rekordit:** ekrani i setit thotë sa përsëritje me peshën e zgjedhur japin rekord të ri të e1RM-së (p.sh. "12 përsëritje të japin rekord të ri: e1RM 87,5 kg"), kur pragu bie brenda intervalit ose 1–2 përsëritje mbi të. Me peshën e sugjeruar (§7) rekordi kërkon gjithnjë më shumë se kufiri i sipërm, ndaj pragu shfaqet vetëm si informacion.
+- **Pesha pa e1RM:** një ushtrim që ka histori, por pa e1RM (setet mbi 15 përsëritje, si pulpat në Javët 1–2), merr si sugjerim peshën e fundit të përdorur, me "Herën e kaluar" pranë; nuk bie te "Zgjidh peshën ku mbyll X–Y përsëritje", që vlen vetëm për ushtrimin pa histori.
 - **Fotot e ushtrimeve** shfaqen bardh e zi, që prushi të mbetet i vetmi theks.
 - **Pjatat vendase:** makrot e një pjate llogariten nga përbërësit e recetës bazë (USDA FoodData Central), dhe faqja e pjatës e thotë ("Nga përbërësit e recetës bazë").
 - **Temat (D3.1):** Natë dhe Ditë u provuan te Sot, Seanca, Ushqimi dhe Trupi. Rregullat dhe tokenat e rinj (`track`, `model-light`, `volume-1..3`) janë te sistemi i dizajnit, "Rregullat e temave". Modeli 3D ndriçohet nga `model-light`, kurrë nga ngjyra e tekstit: në Ditë ajo është e zezë dhe trupi del i zi.
