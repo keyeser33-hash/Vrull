@@ -1,4 +1,6 @@
 import * as body from './areas/body'
+import * as domain from './areas/domain'
+import * as entry from './areas/entry'
 import * as history from './areas/history'
 import * as programme from './areas/programme'
 import * as session from './areas/session'
@@ -274,4 +276,4 @@ const base: TranslationOf<typeof sqBase> = {
   'ui.quickAdd.aiLimit': 'This month’s limit has been reached',
 }
 
-export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en }
+export const en: Translation = { ...base, ...today.en, ...session.en, ...programme.en, ...body.en, ...history.en, ...entry.en, ...domain.en }
