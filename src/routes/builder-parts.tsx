@@ -20,7 +20,23 @@ const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-
  * Shiriti 56 px i ekraneve të ndërtuesit: × ose shigjeta majtas, titulli i vogël në mes, veprimi djathtas.
  * Mbrapa kthehet aty nga erdhi përdoruesi, ose te `fallback` kur ekrani është i pari në histori.
  */
-export function EditorBar({ icon, label, fallback, title, action }: { icon: 'close' | 'back'; label: string; fallback: string; title: string; action?: ReactNode }) {
+export function EditorBar({
+  icon,
+  label,
+  fallback,
+  title,
+  heading = false,
+  action,
+}: {
+  icon: 'close' | 'back'
+  label: string
+  fallback: string
+  title: string
+  /** Titulli i vogël është titulli i ekranit (struktura, ku emri është fushë). */
+  heading?: boolean
+  action?: ReactNode
+}) {
+  const Title = heading ? 'h1' : 'span'
   const navigate = useNavigate()
   const location = useLocation()
   return (
@@ -34,7 +50,7 @@ export function EditorBar({ icon, label, fallback, title, action }: { icon: 'clo
       >
         <Icon name={icon === 'close' ? 'mbyll-vrull' : 'mbrapa'} size={22} />
       </Button>
-      <span className="min-w-0 truncate text-center font-display text-lg leading-[1.2] font-bold tracking-[0.04em] text-muted-foreground uppercase">{title}</span>
+      <Title className="min-w-0 truncate text-center font-display text-lg leading-[1.2] font-bold tracking-[0.04em] text-muted-foreground uppercase">{title}</Title>
       {action ?? <span aria-hidden className="size-touch shrink-0" />}
     </div>
   )

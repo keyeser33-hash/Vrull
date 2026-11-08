@@ -42,7 +42,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { progressionIncrement, weightStep } from '@/program/loads'
 import { slotRules } from '@/program/rules'
-import type { TemplateId } from '@/program/templates'
+import { isTemplateId } from '@/program/templates'
 import type { Equipment, ProgressionRule } from '@/program/types'
 import { workoutMinutes } from '@/program/week-plan'
 import { prescriptionValue, rirText, slotSummary, useTemplateNames } from './builder-format'
@@ -98,7 +98,8 @@ export function ProgramsPage() {
   const [busy, setBusy] = useState(false)
   const active = programs?.find((program) => program.active) ?? null
   const mine = programs?.filter((program) => !program.active) ?? []
-  const template = params.get('shablloni') as TemplateId | null
+  const requested = params.get('shablloni')
+  const template = isTemplateId(requested) ? requested : null
 
   async function build() {
     setBusy(true)
@@ -226,7 +227,8 @@ export function BuildStartPage() {
   const paths = useEditorPaths()
   const names = useTemplateNames()
   const [busy, setBusy] = useState(false)
-  const template = params.get('shablloni') as TemplateId | null
+  const requested = params.get('shablloni')
+  const template = isTemplateId(requested) ? requested : null
 
   async function blank() {
     setBusy(true)
@@ -287,6 +289,7 @@ export function ProgramEditorPage() {
   const [, setParams] = useSearchParams()
   const navigate = useNavigate()
   const paths = useEditorPaths()
+  const names = useTemplateNames()
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
   if (view === undefined) return <h1 className="sr-only">{t('builder.structure.title')}</h1>
@@ -339,7 +342,7 @@ export function ProgramEditorPage() {
   }
 
   const footer = paths.onboarding || view.draft ? 'save' : view.active ? null : 'start'
-  const templateText = view.template ? t('builder.template.startedFrom', { name: templateName(t, view.template) }) : null
+  const templateText = view.template ? t('builder.template.startedFrom', { name: names.program[view.template] }) : null
 
   return (
     <div className="flex flex-col gap-4">
@@ -348,6 +351,7 @@ export function ProgramEditorPage() {
         label={view.draft ? t('builder.structure.close') : t('builder.structure.back')}
         fallback={paths.programmes}
         title={view.draft ? t('builder.structure.newTitle') : t('builder.structure.title')}
+        heading
         action={paths.onboarding ? undefined : <MoreButton label={t('builder.structure.more')} onClick={() => open('me-shume')} />}
       />
 
@@ -507,10 +511,6 @@ export function ProgramEditorPage() {
       ) : null}
     </div>
   )
-}
-
-function templateName(t: ReturnType<typeof useI18n>['t'], id: TemplateId) {
-  return id === 'shortcut_to_size' ? 'Shortcut to Size' : t(`builder.template.name.${id}`)
 }
 
 /** Emri i programit: ruhet kur del nga fusha ose me Enter; bosh kthehet te i mëparshmi. */

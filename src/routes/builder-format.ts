@@ -2,6 +2,7 @@ import type { TemplateNames } from '@/data/program-editor'
 import type { I18n } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
 import type { Scope } from '@/program/rules'
+import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import { type ProgramTemplate, type TemplateId, templateSummary } from '@/program/templates'
 import type { Prescription, RepRange } from '@/program/types'
 import { clock } from './training-format'
@@ -98,7 +99,7 @@ export function useTemplateNames(): TemplateNames {
   const { t } = useI18n()
   return {
     program: {
-      shortcut_to_size: 'Shortcut to Size',
+      shortcut_to_size: SHORTCUT_TO_SIZE.name,
       full_body_3: t('builder.template.name.full_body_3'),
       upper_lower_4: t('builder.template.name.upper_lower_4'),
     },

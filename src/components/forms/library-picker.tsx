@@ -28,7 +28,7 @@ export function LibraryPicker({ onPick, busy = false }: { onPick: (exercise: Lib
   const results = library ? searchLibrary(library, query).slice(0, 40) : []
   return (
     <>
-      <label htmlFor={searchId} className="type-label text-muted-foreground">
+      <label htmlFor={searchId} className="shrink-0 type-label text-muted-foreground">
         {t('builder.library.search')}
       </label>
       <input
@@ -37,7 +37,7 @@ export function LibraryPicker({ onPick, busy = false }: { onPick: (exercise: Lib
         autoComplete="off"
         value={query}
         onChange={(event) => setQuery(event.currentTarget.value)}
-        className={cn('h-button w-full appearance-none rounded-md border border-border bg-surface-2 px-3.5 text-base text-foreground', focusRing)}
+        className={cn('h-button w-full shrink-0 appearance-none rounded-md border border-border bg-surface-2 px-3.5 text-base text-foreground', focusRing)}
       />
       {library === null ? (
         <p role="status" className="type-body text-muted-foreground">

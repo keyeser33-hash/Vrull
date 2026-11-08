@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 import { LibraryPicker } from '@/components/forms/library-picker'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -267,6 +267,9 @@ function RecipeForm({
   const [mode, setMode] = useState<'inherit' | 'own'>(ownRule ? 'own' : 'inherit')
   const [rule, changeRule] = useState<ProgressionRule>(ownRule ?? inherited.rule ?? { minRir: 2, incrementKg: 2.5 })
   const [busy, setBusy] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const paths = useEditorPaths()
 
   const changes: RuleFields = {}
   if (sets !== rules.sets.value) changes.sets = sets
@@ -277,10 +280,13 @@ function RecipeForm({
   if (mode === 'inherit' && ownRule) changes.progression = null
   const dirty = Object.keys(changes).length > 0
 
+  /** Ruan ndryshimet në nivelin e zgjedhur dhe kthehet te dita (si te bordi "Sloti"). */
   async function save() {
     setBusy(true)
     try {
-      await editSlot(store, slotId, scope, changes)
+      if (dirty) await editSlot(store, slotId, scope, changes)
+      if (location.key === 'default') navigate(paths.day(view.id, dayId), { replace: true })
+      else navigate(-1)
     } finally {
       setBusy(false)
     }
@@ -435,7 +441,7 @@ function RecipeForm({
       <Preview view={view} slotId={slotId} dayId={dayId} scope={scope} blockNames={blockNames} />
 
       <EditorFooter>
-        <Button variant="primary" size="xl" disabled={!dirty || busy} onClick={() => void save()}>
+        <Button variant="primary" size="xl" disabled={busy} onClick={() => void save()}>
           {saveLabel(t, scope, blockNames)}
         </Button>
       </EditorFooter>

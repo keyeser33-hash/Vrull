@@ -201,7 +201,8 @@ describe('ndërtuesi i programeve', () => {
     const bench = view.days[0].slots[0]
     const strength = view.blocks[1]
     const user = userEvent.setup()
-    const router = await renderAt(`/programi/editori/${view.id}/sloti/${bench.id}`)
+    const dayPath = `/programi/editori/${view.id}/dita/${view.days[0].id}`
+    const router = await renderAt(`${dayPath}|/programi/editori/${view.id}/sloti/${bench.id}`)
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
     expect(screen.getByText('Sipër A · ushtrimi 1')).toBeInTheDocument()
@@ -209,7 +210,7 @@ describe('ndërtuesi i programeve', () => {
     const level = screen.getByRole('radiogroup', { name: 'Niveli' })
     expect(within(level).getByRole('radio', { name: 'Gjithë programi' })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByRole('button', { name: 'Përsëritjet: 6–8' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Ruaj për gjithë programin' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Ruaj për gjithë programin' })).toBeEnabled()
 
     await user.click(within(level).getByRole('radio', { name: 'Ky bllok' }))
     await user.click(within(screen.getByRole('radiogroup', { name: 'Cili bllok' })).getByRole('radio', { name: 'Forca' }))
@@ -226,13 +227,19 @@ describe('ndërtuesi i programeve', () => {
     await user.click(screen.getByRole('button', { name: 'Një set më pak' }))
     await user.click(screen.getByRole('button', { name: 'Rest-pause' }))
     await user.click(screen.getByRole('button', { name: 'Ruaj për bllokun Forca' }))
+    // "Ruaj për…" ruan dhe kthehet te dita, që e thotë ndryshimin e bllokut.
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sipër A' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe(dayPath)
+    expect(screen.getByRole('link', { name: /^1 · Bench Press/ })).toHaveTextContent('Te blloku Forca: 3 × 4–6 · RIR 2')
     const { programEditor } = await import('@/data/program-editor')
-    await waitFor(async () => {
-      const plan = (await programEditor(data.store, view.id))!.plan(strength.id, 2, view.days[0].id).slots[0]
-      expect(plan).toMatchObject({ sets: 3, target: { min: 4, max: 6, rir: { min: 2, max: 2 } }, technique: { type: 'rest_pause' } })
-    })
-    expect(await screen.findByText('Forca ndryshon 3 vlera. Të tjerat vijnë nga programi.')).toBeInTheDocument()
-    expect((await programEditor(data.store, view.id))!.plan(view.blocks[0].id, 2, view.days[0].id).slots[0]).toMatchObject({ sets: 4, technique: { type: 'none' } })
+    const plans = (await programEditor(data.store, view.id))!
+    expect(plans.plan(strength.id, 2, view.days[0].id).slots[0]).toMatchObject({ sets: 3, target: { min: 4, max: 6, rir: { min: 2, max: 2 } }, technique: { type: 'rest_pause' } })
+    expect(plans.plan(view.blocks[0].id, 2, view.days[0].id).slots[0]).toMatchObject({ sets: 4, technique: { type: 'none' } })
+
+    await user.click(screen.getByRole('link', { name: /^1 · Bench Press/ }))
+    await user.click(within(await screen.findByRole('radiogroup', { name: 'Niveli' })).getByRole('radio', { name: 'Ky bllok' }))
+    await user.click(within(screen.getByRole('radiogroup', { name: 'Cili bllok' })).getByRole('radio', { name: 'Forca' }))
+    expect(screen.getByText('Forca ndryshon 3 vlera. Të tjerat vijnë nga programi.')).toBeInTheDocument()
 
     // Receta te fleta: intervali i ri vlen pas "Ruaj për…".
     await user.click(screen.getByRole('button', { name: 'Përsëritjet: 4–6' }))
@@ -266,11 +273,10 @@ describe('ndërtuesi i programeve', () => {
     await user.selectOptions(within(smart).getByRole('combobox', { name: 'Pragu i RIR-it' }), '1')
     await user.selectOptions(within(smart).getByRole('combobox', { name: 'Shtesa' }), '1')
     await user.click(screen.getByRole('button', { name: 'Ruaj për gjithë programin' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sipër A' })).toBeInTheDocument()
     const { programEditor } = await import('@/data/program-editor')
-    await waitFor(async () => {
-      const plan = (await programEditor(data.store, view.id))!.plan(view.blocks[0].id, 1, view.days[0].id).slots[5]
-      expect(plan.progression).toEqual({ minRir: 1, incrementKg: 1 })
-    })
+    const plan = (await programEditor(data.store, view.id))!.plan(view.blocks[0].id, 1, view.days[0].id).slots[5]
+    expect(plan.progression).toEqual({ minRir: 1, incrementKg: 1 })
   })
 
   it('anglisht: struktura dhe dita e një programi të ndërtuar në anglisht', async () => {
