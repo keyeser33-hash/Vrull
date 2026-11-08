@@ -1,6 +1,6 @@
 # Instalimi në telefon
 
-Training Hub nuk është në Play Store. APK-ja ndërtohet nga GitHub Actions dhe publikohet te [Releases](https://github.com/keyeser33-hash/training-hub/releases) e repo-s.
+Vrull (projekti Training Hub; emri i app-it nga 0.20.0) nuk është në Play Store. APK-ja ndërtohet nga GitHub Actions dhe publikohet te [Releases](https://github.com/keyeser33-hash/training-hub/releases) e repo-s.
 
 ## 1. Një herë: çelësi i nënshkrimit
 
@@ -22,7 +22,7 @@ Workflow-i kontrollon gjurmën e certifikatës. Nëse dikush vendos një çelës
 2. Shkarko `TrainingHub-X.Y.Z.apk`.
 3. Hape skedarin. Herën e parë Android kërkon leje për të instaluar app-e nga ky burim: **Cilësimet → Lejo nga ky burim** (Allow from this source). Kjo bëhet vetëm një herë për shfletuesin ose për app-in e skedarëve.
 4. **Instalo**. Nëse Play Protect thotë që app-i është i panjohur, zgjidh **Më shumë detaje → Instalo gjithsesi**.
-5. Hap Training Hub nga ekrani kryesor dhe hyr me email-in dhe fjalëkalimin e llogarisë që krijove te Supabase. Hyrja kërkon internet vetëm herën e parë; pastaj vendos peshën, ditët dhe orën e stërvitjes, zgjimin dhe gjumin, dhe programi nis nga Java 0.
+5. Hap Vrull nga ekrani kryesor dhe hyr me emailin dhe fjalëkalimin e llogarisë që krijove te Supabase. Hyrja kërkon internet vetëm herën e parë; pastaj zgjedh gjuhën dhe vendos peshën, ditët dhe orën e stërvitjes, zgjimin dhe gjumin, dhe programi nis nga Java 0.
 
 ## 3. Përditësimet
 
@@ -30,12 +30,12 @@ Nga versioni 0.15.0, përditësimet vijnë brenda app-it:
 
 1. Kur ka version të ri, te **Sot** del rreshti "Versioni X.Y.Z është gati" (edhe te **Cilësimet → Versioni**). Kontrolli bëhet kur hapet app-i me internet, të shumtën një herë në 6 orë; **Kontrollo tani** nuk pret.
 2. Prek rreshtin: fleta tregon çfarë ka të re dhe madhësinë. Prek **Përditëso**.
-3. Herën e parë Android-i kërkon lejen **Instalo app të panjohura** për Training Hub: **Lejo instalimin → Lejo nga ky burim**, kthehu te app-i dhe prek përsëri **Përditëso**.
-4. App-i e shkarkon, kontrollon që skedari është ai i versionit (SHA-256) dhe e instalon. Në Android 12 e lart, pas lejes së parë, pa dritare konfirmimi. Training Hub mbyllet për pak dhe njoftimi "Training Hub u përditësua" e hap përsëri.
+3. Herën e parë Android-i kërkon lejen **Instalo app të panjohura** për Vrull: **Lejo instalimin → Lejo nga ky burim**, kthehu te app-i dhe prek përsëri **Përditëso**.
+4. App-i e shkarkon, kontrollon që skedari është ai i versionit (SHA-256) dhe e instalon. Në Android 12 e lart, pas lejes së parë, pa dritare konfirmimi. Vrull mbyllet për pak dhe njoftimi "Vrull u përditësua" (në gjuhën e app-it) e hap përsëri.
 
 Me dorë mbetet e mundur (p.sh. për 0.15.0, që sjell përditësuesin): shkarko APK-në e versionit të ri nga Releases, hape dhe zgjidh **Përditëso** (Update).
 
-Mos e çinstalo app-in para përditësimit. Përditësimi mban të gjitha të dhënat e telefonit, sepse çelësi është i njëjti dhe numri i versionit rritet. Android-i nuk instalon kurrë një APK me çelës tjetër mbi Training Hub.
+Mos e çinstalo app-in para përditësimit. Përditësimi mban të gjitha të dhënat e telefonit, sepse çelësi është i njëjti dhe numri i versionit rritet. Android-i nuk instalon kurrë një APK me çelës tjetër mbi Vrull. Skedari i APK-së mbetet `TrainingHub-X.Y.Z.apk` dhe `appId` mbetet `al.traininghub.app`, që versionet e vjetra ta njohin përditësimin.
 
 ### Një herë: çelësi që publikon versionet te app-i
 
@@ -50,7 +50,7 @@ Pa këtë secret, Release-i në GitHub del njësoj, por app-i nuk e sheh version
 
 - **Njoftimet:** app-i i kërkon në stërvitjen e parë, për timer-in e pushimit. Lejoji.
 - **Alarmet e sakta:** në Android 13 e lart jepen vetë. Në Android 12, nëse app-i të dërgon te cilësimet, aktivizo **Alarmet dhe rikujtuesit**.
-- **Bateria:** nëse timer-i vonon me ekran të kyçur, te Training Hub hap **Cilësimet → Timer-i i pushimit → Hiq kufizimin e baterisë** dhe lejoje. Ose te cilësimet e telefonit: **App-et → Training Hub → Bateria → Pa kufizime**.
+- **Bateria:** nëse timer-i vonon me ekran të kyçur, te Vrull hap **Cilësimet → Timer-i i pushimit → Hiq kufizimin e baterisë** dhe lejoje. Ose te cilësimet e telefonit: **App-et → Vrull → Bateria → Pa kufizime**.
 
 ## 5. Verifikimi i zhvilluesve nga Google
 

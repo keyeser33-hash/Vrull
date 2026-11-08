@@ -1,6 +1,8 @@
 import { Capacitor } from '@capacitor/core'
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
+import { currentI18n } from '@/i18n'
+import { APP_NAME } from '@/lib/app-name'
 import { currentUserId, db } from './app-data'
 import { buildExport, exportFileName } from './export'
 
@@ -23,7 +25,7 @@ export async function shareExport(): Promise<boolean> {
 
   const { uri } = await Filesystem.writeFile({ path: name, data: json, directory: Directory.Cache, encoding: Encoding.UTF8 })
   try {
-    await Share.share({ title: 'Training Hub', files: [uri], dialogTitle: 'Ruaj kopjen e të dhënave' })
+    await Share.share({ title: APP_NAME, files: [uri], dialogTitle: currentI18n().t('settings.export') })
     return true
   } catch (error) {
     // Mbyllja e menysë pa zgjedhur nuk është gabim.

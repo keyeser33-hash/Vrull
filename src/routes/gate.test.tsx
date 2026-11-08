@@ -59,6 +59,8 @@ function renderAt(path: string, phase: AppPhase) {
 }
 
 describe('porta e app-it', () => {
+  afterEach(() => language.set('sq'))
+
   it('pa sesion çon te hyrja', () => {
     const router = renderAt('/', 'signed_out')
     expect(screen.getByRole('heading', { name: 'Hyrja' })).toBeInTheDocument()
@@ -78,15 +80,21 @@ describe('porta e app-it', () => {
     expect(screen.getByRole('heading', { name: 'Sot' })).toBeInTheDocument()
   })
 
-  it('gjatë marrjes së të dhënave e thotë me fjalë', () => {
+  it('gjatë marrjes së të dhënave: logoja, emri Vrull dhe gjendja me fjalë (bordi "Hyrja · Hapja")', () => {
     renderAt('/', 'fetching')
-    expect(screen.getByRole('heading', { name: 'Po merren të dhënat e tua' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Provo përsëri' })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Vrull' })).toBeInTheDocument()
+    expect(screen.getByText('Çdo set të çon përpara.')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Po merren të dhënat e tua')
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(document.body.textContent).not.toMatch(/supabase|training hub/i)
   })
 
   it('kur marrja dështon: provo përsëri ose dil', async () => {
     renderAt('/', 'fetch_failed')
+    expect(screen.getByRole('heading', { level: 1, name: 'Vrull' })).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent('Të dhënat nuk u morën')
     expect(screen.getByRole('heading', { name: 'Të dhënat nuk u morën' })).toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Provo përsëri' }))
     expect(mock.syncNow).toHaveBeenCalledOnce()
     await userEvent.click(screen.getByRole('button', { name: 'Dil nga llogaria' }))
@@ -97,10 +105,17 @@ describe('porta e app-it', () => {
     renderAt('/', 'fetch_failed')
     act(() => language.set('en'))
     expect(screen.getByRole('heading', { name: 'Your data did not arrive' })).toBeInTheDocument()
+    expect(screen.getByText('Every set moves you forward.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
     act(() => language.set('sq'))
     expect(screen.getByRole('heading', { name: 'Të dhënat nuk u morën' })).toBeInTheDocument()
+  })
+
+  it('në anglisht gjatë marrjes', () => {
+    language.set('en')
+    renderAt('/', 'fetching')
+    expect(screen.getByRole('status')).toHaveTextContent('Getting your data')
   })
 
   it('para leximit të sesionit nuk shfaq asnjë ekran', () => {

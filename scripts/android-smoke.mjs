@@ -340,39 +340,46 @@ try {
   let page = await connect()
   // Rifreskim pasi dëgjuesit janë gati, që të kapet çdo gabim i ngarkimit.
   await page.send('Page.reload')
-  await waitForHeading(page, 'Hyr')
-  check('pa sesion hapet hyrja', (await page.evaluate('location.pathname')) === '/hyrja')
+  // Para se të ketë llogari, hyrja ndjek gjuhën e telefonit (V2-E1-17): shqip ose anglisht, përndryshe shqip.
+  const phoneLanguage = String(await page.evaluate('(navigator.languages[0] ?? navigator.language).toLowerCase()')).split('-')[0]
+  const loginTitle = phoneLanguage === 'en' ? 'Welcome' : 'Mirë se erdhe'
+  await waitForHeading(page, loginTitle)
+  check('pa sesion hapet hyrja, në gjuhën e telefonit', (await page.evaluate('location.pathname')) === '/hyrja', `${phoneLanguage}: ${loginTitle}`)
   check('tema OLED si parazgjedhje', (await page.evaluate('document.documentElement.className')) === 'dark oled')
   check('pa shirit veprimesh mbi faqe', !hasActionBar())
-  // Vrull: pjesa e sipërme e hyrjes është `surface` (OLED #121214).
-  const bandLogin = await waitForBand('#121214')
-  check('rripi i orës te hyrja merr ngjyrën e kartës', sameColor(bandLogin, '#121214'), bandLogin.join(','))
+  // Vrull: hyrja është mbi sfondin e temës (OLED #000000), si te bordi "Hyrja · Hyr".
+  const bandLogin = await waitForBand('#000000')
+  check('rripi i orës te hyrja merr sfondin e temës', sameColor(bandLogin, '#000000'), bandLogin.join(','))
   screenshot('1-hyrja')
+  // Pjesa tjetër e provës lexon tekstet shqip: gjuha zgjidhet si te Cilësimet dhe faqja rihapet.
+  if (loginTitle !== 'Mirë se erdhe') {
+    await page.evaluate(`localStorage.setItem('th-language', 'sq')`)
+    await page.send('Page.reload')
+    await waitForHeading(page, 'Mirë se erdhe')
+  }
 
   // 2. Hyrja: fjalëkalimi i gabuar thuhet me fjalë; pastaj hyrja e saktë.
   const started = Date.now()
   await type(page, 'input[type="email"]', EMAIL)
   await type(page, 'input[autocomplete="current-password"]', 'i-gabuar')
   await clickButton(page, 'Hyr')
-  await waitForText(page, 'Email-i ose fjalëkalimi nuk është i saktë.')
+  await waitForText(page, 'Emaili ose fjalëkalimi nuk është i saktë.')
   check('fjalëkalimi i gabuar thuhet me fjalë', true)
   await type(page, 'input[autocomplete="current-password"]', PASSWORD)
   await clickButton(page, 'Hyr')
 
-  // 3. Hapat e hyrjes së parë.
-  await waitForHeading(page, 'Sa peshon sot?')
+  // 3. Hapat e parë: gjuha dhe pesha, ditët dhe oraret, programi (bordet "Hyrja").
+  await waitForHeading(page, 'Gjuha dhe pesha')
   screenshot('2-pesha')
   // Fusha e peshës merr vlerën kur del fokusi, si te telefoni kur prek "Vazhdo".
   await page.evaluate(`document.querySelector('input[inputmode="decimal"]').focus()`)
   await type(page, 'input[inputmode="decimal"]', '80,5')
   await page.evaluate(`document.querySelector('input[inputmode="decimal"]').blur()`)
   await clickButton(page, 'Vazhdo')
-  await waitForHeading(page, 'Kur stërvitesh?')
+  await waitForHeading(page, 'Ditët dhe oraret')
   screenshot('3-stervitja')
   await clickButton(page, 'Vazhdo')
-  await waitForHeading(page, 'Kur zgjohesh dhe kur fle?')
-  await clickButton(page, 'Vazhdo')
-  await waitForHeading(page, 'Programi yt')
+  await waitForHeading(page, 'Zgjidh programin')
   await clickButton(page, 'Fillo programin')
   await waitForHeading(page, 'Stërvitja 1')
   await waitForText(page, 'Java 0')
@@ -606,13 +613,14 @@ try {
   check('v2 instalohet nga app-i, pa dritare konfirmimi', codeV2 !== null && codeV2 > codeV1, `${installStart}; ${codeV1} -> ${codeV2}`)
   page.close()
   // MY_PACKAGE_REPLACED vjen kur sistemi e nis sërish procesin; në emulatorin e ngarkuar mund të vonojë.
-  const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Training Hub u përditësua'), 'njoftimi i përditësimit', 45_000).catch(() => false)
+  const replaced = await waitFor(() => adb('shell', 'dumpsys', 'notification', '--noredact').includes('Vrull u përditësua'), 'njoftimi i përditësimit', 45_000).catch(() => false)
   if (replaced !== true) {
     // Për diagnozë: çfarë ndodhi me broadcast-in dhe procesin pas përditësimit.
     const lines = adb('logcat', '-d', '-t', '4000').split('\n').filter((line) => /traininghub|MY_PACKAGE_REPLACED|AppReplaced|BroadcastQueue|AndroidRuntime/i.test(line))
     writeFileSync(join(outDir, 'logcat-perditesimi.txt'), lines.join('\n'))
   }
-  check('pas përditësimit vjen njoftimi "Training Hub u përditësua"', replaced === true)
+  // Gjuha e njoftimit vjen nga app-i (AppUpdaterPlugin.setLanguage); këtu shqip.
+  check('pas përditësimit vjen njoftimi "Vrull u përditësua"', replaced === true)
   check('pas përditësimit APK-ja e shkarkuar fshihet', adb('shell', 'run-as', PKG, 'ls', 'cache').split(/\s+/).includes('perditesimi.apk') === false)
   launch()
   page = await connect()

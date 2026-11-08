@@ -54,7 +54,7 @@ describe('hyrja në llogari', () => {
   it('kontrollon fushat para se të thërrasë serverin', async () => {
     const client = fakeClient()
     const auth = createAuth(client)
-    expect(await auth.signIn('', 'x')).toEqual({ ok: false, message: 'Shkruaj email-in.' })
+    expect(await auth.signIn('', 'x')).toEqual({ ok: false, message: 'Shkruaj emailin.' })
     expect(await auth.signIn('une@example.com', '')).toEqual({ ok: false, message: 'Shkruaj fjalëkalimin.' })
     expect(client.signInWithPassword).not.toHaveBeenCalled()
   })
@@ -64,7 +64,7 @@ describe('hyrja në llogari', () => {
     await auth.start()
     expect(await auth.signIn('gabim@example.com', 'x')).toEqual({
       ok: false,
-      message: 'Email-i ose fjalëkalimi nuk është i saktë.',
+      message: 'Emaili ose fjalëkalimi nuk është i saktë.',
     })
     expect(auth.getState().status).toBe('signed_out')
   })
@@ -81,8 +81,8 @@ describe('hyrja në llogari', () => {
 
 describe('mesazhet e gabimeve të hyrjes', () => {
   it.each([
-    [{ code: 'invalid_credentials', status: 400 }, 'Email-i ose fjalëkalimi nuk është i saktë.'],
-    [{ message: 'Invalid login credentials', status: 400 }, 'Email-i ose fjalëkalimi nuk është i saktë.'],
+    [{ code: 'invalid_credentials', status: 400 }, 'Emaili ose fjalëkalimi nuk është i saktë.'],
+    [{ message: 'Invalid login credentials', status: 400 }, 'Emaili ose fjalëkalimi nuk është i saktë.'],
     [{ code: 'email_not_confirmed', status: 400 }, 'Llogaria nuk është konfirmuar ende.'],
     [{ code: 'over_request_rate_limit', status: 429 }, 'Shumë përpjekje radhazi. Prit pak minuta dhe provo përsëri.'],
     [{ name: 'AuthRetryableFetchError', status: 0 }, 'Hyrja kërkon internet. Lidhu dhe provo përsëri.'],

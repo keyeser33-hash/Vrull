@@ -14,3 +14,7 @@ Skripti: tools/anatomy/build.mjs.
 
 Licenca e këtij skedari: Creative Commons Attribution-ShareAlike 2.1 Japan (CC BY-SA 2.1 JP),
 sepse përmban pjesë nga BodyParts3D 3.0. https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
+
+shortcut-to-size.webp: pamje e body.glb, e renderuar nga app-i me volumin e një jave të vërtetë të
+Shortcut to Size, për kartën e programit te hapat e parë (V2-E1-17). I njëjti burim dhe e njëjta licencë
+(CC BY-SA 2.1 JP).

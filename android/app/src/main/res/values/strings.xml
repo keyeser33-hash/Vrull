@@ -1,7 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Training Hub</string>
-    <string name="title_activity_main">Training Hub</string>
-    <string name="package_name">al.traininghub.app</string>
-    <string name="custom_url_scheme">al.traininghub.app</string>
+    <!-- Emri i app-it (V24, V2-E1-17), i njëjtë në çdo gjuhë; appId mbetet al.traininghub.app. -->
+    <string name="app_name" translatable="false">Vrull</string>
+    <string name="title_activity_main" translatable="false">Vrull</string>
+    <string name="package_name" translatable="false">al.traininghub.app</string>
+    <string name="custom_url_scheme" translatable="false">al.traininghub.app</string>
+    <!-- Njoftimi pas përditësimit (AppReplacedReceiver), në shqip; anglishtja te values-en. -->
+    <string name="update_channel">Përditësimi i app-it</string>
+    <string name="update_done_title">Vrull u përditësua</string>
+    <string name="update_done_text">Versioni %1$s. Prek për ta hapur.</string>
 </resources>

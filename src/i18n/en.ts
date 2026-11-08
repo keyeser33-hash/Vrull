@@ -80,16 +80,6 @@ const base: TranslationOf<typeof sqBase> = {
   'body.front': 'Front',
   'body.back': 'Back',
 
-  'login.tagline': 'Shortcut to Size, your weights and your food. Even offline.',
-  'login.title': 'Sign in',
-  'login.intro': 'Sign in with your account. You only need the internet this once.',
-  'login.email': 'Email',
-  'login.password': 'Password',
-  'login.showPassword': 'Show password',
-  'login.hidePassword': 'Hide password',
-  'login.offline': 'No internet. Signing in needs the internet only the first time.',
-  'login.submit': 'Sign in',
-  'login.busy': 'Signing in',
   'auth.emailMissing': 'Enter your email.',
   'auth.passwordMissing': 'Enter your password.',
   'auth.wrongCredentials': 'The email or password is not correct.',
@@ -98,12 +88,6 @@ const base: TranslationOf<typeof sqBase> = {
   'auth.offline': 'Signing in needs the internet. Connect and try again.',
   'auth.serverDown': 'The server is not responding. Try again shortly.',
   'auth.failed': 'Signing in did not work. Try again.',
-
-  'fetch.title': 'Getting your data',
-  'fetch.text': 'If you have used Training Hub before, your profile and history come from Supabase.',
-  'fetch.failedTitle': 'Your data did not arrive',
-  'fetch.failedText':
-    'After signing in, this step also needs the internet, so that your profile and history can come from Supabase. Connect and try again.',
 
   'sync.syncing': 'Syncing',
   'sync.never': 'Not synced yet',

@@ -8,15 +8,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import java.util.Locale;
 
 /**
  * Pas përditësimit (brenda app-it ose me dorë), Android-i e mbyll app-in dhe nuk e rihap. Ky
- * njoftim thotë versionin e ri dhe e hap app-in me një prekje (SPEC §3b, TH-23). Fshin edhe APK-në
- * e shkarkuar nga përditësimi brenda app-it.
+ * njoftim ("Vrull u përditësua") thotë versionin e ri dhe e hap app-in me një prekje (SPEC §3b,
+ * TH-23), në gjuhën e app-it (AppUpdaterPlugin.language; shqip kur mungon). Tekstet: res/values
+ * (shqip) dhe res/values-en. Fshin edhe APK-në e shkarkuar nga përditësimi brenda app-it.
  */
 public class AppReplacedReceiver extends BroadcastReceiver {
 
@@ -34,7 +37,8 @@ public class AppReplacedReceiver extends BroadcastReceiver {
         }
         NotificationManager manager = context.getSystemService(NotificationManager.class);
         if (manager == null) return;
-        manager.createNotificationChannel(new NotificationChannel(CHANNEL, "Përditësimi i app-it", NotificationManager.IMPORTANCE_DEFAULT));
+        Context texts = inLanguage(context, AppUpdaterPlugin.language(context));
+        manager.createNotificationChannel(new NotificationChannel(CHANNEL, texts.getString(R.string.update_channel), NotificationManager.IMPORTANCE_DEFAULT));
         String version;
         try {
             version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
@@ -48,11 +52,18 @@ public class AppReplacedReceiver extends BroadcastReceiver {
             ID,
             new NotificationCompat.Builder(context, CHANNEL)
                 .setSmallIcon(R.drawable.ic_stat_pushimi)
-                .setContentTitle("Training Hub u përditësua")
-                .setContentText("Versioni " + version + ". Prek për ta hapur.")
+                .setContentTitle(texts.getString(R.string.update_done_title))
+                .setContentText(texts.getString(R.string.update_done_text, version))
                 .setContentIntent(content)
                 .setAutoCancel(true)
                 .build()
         );
+    }
+
+    /** Burimet në gjuhën e app-it, jo në atë të telefonit: "sq" merr res/values, "en" res/values-en. */
+    private static Context inLanguage(Context context, String language) {
+        Configuration config = new Configuration(context.getResources().getConfiguration());
+        config.setLocale(Locale.forLanguageTag(language));
+        return context.createConfigurationContext(config);
     }
 }
