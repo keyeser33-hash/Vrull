@@ -1,4 +1,4 @@
-import type { Draft, Language } from '../../supabase/functions/program-import/shared'
+import { type Draft, IMPORT_ERRORS, type ImportErrorCode, type Language } from '../../supabase/functions/program-import/shared'
 import { type LibraryExercise, muscleKeys } from '@/program/library'
 import { type Choice, choiceKey, type ImportedProgram, type OwnExercise } from '@/program/pdf-import'
 import type { Equipment, Tracking } from '@/program/types'
@@ -15,19 +15,8 @@ export interface MonthSpend {
   limitEur: number
 }
 
-export type ReadError =
-  | 'offline'
-  | 'unauthorized'
-  | 'not_configured'
-  | 'limit'
-  | 'not_pdf'
-  | 'too_large'
-  | 'bad_request'
-  | 'unreadable'
-  | 'too_long'
-  | 'no_programme'
-  | 'timeout'
-  | 'ai_failed'
+/** Gabimet e funksionit (`IMPORT_ERRORS`), plus "pa internet" që e vendos app-i vetë. */
+export type ReadError = 'offline' | ImportErrorCode
 
 export interface ReadSuccess {
   ok: true
@@ -44,7 +33,7 @@ export interface ImportRemote {
   read(input: { file: Blob; fileName: string; known: string[]; language: Language }): Promise<ReadResult>
 }
 
-const ERRORS = new Set<ReadError>(['unauthorized', 'not_configured', 'limit', 'not_pdf', 'too_large', 'bad_request', 'unreadable', 'too_long', 'no_programme', 'timeout', 'ai_failed'])
+const ERRORS = new Set<ReadError>(IMPORT_ERRORS)
 
 const isMonth = (value: unknown): value is MonthSpend =>
   typeof value === 'object' && value !== null && typeof (value as MonthSpend).spentEur === 'number' && typeof (value as MonthSpend).limitEur === 'number'

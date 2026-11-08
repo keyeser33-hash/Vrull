@@ -10,7 +10,7 @@
 //   https://platform.claude.com/docs/en/build-with-claude/streaming
 // Kufijtë dhe tipet që i lexon edhe app-i jetojnë te shared.ts, që skema dhe udhëzimet e modelit të mos
 // hyjnë në app.
-import { AI_MONTHLY_LIMIT_EUR, type Draft, type Language, MAX_PDF_BYTES } from './shared.ts'
+import { AI_MONTHLY_LIMIT_EUR, type Draft, type ImportErrorCode, type Language, MAX_PDF_BYTES } from './shared.ts'
 
 export { AI_MONTHLY_LIMIT_EUR, MAX_PDF_BYTES }
 export type { Draft, Language, Target } from './shared.ts'
@@ -56,7 +56,7 @@ export const AI_TIMEOUT_MS = 140_000
 export const AI_CALL_RESERVE_EUR = 2
 const MAX_KNOWN = 3000
 
-export type ImportError = 'ai_failed' | 'unreadable' | 'too_long' | 'no_programme'
+export type ImportError = Extract<ImportErrorCode, 'ai_failed' | 'unreadable' | 'too_long' | 'no_programme'>
 
 // ——— Muaji dhe kostoja ———
 

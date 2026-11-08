@@ -10,6 +10,7 @@ import { createLocalStore } from './store'
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from './supabase'
 import { createSync } from './sync'
 import { CLEAN, PENDING, TABLES } from './tables'
+import { weekWeightId } from './week-weights'
 
 const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env ?? {}
 const email = env.E2E_EMAIL
@@ -42,7 +43,8 @@ describe.skipIf(!email || !password)('sinkronizimi me Supabase të vërtetë', {
     userId = data.user.id
     // Nis nga e pastra: rreshtat e një ekzekutimi të mëparshëm do të shkelnin rregullat e unicitetit
     // (një matje për datë, një ushtrim për library_id). Fëmijët fshihen para prindërve.
-    for (const table of [...TABLES].reverse()) {
+    // `ai_usage` e shkruan vetëm serveri (RLS): app-i nuk e fshin dot.
+    for (const table of [...TABLES].reverse().filter((name) => name !== 'ai_usage')) {
       const { error: deleteError } = await client.from(table).delete().eq('user_id', userId)
       if (deleteError) throw deleteError
     }
@@ -116,6 +118,65 @@ describe.skipIf(!email || !password)('sinkronizimi me Supabase të vërtetë', {
 
     await tablet.sync.run()
     expect(await tablet.store.get('diary_entries', entry.id)).toBeUndefined()
+  })
+
+  // V2-E2-00: tabelat e E1 që provat e skedarëve i provojnë vetëm me bazën vendase.
+  it('peshat e javës: dy pajisje me të njëjtin vendim japin një rresht; fshirja dhe rikthimi arrijnë në Supabase', async () => {
+    const phone = device(0)
+    const tablet = device(5_000)
+    const exercise = await phone.store.put('exercises', { name: 'Leg Press', equipment: 'machine' })
+    const program = await phone.store.put('programs', { name: 'Prova e2e' })
+    const block = await phone.store.put('program_blocks', { program_id: program.id, position: 0, name: 'Faza 1', weeks: 4 })
+    const day = await phone.store.put('program_days', { program_id: program.id, position: 0, name: 'Dita 1' })
+    const slot = await phone.store.put('program_slots', { program_id: program.id, day_id: day.id, position: 0, exercise_id: exercise.id, sets: 3 })
+    await phone.sync.run()
+    await tablet.sync.run()
+
+    const id = await weekWeightId({ programId: program.id, run: 1, blockId: block.id, week: 2, slotId: slot.id })
+    const decision = { id, program_id: program.id, run: 1, block_id: block.id, week: 2, slot_id: slot.id, exercise_id: exercise.id, status: 'accepted' }
+    await phone.store.put('week_weights', { ...decision, weight_kg: 100 })
+    await tablet.store.put('week_weights', { ...decision, weight_kg: 105 })
+    expect(await phone.sync.run()).toMatchObject({ status: 'ok', rejected: 0 })
+    expect(await tablet.sync.run()).toMatchObject({ status: 'ok', rejected: 0 })
+    const { data } = await client.from('week_weights').select('id, weight_kg').eq('slot_id', slot.id).is('deleted_at', null)
+    expect(data).toEqual([{ id, weight_kg: 105 }])
+
+    await phone.sync.run()
+    await phone.store.remove('week_weights', id)
+    await phone.sync.run()
+    await phone.store.put('week_weights', { ...decision, weight_kg: 110 }, { revive: true })
+    expect(await phone.sync.run()).toMatchObject({ status: 'ok', rejected: 0 })
+    const { data: revived } = await client.from('week_weights').select('weight_kg, deleted_at').eq('id', id).single()
+    expect(revived).toEqual({ weight_kg: 110, deleted_at: null })
+  })
+
+  it('videoja e formës: rreshti sinkronizohet vetëm me rrugën te dosja e pronarit', async () => {
+    const phone = device(0)
+    const exercise = await phone.store.put('exercises', { name: 'Squat', equipment: 'barbell' })
+    const video = { exercise_id: exercise.id, date: '2026-12-03', mime_type: 'video/mp4', duration_s: 12.5, bytes: 1_000_000 }
+    const own = await phone.store.put('form_videos', { ...video, storage_path: `${userId}/${crypto.randomUUID()}.mp4` })
+    const foreign = await phone.store.put('form_videos', { ...video, storage_path: `${crypto.randomUUID()}/${crypto.randomUUID()}.mp4` })
+    expect(await phone.sync.run()).toMatchObject({ status: 'error', rejected: 1 })
+    expect((await phone.db.form_videos.get(foreign.id))?._error).toBeTruthy()
+    const { data } = await client.from('form_videos').select('id, duration_s').eq('id', own.id)
+    expect(data).toEqual([{ id: own.id, duration_s: 12.5 }])
+  })
+
+  it('kostoja e AI-së: app-i e lexon, por nuk e shkruan dot', async () => {
+    const { error } = await client.from('ai_usage').insert({
+      user_id: userId,
+      month: '2026-12-01',
+      feature: 'program_pdf',
+      model: 'prova',
+      input_tokens: 1,
+      output_tokens: 1,
+      cost_usd: 0,
+      cost_eur: 0,
+    })
+    expect(error).not.toBeNull()
+    const { data, error: readError } = await client.from('ai_usage').select('id').eq('user_id', userId)
+    expect(readError).toBeNull()
+    expect(data).toEqual([])
   })
 
   it('një rresht që shkel skemën nuk bllokon të tjerët', async () => {

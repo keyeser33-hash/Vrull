@@ -8,6 +8,22 @@ export const AI_MONTHLY_LIMIT_EUR = 10
 /** 15 MB: PDF-ja, base64-ja dhe kërkesa rrinë bashkë në 256 MB memorie të funksionit. */
 export const MAX_PDF_BYTES = 15 * 1024 * 1024
 
+/** Kodet e gabimeve që kthen funksioni; app-i i shndërron në tekst (`src/data/pdf-import.ts`). */
+export const IMPORT_ERRORS = [
+  'unauthorized',
+  'not_configured',
+  'limit',
+  'not_pdf',
+  'too_large',
+  'bad_request',
+  'unreadable',
+  'too_long',
+  'no_programme',
+  'timeout',
+  'ai_failed',
+] as const
+export type ImportErrorCode = (typeof IMPORT_ERRORS)[number]
+
 /** Gjuha e emrave të blloqeve dhe ditëve që shkruan AI-ja (emrat e ushtrimeve mbeten si në PDF). */
 export type Language = 'sq' | 'en'
 

@@ -8,6 +8,7 @@ import { sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, Technique, Tracking } from '@/program/types'
 // Intervali i recetës ("9–11") është i njëjtë me atë të ekranit të seancës.
 import { rangeText } from '@/routes/session-format'
+import { numberOrNull } from '@/lib/number'
 
 // Njoftimi i seancës dhe seti nga njoftimi (V2-E1-08, SPEC §0.3a "Seti nga njoftimi").
 //
@@ -398,7 +399,6 @@ export function notificationState(
 
 export type ApplyResult = 'applied' | 'duplicate' | 'closed' | 'stale'
 
-const numberOrNull = (value: unknown) => (value === null || value === undefined ? null : Number(value))
 
 /**
  * Zbaton një prekje të njoftimit te baza lokale, një herë: një set që ekziston (nga një prekje e

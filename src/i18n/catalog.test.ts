@@ -68,7 +68,7 @@ describe('katalogu', () => {
   // `tsc -b` e kontrollon këtë provë: çdo @ts-expect-error i panevojshëm prish build-in.
   it('tipet e t() kapin çelësat dhe parametrat e gabuar', () => {
     const { t } = i18nFor('sq')
-    expect(t('sync.done', { when: 'tani' })).toBe('Sinkronizuar tani')
+    expect(t('sync.minutesAgo', { minutes: 5 })).toBe('para 5 min')
     expect(t('sync.pending', { count: 2 })).toBe('2 ndryshime presin dërgimin')
     // @ts-expect-error çelës që nuk ekziston
     expect(t('nuk.ekziston')).toBe('nuk.ekziston')
@@ -76,8 +76,8 @@ describe('katalogu', () => {
     t('sync.pending')
     // @ts-expect-error `count` është numër
     t('sync.pending', { count: '2' })
-    // @ts-expect-error mungon `when`
-    t('sync.done', {})
+    // @ts-expect-error mungon `minutes`
+    t('sync.minutesAgo', {})
     // @ts-expect-error një tekst pa parametra nuk merr parametra
     t('tab.today', { extra: 1 })
   })

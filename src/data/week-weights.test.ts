@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { addBlock, addDay, addSlot, createProgram, setProgramProgression, setRule } from './program-editor'
 import { completeOnboarding } from './profile'
-import { programmeHome } from './programme'
+import { activeProgramHome } from './programme'
 import { createLocalStore } from './store'
 import { todayView } from './today'
 import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
@@ -29,7 +29,7 @@ describe('peshat e javës në telefon (V23)', () => {
   it('java që shqyrtohet për programin aktiv, me peshat e propozuara', async () => {
     const { store, bench } = await atPhaseOneWeekTwo()
     const view = await weekWeightsView(store)
-    expect(view).toMatchObject({ label: 'Faza 1 · Java 2', run: 1 })
+    expect(view).toMatchObject({ block: { blockName: 'Faza 1', week: 2, run: 1 }, run: 1 })
     expect(view?.rows.find((row) => row.slotId === bench.slotId)).toMatchObject({ weightKg: 62.5, target: { min: 9, max: 11 }, decision: null })
   })
 
@@ -133,7 +133,7 @@ describe('një peshë e javës për slotin: Sot, seanca, Programi dhe Peshat e j
     const snapshot = (await trainingSnapshot(store))!
     const [today, home, session, review] = await Promise.all([
       todayView(store),
-      programmeHome(store, store.now()),
+      activeProgramHome(store, store.now()),
       workoutWeights(store, snapshot.plan),
       weekWeightsView(store, { blockId: snapshot.plan.blockId, week: snapshot.plan.week }),
     ])
@@ -178,7 +178,7 @@ describe('një peshë e javës për slotin: Sot, seanca, Programi dhe Peshat e j
     await finishWorkout(store, sessionId)
     // Pas mbylljes seti hyn te historia: Java 3 (6–8) nis nga e1RM 89,6 → 70,7 → 70 kg.
     const next = (await weekWeightsView(store))!
-    expect(next.label).toBe('Faza 1 · Java 3')
+    expect(next.block).toMatchObject({ blockName: 'Faza 1', week: 3 })
     expect(next.rows.find((row) => row.slotId === bench.slotId)?.weightKg).toBe(70)
   })
 })
@@ -233,7 +233,7 @@ describe('rregulli i progresit te pesha e javës (V2-E1-18)', () => {
     expect(await firstWeight(store)).toEqual({ block: 'Blloku 1', week: 2, weightKg: 22 })
     expect((await todayView(store)).workout?.first?.weightKg).toBe(22)
     const next = (await weekWeightsView(store))!
-    expect(next.label).toBe('Blloku 1 · Java 3')
+    expect(next.block).toMatchObject({ blockName: 'Blloku 1', week: 3 })
     expect(next.rows.map((row) => row.weightKg)).toEqual([24, 24])
   })
 })

@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
 import { addBlock, addDay, addSlot, createProgram } from './program-editor'
-import { programmeHome, weekReview } from './programme'
+import { activeProgramHome, weekReview } from './programme'
 import { createLocalStore, type LocalStore } from './store'
 import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
 import { acceptWeekWeights } from './week-weights'
@@ -31,7 +31,7 @@ async function atPhaseOneWeekTwo() {
 describe('Programi', () => {
   it('blloqet me javët e bëra dhe java e treguesit', async () => {
     const { store, now } = await atPhaseOneWeekTwo()
-    const home = (await programmeHome(store, now()))!
+    const home = (await activeProgramHome(store, now()))!
     expect(home).toMatchObject({ programName: 'Shortcut to Size', source: 'shortcut_to_size', completed: false, weekNumber: 3, totalWeeks: 13 })
     expect(home.blocks.map((block) => [block.name, block.weeks, block.doneWeeks, block.currentWeek])).toEqual([
       ['Java 0', 1, 1, null],
@@ -45,7 +45,7 @@ describe('Programi', () => {
 
   it('ditët e javës me datat, kohën dhe ushtrimet që i hapin', async () => {
     const { store, now } = await atPhaseOneWeekTwo()
-    const home = (await programmeHome(store, now()))!
+    const home = (await activeProgramHome(store, now()))!
     const dates = home.days.map((day) => day.date?.toDateString())
     expect(dates).toEqual([new Date(2026, 10, 8), new Date(2026, 10, 9), new Date(2026, 10, 10), new Date(2026, 10, 12)].map((date) => date.toDateString()))
     expect(home.days.map((day) => [day.dayNumber, day.name, day.status])).toEqual([
@@ -63,7 +63,7 @@ describe('Programi', () => {
 
   it('stërvitja e radhës: ushtrimi i parë me setet, intervalin dhe peshën e javës', async () => {
     const { store, now } = await atPhaseOneWeekTwo()
-    const home = (await programmeHome(store, now()))!
+    const home = (await activeProgramHome(store, now()))!
     expect(home.next).toMatchObject({ dayId: home.days[0].dayId, inProgress: false })
     expect(home.next?.first).toMatchObject({ name: 'Bench Press', sets: 4, target: { kind: 'reps', min: 9, max: 11 }, weightKg: 62.5 })
   })
@@ -71,10 +71,10 @@ describe('Programi', () => {
   it('pas stërvitjes së sotme, e radha bie nesër; seanca e nisur thuhet', async () => {
     const { store, now, setClock } = await atPhaseOneWeekTwo()
     const sessionId = await startWorkout(store)
-    expect((await programmeHome(store, now()))!.next?.inProgress).toBe(true)
+    expect((await activeProgramHome(store, now()))!.next?.inProgress).toBe(true)
     await finishWorkout(store, sessionId)
     setClock(new Date(2026, 10, 8, 19, 0))
-    const home = (await programmeHome(store, now()))!
+    const home = (await activeProgramHome(store, now()))!
     expect(home.doneDays).toBe(1)
     expect(home.days[0]).toMatchObject({ status: 'done' })
     expect(home.days[1].date?.toDateString()).toBe(new Date(2026, 10, 9).toDateString())
@@ -82,11 +82,11 @@ describe('Programi', () => {
 
   it('peshat e javës që shqyrtohet: presin vendimin, pastaj pranuar', async () => {
     const { store, now } = await atPhaseOneWeekTwo()
-    const review = (await programmeHome(store, now()))!.review!
+    const review = (await activeProgramHome(store, now()))!.review!
     expect(review).toMatchObject({ week: { week: 2 }, status: 'pending', startsOn: expect.any(Date) })
     expect(review.startsOn?.toDateString()).toBe(new Date(2026, 10, 8).toDateString())
     await acceptWeekWeights(store, review.week)
-    expect((await programmeHome(store, now()))!.review?.status).toBe('accepted')
+    expect((await activeProgramHome(store, now()))!.review?.status).toBe('accepted')
   })
 
   it('peshat e javës për ekranin: java, e kaluara, ditët me datat, ushtrimet dhe historia', async () => {
@@ -122,7 +122,7 @@ describe('Programi', () => {
 
   it('pa program aktiv: null', async () => {
     const store = createLocalStore(createDatabase(`programme-${crypto.randomUUID()}`), { userId: () => USER })
-    expect(await programmeHome(store, new Date())).toBeNull()
+    expect(await activeProgramHome(store, new Date())).toBeNull()
   })
 
   it('programi aktiv ndërrohet gjatë leximit: pa peshat e javës, pa gabim (V2-E1-18)', async () => {
@@ -149,7 +149,7 @@ describe('Programi', () => {
         return table === 'user_settings' && reads >= 2 ? rows.map((row) => ({ ...row, active_program_id: other })) : rows
       },
     }
-    const home = await programmeHome(racing, now())
+    const home = await activeProgramHome(racing, now())
     expect(home).toMatchObject({ programName: 'Shortcut to Size', review: null })
     reads = 0
     await expect(weekReview(racing, now())).resolves.toBeNull()

@@ -150,8 +150,8 @@ final class SessionMusic implements SessionNotifier.MusicRow {
             int status = state == null ? PlaybackState.STATE_NONE : state.getState();
             boolean playing = status == PlaybackState.STATE_PLAYING || status == PlaybackState.STATE_BUFFERING;
             return new Song(
-                metadata == null ? null : text(metadata, MediaMetadata.METADATA_KEY_TITLE, MediaMetadata.METADATA_KEY_DISPLAY_TITLE),
-                metadata == null ? null : text(metadata, MediaMetadata.METADATA_KEY_ARTIST, MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE),
+                metadata == null ? null : MusicPlugin.text(metadata, MediaMetadata.METADATA_KEY_TITLE, MediaMetadata.METADATA_KEY_DISPLAY_TITLE),
+                metadata == null ? null : MusicPlugin.text(metadata, MediaMetadata.METADATA_KEY_ARTIST, MediaMetadata.METADATA_KEY_DISPLAY_SUBTITLE),
                 playing,
                 state == null ? 0 : state.getActions()
             );
@@ -161,12 +161,6 @@ final class SessionMusic implements SessionNotifier.MusicRow {
             return title + "\n" + artist + "\n" + playing + "\n" + actions;
         }
 
-        @Nullable
-        private static String text(MediaMetadata metadata, String key, String fallback) {
-            CharSequence value = metadata.getText(key);
-            if (value == null || value.length() == 0) value = metadata.getText(fallback);
-            return value == null || value.length() == 0 ? null : value.toString();
-        }
     }
 
     /** Ndjek app-in e muzikës (sesionet aktive dhe atë që luan) sa kohë njoftimi i seancës duket. */
@@ -223,13 +217,7 @@ final class SessionMusic implements SessionNotifier.MusicRow {
 
         private void follow() {
             List<MediaController> controllers = MusicPlugin.controllers(context);
-            MediaController next = MusicPlugin.pick(controllers == null ? Collections.emptyList() : controllers);
-            boolean same = current != null && next != null && current.getSessionToken().equals(next.getSessionToken());
-            if (!same) {
-                if (current != null) current.unregisterCallback(callback);
-                current = next;
-                if (current != null) current.registerCallback(callback, MAIN);
-            }
+            current = MusicPlugin.switchTo(current, MusicPlugin.pick(controllers == null ? Collections.emptyList() : controllers), callback, MAIN);
             changed(context);
         }
     }

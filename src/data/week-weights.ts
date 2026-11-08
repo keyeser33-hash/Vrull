@@ -1,4 +1,4 @@
-import { blockWeekLabel } from '@/program/engine'
+import type { ProgramWeek } from '@/program/types'
 import {
   acceptAll,
   postpone,
@@ -19,8 +19,8 @@ export interface WeekWeightsView {
   programId: string
   run: number
   week: WeekRef
-  /** "Faza 1 · Java 3". */
-  label: string
+  /** Blloku dhe java; teksti në gjuhën e app-it vjen nga `programWeekLabel`. */
+  block: ProgramWeek
   rows: WeekWeightRow[]
 }
 
@@ -66,7 +66,7 @@ export async function weekWeightsView(store: LocalStore, week?: WeekRef): Promis
     programId: loaded.row.id,
     run,
     week: target,
-    label: blockWeekLabel({ blockName: block.name, blockWeeks: block.weeks, week: target.week }),
+    block: { blockName: block.name, blockWeeks: block.weeks, week: target.week, run },
     rows,
   }
 }

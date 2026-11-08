@@ -2,7 +2,7 @@ import { planSession } from '@/program/engine'
 import { type LibraryExercise, loadLibrary, muscleKeys } from '@/program/library'
 import { type Scope, slotRules, type SlotRules } from '@/program/rules'
 import { isTemplateId, type ProgramTemplate, type TemplateId, templateById } from '@/program/templates'
-import type { Block, Prescription, Program, ProgressionRule, SessionPlan, Technique } from '@/program/types'
+import type { Block, Prescription, Program, ProgramWeek, ProgressionRule, SessionPlan, Technique } from '@/program/types'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { exerciseFromLibrary, type ExerciseRecord, programModel } from './training'
@@ -562,7 +562,7 @@ export interface ProgramSummary {
   /** Javët gjithsej të programit. */
   weeks: number
   /** Treguesi, kur programi ka një: blloku, java dhe java e programit (nga 1). */
-  pointer: { blockName: string; blockWeeks: number; week: number; run: number; weekOfProgram: number; completed: boolean } | null
+  pointer: (ProgramWeek & { weekOfProgram: number; completed: boolean }) | null
 }
 
 /** Të gjitha programet: aktivi i pari, pastaj sipas emrit. */

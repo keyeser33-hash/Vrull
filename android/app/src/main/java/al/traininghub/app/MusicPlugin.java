@@ -279,13 +279,7 @@ public class MusicPlugin extends Plugin {
     }
 
     private void follow(List<MediaController> controllers) {
-        MediaController next = pick(controllers == null ? Collections.emptyList() : controllers);
-        boolean same = current != null && next != null && current.getSessionToken().equals(next.getSessionToken());
-        if (!same) {
-            if (current != null) current.unregisterCallback(callback);
-            current = next;
-            if (current != null) current.registerCallback(callback, main);
-        }
+        current = switchTo(current, pick(controllers == null ? Collections.emptyList() : controllers), callback, main);
         emit();
     }
 
@@ -444,10 +438,22 @@ public class MusicPlugin extends Plugin {
         return options.toBundle();
     }
 
-    private static String text(MediaMetadata metadata, String key, String fallback) {
+    /** Teksti i një fushe të këngës, ose i fushës rezervë kur mungon; null kur të dyja janë bosh. */
+    static String text(MediaMetadata metadata, String key, String fallback) {
         CharSequence value = metadata.getText(key);
         if ((value == null || value.length() == 0) && fallback != null) value = metadata.getText(fallback);
-        return value == null ? null : value.toString();
+        return value == null || value.length() == 0 ? null : value.toString();
+    }
+
+    /**
+     * Kalon te sesioni që luan tani (`pick`): heq dëgjuesin nga i vjetri dhe e vë te i riu; i njëjti
+     * sesion mbetet si është. Kthen sesionin që ndiqet (MusicPlugin dhe njoftimi i seancës, SessionMusic).
+     */
+    static MediaController switchTo(MediaController current, MediaController next, MediaController.Callback callback, Handler handler) {
+        if (current != null && next != null && current.getSessionToken().equals(next.getSessionToken())) return current;
+        if (current != null) current.unregisterCallback(callback);
+        if (next != null) next.registerCallback(callback, handler);
+        return next;
     }
 
     private static long actionsOf(MediaController controller) {

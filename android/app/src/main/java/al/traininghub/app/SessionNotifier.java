@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.app.NotificationManagerCompat;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +82,6 @@ final class SessionNotifier {
     private static final int ID_REST_DONE = 4201;
     private static final int ID_REST = 4202;
     /** Prushi i Vrullit (tokeni `ember`), për ikonën e njoftimit. */
-    private static final int EMBER = 0xFFFF5B2E;
     /** Radha nuk rritet pa fund kur app-i nuk hapet për shumë kohë. */
     private static final int MAX_QUEUE = 200;
 
@@ -198,7 +198,7 @@ final class SessionNotifier {
         ensureRestChannel(context, rest.optString("channel"), rest.optString("channelText"));
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_REST_DONE)
             .setSmallIcon(R.drawable.ic_stat_pushimi)
-            .setColor(EMBER)
+            .setColor(ContextCompat.getColor(context, R.color.notification_ember))
             .setContentTitle(rest.optString("title"))
             .setContentText(rest.optString("body"))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -343,7 +343,7 @@ final class SessionNotifier {
         PendingIntent open = openIntent(context, index < 0 ? null : state.steps.optJSONObject(index), state, index, ID_SESSION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_SESSION)
             .setSmallIcon(R.drawable.ic_stat_vrull)
-            .setColor(EMBER)
+            .setColor(ContextCompat.getColor(context, R.color.notification_ember))
             .setSubText(texts.optString("session"))
             .setWhen(state.startedAt)
             .setShowWhen(true)
@@ -440,7 +440,7 @@ final class SessionNotifier {
         RemoteViews big = restViews(context, base, texts.optString("restEnds", "%s"));
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_SESSION)
             .setSmallIcon(R.drawable.ic_stat_pushimi)
-            .setColor(EMBER)
+            .setColor(ContextCompat.getColor(context, R.color.notification_ember))
             .setSubText(texts.optString("rest"))
             .setShowWhen(false)
             .setOngoing(true)

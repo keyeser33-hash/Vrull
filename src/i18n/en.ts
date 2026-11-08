@@ -87,12 +87,10 @@ const base: TranslationOf<typeof sqBase> = {
 
   'sync.syncing': 'Syncing',
   'sync.never': 'Not synced yet',
-  'sync.done': 'Synced {when}',
   'sync.justNow': 'just now',
   'sync.minutesAgo': '{minutes} min ago',
   'sync.hoursAgo': { one: '{count} hour ago', other: '{count} hours ago' },
   'sync.on': 'on {date} at {time}',
-  'sync.offline': 'No internet. Changes are saved on the phone and sent when the connection is back.',
   'sync.signedOut': 'Sign in so that your data is also saved in Supabase.',
   'sync.rejected': {
     one: '{count} change was not accepted by the server. It stays on the phone.',

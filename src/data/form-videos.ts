@@ -1,6 +1,7 @@
 import type { LocalDatabase, VideoFile } from './db'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
+import { numberOrNull } from '@/lib/number'
 
 // Videot e formës (V2-E1-13; SPEC V26, V27, §12). Si fotot e progresit (§8): rreshti te `form_videos`
 // sinkronizohet si çdo tabelë; skedari ruhet në telefon (`_video_files`) dhe ngarkohet te bucket-i
@@ -82,7 +83,6 @@ export interface FormVideoRef {
   set: VideoSet | null
 }
 
-const num = (value: unknown) => (value === null || value === undefined ? null : Number(value))
 
 /** Ruan videon në telefon; një video e mëparshme e të njëjtit set në të njëjtën seancë zëvendësohet. */
 export async function addFormVideo(store: LocalStore, db: LocalDatabase, input: NewFormVideo): Promise<string> {
@@ -138,7 +138,7 @@ export async function removeFormVideo(store: LocalStore, db: LocalDatabase, id: 
 
 function toRef(row: LocalRow, sets: Map<string, VideoSet>): FormVideoRef {
   const sessionId = (row.session_id as string | null) ?? null
-  const setNumber = num(row.set_number)
+  const setNumber = numberOrNull(row.set_number)
   return {
     id: row.id,
     exerciseId: String(row.exercise_id),
@@ -148,8 +148,8 @@ function toRef(row: LocalRow, sets: Map<string, VideoSet>): FormVideoRef {
     type: row.mime_type as VideoType,
     durationS: Number(row.duration_s),
     bytes: Number(row.bytes),
-    width: num(row.width),
-    height: num(row.height),
+    width: numberOrNull(row.width),
+    height: numberOrNull(row.height),
     storagePath: String(row.storage_path),
     createdAt: row.created_at,
     set: (sessionId && setNumber && sets.get(`${sessionId}:${row.exercise_id}:${setNumber}`)) || null,
@@ -163,7 +163,7 @@ async function setsOf(store: LocalStore, sessionIds: unknown[]) {
   for (const sessionId of sessions) {
     for (const set of await store.where('set_logs', 'session_id', sessionId)) {
       if (set.is_warmup) continue
-      sets.set(`${sessionId}:${set.exercise_id}:${set.set_number}`, { weightKg: num(set.weight_kg), reps: num(set.reps), seconds: num(set.seconds) })
+      sets.set(`${sessionId}:${set.exercise_id}:${set.set_number}`, { weightKg: numberOrNull(set.weight_kg), reps: numberOrNull(set.reps), seconds: numberOrNull(set.seconds) })
     }
   }
   return sets

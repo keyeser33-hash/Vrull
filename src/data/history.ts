@@ -18,6 +18,7 @@ import {
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { programModel, trainingHistory } from './training'
+import { numberOrNull } from '@/lib/number'
 
 // Historiku i seancave (V2-E1-15; bordet "Hist-Seancat" dhe "Hist-Seanca"): seancat e mbyllura sipas
 // javës së programit, seanca e kaluar me setet dhe rekordet, dhe ndryshimi i një seti. Rekordet nuk
@@ -225,7 +226,6 @@ export interface PastSession extends HistorySession {
   weightSteps: Partial<Record<Equipment, number>>
 }
 
-const numberOrNull = (value: unknown) => (value === null || value === undefined ? null : Number(value))
 
 function plannedSlots(model: Awaited<ReturnType<typeof programModel>>, row: LocalRow): Map<string, PlannedSlot> {
   if (!model || !row.block_id || !row.day_id) return new Map()

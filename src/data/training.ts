@@ -24,6 +24,7 @@ import type {
 import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
+import { numberOrNull } from '@/lib/number'
 
 // Programi aktiv, treguesi i radhës dhe stërvitjet, mbi bazën lokale (SPEC §4, §6). Motori i
 // programit (src/program) llogarit; ky modul lexon dhe shkruan rreshtat përmes store-it.
@@ -77,7 +78,6 @@ export interface TrainingSnapshot {
 }
 
 const byPosition = (a: LocalRow, b: LocalRow) => Number(a.position) - Number(b.position)
-const numberOrNull = (value: unknown) => (value === null || value === undefined ? null : Number(value))
 
 function toExercise(row: LocalRow): ExerciseRecord {
   return {

@@ -96,12 +96,10 @@ export const base = {
   // Gjendja e sinkronizimit (Cilësimet).
   'sync.syncing': 'Po sinkronizohet',
   'sync.never': 'Ende pa sinkronizim',
-  'sync.done': 'Sinkronizuar {when}',
   'sync.justNow': 'tani',
   'sync.minutesAgo': 'para {minutes} min',
   'sync.hoursAgo': { one: 'para {count} ore', other: 'para {count} orësh' },
   'sync.on': 'më {date}, {time}',
-  'sync.offline': 'Pa internet. Ndryshimet ruhen në telefon dhe dërgohen kur të kthehet rrjeti.',
   'sync.signedOut': 'Hyr në llogari që të dhënat të ruhen edhe në Supabase.',
   'sync.rejected': {
     one: '{count} ndryshim nuk u pranua nga serveri. Mbetet në telefon.',

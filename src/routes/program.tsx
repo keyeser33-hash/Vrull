@@ -7,7 +7,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
-import { type ProgrammeBlock, type ProgrammeDay, type ProgrammeHome, programmeHome } from '@/data/programme'
+import { type ProgrammeBlock, type ProgrammeDay, type ActiveProgramHome, activeProgramHome } from '@/data/programme'
 import { programView, startWorkout } from '@/data/training'
 import { programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -25,7 +25,7 @@ const AUTHORS = { shortcut_to_size: 'Jim Stoppani' } as const
 export function ProgramPage() {
   const { t } = useI18n()
   const [now] = useState(() => new Date())
-  const home = useLocalQuery(() => programmeHome(store, now), [now])
+  const home = useLocalQuery(() => activeProgramHome(store, now), [now])
 
   if (home === undefined) return <h1 className="sr-only">{t('tab.programme')}</h1>
   if (home === null) {
@@ -91,7 +91,7 @@ function LibraryButton() {
 }
 
 /** Blloqet si shirita javësh: e bëra me prush, java e tanishme me vijë prushi, të tjerat gjurmë. */
-function Blocks({ home }: { home: ProgrammeHome }) {
+function Blocks({ home }: { home: ActiveProgramHome }) {
   const { t } = useI18n()
   const label = home.completed ? t('programme.completed') : weekLabel(t, home.week)
   const spoken = [
@@ -146,7 +146,7 @@ function BlockBar({ block }: { block: ProgrammeBlock }) {
   )
 }
 
-function WeekDays({ home, now }: { home: ProgrammeHome; now: Date }) {
+function WeekDays({ home, now }: { home: ActiveProgramHome; now: Date }) {
   const { t } = useI18n()
   return (
     <section aria-labelledby="program-week" className="flex flex-col gap-1.5">
@@ -163,11 +163,11 @@ function WeekDays({ home, now }: { home: ProgrammeHome; now: Date }) {
   )
 }
 
-const dayPath = (home: ProgrammeHome, dayId: string) => `/programi/${home.week.blockId}/${home.week.week}/${dayId}`
+const dayPath = (home: ActiveProgramHome, dayId: string) => `/programi/${home.week.blockId}/${home.week.week}/${dayId}`
 
 const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
 
-function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDay; now: Date }) {
+function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: ProgrammeDay; now: Date }) {
   const { t, fmt } = useI18n()
   const navigate = useNavigate()
   const [busy, setBusy] = useState(false)
@@ -229,7 +229,7 @@ function NextWorkout({ home, day, now }: { home: ProgrammeHome; day: ProgrammeDa
   )
 }
 
-function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
+function DayRow({ home, day }: { home: ActiveProgramHome; day: ProgrammeDay }) {
   const { t, fmt } = useI18n()
   const finished = day.status === 'done' || day.status === 'skipped'
   const when = day.status === 'done' ? t('programme.dayDone') : day.status === 'skipped' ? t('programme.daySkipped') : day.date ? dayShort(fmt, day.date) : null
@@ -257,7 +257,7 @@ function DayRow({ home, day }: { home: ProgrammeHome; day: ProgrammeDay }) {
   )
 }
 
-function WeightsLink({ review }: { review: NonNullable<ProgrammeHome['review']> }) {
+function WeightsLink({ review }: { review: NonNullable<ActiveProgramHome['review']> }) {
   const { t } = useI18n()
   return (
     <Link

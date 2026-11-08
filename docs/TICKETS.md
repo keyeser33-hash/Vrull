@@ -210,6 +210,8 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 
 Lista te "Pas rishikimit të E1", si detyrë e parë e etapës, pa ndryshuar sjelljen. **Pranimi:** `npm test`, `npm run lint`, `npm run build` kalojnë; provat e2e të reja për `week_weights`, `form_videos` dhe `ai_usage` kalojnë me përdorues prove të përkohshëm, i fshirë pas provës.
 
+**Gjendja (09.11.2026):** gati. `settingsRow` dhe `syncedSetting` (gjuha, sfondi) te `data/settings-row.ts`; `numberOrNull` te `lib/number.ts`; `describeSync` u hoq (ekrani përdor `syncSummary`, provat e kohës kaluan atje); `weekWeightsView` jep `block: ProgramWeek` në vend të tekstit shqip; tipi `ProgramWeek` te `program/types.ts`; `programmeHome` → `activeProgramHome` ("Programi aktiv"); kodet e gabimeve të importit te `shared.ts` (`IMPORT_ERRORS`); `MusicPlugin.text` dhe `switchTo` për të dy klasat Java; ngjyra e njoftimeve nga `@color/notification_ember`. Provat e2e (7/7) kaluan me përdorues të përkohshëm, i fshirë pas provës; pastrimi i tyre nuk prek më `ai_usage`, që app-i nuk e shkruan. Java kontrollohet nga build-i i Android-it te prova e lëshimit.
+
 ## V2-E2-01 · Bordet e dizajnit 0.21
 
 Borde të shpejta në stilin Vrull, në tri temat, shqip, në 390 px: faqja Objektivat (me "Di yndyrën time"), hapi i objektivave te hapat e parë, karta e kontrollit javor te Sot, Plani im (vakti, ndërrimi i ushqimit, porcioni, shto/hiq vakt), oraret e vakteve, karta e ujit te Sot, njoftimi i vaktit me dy butona (edhe në ekranin e kyçur), dita e humbur te Sot dhe te java, "Shto suplement" me "Fotografo etiketën". **Pranimi:** përdoruesi i komenton; ndryshimet shkruhen te SPEC para kodit.
@@ -252,7 +254,7 @@ Sipas §13 (V38): gjendja "E humbur" te java (Sot, Programi), karta dhe njoftimi
 
 ## V2-E2-10 · Suplementet e mia
 
-Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushqimi për pluhurin e proteinës, ndryshimi dhe heqja; funksioni `supplement-label` (Supabase, JWT, kufiri dhe rezervimi i AI-së si te `program-import`, logjika në modul pa Deno me prova, `tsc` i funksioneve) që lexon foton e etiketës. Fotoja nuk ruhet. **Pranimi:** etiketa e vërtetë e një whey-i lexohet saktë (provë me përdorues të përkohshëm, si te importi); pa internet fleta punon me dorë; "E mora" te proteina shton makrot te vakti një herë.
+Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushqimi për pluhurin e proteinës, ndryshimi dhe heqja; funksioni `supplement-label` (Supabase, JWT, kufiri dhe rezervimi i AI-së si te `program-import`, logjika në modul pa Deno me prova, `tsc` i funksioneve) që lexon foton e etiketës. Fotoja nuk ruhet. `ai_usage.feature` ka nevojë për vlerën e re (`supplement_label`) me migrim. **Pranimi:** etiketa e vërtetë e një whey-i lexohet saktë (provë me përdorues të përkohshëm, si te importi); pa internet fleta punon me dorë; "E mora" te proteina shton makrot te vakti një herë.
 
 ## V2-E2-11 · Lëshimi 0.21.0
 

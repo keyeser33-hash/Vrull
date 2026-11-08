@@ -37,21 +37,3 @@ export function syncSummary(status: SyncStatus, now: Date = new Date(), i18n: I1
       return { tone: 'danger', title: t('sync.errorTitle'), detail: last.rejected > 0 ? t('sync.rejected', { count: last.rejected }) : t('sync.failed') }
   }
 }
-
-export function describeSync(status: SyncStatus, now: Date = new Date(), i18n: I18n = currentI18n()): string {
-  const { t } = i18n
-  if (status.syncing) return t('sync.syncing')
-  const last = status.last
-  if (!last) return t('sync.never')
-  switch (last.status) {
-    case 'ok':
-      return t('sync.done', { when: relative(new Date(last.at), now, i18n) })
-    case 'offline':
-      return t('sync.offline')
-    case 'signed_out':
-      return t('sync.signedOut')
-    case 'error':
-      if (last.rejected > 0) return t('sync.rejected', { count: last.rejected })
-      return t('sync.failed')
-  }
-}

@@ -1,6 +1,7 @@
 import type { ExternalFood } from '@/nutrition/off'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
+import { numberOrNull } from '@/lib/number'
 
 // Ushqimet e përdoruesit (SPEC §9, TH-15): të krijuara me dorë, nga Open Food Facts ose USDA, dhe
 // ato të shabllonit të Jimit. Makrot janë për 100 g. Çdo produkt i jashtëm ruhet lokalisht, që
@@ -21,7 +22,6 @@ export interface Food {
   servingLabel: string | null
 }
 
-const numberOrNull = (value: unknown) => (value === null || value === undefined ? null : Number(value))
 
 function toFood(row: LocalRow): Food {
   return {

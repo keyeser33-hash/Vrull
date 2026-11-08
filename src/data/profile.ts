@@ -1,5 +1,6 @@
 import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
+import { settingsRow } from './settings-row'
 import { ensureProgramState, ensureShortcutToSize } from './training'
 
 // Profili i stërvitjes (SPEC §3a): pesha, ditët dhe ora e stërvitjes, zgjimi dhe gjumi,
@@ -34,10 +35,6 @@ export function parseWeight(text: string): number | null {
 
 export function isTime(text: string) {
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(text)
-}
-
-async function settingsRow(store: LocalStore) {
-  return (await store.all('user_settings'))[0]
 }
 
 async function saveTodayWeight(store: LocalStore, weightKg: number, now: () => Date) {

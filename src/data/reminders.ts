@@ -2,6 +2,7 @@ import type { ReminderInput, ReminderToggles } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import type { LocalStore } from './store'
+import { settingsRow } from './settings-row'
 import { supplementList } from './supplements'
 import { trainingSnapshot } from './training'
 
@@ -14,10 +15,6 @@ export interface ReminderSettings {
 }
 
 const DEFAULT_TOGGLES: ReminderToggles = { meals: true, supplements: true, training: true, measurements: true }
-
-async function settingsRow(store: LocalStore) {
-  return (await store.all('user_settings'))[0]
-}
 
 export async function reminderSettings(store: LocalStore): Promise<ReminderSettings> {
   const row = await settingsRow(store)

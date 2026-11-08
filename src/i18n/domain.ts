@@ -5,7 +5,7 @@ import type { MealKey } from '@/nutrition/meals'
 import { type Evidence, supplementByName } from '@/nutrition/supplements'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
-import type { Equipment } from '@/program/types'
+import type { Equipment, ProgramWeek } from '@/program/types'
 import type { DayTheme } from '@/progress/history'
 
 // Emrat e domenit sipas gjuhës, për çdo ekran. Emrat e blloqeve dhe të ditëve të Shortcut to Size
@@ -42,7 +42,7 @@ export function programBlockName(t: T, name: string | null): string {
 }
 
 /** "Faza 1 · Java 2", "Java 0"; xhiro e dytë e thotë ("· Xhiro 2"). */
-export function programWeekLabel(t: T, week: { blockName: string | null; blockWeeks: number; week: number; run: number }): string {
+export function programWeekLabel(t: T, week: Omit<ProgramWeek, 'blockName'> & { blockName: string | null }): string {
   const block = programBlockName(t, week.blockName)
   const label = week.blockName && week.blockWeeks > 1 ? `${block} · ${t('plan.week', { week: week.week })}` : block
   return week.run > 1 ? `${label} · ${t('plan.run', { run: week.run })}` : label

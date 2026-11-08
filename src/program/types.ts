@@ -155,3 +155,11 @@ export interface SessionPlan {
   dayNumber: number
   slots: PlannedSlot[]
 }
+
+/** Java e një blloku në një xhiro, si e thotë `programWeekLabel`: "Faza 1 · Java 2 · Xhiro 2". */
+export interface ProgramWeek {
+  blockName: string
+  blockWeeks: number
+  week: number
+  run: number
+}

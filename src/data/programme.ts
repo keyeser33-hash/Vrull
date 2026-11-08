@@ -2,7 +2,7 @@ import { localDate, localDay } from '@/lib/calendar'
 import { groupsOf } from '@/program/exercise-catalog'
 import type { DayStatus } from '@/program/overview'
 import type { HistorySet } from '@/program/loads'
-import type { Equipment, Target, Technique } from '@/program/types'
+import type { Equipment, ProgramWeek, Target, Technique } from '@/program/types'
 import { upcomingDates, workoutMinutes } from '@/program/week-plan'
 import type { WeekRef, WeekWeightRow } from '@/progress/week-weights'
 import type { LocalStore } from './store'
@@ -37,7 +37,7 @@ export interface ProgrammeDay {
   lead: string[]
 }
 
-export interface ProgrammeHome {
+export interface ActiveProgramHome {
   programId: string
   programName: string
   source: 'shortcut_to_size' | 'custom'
@@ -46,7 +46,7 @@ export interface ProgrammeHome {
   /** Java e treguesit në gjithë programin (nga 1) dhe sa javë ka programi. */
   weekNumber: number
   totalWeeks: number
-  week: { blockId: string; blockName: string; blockWeeks: number; week: number; run: number }
+  week: ProgramWeek & { blockId: string }
   days: ProgrammeDay[]
   doneDays: number
   next: {
@@ -57,7 +57,7 @@ export interface ProgrammeHome {
   /** Peshat e javës që shqyrtohet (§7): presin vendimin, të pranuara ose për më vonë. */
   review: {
     week: WeekRef
-    block: { blockName: string; blockWeeks: number; week: number; run: number }
+    block: ProgramWeek
     startsOn: Date | null
     /** Datat e parashikuara të ditëve të asaj jave. */
     dates: Record<string, Date | null>
@@ -67,7 +67,7 @@ export interface ProgrammeHome {
 
 const isFinished = (status: DayStatus) => status === 'done' || status === 'skipped'
 
-export async function programmeHome(store: LocalStore, now: Date): Promise<ProgrammeHome | null> {
+export async function activeProgramHome(store: LocalStore, now: Date): Promise<ActiveProgramHome | null> {
   const view = await programView(store)
   if (!view) return null
   const [snapshot, [settings], sessions, program] = await Promise.all([
@@ -112,7 +112,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
     }
   })
 
-  let next: ProgrammeHome['next'] = null
+  let next: ActiveProgramHome['next'] = null
   if (snapshot && snapshot.programId === programId && !snapshot.completed) {
     const [slot] = snapshot.plan.slots
     const weights = slot ? await workoutWeights(store, snapshot.plan) : null
@@ -153,7 +153,7 @@ export async function programmeHome(store: LocalStore, now: Date): Promise<Progr
   }
 
   /** Peshat e javës që shqyrtohet: e treguesit kur ai është te dita e parë, përndryshe java pas saj. */
-  async function reviewOf(): Promise<ProgrammeHome['review']> {
+  async function reviewOf(): Promise<ActiveProgramHome['review']> {
     if (pointer.completed) return null
     const weights = await weekWeightsView(store)
     // Programi aktiv mund të ndërrohet ndërkohë (editori, sinkronizimi): peshat e një programi tjetër
@@ -192,9 +192,9 @@ function leadExercises(list: ({ name: string; primary: string[] } | undefined)[]
 
 export interface WeekReview {
   week: WeekRef
-  block: { blockName: string; blockWeeks: number; week: number; run: number }
+  block: ProgramWeek
   /** Java para saj në program, edhe në bllokun e mëparshëm; null te java e parë. */
-  previous: { blockName: string; blockWeeks: number; week: number } | null
+  previous: Omit<ProgramWeek, 'run'> | null
   /** Treguesi është te dita e parë e kësaj jave: java e kaluar sapo u mbyll. */
   closed: boolean
   days: { dayId: string; dayNumber: number; name: string; date: Date | null }[]
@@ -210,7 +210,7 @@ export interface WeekReview {
 
 /** "Peshat e javës" (bordi "Sugjerimi"): java që shqyrtohet me propozimet, vendimet dhe llogaritë. */
 export async function weekReview(store: LocalStore, now: Date): Promise<WeekReview | null> {
-  const [home, weights, view, history] = await Promise.all([programmeHome(store, now), weekWeightsView(store), programView(store), trainingHistory(store)])
+  const [home, weights, view, history] = await Promise.all([activeProgramHome(store, now), weekWeightsView(store), programView(store), trainingHistory(store)])
   const review = home?.review
   // Të katër leximet duhet të jenë i njëjti program: ndërrimi i tij në mes nuk jep pamje të përzier.
   if (!review || !weights || !view || home.programId !== view.programId || weights.programId !== view.programId) return null
