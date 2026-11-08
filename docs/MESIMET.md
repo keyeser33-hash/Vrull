@@ -10,6 +10,9 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova te `main` mbeti e kuqe që nga vala A, sepse UI ndryshoi te Vrull dhe skripti kërkonte ende tekstet e v1 → kur ndryshon një ekran që prova e prek, skripti ndryshon në të njëjtin ndryshim; prova nuk niset në çdo push te `main`, vetëm me dorë dhe para lëshimit.
 - Rreshtat `ERROR: could not get idle state` vijnë nga uiautomator gjatë animacioneve → nuk janë shkaku; shkaku është rreshti `Error:` i fundit.
 - Disa gjëra emulatori nuk i bën besueshëm (kamera virtuale me Home, Spotify, telefon i vërtetë i kyçur) → kalojnë te lista e provës në telefon, jo në cikle të pafundme në CI.
+- Prova tregonte vetëm gabimin e parë, pastaj ndalej → pjesët pas bazës (A–C) e shënojnë gabimin, e kthejnë app-in te Sot dhe vazhdojnë; një nisje tregon të gjitha gabimet. `skip` te "Run workflow" (ose `SMOKE_SKIP`) kapërcen pjesët që nuk preken.
+- v1 ndërtohej nga tag-u në çdo nisje (4 min), edhe pse nuk ndryshon kurrë → APK-ja e v1 ruhet në cache sipas tag-ut.
+- Home gjatë regjistrimit të videos: WebView-ja e Android-it nuk e dha `visibilitychange` dhe kamera vazhdoi të regjistronte në sfond → gjendja përpara/sfond vjen vetëm nga `onAppVisibility` (`lib/app-visibility.ts`: visibilitychange + pause/resume i Capacitor-it), jo nga `visibilitychange` vetëm.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
 
 ## Provat (Vitest)

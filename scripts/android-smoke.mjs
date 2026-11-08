@@ -11,6 +11,11 @@
 // ekran të kyçur, seti nga njoftimi (prekja e dyfishtë, ekrani i kyçur, procesi i vrarë), videot e formës,
 // muzika, anglishtja, mbyllja → butoni mbrapa, tema → instalim i ri: hyrja dhe hapat e parë me gjuhën →
 // përditësimi v2 → v3 në anglisht → hapja pa internet.
+//
+// Pjesët: A–C (v1, përditësimi, v2 me të dhënat) janë baza; kur dështojnë, prova ndalet. Pjesët e tjera
+// (njoftimi, kamera, muzika, anglishtja, mbyllja, navigimi, instalimi) e shënojnë gabimin, e kthejnë app-in te
+// Sot dhe vazhdojnë, që një nisje të tregojë të gjitha gabimet. SMOKE_SKIP=kamera,muzika i kapërcen
+// (docs/MESIMET.md: pas një dështimi përsërit vetëm pjesën që dështoi).
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -47,6 +52,72 @@ function check(name, ok, detail = '') {
 function info(name, detail) {
   report.info.push({ name, detail })
   console.log(`INFO ${name}: ${typeof detail === 'string' ? detail : JSON.stringify(detail)}`)
+}
+
+const SKIP = new Set((process.env.SMOKE_SKIP ?? '').split(',').map((id) => id.trim()).filter(Boolean))
+/** Pjesët që dështuan ose nuk u nisën, me arsyen. */
+const sections = []
+let page
+
+/** Kthen app-in te Sot pas një pjese që dështoi: paneli i mbyllur, rrjeti, ekrani i shkyçur, faqja e re. */
+async function recover() {
+  const steps = [
+    () => collapseShade(),
+    () => setNetwork(true),
+    async () => {
+      if (keyguardShowing() !== false) await unlock()
+    },
+    () => adb('shell', 'am', 'force-stop', PLAYER),
+  ]
+  for (const step of steps) {
+    try {
+      await step()
+    } catch {
+      // Hapi nuk kishte çfarë të bënte.
+    }
+  }
+  try {
+    page?.close()
+  } catch {
+    // Faqja ishte mbyllur.
+  }
+  page = await open()
+  await goHome(page)
+}
+
+/**
+ * Një pjesë e provës: kapërcehet me SMOKE_SKIP ose kur pjesa nga e cila varet nuk kaloi; gabimi shënohet,
+ * app-i kthehet te Sot dhe prova vazhdon me pjesën tjetër.
+ */
+async function section(id, title, run, { after } = {}) {
+  if (SKIP.has(id)) {
+    sections.push({ id, result: 'skipped', detail: 'SMOKE_SKIP' })
+    console.log(`---- ${id} · ${title}: kapërcehet (SMOKE_SKIP)`)
+    return
+  }
+  const before = after && sections.find((entry) => entry.id === after)
+  if (before && before.result !== 'ok') {
+    sections.push({ id, result: 'skipped', detail: `varet nga ${after}` })
+    console.log(`---- ${id} · ${title}: nuk niset, varet nga ${after}`)
+    return
+  }
+  console.log(`---- ${id} · ${title}`)
+  const start = Date.now()
+  try {
+    await run()
+    sections.push({ id, result: 'ok', seconds: Math.round((Date.now() - start) / 1000) })
+  } catch (error) {
+    const message = String(error?.message ?? error)
+    sections.push({ id, result: 'failed', detail: message, stack: String(error?.stack ?? '') })
+    console.error(`GABIM te pjesa ${id}: ${message}`)
+    try {
+      screenshot(`gabim-${id}`)
+      writeFileSync(join(outDir, `njoftimet-${id}.txt`), adb('shell', 'dumpsys', 'notification', '--noredact'))
+    } catch {
+      // Emulatori mund të mos përgjigjet.
+    }
+    await recover()
+  }
 }
 
 async function waitFor(fn, label, timeout = 60_000) {
@@ -745,7 +816,7 @@ try {
   adb('install', apkV1)
   const codeV1 = versionCode()
   check('v1 0.16.0 instalohet', codeV1 === 1600, `versionCode ${codeV1}`)
-  let page = await open()
+  page = await open()
   await page.send('Page.reload')
   await waitForHeading(page, 'Hyr')
   check('v1: pa sesion hapet hyrja', (await page.evaluate('location.pathname')) === '/hyrja')
@@ -897,418 +968,442 @@ try {
   await click(page, 'a[href="/"]')
 
   // ==== D. Seanca dhe seti nga njoftimi (V2-E1-07, V2-E1-08) ====
-  await openSession(page)
-  const ids = await exerciseIds(page)
-  const sessionId = report.v1.session
-  check('seanca e v1 vazhdon te v2: Bench Press, seti 2 nga 3', await atStep(page, { exercise: 'Bench Press', set: 'Seti 2 nga 3' }))
-  await waitForNotificationTitle(4200, 'Bench Press · Seti 2 nga 3')
-  check('njoftimi i seancës: Bench Press · Seti 2 nga 3, me peshën e setit 1', notification(4200).text.startsWith('60 kg × 12'), notification(4200).text)
-  // Muzika pa leje: karta "Lidh muzikën tënde" (V2-E1-12).
-  check('muzika pa leje: karta "Lidh muzikën tënde" te seanca', await waitFor(() => hasText(page, 'Lidh muzikën tënde'), 'Lidh muzikën tënde', 15_000).then(() => true, () => false))
-  screenshot('seanca-v2')
+  await section('njoftimi', 'Seanca dhe seti nga njoftimi', async () => {
+    await openSession(page)
+    const ids = await exerciseIds(page)
+    const sessionId = report.v1.session
+    check('seanca e v1 vazhdon te v2: Bench Press, seti 2 nga 3', await atStep(page, { exercise: 'Bench Press', set: 'Seti 2 nga 3' }))
+    await waitForNotificationTitle(4200, 'Bench Press · Seti 2 nga 3')
+    check('njoftimi i seancës: Bench Press · Seti 2 nga 3, me peshën e setit 1', notification(4200).text.startsWith('60 kg × 12'), notification(4200).text)
+    // Muzika pa leje: karta "Lidh muzikën tënde" (V2-E1-12).
+    check('muzika pa leje: karta "Lidh muzikën tënde" te seanca', await waitFor(() => hasText(page, 'Lidh muzikën tënde'), 'Lidh muzikën tënde', 15_000).then(() => true, () => false))
+    screenshot('seanca-v2')
 
-  // D1. Prekja e dyfishtë te paneli i njoftimeve ruan një set (Bench Press seti 2), jo dy.
-  adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
-  await sleep(1000)
-  await expandShade()
-  screenshot('njoftimi-paneli')
-  const doubleTap = await tapSave('prekja-e-dyfishte', 'Bench Press · Seti 3 nga 3', 2)
-  await waitForNotificationTitle(4200, 'Bench Press · Seti 3 nga 3')
-  await sleep(2500)
-  collapseShade()
-  page.close()
-  page = await open()
-  await openSession(page)
-  check('njoftimi: seti i ruajtur del te seanca', await atStep(page, { exercise: 'Bench Press', set: 'Seti 3 nga 3' }))
-  // Pritet pak, që një prekje e dytë e vonuar të kishte kohë të dilte si set i ri.
-  await sleep(2000)
-  const bench = await setsOf(page, sessionId, ids['Bench Press'])
-  check('njoftimi: prekja e dyfishtë ruan një set', bench.map((set) => set.set_number).join(',') === '1,2', `setet ${bench.map((set) => set.set_number).join(',')}, prekja ${doubleTap.at}`)
-
-  // D2. Ekrani i kyçur me PIN: "Ruaj setin" pa e shkyçur telefonin; pushimi nis nga njoftimi dhe
-  // "Pushimi mbaroi" vjen me ekran të fikur.
-  adb('shell', 'locksettings', 'set-pin', PIN)
-  await sleepScreen()
-  await wakeScreen()
-  await sleep(1500)
-  check('ekrani i kyçur me PIN', keyguardShowing() !== false)
-  screenshot('ekrani-kycur')
-  const lockTap = await tapSave('ekrani-kycur', 'Incline Bench Press · Seti 1 nga 2')
-  await waitForNotificationTitle(4200, 'Incline Bench Press · Seti 1 nga 2')
-  await waitFor(() => notification(4202), 'njoftimi i pushimit (4202)', 10_000)
-  check('ekrani i kyçur: "Ruaj setin" kalon te seti tjetër dhe nis pushimin, pa shkyçur', keyguardShowing() !== false, notification(4202)?.title)
-  screenshot('ekrani-kycur-pas')
-  const lockRest = sessionPrefs().rest
-  await sleepScreen()
-  await expectRestDone('pushimi nga njoftimi', lockRest?.endsAt ?? lockTap.at + 90_000)
-  await unlock()
-  page.close()
-  page = await open()
-  await openSession(page)
-  const lockSet = await waitFor(async () => (await setsOf(page, sessionId, ids['Bench Press'])).find((set) => set.set_number === 3), 'seti 3 nga ekrani i kyçur', 20_000)
-  check('ekrani i kyçur: seti 3 ruhet me kohën e prekjes', lockSet && Math.abs(Date.parse(lockSet.logged_at) - lockTap.at) <= 3000, `${lockSet?.logged_at} vs ${new Date(lockTap.at).toISOString()}`)
-  await waitFor(() => posted('set_logs').some((row) => row.id === lockSet.id), 'sinkronizimi i setit nga ekrani i kyçur', 30_000)
-
-  // D3. Seanca: "Ruaj setin" te app-i (Incline Bench Press seti 1, 40 kg) dhe pushimi me ekran të kyçur.
-  check('pas Bench Press seanca kalon te Incline Bench Press', await atStep(page, { exercise: 'Incline Bench Press', set: 'Seti 1 nga 2' }))
-  for (let i = 0; i < 16; i++) await clickButton(page, 'Rrit peshën me 2,5 kg')
-  await waitFor(() => hasButton(page, 'Shkruaj peshën, 40 kg'), 'pesha 40 kg')
-  await clickButton(page, 'Ruaj setin')
-  await waitFor(() => hasButton(page, 'Hiq 15 sekonda nga pushimi'), 'pushimi te seanca')
-  for (let i = 0; i < 5; i++) await clickButton(page, 'Hiq 15 sekonda nga pushimi')
-  screenshot('seanca-pushimi')
-  const inAppRest = await restEndsAt(page)
-  await sleepScreen()
-  await expectRestDone('pushimi te seanca', inAppRest)
-  await unlock()
-  await waitForText(page, 'Seti 2 nga 2')
-  check('pas pushimit seanca vazhdon te seti 2', true)
-
-  // D4. Procesi i vrarë: "Ruaj setin" e nis procesin, njoftimi kalon te seti tjetër, radha mbetet derisa hapet app-i.
-  await waitForNotificationTitle(4200, 'Incline Bench Press · Seti 2 nga 2')
-  page.close()
-  adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
-  await sleep(1500)
-  await waitFor(() => {
-    adb('shell', 'am', 'kill', PKG)
-    return pidOf() === ''
-  }, 'procesi i vrarë me am kill', 10_000).catch(() => {
-    // `am kill` vret vetëm procesin "në cache"; përndryshe si sistemi kur i duhet kujtesa.
-    info('procesi', 'am kill nuk e vrau; vritet me kill nga vetë përdoruesi i app-it')
-    adb('shell', 'run-as', PKG, 'kill', '-9', pidOf())
-  })
-  await waitFor(() => pidOf() === '', 'procesi i vrarë', 10_000)
-  check('procesi i app-it është vrarë, njoftimi mbetet', notification(4200)?.title === 'Incline Bench Press · Seti 2 nga 2')
-  await expandShade()
-  const killedTap = await tapSave('procesi-i-vrare', 'Incline Dumbbell Flye · Seti 1 nga 2')
-  await waitFor(() => pidOf() !== '', 'procesi nis nga prekja', 15_000)
-  await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
-  const queued = sessionPrefs().queue.filter((action) => action.type === 'save')
-  check('procesi i vrarë: prekja e nis procesin dhe njoftimi kalon te seti tjetër', queued.length === 1, `radha ${JSON.stringify(queued.map((action) => [action.setNumber, action.reps, action.at]))}`)
-  check('procesi i vrarë: radha mban setin me kohën e prekjes', Math.abs(queued[0].at - killedTap.at) <= 3000 && queued[0].setNumber === 2 && queued[0].weightKg === 40)
-  screenshot('njoftimi-pas-procesit')
-  collapseShade()
-  page = await open()
-  await waitFor(async () => ['/', '/seanca'].includes(await page.evaluate('location.pathname')), 'Sot ose seanca')
-  if ((await page.evaluate('location.pathname')) === '/') {
-    await clickButton(page, 'Vazhdo stërvitjen')
-    await waitForPath(page, '/seanca')
-  }
-  await waitForText(page, 'Seti 2 u ruajt: 40 × 12')
-  check('procesi i vrarë: hapja e app-it tregon "Seti 2 u ruajt"', true)
-  await waitFor(() => sessionPrefs().queue.length === 0, 'radha e zbrazur', 15_000)
-  await waitFor(() => posted('set_logs').some((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press']), 'sinkronizimi i setit nga njoftimi', 30_000)
-  const killedSet = posted('set_logs').find((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press'])
-  check('procesi i vrarë: seti sinkronizohet me logged_at = koha e prekjes', Date.parse(killedSet.logged_at) === queued[0].at, `${killedSet.logged_at} = ${new Date(queued[0].at).toISOString()}`)
-  screenshot('seanca-seti-nga-njoftimi')
-  await openSession(page)
-
-  // D5. Videot e formës (V2-E1-13): leja CAMERA te prekja e parë, kamera virtuale, regjistrimi pa internet.
-  report.mp4 = await page.evaluate(`({ avc1: MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'), mp4: MediaRecorder.isTypeSupported('video/mp4'), webm: MediaRecorder.isTypeSupported('video/webm') })`)
-  info("MediaRecorder.isTypeSupported('video/mp4;codecs=avc1') në WebView-in e emulatorit", report.mp4)
-  const cameraGranted = () => /android\.permission\.CAMERA: granted=true/.test(adb('shell', 'dumpsys', 'package', PKG))
-  check('kamera: leja CAMERA ende pa dhënë', !cameraGranted())
-  await clickButton(page, 'Video e formës')
-  await waitFor(() => focusedWindow().includes('permissioncontroller'), 'dritarja e lejes së kamerës', 20_000)
-  screenshot('kamera-leja')
-  const allow = await waitFor(() => (uiNodes() ?? []).find((node) => /permission_allow_foreground_only_button|permission_allow_button/.test(node.id)), 'butoni "Lejo" i kamerës', 20_000)
-  adb('shell', 'input', 'tap', String(allow.x), String(allow.y))
-  await waitFor(cameraGranted, 'leja CAMERA', 15_000)
-  check('kamera: leja CAMERA kërkohet te prekja e parë dhe jepet', true)
-  const cameraLive = () => page.evaluate(`(document.querySelector('[role=dialog] video')?.readyState ?? 0) >= 2`)
-  await waitFor(cameraLive, 'pamja e kamerës virtuale', 30_000)
-  check('kamera: pamja e kamerës virtuale të emulatorit', true)
-  screenshot('kamera')
-  await setNetwork(false)
-  const recordLabel = async () => ((await hasButton(page, 'Regjistro')) ? 'Regjistro' : 'Regjistro përsëri')
-  await clickButton(page, await recordLabel())
-  await sleep(5200)
-  await clickButton(page, 'Ndalo regjistrimin')
-  await waitFor(() => page.evaluate(`/Regjistruar 0:0[456]/.test(${PAGE_TEXT})`), 'regjistrimi 5 s')
-  screenshot('kamera-regjistruar')
-  await clickButtonStarting(page, 'Ruaj te seti ')
-  await waitFor(() => page.evaluate(`!document.querySelector('[role=dialog] video')`), 'mbyllja e kamerës pas ruajtjes')
-  const savedVideo = await waitFor(async () => {
-    const data = await readDb(page, ['form_videos', '_video_files'])
-    return data.form_videos.length === 1 && data._video_files.length === 1 ? data : null
-  }, 'videoja në telefon')
-  check('video: ruhet në telefon pa internet, pa u ngarkuar', savedVideo._video_files[0].uploaded === 0 && savedVideo.form_videos[0].duration_s >= 4, `${savedVideo.form_videos[0].mime_type}, ${savedVideo.form_videos[0].duration_s} s, ${savedVideo.form_videos[0].bytes} B`)
-  report.video = savedVideo.form_videos[0]
-  await setNetwork(true)
-  await waitFor(() => report.requests.some((line) => line.startsWith('POST /storage/v1/object/form-videos/')), 'ngarkimi i videos kur kthehet rrjeti', 60_000)
-  await waitFor(async () => (await readDb(page, ['_video_files']))._video_files[0].uploaded === 1, 'videoja e shënuar si e ngarkuar', 30_000)
-  check('video: ngarkohet te form-videos kur kthehet rrjeti', true, report.requests.find((line) => line.startsWith('POST /storage/v1/object/form-videos/')))
-  // Home gjatë regjistrimit: regjistrimi ndalet dhe mbahet, kamera rihapet kur app-i kthehet.
-  await clickButton(page, 'Video e formës')
-  await waitFor(cameraLive, 'kamera përsëri', 30_000)
-  await clickButton(page, await recordLabel())
-  await sleep(2500)
-  adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
-  await sleep(2000)
-  launch()
-  await waitFor(() => page.evaluate(`/Regjistruar 0:0\\d/.test(${PAGE_TEXT})`), 'regjistrimi i ndalur nga Home', 20_000)
-  await waitFor(cameraLive, 'kamera e rihapur pas Home', 30_000)
-  check('video: Home gjatë regjistrimit e ndal dhe e mban regjistrimin, kamera rihapet', true)
-  screenshot('kamera-pas-home')
-  await clickButton(page, 'Mbyll kamerën')
-  await waitFor(() => page.evaluate(`!document.querySelector('[role=dialog] video')`), 'kamera e mbyllur')
-
-  // D6. Muzika (V2-E1-12): leja "Qasja te njoftimet" dhe, me app-in e provës, mini-player-i dhe rreshti i
-  // muzikës te njoftimi i seancës me kontrollet.
-  adb('shell', 'cmd', 'notification', 'allow_listener', `${PKG}/${PKG}.MusicListenerService`)
-  adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
-  await sleep(1000)
-  launch()
-  await waitFor(async () => !(await hasText(page, 'Lidh muzikën tënde')), 'karta e lidhjes ikën pas lejes', 20_000)
-  // Emulatori mund të ketë vetë një sesion medie pa titull (app-et e Google-it): atëherë del mini-player-i.
-  const musicIdle = await waitFor(async () => (await hasText(page, 'Asnjë app muzike nuk luan')) || (await page.evaluate(`!!document.querySelector('section[aria-label="Muzika"]')`)), 'muzika me lejen', 15_000)
-  check('muzika: me lejen, karta e lidhjes ikën dhe del muzika', Boolean(musicIdle))
-  info('muzika para app-it të provës', (await hasText(page, 'Asnjë app muzike nuk luan')) ? 'Asnjë app muzike nuk luan' : 'mini-player-i i një sesioni tjetër të emulatorit')
-  if (apkPlayer) {
-    adb('install', apkPlayer)
-    adb('shell', 'pm', 'grant', PLAYER, 'android.permission.POST_NOTIFICATIONS')
-    adb('logcat', '-c')
-    adb('shell', 'am', 'start', '-W', '-n', `${PLAYER}/.MainActivity`)
-    launch()
-    await waitForText(page, 'Prova e ritmit', 20_000)
-    await waitForText(page, '128 BPM', 20_000)
-    check('muzika: mini-player-i tregon këngën dhe tempon', true)
-    screenshot('muzika-seanca')
-    const playerLog = () => adb('logcat', '-d', '-s', 'VrullProva').split('\n').filter((line) => line.includes('komanda'))
-    // Kontrollet te seanca.
-    await clickButton(page, 'Kënga tjetër')
-    await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e dytë')), 'kënga tjetër nga seanca', 15_000)
-    await waitForText(page, 'Kënga e dytë', 15_000)
-    check('muzika: "Kënga tjetër" te seanca ndërron këngën', true)
-    // Pozicioni (rrëshqitësi i "Trupi në ritëm"): numri vjen si Integer nga JS-i (CallNumbers.java).
-    const seek = await page.evaluate(`Capacitor.Plugins.Music.control({ action: 'seekTo', positionMs: 30000 }).then(() => 'ok', (e) => e.code)`)
-    await waitFor(() => playerLog().some((line) => line.includes('komanda seekTo')), 'pozicioni te app-i i muzikës', 15_000)
-    check('muzika: pozicioni i këngës ndryshon nga Vrull', seek === 'ok', seek)
-    // Rreshti i muzikës te njoftimi: titulli dhe kontrollet (uiautomator; ekrani me kronometër mund të mos qetësohet).
+    // D1. Prekja e dyfishtë te paneli i njoftimeve ruan një set (Bench Press seti 2), jo dy.
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     await sleep(1000)
     await expandShade()
-    // Butonat e rreshtit (notification_music.xml). uiautomator i jep kur ekrani qetësohet; përndryshe (kronometri
-    // i njoftimit e mban në lëvizje) gjenden nga butoni prush i njoftimit të zgjeruar: rreshti 48 dp nis 8 dp nën
-    // kontrollet, butonat 48 dp me 6 dp mes tyre, i fundit në skajin e djathtë.
-    const nodes = uiNodes() ?? []
-    const node = (name) => nodes.find((entry) => entry.id.endsWith(`:id/music_${name}`))
-    let buttons
-    if (node('play_pause') && node('next') && node('previous')) {
-      check('njoftimi: rreshti i muzikës tregon këngën', node('title')?.text === 'Kënga e dytë', node('title')?.text)
-      check('njoftimi: luaj/pauzë sipas gjendjes', node('play_pause').desc === 'Pauzë', node('play_pause').desc)
-      buttons = Object.fromEntries(['play_pause', 'next', 'previous'].map((name) => [name, [String(node(name).x), String(node(name).y)]]))
-    } else {
-      info('njoftimi i muzikës', 'uiautomator nuk e kapi panelin (kronometri); butonat gjenden nga butoni prush')
-      const dp = Number(adb('shell', 'wm', 'density').match(/(\d+)\s*$/)[1]) / 160
-      const ember = emberButton()
-      const right = ember.x + ember.w / 2
-      const y = Math.round(ember.y + ember.h / 2 + 32 * dp)
-      const at = (index) => [String(Math.round(right - 24 * dp - index * 54 * dp)), String(y)]
-      buttons = { next: at(0), play_pause: at(1), previous: at(2) }
-    }
-    screenshot('njoftimi-muzika')
-    adb('shell', 'input', 'tap', ...buttons.play_pause)
-    await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
-    await sleep(1500)
-    adb('shell', 'input', 'tap', ...buttons.play_pause)
-    await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
-    await sleep(1500)
-    adb('shell', 'input', 'tap', ...buttons.next)
-    await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
-    await sleep(1500)
-    screenshot('njoftimi-muzika-pas')
-    adb('shell', 'input', 'tap', ...buttons.previous)
-    await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
-    check('njoftimi: rreshti i muzikës me pauzë, luaj, para dhe mbrapa', true)
+    screenshot('njoftimi-paneli')
+    const doubleTap = await tapSave('prekja-e-dyfishte', 'Bench Press · Seti 3 nga 3', 2)
+    await waitForNotificationTitle(4200, 'Bench Press · Seti 3 nga 3')
+    await sleep(2500)
     collapseShade()
+    page.close()
+    page = await open()
+    await openSession(page)
+    check('njoftimi: seti i ruajtur del te seanca', await atStep(page, { exercise: 'Bench Press', set: 'Seti 3 nga 3' }))
+    // Pritet pak, që një prekje e dytë e vonuar të kishte kohë të dilte si set i ri.
+    await sleep(2000)
+    const bench = await setsOf(page, sessionId, ids['Bench Press'])
+    check('njoftimi: prekja e dyfishtë ruan një set', bench.map((set) => set.set_number).join(',') === '1,2', `setet ${bench.map((set) => set.set_number).join(',')}, prekja ${doubleTap.at}`)
+
+    // D2. Ekrani i kyçur me PIN: "Ruaj setin" pa e shkyçur telefonin; pushimi nis nga njoftimi dhe
+    // "Pushimi mbaroi" vjen me ekran të fikur.
+    adb('shell', 'locksettings', 'set-pin', PIN)
+    await sleepScreen()
+    await wakeScreen()
+    await sleep(1500)
+    check('ekrani i kyçur me PIN', keyguardShowing() !== false)
+    screenshot('ekrani-kycur')
+    const lockTap = await tapSave('ekrani-kycur', 'Incline Bench Press · Seti 1 nga 2')
+    await waitForNotificationTitle(4200, 'Incline Bench Press · Seti 1 nga 2')
+    await waitFor(() => notification(4202), 'njoftimi i pushimit (4202)', 10_000)
+    check('ekrani i kyçur: "Ruaj setin" kalon te seti tjetër dhe nis pushimin, pa shkyçur', keyguardShowing() !== false, notification(4202)?.title)
+    screenshot('ekrani-kycur-pas')
+    const lockRest = sessionPrefs().rest
+    await sleepScreen()
+    await expectRestDone('pushimi nga njoftimi', lockRest?.endsAt ?? lockTap.at + 90_000)
+    await unlock()
+    page.close()
+    page = await open()
+    await openSession(page)
+    const lockSet = await waitFor(async () => (await setsOf(page, sessionId, ids['Bench Press'])).find((set) => set.set_number === 3), 'seti 3 nga ekrani i kyçur', 20_000)
+    check('ekrani i kyçur: seti 3 ruhet me kohën e prekjes', lockSet && Math.abs(Date.parse(lockSet.logged_at) - lockTap.at) <= 3000, `${lockSet?.logged_at} vs ${new Date(lockTap.at).toISOString()}`)
+    await waitFor(() => posted('set_logs').some((row) => row.id === lockSet.id), 'sinkronizimi i setit nga ekrani i kyçur', 30_000)
+
+    // D3. Seanca: "Ruaj setin" te app-i (Incline Bench Press seti 1, 40 kg) dhe pushimi me ekran të kyçur.
+    check('pas Bench Press seanca kalon te Incline Bench Press', await atStep(page, { exercise: 'Incline Bench Press', set: 'Seti 1 nga 2' }))
+    for (let i = 0; i < 16; i++) await clickButton(page, 'Rrit peshën me 2,5 kg')
+    await waitFor(() => hasButton(page, 'Shkruaj peshën, 40 kg'), 'pesha 40 kg')
+    await clickButton(page, 'Ruaj setin')
+    await waitFor(() => hasButton(page, 'Hiq 15 sekonda nga pushimi'), 'pushimi te seanca')
+    for (let i = 0; i < 5; i++) await clickButton(page, 'Hiq 15 sekonda nga pushimi')
+    screenshot('seanca-pushimi')
+    const inAppRest = await restEndsAt(page)
+    await sleepScreen()
+    await expectRestDone('pushimi te seanca', inAppRest)
+    await unlock()
+    await waitForText(page, 'Seti 2 nga 2')
+    check('pas pushimit seanca vazhdon te seti 2', true)
+
+    // D4. Procesi i vrarë: "Ruaj setin" e nis procesin, njoftimi kalon te seti tjetër, radha mbetet derisa hapet app-i.
+    await waitForNotificationTitle(4200, 'Incline Bench Press · Seti 2 nga 2')
+    page.close()
+    adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
+    await sleep(1500)
+    await waitFor(() => {
+      adb('shell', 'am', 'kill', PKG)
+      return pidOf() === ''
+    }, 'procesi i vrarë me am kill', 10_000).catch(() => {
+      // `am kill` vret vetëm procesin "në cache"; përndryshe si sistemi kur i duhet kujtesa.
+      info('procesi', 'am kill nuk e vrau; vritet me kill nga vetë përdoruesi i app-it')
+      adb('shell', 'run-as', PKG, 'kill', '-9', pidOf())
+    })
+    await waitFor(() => pidOf() === '', 'procesi i vrarë', 10_000)
+    check('procesi i app-it është vrarë, njoftimi mbetet', notification(4200)?.title === 'Incline Bench Press · Seti 2 nga 2')
+    await expandShade()
+    const killedTap = await tapSave('procesi-i-vrare', 'Incline Dumbbell Flye · Seti 1 nga 2')
+    await waitFor(() => pidOf() !== '', 'procesi nis nga prekja', 15_000)
+    await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
+    const queued = sessionPrefs().queue.filter((action) => action.type === 'save')
+    check('procesi i vrarë: prekja e nis procesin dhe njoftimi kalon te seti tjetër', queued.length === 1, `radha ${JSON.stringify(queued.map((action) => [action.setNumber, action.reps, action.at]))}`)
+    check('procesi i vrarë: radha mban setin me kohën e prekjes', Math.abs(queued[0].at - killedTap.at) <= 3000 && queued[0].setNumber === 2 && queued[0].weightKg === 40)
+    screenshot('njoftimi-pas-procesit')
+    collapseShade()
+    page = await open()
+    await waitFor(async () => ['/', '/seanca'].includes(await page.evaluate('location.pathname')), 'Sot ose seanca')
+    if ((await page.evaluate('location.pathname')) === '/') {
+      await clickButton(page, 'Vazhdo stërvitjen')
+      await waitForPath(page, '/seanca')
+    }
+    await waitForText(page, 'Seti 2 u ruajt: 40 × 12')
+    check('procesi i vrarë: hapja e app-it tregon "Seti 2 u ruajt"', true)
+    await waitFor(() => sessionPrefs().queue.length === 0, 'radha e zbrazur', 15_000)
+    await waitFor(() => posted('set_logs').some((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press']), 'sinkronizimi i setit nga njoftimi', 30_000)
+    const killedSet = posted('set_logs').find((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press'])
+    check('procesi i vrarë: seti sinkronizohet me logged_at = koha e prekjes', Date.parse(killedSet.logged_at) === queued[0].at, `${killedSet.logged_at} = ${new Date(queued[0].at).toISOString()}`)
+    screenshot('seanca-seti-nga-njoftimi')
+  })
+
+  // D5. Videot e formës (V2-E1-13): leja CAMERA te prekja e parë, kamera virtuale, regjistrimi pa internet.
+  await section('kamera', 'Videot e formës', async () => {
+    await openSession(page)
+    report.mp4 = await page.evaluate(`({ avc1: MediaRecorder.isTypeSupported('video/mp4;codecs=avc1'), mp4: MediaRecorder.isTypeSupported('video/mp4'), webm: MediaRecorder.isTypeSupported('video/webm') })`)
+    info("MediaRecorder.isTypeSupported('video/mp4;codecs=avc1') në WebView-in e emulatorit", report.mp4)
+    const cameraGranted = () => /android\.permission\.CAMERA: granted=true/.test(adb('shell', 'dumpsys', 'package', PKG))
+    check('kamera: leja CAMERA ende pa dhënë', !cameraGranted())
+    await clickButton(page, 'Video e formës')
+    await waitFor(() => focusedWindow().includes('permissioncontroller'), 'dritarja e lejes së kamerës', 20_000)
+    screenshot('kamera-leja')
+    const allow = await waitFor(() => (uiNodes() ?? []).find((node) => /permission_allow_foreground_only_button|permission_allow_button/.test(node.id)), 'butoni "Lejo" i kamerës', 20_000)
+    adb('shell', 'input', 'tap', String(allow.x), String(allow.y))
+    await waitFor(cameraGranted, 'leja CAMERA', 15_000)
+    check('kamera: leja CAMERA kërkohet te prekja e parë dhe jepet', true)
+    const cameraLive = () => page.evaluate(`(document.querySelector('[role=dialog] video')?.readyState ?? 0) >= 2`)
+    await waitFor(cameraLive, 'pamja e kamerës virtuale', 30_000)
+    check('kamera: pamja e kamerës virtuale të emulatorit', true)
+    screenshot('kamera')
+    await setNetwork(false)
+    const recordLabel = async () => ((await hasButton(page, 'Regjistro')) ? 'Regjistro' : 'Regjistro përsëri')
+    await clickButton(page, await recordLabel())
+    await sleep(5200)
+    await clickButton(page, 'Ndalo regjistrimin')
+    await waitFor(() => page.evaluate(`/Regjistruar 0:0[456]/.test(${PAGE_TEXT})`), 'regjistrimi 5 s')
+    screenshot('kamera-regjistruar')
+    await clickButtonStarting(page, 'Ruaj te seti ')
+    await waitFor(() => page.evaluate(`!document.querySelector('[role=dialog] video')`), 'mbyllja e kamerës pas ruajtjes')
+    const savedVideo = await waitFor(async () => {
+      const data = await readDb(page, ['form_videos', '_video_files'])
+      return data.form_videos.length === 1 && data._video_files.length === 1 ? data : null
+    }, 'videoja në telefon')
+    check('video: ruhet në telefon pa internet, pa u ngarkuar', savedVideo._video_files[0].uploaded === 0 && savedVideo.form_videos[0].duration_s >= 4, `${savedVideo.form_videos[0].mime_type}, ${savedVideo.form_videos[0].duration_s} s, ${savedVideo.form_videos[0].bytes} B`)
+    report.video = savedVideo.form_videos[0]
+    await setNetwork(true)
+    await waitFor(() => report.requests.some((line) => line.startsWith('POST /storage/v1/object/form-videos/')), 'ngarkimi i videos kur kthehet rrjeti', 60_000)
+    await waitFor(async () => (await readDb(page, ['_video_files']))._video_files[0].uploaded === 1, 'videoja e shënuar si e ngarkuar', 30_000)
+    check('video: ngarkohet te form-videos kur kthehet rrjeti', true, report.requests.find((line) => line.startsWith('POST /storage/v1/object/form-videos/')))
+    // Home gjatë regjistrimit: regjistrimi ndalet dhe mbahet, kamera rihapet kur app-i kthehet.
+    await clickButton(page, 'Video e formës')
+    await waitFor(cameraLive, 'kamera përsëri', 30_000)
+    await clickButton(page, await recordLabel())
+    await sleep(2500)
+    adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
+    await sleep(2000)
     launch()
-    // MusicBrainz përmes CapacitorHttp (V2-E1-16a): për "Kënga e dytë" GetSongBPM i imituar s'ka tempo, ndaj
-    // app-i pyet MusicBrainz. Kërkesa del nga telefoni (jo nga WebView), ndaj shihet vetëm te `_meta`.
-    const tempoRecord = await waitFor(async () => {
-      const { _meta: meta } = await readDb(page, ['_meta'])
-      return meta.find((entry) => entry.key === 'tempo:vrull|kenga e dyte') ?? null
-    }, 'tempo e "Kënga e dytë"', 30_000).catch(() => null)
-    info('MusicBrainz përmes CapacitorHttp', tempoRecord ? tempoRecord.value : 'pa përgjigje (MusicBrainz ose rrjeti i runner-it)')
-    adb('shell', 'am', 'force-stop', PLAYER)
-  }
+    await waitFor(() => page.evaluate(`/Regjistruar 0:0\\d/.test(${PAGE_TEXT})`), 'regjistrimi i ndalur nga Home', 20_000)
+    await waitFor(cameraLive, 'kamera e rihapur pas Home', 30_000)
+    check('video: Home gjatë regjistrimit e ndal dhe e mban regjistrimin, kamera rihapet', true)
+    screenshot('kamera-pas-home')
+    await clickButton(page, 'Mbyll kamerën')
+    await waitFor(() => page.evaluate(`!document.querySelector('[role=dialog] video')`), 'kamera e mbyllur')
+  })
+
+  // D6. Muzika (V2-E1-12): leja "Qasja te njoftimet" dhe, me app-in e provës, mini-player-i dhe rreshti i
+  // muzikës te njoftimi i seancës me kontrollet.
+  await section('muzika', 'Muzika te seanca dhe te njoftimi', async () => {
+    await openSession(page)
+    adb('shell', 'cmd', 'notification', 'allow_listener', `${PKG}/${PKG}.MusicListenerService`)
+    adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
+    await sleep(1000)
+    launch()
+    await waitFor(async () => !(await hasText(page, 'Lidh muzikën tënde')), 'karta e lidhjes ikën pas lejes', 20_000)
+    // Emulatori mund të ketë vetë një sesion medie pa titull (app-et e Google-it): atëherë del mini-player-i.
+    const musicIdle = await waitFor(async () => (await hasText(page, 'Asnjë app muzike nuk luan')) || (await page.evaluate(`!!document.querySelector('section[aria-label="Muzika"]')`)), 'muzika me lejen', 15_000)
+    check('muzika: me lejen, karta e lidhjes ikën dhe del muzika', Boolean(musicIdle))
+    info('muzika para app-it të provës', (await hasText(page, 'Asnjë app muzike nuk luan')) ? 'Asnjë app muzike nuk luan' : 'mini-player-i i një sesioni tjetër të emulatorit')
+    if (apkPlayer) {
+      adb('install', apkPlayer)
+      adb('shell', 'pm', 'grant', PLAYER, 'android.permission.POST_NOTIFICATIONS')
+      adb('logcat', '-c')
+      adb('shell', 'am', 'start', '-W', '-n', `${PLAYER}/.MainActivity`)
+      launch()
+      await waitForText(page, 'Prova e ritmit', 20_000)
+      await waitForText(page, '128 BPM', 20_000)
+      check('muzika: mini-player-i tregon këngën dhe tempon', true)
+      screenshot('muzika-seanca')
+      const playerLog = () => adb('logcat', '-d', '-s', 'VrullProva').split('\n').filter((line) => line.includes('komanda'))
+      // Kontrollet te seanca.
+      await clickButton(page, 'Kënga tjetër')
+      await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e dytë')), 'kënga tjetër nga seanca', 15_000)
+      await waitForText(page, 'Kënga e dytë', 15_000)
+      check('muzika: "Kënga tjetër" te seanca ndërron këngën', true)
+      // Pozicioni (rrëshqitësi i "Trupi në ritëm"): numri vjen si Integer nga JS-i (CallNumbers.java).
+      const seek = await page.evaluate(`Capacitor.Plugins.Music.control({ action: 'seekTo', positionMs: 30000 }).then(() => 'ok', (e) => e.code)`)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda seekTo')), 'pozicioni te app-i i muzikës', 15_000)
+      check('muzika: pozicioni i këngës ndryshon nga Vrull', seek === 'ok', seek)
+      // Rreshti i muzikës te njoftimi: titulli dhe kontrollet (uiautomator; ekrani me kronometër mund të mos qetësohet).
+      adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
+      await sleep(1000)
+      await expandShade()
+      // Butonat e rreshtit (notification_music.xml). uiautomator i jep kur ekrani qetësohet; përndryshe (kronometri
+      // i njoftimit e mban në lëvizje) gjenden nga butoni prush i njoftimit të zgjeruar: rreshti 48 dp nis 8 dp nën
+      // kontrollet, butonat 48 dp me 6 dp mes tyre, i fundit në skajin e djathtë.
+      const nodes = uiNodes() ?? []
+      const node = (name) => nodes.find((entry) => entry.id.endsWith(`:id/music_${name}`))
+      let buttons
+      if (node('play_pause') && node('next') && node('previous')) {
+        check('njoftimi: rreshti i muzikës tregon këngën', node('title')?.text === 'Kënga e dytë', node('title')?.text)
+        check('njoftimi: luaj/pauzë sipas gjendjes', node('play_pause').desc === 'Pauzë', node('play_pause').desc)
+        buttons = Object.fromEntries(['play_pause', 'next', 'previous'].map((name) => [name, [String(node(name).x), String(node(name).y)]]))
+      } else {
+        info('njoftimi i muzikës', 'uiautomator nuk e kapi panelin (kronometri); butonat gjenden nga butoni prush')
+        const dp = Number(adb('shell', 'wm', 'density').match(/(\d+)\s*$/)[1]) / 160
+        const ember = emberButton()
+        const right = ember.x + ember.w / 2
+        const y = Math.round(ember.y + ember.h / 2 + 32 * dp)
+        const at = (index) => [String(Math.round(right - 24 * dp - index * 54 * dp)), String(y)]
+        buttons = { next: at(0), play_pause: at(1), previous: at(2) }
+      }
+      screenshot('njoftimi-muzika')
+      adb('shell', 'input', 'tap', ...buttons.play_pause)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
+      await sleep(1500)
+      adb('shell', 'input', 'tap', ...buttons.play_pause)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
+      await sleep(1500)
+      adb('shell', 'input', 'tap', ...buttons.next)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
+      await sleep(1500)
+      screenshot('njoftimi-muzika-pas')
+      adb('shell', 'input', 'tap', ...buttons.previous)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
+      check('njoftimi: rreshti i muzikës me pauzë, luaj, para dhe mbrapa', true)
+      collapseShade()
+      launch()
+      // MusicBrainz përmes CapacitorHttp (V2-E1-16a): për "Kënga e dytë" GetSongBPM i imituar s'ka tempo, ndaj
+      // app-i pyet MusicBrainz. Kërkesa del nga telefoni (jo nga WebView), ndaj shihet vetëm te `_meta`.
+      const tempoRecord = await waitFor(async () => {
+        const { _meta: meta } = await readDb(page, ['_meta'])
+        return meta.find((entry) => entry.key === 'tempo:vrull|kenga e dyte') ?? null
+      }, 'tempo e "Kënga e dytë"', 30_000).catch(() => null)
+      info('MusicBrainz përmes CapacitorHttp', tempoRecord ? tempoRecord.value : 'pa përgjigje (MusicBrainz ose rrjeti i runner-it)')
+      adb('shell', 'am', 'force-stop', PLAYER)
+    }
+  })
 
   // D7. Anglishtja: njoftimi ndjek gjuhën e app-it.
-  await chooseLanguage(page, 'en')
-  await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Set 1 of 2')
-  check('anglisht: njoftimi i seancës në anglisht', true, notification(4200).title)
-  screenshot('pamja-anglisht')
-  await chooseLanguage(page, 'sq')
-  await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
+  await section('anglishtja', 'Njoftimi ndjek gjuhën', async () => {
+    await chooseLanguage(page, 'en')
+    await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Set 1 of 2')
+    check('anglisht: njoftimi i seancës në anglisht', true, notification(4200).title)
+    screenshot('pamja-anglisht')
+    await chooseLanguage(page, 'sq')
+    await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
+  }, { after: 'njoftimi' })
 
   // D8. Butoni mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca; "Mbyll stërvitjen" heq njoftimin.
-  await goHome(page)
-  await openSession(page)
-  await clickButtonStarting(page, 'Ushtrimet e seancës, ')
-  await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"]')`), 'fleta e ushtrimeve')
-  await pressBack()
-  await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
-  check('seanca: mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca', (await page.evaluate('location.pathname')) === '/seanca')
-  await clickButtonStarting(page, 'Ushtrimet e seancës, ')
-  await clickButton(page, 'Mbyll stërvitjen')
-  await clickButton(page, 'Po, mbyll')
-  await waitFor(async () => (await page.evaluate('location.pathname')).startsWith('/seanca/mbyllja/'), 'mbyllja e seancës')
-  screenshot('mbyllja')
-  await waitFor(() => !notification(4200) && !notification(4202), 'njoftimi i seancës i hequr', 15_000)
-  check('"Mbyll stërvitjen" heq njoftimin e seancës', true)
-  await clickButton(page, 'Mbaro')
-  await waitForPath(page, '/')
+  await section('mbyllja', 'Butoni mbrapa te seanca dhe mbyllja', async () => {
+    await goHome(page)
+    await openSession(page)
+    await clickButtonStarting(page, 'Ushtrimet e seancës, ')
+    await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"]')`), 'fleta e ushtrimeve')
+    await pressBack()
+    await waitFor(() => page.evaluate(`!document.querySelector('[role="dialog"]')`), 'mbrapa mbyll fletën')
+    check('seanca: mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca', (await page.evaluate('location.pathname')) === '/seanca')
+    await clickButtonStarting(page, 'Ushtrimet e seancës, ')
+    await clickButton(page, 'Mbyll stërvitjen')
+    await clickButton(page, 'Po, mbyll')
+    await waitFor(async () => (await page.evaluate('location.pathname')).startsWith('/seanca/mbyllja/'), 'mbyllja e seancës')
+    screenshot('mbyllja')
+    await waitFor(() => !notification(4200) && !notification(4202), 'njoftimi i seancës i hequr', 15_000)
+    check('"Mbyll stërvitjen" heq njoftimin e seancës', true)
+    await clickButton(page, 'Mbaro')
+    await waitForPath(page, '/')
+  })
 
   // ==== E. Trupi 3D, butoni mbrapa dhe tema ====
-  await click(page, 'a[href="/progresi"]')
-  await waitFor(() => page.evaluate(`!!document.querySelector('a[href="/progresi/trupi"]')`), 'Trupi te Progresi')
-  await click(page, 'a[href="/progresi/trupi"]')
-  await waitForHeading(page, 'Trupi')
-  // Trupi 3D (V2-E1-14): modeli vizatohet me WebGL nga GLB-ja në APK; emulatori e vizaton me CPU.
-  const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
-  if (!webgl) {
-    info('Trupi 3D', 'WebView-i i emulatorit nuk ka WebGL; modeli kontrollohet në telefon')
-  } else {
-    await waitFor(() => page.evaluate(`!!document.querySelector('section canvas') && !document.body.innerText.includes('Po ngarkohet modeli')`), 'modeli 3D', 60_000)
-    check('Trupi: modeli 3D vizatohet nga APK-ja', !(await hasText(page, 'Modeli 3D nuk u ngarkua')))
+  await section('navigimi', 'Trupi 3D, butoni mbrapa dhe tema', async () => {
+    await click(page, 'a[href="/progresi"]')
+    await waitFor(() => page.evaluate(`!!document.querySelector('a[href="/progresi/trupi"]')`), 'Trupi te Progresi')
+    await click(page, 'a[href="/progresi/trupi"]')
+    await waitForHeading(page, 'Trupi')
+    // Trupi 3D (V2-E1-14): modeli vizatohet me WebGL nga GLB-ja në APK; emulatori e vizaton me CPU.
+    const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
+    if (!webgl) {
+      info('Trupi 3D', 'WebView-i i emulatorit nuk ka WebGL; modeli kontrollohet në telefon')
+    } else {
+      await waitFor(() => page.evaluate(`!!document.querySelector('section canvas') && !document.body.innerText.includes('Po ngarkohet modeli')`), 'modeli 3D', 60_000)
+      check('Trupi: modeli 3D vizatohet nga APK-ja', !(await hasText(page, 'Modeli 3D nuk u ngarkua')))
+    }
+    screenshot('trupi-3d')
+    await click(page, 'a[href="/"]')
+    await waitForPath(page, '/')
+    // Butoni mbrapa: nga biblioteka te Programi, pastaj te Sot.
+    await click(page, 'a[href="/programi"]')
+    await waitForPath(page, '/programi')
+    await click(page, 'a[href="/programi/biblioteka"]')
+    await waitForPath(page, '/programi/biblioteka')
+    await pressBack()
+    await waitForPath(page, '/programi')
+    check('mbrapa kthen te faqja e mëparshme', true)
+    await click(page, 'a[href="/"]')
+    await waitForPath(page, '/')
+    await click(page, 'a[aria-label="Profili dhe cilësimet"]')
+    await waitForHeading(page, 'Cilësimet')
+    // Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
+    await page.send('Page.reload')
+    await waitForHeading(page, 'Cilësimet')
+    check('rifreskimi te /cilesimet mban faqen', true)
+    await waitFor(() => hasButton(page, 'Dil'), 'butoni "Dil"')
+    check('"Dil" te fundi i Cilësimeve', await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Dil'); b.scrollIntoView(); return b.getBoundingClientRect().bottom <= innerHeight })()`))
+    await page.evaluate(`[...document.querySelectorAll('a')].find((a) => (a.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
+    await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'Pamja')
+    await page.evaluate(`document.querySelector('input[type="radio"][value="light"]').click()`)
+    await waitFor(async () => (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light', 'ruajtja e temës')
+    check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
+    const bandLight = await waitForBand('#F4F4F5')
+    screenshot('pamja-dite')
+    check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#F4F4F5'), bandLight.join(','))
+    await pressBack()
+    await waitForHeading(page, 'Cilësimet')
+    check('mbrapa nga Pamja kthen te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
+    const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
+    check('rikujtuesit planifikohen pas lejes së njoftimeve', (await page.evaluate(pendingReminders)) > 0, `${await page.evaluate(pendingReminders)} njoftime`)
+    page.close()
+    // Mbrapa në fillim të historisë (app-i i sapohapur te Sot) e çon app-in në sfond pa e mbyllur.
+    adb('shell', 'am', 'force-stop', PKG)
+    page = await open()
+    await waitForPath(page, '/')
+    await waitForText(page, 'Java 0')
+    await pressBack()
+    await waitFor(() => !isForeground(), 'app-i në sfond me butonin mbrapa', 15_000)
+    check('mbrapa në fillim të historisë e çon app-in në sfond, gjallë', pidOf() !== '')
+  })
+  try {
+    adb('shell', 'locksettings', 'clear', '--old', PIN)
+  } catch {
+    // Pa PIN.
   }
-  screenshot('trupi-3d')
-  await click(page, 'a[href="/"]')
-  await waitForPath(page, '/')
-  // Butoni mbrapa: nga biblioteka te Programi, pastaj te Sot.
-  await click(page, 'a[href="/programi"]')
-  await waitForPath(page, '/programi')
-  await click(page, 'a[href="/programi/biblioteka"]')
-  await waitForPath(page, '/programi/biblioteka')
-  await pressBack()
-  await waitForPath(page, '/programi')
-  check('mbrapa kthen te faqja e mëparshme', true)
-  await click(page, 'a[href="/"]')
-  await waitForPath(page, '/')
-  await click(page, 'a[aria-label="Profili dhe cilësimet"]')
-  await waitForHeading(page, 'Cilësimet')
-  // Rifreskimi në një rrugë të brendshme (serveri lokal i Capacitor-it kthen index.html).
-  await page.send('Page.reload')
-  await waitForHeading(page, 'Cilësimet')
-  check('rifreskimi te /cilesimet mban faqen', true)
-  await waitFor(() => hasButton(page, 'Dil'), 'butoni "Dil"')
-  check('"Dil" te fundi i Cilësimeve', await page.evaluate(`(() => { const b = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Dil'); b.scrollIntoView(); return b.getBoundingClientRect().bottom <= innerHeight })()`))
-  await page.evaluate(`[...document.querySelectorAll('a')].find((a) => (a.getAttribute('aria-label') ?? '').startsWith('Tema')).click()`)
-  await waitFor(() => page.evaluate(`!!document.querySelector('input[type="radio"][value="light"]')`), 'Pamja')
-  await page.evaluate(`document.querySelector('input[type="radio"][value="light"]').click()`)
-  await waitFor(async () => (await page.evaluate(`localStorage.getItem('th-theme')`)) === 'light', 'ruajtja e temës')
-  check('tema e çelët ruhet', (await page.evaluate('document.documentElement.className')) === '')
-  const bandLight = await waitForBand('#F4F4F5')
-  screenshot('pamja-dite')
-  check('rripi i orës merr sfondin e temës së çelët', sameColor(bandLight, '#F4F4F5'), bandLight.join(','))
-  await pressBack()
-  await waitForHeading(page, 'Cilësimet')
-  check('mbrapa nga Pamja kthen te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
-  const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
-  check('rikujtuesit planifikohen pas lejes së njoftimeve', (await page.evaluate(pendingReminders)) > 0, `${await page.evaluate(pendingReminders)} njoftime`)
-  page.close()
-  // Mbrapa në fillim të historisë (app-i i sapohapur te Sot) e çon app-in në sfond pa e mbyllur.
-  adb('shell', 'am', 'force-stop', PKG)
-  page = await open()
-  await waitForPath(page, '/')
-  await waitForText(page, 'Java 0')
-  await pressBack()
-  await waitFor(() => !isForeground(), 'app-i në sfond me butonin mbrapa', 15_000)
-  check('mbrapa në fillim të historisë e çon app-in në sfond, gjallë', pidOf() !== '')
-  page.close()
-  adb('shell', 'locksettings', 'clear', '--old', PIN)
 
   // ==== F. Instalim i ri (një mik): hyrja në gjuhën e telefonit, hapat e parë me gjuhën ====
-  adb('uninstall', PKG)
-  adb('install', apkV2)
-  // Instalimi i ri nuk ka lejen e njoftimeve (Android 13+); app-i e kërkon në stërvitjen e parë, këtu jepet si nga përdoruesi.
-  adb('shell', 'pm', 'grant', PKG, 'android.permission.POST_NOTIFICATIONS')
-  page = await open()
-  await page.send('Page.reload')
-  const phoneLanguage = String(await page.evaluate('(navigator.languages[0] ?? navigator.language).toLowerCase()')).split('-')[0]
-  const english = phoneLanguage === 'en'
-  await waitForHeading(page, english ? 'Welcome' : 'Mirë se erdhe')
-  check('instalim i ri: hyrja në gjuhën e telefonit', (await page.evaluate('location.pathname')) === '/hyrja', phoneLanguage)
-  const bandLogin = await waitForBand('#000000')
-  check('rripi i orës te hyrja merr sfondin e temës', sameColor(bandLogin, '#000000'), bandLogin.join(','))
-  screenshot('hyrja-v2')
-  await type(page, 'input[type="email"]', EMAIL)
-  await type(page, 'input[autocomplete="current-password"]', 'i-gabuar')
-  await clickButton(page, english ? 'Sign in' : 'Hyr')
-  await waitForText(page, english ? 'The email or password is not correct.' : 'Emaili ose fjalëkalimi nuk është i saktë.')
-  check('fjalëkalimi i gabuar thuhet me fjalë', true)
-  await type(page, 'input[autocomplete="current-password"]', PASSWORD)
-  await clickButton(page, english ? 'Sign in' : 'Hyr')
-  await waitForHeading(page, english ? 'Language and weight' : 'Gjuha dhe pesha')
-  screenshot('hapi-gjuha')
-  await clickButton(page, english ? 'Shqip' : 'English')
-  await waitForHeading(page, english ? 'Gjuha dhe pesha' : 'Language and weight')
-  check('hapat e parë: gjuha ndërrohet menjëherë', true)
-  if (!english) await clickButton(page, 'Shqip')
-  await waitForHeading(page, 'Gjuha dhe pesha')
-  await page.evaluate(`document.querySelector('input[inputmode="decimal"]')?.focus()`)
-  await type(page, 'input[inputmode="decimal"]', '80,5')
-  await page.evaluate(`document.querySelector('input[inputmode="decimal"]').blur()`)
-  await clickButton(page, 'Vazhdo')
-  await waitForHeading(page, 'Ditët dhe oraret')
-  await clickButton(page, 'Vazhdo')
-  await waitForHeading(page, 'Zgjidh programin')
-  await clickButton(page, 'Fillo programin')
-  await waitForPath(page, '/')
-  await waitForText(page, 'Java 0')
-  check('hapat e parë mbarojnë te Sot me Java 0, shqip', await waitFor(() => hasText(page, 'Stërvitja 1 ·'), 'Stërvitja 1 ·', 15_000).then(() => true, () => false))
-  await waitFor(() => posted('user_settings').some((row) => row.language === 'sq'), 'gjuha te user_settings', 20_000)
-  screenshot('sot-instalim-i-ri')
+  await section('instalimi', 'Instalim i ri, hapat e parë dhe përditësimi v2 → v3', async () => {
+    page?.close()
+    adb('uninstall', PKG)
+    adb('install', apkV2)
+    // Instalimi i ri nuk ka lejen e njoftimeve (Android 13+); app-i e kërkon në stërvitjen e parë, këtu jepet si nga përdoruesi.
+    adb('shell', 'pm', 'grant', PKG, 'android.permission.POST_NOTIFICATIONS')
+    page = await open()
+    await page.send('Page.reload')
+    const phoneLanguage = String(await page.evaluate('(navigator.languages[0] ?? navigator.language).toLowerCase()')).split('-')[0]
+    const english = phoneLanguage === 'en'
+    await waitForHeading(page, english ? 'Welcome' : 'Mirë se erdhe')
+    check('instalim i ri: hyrja në gjuhën e telefonit', (await page.evaluate('location.pathname')) === '/hyrja', phoneLanguage)
+    const bandLogin = await waitForBand('#000000')
+    check('rripi i orës te hyrja merr sfondin e temës', sameColor(bandLogin, '#000000'), bandLogin.join(','))
+    screenshot('hyrja-v2')
+    await type(page, 'input[type="email"]', EMAIL)
+    await type(page, 'input[autocomplete="current-password"]', 'i-gabuar')
+    await clickButton(page, english ? 'Sign in' : 'Hyr')
+    await waitForText(page, english ? 'The email or password is not correct.' : 'Emaili ose fjalëkalimi nuk është i saktë.')
+    check('fjalëkalimi i gabuar thuhet me fjalë', true)
+    await type(page, 'input[autocomplete="current-password"]', PASSWORD)
+    await clickButton(page, english ? 'Sign in' : 'Hyr')
+    await waitForHeading(page, english ? 'Language and weight' : 'Gjuha dhe pesha')
+    screenshot('hapi-gjuha')
+    await clickButton(page, english ? 'Shqip' : 'English')
+    await waitForHeading(page, english ? 'Gjuha dhe pesha' : 'Language and weight')
+    check('hapat e parë: gjuha ndërrohet menjëherë', true)
+    if (!english) await clickButton(page, 'Shqip')
+    await waitForHeading(page, 'Gjuha dhe pesha')
+    await page.evaluate(`document.querySelector('input[inputmode="decimal"]')?.focus()`)
+    await type(page, 'input[inputmode="decimal"]', '80,5')
+    await page.evaluate(`document.querySelector('input[inputmode="decimal"]').blur()`)
+    await clickButton(page, 'Vazhdo')
+    await waitForHeading(page, 'Ditët dhe oraret')
+    await clickButton(page, 'Vazhdo')
+    await waitForHeading(page, 'Zgjidh programin')
+    await clickButton(page, 'Fillo programin')
+    await waitForPath(page, '/')
+    await waitForText(page, 'Java 0')
+    check('hapat e parë mbarojnë te Sot me Java 0, shqip', await waitFor(() => hasText(page, 'Stërvitja 1 ·'), 'Stërvitja 1 ·', 15_000).then(() => true, () => false))
+    await waitFor(() => posted('user_settings').some((row) => row.language === 'sq'), 'gjuha te user_settings', 20_000)
+    screenshot('sot-instalim-i-ri')
 
-  // Përditësimi v2 → v3 nga app-i i v2, pasi gjuha është anglisht: njoftimi në anglisht (AppUpdaterPlugin.setLanguage).
-  await chooseLanguage(page, 'en')
-  const codeBefore = versionCode()
-  const shaV3 = createHash('sha256').update(readFileSync(apkV3)).digest('hex')
-  adb('shell', 'appops', 'set', PKG, 'REQUEST_INSTALL_PACKAGES', 'allow')
-  const appDirV2 = adb('shell', 'run-as', PKG, 'pwd')
-  check('v2: app-i e sheh lejen e instalimit', (await page.evaluate(`Capacitor.Plugins.AppUpdater.canInstall().then((r) => r.value)`)) === true)
-  // Shkarkimi native me SHA-256, nga një skedar HTTPS publik që nuk ndryshon kurrë (Maven Central).
-  const PROBE = 'https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom'
-  const probe = await fetch(PROBE).then((response) => (response.ok ? response.arrayBuffer() : null)).catch(() => null)
-  if (!probe) {
-    info('përditësimi', 'runner-i nuk e mori skedarin e provës; shkarkimi native nuk provohet këtë herë')
-  } else {
-    const probeSha = createHash('sha256').update(Buffer.from(probe)).digest('hex')
-    const downloaded = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${probeSha}' }).then((r) => r.path, (e) => 'GABIM ' + e.code + ' ' + e.message)`)
-    check('v2: shkarkimi native me SHA-256 të saktë', downloaded.endsWith('/cache/perditesimi.apk'), downloaded)
-    // Capacitor e shkruan refuzimin e qëllimshëm si console.error në build-in debug (ignoredError, HASH_MISMATCH).
-    const refused = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${'1'.repeat(64)}' }).then(() => 'pranoi', (e) => e.code)`)
-    check('v2: shkarkimi me SHA-256 të gabuar refuzohet', refused === 'HASH_MISMATCH', refused)
-  }
-  adb('push', apkV3, '/data/local/tmp/th-v3.apk')
-  adb('shell', 'run-as', PKG, 'cp', '/data/local/tmp/th-v3.apk', 'cache/perditesimi.apk')
-  const installV3 = await page
-    .evaluate(`Capacitor.Plugins.AppUpdater.install({ path: '${appDirV2}/cache/perditesimi.apk', sha256: '${shaV3}' }).then(() => 'nisi', (e) => e.message)`)
-    .catch(() => 'nisi')
-  let codeV3 = versionCode()
-  for (let waited = 0; waited < 90_000 && !(codeV3 > codeBefore); waited += 1000) {
-    await sleep(1000)
-    codeV3 = versionCode()
-  }
-  check('v2 → v3: instalohet nga app-i', codeV3 > codeBefore, `${installV3}; ${codeBefore} -> ${codeV3}`)
-  page.close()
-  const updatedEn = await waitFor(() => notifications().find((entry) => entry.title.startsWith('Vrull')), 'njoftimi i përditësimit', 45_000).catch(() => null)
-  check('v2 → v3: njoftimi në anglisht pas setLanguage', updatedEn?.title === 'Vrull was updated', updatedEn ? `${updatedEn.title} · ${updatedEn.text}` : 'asnjë')
+    // Përditësimi v2 → v3 nga app-i i v2, pasi gjuha është anglisht: njoftimi në anglisht (AppUpdaterPlugin.setLanguage).
+    await chooseLanguage(page, 'en')
+    const codeBefore = versionCode()
+    const shaV3 = createHash('sha256').update(readFileSync(apkV3)).digest('hex')
+    adb('shell', 'appops', 'set', PKG, 'REQUEST_INSTALL_PACKAGES', 'allow')
+    const appDirV2 = adb('shell', 'run-as', PKG, 'pwd')
+    check('v2: app-i e sheh lejen e instalimit', (await page.evaluate(`Capacitor.Plugins.AppUpdater.canInstall().then((r) => r.value)`)) === true)
+    // Shkarkimi native me SHA-256, nga një skedar HTTPS publik që nuk ndryshon kurrë (Maven Central).
+    const PROBE = 'https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.pom'
+    const probe = await fetch(PROBE).then((response) => (response.ok ? response.arrayBuffer() : null)).catch(() => null)
+    if (!probe) {
+      info('përditësimi', 'runner-i nuk e mori skedarin e provës; shkarkimi native nuk provohet këtë herë')
+    } else {
+      const probeSha = createHash('sha256').update(Buffer.from(probe)).digest('hex')
+      const downloaded = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${probeSha}' }).then((r) => r.path, (e) => 'GABIM ' + e.code + ' ' + e.message)`)
+      check('v2: shkarkimi native me SHA-256 të saktë', downloaded.endsWith('/cache/perditesimi.apk'), downloaded)
+      // Capacitor e shkruan refuzimin e qëllimshëm si console.error në build-in debug (ignoredError, HASH_MISMATCH).
+      const refused = await page.evaluate(`Capacitor.Plugins.AppUpdater.download({ url: '${PROBE}', sha256: '${'1'.repeat(64)}' }).then(() => 'pranoi', (e) => e.code)`)
+      check('v2: shkarkimi me SHA-256 të gabuar refuzohet', refused === 'HASH_MISMATCH', refused)
+    }
+    adb('push', apkV3, '/data/local/tmp/th-v3.apk')
+    adb('shell', 'run-as', PKG, 'cp', '/data/local/tmp/th-v3.apk', 'cache/perditesimi.apk')
+    const installV3 = await page
+      .evaluate(`Capacitor.Plugins.AppUpdater.install({ path: '${appDirV2}/cache/perditesimi.apk', sha256: '${shaV3}' }).then(() => 'nisi', (e) => e.message)`)
+      .catch(() => 'nisi')
+    let codeV3 = versionCode()
+    for (let waited = 0; waited < 90_000 && !(codeV3 > codeBefore); waited += 1000) {
+      await sleep(1000)
+      codeV3 = versionCode()
+    }
+    check('v2 → v3: instalohet nga app-i', codeV3 > codeBefore, `${installV3}; ${codeBefore} -> ${codeV3}`)
+    page.close()
+    const updatedEn = await waitFor(() => notifications().find((entry) => entry.title.startsWith('Vrull')), 'njoftimi i përditësimit', 45_000).catch(() => null)
+    check('v2 → v3: njoftimi në anglisht pas setLanguage', updatedEn?.title === 'Vrull was updated', updatedEn ? `${updatedEn.title} · ${updatedEn.text}` : 'asnjë')
 
-  // Pa internet: app-i hapet direkt te Sot.
-  await setNetwork(false)
-  adb('shell', 'am', 'force-stop', PKG)
-  page = await open()
-  await waitForPath(page, '/')
-  await waitForText(page, 'Week 0')
-  check('pa internet pas hyrjes, hapet direkt te Sot', (await page.evaluate('navigator.onLine')) === false)
-  screenshot('sot-pa-internet')
-  page.close()
-  await setNetwork(true)
+    // Pa internet: app-i hapet direkt te Sot.
+    await setNetwork(false)
+    adb('shell', 'am', 'force-stop', PKG)
+    page = await open()
+    await waitForPath(page, '/')
+    await waitForText(page, 'Week 0')
+    check('pa internet pas hyrjes, hapet direkt te Sot', (await page.evaluate('navigator.onLine')) === false)
+    screenshot('sot-pa-internet')
+    page.close()
+    await setNetwork(true)
+  })
 
   report.errors.push(...(await Promise.all(errorDetails)))
   const errors = report.errors.filter((text) => !ignoredError(text))
+  report.sections = sections
+  console.log('---- Pjesët')
+  for (const entry of sections) console.log(`${entry.result.padEnd(7)} ${entry.id}${entry.detail ? ` (${entry.detail})` : ''}`)
   check('asnjë gabim JavaScript', errors.length === 0, errors.join(' | '))
+  const failed = sections.filter((entry) => entry.result === 'failed')
+  if (failed.length > 0) throw new Error(`Pjesët që dështuan: ${failed.map((entry) => entry.id).join(', ')}`)
   report.ok = true
 } catch (error) {
   report.ok = false

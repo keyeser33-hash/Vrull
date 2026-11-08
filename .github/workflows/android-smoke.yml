@@ -4,27 +4,27 @@
 # build-et janë debug me të njëjtin çelës debug. Skripti: scripts/android-smoke.mjs.
 name: Prova e Android-it
 
-# v2 (SPEC §0.1): prova në emulator bëhet në fund të etapës (versioni i ri te package.json) dhe kur
-# ndryshon pjesa native, jo në çdo ndryshim të kodit web; testet, lint-i dhe build-i mbeten te CI.
-# Me dorë: Actions → Prova e Android-it → Run workflow (edhe për një degë).
+# v2 (SPEC §0.1): prova në emulator bëhet para çdo lëshimi (android-release.yml e thërret kur publikon një
+# version të ri) dhe me dorë, jo në çdo push: testet, lint-i dhe build-i mbeten te CI.
+# Me dorë: Actions → Prova e Android-it → Run workflow (edhe për një degë), me pjesët që kapërcehen te "skip"
+# (p.sh. "muzika,instalimi"). Pas një dështimi niset vetëm pjesa që dështoi (docs/MESIMET.md).
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'android/**'
-      - 'android-test/**'
-      - 'capacitor.config.ts'
-      - 'package.json'
-      - 'scripts/android-smoke.mjs'
-      - '.github/workflows/android-smoke.yml'
+    inputs:
+      skip:
+        description: 'Pjesët që kapërcehen, të ndara me presje: njoftimi, kamera, muzika, anglishtja, mbyllja, navigimi, instalimi'
+        required: false
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      skip:
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read
-
-concurrency:
-  group: android-smoke-${{ github.ref }}
-  cancel-in-progress: true
 
 env:
   # API 35: nga cepi në cep i detyrueshëm si në telefonat e rinj, dhe më i qëndrueshëm se 36 në runner-at me 2 bërthama.
@@ -35,6 +35,10 @@ env:
 jobs:
   smoke:
     runs-on: ubuntu-24.04
+    # Një provë për degë; një nisje e re me dorë ndal të vjetrën.
+    concurrency:
+      group: android-smoke-${{ github.ref }}-${{ github.event_name }}
+      cancel-in-progress: true
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -55,8 +59,16 @@ jobs:
           java-version: 21
           cache: gradle
 
-      # v1: kodi i tag-ut, si në telefonat e përdoruesve, por me Supabase-n e imituar.
+      # v1: kodi i tag-ut, si në telefonat e përdoruesve, por me Supabase-n e imituar. Tag-u nuk ndryshon, ndaj
+      # APK-ja ruhet në cache (4 minuta më pak për çdo nisje); prapashtesa rritet kur ndryshon mënyra e ndërtimit.
+      - name: v1 nga cache
+        id: v1-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apks/v1.apk
+          key: smoke-v1-apk-${{ env.V1_TAG }}-smoke-invalid-1
       - name: v1 nga tag-u
+        if: steps.v1-cache.outputs.cache-hit != 'true'
         run: |
           git fetch --no-tags --depth=1 origin "refs/tags/$V1_TAG:refs/tags/$V1_TAG"
           git worktree add ../v1 "$V1_TAG"
@@ -141,6 +153,8 @@ jobs:
           adb shell wm dismiss-keyguard || true
 
       - name: Prova
+        env:
+          SMOKE_SKIP: ${{ inputs.skip }}
         run: node scripts/android-smoke.mjs smoke-out apks/v1.apk apks/v2.apk apks/v3.apk apks/muzika.apk
 
       - name: Logcat dhe pamja e ekranit për diagnozë
