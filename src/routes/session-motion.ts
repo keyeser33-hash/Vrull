@@ -8,7 +8,7 @@ import { type RefObject, useEffect, useRef } from 'react'
 
 const VRULL = 'cubic-bezier(0.34, 1.56, 0.64, 1)'
 
-export const reducedMotion = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const reducedMotion = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const canAnimate = (element: Element | null): element is Element => element !== null && typeof element.animate === 'function'
 
