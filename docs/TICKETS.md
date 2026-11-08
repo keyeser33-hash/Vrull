@@ -220,6 +220,8 @@ Borde të shpejta në stilin Vrull, në tri temat, shqip, në 390 px: faqja Obje
 
 Logjika pa UI te `src/nutrition/`, me prova përpara kodit, sipas Shtojcës C: Mifflin-St Jeor, Cunningham me yndyrën, US Navy nga perimetrat, aktiviteti, dita e stërvitjes, ritmi, makrot, kufijtë, rrumbullakimi, mirëmbajtja e njohur. **Pranimi:** shembulli i Shtojcës C del saktë (2 820 / 3 120 kcal, 176 g P, 79 g Y); kufijtë (1 500 / 1 200 kcal, karbohidratet ≥ 50 g, yndyra ≥ 20%) kanë prova; të njëjtat hyrje japin të njëjtat numra në të dy gjuhët.
 
+**Gjendja (08.11.2026):** gati: `src/nutrition/calculator.ts` (`calculateTargets`, `navyBodyFat`) me 17 prova përpara kodit, të kontrolluara me mutacion (stërvitja 3,4 kcal/kg, yndyra 20%, 7 700 kcal/kg, kufiri i kalorive). Ekranet ende përdorin `nutritionTargets` deri te E2-03.
+
 ## V2-E2-03 · Faqja Objektivat
 
 Sipas bordit dhe §9: Ushqimi › Objektivat, hapi te hapat e parë për përdoruesit e rinj, fushat e reja te `user_settings` (gjinia, viti i lindjes, gjatësia, aktiviteti, qëllimi, ritmi, proteina dhe yndyra g/kg, mirëmbajtja e njohur), të sinkronizuara. "Ruaj" vlen nga sot; objektivat e ruajtura të ditëve të kaluara mbeten. Përdoruesi ekzistues pa këto fusha sheh te Ushqimi një kartë "Llogarit objektivat e tua" dhe deri atëherë objektivat e vjetra. **Pranimi:** pas "Ruaj", Sot dhe Ushqimi tregojnë objektivat e reja; dje mbetet me të vjetrat (provë); shqip dhe anglisht; tri temat në 390 px.

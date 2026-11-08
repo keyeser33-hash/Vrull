@@ -522,11 +522,11 @@ Burimi dhe referencat: `docs/research/objektivat.md`. Logjika jeton te `src/nutr
 
 **Qëllimi.** Teprica ose mungesa ditore = ritmi (% e peshës në javë) × pesha × 5 600 kcal/kg ÷ 7 për masën (indet e reja janë pjesërisht muskul), × 7 700 ÷ 7 për humbjen. Masë: parazgjedhja +0,25%, nga +0,1 deri +0,5%. Humbje: parazgjedhja −0,5%, nga −0,25 deri −1,0%. Mirëmbajtje: 0.
 
-**Makrot.** Proteina 2,0 g/kg (1,6–2,4; në humbje parazgjedhja 2,2), yndyra 0,9 g/kg (0,6–1,2; jo nën 20% të kcal), karbohidratet plotësojnë kcal (4 kcal/g për proteinën dhe karbohidratet, 9 për yndyrën). Proteina dhe yndyra janë të njëjta çdo ditë; ndryshimi stërvitje − pushim shkon i gjithi te karbohidratet. Rrumbullakimi: kcal në 10, gramët në 1.
+**Makrot.** Proteina 2,0 g/kg (1,6–2,4; në humbje parazgjedhja 2,2), yndyra 0,9 g/kg (0,6–1,2; jo nën 20% të kcal), karbohidratet plotësojnë kcal (4 kcal/g për proteinën dhe karbohidratet, 9 për yndyrën). Proteina dhe yndyra janë të njëjta çdo ditë; ndryshimi stërvitje − pushim shkon i gjithi te karbohidratet. Rrumbullakimi: kcal në 10, gramët në 1; karbohidratet nga kcal e rrumbullakosur dhe gramët e proteinës dhe yndyrës. Rreshtat e "Si u llogarit" (BMR, mirëmbajtja) rrumbullakohen në 10 dhe teprica e stërvitja dalin si diferencë mes totaleve, që rreshtat të mblidhen saktë.
 
 **Kufijtë.** Jo nën 1 500 kcal (burra) ose 1 200 (gra), jo nën BMR-në; karbohidratet jo nën 50 g (kur bien, ulet ritmi dhe app-i e thotë). Ekrani thotë "Vlerësim (±300 kcal), korrigjohet çdo javë".
 
-**Shembull (përdoruesi, 08.11.2026).** Burrë, 30 vjeç, 185 cm, 88 kg, zyrë me ecje ("Lëviz pak", 1,4), 4 seanca, masë +0,25%: BMR 1 891; teprica 176 kcal; pushimi 2 648 + 176 ≈ 2 820 kcal; stërvitja 2 947 + 176 ≈ 3 120 kcal. Proteina 176 g dhe yndyra 79 g çdo ditë; karbohidratet ≈ 350 g në pushim dhe ≈ 425 g në stërvitje. Me "Ulur" (1,3): ≈ 2 630 dhe ≈ 2 930 kcal. Totalet e Jimit të shkallëzuara (deri te 0.20) jepnin 3 990 kcal dhe 361 g proteinë në stërvitje.
+**Shembull (përdoruesi, 08.11.2026).** Burrë, 30 vjeç, 185 cm, 88 kg, zyrë me ecje ("Lëviz pak", 1,4), 4 seanca, masë +0,25%: BMR 1 891; teprica 176 kcal; pushimi 2 648 + 176 ≈ 2 820 kcal; stërvitja 2 947 + 176 ≈ 3 120 kcal. Proteina 176 g dhe yndyra 79 g çdo ditë; karbohidratet 351 g në pushim dhe 426 g në stërvitje. Me "Ulur" (1,3): ≈ 2 630 dhe ≈ 2 930 kcal. Totalet e Jimit të shkallëzuara (deri te 0.20) jepnin 3 990 kcal dhe 361 g proteinë në stërvitje.
 
 ## Shtojca D · Çelësat e muskujve
 
