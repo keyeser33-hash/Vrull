@@ -170,7 +170,7 @@ jobs:
           else
             # Tag-u krijohet te commit-i i ndërtuar. Një tag i krijuar me GITHUB_TOKEN nuk e
             # nis përsëri këtë workflow, ndaj APK-ja nuk ndërtohet dy herë.
-            gh release create "$tag" out/* --target "$GITHUB_SHA" --title "Training Hub $VERSION" --notes "$notes"
+            gh release create "$tag" out/* --target "$GITHUB_SHA" --title "Vrull $VERSION" --notes "$notes"
           fi
 
       # Përditësimi brenda app-it (TH-23): APK-ja dhe latest.json te bucket-i privat app-releases i
