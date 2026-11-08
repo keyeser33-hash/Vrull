@@ -36,6 +36,7 @@ vi.mock('@/data/app-data', () => ({
   usePhotoUploader: () => undefined,
   useUpdateChecker: () => undefined,
   useLanguageSync: () => undefined,
+  useBackgroundSync: () => undefined,
 }))
 
 function renderAt(path: string, phase: AppPhase) {
