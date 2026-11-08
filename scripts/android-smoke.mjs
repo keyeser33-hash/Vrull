@@ -1104,7 +1104,29 @@ try {
       check('njoftimi: luaj, para dhe mbrapa punojnë dhe titulli ndjek këngën', true)
       screenshot('njoftimi-muzika-pas')
     } else {
-      info('njoftimi i muzikës', 'uiautomator nuk e kapi panelin (kronometri); kontrollet provohen te seanca')
+      // uiautomator nuk e kap panelin (kronometri i njoftimit nuk e lë ekranin të qetë). Butonat e rreshtit
+      // gjenden nga butoni prush i njoftimit, sipas notification_session_big.xml dhe notification_music.xml:
+      // rreshti 48 dp nis 8 dp nën kontrollet, butonat 48 dp me 6 dp mes tyre, i fundit në skajin e djathtë.
+      info('njoftimi i muzikës', 'uiautomator nuk e kapi panelin (kronometri); butonat gjenden nga butoni prush')
+      const dp = Number(adb('shell', 'wm', 'density').match(/(\d+)\s*$/)[1]) / 160
+      const ember = emberButton()
+      const right = ember.x + ember.w / 2
+      const y = Math.round(ember.y + ember.h / 2 + 32 * dp)
+      const at = (index) => [String(Math.round(right - 24 * dp - index * 54 * dp)), String(y)]
+      const [next, toggle, previous] = [at(0), at(1), at(2)]
+      adb('shell', 'input', 'tap', ...toggle)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda pause')), 'pauza nga njoftimi', 15_000)
+      await sleep(1500)
+      adb('shell', 'input', 'tap', ...toggle)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda play')), 'luaj nga njoftimi', 15_000)
+      await sleep(1500)
+      adb('shell', 'input', 'tap', ...next)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e tretë')), 'kënga tjetër nga njoftimi', 15_000)
+      await sleep(1500)
+      screenshot('njoftimi-muzika-pas')
+      adb('shell', 'input', 'tap', ...previous)
+      await waitFor(() => playerLog().some((line) => line.includes('komanda previous -> Kënga e dytë')), 'kënga e mëparshme nga njoftimi', 15_000)
+      check('njoftimi: rreshti i muzikës me pauzë, luaj, para dhe mbrapa', true)
     }
     collapseShade()
     launch()
@@ -1112,7 +1134,7 @@ try {
     // app-i pyet MusicBrainz. Kërkesa del nga telefoni (jo nga WebView), ndaj shihet vetëm te `_meta`.
     const tempoRecord = await waitFor(async () => {
       const { _meta: meta } = await readDb(page, ['_meta'])
-      return meta.find((entry) => entry.key === 'tempo:vrull|kënga e dytë') ?? null
+      return meta.find((entry) => entry.key === 'tempo:vrull|kenga e dyte') ?? null
     }, 'tempo e "Kënga e dytë"', 30_000).catch(() => null)
     info('MusicBrainz përmes CapacitorHttp', tempoRecord ? tempoRecord.value : 'pa përgjigje (MusicBrainz ose rrjeti i runner-it)')
     adb('shell', 'am', 'force-stop', PLAYER)
@@ -1148,21 +1170,16 @@ try {
   await click(page, 'a[href="/progresi"]')
   await waitFor(() => page.evaluate(`!!document.querySelector('a[href="/progresi/trupi"]')`), 'Trupi te Progresi')
   await click(page, 'a[href="/progresi/trupi"]')
-  await waitFor(() => page.evaluate(`!!document.querySelector('section[aria-label="Harta e trupit"]')`), 'harta e trupit', 30_000)
+  await waitForHeading(page, 'Trupi')
+  // Trupi 3D (V2-E1-14): modeli vizatohet me WebGL nga GLB-ja në APK; emulatori e vizaton me CPU.
   const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
   if (!webgl) {
     info('Trupi 3D', 'WebView-i i emulatorit nuk ka WebGL; modeli kontrollohet në telefon')
   } else {
-    await clickButton(page, '3D')
-    await waitFor(
-      () => page.evaluate(`!!document.querySelector('[role="img"] canvas') && !document.body.innerText.includes('Po ngarkohet modeli')`),
-      'modeli 3D',
-      60_000,
-    )
+    await waitFor(() => page.evaluate(`!!document.querySelector('section canvas') && !document.body.innerText.includes('Po ngarkohet modeli')`), 'modeli 3D', 60_000)
     check('Trupi: modeli 3D vizatohet nga APK-ja', !(await hasText(page, 'Modeli 3D nuk u ngarkua')))
-    screenshot('trupi-3d')
-    await clickButton(page, '2D')
   }
+  screenshot('trupi-3d')
   await click(page, 'a[href="/"]')
   await waitForPath(page, '/')
   // Butoni mbrapa: nga biblioteka te Programi, pastaj te Sot.
