@@ -21,9 +21,33 @@ export function isLanguage(value: unknown): value is Language {
   return typeof value === 'string' && (LANGUAGES as readonly string[]).includes(value)
 }
 
-export function readLanguage(): Language {
+/** Gjuha e ruajtur në telefon, ose null kur përdoruesi s'ka zgjedhur ende. */
+function savedLanguage(): Language | null {
   const saved = safeStorage.getItem(STORAGE_KEY)
-  return isLanguage(saved) ? saved : DEFAULT_LANGUAGE
+  return isLanguage(saved) ? saved : null
+}
+
+export function readLanguage(): Language {
+  return savedLanguage() ?? DEFAULT_LANGUAGE
+}
+
+/** Gjuha e telefonit (parapëlqimet e sistemit, me radhë), kur është njëra nga gjuhët e app-it. */
+export function deviceLanguage(preferred: readonly string[]): Language | null {
+  for (const tag of preferred) {
+    const base = tag.toLowerCase().split('-')[0]
+    if (isLanguage(base)) return base
+  }
+  return null
+}
+
+/**
+ * Te hyrja, para se të ketë llogari (V2-E1-17): pa gjuhë të ruajtur, app-i ndjek gjuhën e telefonit
+ * dhe e mban; një gjuhë e zgjedhur më parë fiton. Pas hyrjes vendos gjuha e llogarisë (data/language.ts).
+ */
+export function followDeviceLanguage(store: LanguageStore, preferred: readonly string[] = navigator.languages ?? [navigator.language]) {
+  if (savedLanguage() !== null) return
+  const device = deviceLanguage(preferred)
+  if (device) store.set(device)
 }
 
 /** `lang` i faqes ndjek gjuhën, që lexuesi i ekranit të shqiptojë drejt. */

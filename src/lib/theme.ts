@@ -59,22 +59,6 @@ function syncSystemBars(theme: Theme, background: string) {
     })
 }
 
-/**
- * Ekranet që nisin me një kartë `surface` sipër (hyrja): rripi i orës merr ngjyrën e kartës.
- * Në Vrull `surface` ndjek temën, ndaj ikonat e orës dhe të baterisë ndjekin temën aktive.
- * false i kthen shiritat te sfondi i temës.
- */
-export function applyPanelTop(on: boolean, root: HTMLElement = document.documentElement) {
-  if (!on) {
-    applyTheme(readTheme(), root)
-    return
-  }
-  const surface = getComputedStyle(root).getPropertyValue('--surface').trim()
-  const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta && surface) meta.setAttribute('content', surface)
-  syncSystemBars(root.classList.contains('dark') ? 'dark' : 'light', surface)
-}
-
 // Android (Color.parseColor) pranon vetëm formën me gjashtë shifra; build-i i shkurton tokenat
 // në tre shifra kur munden (e zeza e OLED-it del me tre).
 function toHex6(value: string) {

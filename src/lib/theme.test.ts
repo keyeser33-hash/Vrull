@@ -1,6 +1,6 @@
 import { SystemBarsStyle } from '@capacitor/core'
 import { i18nFor } from '@/i18n'
-import { applyPanelTop, applyTheme, DEFAULT_THEME, readTheme, saveTheme, THEMES } from './theme'
+import { applyTheme, DEFAULT_THEME, readTheme, saveTheme, THEMES } from './theme'
 
 // SystemBars është proxy i Capacitor-it, prandaj zëvendësohet i tëri.
 const native = vi.hoisted(() => ({
@@ -49,26 +49,6 @@ describe('shiritat e sistemit në Android', () => {
       SystemBarsStyle.Dark,
       SystemBarsStyle.Light,
     ])
-  })
-
-  it('ekranet me kartë sipër (hyrja): dritarja me ngjyrën `surface`, ikonat sipas temës', async () => {
-    native.isNative = true
-    document.documentElement.style.setProperty('--surface', '#FFFFFF')
-    applyTheme('light')
-    native.setStyle.mockClear()
-    native.setColor.mockClear()
-    applyPanelTop(true)
-    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#FFFFFF' }))
-    // Në Vrull `surface` ndjek temën: në Ditë është e bardhë, ndaj ora dhe bateria mbeten të errëta.
-    expect(native.setStyle).toHaveBeenCalledWith({ style: SystemBarsStyle.Light })
-
-    document.documentElement.style.setProperty('--surface', '#121214')
-    applyTheme('oled')
-    native.setStyle.mockClear()
-    applyPanelTop(true)
-    await vi.waitFor(() => expect(native.setColor).toHaveBeenCalledWith({ color: '#121214' }))
-    expect(native.setStyle).toHaveBeenCalledWith({ style: SystemBarsStyle.Dark })
-    document.documentElement.style.removeProperty('--surface')
   })
 
   it('në shfletues nuk thërret plugin-in', () => {

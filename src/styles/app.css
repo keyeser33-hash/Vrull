@@ -24,6 +24,21 @@
   --safe-top: env(safe-area-inset-top, 0px);
 }
 
+/* Shiriti i marrjes së të dhënave (bordi "Hyrja · Hapja"): një copë 56 px kalon gjurmën 160 px nga e
+   majta në të djathtë. Me "lëvizje të reduktuar" globals.css e ndal dhe copa rri në vendin e bordit. */
+@theme {
+  --animate-loading: loading 1.4s ease-in-out infinite;
+
+  @keyframes loading {
+    from {
+      transform: translateX(-96px);
+    }
+    to {
+      transform: translateX(120px);
+    }
+  }
+}
+
 @layer base {
   html,
   body,

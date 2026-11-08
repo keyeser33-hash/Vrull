@@ -86,32 +86,15 @@ export const base = {
   'body.front': 'Përpara',
   'body.back': 'Mbrapa',
 
-  // Hyrja.
-  'login.tagline': 'Shortcut to Size, peshat dhe ushqimi. Edhe pa internet.',
-  'login.title': 'Hyr',
-  'login.intro': 'Hyr me llogarinë tënde. Interneti duhet vetëm këtë herë.',
-  'login.email': 'Email',
-  'login.password': 'Fjalëkalimi',
-  'login.showPassword': 'Shfaq fjalëkalimin',
-  'login.hidePassword': 'Fshih fjalëkalimin',
-  'login.offline': 'Pa internet. Hyrja kërkon internet vetëm herën e parë.',
-  'login.submit': 'Hyr',
-  'login.busy': 'Po hyn',
-  'auth.emailMissing': 'Shkruaj email-in.',
+  // Gabimet e hyrjes (data/auth.ts). Tekstet e hyrjes dhe të hapave të parë: areas/entry.ts.
+  'auth.emailMissing': 'Shkruaj emailin.',
   'auth.passwordMissing': 'Shkruaj fjalëkalimin.',
-  'auth.wrongCredentials': 'Email-i ose fjalëkalimi nuk është i saktë.',
+  'auth.wrongCredentials': 'Emaili ose fjalëkalimi nuk është i saktë.',
   'auth.notConfirmed': 'Llogaria nuk është konfirmuar ende.',
   'auth.tooManyAttempts': 'Shumë përpjekje radhazi. Prit pak minuta dhe provo përsëri.',
   'auth.offline': 'Hyrja kërkon internet. Lidhu dhe provo përsëri.',
   'auth.serverDown': 'Serveri nuk po përgjigjet. Provo përsëri pas pak.',
   'auth.failed': 'Hyrja nuk u krye. Provo përsëri.',
-
-  // Marrja e të dhënave pas hyrjes.
-  'fetch.title': 'Po merren të dhënat e tua',
-  'fetch.text': 'Nëse e ke përdorur Training Hub më parë, profili dhe historia jote vijnë nga Supabase.',
-  'fetch.failedTitle': 'Të dhënat nuk u morën',
-  'fetch.failedText':
-    'Pas hyrjes duhet internet edhe për këtë hap, që profili dhe historia jote të vijnë nga Supabase. Lidhu dhe provo përsëri.',
 
   // Gjendja e sinkronizimit (Cilësimet).
   'sync.syncing': 'Po sinkronizohet',

@@ -1,4 +1,4 @@
-import { applyLanguage, DEFAULT_LANGUAGE, language, readLanguage } from './language'
+import { applyLanguage, createLanguageStore, DEFAULT_LANGUAGE, deviceLanguage, followDeviceLanguage, language, readLanguage } from './language'
 
 describe('gjuha e app-it', () => {
   beforeEach(() => window.localStorage.clear())
@@ -46,5 +46,40 @@ describe('gjuha e app-it', () => {
     })
     expect(readLanguage()).toBe('sq')
     spy.mockRestore()
+  })
+})
+
+// V2-E1-17: te hyrja, para se të ketë llogari, gjuha ndjek atë të ruajtur ose atë të telefonit.
+describe('gjuha para hyrjes', () => {
+  beforeEach(() => window.localStorage.clear())
+  afterEach(() => language.set('sq'))
+
+  it('gjuha e telefonit, kur është shqip ose anglisht, sipas radhës së parapëlqimeve', () => {
+    expect(deviceLanguage(['en-US', 'sq-AL'])).toBe('en')
+    expect(deviceLanguage(['de-DE', 'sq-AL'])).toBe('sq')
+    expect(deviceLanguage(['SQ'])).toBe('sq')
+    expect(deviceLanguage(['de-DE', 'fr'])).toBeNull()
+    expect(deviceLanguage([])).toBeNull()
+  })
+
+  it('pa gjuhë të ruajtur ndjek telefonin dhe e mban për herën tjetër', () => {
+    const store = createLanguageStore()
+    followDeviceLanguage(store, ['en-GB', 'sq'])
+    expect(store.get()).toBe('en')
+    expect(readLanguage()).toBe('en')
+  })
+
+  it('gjuha e ruajtur fiton mbi atë të telefonit', () => {
+    window.localStorage.setItem('th-language', 'sq')
+    const store = createLanguageStore()
+    followDeviceLanguage(store, ['en-GB'])
+    expect(store.get()).toBe('sq')
+  })
+
+  it('telefon në një gjuhë tjetër: mbetet shqipja', () => {
+    const store = createLanguageStore()
+    followDeviceLanguage(store, ['de-DE'])
+    expect(store.get()).toBe('sq')
+    expect(window.localStorage.getItem('th-language')).toBeNull()
   })
 })
