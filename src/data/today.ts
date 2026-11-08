@@ -133,6 +133,9 @@ export interface TodayView {
   firstEver: boolean
   workout: TodayWorkout | null
   protein: { eatenG: number; targetG: number | null }
+  /** Data e ushqimit dhe e ujit, dhe nëse sot është ditë stërvitjeje (objektivi i ujit, V36). */
+  date: string
+  trainingDay: boolean
 }
 
 export async function todayView(store: LocalStore): Promise<TodayView> {
@@ -157,6 +160,8 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     nextDate: nextTrainingDate(now, profile.trainingDays),
     firstEver: history.sets.length === 0,
     protein: { eatenG: Math.round(nutrition.totals.proteinG), targetG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null },
+    date: today,
+    trainingDay: nutrition.dayType === 'training',
   }
   if (!snapshot) return { ...base, mode: 'none', workout: null }
 

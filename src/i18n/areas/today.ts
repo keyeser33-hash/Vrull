@@ -63,6 +63,16 @@ export const sq = {
   'today.noProgrammeTitle': 'Pa program aktiv',
   'today.noProgrammeText': 'Zgjidh një program dhe stërvitja e radhës del këtu.',
   'today.chooseProgramme': 'Zgjidh programin',
+  'today.water.title': 'Uji',
+  'today.water.of': '{total} nga {target} L',
+  'today.water.ofNoTarget': '{total} L sot',
+  'today.water.glasses': { one: '{count} gotë nga {target}', other: '{count} gota nga {target}' },
+  'today.water.add': 'Gotë, {ml} ml',
+  'today.water.addLabel': 'Shto një gotë ujë, {ml} ml',
+  'today.water.trainingExtra': 'Ditë stërvitjeje: +{litres} L',
+  'today.water.noTarget': 'Shto peshën që të dalë objektivi',
+  'today.water.added': 'U shtua një gotë · {total} L',
+  'today.water.undo': 'Kthe mbrapsht',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -118,4 +128,14 @@ export const en: TranslationOf<typeof sq> = {
   'today.noProgrammeTitle': 'No active programme',
   'today.noProgrammeText': 'Choose a programme and your next workout shows up here.',
   'today.chooseProgramme': 'Choose a programme',
+  'today.water.title': 'Water',
+  'today.water.of': '{total} of {target} L',
+  'today.water.ofNoTarget': '{total} L today',
+  'today.water.glasses': { one: '{count} glass of {target}', other: '{count} glasses of {target}' },
+  'today.water.add': 'Glass, {ml} ml',
+  'today.water.addLabel': 'Add a glass of water, {ml} ml',
+  'today.water.trainingExtra': 'Training day: +{litres} L',
+  'today.water.noTarget': 'Add your weight to see a target',
+  'today.water.added': 'Glass added · {total} L',
+  'today.water.undo': 'Undo',
 }

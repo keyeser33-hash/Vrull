@@ -10,6 +10,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
 import { setSupplementEnabled, supplementList, toggleSupplement } from '@/data/supplements'
+import { waterDay } from '@/data/water'
 import { logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
 import { type I18n, NBSP } from '@/i18n'
 import { foodName, mealName, nameInSentence, portionText, supplementDose, supplementEvidence, supplementName } from '@/i18n/domain'
@@ -65,6 +66,7 @@ export function NutritionPage() {
       <Timeline day={day} onOpen={openMeal} />
       <Supplements day={day} onEdit={() => setParams({ ndrysho: 'suplementet' })} />
       <MacroTotals day={day} />
+      <WaterTotal date={day.date} />
       {meal ? <MealSheet date={day.date} meal={meal} onClose={() => navigate(-1)} /> : null}
       {params.get('ndrysho') === 'suplementet' ? <SupplementsSheet onClose={() => navigate(-1)} /> : null}
     </div>
@@ -312,6 +314,23 @@ function MacroTotals({ day }: { day: NutritionDay }) {
         <p className="text-xs leading-4 text-muted-foreground">{t('food.outsideJim', { min: JIM_RANGE_KG.min, max: JIM_RANGE_KG.max })}</p>
       ) : null}
     </section>
+  )
+}
+
+/** Uji i ditës (V36): totali kundrejt objektivit; gotat shtohen te Sot. */
+function WaterTotal({ date }: { date: string }) {
+  const { t, fmt } = useI18n()
+  const water = useLocalQuery(() => waterDay(store, date), [date])
+  if (!water) return null
+  const litres = (ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 2 })
+  return (
+    <div className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-sm leading-5 tabular-nums">
+      <span>{t('food.water')}</span>
+      <span className="text-muted-foreground">
+        <b className="font-semibold text-foreground">{litres(water.totalMl)}</b>
+        {water.targetMl === null ? ' L' : ` / ${litres(water.targetMl)} L`}
+      </span>
+    </div>
   )
 }
 

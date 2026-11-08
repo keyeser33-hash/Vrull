@@ -10,6 +10,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { type WeekDay, WeekStrip } from '@/components/ui/week-strip'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type TodayView, todayView } from '@/data/today'
+import { WaterCard } from './water-card'
 import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
 import { dayThemeName, muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
@@ -65,6 +66,7 @@ export function TodayPage() {
           {view.mode === 'session' ? null : <SkipWorkout />}
         </>
       )}
+      <WaterCard date={view.date} training={view.trainingDay} />
     </div>
   )
 }

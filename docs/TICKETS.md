@@ -246,6 +246,8 @@ Sipas §9 dhe bordit: zgjedhja e numrit të vakteve (3–9), lëvizja dhe heqja 
 
 Tabela e re e ujit (ml, ora, data), karta te Sot me një prekje dhe "Kthe mbrapsht", totali te Ushqimi, objektivi sipas §9. **Pranimi:** një gotë ruhet pa internet dhe sinkronizohet; objektivi ndryshon me llojin e ditës; prekja 44 px, tri temat.
 
+**Gjendja (09.11.2026):** kodi dhe provat gati: `nutrition/water.ts` (objektivi), `data/water.ts`, tabela `water_logs` (Dexie versioni 6, migrimi `20261109100000_water_logs.sql` pret përdoruesin), karta te Sot me "Kthe mbrapsht" për 6 s, totali te Ushqimi. Data e ditës kalon te dita e ushqimit (V46) me E2-06.
+
 ## V2-E2-08 · Rikujtuesit e zgjuar
 
 Sipas §13 (V37): pa rikujtues për atë që është regjistruar (edhe pas sinkronizimit), butonat te njoftimi, kufiri ditor dhe bashkimi, orët e qeta, uji sipas ritmit, heshtja pas 3 ditëve të injoruara. Butonat ndjekin modelin e `SessionActionReceiver` (E1-08): PendingIntent i qartë, veprimi ruhet në radhë native, app-i e zbaton sapo hapet ose kthehet, njoftimi bëhet "U regjistrua"; punojnë edhe me ekran të kyçur. **Pranimi:** prova të planit për çdo rregull; në emulator (pjesë e re e provës së Android-it, `rikujtuesit`): "Hëngra si në plan" nga ekrani i kyçur regjistron vaktin dhe rikujtuesi tjetër i tij nuk vjen; "Shty 30 min" e rikthen njoftimin.

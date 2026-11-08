@@ -296,6 +296,7 @@ export const sq = {
   'food.targets.cta': 'Llogarit objektivat e tua',
   'food.targets.ctaText': 'Tani objektivat vijnë nga plani i Jimit. Me të dhënat e tua dalin më afër.',
   'food.targets.ctaAction': 'Llogarit',
+  'food.water': 'Uji',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -571,4 +572,5 @@ export const en: TranslationOf<typeof sq> = {
   'food.targets.cta': 'Work out your targets',
   'food.targets.ctaText': 'Your targets come from Jim’s plan for now. With your details they get closer.',
   'food.targets.ctaAction': 'Work out',
+  'food.water': 'Water',
 }

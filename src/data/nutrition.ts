@@ -301,3 +301,11 @@ export async function targetsPageData(store: LocalStore, date: string) {
   const [profile, targets, weightKg] = await Promise.all([readProfile(store), readTargetsProfile(store), weightFor(store, date)])
   return { targets, weightKg, sessionsPerWeek: profile.trainingDays.length }
 }
+
+/** Lloji i ditës dhe pesha e objektivave të një date (uji, V36), si te dita e ushqimit. */
+export async function dayBasics(store: LocalStore, date: string): Promise<{ dayType: DayType; weightKg: number | null }> {
+  const profile = await readProfile(store)
+  const [{ dayType, saved }, measuredKg] = await Promise.all([dayTypeFor(store, date, profile.trainingDays), weightFor(store, date)])
+  const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
+  return { dayType, weightKg }
+}

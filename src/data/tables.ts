@@ -26,6 +26,8 @@ export const TABLES = [
   'form_videos',
   // Kostoja e AI-së (V2-E1-11): e shkruan vetëm funksioni program-import; telefoni vetëm e merr.
   'ai_usage',
+  // Uji (V36, V2-E2-07).
+  'water_logs',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -79,6 +81,7 @@ export const INDEXES: Record<TableName, string[]> = {
   nutrition_targets: ['date'],
   supplements: [],
   supplement_logs: ['date', 'supplement_id'],
+  water_logs: ['date'],
   user_settings: [],
   week_weights: ['program_id'],
   form_videos: ['exercise_id', 'session_id'],
