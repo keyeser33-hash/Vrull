@@ -1,6 +1,6 @@
 import { i18nFor } from '@/i18n'
 import type { SetRecord } from '@/data/training'
-import { elapsedText, loadText, rangeText, setValue, setsDetail, spokenDuration, targetText, workoutLabel } from './session-format'
+import { elapsedText, loadText, rangeText, setValue, setsDetail, spokenDuration, targetText } from './session-format'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -59,15 +59,12 @@ describe('tekstet e seancës në dy gjuhët', () => {
     expect(setsDetail([set({ weightKg: null, reps: null, seconds: 60 }), set({ weightKg: null, reps: null, seconds: 55 })], sq)).toBe('60 s, 55 s')
   })
 
-  it('koha e seancës "06:10", e pushimit me fjalë dhe stërvitja', () => {
+  it('koha e seancës "06:10" dhe e pushimit me fjalë', () => {
     expect(elapsedText(370)).toBe('06:10')
     expect(elapsedText(3970)).toBe('1:06:10')
     expect(spokenDuration(75, sq.t)).toBe('1 minutë e 15 sekonda')
     expect(spokenDuration(90, en.t)).toBe('1 minute 30 seconds')
     expect(spokenDuration(3960, sq.t)).toBe('1 orë e 6 minuta')
     expect(spokenDuration(45, en.t)).toBe('45 seconds')
-    expect(workoutLabel({ blockName: 'Faza 1', blockWeeks: 4, week: 2 }, sq.t)).toBe('Faza 1 · Java 2')
-    expect(workoutLabel({ blockName: 'Faza 1', blockWeeks: 4, week: 2 }, en.t)).toBe('Faza 1 · Week 2')
-    expect(workoutLabel({ blockName: 'Java 0', blockWeeks: 1, week: 1 }, en.t)).toBe('Java 0')
   })
 })

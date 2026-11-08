@@ -90,8 +90,3 @@ export function spokenDuration(totalSeconds: number, t: T): string {
   const [first, second] = parts.filter((part): part is string => part !== null)
   return second ? t('session.spoken.join', { first, second }) : first
 }
-
-/** "Faza 1 · Java 2"; një bllok me një javë vetëm me emrin ("Java 0"). */
-export function workoutLabel(block: { blockName: string; blockWeeks: number; week: number }, t: T): string {
-  return block.blockWeeks === 1 ? block.blockName : t('session.blockWeek', { block: block.blockName, week: String(block.week) })
-}

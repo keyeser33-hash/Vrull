@@ -6,9 +6,10 @@ import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { store } from '@/data/app-data'
 import { replaceExerciseForBlock, type SetRecord, type TrainingSnapshot } from '@/data/training'
+import { programBlockName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import type { HistorySet } from '@/program/loads'
-import { sessionRecords } from '@/program/records'
+import { sessionBests } from '@/progress/records'
 import type { SessionProgress, SlotProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan } from '@/program/types'
 import { cn } from '@/lib/cn'
@@ -50,7 +51,7 @@ export function ExerciseListSheet({
   const { t } = useI18n()
   const [confirm, setConfirm] = useState(false)
   const remaining = progress.totalSets - progress.doneSets
-  const records = new Map(sessionRecords(history, sessionId).map((record) => [record.exerciseId, record]))
+  const records = new Map(sessionBests(history, sessionId).map((record) => [record.exerciseId, record]))
 
   // "Mbyll stërvitjen" mbetet me kontur derisa të ruhen të gjitha setet, pastaj bëhet veprimi kryesor (§0.3a).
   const footer =
@@ -226,7 +227,7 @@ export function ChangeExerciseSheet({ plan, slot, exerciseName, onClose }: { pla
   const [busy, setBusy] = useState(false)
   return (
     <Sheet title={t('session.change.title')} onClose={onClose}>
-      <p className="type-body text-muted-foreground">{t('session.change.text', { exercise: exerciseName, block: plan.blockName })}</p>
+      <p className="type-body text-muted-foreground">{t('session.change.text', { exercise: exerciseName, block: programBlockName(t, plan.blockName) })}</p>
       <LibraryPicker
         busy={busy}
         onPick={(item) => {

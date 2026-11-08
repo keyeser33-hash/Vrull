@@ -397,7 +397,7 @@ describe('seanca (V2-E1-07)', () => {
     await user.click(within(list).getByRole('button', { name: 'Yes, finish' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'New personal best' })).toBeInTheDocument()
-    expect(screen.getByText('Faza 1 · Week 2 · Workout 1')).toBeInTheDocument()
+    expect(screen.getByText('Phase 1 · Week 2 · Workout 1')).toBeInTheDocument()
     expect(screen.getByText('Bench Press · set 1: 62.5 × 12')).toBeInTheDocument()
     expect(screen.getByText('+1.5 kg on your previous best')).toBeInTheDocument()
     expect(screen.getByRole('group', { name: '1 working set' })).toBeInTheDocument()

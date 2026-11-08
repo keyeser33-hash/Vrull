@@ -7,10 +7,10 @@ import { surfaceClass } from '@/components/ui/surface'
 import { loadLevel, WEEKLY_TARGET } from '@/body/body-map'
 import { store, useLocalQuery } from '@/data/app-data'
 import { sessionSummary, type SessionSummary } from '@/data/training'
-import type { MessageKey } from '@/i18n'
+import { muscleName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
-import { spokenDuration, workoutLabel } from './session-format'
+import { spokenDuration } from './session-format'
 import { recordPulse, useRecordBurst } from './session-motion'
 
 // Mbyllja e seancës (V2-E1-07; bordi "Mbyll"): stërvitja, rekordi më i madh me shkëndijat e prushit
@@ -32,7 +32,7 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
   const { t, fmt } = useI18n()
   const navigate = useNavigate()
   const [top, ...others] = summary.records
-  const label = t('session.summary.workoutLabel', { label: workoutLabel(summary, t), day: String(summary.dayNumber) })
+  const label = t('session.summary.workoutLabel', { label: programWeekLabel(t, summary), day: String(summary.dayNumber) })
   const seconds = summary.durationSeconds
   const duration =
     seconds === null
@@ -56,7 +56,7 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
           ) : (
             <div className="flex flex-col gap-1">
               <h1 className="type-display-l">{t('session.summary.workout', { day: String(summary.dayNumber) })}</h1>
-              <p className="type-body text-muted-foreground">{summary.dayName}</p>
+              <p className="type-body text-muted-foreground">{programDayName(t, summary.dayName)}</p>
             </div>
           )}
 
@@ -99,32 +99,13 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
   )
 }
 
-/** Emrat e grupeve të muskujve (src/program/muscles.ts) në katalog. */
-const GROUP_NAMES = {
-  gjoksi: 'session.group.gjoksi',
-  shpatullat: 'session.group.shpatullat',
-  trapezi: 'session.group.trapezi',
-  shpina: 'session.group.shpina',
-  mesi: 'session.group.mesi',
-  bicepsi: 'session.group.bicepsi',
-  tricepsi: 'session.group.tricepsi',
-  parakrahet: 'session.group.parakrahet',
-  barku: 'session.group.barku',
-  vithet: 'session.group.vithet',
-  kuadricepsi: 'session.group.kuadricepsi',
-  'kofshet-e-pasme': 'session.group.kofshet-e-pasme',
-  aduktoret: 'session.group.aduktoret',
-  pulpat: 'session.group.pulpat',
-  qafa: 'session.group.qafa',
-} as const satisfies Record<string, MessageKey>
-
 const LEVEL_TEXT = ['session.volume.under', 'session.volume.under', 'session.volume.within', 'session.volume.over'] as const
 
 /** "Gjoksi këtë javë": volumi kundrejt objektivit 10–20, me shiritin 0 · 10 · 20 dhe pjesën e sotme. */
 function VolumeCard({ volume }: { volume: NonNullable<SessionSummary['volume']> }) {
   const { t, fmt } = useI18n()
   const { min, max } = WEEKLY_TARGET
-  const name = volume.groupId in GROUP_NAMES ? t(GROUP_NAMES[volume.groupId as keyof typeof GROUP_NAMES]) : volume.groupId
+  const name = muscleName(t, volume.groupId)
   const earlier = Math.max(0, volume.week - volume.today)
   return (
     <section aria-labelledby="week-volume" className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-lg p-3.5')}>

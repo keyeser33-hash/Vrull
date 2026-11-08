@@ -9,9 +9,10 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { weekWeightsView } from '@/data/week-weights'
+import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
-import { isRecord, recordHint, setRecord, type SetRecordResult } from '@/program/records'
+import { isRecord, recordHint, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
 import type { WeekWeightRow } from '@/progress/week-weights'
@@ -591,9 +592,7 @@ function ReferenceLine({ previous, weightKg, basis, range }: { previous: Referen
   const text =
     previous.kind === 'last_time'
       ? t('session.lastTime', { value })
-      : previous.blockWeeks === 1
-        ? t('session.previousBlockShort', { block: previous.blockName, value })
-        : t('session.previousBlock', { block: previous.blockName, week: String(previous.week), value })
+      : t('session.previousBlock', { label: programWeekLabel(t, { blockName: previous.blockName, blockWeeks: previous.blockWeeks, week: previous.week, run: 1 }), value })
   const diff = weightKg && previous.weightKg ? Math.round((weightKg - previous.weightKg) * 100) / 100 : 0
   return (
     <p className="mt-0.5 type-body text-muted-foreground tabular-nums">

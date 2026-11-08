@@ -1,8 +1,8 @@
-import type { HistorySet } from './loads'
-import { isRecord, recordHint, sessionRecords, setRecord } from './records'
+import type { HistorySet } from '@/program/loads'
+import { isRecord, recordHint, sessionBests, setRecord } from './records'
 
 // Rekordi te seanca (SPEC §0.3a, §6; V2-E1-07): pragu me peshën e zgjedhur, edhe kur çdo set i
-// intervalit jep rekord, dhe rekordet e një seance kundrejt historisë para saj.
+// intervalit jep rekord, rekordi i setit në moment dhe rekordet e seancës (si te historiku, E1-15).
 
 const NOW = new Date('2026-11-08T18:00:00.000Z')
 const daysAgo = (days: number) => new Date(NOW.getTime() - days * 86_400_000).toISOString()
@@ -73,9 +73,9 @@ describe('rekordet e seancës', () => {
 
   it('Bench Press: seti 1 62,5 × 12 → e1RM 87,5, +1,5 nga rekordi i kaluar', () => {
     const sets = [today({ setNumber: 1, reps: 12 }), today({ setNumber: 2, reps: 10 }), today({ setNumber: 3, reps: 9 })]
-    const [record, ...rest] = sessionRecords([...java1, ...sets], 'java-2')
+    const [record, ...rest] = sessionBests([...java1, ...sets], 'java-2')
     expect(rest).toEqual([])
-    expect(record).toMatchObject({ exerciseId: 'bench', setId: sets[0].id, setNumber: 1, weightKg: 62.5, reps: 12 })
+    expect(record).toMatchObject({ exerciseId: 'bench', setId: sets[0].id })
     expect(record.e1rmKg).toBeCloseTo(87.5, 5)
     expect(record.previousBestKg).toBeCloseTo(86, 5)
     expect(record.gainKg).toBeCloseTo(1.5, 5)
@@ -83,8 +83,8 @@ describe('rekordet e seancës', () => {
 
   it('vlen seti më i mirë i seancës, kundrejt historisë para saj', () => {
     const sets = [today({ setNumber: 1, reps: 12 }), today({ setNumber: 2, weightKg: 65, reps: 12 })]
-    const [record] = sessionRecords([...java1, ...sets], 'java-2')
-    expect(record).toMatchObject({ setNumber: 2, weightKg: 65 })
+    const [record] = sessionBests([...java1, ...sets], 'java-2')
+    expect(record.setId).toBe(sets[1].id)
     expect(record.previousBestKg).toBeCloseTo(86, 5)
   })
 
@@ -92,12 +92,12 @@ describe('rekordet e seancës', () => {
     const fly = today({ exerciseId: 'fly', weightKg: 12, reps: 11 })
     const warmup = today({ exerciseId: 'bench', weightKg: 80, reps: 10, isWarmup: true })
     const weaker = today({ setNumber: 1, reps: 9 })
-    expect(sessionRecords([...java1, fly, warmup, weaker], 'java-2')).toEqual([])
+    expect(sessionBests([...java1, fly, warmup, weaker], 'java-2')).toEqual([])
   })
 
   it('pa e1RM të mëparshme (pulpat me 30 përsëritje) s\'ka rekord për të kaluar', () => {
     const calves = [set({ exerciseId: 'calf', weightKg: 70, reps: 30 }), today({ exerciseId: 'calf', weightKg: 70, reps: 15 })]
-    expect(sessionRecords(calves, 'java-2')).toEqual([])
+    expect(sessionBests(calves, 'java-2')).toEqual([])
     expect(isRecord(calves[1], calves)).toBe(false)
     expect(isRecord(today({ reps: 12 }), java1)).toBe(true)
   })
@@ -114,7 +114,7 @@ describe('rekordet e seancës', () => {
 
   it('disa rekorde: më i madhi i pari', () => {
     const fly = [set({ exerciseId: 'fly', weightKg: 10, reps: 11 }), today({ exerciseId: 'fly', weightKg: 14, reps: 11 })]
-    const records = sessionRecords([...java1, ...fly, today({ reps: 12 })], 'java-2')
+    const records = sessionBests([...java1, ...fly, today({ reps: 12 })], 'java-2')
     expect(records.map((record) => record.exerciseId)).toEqual(['fly', 'bench'])
   })
 })
