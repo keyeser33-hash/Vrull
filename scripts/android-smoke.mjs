@@ -290,6 +290,15 @@ async function unlock() {
   throw new Error('Ekrani nuk u shkyç me PIN-in')
 }
 
+/** Vendos PIN-in kur mungon, që një pjesë me ekran të kyçur të mos varet nga pjesët para saj. */
+function ensurePin() {
+  try {
+    adb('shell', 'locksettings', 'set-pin', PIN)
+  } catch {
+    // PIN-i ishte vendosur nga një pjesë më parë.
+  }
+}
+
 function collapseShade() {
   adb('shell', 'cmd', 'statusbar', 'collapse')
 }
@@ -1104,7 +1113,7 @@ try {
 
     // D2. Ekrani i kyçur me PIN: "Ruaj setin" pa e shkyçur telefonin; pushimi nis nga njoftimi dhe
     // "Pushimi mbaroi" vjen me ekran të fikur.
-    adb('shell', 'locksettings', 'set-pin', PIN)
+    ensurePin()
     await sleepScreen()
     await wakeScreen()
     await sleep(1500)
@@ -1364,6 +1373,7 @@ try {
       done,
       undo: 'Kthe mbrapsht',
     })
+    ensurePin()
     const scheduleAndKill = async (item) => {
       // Planifikimi i app-it (1,5 s pas çdo shkrimi ose hapjeje) mbaron para rikujtuesit të provës.
       await sleep(4000)
