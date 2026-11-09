@@ -39,6 +39,15 @@ export function weekDates(monday: string): string[] {
 
 // --- Stërvitja ---
 
+/** Blloku si çelës i qëllimeve: xhiroja dhe blloku (dita rezervë është një për bllok në çdo xhiro). */
+export const blockKey = (run: number, blockId: string) => `${run}:${blockId}`
+
+/** Xhiroja dhe blloku nga çelësi i `blockKey`. */
+export function parseBlockKey(key: string): { run: number; blockId: string } {
+  const index = key.indexOf(':')
+  return { run: Number(key.slice(0, index)), blockId: key.slice(index + 1) }
+}
+
 export interface GoalSession {
   id: string
   /** Data e seancës (YYYY-MM-DD), si te rripi i Sot. */
@@ -46,7 +55,7 @@ export interface GoalSession {
   /** Çasti i fillimit ose i mbylljes: radha brenda ditës. */
   at: string
   status: 'completed' | 'skipped' | 'in_progress'
-  /** Blloku i programit si çelës (xhiroja dhe blloku, `blockKey` te data); null kur mungon. */
+  /** Blloku i programit si çelës (xhiroja dhe blloku, `blockKey`); null kur mungon. */
   block: string | null
 }
 
@@ -104,7 +113,8 @@ function weekTraining(input: TrainingInput, ordered: GoalSession[], monday: stri
 /**
  * Javët e stërvitjes nga e para te ajo e `today`, me ditën rezervë: kur java mbyllet një stërvitje
  * më pak se objektivi dhe blloku i saj s'e ka përdorur ende, dita rezervë e plotëson qëllimin. Nuk
- * mbulon dy stërvitje dhe nuk kalon te blloku tjetër. Java e `today` mbetet e hapur (pa ditë rezervë).
+ * mbulon dy stërvitje, as një javë pa asnjë seancë të mbyllur, dhe nuk kalon te blloku tjetër. Java e
+ * `today` mbetet e hapur (pa ditë rezervë).
  */
 export function trainingLedger(input: TrainingInput, today: string): TrainingLedger {
   const ordered = [...input.sessions].sort(chronological)
@@ -118,7 +128,8 @@ export function trainingLedger(input: TrainingInput, today: string): TrainingLed
     const closed = shiftDate(monday, 6) < today
     let met: boolean | null = week.target > 0 ? week.done >= week.target : null
     let spare: TrainingWeek['spare'] = null
-    if (closed && met === false && week.done === week.target - 1 && week.block !== null && !spareUsed.has(week.block)) {
+    // Vetëm një stërvitje mungon, dhe të paktën një u bë: një javë pa asnjë seancë nuk mbulohet (rishikimi i 0.23).
+    if (closed && met === false && week.done > 0 && week.done === week.target - 1 && week.block !== null && !spareUsed.has(week.block)) {
       const trained = new Set(inWeek.filter((entry) => entry.status === 'completed').map((entry) => entry.date))
       spareUsed.set(week.block, monday)
       spare = { block: week.block, date: week.trainingDates.filter((date) => !trained.has(date)).at(-1) ?? null }

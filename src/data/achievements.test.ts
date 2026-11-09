@@ -1,8 +1,11 @@
+import { createFakeRemote, pullOnce } from '@/test/fake-remote'
 import { achievementId, achievementsView, awardAchievements, newAchievements, sessionAchievements } from './achievements'
 import { createDatabase } from './db'
 import { dayTargets } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
+import { createSync } from './sync'
+import { TABLES, type TableName } from './tables'
 import { finishWorkout, saveSet, skipWorkout, startWorkout, trainingSnapshot } from './training'
 import { waterDay } from './water'
 
@@ -16,8 +19,9 @@ const PROFILE = { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00
 
 function setup() {
   let clock = at('2026-11-02', '08:00')
-  const store = createLocalStore(createDatabase(`achievements-${crypto.randomUUID()}`), { userId: () => USER, now: () => clock })
-  return { store, setClock: (date: Date) => (clock = date) }
+  const db = createDatabase(`achievements-${crypto.randomUUID()}`)
+  const store = createLocalStore(db, { userId: () => USER, now: () => clock })
+  return { store, db, setClock: (date: Date) => (clock = date) }
 }
 
 type Context = ReturnType<typeof setup>
@@ -37,8 +41,10 @@ const eat = (context: Context, date: string, kcal: number) =>
   context.store.put('diary_entries', { date, meal: 'lunch', food_id: null, grams: 100, kcal, protein_g: 100, carbs_g: 0, fat_g: 0, logged_at: at(date, '13:00').toISOString() })
 const drink = (context: Context, date: string, ml: number) => context.store.put('water_logs', { date, ml, logged_at: at(date, '12:00').toISOString() })
 
+/** Hapat e parë, pas marrjes së parë nga serveri (i rremë): arritjet jepen vetëm pas saj. */
 async function started() {
   const context = setup()
+  await pullOnce(context.db, USER)
   await completeOnboarding(context.store, PROFILE, () => at('2026-11-01', '08:00'))
   await context.store.put('body_measurements', { date: '2026-11-01', weight_kg: 88 })
   return context
@@ -118,6 +124,29 @@ describe('dhënia e arritjeve', () => {
     expect(rows[0]).toMatchObject({ id, deleted_at: null, earned_on: '2026-11-02' })
   })
 
+  it('një rresht i fshirë që kthehet mban datën e vet, edhe kur historia ndryshoi', async () => {
+    const context = await started()
+    const sessionId = await train(context, '2026-11-02', [{ weightKg: 50, reps: 14, rir: 2 }])
+    await awardAchievements(context.store)
+    const id = await achievementId(USER, 'first_session')
+    await context.store.remove('achievements', id)
+    await context.store.remove('workout_sessions', sessionId)
+    await train(context, '2026-11-05', [{ weightKg: 50, reps: 14, rir: 2 }])
+    expect(await awardAchievements(context.store)).toEqual(['first_session'])
+    expect(await live(context)).toMatchObject([{ id, deleted_at: null, earned_on: '2026-11-02' }])
+  })
+
+  it('pa marrjen e parë nga serveri nuk jepet asgjë; pas saj jepet me datën e rregullit', async () => {
+    const context = setup()
+    await completeOnboarding(context.store, PROFILE, () => at('2026-11-01', '08:00'))
+    await train(context, '2026-11-02', [{ weightKg: 50, reps: 14, rir: 2 }])
+    expect(await awardAchievements(context.store)).toEqual([])
+    expect((await achievementsView(context.store)).earned).toBe(0)
+    await pullOnce(context.db, USER)
+    expect(await awardAchievements(context.store)).toEqual(['first_session'])
+    expect(await live(context)).toMatchObject([{ key: 'first_session', earned_on: '2026-11-02' }])
+  })
+
   it('dy dhënie njëkohësisht shkruajnë një rresht', async () => {
     const context = await started()
     await train(context, '2026-11-02', [{ weightKg: 50, reps: 14, rir: 2 }])
@@ -178,5 +207,54 @@ describe('listat për ekranet', () => {
     expect(close.earned).toEqual([])
     // Më afër tani: vargu 1 nga 4 dhe 25 seanca 6 nga 25 mbeten pas ushqimit dhe ujit 5 nga 7.
     expect(close.nearest).toMatchObject({ key: 'food_7', progress: { current: 5, target: 7 } })
+  })
+})
+
+// Rishikimi i 0.23: telefoni i dytë (0.22 deri tani, pa tabelën e arritjeve) hapet pasi historia u ndryshua
+// te i pari. Pa marrë arritjet nga serveri ai nuk jep asgjë, ndaj data e ruajtur nuk ri-datohet.
+describe('dy telefona', () => {
+  const PHONE = { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00', wakeTime: '08:20', sleepTime: '01:00' }
+
+  function phone(remote: ReturnType<typeof createFakeRemote>, tables?: readonly TableName[]) {
+    let clock = at('2026-11-01', '08:00')
+    const db = createDatabase(`achievements-sync-${crypto.randomUUID()}`)
+    const store = createLocalStore(db, { userId: () => USER, now: () => clock })
+    const make = (only?: readonly TableName[]) => createSync({ db, remote, userId: () => USER, now: () => clock, tables: only })
+    return { store, db, sync: make(tables), fullSync: make(), setClock: (date: Date) => (clock = date) }
+  }
+
+  it('telefoni që s\'i ka marrë ende arritjet nuk jep; pas marrjes data e ruajtur mbetet', async () => {
+    const remote = createFakeRemote()
+    const a = phone(remote)
+    await completeOnboarding(a.store, PHONE, () => at('2026-11-01', '08:00'))
+    await a.store.put('body_measurements', { date: '2026-11-01', weight_kg: 88 })
+    await a.fullSync.run()
+    const first = await train(a, '2026-11-02', [{ weightKg: 50, reps: 14, rir: 2 }])
+    a.setClock(at('2026-11-03', '09:00'))
+    expect(await awardAchievements(a.store)).toEqual(['first_session'])
+    await a.fullSync.run()
+    // Historia ndryshon te A: seanca e parë fshihet, një tjetër bëhet më 5 nëntor.
+    a.setClock(at('2026-11-05', '08:00'))
+    await a.store.remove('workout_sessions', first)
+    await train(a, '2026-11-05', [{ weightKg: 50, reps: 14, rir: 2 }])
+    await a.fullSync.run()
+    const id = await achievementId(USER, 'first_session')
+
+    // B sinkronizoi gjithçka përveç arritjeve; hapet më 6 nëntor: pa marrjen e tyre nuk jep asgjë.
+    const b = phone(remote, TABLES.filter((table) => table !== 'achievements'))
+    b.setClock(at('2026-11-06', '09:00'))
+    await b.sync.run()
+    expect(await awardAchievements(b.store)).toEqual([])
+    expect(await b.store.get('achievements', id)).toBeUndefined()
+    // Pas marrjes së arritjeve: rreshti i A-së, asnjë dhënie e re.
+    await b.fullSync.run()
+    expect(await awardAchievements(b.store)).toEqual([])
+    expect((await b.store.get('achievements', id))?.earned_on).toBe('2026-11-02')
+    expect((await achievementsView(b.store)).achievements.find((entry) => entry.key === 'first_session')?.earnedOn).toBe('2026-11-02')
+
+    a.setClock(at('2026-11-06', '10:00'))
+    await a.fullSync.run()
+    expect((await a.store.get('achievements', id))?.earned_on).toBe('2026-11-02')
+    expect(remote.rows('achievements').map((row) => [row.id === id, row.earned_on])).toEqual([[true, '2026-11-02']])
   })
 })

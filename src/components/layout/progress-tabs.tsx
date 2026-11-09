@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { surfaceClass } from '@/components/ui/surface'
+import { ScreenHeader } from './screen-header'
 
 // Tab-et e Progresit (V44, SPEC §0.3c; bordet "Progresi · Përmbledhja" dhe "Progresi · Arritjet"):
 // Trupi · Përmbledhja · Historiku · Arritjet, katër lidhje 44 px në një shirit `surface` me rreze 14 px.
@@ -32,7 +34,7 @@ export function ProgressTabs({ active, className }: { active: ProgressTab; class
             aria-current={selected ? 'page' : undefined}
             replace
             className={cn(
-              'flex h-touch min-w-0 items-center justify-center rounded-[10px] font-display text-[16px] leading-none font-bold transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+              'flex h-touch min-w-0 items-center justify-center rounded-[10px] font-display text-[16px] leading-none font-bold transition-colors duration-250 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
               selected ? 'bg-foreground text-background' : 'text-muted-foreground',
             )}
           >
@@ -41,5 +43,22 @@ export function ProgressTabs({ active, className }: { active: ProgressTab; class
         )
       })}
     </div>
+  )
+}
+
+/**
+ * Kreu i Progresit (bordi V23-Progresi), i njëjtë te Përmbledhja dhe Arritjet: titulli "Progresi", poshtë
+ * data dhe java e programit (`label`, kur ka program me stërvitje), pastaj tab-et.
+ */
+export function ProgressHeader({ active, label }: { active: ProgressTab; label?: string }) {
+  const { t, fmt } = useI18n()
+  const [now] = useState(() => new Date())
+  const date = fmt.date(now)
+  const line = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
+  return (
+    <>
+      <ScreenHeader title={t('tab.progress')} subtitle={<span className="tabular-nums">{line}</span>} />
+      <ProgressTabs active={active} />
+    </>
   )
 }

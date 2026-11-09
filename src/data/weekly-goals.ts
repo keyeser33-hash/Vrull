@@ -5,11 +5,13 @@ import { upcomingDates, workoutMinutes } from '@/program/week-plan'
 import { durationMinutes, recordsAtTheTime, sessionRecords } from '@/progress/history'
 import {
   average,
+  blockKey,
   completeWeek,
   foodGoal,
   type GoalSession,
   type IntakeGoal,
   mondayOf,
+  parseBlockKey,
   streakAt,
   type TrainingDay,
   trainingDays,
@@ -21,6 +23,7 @@ import {
   weekRecords,
   weekWeight,
 } from '@/progress/weekly-goals'
+import { isLoggedDay } from '@/nutrition/weekly-check'
 import { readMissedInput } from './missed-day'
 import { currentFoodDate, dayTargets } from './nutrition'
 import { readSchedule, trainingTimeOn } from './schedule-settings'
@@ -126,7 +129,7 @@ export interface WeekSummary {
     /** Të gjitha rekordet e e1RM-së (si te Historiku) dhe tri më të mëdhatë, një për ushtrim. */
     records: { count: number; top: WeekRecordLine[] }
   }
-  /** Mesatarja e ditës mbi ditët e numëruara (≥ 60%); null pa to. */
+  /** Mesatarja e ditës mbi ditët e regjistruara (≥ 50% e objektivit, `isLoggedDay` si kontrolli javor); null pa to. */
   food: { averageKcal: number | null; averageProteinG: number | null }
   /** Mesatarja mbi ditët me ujë të regjistruar, në ml. */
   water: { averageMl: number | null }
@@ -134,13 +137,6 @@ export interface WeekSummary {
   weight: { averageKg: number | null; changeKg: number | null }
   /** Stërvitja e radhës, për javën e tanishme (e diela) ose të fundit të mbyllur; null për javët e tjera. */
   next: NextWorkout | null
-}
-
-/** Blloku si çelës i qëllimeve: xhiroja dhe blloku (dita rezervë është një për bllok në çdo xhiro). */
-const blockKey = (run: number, blockId: string) => `${run}:${blockId}`
-function parseBlockKey(key: string) {
-  const index = key.indexOf(':')
-  return { run: Number(key.slice(0, index)), blockId: key.slice(index + 1) }
 }
 
 const byPosition = (a: { position: number }, b: { position: number }) => a.position - b.position
@@ -307,7 +303,8 @@ export async function weekSummary(store: LocalStore, monday: string): Promise<We
   const names = new Map(exercises.map((row) => [row.id, String(row.name)]))
   const weekly = weekRecords(completed.flatMap((row) => sessionRecords(history.sets, row.id, records)))
   const lastBlock = completed.at(-1)?.block_id ? context.blocks.get(String(completed.at(-1)!.block_id)) : undefined
-  const counted = intake.days.filter((_, index) => intake.food?.days[index].state === 'counted')
+  // Mesatarja e ushqimit në ditët e regjistruara (SPEC §0.3c), me rregullin e kontrollit javor (≥ 50%).
+  const logged = intake.days.filter(isLoggedDay)
   const spareBlock = week.spare ? parseBlockKey(week.spare.block) : null
   const weights = measurements
     .filter((row) => row.weight_kg !== null && row.weight_kg !== undefined)
@@ -334,7 +331,7 @@ export async function weekSummary(store: LocalStore, monday: string): Promise<We
       minutes: completed.reduce((total, row) => total + (durationMinutes((row.started_at as string | null) ?? null, (row.ended_at as string | null) ?? null) ?? 0), 0),
       records: { count: weekly.count, top: weekly.top.map((record) => ({ ...record, name: names.get(record.exerciseId) ?? '' })) },
     },
-    food: { averageKcal: round(average(counted.map((day) => day.kcal))), averageProteinG: round(average(counted.map((day) => day.proteinG))) },
+    food: { averageKcal: round(average(logged.map((day) => day.kcal))), averageProteinG: round(average(logged.map((day) => day.proteinG))) },
     water: { averageMl: round(average(intake.days.filter((day) => day.waterMl > 0).map((day) => day.waterMl))) },
     weight: weekWeight(weights, sunday),
     next: start === current ? await nextWorkout(store, context, shiftDate(sunday, 1), today) : shiftDate(start, 7) === current ? await nextWorkout(store, context, today, today) : null,

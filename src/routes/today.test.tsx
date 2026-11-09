@@ -305,6 +305,62 @@ describe('Sot', () => {
     expect(goalsLink().querySelectorAll('.border-ember-text')).toHaveLength(0)
   })
 
+  it('java e plotë: festimi i vet 600 ms rreth matësve, një herë në javë; me lëvizje të reduktuar vetëm zbehje', async () => {
+    const { store, train } = await boardWeek()
+    await train(at(8, 11, 17, 15), [{ weightKg: 62.5, reps: 12 }])
+    const { dayTargets } = await import('@/data/nutrition')
+    const { waterDay } = await import('@/data/water')
+    for (const day of [2, 3, 4, 5, 6]) {
+      const date = `2026-11-0${day}`
+      const kcal = Math.ceil((await dayTargets(store, date))!.kcal * 0.6)
+      await store.put('diary_entries', { date, meal: 'lunch', food_id: null, grams: 100, kcal, protein_g: 100, carbs_g: 0, fat_g: 0, logged_at: at(day, 11, 13).toISOString() })
+      await store.put('water_logs', { date, ml: (await waterDay(store, date)).targetMl, logged_at: at(day, 11, 12).toISOString() })
+    }
+    data.clock = at(8, 11, 19)
+    const animations: { element: Element; keyframes: Keyframe[]; options: KeyframeAnimationOptions }[] = []
+    const motion = (reduced: boolean) => {
+      animations.length = 0
+      vi.stubGlobal('matchMedia', (query: string) => ({ matches: reduced && query.includes('reduce'), addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+      Object.defineProperty(HTMLElement.prototype, 'animate', {
+        configurable: true,
+        value(this: Element, keyframes: Keyframe[], options: KeyframeAnimationOptions) {
+          animations.push({ element: this, keyframes, options })
+          return {}
+        },
+      })
+    }
+    const weekSpark = () => document.querySelector('[data-spark="week"]')
+    try {
+      motion(false)
+      await renderToday()
+      await waitFor(() => expect(weekSpark()).not.toBeNull())
+      expect(goalsLink()).toHaveAccessibleName('Qëllimet e javës: stërvitja 4 nga 4, ushqimi 5 nga 7 ditë, uji 5 nga 7 ditë, të tre qëllimet të arritura')
+      expect(await data.store.readDevice('goal-celebrated')).toEqual({ monday: '2026-11-02', keys: ['training', 'food', 'water', 'complete'] })
+      const ring = animations.find((call) => call.element === weekSpark())!
+      expect(ring.options).toMatchObject({ duration: 600, delay: 320, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' })
+      expect(ring.keyframes.some((frame) => 'transform' in frame)).toBe(true)
+      // Një herë në javë: pas rihapjes asnjë festim.
+      cleanup()
+      await renderToday()
+      await waitFor(() => expect(goalsLink()).toBeInTheDocument())
+      expect(weekSpark()).toBeNull()
+
+      // Me lëvizje të reduktuar unaza vetëm zbehet, 120 ms.
+      cleanup()
+      await data.store.writeDevice('goal-celebrated', { monday: '2026-11-02', keys: ['training', 'food', 'water'] })
+      motion(true)
+      await renderToday()
+      await waitFor(() => expect(weekSpark()).not.toBeNull())
+      expect(goalsLink().querySelectorAll('.border-ember-text')).toHaveLength(0)
+      const reduced = animations.find((call) => call.element === weekSpark())!
+      expect(reduced.options.duration).toBe(120)
+      expect(reduced.keyframes.some((frame) => 'transform' in frame)).toBe(false)
+    } finally {
+      vi.unstubAllGlobals()
+      delete (HTMLElement.prototype as { animate?: unknown }).animate
+    }
+  })
+
   it('e diela pas 20:00 pa stërvitje sot: karta "Java jote" zë vendin e kartës, me stërvitjen e radhës poshtë', async () => {
     const user = userEvent.setup()
     const { train } = await boardWeek()

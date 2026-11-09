@@ -63,6 +63,11 @@ const LAST_RESULT_KEY = 'sync:last'
 // Përdoruesi për të cilin marrja e plotë ka përfunduar të paktën një herë në këtë telefon.
 const PULLED_KEY = 'sync:pulled'
 const cursorKey = (table: TableName) => `sync:cursor:${table}`
+/**
+ * Përdoruesi për të cilin marrja e kësaj tabele ka përfunduar të paktën një herë në këtë telefon (edhe kur
+ * serveri s'kishte asnjë rresht, pa kursor). `store.pulled` e lexon: arritjet nuk jepen para saj (SPEC §0.3c).
+ */
+export const tablePulledKey = (table: TableName) => `sync:pulled:${table}`
 
 const instant = (value: unknown) => Date.parse(String(value))
 
@@ -183,7 +188,8 @@ export function createSync(options: SyncOptions) {
   }
 
   async function pull(table: TableName) {
-    const saved = (await db._meta.get(cursorKey(table)))?.value as Cursor | undefined
+    const [savedEntry, pulledFor] = await Promise.all([db._meta.get(cursorKey(table)), db._meta.get(tablePulledKey(table))])
+    const saved = savedEntry?.value as Cursor | undefined
     let after: Cursor | null = saved
       ? { at: new Date(instant(saved.at) - lagMs).toISOString(), id: MIN_UUID }
       : null
@@ -200,6 +206,7 @@ export function createSync(options: SyncOptions) {
       if (rows.length < pageSize) break
     }
     if (latest && latest !== saved) await db._meta.put({ key: cursorKey(table), value: latest })
+    if (pulledFor?.value !== options.userId()) await db._meta.put({ key: tablePulledKey(table), value: options.userId() })
     return pulled
   }
 

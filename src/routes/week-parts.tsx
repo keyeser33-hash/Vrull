@@ -48,6 +48,12 @@ function Spark() {
   return <span ref={ref} aria-hidden className="pointer-events-none absolute -inset-2 rounded-pill border-2 border-ember-text opacity-0" />
 }
 
+/** Java e plotë (`WEEK_COMPLETE`): unaza rreth tre matësve, 600 ms, një herë në javë (dekor, `goal-motion.ts`). */
+export function WeekSpark() {
+  const ref = useSpark<HTMLSpanElement>('week')
+  return <span ref={ref} aria-hidden data-spark="week" className="pointer-events-none absolute -inset-1.5 rounded-lg border-2 border-ember-text opacity-0" />
+}
+
 /** Tre matësit në një rresht (Sot): emri, vlera dhe shiriti. Pa `to` janë vetëm pamje; `celebrate`: qëllimet që sapo u arritën. */
 export function GoalMeters({
   cells,

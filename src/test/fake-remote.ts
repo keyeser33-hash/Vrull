@@ -3,7 +3,8 @@
 //   server_updated_at vendoset në çdo shkrim (në formatin e Postgres-it, +00:00);
 // - një upsert me një rresht të pavlefshëm dështon i tëri (transaksion);
 // - pull me kursor keyset (server_updated_at, id), në rend rritës.
-import { NetworkError, RemoteError, type Cursor, type Remote } from '@/data/sync'
+import type { LocalDatabase } from '@/data/db'
+import { createSync, NetworkError, RemoteError, type Cursor, type Remote } from '@/data/sync'
 import type { Row, TableName } from '@/data/tables'
 
 export interface FakeRemote extends Remote {
@@ -134,4 +135,12 @@ export function createFakeStorage(options: { userId: () => string | null; remote
     },
   }
   return storage
+}
+
+/**
+ * Marrja e parë e një telefoni nga një server i rremë bosh, si pas hyrjes: pa të arritjet nuk jepen
+ * (`store.pulled`, SPEC §0.3c). Thirret pas pastrimit të tabelave, se `_meta` pastrohet me to.
+ */
+export async function pullOnce(db: LocalDatabase, userId: string) {
+  await createSync({ db, remote: createFakeRemote(), userId: () => userId }).run()
 }

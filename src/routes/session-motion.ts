@@ -84,12 +84,21 @@ export function useBannerMotion<T extends HTMLElement>(onDone: () => void): { re
   return { ref, dismiss }
 }
 
-/** Dridhja e rëndë e rekordit në telefon; në shfletues asgjë. */
-export async function recordPulse() {
+async function pulse(style: ImpactStyle) {
   if (!Capacitor.isNativePlatform()) return
   try {
-    await Haptics.impact({ style: ImpactStyle.Heavy })
+    await Haptics.impact({ style })
   } catch {
-    // Pa dridhje: ekrani e tregon rekordin gjithsesi.
+    // Pa dridhje: ekrani e tregon setin ose rekordin gjithsesi.
   }
+}
+
+/** Dridhja e lehtë e çdo "Ruaj setin" në telefon (SPEC §0.3c); kur seti jep rekord, vetëm `recordPulse`. */
+export function savePulse() {
+  return pulse(ImpactStyle.Light)
+}
+
+/** Dridhja e rëndë e rekordit në telefon; në shfletues asgjë. */
+export function recordPulse() {
+  return pulse(ImpactStyle.Heavy)
 }

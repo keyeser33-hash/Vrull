@@ -1,3 +1,4 @@
+import { localDate } from '@/lib/calendar'
 import { weightStep } from '@/program/loads'
 import type { ProgramWeek } from '@/program/types'
 import { lighterWeight } from '@/progress/weekly-goals'
@@ -78,7 +79,7 @@ async function readWeek(store: LocalStore, week?: WeekRef) {
     block: { blockName: block.name, blockWeeks: block.weeks, week: target.week, run },
     rows,
   }
-  return { view, loaded, history }
+  return { view, loaded, history, open }
 }
 
 export interface WorkoutWeight extends WeekWeightRow {
@@ -94,14 +95,17 @@ export interface WorkoutWeight extends WeekWeightRow {
  * (pranuar, ndryshuar, "Më vonë"), përndryshe propozimi i §7, që për ushtrimin me histori pa e1RM
  * është pesha e fundit (§0.3a). I vetmi lexim i saj për Sot, seancën, Programin dhe njoftimin e
  * seancës (E1-08), sipas slotit. Për stërvitjen e radhës pas 7 ditësh pa seancë ("Mirë se u ktheve",
- * me çelësin të ndezur) pesha është 90% e saj, poshtë sipas hapit të pajisjes, derisa ajo mbyllet.
+ * me çelësin të ndezur) pesha është 90% e saj, poshtë sipas hapit të pajisjes, derisa ajo mbyllet; me
+ * seancën të hapur ditët dhe çelësi maten në datën e saj.
  */
 export async function workoutWeights(store: LocalStore, plan: WeekRef & { dayId: string }): Promise<Map<string, WorkoutWeight>> {
   const read = await readWeek(store, { blockId: plan.blockId, week: plan.week })
   const rows = (read?.view.rows ?? []).filter((row) => row.dayId === plan.dayId)
   const pointer = read?.loaded.pointer
   const next = !!pointer && !pointer.completed && pointer.blockId === plan.blockId && pointer.week === plan.week && pointer.dayId === plan.dayId
-  const lighter = next && rows.length > 0 && (await lighterFirstSession(store))
+  // Me seancën të hapur vendos data e saj, jo ora: peshat nuk ndryshojnë kur kalon mesnata (rishikimi i 0.23).
+  const day = read?.open?.date ? String(read.open.date).slice(0, 10) : localDate(store.now())
+  const lighter = next && rows.length > 0 && (await lighterFirstSession(store, day))
   const steps = read?.history.weightSteps ?? {}
   return new Map(
     rows.map((row): [string, WorkoutWeight] => {

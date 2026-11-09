@@ -30,8 +30,8 @@ Tokenat jetojnë vetëm te `globals.css`, në tri tema. Klasa e Tailwind-it ësh
 | `ember` | `#FF5B2E` | = | = | Prushi: sfondi i **një** veprimi kryesor, shenjat e mbushura, volumi |
 | `on-ember` | `#0B0B0C` | = | = | Teksti mbi `ember` dhe `sand` (6,4:1). Kurrë i bardhë (3,1:1) |
 | `ember-text` | `#FF5B2E` | `#FF5B2E` | `#C2410C` | Prushi si tekst, ikonë ose vijë e hollë |
-| `data` | `#8B7CFF` | `#8B7CFF` | `#5B4BDB` | Vjollca: të dhënat dytësore (karbohidratet, "+2,5 kg", miqtë) |
-| `sand` | `#E0B48A` | = | = | Rëra: zë vendin e `ember` në ditë të lodhura; yndyrat |
+| `data` | `#8B7CFF` | `#8B7CFF` | `#5B4BDB` | Vjollca: të dhënat dytësore ("+2,5 kg", kufiri i AI-së, miqtë) |
+| `sand` | `#E0B48A` | = | = | Rëra: zë vendin e `ember` në ditë të lodhura |
 | `success` | `#4ADE80` | `#4ADE80` | `#15803D` | Vetëm gjendje, gjithnjë me fjalë |
 | `danger` | `#F87171` | `#F87171` | `#B91C1C` | Gabime dhe fshirje, gjithnjë me fjalë |
 | `insight` | `#1A1206` | `#1A1206` | `#FFF1EA` | Kartat e rekordit dhe të sugjerimit |
@@ -106,7 +106,8 @@ OLED (parazgjedhja, e zeza e plotë), Natë dhe Ditë. Në kod emrat e ruajtur m
 | `RirPicker` | Pesë çipa 44 px me `aria-pressed`; i zgjedhuri në bojë, jo prush |
 | `ListRow` | Rreshti 56 px brenda `<ul>`: emri, detaji, vlera djathtas; i gjithë rreshti preket, veprimi brenda ka zonën e vet |
 | `StatTile` | Numri i madh me etiketë; `aria-label` me fjalë të plota; `tone="data"` |
-| `ProgressBar`, `ProgressTrack` | Shiriti 6 px kundrejt objektivit (proteina `ember`, karbohidratet `data`, yndyrat `sand`); mbi 100% e thotë me fjalë |
+| `ProgressBar`, `ProgressTrack` | Shiriti 6 px kundrejt objektivit: gjurma (`track` mbi faqe, `surface-2` në kartë) dhe mbushja `ember`; te Ushqimi (0.23) të tri makrot janë `ember`, emri i dallon; `data` dhe `sand` mbeten për shiritat e tjerë (kufiri i AI-së `data`); mbi 100% e thotë me fjalë |
+| `Expand` (`expand.tsx`) | Rreshti → detaji: lista hapet në vend, 250 ms ease-out (rreshti i rrjetës 0fr → 1fr); e mbyllur jashtë lexuesit të ekranit dhe radhës së Tab-it; butoni mban `aria-expanded` |
 | `RollingNumber` (`rolling-number.tsx`) | Numri që ndryshon: `value` dhe `format` (parazgjedhja `fmt.number`); teksti është ai i `fmt`, shifrat që ndryshuan rrotullohen (Lëvizja); lexuesi i ekranit dëgjon vetëm vlerën e fundit |
 | `InsightCard` | Rekordi ose sugjerimi (`insight`), gatishmëria e ulët (`tired`, me "Prano" dhe "Jo sot"); një në ekran |
 | `FactCard` | "A e dije?" me burim ose "Shpjeguar nga AI" |

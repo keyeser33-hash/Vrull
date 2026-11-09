@@ -1,4 +1,5 @@
 import type { LocalDatabase } from './db'
+import { tablePulledKey } from './sync'
 import { type LocalRow, PENDING, type TableName } from './tables'
 
 // Çdo veprim i app-it shkruan këtu, në telefon, dhe përfundon menjëherë. Sinkronizimi
@@ -25,8 +26,8 @@ export interface LocalStore {
   insertMany(table: TableName, rows: Values[]): Promise<LocalRow[]>
   /** Fshirje e butë: rreshti mbetet me deleted_at, që fshirja të arrijë edhe në Supabase. */
   remove(table: TableName, id: string): Promise<void>
-  /** Rreshti, ose undefined kur nuk ekziston ose është fshirë. */
-  get(table: TableName, id: string): Promise<LocalRow | undefined>
+  /** Rreshti, ose undefined kur nuk ekziston ose është fshirë; `deleted: true` e kthen edhe të fshirin. */
+  get(table: TableName, id: string, options?: { deleted?: boolean }): Promise<LocalRow | undefined>
   all(table: TableName): Promise<LocalRow[]>
   where(table: TableName, index: string, value: unknown): Promise<LocalRow[]>
   /** Ora e store-it (në teste, ora e provës): kohët e stërvitjes vijnë nga e njëjta orë si rreshtat. */
@@ -39,6 +40,8 @@ export interface LocalStore {
   writeDevice(key: string, value: unknown): Promise<void>
   /** Thirret pas çdo shkrimi; kthen funksionin që e ndal. */
   subscribe(listener: (table: StoreChange) => void): () => void
+  /** Ky telefon e ka marrë tabelën nga serveri të paktën një herë për përdoruesin e hyrë (sync.ts). */
+  pulled(table: TableName): Promise<boolean>
 }
 
 export interface StoreOptions {
@@ -137,8 +140,9 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
       notify(table)
     },
 
-    async get(table, id) {
-      return visible(await db[table].get(id))
+    async get(table, id, { deleted = false } = {}) {
+      const row = await db[table].get(id)
+      return deleted ? row : visible(row)
     },
 
     async all(table) {
@@ -168,6 +172,11 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
     subscribe(listener) {
       listeners.add(listener)
       return () => listeners.delete(listener)
+    },
+
+    async pulled(table) {
+      const userId = options.userId()
+      return userId !== null && (await db._meta.get(tablePulledKey(table)))?.value === userId
     },
   }
 }

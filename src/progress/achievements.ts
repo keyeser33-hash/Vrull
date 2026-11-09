@@ -1,6 +1,7 @@
 import { shiftDate } from '@/lib/calendar'
 import type { MissedInput } from '@/program/missed-day'
 import {
+  blockKey,
   completeWeek,
   FOOD_SHARE,
   GOAL_DAYS,
@@ -111,7 +112,7 @@ const goalSession = (session: AchievementSession): GoalSession => ({
   date: session.date,
   at: session.startedAt ?? session.endedAt ?? '',
   status: session.status,
-  block: session.blockId ? `${session.run}:${session.blockId}` : null,
+  block: session.blockId ? blockKey(session.run, session.blockId) : null,
 })
 
 const full = (target: number): AchievementProgress => ({ current: target, target })
@@ -255,7 +256,7 @@ export function achievementStates(input: AchievementInput): AchievementState[] {
 
   // Qëllimet e javës: stërvitja (me ditën rezervë), ushqimi dhe uji, java pas jave.
   const goalSessions = input.sessions.map(goalSession)
-  const { weeks } = trainingLedger({ days: input.days, sessions: goalSessions, pointerBlock: input.pointer ? `${input.pointer.run}:${input.pointer.blockId}` : null }, today)
+  const { weeks } = trainingLedger({ days: input.days, sessions: goalSessions, pointerBlock: input.pointer ? blockKey(input.pointer.run, input.pointer.blockId) : null }, today)
   const food = new Map(input.food.map((day) => [day.date, day]))
   const water = new Map(input.water.map((day) => [day.date, day]))
 

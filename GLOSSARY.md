@@ -112,7 +112,7 @@ Pjesa e setit të fundit pas pushimit të rest-pause ose pas uljes së peshës t
 Koha mes seteve të një sloti, që mat timer-i; te rest-pause është 15 s.
 
 **Njoftimi i seancës**:
-Njoftimi i Android-it gjatë një **Seance** të hapur: seti i radhës me peshën dhe përsëritjet e propozuara, "Ruaj setin", −/+, "Ndrysho" dhe **Pushimi**; punon edhe me ekran të kyçur. "Seti nga njoftimi" është seti i ruajtur prej tij. "Rreshti i muzikës" nën "Ruaj setin" tregon këngën që luan me kontrollet e app-it të muzikës (si **Mini-player-i**, pa tempon).
+Njoftimi i Android-it gjatë një **Seance** të hapur: seti i radhës me peshën dhe përsëritjet e propozuara, "Ruaj setin", −/+, "Ndrysho" dhe **Pushimi**; punon edhe me ekran të kyçur. "Seti nga njoftimi" është seti i ruajtur prej tij. "Rreshti i muzikës" nën "Ruaj setin" tregon këngën që luan me kontrollet e app-it të muzikës (si "Trupi në ritëm", pa tempon, që mbetet te seanca).
 _Avoid_: widget, njoftimi i pushimit (është "Pushimi mbaroi")
 
 **RIR**:
@@ -373,8 +373,9 @@ Tempo me dorë: përdoruesi prek në çdo goditje të këngës, të paktën kat�
 Ndezja e muskujve të sotëm në trupin 3D, një herë çdo 60/BPM sekonda; gjatë pushimit në gjysmën e tempos. Ndjek tempon, jo goditjet, dhe ndalet kur app-i nuk duket.
 _Avoid_: ritmi i zemrës (zemra vjen nga ora)
 
-**Mini-player-i**:
-Karta e muzikës te seanca, mbi "Ruaj setin" dhe poshtë pushimit: kënga, tempo, "Pauzë" dhe "Kënga tjetër"; prekja hap "Trupi në ritëm".
+**Ikona e muzikës**:
+Ikona 44 px te kreu i seancës, para videos dhe muskujve (nga 0.23): pa leje hap "Lidh muzikën tënde", me lejen hap "Trupi në ritëm". Kur luan një këngë ka një pikë prushi, dhe emri për lexuesin e ekranit mban këngën dhe tempon. "Pauzë" dhe "Kënga tjetër" janë te "Trupi në ritëm" dhe te **Njoftimi i seancës**.
+_Avoid_: mini-player-i (karta mbi "Ruaj setin" u hoq te 0.23)
 
 **Kënga e setit**:
 Kënga më energjike nga radha e app-it të muzikës, që Vrull e sugjeron kur fillon një set dhe e luan vetëm me prekjen e përdoruesit. Kur app-i nuk e jep radhën, oferta është vetëm "Kalo këngën".

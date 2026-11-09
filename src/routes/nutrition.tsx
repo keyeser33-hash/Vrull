@@ -4,6 +4,7 @@ import { ScreenHeader } from '@/components/layout/screen-header'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
+import { Expand } from '@/components/ui/expand'
 import { Icon } from '@/components/ui/icons'
 import { InsightCard } from '@/components/ui/insight-card'
 import { ProgressTrack } from '@/components/ui/progress-bar'
@@ -289,13 +290,13 @@ function DayMeals({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) 
               <span className="shrink-0 text-sm leading-5 text-muted-foreground tabular-nums">{kcalText(i18n, loggedKcal)} kcal</span>
               <Chevron open={open} />
             </button>
-            {open ? (
+            <Expand open={open}>
               <ul id={listId} className="flex flex-col">
                 {logged.map((meal) => (
                   <MealRow key={meal.meal} meal={meal} onOpen={onOpen} end={<span className="text-[13px] leading-[1.35] text-muted-foreground tabular-nums">{kcalText(i18n, meal.totals.kcal)} kcal</span>} />
                 ))}
               </ul>
-            ) : null}
+            </Expand>
           </>
         ) : null}
         <ul className="flex flex-col">
@@ -434,13 +435,13 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
                 </span>
                 <Chevron open={open.has('taken')} />
               </button>
-              {open.has('taken') ? (
+              <Expand open={open.has('taken')}>
                 <ul id={`${idBase}-taken`} className="flex flex-col pb-1 pl-[60px]">
                   {taken.map(({ meal, item }) => (
                     <SupplementCheck key={`${meal.meal}-${item.id}`} date={day.date} meal={meal} item={item} withMeal />
                   ))}
                 </ul>
-              ) : null}
+              </Expand>
             </div>
           ) : null}
           {groups.map(({ meal, items }) => {
@@ -483,13 +484,15 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
                     {t('food.takeGroup', { count: items.length })}
                   </Button>
                 </div>
-                {!single && open.has(key) ? (
-                  <ul id={`${idBase}-${key}`} className="flex flex-col pb-1 pl-[60px]">
-                    {items.map((item) => (
-                      <SupplementCheck key={item.id} date={day.date} meal={meal} item={item} />
-                    ))}
-                  </ul>
-                ) : null}
+                {single ? null : (
+                  <Expand open={open.has(key)}>
+                    <ul id={`${idBase}-${key}`} className="flex flex-col pb-1 pl-[60px]">
+                      {items.map((item) => (
+                        <SupplementCheck key={item.id} date={day.date} meal={meal} item={item} />
+                      ))}
+                    </ul>
+                  </Expand>
+                )}
               </div>
             )
           })}

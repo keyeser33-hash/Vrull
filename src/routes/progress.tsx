@@ -4,7 +4,6 @@ import { TrendChart } from '@/components/charts/trend-chart'
 import { EmptyState } from '@/components/layout/empty-state'
 import { Group, LinkRow } from '@/components/layout/list-group'
 import { BackButton } from '@/components/layout/page'
-import { ScreenHeader } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -22,7 +21,7 @@ import { METRICS, type Metric, metricByKey, movingAverage } from '@/progress/met
 import { cn } from '@/lib/cn'
 import { weekSummary } from '@/data/weekly-goals'
 import { mondayOf, weekCardMonday } from '@/progress/weekly-goals'
-import { ProgressTabs } from '@/components/layout/progress-tabs'
+import { ProgressHeader } from '@/components/layout/progress-tabs'
 import { summaryTitle, weekRangeText } from './week-format'
 
 // Progresi (V2-E1-05; pamja e 0.23, SPEC §0.3c, bordi "Progresi"): tab-et Trupi · Përmbledhja ·
@@ -59,20 +58,6 @@ type Snapshot = Awaited<ReturnType<typeof trainingSnapshot>>
 /** Java e programit për stërvitjen e radhës ("Faza 1 · Java 2"), në gjuhën e app-it. */
 const weekLabel = (t: I18n['t'], snapshot: Snapshot | undefined) => (snapshot && !snapshot.completed ? programWeekLabel(t, snapshot.plan) : undefined)
 
-/** Kreu i Progresit: titulli, poshtë data dhe java e programit, si te bordi; pastaj tab-et. */
-function ProgressHeader({ label }: { label?: string }) {
-  const { t, fmt } = useI18n()
-  const [now] = useState(() => new Date())
-  const date = fmt.date(now)
-  const line = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
-  return (
-    <>
-      <ScreenHeader title={t('tab.progress')} subtitle={<span className="tabular-nums">{line}</span>} />
-      <ProgressTabs active="summary" />
-    </>
-  )
-}
-
 export function ProgressPage() {
   const i18n = useI18n()
   const { t } = i18n
@@ -83,7 +68,7 @@ export function ProgressPage() {
   if (!start || !view) {
     return (
       <div className="flex flex-col gap-5">
-        <ProgressHeader label={label} />
+        <ProgressHeader active="summary" label={label} />
         <div aria-hidden className="h-80 rounded-xl bg-surface" />
       </div>
     )
@@ -91,7 +76,7 @@ export function ProgressPage() {
   if (start.empty) return <ProgressEmpty weightKg={start.weightKg} snapshot={snapshot} label={label} />
   return (
     <div className="flex flex-col gap-3.5">
-      <ProgressHeader label={label} />
+      <ProgressHeader active="summary" label={label} />
       <WeekLink />
       <TrainingSections />
       <WeightSection view={view} />
@@ -233,7 +218,7 @@ function ProgressEmpty({ weightKg, snapshot, label }: { weightKg: number | null;
 
   return (
     <div className="flex min-h-[calc(100dvh-var(--spacing-tab-bar)-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-[18px]">
-      <ProgressHeader label={label} />
+      <ProgressHeader active="summary" label={label} />
       <EmptyState
         title={t('progress.emptyTitle')}
         intro={t('progress.emptyIntro')}

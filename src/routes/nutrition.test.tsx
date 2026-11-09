@@ -72,8 +72,13 @@ describe('Ushqimi', () => {
     expect(logged).toHaveTextContent('1 vakt i regjistruarDreka495 kcal')
     expect(logged).toHaveAttribute('aria-expanded', 'false')
     expect(screen.queryByRole('button', { name: /^Dreka, 13:00/ })).toBeNull()
+    // Rreshti → detaji (§0.3c): lista hapet në vend (250 ms); e mbyllur s'lexohet dhe s'merr fokusin.
+    const list = document.getElementById(logged.getAttribute('aria-controls')!)!
+    expect(list.closest('[inert]')).not.toBeNull()
     await user.click(logged)
     expect(logged).toHaveAttribute('aria-expanded', 'true')
+    expect(list.closest('[inert]')).toBeNull()
+    expect(list.closest('.grid')).toHaveClass('motion-safe:duration-250')
     expect(screen.getByRole('button', { name: 'Dreka, 13:00, Regjistruar · 495 kcal' })).toHaveTextContent('495 kcal')
     expect(screen.getByRole('button', { name: 'Snack pasdite, 15:30, I radhës' })).toBeInTheDocument()
     expect(within(screen.getByRole('navigation', { name: 'Plani i ushqimit' })).getAllByRole('link').map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
@@ -116,6 +121,7 @@ describe('Ushqimi', () => {
     expect(await within(section).findByText('· 1 nga 17', { exact: false })).toBeInTheDocument()
     const taken = within(section).getByRole('button', { name: /^Marrë/ })
     expect(taken).toHaveTextContent('MarrëMultivitaminë')
+    expect(document.getElementById(taken.getAttribute('aria-controls')!)!.closest('[inert]')).not.toBeNull()
     await user.click(taken)
     expect(within(section).getByRole('checkbox', { name: /Multivitaminë/ })).toBeChecked()
     expect(within(section).getByRole('checkbox', { name: /Multivitaminë/ }).closest('label')).toHaveTextContent('13:00 · Dreka · 1 dozëVetëm për mungesa')
@@ -134,9 +140,11 @@ describe('Ushqimi', () => {
     // Grupi hapet në listën me kutitë: një suplement shënohet më vete.
     const bedtime = within(section).getByRole('button', { name: /^Para gjumit · 2/ })
     expect(bedtime).toHaveTextContent('Para gjumit · 2Pluhur proteine, ZMA')
+    expect(within(section).queryByRole('checkbox', { name: /ZMA/ })).toBeNull()
     await user.click(bedtime)
     expect(bedtime).toHaveAttribute('aria-expanded', 'true')
     expect(within(section).getByRole('checkbox', { name: /ZMA/ }).closest('label')).toHaveTextContent('ZMA1 dozëE dobët')
+    expect(document.getElementById(bedtime.getAttribute('aria-controls')!)!.closest('[inert]')).toBeNull()
 
     await user.click(within(section).getByRole('button', { name: 'Ndrysho listën' }))
     const sheet = screen.getByRole('dialog', { name: 'Suplementet' })

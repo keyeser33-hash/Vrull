@@ -20,12 +20,14 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova qëndroi 33 min pa dalë pas një hapjeje të app-it: `fetch` te socket-i i WebView-së dhe hapja e WebSocket-it nuk kishin afat, dhe `waitFor` nuk e ndalon një thirrje që nuk kthehet kurrë → çdo pritje jashtë (fetch, WebSocket, adb) ka afatin e vet; `waitFor` mat vetëm ciklin.
 - WebView-ja e nisur për herë të parë pas ndezjes së emulatorit nuk iu përgjigj CDP-së brenda 15 s ("Log.enable pa përgjigje") → lidhja me WebView-në provohet deri në 3 herë dhe përpjekjet shënohen te raporti.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
+- Prova e 0.23 ra duke kërkuar foton te Progresi: ekrani u ridizajnua (vetëm rreshti i fotove) dhe `scripts/android-smoke.mjs` kërkonte ende pamjen e vjetër; rregulli më sipër u përsërit → një degë që ridizajnon një ekran kërkon te `android-smoke.mjs` tekstet dhe hapat e atij ekrani dhe i ndryshon në të njëjtën degë, para provës së Android-it.
 
 ## Provat (Vitest)
 
 - Gjithë provat (>1 000) varen më shumë se 600 s kur një gabim runtime bllokon një ekran → pas një merge nis fillimisht provat e skedarëve të prekur, pastaj të gjitha.
 - Prova që varet nga rreshti i lënë nga prova e mëparshme (`form-video.test`) → çdo provë pastron tabelat që lexon (`db[table].clear()`), fixture-t kanë të gjitha fushat që lexon ekrani.
 - Prova që dështon vetëm kur punojnë disa agjentë njëkohësisht → nis vetëm atë skedar përsëri para se ta quash gabim; afatet jetojnë te `src/test/setup.ts` dhe `vite.config.ts`, jo te secila provë.
+- `vi.useFakeTimers()` pa `toFake` ndali IndexedDB-në në memorie (fake-indexeddb ecën me `setImmediate`) dhe prova e `app-data` u var pa asnjë gabim → me bazën lokale imitohen vetëm `setTimeout`/`setInterval` (`toFake`).
 
 - Prova e seancës (0.23) nuk gjeti butonin "Ndrysho setin 1: 62,5 kg × 12": `fmt.unit` vendos hapësirën që nuk thyhet, dhe `getByRole({ name })` me tekst nuk e normalizon si `getByText` → emrat me njësi shkruhen me ` ` te prova (`62,5 kg`).
 - QA në shfletues nga një worktree (node_modules si lidhje te repo-ja kryesore): Vite i refuzon fontet me 403 (`server.fs.allow`), faqet dalin me fontin rezervë dhe karta e canvas-it u vizatua me Arial pa asnjë gabim të dukshëm → para QA-së vizuale kontrollo që fontet ngarkohen (`document.fonts.load` në shfletues); në worktree nis Vite me një konfigurim të përkohshëm që lejon `node_modules` e repo-s kryesore (nuk shkon në commit).

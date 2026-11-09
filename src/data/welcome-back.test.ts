@@ -1,3 +1,5 @@
+import { currentI18n } from '@/i18n'
+import { createSessionNotifier, type NotificationState, type SessionNotificationPort } from '@/lib/session-notification'
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
 import { activeProgramHome } from './programme'
@@ -48,6 +50,20 @@ async function lastTrainedThursday() {
 async function benchWeight(store: ReturnType<typeof setup>['store']) {
   const { plan } = (await trainingSnapshot(store))!
   return (await workoutWeights(store, plan)).get(plan.slots[0].slotId)
+}
+
+/** Pesha e Bench Press që tregon njoftimi i seancës (plugin-i imitohet). */
+async function notifiedWeight(store: ReturnType<typeof setup>['store']) {
+  let shown: NotificationState | null = null
+  const port: SessionNotificationPort = {
+    show: async (state) => void (shown = state),
+    hide: async () => void (shown = null),
+    pending: async () => [],
+    ack: async () => {},
+    onAction: () => () => {},
+  }
+  await createSessionNotifier({ store, port, rest: () => ({ adopt() {}, skip() {} }), i18n: currentI18n }).sync()
+  return (shown as NotificationState | null)?.steps[0]?.weightKg ?? null
 }
 
 describe('mirë se u ktheve', () => {
@@ -105,6 +121,39 @@ describe('mirë se u ktheve', () => {
     context.setClock(at(16, 11, 9))
     expect((await welcomeBack(store))?.lighter).toBe(true)
     expect(await benchWeight(store)).toMatchObject({ weightKg: 55 })
+  })
+
+  // Rishikimi i 0.23: seanca e hapur vendos me datën e saj (ditët dhe çelësi i asaj date), që peshat të mos
+  // ndryshojnë në mes të saj kur kalon mesnata.
+  it('seanca e nisur ditën e 6-të mbetet me peshat e javës pas mesnatës, edhe te njoftimi', async () => {
+    const context = await lastTrainedThursday()
+    const { store } = context
+    context.setClock(at(11, 11, 23, 30))
+    expect(await welcomeBack(store)).toBeNull()
+    await startWorkout(store)
+    expect(await benchWeight(store)).toMatchObject({ weightKg: 62.5, weekKg: null })
+    context.setClock(at(12, 11, 0, 10))
+    expect(await benchWeight(store)).toMatchObject({ weightKg: 62.5, weekKg: null })
+    expect(await welcomeBack(store)).toBeNull()
+    expect((await todayView(store)).workout?.first).toMatchObject({ weightKg: 62.5, weekKg: null })
+    expect(await notifiedWeight(store)).toBe(62.5)
+  })
+
+  it('çelësi i fikur për ditën e seancës mbetet i fikur pas mesnatës; ndryshimi i tij vlen për seancën', async () => {
+    const context = await lastTrainedThursday()
+    const { store } = context
+    context.setClock(at(12, 11, 23))
+    await setLighterFirstSession(store, false)
+    await startWorkout(store)
+    expect(await benchWeight(store)).toMatchObject({ weightKg: 62.5, weekKg: null })
+    context.setClock(at(13, 11, 0, 10))
+    expect(await benchWeight(store)).toMatchObject({ weightKg: 62.5, weekKg: null })
+    expect(await welcomeBack(store)).toEqual({ days: 7, lastSessionOn: '2026-11-05', lighter: false })
+    expect(await notifiedWeight(store)).toBe(62.5)
+    // Karta e Sot gjatë seancës ndez çelësin e seancës, jo të datës së re.
+    await setLighterFirstSession(store, true)
+    expect(await benchWeight(store)).toMatchObject({ weightKg: 55, weekKg: 62.5 })
+    expect(await notifiedWeight(store)).toBe(55)
   })
 
   it('përdoruesi i ri, pa asnjë seancë të mbyllur: asnjë "Mirë se u ktheve"', async () => {
