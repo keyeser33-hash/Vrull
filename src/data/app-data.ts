@@ -26,6 +26,7 @@ import { adoptSavedBackground } from './background'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { addFormVideo, type FormVideoRef, formVideoData, type NewFormVideo, removeFormVideo, syncFormVideoFiles, type VideoRemote } from './form-videos'
 import { ensureSupplements } from './supplements'
+import { awardAchievements } from './achievements'
 import { usdaFromJson } from '@/nutrition/usda'
 import type { ExternalFood } from '@/nutrition/off'
 import { upgradeShortcutToSize } from './training'
@@ -495,6 +496,8 @@ export function useDataUpgrades(ready: boolean) {
     if (!ready || !userId) return
     void upgradeShortcutToSize(store).catch(() => {})
     void ensureSupplements(store).catch(() => {})
+    // Arritjet (V43): ato që u plotësuan pa u dhënë (p.sh. ushqimi i së dielës) jepen në hapje.
+    void awardAchievements(store).catch(() => {})
   }, [ready, userId])
 }
 

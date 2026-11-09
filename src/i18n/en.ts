@@ -1,3 +1,4 @@
+import * as achievements from './areas/achievements'
 import * as ai from './areas/ai'
 import * as body from './areas/body'
 import * as builder from './areas/builder'
@@ -263,4 +264,5 @@ export const en: Translation = {
   ...reminders.en,
   ...box.en,
   ...admin.en,
+  ...achievements.en,
 }

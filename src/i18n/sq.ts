@@ -1,3 +1,4 @@
+import * as achievements from './areas/achievements'
 import * as ai from './areas/ai'
 import * as body from './areas/body'
 import * as builder from './areas/builder'
@@ -262,7 +263,7 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin }
+export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements }
 
 export const sq = {
   ...base,
@@ -284,6 +285,7 @@ export const sq = {
   ...reminders.sq,
   ...box.sq,
   ...admin.sq,
+  ...achievements.sq,
 } as const satisfies Messages
 
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */
