@@ -19,7 +19,7 @@ describe('gjendja e ditës', () => {
     const rows = await store.where('daily_states', 'date', DAY)
     expect(rows).toHaveLength(1)
     expect(rows[0].id).toBe(await dailyStateId(USER, DAY))
-    expect(await readDailyState(store, DAY)).toEqual({ date: DAY, ...CHECK_IN, soreGroups: ['chest'], energy: 4, choice: null })
+    expect(await readDailyState(store, DAY)).toEqual({ date: DAY, ...CHECK_IN, soreGroups: ['chest'], energy: 4, readiness: null, choice: null })
   })
 
   it('dy telefona shkruajnë të njëjtin rresht', async () => {
@@ -38,6 +38,13 @@ describe('gjendja e ditës', () => {
     expect((await readDailyState(store, DAY))?.choice).toBe('lighter')
     await setReadinessChoice(store, DAY, null)
     expect((await readDailyState(store, DAY))?.choice).toBeNull()
+  })
+
+  it('gatishmëria e mëngjesit ruhet brenda 0–100', async () => {
+    const store = storeFor()
+    expect((await saveDailyState(store, DAY, CHECK_IN, 54)).readiness).toBe(54)
+    expect((await saveDailyState(store, DAY, CHECK_IN, 130.4)).readiness).toBe(100)
+    expect((await saveDailyState(store, DAY, CHECK_IN)).readiness).toBeNull()
   })
 
   it('vendimi pa check-in nuk krijon rresht', async () => {

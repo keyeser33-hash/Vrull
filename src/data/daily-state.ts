@@ -25,6 +25,8 @@ export interface CheckInAnswers {
 
 export interface DailyState extends CheckInAnswers {
   date: string
+  /** Gatishmëria në çastin e check-in-it (0–100), për historinë e 14 ditëve; null kur s'u llogarit. */
+  readiness: number | null
   choice: ReadinessChoice | null
 }
 
@@ -65,6 +67,7 @@ function fromRow(row: LocalRow): DailyState {
     sleepQuality: Number(row.sleep_quality) as Scale,
     soreness: Number(row.soreness) as Soreness,
     soreGroups: Array.isArray(row.sore_groups) ? row.sore_groups.map(String) : [],
+    readiness: typeof row.readiness === 'number' ? row.readiness : null,
     choice,
   }
 }
@@ -84,8 +87,11 @@ export async function dailyStates(store: LocalStore, dates: string[]): Promise<M
   return new Map(rows.filter((row): row is LocalRow => !!row).map((row) => [String(row.date).slice(0, 10), fromRow(row)]))
 }
 
-/** Ruan ose ndryshon check-in-in e datës; vendimi i sugjerimit mbetet. */
-export async function saveDailyState(store: LocalStore, date: string, answers: CheckInAnswers): Promise<DailyState> {
+/**
+ * Ruan ose ndryshon check-in-in e datës, me gatishmërinë e atij çasti (`readinessFor` te readiness-view.ts);
+ * vendimi i sugjerimit mbetet.
+ */
+export async function saveDailyState(store: LocalStore, date: string, answers: CheckInAnswers, readiness: number | null = null): Promise<DailyState> {
   const values = normalizeCheckIn(answers)
   const existing = await rowFor(store, date)
   const userId = store.userId()
@@ -101,6 +107,7 @@ export async function saveDailyState(store: LocalStore, date: string, answers: C
       sleep_quality: values.sleepQuality,
       soreness: values.soreness,
       sore_groups: values.soreGroups,
+      readiness: readiness === null || !Number.isFinite(readiness) ? null : Math.min(100, Math.max(0, Math.round(readiness))),
       choice: existing?.choice ?? null,
     },
     { revive: true },

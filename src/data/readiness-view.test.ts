@@ -7,7 +7,7 @@ import type { TodayView } from './today'
 // Gatishmëria e sotme (V50, SPEC §0.3d): rikuperimi dhe grupet e stërvitjes hyjnë vetëm kur sot ka stërvitje.
 const DAY = '2026-11-19'
 const CHEST_DAY = ['pectoralis_major_sternocostal', 'triceps_brachii', 'gastrocnemius']
-const STATE = { date: DAY, mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 2, soreGroups: ['gjoksi'], choice: null } as const
+const STATE = { date: DAY, mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 2, soreGroups: ['gjoksi'], readiness: null, choice: null } as const
 const view = (mode: TodayView['mode']) =>
   ({ date: DAY, mode, workout: { recovery: 'gati', primary: CHEST_DAY } }) as unknown as TodayView
 
