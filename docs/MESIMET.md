@@ -69,3 +69,4 @@ Formati: **çfarë ndodhi** → **rregulli**.
 ## AI-ja
 
 - Kutia e AI-së (log-parse, 09.11.2026), me AI-në e vërtetë: me Haiku 5.5 dhe `effort: low` mesazhi i parë kushtoi 0,001 € (cache-i shkruhet, ~1 200 tokena dalje), i njëjti kontekst pas tij 0,0001–0,0006 € (cache-i lexohet, 4 175 tokena). Përgjigja te pyetja ("dy feta") ktheu vetëm rreshtin e përgjigjur → udhëzimi e kërkon shprehimisht, dhe app-i e bashkon me draftin sipas emrit; zgjedhjet (1/2/3 feta) plotësohen në telefon pa thirrje të re.
+- `npx prettier --write` pa konfigurim (repo-ja nuk ka Prettier) i ktheu skedarët në thonjëza dyshe me pikëpresje dhe rreshta 80 → mos e nis; stili i repo-s (pa pikëpresje, thonjëza teke, rreshta të gjatë) mbahet me dorë, oxlint e kontrollon.

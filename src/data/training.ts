@@ -325,11 +325,38 @@ export async function startWorkout(store: LocalStore): Promise<string> {
   return session.id
 }
 
+/**
+ * Seanca e stërvitjes së radhës në një datë të dhënë (kutia e AI-së, V2-E2-14: "dje bëra…"): ajo e nisur,
+ * ose një e re me atë datë. Pa program aktiv, null.
+ */
+export async function sessionForNext(store: LocalStore, date: string): Promise<string | null> {
+  const loaded = await activeProgram(store)
+  if (!loaded || loaded.pointer.completed) return null
+  const { row, state, pointer } = loaded
+  const open = await openSession(store, row.id, pointer)
+  if (open) return open.id
+  const now = store.now()
+  const startedAt = date === localDate(now) ? now : new Date(`${date}T12:00:00`)
+  const session = await store.put('workout_sessions', {
+    program_id: row.id,
+    run: pointer.run,
+    block_id: pointer.blockId,
+    week: pointer.week,
+    day_id: pointer.dayId,
+    date,
+    status: 'in_progress',
+    started_at: startedAt.toISOString(),
+  })
+  if (!state.started_at) await store.put('program_state', { id: state.id, started_at: startedAt.toISOString() })
+  return session.id
+}
+
 export interface SetInput {
   /** Për të ndryshuar një set të ruajtur (p.sh. për t'i shtuar segmentin e rest-pause). */
   id?: string
   sessionId: string
-  slot: Pick<PlannedSlot, 'slotId' | 'exerciseId' | 'position'>
+  /** slotId null: ushtrim shtesë jashtë stërvitjes (kutia e AI-së, V2-E2-14), i njohur nga ushtrimi. */
+  slot: Pick<PlannedSlot, 'exerciseId' | 'position'> & { slotId: string | null }
   setNumber: number
   weightKg?: number | null
   reps?: number | null
@@ -348,7 +375,10 @@ export async function saveSet(store: LocalStore, input: SetInput) {
   const existing = input.id
     ? await store.get('set_logs', input.id)
     : (await store.where('set_logs', 'session_id', input.sessionId)).find(
-        (row) => row.slot_id === input.slot.slotId && Number(row.set_number) === input.setNumber,
+        (row) =>
+          (row.slot_id ?? null) === input.slot.slotId &&
+          (input.slot.slotId !== null || row.exercise_id === input.slot.exerciseId) &&
+          Number(row.set_number) === input.setNumber,
       )
   return toSet(
     await store.put('set_logs', {

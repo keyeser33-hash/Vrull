@@ -7,6 +7,10 @@ export const MAX_TEXT = 1_000
 /** Kufijtë e kontekstit: ushqimet e njohura dhe suplementet e përdoruesit. */
 export const MAX_FOODS = 150
 export const MAX_SUPPLEMENTS = 30
+/** Stërvitjet që mund të marrin sete: e sotmja, e radhës dhe ato të 7 ditëve të fundit (V2-E2-14). */
+export const MAX_WORKOUTS = 8
+/** Faktet e trajnerit (V2-E2-15) që shkojnë me mesazhin, jashtë cache-it. */
+export const MAX_FACTS = 4_000
 /** Përgjigjet e mëparshme të së njëjtës bisedë (përgjigja e lirë te pyetja). */
 export const MAX_HISTORY = 6
 
@@ -40,12 +44,24 @@ export interface ContextSupplement {
   dose: string
 }
 
+export interface ContextWorkout {
+  /** Referenca e shkurtër ("w1"). */
+  ref: string
+  /** Data e seancës; null për stërvitjen e radhës që s'është nisur (merr ditën që thotë përdoruesi). */
+  date: string | null
+  /** "Stërvitja 1 · Gjoks, triceps, pulpa". */
+  label: string
+  status: 'done' | 'open' | 'next'
+  exercises: { ref: string; name: string }[]
+}
+
 /** Pjesa që ndryshon rrallë: ruhet në cache te Claude (prompt caching) për mesazhet e radhës. */
 export interface ParseContext {
   language: 'sq' | 'en'
   meals: ContextMeal[]
   foods: ContextFood[]
   supplements: ContextSupplement[]
+  workouts: ContextWorkout[]
 }
 
 export interface ParseTurn {
@@ -59,6 +75,8 @@ export interface ParseRequest {
   date: string
   time: string
   context: ParseContext
+  /** Të dhënat e ditës për trajnerin (objektivat, ushqimi, plani, stërvitjet), si tekst i shkurtër. */
+  facts?: string
   history?: ParseTurn[]
 }
 
@@ -106,10 +124,38 @@ export interface DraftSupplement {
   day: DayOffset
 }
 
+export interface DraftSet {
+  reps: number
+  /** null: me peshën e trupit ose pa peshë të thënë. */
+  weightKg: number | null
+  rir: number | null
+}
+
+export interface DraftExercise {
+  said: string
+  /** Stërvitja e kontekstit ku shkojnë setet. */
+  workoutRef: string
+  /** Ushtrimi i asaj stërvitjeje; null kur nuk është aty (pyetet si ushtrim shtesë). */
+  exerciseRef: string | null
+  /** Emri në anglisht, si në bibliotekë ("Dips"). */
+  exerciseName: string
+  sets: DraftSet[]
+  day: DayOffset
+}
+
+/** Përgjigja e trajnerit (V41): numri ose fakti kryesor, pastaj një deri në tri fjali. */
+export interface CoachAnswer {
+  headline: string
+  text: string
+}
+
 export interface Draft {
   foods: DraftFood[]
   water: DraftWater[]
   supplements: DraftSupplement[]
+  sets: DraftExercise[]
+  /** Kur mesazhi është pyetje: përgjigja nga të dhënat e përdoruesit. */
+  answer: CoachAnswer | null
   /** Pjesët e mesazhit që AI-ja nuk i ktheu në regjistrim, me fjalët e përdoruesit. */
   notUnderstood: string[]
 }

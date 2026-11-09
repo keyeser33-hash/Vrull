@@ -15,7 +15,17 @@ const sq = i18nFor('sq')
 
 async function setup() {
   const store = createLocalStore(createDatabase(`ai-box-${crypto.randomUUID()}`), { userId: () => USER, now: () => EVENING })
-  await completeOnboarding(store, { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00', wakeTime: '08:20', sleepTime: '01:00' }, () => new Date('2026-12-01T08:00:00'))
+  await completeOnboarding(
+    store,
+    {
+      weightKg: 88,
+      trainingDays: [1, 2, 4, 5],
+      trainingTime: '21:00',
+      wakeTime: '08:20',
+      sleepTime: '01:00',
+    },
+    () => new Date('2026-12-01T08:00:00'),
+  )
   await ensureSupplements(store)
   const wheyId = await saveSupplement(store, {
     name: 'Gold Standard 100% Whey',
@@ -30,7 +40,14 @@ async function setup() {
   return { store, wheyId }
 }
 
-const empty: Draft = { foods: [], water: [], supplements: [], notUnderstood: [] }
+const empty: Draft = {
+  foods: [],
+  water: [],
+  supplements: [],
+  sets: [],
+  answer: null,
+  notUnderstood: [],
+}
 const food = (fields: Partial<Draft['foods'][number]>): Draft['foods'][number] => ({
   said: 'x',
   ref: null,
@@ -54,7 +71,13 @@ describe('konteksti', () => {
     expect(box.request.time).toBe('22:40')
     expect(box.request.context.language).toBe('sq')
     const day = await nutritionDay(store, WEDNESDAY, EVENING)
-    expect(box.request.context.meals).toEqual(day.meals.map((slot) => ({ key: slot.meal, name: sq.t(`food.meal.${slot.meal}`), time: slot.time })))
+    expect(box.request.context.meals).toEqual(
+      day.meals.map((slot) => ({
+        key: slot.meal,
+        name: sq.t(`food.meal.${slot.meal}`),
+        time: slot.time,
+      })),
+    )
     const bread = box.request.context.foods.find((item) => item.name === 'Bukë integrale')
     expect(bread).toBeDefined()
     expect(bread!.portion).toMatch(/^1 fetë = \d+\u00a0g$/)
@@ -99,8 +122,20 @@ describe('drafti', () => {
       {
         ...empty,
         foods: [
-          food({ ref: breadRef, name: 'Bukë integrale', grams: 64, per100: null, time: '12:00' }),
-          food({ name: 'Pulë e pjekur me lëkurë', grams: 300, estimated: true, per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 }, meal: 'dinner' }),
+          food({
+            ref: breadRef,
+            name: 'Bukë integrale',
+            grams: 64,
+            per100: null,
+            time: '12:00',
+          }),
+          food({
+            name: 'Pulë e pjekur me lëkurë',
+            grams: 300,
+            estimated: true,
+            per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 },
+            meal: 'dinner',
+          }),
           food({ name: 'Kos', grams: 200 }),
           food({ name: 'Gjizë', grams: 250, meal: 'bedtime', day: -1 }),
         ],
@@ -109,9 +144,18 @@ describe('drafti', () => {
       new Date('2026-12-09T13:00:00'),
     )
     const [bread, chicken, yoghurt, cheese] = draft.foods
-    expect(bread).toMatchObject({ name: 'Bukë integrale', meal: 'snack_am', date: WEDNESDAY, grams: 64 })
+    expect(bread).toMatchObject({
+      name: 'Bukë integrale',
+      meal: 'snack_am',
+      date: WEDNESDAY,
+      grams: 64,
+    })
     expect(bread.macros.kcal).toBeGreaterThan(100)
-    expect(chicken).toMatchObject({ meal: 'dinner', estimated: true, isNew: true })
+    expect(chicken).toMatchObject({
+      meal: 'dinner',
+      estimated: true,
+      isNew: true,
+    })
     expect(chicken.macros.kcal).toBeCloseTo(717, 0)
     const next = (await nutritionDay(store, WEDNESDAY, new Date('2026-12-09T13:00:00'))).next!.meal
     expect(yoghurt.meal).toBe(next)
@@ -124,12 +168,34 @@ describe('drafti', () => {
     const ref = (name: string) => box.request.context.supplements.find((item) => item.name === name)!.ref
     const draft = await resolveDraft(
       store,
-      { ...empty, supplements: [{ ref: ref('Gold Standard 100% Whey'), amount: 1, meal: null, time: '07:00', day: 0 }, { ref: ref('Multivitaminë'), amount: 1, meal: null, time: null, day: 0 }] },
+      {
+        ...empty,
+        supplements: [
+          {
+            ref: ref('Gold Standard 100% Whey'),
+            amount: 1,
+            meal: null,
+            time: '07:00',
+            day: 0,
+          },
+          {
+            ref: ref('Multivitaminë'),
+            amount: 1,
+            meal: null,
+            time: null,
+            day: 0,
+          },
+        ],
+      },
       box,
       EVENING,
     )
     expect(draft.supplements).toEqual([
-      expect.objectContaining({ supplementId: wheyId, meal: 'breakfast_1', date: WEDNESDAY }),
+      expect.objectContaining({
+        supplementId: wheyId,
+        meal: 'breakfast_1',
+        date: WEDNESDAY,
+      }),
       expect.objectContaining({ name: 'Multivitaminë', meal: 'lunch' }),
     ])
   })
@@ -139,13 +205,27 @@ describe('drafti', () => {
     const box = await boxContext(store, EVENING, sq)
     let draft = await resolveDraft(
       store,
-      { ...empty, foods: [food({ name: 'Panetone', grams: null, per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 }, options: [{ label: '1 fetë', grams: 80 }] })], water: [{ ml: 500, time: null, day: 0 }] },
+      {
+        ...empty,
+        foods: [
+          food({
+            name: 'Panetone',
+            grams: null,
+            per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 },
+            options: [{ label: '1 fetë', grams: 80 }],
+          }),
+        ],
+        water: [{ ml: 500, time: null, day: 0 }],
+      },
       box,
       EVENING,
     )
     expect(draft.foods[0].grams).toBeNull()
     expect(draft.foods[0].macros.kcal).toBe(0)
-    draft = chooseOption(draft, draft.foods[0].key, { label: '1 fetë', grams: 80 })
+    draft = chooseOption(draft, draft.foods[0].key, {
+      label: '1 fetë',
+      grams: 80,
+    })
     expect(draft.foods[0]).toMatchObject({ grams: 80, portion: '1 fetë' })
     expect(draft.foods[0].macros.kcal).toBeCloseTo(289.6, 1)
     draft = setGrams(draft, draft.foods[0].key, 160)
@@ -163,14 +243,33 @@ describe('drafti', () => {
       store,
       {
         ...empty,
-        foods: [food({ name: 'Panetone', grams: null, per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 }, options: [{ label: '1 fetë', grams: 80 }] }), food({ name: 'Kos', grams: 200 })],
+        foods: [
+          food({
+            name: 'Panetone',
+            grams: null,
+            per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 },
+            options: [{ label: '1 fetë', grams: 80 }],
+          }),
+          food({ name: 'Kos', grams: 200 }),
+        ],
       },
       box,
       EVENING,
     )
     const answer = await resolveDraft(
       store,
-      { ...empty, foods: [food({ name: 'panetone', grams: 120, portion: 'një fetë e gjysmë', per100: { kcal: 360, proteinG: 6, carbsG: 55, fatG: 13 } }), food({ name: 'Mollë', grams: 180 })] },
+      {
+        ...empty,
+        foods: [
+          food({
+            name: 'panetone',
+            grams: 120,
+            portion: 'një fetë e gjysmë',
+            per100: { kcal: 360, proteinG: 6, carbsG: 55, fatG: 13 },
+          }),
+          food({ name: 'Mollë', grams: 180 }),
+        ],
+      },
       box,
       EVENING,
     )
@@ -193,17 +292,41 @@ describe('regjistrimi', () => {
     const supplement = box.request.context.supplements.find((item) => item.name === 'Gold Standard 100% Whey')!.ref
     const parsed: Draft = {
       foods: [
-        food({ ref: ref('Bukë integrale'), name: 'Bukë integrale', grams: 64, per100: null, time: '12:00' }),
-        food({ name: 'Pulë e pjekur me lëkurë', grams: 300, per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 }, meal: 'dinner' }),
-        food({ name: 'Panetone', grams: null, per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 }, options: [{ label: '1 fetë', grams: 80 }] }),
+        food({
+          ref: ref('Bukë integrale'),
+          name: 'Bukë integrale',
+          grams: 64,
+          per100: null,
+          time: '12:00',
+        }),
+        food({
+          name: 'Pulë e pjekur me lëkurë',
+          grams: 300,
+          per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 },
+          meal: 'dinner',
+        }),
+        food({
+          name: 'Panetone',
+          grams: null,
+          per100: { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 },
+          options: [{ label: '1 fetë', grams: 80 }],
+        }),
       ],
       water: [{ ml: 500, time: '15:00', day: 0 }],
       supplements: [{ ref: supplement, amount: 1, meal: null, time: '07:00', day: 0 }],
+      sets: [],
+      answer: null,
       notUnderstood: [],
     }
     const draft = await resolveDraft(store, parsed, box, EVENING)
     const counts = await logBoxDraft(store, draft)
-    expect(counts).toEqual({ foods: 2, water: 1, supplements: 1, skipped: 1 })
+    expect(counts).toEqual({
+      foods: 2,
+      water: 1,
+      supplements: 1,
+      sets: 0,
+      skipped: 1,
+    })
 
     const entries = await store.where('diary_entries', 'date', WEDNESDAY)
     const dinner = entries.filter((row) => row.meal === 'dinner')
@@ -228,10 +351,30 @@ describe('përgjigja e funksionit', () => {
   it('drafti me koston; gabimet me kodin e tyre; pa lidhje', async () => {
     const { boxResultFrom } = await import('./ai-box')
     expect(boxResultFrom(200, { draft: empty, usage: { costEur: 0.001 }, month })).toEqual({ ok: true, draft: empty, costEur: 0.001, month })
-    expect(boxResultFrom(200, { draft: { foods: [] }, month })).toEqual({ ok: false, error: 'ai_failed' })
-    expect(boxResultFrom(429, { error: 'limit', month })).toEqual({ ok: false, error: 'limit', month })
-    expect(boxResultFrom(401, null)).toEqual({ ok: false, error: 'unauthorized' })
-    expect(boxResultFrom(500, { error: 'tjetër' })).toEqual({ ok: false, error: 'ai_failed' })
+    expect(boxResultFrom(200, { draft: { foods: [] }, month })).toEqual({
+      ok: false,
+      error: 'ai_failed',
+    })
+    // Drafti i 0.22 pa setet dhe përgjigjen (funksioni i vjetër) nuk pranohet.
+    expect(
+      boxResultFrom(200, {
+        draft: { foods: [], water: [], supplements: [], notUnderstood: [] },
+        month,
+      }),
+    ).toEqual({ ok: false, error: 'ai_failed' })
+    expect(boxResultFrom(429, { error: 'limit', month })).toEqual({
+      ok: false,
+      error: 'limit',
+      month,
+    })
+    expect(boxResultFrom(401, null)).toEqual({
+      ok: false,
+      error: 'unauthorized',
+    })
+    expect(boxResultFrom(500, { error: 'tjetër' })).toEqual({
+      ok: false,
+      error: 'ai_failed',
+    })
     expect(boxResultFrom(null, null)).toEqual({ ok: false, error: 'offline' })
   })
 })

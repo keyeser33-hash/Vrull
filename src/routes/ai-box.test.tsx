@@ -8,7 +8,11 @@ import { language } from '@/i18n'
 import { boxText } from '@/lib/box-text'
 
 // Kutia e AI-së (V40, V2-E2-13; bordet V22-Kutia-*): dërgimi, pyetja, përmbledhja, regjistrimi dhe pa internet.
-const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, requests: [] as ParseRequest[], reply: null as null | ((request: ParseRequest) => BoxResult) }))
+const data = vi.hoisted(() => ({
+  store: null as unknown as LocalStore,
+  requests: [] as ParseRequest[],
+  reply: null as null | ((request: ParseRequest) => BoxResult),
+}))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
@@ -27,7 +31,14 @@ vi.mock('@/data/app-data', async () => {
 })
 
 const MONTH = { month: '2026-11-01', spentEur: 0.2, limitEur: 10 }
-const empty: Draft = { foods: [], water: [], supplements: [], notUnderstood: [] }
+const empty: Draft = {
+  foods: [],
+  water: [],
+  supplements: [],
+  sets: [],
+  answer: null,
+  notUnderstood: [],
+}
 const ref = (request: ParseRequest, name: string) => request.context.foods.find((food) => food.name === name)!.ref
 const supplementRef = (request: ParseRequest, name: string) => request.context.supplements.find((supplement) => supplement.name === name)!.ref
 const PANETONE = { kcal: 362, proteinG: 6.5, carbsG: 55, fatG: 13 }
@@ -39,7 +50,13 @@ const panetone = (grams: number | null): Draft['foods'][number] => ({
   portion: grams ? '' : '',
   estimated: false,
   per100: PANETONE,
-  options: grams ? [] : [{ label: '1 fetë', grams: 80 }, { label: '2 feta', grams: 160 }, { label: '3 feta', grams: 240 }],
+  options: grams
+    ? []
+    : [
+        { label: '1 fetë', grams: 80 },
+        { label: '2 feta', grams: 160 },
+        { label: '3 feta', grams: 240 },
+      ],
   meal: 'dinner',
   time: null,
   day: 0,
@@ -53,11 +70,43 @@ const example = (request: ParseRequest): BoxResult => ({
   draft: {
     ...empty,
     foods: [
-      { said: 'dy tost', ref: ref(request, 'Bukë integrale'), name: 'Bukë integrale', grams: 64, portion: '2 feta', estimated: false, per100: null, options: [], meal: null, time: '12:00', day: 0 },
-      { said: 'gjysmë pule', ref: null, name: 'Pulë e pjekur me lëkurë', grams: 300, portion: 'gjysmë pule', estimated: true, per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 }, options: [], meal: 'dinner', time: null, day: 0 },
+      {
+        said: 'dy tost',
+        ref: ref(request, 'Bukë integrale'),
+        name: 'Bukë integrale',
+        grams: 64,
+        portion: '2 feta',
+        estimated: false,
+        per100: null,
+        options: [],
+        meal: null,
+        time: '12:00',
+        day: 0,
+      },
+      {
+        said: 'gjysmë pule',
+        ref: null,
+        name: 'Pulë e pjekur me lëkurë',
+        grams: 300,
+        portion: 'gjysmë pule',
+        estimated: true,
+        per100: { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 },
+        options: [],
+        meal: 'dinner',
+        time: null,
+        day: 0,
+      },
       panetone(null),
     ],
-    supplements: [{ ref: supplementRef(request, 'Kreatinë'), amount: 1, meal: null, time: null, day: 0 }],
+    supplements: [
+      {
+        ref: supplementRef(request, 'Kreatinë'),
+        amount: 1,
+        meal: null,
+        time: null,
+        day: 0,
+      },
+    ],
     water: [{ ml: 500, time: null, day: 0 }],
   },
 })
@@ -67,7 +116,13 @@ describe('Kutia e AI-së', () => {
     await import('@/data/app-data')
     const { completeOnboarding } = await import('@/data/profile')
     const { ensureSupplements } = await import('@/data/supplements')
-    await completeOnboarding(data.store, { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00', wakeTime: '08:20', sleepTime: '01:00' })
+    await completeOnboarding(data.store, {
+      weightKg: 88,
+      trainingDays: [1, 2, 4, 5],
+      trainingTime: '21:00',
+      wakeTime: '08:20',
+      sleepTime: '01:00',
+    })
     await ensureSupplements(data.store)
   })
   beforeEach(async () => {
@@ -112,7 +167,9 @@ describe('Kutia e AI-së', () => {
 
     expect(await screen.findByRole('heading', { name: 'Kontrollo dhe regjistro' })).toBeInTheDocument()
     // Orët e vakteve vijnë me ditën nga baza: pritet grupi me orën.
-    const dinner = await screen.findByRole('region', { name: /^Darka · \d\d:\d\d$/ })
+    const dinner = await screen.findByRole('region', {
+      name: /^Darka · \d\d:\d\d$/,
+    })
     expect(within(dinner).getByText('Pulë e pjekur me lëkurë')).toBeInTheDocument()
     expect(within(dinner).getByText(/gjysmë pule · 300 g · vlerësim/)).toBeInTheDocument()
     expect(within(dinner).getByText('Panetone')).toBeInTheDocument()
@@ -131,7 +188,20 @@ describe('Kutia e AI-së', () => {
 
   it('përgjigja e lirë dërgohet me bisedën dhe plotëson rreshtin', async () => {
     const user = userEvent.setup()
-    data.reply = (request) => (request.history?.length ? { ok: true, costEur: 0.0002, month: MONTH, draft: { ...empty, foods: [panetone(120)] } } : { ok: true, costEur: 0.001, month: MONTH, draft: { ...empty, foods: [panetone(null)] } })
+    data.reply = (request) =>
+      request.history?.length
+        ? {
+            ok: true,
+            costEur: 0.0002,
+            month: MONTH,
+            draft: { ...empty, foods: [panetone(120)] },
+          }
+        : {
+            ok: true,
+            costEur: 0.001,
+            month: MONTH,
+            draft: { ...empty, foods: [panetone(null)] },
+          }
     await renderPage()
     await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'panetone në darkë')
     await user.click(screen.getByRole('button', { name: 'Dërgo' }))
@@ -150,7 +220,12 @@ describe('Kutia e AI-së', () => {
 
   it('një rresht ndryshohet (gramët, vakti) ose hiqet para regjistrimit', async () => {
     const user = userEvent.setup()
-    data.reply = () => ({ ok: true, costEur: 0.0002, month: MONTH, draft: { ...empty, foods: [panetone(80)] } })
+    data.reply = () => ({
+      ok: true,
+      costEur: 0.0002,
+      month: MONTH,
+      draft: { ...empty, foods: [panetone(80)] },
+    })
     await renderPage()
     await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'një fetë panetone')
     await user.click(screen.getByRole('button', { name: 'Dërgo' }))
@@ -177,7 +252,11 @@ describe('Kutia e AI-së', () => {
 
   it('kufiri i muajit dhe gabimi: teksti mbetet me shpjegimin', async () => {
     const user = userEvent.setup()
-    data.reply = () => ({ ok: false, error: 'limit', month: { ...MONTH, spentEur: 10 } })
+    data.reply = () => ({
+      ok: false,
+      error: 'limit',
+      month: { ...MONTH, spentEur: 10 },
+    })
     await renderPage()
     await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'dy vezë')
     await user.click(screen.getByRole('button', { name: 'Dërgo' }))
@@ -188,11 +267,20 @@ describe('Kutia e AI-së', () => {
   it('anglisht', async () => {
     const user = userEvent.setup()
     language.set('en')
-    data.reply = () => ({ ok: true, costEur: 0.0002, month: MONTH, draft: { ...empty, foods: [panetone(null)] } })
+    data.reply = () => ({
+      ok: true,
+      costEur: 0.0002,
+      month: MONTH,
+      draft: { ...empty, foods: [panetone(null)] },
+    })
     await renderPage().catch(() => null)
     await user.type(await screen.findByLabelText('Type or say what you did'), 'panettone')
     await user.click(screen.getByRole('button', { name: 'Send' }))
-    expect(await screen.findByRole('heading', { name: 'How much panetone did you have?' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', {
+        name: 'How much panetone did you have?',
+      }),
+    ).toBeInTheDocument()
     expect(data.requests[0].context.language).toBe('en')
   })
 })
