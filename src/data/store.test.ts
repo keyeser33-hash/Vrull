@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { createLocalStore } from './store'
+import { createLocalStore, DEVICE_TABLE } from './store'
 import { CLEAN, PENDING } from './tables'
 
 const USER = '11111111-1111-4111-8111-111111111111'
@@ -141,5 +141,19 @@ describe('shumë rreshta njëherësh', () => {
     expect(await db.program_days.where('_dirty').equals(PENDING).count()).toBe(2)
     expect(rows[1]).toMatchObject({ user_id: USER, deleted_at: null, created_at: '2026-11-30T08:00:00.000Z' })
     expect(notified).toEqual(['program_days'])
+  })
+})
+
+describe('vlerat vetëm të telefonit', () => {
+  it('ruhen te _meta pa sinkronizim dhe pa përdorues, dhe njoftojnë dëgjuesit', async () => {
+    const { store, db } = setup({ userId: null })
+    const notified: string[] = []
+    store.subscribe((table) => notified.push(table))
+    expect(await store.readDevice('lighter-first-session')).toBeUndefined()
+    await store.writeDevice('lighter-first-session', { date: '2026-12-07', on: false })
+    expect(await store.readDevice('lighter-first-session')).toEqual({ date: '2026-12-07', on: false })
+    expect(notified).toEqual([DEVICE_TABLE])
+    // Larg kursorëve të sinkronizimit, që jetojnë te e njëjta tabelë.
+    expect((await db._meta.toArray()).map((entry) => entry.key)).toEqual(['device:lighter-first-session'])
   })
 })

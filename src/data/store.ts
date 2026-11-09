@@ -6,6 +6,14 @@ import { type LocalRow, PENDING, type TableName } from './tables'
 
 type Values = Record<string, unknown> & { id?: string }
 
+/** Tabela e vlerave vetëm të këtij telefoni (`readDevice`, `writeDevice`), pa sinkronizim. */
+export const DEVICE_TABLE = '_meta'
+/** Çfarë ndryshoi një shkrim: një tabelë që sinkronizohet, ose vlerat e telefonit. */
+export type StoreChange = TableName | typeof DEVICE_TABLE
+
+// Vlerat e telefonit rrinë te `_meta` me këtë parashtesë, larg kursorëve të sinkronizimit.
+const DEVICE_PREFIX = 'device:'
+
 export interface LocalStore {
   /** Krijon ose ndryshon (pjesërisht) një rresht dhe e shënon për dërgim. */
   /**
@@ -25,8 +33,12 @@ export interface LocalStore {
   now(): Date
   /** Përdoruesi i hyrë (p.sh. për dosjen e tij te Storage); null pa hyrje. */
   userId(): string | null
+  /** Një vlerë vetëm e këtij telefoni (p.sh. "Seanca e parë më e lehtë", V43); undefined kur mungon. */
+  readDevice(key: string): Promise<unknown>
+  /** Ruan një vlerë vetëm të këtij telefoni, pa sinkronizim; dëgjuesit marrin `DEVICE_TABLE`. */
+  writeDevice(key: string, value: unknown): Promise<void>
   /** Thirret pas çdo shkrimi; kthen funksionin që e ndal. */
-  subscribe(listener: (table: TableName) => void): () => void
+  subscribe(listener: (table: StoreChange) => void): () => void
 }
 
 export interface StoreOptions {
@@ -55,8 +67,8 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
   const clock = options.now ?? (() => new Date())
   const now = () => clock().toISOString()
   const uuid = options.uuid ?? (() => crypto.randomUUID())
-  const listeners = new Set<(table: TableName) => void>()
-  const notify = (table: TableName) => listeners.forEach((listener) => listener(table))
+  const listeners = new Set<(table: StoreChange) => void>()
+  const notify = (table: StoreChange) => listeners.forEach((listener) => listener(table))
 
   function requireUser() {
     const userId = options.userId()
@@ -143,6 +155,15 @@ export function createLocalStore(db: LocalDatabase, options: StoreOptions): Loca
 
     now: () => clock(),
     userId: () => options.userId(),
+
+    async readDevice(key) {
+      return (await db._meta.get(DEVICE_PREFIX + key))?.value
+    },
+
+    async writeDevice(key, value) {
+      await db._meta.put({ key: DEVICE_PREFIX + key, value })
+      notify(DEVICE_TABLE)
+    },
 
     subscribe(listener) {
       listeners.add(listener)

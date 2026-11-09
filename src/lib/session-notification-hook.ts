@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { scheduler, store } from '@/data/app-data'
-import type { TableName } from '@/data/tables'
+import { DEVICE_TABLE, type StoreChange } from '@/data/store'
 import { currentI18n, language } from '@/i18n'
 import { createSessionNotifier, openState, sessionView } from './session-notification'
 import { nativeSessionPort, notificationOpen } from './session-notification-native'
@@ -13,7 +13,8 @@ import { restControl } from './use-rest-timer'
 // peshat e javës, gjuha, sinkronizimi), prekjet e tij zbatohen sapo JS-i i merr vesh dhe në çdo
 // nisje ose kthim në plan të parë, dhe "Ndrysho" hap seancën te seti. Vetëm në telefon.
 
-const TRAINING_TABLES = new Set<TableName>([
+// `DEVICE_TABLE`: "Seanca e parë më e lehtë" (V43) ndryshon peshat e seancës.
+const TRAINING_TABLES = new Set<StoreChange>([
   'set_logs',
   'workout_sessions',
   'program_state',
@@ -26,6 +27,7 @@ const TRAINING_TABLES = new Set<TableName>([
   'week_weights',
   'one_rm_overrides',
   'user_settings',
+  DEVICE_TABLE,
 ])
 
 export function useSessionNotification(ready: boolean) {

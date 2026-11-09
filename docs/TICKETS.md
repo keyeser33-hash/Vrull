@@ -335,6 +335,8 @@ Qëllimet javore, "Mirë se u ktheve", banderola e rekordit, përmbledhja e së 
 
 Sipas SPEC §0.3c: java e hënë–e diel; stërvitja sipas ditëve të stërvitjes, ushqimi 5 ditë nga 7 (≥ 60% e kalorive), uji 5 ditë nga 7; dita rezervë një për bllok, e rillogaritur; vargu; "Mirë se u ktheve" pas 7 ditësh me peshat 90%. **Pranimi:** prova të logjikës përpara kodit për javë të plota, me ditë rezervë (një herë për bllok, jo dy stërvitje), pa objektiva, pas pushimit, me ditën e ushqimit (V46).
 
+**Gjendja (09.11.2026):** logjika dhe të dhënat gati, pa ekrane (ato vijnë me E2-22). Rregullat: `progress/weekly-goals.ts` (java, objektivi, dita rezervë, vargu, ushqimi dhe uji, "Mirë se u ktheve", karta e së dielës); leximi: `data/weekly-goals.ts` (`weekGoalsView` për Sot dhe Qëllimet, `weekSummary(monday)` për përmbledhjen) dhe `data/welcome-back.ts` (`welcomeBack`, `setLighterFirstSession`, vetëm në telefon me `store.writeDevice`). Peshat 90% i vendos vetëm `workoutWeights` (`weekKg` = pesha e javës), ndaj Sot (`TodayView.welcomeBack`, `first.weekKg`), seanca, Programi dhe njoftimi thonë të njëjtën gjë.
+
 ## V2-E2-21 · Festimet dhe distinktivët
 
 Sipas SPEC §0.3c: banderola e rekordit mbi pushim; e diela (njoftimi 20:00, karta te Sot, përmbledhja); karta PNG 1080 × 1350 vetëm me stërvitjen ("Ndaj", "Ruaj në galeri"); 10 arritjet (tabela `achievements`, migrim) me faqen dhe detajin. **Pranimi:** karta ndahet nga Android-i; arritjet jepen një herë dhe sinkronizohen; asnjë lëshim para migrimit.

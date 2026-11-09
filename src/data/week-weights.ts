@@ -1,4 +1,6 @@
+import { weightStep } from '@/program/loads'
 import type { ProgramWeek } from '@/program/types'
+import { lighterWeight } from '@/progress/weekly-goals'
 import {
   acceptAll,
   postpone,
@@ -11,6 +13,7 @@ import {
 import type { LocalStore } from './store'
 import { activeProgram, openSession, trainingHistory } from './training'
 import { naturalId } from './natural-id'
+import { lighterFirstSession } from './welcome-back'
 
 // Peshat e javës (V23) mbi bazën lokale: propozimi i §7 për javën që shqyrtohet dhe vendimi i
 // përdoruesit (pranoi, ndryshoi, la për më vonë), i ruajtur te `week_weights`. Pesha e javës e një
@@ -27,6 +30,11 @@ export interface WeekWeightsView {
 
 /** Peshat e javës që shqyrtohet (ose e javës së dhënë) të programit aktiv. */
 export async function weekWeightsView(store: LocalStore, week?: WeekRef): Promise<WeekWeightsView | null> {
+  return (await readWeek(store, week))?.view ?? null
+}
+
+/** Pamja e peshave të javës, me programin dhe historinë nga u llogarit. */
+async function readWeek(store: LocalStore, week?: WeekRef) {
   const loaded = await activeProgram(store)
   if (!loaded) return null
   const target = week ?? weekToReview(loaded.engine, loaded.pointer)
@@ -63,24 +71,46 @@ export async function weekWeightsView(store: LocalStore, week?: WeekRef): Promis
       }),
     ),
   })
-  return {
+  const view: WeekWeightsView = {
     programId: loaded.row.id,
     run,
     week: target,
     block: { blockName: block.name, blockWeeks: block.weeks, week: target.week, run },
     rows,
   }
+  return { view, loaded, history }
+}
+
+export interface WorkoutWeight extends WeekWeightRow {
+  /**
+   * Pesha e javës kur "Seanca e parë më e lehtë" (V43) e ul `weightKg` në 90%; null kur `weightKg` është
+   * vetë pesha e javës. Sot e thotë "55 × 12–15 në vend të 62,5".
+   */
+  weekKg: number | null
 }
 
 /**
  * Pesha e javës e çdo sloti me peshë të një stërvitjeje (V23, SPEC §7): vendimi te `week_weights`
  * (pranuar, ndryshuar, "Më vonë"), përndryshe propozimi i §7, që për ushtrimin me histori pa e1RM
  * është pesha e fundit (§0.3a). I vetmi lexim i saj për Sot, seancën, Programin dhe njoftimin e
- * seancës (E1-08), sipas slotit.
+ * seancës (E1-08), sipas slotit. Për stërvitjen e radhës pas 7 ditësh pa seancë ("Mirë se u ktheve",
+ * me çelësin të ndezur) pesha është 90% e saj, poshtë sipas hapit të pajisjes, derisa ajo mbyllet.
  */
-export async function workoutWeights(store: LocalStore, plan: WeekRef & { dayId: string }): Promise<Map<string, WeekWeightRow>> {
-  const view = await weekWeightsView(store, { blockId: plan.blockId, week: plan.week })
-  return new Map((view?.rows ?? []).filter((row) => row.dayId === plan.dayId).map((row) => [row.slotId, row]))
+export async function workoutWeights(store: LocalStore, plan: WeekRef & { dayId: string }): Promise<Map<string, WorkoutWeight>> {
+  const read = await readWeek(store, { blockId: plan.blockId, week: plan.week })
+  const rows = (read?.view.rows ?? []).filter((row) => row.dayId === plan.dayId)
+  const pointer = read?.loaded.pointer
+  const next = !!pointer && !pointer.completed && pointer.blockId === plan.blockId && pointer.week === plan.week && pointer.dayId === plan.dayId
+  const lighter = next && rows.length > 0 && (await lighterFirstSession(store))
+  const steps = read?.history.weightSteps ?? {}
+  return new Map(
+    rows.map((row): [string, WorkoutWeight] => {
+      const equipment = read?.loaded.exercises[row.exerciseId]?.equipment
+      if (!lighter || row.weightKg === null || !equipment) return [row.slotId, { ...row, weekKg: null }]
+      const weightKg = lighterWeight(row.weightKg, weightStep(equipment, steps))
+      return [row.slotId, { ...row, weightKg, weekKg: weightKg === row.weightKg ? null : row.weightKg }]
+    }),
+  )
 }
 
 /** Vendimet e ruajtura për një javë të programit, në këtë xhiro. */

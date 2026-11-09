@@ -28,4 +28,8 @@ export async function sampleWeek(store: LocalStore, clock: TestClock) {
   clock.date = new Date(2026, 10, 1, 17, 30)
   await benchDay(60, 13, null)
   clock.date = TODAY
+  // Seanca e fundit e mbyllur është 1 nëntor, 7 ditë para mostrës: "Mirë se u ktheve" (V43) do ta ulte
+  // stërvitjen e radhës në 90%. Bordet e Programit tregojnë peshat e javës, ndaj çelësi i sotëm fiket.
+  const { setLighterFirstSession } = await import('@/data/welcome-back')
+  await setLighterFirstSession(store, false)
 }

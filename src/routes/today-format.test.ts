@@ -10,6 +10,7 @@ const exercise = (target: Target, weightKg: number | null, tracking: 'weight_rep
   tracking,
   target,
   weightKg,
+  weekKg: null,
 })
 
 describe('rreshti i ushtrimit të parë', () => {

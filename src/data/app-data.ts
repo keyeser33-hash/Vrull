@@ -6,7 +6,7 @@ import { createDatabase } from './db'
 import { decidePhase } from './phase'
 import { createSupabaseRemote } from './remote-supabase'
 import { createSyncScheduler } from './scheduler'
-import { createLocalStore } from './store'
+import { createLocalStore, DEVICE_TABLE } from './store'
 import { supabase } from './supabase'
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
@@ -48,7 +48,11 @@ export const store = createLocalStore(db, { userId })
 export const sync = createSync({ db, remote: createSupabaseRemote(supabase), userId })
 export const scheduler = createSyncScheduler({
   sync,
-  onLocalWrite: (listener) => store.subscribe(() => listener()),
+  // Vlerat vetëm të telefonit (`writeDevice`) nuk kanë çfarë të dërgojnë.
+  onLocalWrite: (listener) =>
+    store.subscribe((table) => {
+      if (table !== DEVICE_TABLE) listener()
+    }),
   events,
 })
 

@@ -31,6 +31,8 @@ Formati: **çfarë ndodhi** → **rregulli**.
 
 - Një ekran me skelet (kreu del para të dhënave) dështonte rastësisht: `findByRole` gjente kreun e skeletit, që zëvendësohej menjëherë → prova pret fillimisht një element që vjen nga baza, pastaj kontrollon kreun.
 
+- "Mirë se u ktheve" (7 ditë pa seancë të mbyllur, V43) ndryshoi mostrat e Programit: seanca e vetme e mbyllur 1 nëntor, ora e provës 8 nëntor, ditët e tjera të kapërcyera; vetëm prova e plotë e kapi → një rregull i ri që varet nga koha kërkon mostrat me të njëjtin hendek (`programme-test-setup.ts`, `atPhaseOneWeekTwo`) para provës së plotë, dhe mostra e thotë shprehimisht kur rregulli nuk i përket (çelësi i fikur).
+
 ## Bashkimet (merge) e degëve paralele
 
 - Çelësa të dyfishtë te `icon-paths-vrull.ts` (TS1117) dhe një rresht i humbur te `session.tsx` (`lastSlot`) pas merge-ve → pas çdo merge: `tsc`, pastaj provat e skedarëve në konflikt, pastaj të gjitha.
