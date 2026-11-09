@@ -206,6 +206,36 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E2-23 | Lëvizja | E2-22 |
 | V2-E2-24 | Lëshimi 0.23.0 | E2-19 … E2-23 |
 
+### Etapa 3 · 0.24 Gatishmëria (plani i 09.11.2026)
+
+**Mënyra e punës.** Si Etapa 2: bordet → komentet e përdoruesit → kodi, me hapat dhe agjentët e `docs/agents/ORKESTRIMI.md` dhe retron e çdo vale (V49). Rregullat janë te SPEC §0.3d. Pjesët e tjera të Etapës 3 vijnë me versionet e tyre: Mëso, Health Connect me ujin sipas motit dhe zakonet, raporti PDF.
+
+| ID | Detyra | Varet nga |
+|---|---|---|
+| V2-E3-01 | Bordet e dizajnit 0.24 | – |
+| V2-E3-02 | Logjika e gatishmërisë (provat përpara): pikët, nivelet, seanca më e lehtë, shtyrja | E3-01 |
+| V2-E3-03 | Të dhënat: migrimi `daily_states`, `TABLES`/`INDEXES`, `db.ts`, `data/daily-state.ts` (skeleti i valës) | E3-01 |
+| V2-E3-04 | Check-in-i: karta te Sot, katër pyetjet, gjumi, dhimbjet me figurën, "Jo sot", rikujtuesi | E3-02, E3-03 |
+| V2-E3-05 | Pllaka "Gati" dhe fleta me pjesët dhe 14 ditët | E3-02, E3-03 |
+| V2-E3-06 | Sugjerimi, seanca më e lehtë, "Shtyje për nesër", "Më e lehtë" te historiku | E3-02, E3-03 |
+| V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
+| V2-E3-08 | Lëshimi 0.24.0 | E3-01 … E3-07 |
+
+## V2-E3-01 · Bordet e dizajnit 0.24
+
+Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
+- Sot me kartën "Si ndihesh sot?";
+- check-in-i;
+- Sot me gatishmëri të ulët, me sugjerimin dhe pamjen e lodhur;
+- Sot me gatishmëri të lartë;
+- fleta "Gati";
+- seanca më e lehtë;
+- stërvitja e shtyrë;
+- Cilësimet › Pamja;
+- një bord në anglisht.
+
+Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
+
 ## V2-E2-00 · Pastrimi i E1
 
 Lista te "Pas rishikimit të E1", si detyrë e parë e etapës, pa ndryshuar sjelljen. **Pranimi:** `npm test`, `npm run lint`, `npm run build` kalojnë; provat e2e të reja për `week_weights`, `form_videos` dhe `ai_usage` kalojnë me përdorues prove të përkohshëm, i fshirë pas provës.

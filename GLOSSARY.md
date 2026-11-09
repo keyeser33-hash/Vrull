@@ -326,6 +326,13 @@ _Avoid_: humori, mood (në UI shqip)
 Sa gati është përdoruesi sot për stërvitje, në përqindje, nga **Gjendja e ditës**, gjumi dhe zemra nga ora, dhe **Rikuperimi**; kur është e ulët, sugjeron ndryshime në seancë.
 _Avoid_: readiness (në UI shqip)
 
+**Seanca më e lehtë**:
+Sugjerimi i një dite me **Gatishmëri** të ulët, që përdoruesi e pranon: një set më pak nga ushtrimi i tretë e tutje, dhe RIR +1 ose pesha 10% më e ulët. Programi nuk ndryshon.
+
+**Pamja e lodhur**:
+Pamja e gjithë app-it në një ditë me **Gatishmëri** të ulët: rërë në vend të prushit, lëvizje e qetë, pa festime, tekste më të buta.
+_Avoid_: modaliteti i lodhjes
+
 **Zakoni**:
 Një veprim ditor që përdoruesi zgjedh ta ndjekë (p.sh. 10 mijë hapa, gjumë para 23:00).
 
