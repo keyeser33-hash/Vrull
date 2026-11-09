@@ -288,7 +288,7 @@ export async function logTemplateMeal(store: LocalStore, date: string, meal: Mea
       logged_at: new Date(loggedAt + index).toISOString(),
     })
   }
-  await store.insertMany('diary_entries', rows)
+  return (await store.insertMany('diary_entries', rows)).map((row) => row.id)
 }
 
 /** Një ushqim me gramë në një vakt; makrot llogariten nga vlerat për 100 g dhe ruhen në regjistrim. */

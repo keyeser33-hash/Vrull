@@ -13,9 +13,11 @@ import { type ImportRemote, readResultFrom } from './pdf-import'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
 import { currentI18n, language } from '@/i18n'
-import { planReminders } from '@/reminders/plan'
-import { scheduleReminders } from '@/lib/reminders-native'
-import { reminderInput } from './reminders'
+import { planReminders, staleKeys } from '@/reminders/plan'
+import { nativeReminderQueue, scheduleReminders } from '@/lib/reminders-native'
+import { localDate } from '@/lib/calendar'
+import { muteIgnored, reminderInput } from './reminders'
+import { appliedLog, applyReminderActions } from './reminder-actions'
 import { adoptSavedLanguage } from './language'
 import { adoptSavedBackground } from './background'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
@@ -308,14 +310,46 @@ export function useFormVideoUploader(ready: boolean) {
   }, [ready, userId])
 }
 
-/** Rikujtuesit e 7 ditëve të ardhshme, të planifikuar përsëri në telefon (SPEC §13). */
-export async function planRemindersNow() {
+/** Çfarë krijoi çdo prekje te rikujtuesit, për "Kthe mbrapsht" dhe që asnjë të mos zbatohet dy herë. */
+const appliedReminderActions = appliedLog(safeStorage)
+
+/** Prekjet te rikujtuesit (V37) që telefoni ruajti: zbatohen një herë, pastaj hiqen nga radha native. */
+export async function applyReminderQueue() {
   if (!Capacitor.isNativePlatform()) return
-  // Tekstet në gjuhën e app-it tani; ndërrimi i gjuhës i planifikon përsëri (user_settings).
-  await scheduleReminders(planReminders(await reminderInput(store, new Date()), currentI18n()))
+  const actions = await nativeReminderQueue.pending()
+  if (actions.length === 0) return
+  await nativeReminderQueue.ack(await applyReminderActions(store, actions, appliedReminderActions))
 }
 
-const REMINDER_TABLES = new Set(['user_settings', 'program_state', 'workout_sessions', 'supplements', 'nutrition_targets'])
+/**
+ * Rikujtuesit e 7 ditëve të ardhshme, të planifikuar përsëri në telefon (SPEC §13): pas prekjeve të
+ * fundit dhe pas heshtjes së llojeve të injoruara 3 ditë rresht (V37).
+ */
+export async function planRemindersNow() {
+  if (!Capacitor.isNativePlatform()) return
+  const now = new Date()
+  await applyReminderQueue().catch(() => {})
+  await muteIgnored(store, await nativeReminderQueue.log().catch(() => []), localDate(now)).catch(() => [])
+  const input = await reminderInput(store, now)
+  // Tekstet në gjuhën e app-it tani; ndërrimi i gjuhës i planifikon përsëri (user_settings).
+  const reminders = planReminders(input, currentI18n())
+  await scheduleReminders(reminders, input.smart ? staleKeys(input.smart, reminders) : [])
+}
+
+// Çdo ndryshim që ndikon te rikujtuesit: oraret, stërvitja, suplementet, lloji i ditës, dhe (V37) çfarë
+// u regjistrua, uji, Plani im dhe pesha (objektivi i ujit).
+const REMINDER_TABLES = new Set([
+  'user_settings',
+  'program_state',
+  'workout_sessions',
+  'supplements',
+  'nutrition_targets',
+  'diary_entries',
+  'supplement_logs',
+  'water_logs',
+  'meal_templates',
+  'body_measurements',
+])
 
 /**
  * Rinovon rikujtuesit kur hapet app-i, kur ndryshojnë oraret, stërvitja e radhës ose suplementet, dhe kur
@@ -336,10 +370,13 @@ export function useReminderPlanner(ready: boolean) {
     })
     const stopLanguage = language.subscribe(plan)
     const resume = App.addListener('resume', plan)
+    // Një prekje te njoftimi kur app-i jeton: zbatohet menjëherë, pastaj plani rinovohet.
+    const stopActions = nativeReminderQueue.listen(() => void applyReminderQueue().catch(() => {}))
     return () => {
       clearTimeout(timer)
       stop()
       stopLanguage()
+      stopActions()
       void resume.then((handle) => handle.remove())
     }
   }, [ready, userId])

@@ -1,6 +1,10 @@
-import type { ReminderInput, ReminderToggles } from '@/reminders/plan'
+import { localDate } from '@/lib/calendar'
+import { waterTargetMl } from '@/nutrition/water'
+import { ignoredStreaks, MUTE_AFTER_DAYS, type ReminderLogEntry } from '@/reminders/ignored'
+import type { MutableKind, ReminderInput, ReminderToggles, SmartInput } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
 import { readMissedInput } from './missed-day'
+import { dayBasics, type NutritionDay, planDay, targetsWeight } from './nutrition'
 import { readProfile } from './profile'
 import { readSchedule } from './schedule-settings'
 import type { LocalStore } from './store'
@@ -8,26 +12,79 @@ import { settingsRow } from './settings-row'
 import { supplementList } from './supplements'
 import { trainingSnapshot } from './training'
 
-// Cilësimet e rikujtuesve (SPEC §13) dhe të dhënat që u duhen për t'u planifikuar.
+// Cilësimet e rikujtuesve (SPEC §13) dhe të dhënat që u duhen për t'u planifikuar. Të gjitha
+// cilësimet rrinë te `user_settings.reminders` (jsonb): çelësat, orët e qeta, llojet e heshtura
+// dhe dita kur një lloj u ndez përsëri (V37), pa kolona të reja.
 
 export interface ReminderSettings {
-  toggles: ReminderToggles
+  toggles: ReminderToggles & { water: boolean }
   /** Dita ISO e matjes javore (7 = e diel). */
   measurementDay: number
+  /** Intervali i qetë që zgjodhi përdoruesi; null pa interval. */
+  quiet: { from: string; to: string } | null
+  /** Llojet e heshtura vetë, me datën kur heshtën. */
+  muted: Partial<Record<MutableKind, string>>
+  /** Dita kur një lloj u ndez përsëri: ditët e injoruara para saj nuk numërohen. */
+  resumed: Partial<Record<MutableKind, string>>
 }
 
-const DEFAULT_TOGGLES: ReminderToggles = { meals: true, supplements: true, training: true, measurements: true }
+const DEFAULT_TOGGLES = { meals: true, supplements: true, training: true, measurements: true, water: true }
+const TOGGLE_KEYS = Object.keys(DEFAULT_TOGGLES) as (keyof typeof DEFAULT_TOGGLES)[]
+const KINDS: readonly MutableKind[] = ['meal', 'supplements', 'water']
+const TIME = /^\d{2}:\d{2}$/
+
+const dates = (value: unknown): Partial<Record<MutableKind, string>> => {
+  const source = value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
+  return Object.fromEntries(KINDS.filter((kind) => typeof source[kind] === 'string').map((kind) => [kind, String(source[kind]).slice(0, 10)]))
+}
+
+async function rawReminders(store: LocalStore): Promise<{ id: string | undefined; raw: Record<string, unknown> }> {
+  const row = await settingsRow(store)
+  const raw = row?.reminders && typeof row.reminders === 'object' ? (row.reminders as Record<string, unknown>) : {}
+  return { id: row?.id, raw }
+}
 
 export async function reminderSettings(store: LocalStore): Promise<ReminderSettings> {
   const row = await settingsRow(store)
-  const saved = (row?.reminders as Partial<ReminderToggles> | undefined) ?? {}
-  return { toggles: { ...DEFAULT_TOGGLES, ...saved }, measurementDay: Number(row?.measurement_day ?? 7) }
+  const raw = row?.reminders && typeof row.reminders === 'object' ? (row.reminders as Record<string, unknown>) : {}
+  const toggles = { ...DEFAULT_TOGGLES }
+  for (const key of TOGGLE_KEYS) if (typeof raw[key] === 'boolean') toggles[key] = raw[key] as boolean
+  const quiet = raw.quiet as { from?: unknown; to?: unknown } | null | undefined
+  return {
+    toggles,
+    measurementDay: Number(row?.measurement_day ?? 7),
+    quiet: quiet && typeof quiet.from === 'string' && typeof quiet.to === 'string' && TIME.test(quiet.from) && TIME.test(quiet.to) && quiet.from !== quiet.to ? { from: quiet.from, to: quiet.to } : null,
+    muted: dates(raw.muted),
+    resumed: dates(raw.resumed),
+  }
 }
 
-export async function setReminderToggle(store: LocalStore, key: keyof ReminderToggles, on: boolean) {
-  const row = await settingsRow(store)
-  const { toggles } = await reminderSettings(store)
-  await store.put('user_settings', { id: row?.id, reminders: { ...toggles, [key]: on } })
+async function patchReminders(store: LocalStore, patch: Record<string, unknown>) {
+  const { id, raw } = await rawReminders(store)
+  await store.put('user_settings', { id, reminders: { ...DEFAULT_TOGGLES, ...raw, ...patch } })
+}
+
+export async function setReminderToggle(store: LocalStore, key: keyof ReminderSettings['toggles'], on: boolean) {
+  await patchReminders(store, { [key]: on })
+}
+
+export async function setQuietHours(store: LocalStore, quiet: { from: string; to: string } | null) {
+  await patchReminders(store, { quiet })
+}
+
+/** Hesht llojet e injoruara 3 ditë rresht (V37). */
+export async function muteReminders(store: LocalStore, kinds: readonly MutableKind[], today: string) {
+  if (kinds.length === 0) return
+  const { muted } = await reminderSettings(store)
+  await patchReminders(store, { muted: { ...muted, ...Object.fromEntries(kinds.map((kind) => [kind, today])) } })
+}
+
+/** "Ndize përsëri": lloji vjen sërish dhe ditët e injoruara numërohen nga sot. */
+export async function unmuteReminders(store: LocalStore, kind: MutableKind, today: string) {
+  const { muted, resumed } = await reminderSettings(store)
+  const next = { ...muted }
+  delete next[kind]
+  await patchReminders(store, { muted: next, resumed: { ...resumed, [kind]: today } })
 }
 
 export async function setMeasurementDay(store: LocalStore, day: number) {
@@ -35,7 +92,7 @@ export async function setMeasurementDay(store: LocalStore, day: number) {
   await store.put('user_settings', { id: row?.id, measurement_day: day })
 }
 
-/** Gjithçka që i duhet planit të rikujtuesve për 7 ditët nga `now`. */
+/** Gjithçka që i duhet planit të rikujtuesve për 7 ditët nga `now`, me rikujtuesit e zgjuar (V37). */
 export async function reminderInput(store: LocalStore, now: Date): Promise<ReminderInput> {
   const [profile, settings, supplements, snapshot, targets, schedule, missed] = await Promise.all([
     readProfile(store),
@@ -46,6 +103,7 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     readSchedule(store),
     readMissedInput(store),
   ])
+  const dayTypes = Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date), row.day_type as DayType]))
   return {
     from: now,
     days: 7,
@@ -63,13 +121,96 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
             week: snapshot.plan.week,
             run: snapshot.plan.run,
             dayNumber: snapshot.plan.dayNumber,
+            dayName: snapshot.plan.dayName,
           }
         : null,
     supplements,
-    dayTypes: Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date), row.day_type as DayType])),
+    dayTypes,
     trainingTimes: schedule.trainingTimes,
     mealPlan: schedule.plan,
     startedOn: missed.startedOn,
     sessionDates: missed.sessionDates,
+    smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes),
   }
+}
+
+/** Rikujtuesit në ditë për vaktet, suplementet dhe ujin bashkë (V37). */
+export const MAX_DAILY_REMINDERS = 4
+
+async function smartInput(store: LocalStore, now: Date, settings: ReminderSettings, trainingDays: readonly number[], dayTypes: Record<string, DayType>): Promise<SmartInput> {
+  // Nga dita e djeshme: vaktet pas mesnate i përkasin asaj.
+  const dates = Array.from({ length: 8 }, (_, index) => localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + index - 1)))
+  const [diary, supplementLogs, water, weightKg, trainingDay, restDay] = await Promise.all([
+    Promise.all(dates.map((date) => store.where('diary_entries', 'date', date))),
+    Promise.all(dates.map((date) => store.where('supplement_logs', 'date', date))),
+    Promise.all(dates.map((date) => store.where('water_logs', 'date', date))),
+    targetsWeight(store, localDate(now)),
+    planDay(store, 'training', now),
+    planDay(store, 'rest', now),
+  ])
+  const planOf = (day: NutritionDay) =>
+    Object.fromEntries(
+      day.meals.map((meal) => [
+        meal.meal,
+        { items: meal.template.map((line) => ({ name: line.name, sourceId: line.sourceId })), kcal: meal.templateTotals.kcal, proteinG: meal.templateTotals.proteinG },
+      ]),
+    )
+  const typeOf = (date: string) => dayTypes[date] ?? (trainingDays.includes(new Date(`${date}T12:00:00`).getDay() || 7) ? 'training' : 'rest')
+  return {
+    maxDaily: MAX_DAILY_REMINDERS,
+    logged: {
+      meals: diary.flat().map((row) => `${String(row.date)}|${String(row.meal)}`),
+      supplements: supplementLogs.flat().map((row) => `${String(row.date)}|${String(row.timing)}|${String(row.supplement_id)}`),
+      waterMl: Object.fromEntries(dates.map((date, index) => [date, water[index].reduce((total, row) => total + Number(row.ml ?? 0), 0)])),
+    },
+    quiet: settings.quiet,
+    muted: Object.fromEntries(Object.keys(settings.muted).map((kind) => [kind, true])),
+    waterTargets: weightKg === null ? {} : Object.fromEntries(dates.map((date) => [date, waterTargetMl(weightKg, typeOf(date))])),
+    plan: { training: planOf(trainingDay), rest: planOf(restDay) },
+  }
+}
+
+/**
+ * Heshtja vetë (V37): llojet që telefoni i tregoi 3 ditë rresht pa asnjë prekje dhe pa regjistrim
+ * heshtin; kthen llojet që sapo heshtën.
+ */
+export async function muteIgnored(store: LocalStore, log: readonly ReminderLogEntry[], today: string): Promise<MutableKind[]> {
+  if (log.length === 0) return []
+  const settings = await reminderSettings(store)
+  const dates = [...new Set(log.map((entry) => entry.date).filter(Boolean))]
+  const facts = new Map(
+    await Promise.all(
+      dates.map(async (date) => {
+        const [diary, supplements, water, basics] = await Promise.all([
+          store.where('diary_entries', 'date', date),
+          store.where('supplement_logs', 'date', date),
+          store.where('water_logs', 'date', date),
+          dayBasics(store, date),
+        ])
+        const total = water.reduce((sum, row) => sum + Number(row.ml ?? 0), 0)
+        const target = basics.weightKg === null ? null : waterTargetMl(basics.weightKg, basics.dayType)
+        return [
+          date,
+          {
+            meals: new Set(diary.map((row) => String(row.meal))),
+            supplements: new Set(supplements.map((row) => String(row.timing))),
+            // Uji nuk është injoruar kur dita mbaroi afër objektivit.
+            water: target !== null && total >= target * 0.75,
+          },
+        ] as const
+      }),
+    ),
+  )
+  const isLogged = (entry: ReminderLogEntry) => {
+    const day = facts.get(entry.date)
+    if (!day) return false
+    const meal = entry.key.split('|')[2] ?? ''
+    if (entry.kind === 'meal') return day.meals.has(meal)
+    if (entry.kind === 'supplements') return day.supplements.has(meal)
+    return entry.kind === 'water' ? day.water : true
+  }
+  const streaks = ignoredStreaks(log, isLogged, today, settings.resumed)
+  const kinds = (Object.keys(streaks) as MutableKind[]).filter((kind) => streaks[kind] >= MUTE_AFTER_DAYS && !settings.muted[kind])
+  await muteReminders(store, kinds, today)
+  return kinds
 }

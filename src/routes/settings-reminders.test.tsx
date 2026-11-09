@@ -41,6 +41,7 @@ describe('Rikujtuesit', () => {
       'Stërvitja',
       'Vaktet',
       'Suplementet',
+      'Uji',
       'Matja javore',
     ])
     const meals = screen.getByRole('switch', { name: /^Vaktet/ })
@@ -54,6 +55,31 @@ describe('Rikujtuesit', () => {
     await user.click(within(sheet).getByRole('radio', { name: 'E hënë' }))
     expect(await screen.findByRole('button', { name: 'Dita e matjes, E hënë' })).toBeInTheDocument()
     expect((await data.store.all('user_settings'))[0].measurement_day).toBe(1)
+  })
+
+  it('orët e qeta (V37): intervali ruhet dhe hiqet; teksti i rikujtuesve të zgjuar', async () => {
+    const user = userEvent.setup()
+    await renderReminders()
+    expect(await screen.findByText(/^Vjen vetëm kur vakti, uji ose suplementi nuk është regjistruar\. Rreth 4 në ditë, jo nga gjumi deri te zgjimi \(23:00–07:00\)/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Orët e qeta, Pa interval' }))
+    const sheet = screen.getByRole('dialog', { name: 'Orët e qeta' })
+    await user.click(within(sheet).getByRole('button', { name: 'Ruaj intervalin' }))
+    expect(await screen.findByRole('button', { name: 'Orët e qeta, 12:00–14:00' })).toBeInTheDocument()
+    expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ quiet: { from: '12:00', to: '14:00' } })
+    await user.click(screen.getByRole('button', { name: 'Orët e qeta, 12:00–14:00' }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Orët e qeta' })).getByRole('button', { name: 'Hiq intervalin' }))
+    expect(await screen.findByRole('button', { name: 'Orët e qeta, Pa interval' })).toBeInTheDocument()
+  })
+
+  it('një lloj i heshtur vetë: "Ndize përsëri"', async () => {
+    const user = userEvent.setup()
+    const { muteReminders } = await import('@/data/reminders')
+    await muteReminders(data.store, ['water'], '2026-12-14')
+    await renderReminders()
+    const muted = screen.getByRole('region', { name: 'Të heshtur' })
+    expect(within(muted).getByText('Heshtur, sepse nuk i hap')).toBeInTheDocument()
+    await user.click(within(muted).getByRole('button', { name: 'Ndize përsëri' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'Të heshtur' })).not.toBeInTheDocument())
   })
 
   it('në anglisht', async () => {

@@ -44,7 +44,7 @@ type Editor = ProfileEditor | 'dil' | 'burimet' | 'perditesimi'
 const isProfileEditor = (value: Editor | null): value is ProfileEditor => value === 'pesha' || value === 'dite' || value === 'oraret'
 
 // Radha e bordit: "Stërvitja, vaktet, suplementet, matjet".
-const REMINDER_ORDER: (keyof ReminderToggles)[] = ['training', 'meals', 'supplements', 'measurements']
+const REMINDER_ORDER: (keyof ReminderToggles)[] = ['training', 'meals', 'supplements', 'water', 'measurements']
 
 export function SettingsPage() {
   const { t, fmt, lang } = useI18n()

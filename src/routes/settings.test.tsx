@@ -100,7 +100,7 @@ describe('cilësimet', () => {
     expect(within(appearance).getByRole('link', { name: 'Tema, OLED' })).toHaveAttribute('href', '/cilesimet/pamja')
     expect(within(appearance).getByRole('link', { name: 'Sfondi, I plotë' })).toHaveAttribute('href', '/cilesimet/pamja')
     expect(within(appearance).getByRole('link', { name: 'Gjuha, Shqip' })).toHaveAttribute('href', '/cilesimet/pamja')
-    expect(within(group('Njoftimet')).getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, vaktet, suplementet, matjet')
+    expect(within(group('Njoftimet')).getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, vaktet, suplementet, uji, matjet')
     for (const later of ['Admini', 'Ora dhe Health Connect']) expect(screen.queryByRole('region', { name: later })).toBeNull()
   })
 
@@ -228,7 +228,7 @@ describe('cilësimet', () => {
     expect(row(/^Times/)).toHaveTextContent(/\d\d:\d\d · wake \d\d:\d\d · sleep \d\d:\d\d/)
     expect(screen.getByRole('link', { name: 'Theme, OLED' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Background, Solid' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /^Reminders/ })).toHaveTextContent('Workouts, meals, supplements, measurements')
+    expect(screen.getByRole('link', { name: /^Reminders/ })).toHaveTextContent('Workouts, meals, supplements, water, measurements')
     expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
   })
 
@@ -236,7 +236,7 @@ describe('cilësimet', () => {
     const { setReminderToggle } = await import('@/data/reminders')
     await setReminderToggle(data.store, 'meals', false)
     await renderSettings()
-    await waitFor(() => expect(screen.getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, suplementet, matjet'))
+    await waitFor(() => expect(screen.getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, suplementet, uji, matjet'))
     await setReminderToggle(data.store, 'meals', true)
   })
 })

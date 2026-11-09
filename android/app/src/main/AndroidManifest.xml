@@ -55,6 +55,14 @@
         <!-- Njoftimi i seancës (V2-E1-08): prekjet te njoftimi ("Ruaj setin", −/+, "Kapërce pushimin"), edhe
              me ekran të kyçur dhe kur procesi është vrarë, dhe alarmi i saktë i fundit të pushimit. -->
         <receiver android:name=".SessionActionReceiver" android:exported="false" />
+        <!-- Rikujtuesit e zgjuar (V2-E2-08): alarmet, butonat ("Hëngra si në plan", "Shty 30 min", "Piva
+             një gotë", "E mora", "Po, sot") dhe rinisja e alarmeve pas ndezjes ose përditësimit. -->
+        <receiver android:name=".ReminderReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
         <!-- Skaneri i barkodit i Google Play Services (scan(), pa leje kamere); moduli shkarkohet me instalimin. -->
         <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui" />
     </application>
@@ -68,6 +76,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Njoftimi i timer-it të pushimit dhe rikujtuesit (Android 13+ e kërkon në stërvitjen e parë). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Rikujtuesit (V2-E2-08): alarmet e tyre vendosen sërish pas ndezjes së telefonit. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Alarmet e sakta, që timer-i të bjerë në kohë edhe me ekran të kyçur.
          Android 12: SCHEDULE_EXACT_ALARM (përdoruesi e lejon); Android 13+: USE_EXACT_ALARM. -->
     <uses-permission

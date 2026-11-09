@@ -1,6 +1,6 @@
 import { i18nFor } from '@/i18n'
 import { SUPPLEMENTS } from '@/nutrition/supplements'
-import { planReminders, type ReminderInput } from './plan'
+import { planReminders, type ReminderInput, staleKeys } from './plan'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -96,6 +96,11 @@ describe('rikujtuesit (§13)', () => {
     const [last] = planReminders(base({ sleepTime: '00:30' }), sq).slice(-1)
     expect([last.title, last.at.getDate(), hhmm(last.at)]).toEqual(['Para gjumit', 10, '00:00'])
   })
+  it('planifikimi pas mesnate nuk e humb vaktin para gjumit të ditës që mbaron', () => {
+    const items = planReminders(base({ from: new Date('2026-12-10T00:10:00'), wakeTime: '08:20', sleepTime: '01:00' }), sq)
+    expect(items[0]).toMatchObject({ title: 'Para gjumit', at: new Date('2026-12-10T00:30:00') })
+    expect(items.filter((item) => item.kind === 'training' || item.kind === 'measurement').every((item) => item.at.getDate() === 10)).toBe(true)
+  })
   // V46: vaktet pas mesnate bien të nesërmen kalendarike, edhe kur gjumi është pas orës 04:00.
   it('gjumi pas mesnate: vakti para gjumit të nesërmen në orën e duhur', () => {
     const late = planReminders(base({ wakeTime: '08:20', sleepTime: '01:00' }), sq).filter((item) => item.kind === 'meal')
@@ -130,5 +135,102 @@ describe('dita e humbur (V38)', () => {
       '07:30 Dje nuk u stërvite: Stërvitja 3 sot? Hap app-in për ta sjellë.',
       '07:30 Dje nuk u stërvite: E bën sot stërvitjen e radhës? Hap app-in për ta sjellë.',
     ])
+  })
+})
+
+describe('rikujtuesit e zgjuar (V37)', () => {
+  const smart = (overrides: Partial<NonNullable<ReminderInput['smart']>> = {}): NonNullable<ReminderInput['smart']> => ({
+    maxDaily: 4,
+    logged: { meals: [], supplements: [], waterMl: {} },
+    quiet: null,
+    muted: {},
+    waterTargets: {},
+    plan: {},
+    ...overrides,
+  })
+  const MONDAY = new Date('2026-12-07T06:00:00')
+  const kinds = (items: ReturnType<typeof planReminders>, kind: string) => items.filter((item) => item.kind === kind)
+  const food = (items: ReturnType<typeof planReminders>) => items.filter((item) => item.kind === 'meal' || item.kind === 'supplements').map((item) => `${hhmm(item.at)} ${item.title}`)
+
+  it('kufiri: ditë stërvitjeje me nëntë vakte, katër njoftime sipas përparësisë; stërvitja nuk numërohet', () => {
+    const items = planReminders(base({ from: MONDAY, smart: smart() }), sq)
+    expect(food(items)).toEqual(['13:00 Dreka', '17:45 Para stërvitjes', '19:30 Pas stërvitjes', '22:30 Para gjumit'])
+    expect(kinds(items, 'training')).toHaveLength(1)
+  })
+
+  it('vakti i regjistruar nuk vjen, suplementet e tij vijnë më vete; kur janë marrë edhe ato, vjen i radhës', () => {
+    const logged = { meals: ['2026-12-07|lunch'], supplements: [], waterMl: {} }
+    expect(food(planReminders(base({ from: MONDAY, smart: smart({ logged }) }), sq))).toEqual([
+      '13:00 Suplementet · Dreka',
+      '17:45 Para stërvitjes',
+      '19:30 Pas stërvitjes',
+      '22:30 Para gjumit',
+    ])
+    const lunchSupplements = SUPPLEMENTS.flatMap((supplement, index) => (supplement.timing.includes('lunch') ? [`2026-12-07|lunch|s${index}`] : []))
+    const both = { ...logged, supplements: lunchSupplements }
+    expect(food(planReminders(base({ from: MONDAY, smart: smart({ logged: both }) }), sq))).toEqual([
+      '17:45 Para stërvitjes',
+      '19:30 Pas stërvitjes',
+      '20:30 Darka',
+      '22:30 Para gjumit',
+    ])
+  })
+
+  it('butonat, çelësi dhe teksti pas veprimit; trupi nga Plani im', () => {
+    const plan = { rest: { lunch: { items: [{ name: 'Gjoks pule', sourceId: null }, { name: 'Bukë integrale', sourceId: 'jim:wheat_bread' }], kcal: 404, proteinG: 25.4 } } }
+    const lunch = planReminders(base({ smart: smart({ plan }) }), sq).find((item) => item.title === 'Dreka')!
+    expect(lunch).toMatchObject({
+      kind: 'meal',
+      body: 'Gjoks pule, bukë integrale · me multivitaminë',
+      key: 'meal|2026-12-09|lunch',
+      actions: [
+        { id: 'ate', title: 'Hëngra si në plan' },
+        { id: 'snooze', title: 'Shty 30 min' },
+      ],
+      data: { date: '2026-12-09', meal: 'lunch' },
+      done: { ate: { title: 'Dreka u regjistrua', body: '404 kcal · 25 g proteina, si në plan' } },
+    })
+    expect(lunch.data?.supplementIds).toHaveLength(1)
+    const en_ = planReminders(base({ smart: smart({ plan }) }), en).find((item) => item.title === 'Lunch')!
+    expect(en_.actions?.map((action) => action.title)).toEqual(['Ate as planned', 'Snooze 30 min'])
+  })
+
+  it('uji: një rikujtues kur je prapa ritmit të ditës', () => {
+    const at = (waterMl: number) =>
+      kinds(planReminders(base({ from: new Date('2026-12-09T13:10:00'), smart: smart({ waterTargets: { '2026-12-09': 3000 }, logged: { meals: [], supplements: [], waterMl: { '2026-12-09': waterMl } } }) }), sq), 'water')
+    expect(at(500).map((item) => `${hhmm(item.at)} ${item.title}: ${item.body}`)).toEqual(['15:00 Uji: 0,5 nga 3,0 L: Për këtë orë je pak prapa. Një gotë tani?'])
+    expect(at(500)[0]).toMatchObject({ actions: [{ id: 'drank', title: 'Piva një gotë' }], data: { date: '2026-12-09', ml: 250 }, done: { drank: { title: 'U shtua një gotë', body: '0,75 nga 3,0 L' } } })
+    expect(at(1500).map((item) => hhmm(item.at))).toEqual(['19:00'])
+    expect(at(2500)).toEqual([])
+  })
+
+  it('orët e qeta: rikujtuesi bie në fund të intervalit; i heshturi nuk vjen', () => {
+    const lunch = planReminders(base({ smart: smart({ quiet: { from: '12:30', to: '14:00' } }) }), sq).find((item) => item.title === 'Dreka')!
+    expect(hhmm(lunch.at)).toBe('14:00')
+    const muted = planReminders(base({ smart: smart({ muted: { meal: true } }) }), sq)
+    expect(kinds(muted, 'meal')).toEqual([])
+    expect(kinds(muted, 'supplements').length).toBeGreaterThan(0)
+    expect(planReminders(base({ smart: smart({ muted: { meal: true, supplements: true } }) }), sq).filter((item) => item.kind !== 'measurement')).toEqual([])
+  })
+
+  it('dita e humbur: "Po, sot" dhe "Jo, të enjten" te njoftimi', () => {
+    const items = planReminders(base({ startedOn: '2026-12-01', sessionDates: ['2026-12-07'], nextWorkout: { blockName: 'Faza 1', blockWeeks: 4, week: 2, run: 1, dayNumber: 3, dayName: 'Shpinë, biceps, bark' }, smart: smart() }), sq)
+    expect(kinds(items, 'missed')[0]).toMatchObject({
+      title: 'Dje nuk u stërvite',
+      body: 'Stërvitja 3, shpinë, biceps, bark, sot në 18:00?',
+      actions: [
+        { id: 'yes', title: 'Po, sot' },
+        { id: 'no', title: 'Jo, të enjten' },
+      ],
+      data: { date: '2026-12-09' },
+      done: { yes: { title: 'Sot është ditë stërvitjeje' }, no: { title: 'Sot mbetet ditë pushimi', body: 'Stërvitja e radhës: e enjte.' } },
+    })
+  })
+
+  it('njoftimet e regjistruara ndërkohë hiqen nga paneli, ato që vijnë jo', () => {
+    const logged = { meals: ['2026-12-09|lunch'], supplements: ['2026-12-09|bedtime|s9'], waterMl: { '2026-12-09': 1500, '2026-12-10': 0 } }
+    const input = smart({ logged, waterTargets: { '2026-12-09': 3000 } })
+    const reminders = planReminders(base({ from: new Date('2026-12-09T13:10:00'), smart: input }), sq)
+    expect(staleKeys(input, reminders).sort()).toEqual(['meal|2026-12-09|lunch', 'supplements|2026-12-09|bedtime'].sort())
   })
 })

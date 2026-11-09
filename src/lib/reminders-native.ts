@@ -1,11 +1,15 @@
-import { Capacitor } from '@capacitor/core'
+import { Capacitor, type PluginListenerHandle, registerPlugin } from '@capacitor/core'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { currentI18n, type Language } from '@/i18n'
+import type { QueuedReminderAction } from '@/data/reminder-actions'
+import type { ReminderLogEntry } from '@/reminders/ignored'
 import { type Reminder, REMINDER_IDS } from '@/reminders/plan'
 
 // Rikujtuesit në telefon (SPEC §13): njoftime lokale në kanalin e tyre. Çdo planifikim i ri heq
 // ata të mëparshëm (id 5000–5199) dhe vendos të rinjtë; timer-i i pushimit nuk preket. Emri i
 // kanalit ndjek gjuhën e app-it: Android-i e përditëson kur kanali krijohet përsëri me të njëjtën id.
+// Që nga 0.21 (V37) i vendos plugin-i native Reminders, me butonat e njoftimit; LocalNotifications
+// mbetet për lejen dhe kanalin.
 
 const CHANNEL = 'rikujtuesit'
 let channelReady: { lang: Language; ready: Promise<void> } | null = null
@@ -47,22 +51,67 @@ export async function requestReminderPermission(): Promise<boolean> {
   }
 }
 
-export async function scheduleReminders(reminders: Reminder[]) {
+/** Plugin-i native i rikujtuesve të zgjuar (RemindersPlugin.java, V2-E2-08). */
+interface RemindersPlugin {
+  schedule(options: { reminders: NativeReminder[]; channel: { name: string; description: string }; cancelKeys: string[] }): Promise<void>
+  pending(): Promise<{ actions: QueuedReminderAction[] }>
+  ack(options: { ids: string[] }): Promise<void>
+  log(): Promise<{ entries: ReminderLogEntry[] }>
+  addListener(event: 'action', listener: () => void): Promise<PluginListenerHandle>
+}
+
+interface NativeReminder {
+  id: number
+  at: number
+  title: string
+  body: string
+  kind: Reminder['kind']
+  key: string
+  data: Reminder['data'] | null
+  actions: NonNullable<Reminder['actions']>
+  done: NonNullable<Reminder['done']>
+  undo: string
+}
+
+const Reminders = registerPlugin<RemindersPlugin>('Reminders')
+
+/**
+ * Planifikon rikujtuesit: plugin-i native i vendos me alarmet e veta dhe heq listën e mëparshme; njoftimet
+ * e `cancelKeys` (të regjistruara ndërkohë) hiqen nga paneli. Rikujtuesit e vjetër të LocalNotifications
+ * (0.20, të njëjtat id) hiqen që të mos vijnë dy herë.
+ */
+export async function scheduleReminders(reminders: Reminder[], cancelKeys: string[] = []) {
   if ((await reminderPermission()) !== 'granted') return
   await ensureChannel()
   const { notifications } = await LocalNotifications.getPending()
   const old = notifications.filter((item) => item.id >= REMINDER_IDS.first && item.id <= REMINDER_IDS.last)
   if (old.length > 0) await LocalNotifications.cancel({ notifications: old.map((item) => ({ id: item.id })) })
-  if (reminders.length === 0) return
-  await LocalNotifications.schedule({
-    notifications: reminders.map((item) => ({
+  const { t } = currentI18n()
+  await Reminders.schedule({
+    reminders: reminders.map((item) => ({
       id: item.id,
+      at: item.at.getTime(),
       title: item.title,
       body: item.body,
-      channelId: CHANNEL,
-      smallIcon: 'ic_stat_pushimi',
-      autoCancel: true,
-      schedule: { at: item.at, allowWhileIdle: true },
+      kind: item.kind,
+      key: item.key ?? `${item.kind}|${item.id}`,
+      data: item.data ?? null,
+      actions: item.actions ?? [],
+      done: item.done ?? {},
+      undo: t('reminders.notify.undo'),
     })),
+    channel: { name: t('reminders.notify.channel'), description: t('reminders.notify.channelText') },
+    cancelKeys,
   })
+}
+
+/** Radha e prekjeve dhe ditari i njoftimeve të shfaqura, nga telefoni. */
+export const nativeReminderQueue = {
+  pending: async () => (await Reminders.pending()).actions,
+  ack: (ids: string[]) => Reminders.ack({ ids }),
+  log: async () => (await Reminders.log()).entries,
+  listen(listener: () => void) {
+    const handle = Reminders.addListener('action', listener)
+    return () => void handle.then((value) => value.remove())
+  },
 }
