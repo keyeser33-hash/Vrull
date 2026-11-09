@@ -150,7 +150,8 @@ jobs:
         with:
           name: TrainingHub-${{ needs.plan.outputs.version }}
           path: out/
-          retention-days: 30
+          # APK-ja e lëshimit ruhet te Release-i dhe te Supabase-i; artifact-i shërben për ndërtimet me dorë.
+          retention-days: 7
 
       - name: Publiko Release-in
         if: needs.plan.outputs.publish == 'true'

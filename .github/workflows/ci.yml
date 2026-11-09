@@ -1,10 +1,17 @@
 # Kontrolli i çdo ndryshimi: lint (përfshirë rojën e dizajnit), testet dhe build-i i web-it.
 name: CI
 
+# Dokumentet nuk e nisin: lint-i dhe provat nuk lexojnë docs/ dhe *.md (docs/research/optimizimi-i-ndertimeve.md).
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 
 permissions:
   contents: read
