@@ -1209,7 +1209,8 @@ try {
     await waitForText(page, 'Seti 2 u ruajt: 40 × 12')
     check('procesi i vrarë: hapja e app-it tregon "Seti 2 u ruajt"', true)
     await waitFor(() => sessionPrefs().queue.length === 0, 'radha e zbrazur', 15_000)
-    await waitFor(() => posted('set_logs').some((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press']), 'sinkronizimi i setit nga njoftimi', 30_000)
+    // Procesi sapo nisi: sinkronizimi i parë lexon edhe tabelat e tjera para setit; në CI zgjati një herë mbi 30 s.
+    await waitFor(() => posted('set_logs').some((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press']), 'sinkronizimi i setit nga njoftimi', 60_000)
     const killedSet = posted('set_logs').find((row) => row.set_number === 2 && row.exercise_id === ids['Incline Bench Press'])
     check('procesi i vrarë: seti sinkronizohet me logged_at = koha e prekjes', Date.parse(killedSet.logged_at) === queued[0].at, `${killedSet.logged_at} = ${new Date(queued[0].at).toISOString()}`)
     screenshot('seanca-seti-nga-njoftimi')
