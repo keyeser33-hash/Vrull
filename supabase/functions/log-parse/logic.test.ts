@@ -1,5 +1,5 @@
 import { buildRequest, interpret, MODEL, parseRequest, PARSE_SCHEMA } from './logic'
-import type { ParseContext } from './shared'
+import { NO_FOOD_IN_PHOTO, type ParseContext } from './shared'
 
 // Kutia e AI-së (V40, V2-E2-13): kërkesa me cache-in e kontekstit, kontrolli i hyrjes dhe drafti i pastër.
 const CONTEXT: ParseContext = {
@@ -116,6 +116,8 @@ describe('kërkesa', () => {
     expect(parseRequest({ ...REQUEST, image })).toMatchObject({ ok: true, request: { image } })
     expect(parseRequest({ ...REQUEST, image: { mediaType: 'image/gif', data: image.data } })).toEqual({ ok: false, error: 'bad_request' })
     expect(parseRequest({ ...REQUEST, image: { mediaType: 'image/jpeg', data: 'A'.repeat(7_000_001) } })).toEqual({ ok: false, error: 'too_long' })
+    // Foto pa ushqim: udhëzimi kërkon shenjën që app-i e kthen në fjali.
+    expect(request.system[0].text).toContain(`put "${NO_FOOD_IN_PHOTO}" in not_understood`)
   })
 
   it('udhëzimet e kalojnë pragun e cache-it (512 tokena te Haiku 5.5)', () => {

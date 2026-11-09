@@ -1,4 +1,4 @@
-import { type CoachAnswer, type ContextFood, type ContextSupplement, type Draft, PARSE_ERRORS, type ParseErrorCode, type ParseMealKey, type ParseRequest } from '../../supabase/functions/log-parse/shared'
+import { type CoachAnswer, type ContextFood, type ContextSupplement, type Draft, NO_FOOD_IN_PHOTO, PARSE_ERRORS, type ParseErrorCode, type ParseMealKey, type ParseRequest } from '../../supabase/functions/log-parse/shared'
 import { type BoxExercise, logSets, resolveSets, type TrainingRefs, workoutContext } from './ai-box-training'
 import { coachFacts } from './ai-coach'
 import { createCustomFood, recentFoods } from './foods'
@@ -351,6 +351,12 @@ export const pendingExtra = (draft: BoxDraft) => draft.exercises.find((row) => !
 
 /** Sa rreshta do të regjistrohen: ushqimet me sasi, setet e pranuara, suplementet dhe uji. */
 export const draftRows = (draft: BoxDraft) => draft.foods.filter((row) => row.grams !== null).length + draft.exercises.filter((row) => row.slot || row.extra).reduce((sum, row) => sum + row.sets.length, 0) + draft.supplements.length + draft.water.length
+
+/** Pjesët e paregjistruara pa shenjën e fotos pa ushqim (V2-E2-16), që ekrani e thotë me fjalë. */
+export function notLogged(draft: Pick<BoxDraft, 'notUnderstood'>): { parts: string[]; photoWithoutFood: boolean } {
+  const isMarker = (part: string) => part.trim().toLowerCase() === NO_FOOD_IN_PHOTO
+  return { parts: draft.notUnderstood.filter((part) => !isMarker(part)), photoWithoutFood: draft.notUnderstood.some(isMarker) }
+}
 
 /**
  * Përgjigja e lirë te pyetja (MESIMET, "AI-ja"): funksioni kthen vetëm rreshtat e përgjigjur ose të rinj.

@@ -17,6 +17,7 @@ import {
   draftTotals,
   logBoxDraft,
   mergeAnswer,
+  notLogged,
   pendingExtra,
   removeRow,
   resolveDraft,
@@ -399,6 +400,7 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
   const rows = draftRows(draft)
   const extra = pendingExtra(draft)
   const empty = rows === 0 && !extra && !draft.answer
+  const skipped = notLogged(draft)
   const added = draftTotals({ ...draft, foods: draft.foods.filter((row) => row.date === today?.date) })
   const edited = draft.foods.find((row) => row.key === editing) ?? null
   const cost = Math.max(0.001, Math.round(review.costEur * 1000) / 1000)
@@ -415,7 +417,7 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
         <Said texts={said} />
         {draft.answer ? <CoachCard answer={draft.answer} /> : null}
         <h2 className="m-0 type-display-s">{t('box.summary.title')}</h2>
-        {empty ? <p className="m-0 type-body-l text-muted-foreground">{t('box.summary.empty')}</p> : null}
+        {empty ? <p className="m-0 type-body-l text-muted-foreground">{t(skipped.photoWithoutFood ? 'box.summary.photoEmpty' : 'box.summary.empty')}</p> : null}
         {draft.exercises.map((row) => (
           <ExerciseCard key={row.key} row={row} onExtra={(accept) => onChange(acceptExtra(draft, row.key, accept))} onRemove={() => onChange(removeRow(draft, row.key))} />
         ))}
@@ -482,7 +484,8 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
             </ul>
           </section>
         ) : null}
-        {draft.notUnderstood.length ? <p className="m-0 type-caption text-muted-foreground">{t('box.summary.notUnderstood', { text: draft.notUnderstood.join('; ') })}</p> : null}
+        {skipped.photoWithoutFood && !empty ? <p className="m-0 type-caption text-muted-foreground">{t('box.summary.photoEmpty')}</p> : null}
+        {skipped.parts.length ? <p className="m-0 type-caption text-muted-foreground">{t('box.summary.notUnderstood', { text: skipped.parts.join('; ') })}</p> : null}
       </div>
       <div className="sticky bottom-0 flex shrink-0 flex-col gap-2 bg-background px-4 pt-2.5 pb-[calc(var(--safe-bottom)+20px)]">
         {today?.targets && draft.foods.length ? (

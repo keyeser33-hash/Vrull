@@ -17,6 +17,8 @@ export const MAX_HISTORY = 6
 export const MAX_IMAGE_BASE64 = 7_000_000
 export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
 export type ImageType = (typeof IMAGE_TYPES)[number]
+/** Shenja te `notUnderstood` kur foto nuk tregon ushqim (udhëzimet te logic.ts); app-i e thotë me fjalë. */
+export const NO_FOOD_IN_PHOTO = 'photo'
 
 export const PARSE_ERRORS = ['unauthorized', 'not_configured', 'limit', 'bad_request', 'too_long', 'unreadable', 'timeout', 'ai_failed'] as const
 export type ParseErrorCode = (typeof PARSE_ERRORS)[number]

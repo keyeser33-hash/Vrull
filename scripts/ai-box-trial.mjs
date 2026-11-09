@@ -3,6 +3,8 @@
 // të përkohshëm dhe tregon draftin, koston dhe cache-in.
 //
 //   E2E_EMAIL=… E2E_PASSWORD=… node scripts/ai-box-trial.mjs
+//   ONLY=1,8 …: vetëm këto raste. PHOTO=pjata.jpg …: vetëm foto e pjatës për drekë (V2-E2-16), e
+//   zvogëluar si në app (JPEG deri në 1 568 px; ImageMagick `convert`).
 //
 // Përdoruesi i provës krijohet dhe fshihet jashtë skriptit (SQL), vetëm kur pronari është i pranishëm.
 const URL = process.env.SUPABASE_URL ?? 'https://hxwkyhfqcadtipkpopnq.supabase.co'
@@ -79,6 +81,14 @@ const ALL_CASES = [
 ]
 const CASES = ALL_CASES.filter((_, index) => !ONLY || ONLY.has(index + 1))
 
+// Foto si e dërgon app-i (`food.photo.message`); kostoja numërohet si food_photo.
+if (process.env.PHOTO) {
+  const { execFileSync } = await import('node:child_process')
+  const jpeg = execFileSync('convert', [process.env.PHOTO, '-auto-orient', '-resize', '1568x1568>', '-quality', '82', 'jpeg:-'])
+  CASES.length = 0
+  CASES.push({ text: 'Foto e pjatës për Dreka.', time: '14:30', image: { mediaType: 'image/jpeg', data: jpeg.toString('base64') }, note: `${process.env.PHOTO}, ${Math.round(jpeg.length / 1024)} KB` })
+}
+
 const auth = await fetch(`${URL}/auth/v1/token?grant_type=password`, {
   method: 'POST',
   headers: { apikey: KEY, 'content-type': 'application/json' },
@@ -93,7 +103,7 @@ for (const item of CASES) {
   const response = await fetch(`${URL}/functions/v1/log-parse`, {
     method: 'POST',
     headers: { apikey: KEY, authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ text: item.text, date: item.date ?? '2026-11-18', time: item.time, context: CONTEXT, facts: FACTS, history: item.history ?? [] }),
+    body: JSON.stringify({ text: item.text, date: item.date ?? '2026-11-18', time: item.time, context: CONTEXT, facts: FACTS, history: item.history ?? [], ...(item.image ? { image: item.image } : {}) }),
   })
   const body = await response.json()
   console.log(`\n### ${item.text}${item.note ? ` (${item.note})` : ''}`)

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { Draft, ParseRequest } from '../../supabase/functions/log-parse/shared'
@@ -135,14 +135,14 @@ describe('Kutia e AI-së', () => {
     vi.restoreAllMocks()
   })
 
-  async function renderPage() {
+  async function renderPage(state?: { photo: NonNullable<ParseRequest['image']>; text: string }) {
     const { AiBoxPage } = await import('./ai-box')
     const router = createMemoryRouter(
       [
         { path: '/', element: <p>Sot</p> },
         { path: '/kutia', element: <AiBoxPage /> },
       ],
-      { initialEntries: ['/', '/kutia'], initialIndex: 1 },
+      { initialEntries: ['/', state ? { pathname: '/kutia', state } : '/kutia'], initialIndex: 1 },
     )
     render(<RouterProvider router={router} />)
     await screen.findByRole('heading', { name: 'Kutia e AI-së' })
@@ -294,6 +294,31 @@ describe('Kutia e AI-së', () => {
       { role: 'user', text: 'Sa proteinë më mbetet sot?' },
       { role: 'assistant', text: '44 g proteinë. Ke 132 nga 176 g.' },
     ])
+  })
+
+  it('foto e pjatës: dërgohet një herë me vaktin; pa ushqim në foto, ekrani e thotë me fjalë', async () => {
+    const photo = { mediaType: 'image/jpeg' as const, data: 'A'.repeat(400) }
+    // Si e ktheu AI-ja e vërtetë një foto me sallatë makaronash (09.11.2026).
+    data.reply = () => ({
+      ok: true,
+      costEur: 0.00036,
+      month: MONTH,
+      draft: {
+        ...empty,
+        foods: [{ said: 'foto', ref: null, name: 'Makarona me karkaleca', grams: 350, portion: '', estimated: true, per100: { kcal: 165, proteinG: 7.5, carbsG: 20, fatG: 6 }, options: [], meal: 'lunch', time: null, day: 0 }],
+      },
+    })
+    await renderPage({ photo, text: 'Foto e pjatës për Dreka.' })
+    expect(await screen.findByRole('button', { name: /Makarona me karkaleca/ })).toHaveTextContent(/350\sg · vlerësim/)
+    expect(data.requests).toHaveLength(1)
+    expect(data.requests[0]).toMatchObject({ text: 'Foto e pjatës për Dreka.', image: photo })
+    cleanup()
+
+    // Si e ktheu AI-ja e vërtetë një foto pa ushqim: shenja nuk del si tekst.
+    data.reply = () => ({ ok: true, costEur: 0.00034, month: MONTH, draft: { ...empty, notUnderstood: ['photo'] } })
+    await renderPage({ photo, text: 'Foto e pjatës për Dreka.' })
+    expect(await screen.findByText('Në foto nuk dallova ushqim. Provo një foto tjetër ose shkruaje me fjalë.')).toBeInTheDocument()
+    expect(screen.queryByText(/Nuk e regjistrova/)).toBeNull()
   })
 
   it('pa internet: teksti mbetet, "Dërgo" pret rrjetin dhe karta e thotë', async () => {
