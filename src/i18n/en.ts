@@ -6,13 +6,17 @@ import * as domain from './areas/domain'
 import * as entry from './areas/entry'
 import * as food from './areas/food'
 import * as history from './areas/history'
+import * as lighter from './areas/lighter'
 import * as music from './areas/music'
 import * as notify from './areas/notify'
 import * as photos from './areas/photos'
 import * as programme from './areas/programme'
 import * as progress from './areas/progress'
+import * as readiness from './areas/readiness'
 import * as reminders from './areas/reminders'
 import * as box from './areas/box'
+import * as checkin from './areas/checkin'
+import * as daymode from './areas/daymode'
 import * as admin from './areas/admin'
 import * as session from './areas/session'
 import * as today from './areas/today'
@@ -267,4 +271,8 @@ export const en: Translation = {
   ...admin.en,
   ...achievements.en,
   ...week.en,
+  ...checkin.en,
+  ...readiness.en,
+  ...lighter.en,
+  ...daymode.en,
 }

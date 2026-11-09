@@ -34,6 +34,8 @@ export const TABLES = [
   'ai_limits',
   // Arritjet (V43, V2-E2-21): një rresht për arritje të fituar, me id nga çelësi (`achievementId`).
   'achievements',
+  // Gjendja e ditës (V50, V2-E3-03): check-in-i i mëngjesit dhe vendimi i sugjerimit, një rresht për ditë ushqimi.
+  'daily_states',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -95,4 +97,5 @@ export const INDEXES: Record<TableName, string[]> = {
   ai_usage: ['month'],
   ai_limits: [],
   achievements: [],
+  daily_states: ['date'],
 }
