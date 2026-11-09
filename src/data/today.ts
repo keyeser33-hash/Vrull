@@ -5,6 +5,8 @@ import { isMissed, missedYesterday } from '@/program/missed-day'
 import { recoveryFor, type RecoveryStatus } from '@/program/recovery'
 import { workoutMinutes } from '@/program/week-plan'
 import type { Target, Tracking } from '@/program/types'
+import type { MealKey } from '@/nutrition/meals'
+import { weekCardMonday } from '@/progress/weekly-goals'
 import { readMissedInput } from './missed-day'
 import { currentFoodDate, dayTargets, nutritionDay } from './nutrition'
 import { readProfile } from './profile'
@@ -140,6 +142,16 @@ export interface TodayView {
   firstEver: boolean
   workout: TodayWorkout | null
   protein: { eatenG: number; targetG: number | null }
+  /** Ushqimi i ditës së ushqimit (V46): kaloritë dhe proteina kundrejt objektivave, dhe vakti i radhës. */
+  food: TodayFood
+  /** Ora e stërvitjes së sotme (V35) dhe e ditës së radhës: "Sot · 17:15 · Stërvitja 1". */
+  trainingTime: string
+  nextTime: string | null
+  /**
+   * Karta "Java jote" (V43, SPEC §0.3c): e hëna e javës që përmbledh, nga e diela 20:00 deri në fund të
+   * së hënës (`weekCardMonday`); null jashtë saj.
+   */
+  weekCard: string | null
   /** Data e ushqimit dhe e ujit, dhe nëse sot është ditë stërvitjeje (objektivi i ujit, V36). */
   date: string
   trainingDay: boolean
@@ -150,6 +162,15 @@ export interface TodayView {
    * null kur nuk ka. Zë vendin e kartës së ditës së humbur. Çelësi: `setLighterFirstSession`.
    */
   welcomeBack: WelcomeBack | null
+}
+
+export interface TodayFood {
+  kcal: number
+  targetKcal: number | null
+  proteinG: number
+  targetProteinG: number | null
+  /** Vakti i radhës me orën ("Snack pasdite, 17:45"); null kur s'ka më vakte sot. */
+  next: { meal: MealKey; time: string } | null
 }
 
 export interface TodayMissed {
@@ -191,13 +212,24 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     : null
   const trainingToday = profile.trainingDays.includes(isoWeekday(now)) || missedInput.dayTypes[today] === 'training'
   const back = programmeOpen ? await welcomeBack(store) : null
+  const nextDate = nextTrainingDate(now, profile.trainingDays)
   const base = {
     now,
     snapshot,
     week,
-    nextDate: nextTrainingDate(now, profile.trainingDays),
+    nextDate,
     firstEver: history.sets.length === 0,
     protein: { eatenG: Math.round(nutrition.totals.proteinG), targetG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null },
+    food: {
+      kcal: Math.round(nutrition.totals.kcal),
+      targetKcal: nutrition.targets ? Math.round(nutrition.targets.kcal) : null,
+      proteinG: Math.round(nutrition.totals.proteinG),
+      targetProteinG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null,
+      next: nutrition.next ? { meal: nutrition.next.meal, time: nutrition.next.time } : null,
+    },
+    trainingTime: trainingTimeOn(schedule, today),
+    nextTime: nextDate ? trainingTimeOn(schedule, nextDate) : null,
+    weekCard: weekCardMonday(now),
     date: eatingDate,
     trainingDay: nutrition.dayType === 'training',
     missed,

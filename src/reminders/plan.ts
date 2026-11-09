@@ -7,6 +7,7 @@ import type { SupplementDef } from '@/nutrition/supplements'
 import type { DayType } from '@/nutrition/targets'
 import { GLASS_ML } from '@/nutrition/water'
 import { type MissedInput, missedYesterday } from '@/program/missed-day'
+import { WEEK_CARD_HOUR } from '@/progress/weekly-goals'
 
 // Rikujtuesit (SPEC §13), pa UI: njoftimet e ditëve të ardhshme sipas orarit të vakteve, të
 // suplementeve, të stërvitjes dhe të matjes javore. Telefoni i planifikon dhe i rinovon sa herë
@@ -31,6 +32,8 @@ export interface ReminderToggles {
   measurements: boolean
   /** Uji sipas ritmit (V37); pa vlerë, i ndezur. */
   water?: boolean
+  /** "Java jote është gati" të dielën në 20:00 (V43); pa vlerë, i ndezur. */
+  week?: boolean
 }
 
 /** Llojet që heshtin vetë pas 3 ditëve të injoruara (V37). */
@@ -76,7 +79,7 @@ export interface ReminderInput {
   smart?: SmartInput
 }
 
-export type ReminderKind = 'meal' | 'supplements' | 'water' | 'training' | 'measurement' | 'missed'
+export type ReminderKind = 'meal' | 'supplements' | 'water' | 'training' | 'measurement' | 'missed' | 'week'
 export type ReminderActionId = 'ate' | 'snooze' | 'drank' | 'took' | 'yes' | 'no'
 
 export interface Reminder {
@@ -87,7 +90,7 @@ export interface Reminder {
   kind: ReminderKind
   /** Butonat te njoftimi (V37), që telefoni i zbaton pa hapur app-in. */
   actions?: { id: ReminderActionId; title: string }[]
-  /** Çfarë regjistron një buton: dita, vakti, suplementet ose gota. */
+  /** Çfarë regjistron një buton: dita, vakti, suplementet ose gota; te "Java jote" e hëna e javës. */
   data?: { date: string; meal?: MealKey; supplementIds?: string[]; ml?: number }
   /** Njoftimi pas butonit, sipas butonit ("Dreka u regjistrua"). */
   done?: Partial<Record<ReminderActionId, { title: string; body: string }>>
@@ -188,6 +191,19 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
         const body = known ? t('reminders.notify.missedText', { day: String(known.dayNumber) }) : t('reminders.notify.missedNext')
         dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title: t('reminders.notify.missed'), body, kind: 'missed' })
       }
+    }
+    // "Java jote është gati" (V43, SPEC §0.3c): të dielën në 20:00, një herë në javë, jashtë kufirit
+    // ditor (si stërvitja dhe matja); orët e qeta e shtyjnë si çdo njoftim. Prekja hap përmbledhjen.
+    if (!late && weekday === 7 && input.toggles.week !== false) {
+      const monday = isoDate(new Date(day.getFullYear(), day.getMonth(), day.getDate() - 6))
+      dayItems.push({
+        at: new Date(day.getFullYear(), day.getMonth(), day.getDate(), WEEK_CARD_HOUR, 0),
+        title: t('reminders.notify.week'),
+        body: t('reminders.notify.weekText'),
+        kind: 'week',
+        key: `week|${monday}|`,
+        data: { date: monday },
+      })
     }
     if (training && !done.has(date) && !late) pending += 1
     if (input.toggles.training && training && !late) {
@@ -327,6 +343,12 @@ function nextTrainingDay(day: Date, isTraining: (date: Date) => boolean): Date |
     if (isTraining(candidate)) return candidate
   }
   return null
+}
+
+/** Rruga që hap një njoftim i prekur: "week|2026-11-16|" → përmbledhja e asaj jave; null për të tjerët. */
+export function reminderRoute(key: string | null): string | null {
+  const match = key ? /^week\|(\d{4}-\d{2}-\d{2})\|$/.exec(key) : null
+  return match ? `/progresi/java/${match[1]}` : null
 }
 
 /**

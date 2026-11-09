@@ -58,7 +58,9 @@ interface RemindersPlugin {
   pending(): Promise<{ actions: QueuedReminderAction[] }>
   ack(options: { ids: string[] }): Promise<void>
   log(): Promise<{ entries: ReminderLogEntry[] }>
-  addListener(event: 'action', listener: () => void): Promise<PluginListenerHandle>
+  /** Çelësi i njoftimit të prekur që hap një faqe ("week|2026-11-16|"), një herë. */
+  consumeOpen(): Promise<{ key: string | null }>
+  addListener(event: 'action' | 'open', listener: () => void): Promise<PluginListenerHandle>
 }
 
 interface NativeReminder {
@@ -115,5 +117,14 @@ export const nativeReminderQueue = {
   listen(listener: () => void) {
     const handle = Reminders.addListener('action', listener)
     return () => void handle.then((value) => value.remove())
+  },
+}
+
+/** Prekja e "Java jote është gati" (V43): çelësi i njoftimit, që app-i hap përmbledhjen. */
+export const reminderOpen = {
+  consume: async () => (await Reminders.consumeOpen()).key,
+  listen(listener: () => void) {
+    const handle = Reminders.addListener('open', listener)
+    return () => void handle.then((value) => value.remove()).catch(() => undefined)
   },
 }

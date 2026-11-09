@@ -96,6 +96,11 @@
          kërkon lejen kur hapet kamera e parë herë; pa zë, ndaj pa RECORD_AUDIO. Me këtë leje, edhe
          fotot e progresit e kërkojnë një herë para se të hapin kamerën e sistemit. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Karta e javës (V43): "Ruaj në galeri" te Pictures/Vrull. Android 10+ ruan me MediaStore pa leje;
+         vetëm Android 7–9 e kërkon këtë leje, herën e parë që ruhet një kartë (GalleryPlugin). -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- Muzika (V2-E1-12): emri i app-it të muzikës që luan ("Luhet te Spotify"). Android 11+ i fsheh
          paketat e tjera; app-et e muzikës me shërbimin e shfletimit të medias bëhen të dukshme vetëm

@@ -42,7 +42,9 @@ describe('Progresi bosh', () => {
   it('katër gjërat që vijnë, pesha e sotme dhe stërvitja e parë si veprimi kryesor; edhe në anglisht', async () => {
     await renderProgress()
     expect(await screen.findByRole('heading', { level: 2, name: 'Grafikët nisin me setin e parë' })).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByRole('banner')).toHaveTextContent(/· Java 0Progresi/))
+    // 0.23 (bordi "Progresi"): titulli sipër, data dhe java e programit poshtë tij; tab-et edhe në gjendjen bosh.
+    await waitFor(() => expect(screen.getByRole('banner')).toHaveTextContent(/^Progresi.+ · Java 0$/))
+    expect(screen.getByRole('tab', { name: 'Përmbledhja' })).toHaveAttribute('aria-selected', 'true')
     const items = screen.getAllByRole('listitem').map((item) => item.textContent)
     expect(items).toEqual([
       '01Forca · e1RMPër çdo ushtrim, që nga seti i parë.',

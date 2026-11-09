@@ -59,4 +59,7 @@ export const VRULL_ICONS = {
   metronomi: '<path d="M7 21h10L14 3h-4L7 21z"/><path d="M12 16l5-8"/>',
   muzika: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
   vale: '<path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/>',
+  // Java (0.23, bordet "Sot", "Java", "Karta"): gota e ujit dhe ndarja e kartës.
+  gota: '<path d="M6 4h12l-1.5 16h-9z"/><path d="M7 9h10"/>',
+  ndaj: '<path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>',
 } as const

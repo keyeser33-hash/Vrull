@@ -43,6 +43,7 @@ describe('Rikujtuesit', () => {
       'Suplementet',
       'Uji',
       'Matja javore',
+      'Përmbledhja e javës',
     ])
     const meals = screen.getByRole('switch', { name: /^Vaktet/ })
     expect(meals).toBeChecked()
@@ -87,6 +88,7 @@ describe('Rikujtuesit', () => {
     act(() => language.set('en'))
     expect(screen.getByRole('heading', { level: 1, name: 'Reminders' })).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: /^Weekly measurement/ })).toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: /^Weekly summary/ })).toBeChecked()
     expect(screen.getByRole('button', { name: 'Measurement day, Monday' })).toBeInTheDocument()
   })
 })

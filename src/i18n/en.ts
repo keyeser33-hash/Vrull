@@ -17,6 +17,7 @@ import * as admin from './areas/admin'
 import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
+import * as week from './areas/week'
 import type { base as sqBase, Translation } from './sq'
 import type { TranslationOf } from './translate'
 
@@ -265,4 +266,5 @@ export const en: Translation = {
   ...box.en,
   ...admin.en,
   ...achievements.en,
+  ...week.en,
 }

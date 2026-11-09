@@ -17,7 +17,7 @@ import { trainingSnapshot } from './training'
 // dhe dita kur një lloj u ndez përsëri (V37), pa kolona të reja.
 
 export interface ReminderSettings {
-  toggles: ReminderToggles & { water: boolean }
+  toggles: ReminderToggles & { water: boolean; week: boolean }
   /** Dita ISO e matjes javore (7 = e diel). */
   measurementDay: number
   /** Intervali i qetë që zgjodhi përdoruesi; null pa interval. */
@@ -28,7 +28,7 @@ export interface ReminderSettings {
   resumed: Partial<Record<MutableKind, string>>
 }
 
-const DEFAULT_TOGGLES = { meals: true, supplements: true, training: true, measurements: true, water: true }
+const DEFAULT_TOGGLES = { meals: true, supplements: true, training: true, measurements: true, water: true, week: true }
 const TOGGLE_KEYS = Object.keys(DEFAULT_TOGGLES) as (keyof typeof DEFAULT_TOGGLES)[]
 const KINDS: readonly MutableKind[] = ['meal', 'supplements', 'water']
 const TIME = /^\d{2}:\d{2}$/

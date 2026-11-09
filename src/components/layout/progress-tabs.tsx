@@ -29,6 +29,7 @@ export function ProgressTabs({ active, className }: { active: ProgressTab; class
             to={tab.to}
             role="tab"
             aria-selected={selected}
+            aria-current={selected ? 'page' : undefined}
             replace
             className={cn(
               'flex h-touch min-w-0 items-center justify-center rounded-[10px] font-display text-[16px] leading-none font-bold transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',

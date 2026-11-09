@@ -6,7 +6,6 @@ import type { Messages, TranslationOf } from '../translate'
 
 export const sq = {
   'photos.title': 'Fotot e progresit',
-  'photos.all': 'Të gjitha',
   'photos.pose.front': 'Para',
   'photos.pose.side': 'Anash',
   'photos.pose.back': 'Mbrapa',
@@ -29,7 +28,6 @@ export const sq = {
 
 export const en: TranslationOf<typeof sq> = {
   'photos.title': 'Progress photos',
-  'photos.all': 'See all',
   'photos.pose.front': 'Front',
   'photos.pose.side': 'Side',
   'photos.pose.back': 'Back',

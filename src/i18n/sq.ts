@@ -17,6 +17,7 @@ import * as admin from './areas/admin'
 import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
+import * as week from './areas/week'
 import type { Messages, TranslationOf } from './translate'
 
 // Katalogu shqip: burimi i çelësave. Korniza dhe ekranet e v1 janë këtu (base, me anglishten te en.ts);
@@ -263,7 +264,7 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements }
+export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements, week }
 
 export const sq = {
   ...base,
@@ -286,6 +287,7 @@ export const sq = {
   ...box.sq,
   ...admin.sq,
   ...achievements.sq,
+  ...week.sq,
 } as const satisfies Messages
 
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */

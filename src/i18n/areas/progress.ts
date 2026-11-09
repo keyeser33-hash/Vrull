@@ -21,8 +21,18 @@ export const sq = {
   'progress.startFirst': 'Fillo stërvitjen e parë',
   'progress.nextWorkout': '{label} · Stërvitja {day} · {name}',
 
-  // Paneli i peshës.
-  'progress.weightTitle': 'Pesha · mesatarja 7-ditore',
+  // Tab-et (0.23, bordi "Progresi"): Trupi · Përmbledhja · Historiku · Arritjet.
+  // Karta e javës: hap përmbledhjen.
+  'progress.week.training': '{value} stërvitje',
+  'progress.week.food': '{value} ushqimi',
+  'progress.week.water': '{value} uji',
+  'progress.week.streak': { one: 'Vargu {count} javë', other: 'Vargu {count} javë' },
+
+  // Pesha, matjet dhe fotot.
+  'progress.weight': 'Pesha',
+  'progress.weightUnit': 'kg · mesatarja 7-ditore',
+  'progress.photosDetail': { one: '{count} foto · {date}', other: '{count} foto · {date}' },
+  'progress.photosNone': 'Asnjë foto ende',
   'progress.noWeight': 'Pa peshë ende',
   'progress.changeFrom': '{delta} nga {date}',
   'progress.changeLater': 'Ndryshimi del pas matjeve të tjera',
@@ -79,7 +89,15 @@ export const en: TranslationOf<typeof sq> = {
   'progress.startFirst': 'Start your first workout',
   'progress.nextWorkout': '{label} · Workout {day} · {name}',
 
-  'progress.weightTitle': 'Weight · 7-day average',
+  'progress.week.training': '{value} workouts',
+  'progress.week.food': '{value} food',
+  'progress.week.water': '{value} water',
+  'progress.week.streak': { one: 'Streak {count} week', other: 'Streak {count} weeks' },
+
+  'progress.weight': 'Weight',
+  'progress.weightUnit': 'kg · 7-day average',
+  'progress.photosDetail': { one: '{count} photo · {date}', other: '{count} photos · {date}' },
+  'progress.photosNone': 'No photos yet',
   'progress.noWeight': 'No weight yet',
   'progress.changeFrom': '{delta} since {date}',
   'progress.changeLater': 'The change shows after a few more measurements',

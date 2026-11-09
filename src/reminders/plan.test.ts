@@ -1,6 +1,6 @@
 import { i18nFor } from '@/i18n'
 import { SUPPLEMENTS } from '@/nutrition/supplements'
-import { planReminders, type ReminderInput, staleKeys } from './plan'
+import { planReminders, type ReminderInput, reminderRoute, staleKeys } from './plan'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -89,7 +89,7 @@ describe('rikujtuesit (§13)', () => {
 
   it('dita e ndryshuar me dorë ndjek llojin e ri; çdo gjë e fikur nuk planifikon asgjë', () => {
     expect(lines(base({ dayTypes: { '2026-12-09': 'training' } }))).toContain('07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00')
-    expect(planReminders(base({ toggles: { meals: false, supplements: false, training: false, measurements: false }, days: 7 }), sq)).toEqual([])
+    expect(planReminders(base({ toggles: { meals: false, supplements: false, training: false, measurements: false, week: false }, days: 7 }), sq)).toEqual([])
   })
 
   it('gjumi pas mesnate: vakti para gjumit del pas mesnate, në ditën e nesërme', () => {
@@ -157,6 +157,25 @@ describe('rikujtuesit e zgjuar (V37)', () => {
     const items = planReminders(base({ from: MONDAY, smart: smart() }), sq)
     expect(food(items)).toEqual(['13:00 Dreka', '17:45 Para stërvitjes', '19:30 Pas stërvitjes', '22:30 Para gjumit'])
     expect(kinds(items, 'training')).toHaveLength(1)
+  })
+
+  it('e diela 20:00 (V43): "Java jote është gati" një herë në javë, jashtë kufirit ditor, me orët e qeta; prekja hap përmbledhjen', () => {
+    const items = planReminders(base({ from: MONDAY, days: 7, smart: smart() }), sq)
+    expect(kinds(items, 'week')).toEqual([
+      expect.objectContaining({ title: 'Java jote është gati', body: 'Qëllimet, rekordet dhe java tjetër.', key: 'week|2026-12-07|', data: { date: '2026-12-07' }, at: new Date('2026-12-13T20:00:00') }),
+    ])
+    expect(kinds(items, 'week')[0].actions).toBeUndefined()
+    // E diela është pushim me shtatë vakte: kufiri mbetet katër vakte, njoftimi i javës vjen veç tyre.
+    expect(items.filter((item) => (item.kind === 'meal' || item.kind === 'supplements') && item.at.getDate() === 13)).toHaveLength(4)
+    const quiet = planReminders(base({ from: MONDAY, days: 7, smart: smart({ quiet: { from: '19:30', to: '21:00' } }) }), sq)
+    expect(kinds(quiet, 'week').map((item) => item.at)).toEqual([new Date('2026-12-13T21:00:00')])
+    expect(kinds(planReminders(base({ from: MONDAY, days: 7, toggles: { meals: true, supplements: true, training: true, measurements: true, week: false } }), sq), 'week')).toEqual([])
+    // Pas 20:00 të së dielës nuk vjen më; java tjetër është jashtë 7 ditëve.
+    expect(kinds(planReminders(base({ from: new Date('2026-12-13T20:30:00'), days: 7 }), sq), 'week')).toEqual([])
+    expect(kinds(planReminders(base({ from: MONDAY, days: 7 }), en), 'week')[0]).toMatchObject({ title: 'Your week is ready', body: 'Your goals, records and next week.' })
+    expect(reminderRoute('week|2026-12-07|')).toBe('/progresi/java/2026-12-07')
+    expect(reminderRoute('meal|2026-12-07|lunch')).toBeNull()
+    expect(reminderRoute(null)).toBeNull()
   })
 
   it('vakti i regjistruar nuk vjen, suplementet e tij vijnë më vete; kur janë marrë edhe ato, vjen i radhës', () => {

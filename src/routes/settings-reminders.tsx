@@ -19,7 +19,7 @@ import type { MutableKind } from '@/reminders/plan'
 // telefoni, dita e matjes javore (në fletë, ?ndrysho=matja) dhe, me rikujtuesit e zgjuar (V37), uji,
 // orët e qeta (?ndrysho=qete) dhe llojet e heshtura vetë me "Ndize përsëri".
 
-const TOGGLES = ['training', 'meals', 'supplements', 'water', 'measurements'] as const satisfies readonly (keyof ReminderSettings['toggles'])[]
+const TOGGLES = ['training', 'meals', 'supplements', 'water', 'measurements', 'week'] as const satisfies readonly (keyof ReminderSettings['toggles'])[]
 const MUTED_ORDER: readonly MutableKind[] = ['meal', 'supplements', 'water']
 
 export function RemindersPage() {

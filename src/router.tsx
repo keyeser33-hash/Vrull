@@ -34,6 +34,7 @@ export const appRoutes: RouteObject[] = [
     element: <AppShell />,
     children: [
       { index: true, ...screen(today, (m) => m.TodayPage), ...tab('today') },
+      { path: 'sot/java', ...screen(() => import('@/routes/week-goals'), (m) => m.WeekGoalsPage), ...tab(null) },
       { path: 'programi', ...screen(program, (m) => m.ProgramPage), ...tab('programme') },
       { path: 'programi/biblioteka', ...screen(library, (m) => m.LibraryPage), ...tab('programme') },
       { path: 'programi/biblioteka/krijo', ...screen(() => import('@/routes/exercise-create'), (m) => m.CreateExercisePage), ...tab(null) },
@@ -61,6 +62,9 @@ export const appRoutes: RouteObject[] = [
       { path: 'progresi/historiku', ...screen(history, (m) => m.HistoryPage), ...tab('progress') },
       { path: 'progresi/historiku/:sessionId', ...screen(history, (m) => m.PastSessionPage), ...tab('progress') },
       { path: 'progresi/arritjet', ...screen(() => import('@/routes/achievements'), (m) => m.AchievementsPage), ...tab('progress') },
+      // Përmbledhja e javës dhe karta për ndarje (V43, SPEC §0.3c): pa tab-bar, me "Ndaj javën" poshtë.
+      { path: 'progresi/java/:monday', ...screen(() => import('@/routes/week-summary'), (m) => m.WeekSummaryPage), ...tab(null) },
+      { path: 'progresi/java/:monday/karta', ...screen(() => import('@/routes/week-share'), (m) => m.WeekSharePage), ...tab(null) },
       { path: 'progresi/:metric', ...screen(progress, (m) => m.MetricPage), ...tab('progress') },
       { path: 'trupi', element: <Moved to="/progresi/trupi" />, ...tab('progress') },
       { path: 'miqte', ...screen(() => import('@/routes/friends'), (m) => m.FriendsPage), ...tab('friends') },

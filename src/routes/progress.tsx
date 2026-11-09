@@ -9,10 +9,9 @@ import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
-import { store, useLocalQuery } from '@/data/app-data'
-import { localDate } from '@/lib/calendar'
+import { photos, store, useLocalQuery } from '@/data/app-data'
+import { localDate, shiftDate } from '@/lib/calendar'
 import { type ComplianceDay, metricHistory, progressStart, progressView, trainingProgress } from '@/data/progress'
-import { historyGlance } from '@/data/history'
 import { startWorkout, trainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
 import { muscleName, programDayName, programWeekLabel } from '@/i18n/domain'
@@ -21,12 +20,16 @@ import { prepareRestNotifications } from '@/lib/rest-alarm'
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, metricByKey, movingAverage } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
-import { PhotoSection } from './photos'
+import { weekSummary } from '@/data/weekly-goals'
+import { mondayOf, weekCardMonday } from '@/progress/weekly-goals'
+import { ProgressTabs } from '@/components/layout/progress-tabs'
+import { summaryTitle, weekRangeText } from './week-format'
 
-// Progresi (V2-E1-05 në sistemin Vrull; pamja e plotë e bordit vjen me Etapën 3): para setit të
-// parë gjendja bosh e bordit "Gjendje · Bosh" me "Fillo stërvitjen e parë"; pastaj paneli i peshës
-// me mesataren 7-ditore dhe "Shto matjen" (veprimi kryesor), Trupi 3D (këtu që nga v2), fotot,
-// forca, volumi, ushqimi dhe çdo matje me vlerën e fundit. Tekstet: 'progress.*' (V2-E1-16b).
+// Progresi (V2-E1-05; pamja e 0.23, SPEC §0.3c, bordi "Progresi"): tab-et Trupi · Përmbledhja ·
+// Historiku · Arritjet, që hapet te Përmbledhja. Para setit të parë gjendja bosh e bordit "Gjendje ·
+// Bosh" me "Fillo stërvitjen e parë"; pastaj karta e javës (hap përmbledhjen), forca (e1RM), pesha me
+// mesataren 7-ditore, matjet, fotot dhe "Shto matjen" (veprimi kryesor), volumi dhe ushqimi i 7 ditëve.
+// Tekstet: 'progress.*' (V2-E1-16b).
 
 // Një shifër pas presjes: sa mat peshorja dhe centimetri.
 const round1 = (value: number) => Math.round(value * 10) / 10
@@ -56,13 +59,18 @@ type Snapshot = Awaited<ReturnType<typeof trainingSnapshot>>
 /** Java e programit për stërvitjen e radhës ("Faza 1 · Java 2"), në gjuhën e app-it. */
 const weekLabel = (t: I18n['t'], snapshot: Snapshot | undefined) => (snapshot && !snapshot.completed ? programWeekLabel(t, snapshot.plan) : undefined)
 
-/** Kreu i Progresit: data dhe java e programit sipër, si te bordi. */
+/** Kreu i Progresit: titulli, poshtë data dhe java e programit, si te bordi; pastaj tab-et. */
 function ProgressHeader({ label }: { label?: string }) {
   const { t, fmt } = useI18n()
   const [now] = useState(() => new Date())
   const date = fmt.date(now)
-  const eyebrow = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
-  return <ScreenHeader eyebrow={eyebrow} title={t('tab.progress')} />
+  const line = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
+  return (
+    <>
+      <ScreenHeader title={t('tab.progress')} subtitle={<span className="tabular-nums">{line}</span>} />
+      <ProgressTabs active="summary" />
+    </>
+  )
 }
 
 export function ProgressPage() {
@@ -81,125 +89,126 @@ export function ProgressPage() {
     )
   }
   if (start.empty) return <ProgressEmpty weightKg={start.weightKg} snapshot={snapshot} label={label} />
-  const { weight } = view
-  const measured = view.metrics.filter((entry) => entry.latest)
   return (
     <div className="flex flex-col gap-3.5">
       <ProgressHeader label={label} />
-      <section aria-labelledby="weight-title" className={cn(surfaceClass, 'flex flex-col gap-3 rounded-xl p-4')}>
-        <div className="flex flex-col gap-1">
-          <span id="weight-title" className="type-label text-muted-foreground">
-            {t('progress.weightTitle')}
-          </span>
-          {weight.latest ? (
-            <span className="flex items-baseline gap-1.5">
-              <span className="type-display-s tabular-nums">{numberText(i18n, weight.latest.value)}</span>
-              <span className="type-body text-muted-foreground">{WEIGHT.unit}</span>
-            </span>
-          ) : (
-            <span className="type-title">{t('progress.noWeight')}</span>
-          )}
-          <span className="type-caption text-muted-foreground tabular-nums">{weight.change ? changeText(i18n, WEIGHT, weight.change) : t('progress.changeLater')}</span>
-        </div>
-        {weight.averages.length > 1 ? (
-          <TrendChart
-            ground="card"
-            line={since(weight.averages, 56)}
-            points={since(weight.points, 56)}
-            lineLabel={t('progress.average')}
-            pointsLabel={t('progress.dailyWeight')}
-            label={t('progress.weightChart', { value: valueText(i18n, WEIGHT, weight.latest!.value) })}
-            format={(value) => valueText(i18n, WEIGHT, value)}
-          />
-        ) : null}
-        <div className="flex gap-2">
-          <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'min-w-0 flex-1 px-4')}>
-            {t('progress.addMeasurement')}
-          </Link>
-          <Link to="/progresi/weight_kg" className={buttonVariants({ variant: 'secondary', size: 'lg' })}>
-            {t('progress.history')}
-          </Link>
-        </div>
-      </section>
-
-      <BodyLink />
-
-      <HistoryLink />
-
-      <PhotoSection />
-
+      <WeekLink />
       <TrainingSections />
-
-      {measured.length > 0 ? (
-        <Group title={t('progress.bodyGroup')}>
-          {measured.map(({ metric, latest, change }) => (
-            <LinkRow
-              key={metric.key}
-              to={`/progresi/${metric.key}`}
-              label={metricName(i18n, metric)}
-              value={valueText(i18n, metric, latest!.value)}
-              detail={change ? changeText(i18n, metric, change) : dayText(i18n, latest!.date)}
-            />
-          ))}
-        </Group>
-      ) : (
-        <p className="type-caption text-muted-foreground">{t('progress.noPerimeters')}</p>
-      )}
+      <WeightSection view={view} />
+      <TrainingExtras />
     </div>
   )
 }
 
-/** Trupi 3D, që në v2 jeton brenda Progresit (/progresi/trupi). */
-function BodyLink() {
-  const { t } = useI18n()
+/**
+ * Karta e javës (bordi "Progresi"): java e fundit e mbyllur, ose nga e diela 20:00 java e tanishme si
+ * do të mbyllej; hap përmbledhjen e saj.
+ */
+function WeekLink() {
+  const i18n = useI18n()
+  const { t } = i18n
+  const [now] = useState(() => new Date())
+  const monday = weekCardMonday(now) ?? shiftDate(mondayOf(localDate(now)), -7)
+  const summary = useLocalQuery(() => weekSummary(store, monday), [monday])
+  if (!summary) return null
+  const { goals } = summary
+  const short = (goal: typeof goals.food) => (goal ? `${goal.counted}/${goal.met ? 7 : goal.goal}` : '–')
+  const training = summary.spare ? `${goals.training.done}+1` : `${goals.training.done}/${goals.training.target}`
+  const range = weekRangeText(i18n, summary.monday)
   return (
     <Link
-      to="/progresi/trupi"
-      className={cn(
-        surfaceClass,
-        'flex min-h-row items-center gap-3 rounded-lg py-3 pr-3 pl-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
-      )}
+      to={`/progresi/java/${summary.monday}`}
+      className={cn(surfaceClass, 'flex items-center gap-3.5 rounded-xl px-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
     >
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="type-title">{t('progress.body')}</span>
-        <span className="type-caption text-muted-foreground">{t('progress.bodyText')}</span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="type-caption text-muted-foreground tabular-nums">{summary.programWeek ? `${t('plan.week', { week: summary.programWeek.week })} · ${range}` : range}</span>
+        <span className="type-display-s">{summaryTitle(i18n, summary)}</span>
+        <span className="flex flex-wrap gap-x-3 type-caption text-muted-foreground tabular-nums">
+          <span>{t('progress.week.training', { value: training })}</span>
+          <span>{t('progress.week.food', { value: short(goals.food) })}</span>
+          <span>{t('progress.week.water', { value: short(goals.water) })}</span>
+        </span>
+        <span className="text-sm tabular-nums">
+          {t('progress.week.streak', { count: summary.streak })} · {t('week.summary.records.count', { count: summary.training.records.count })}
+        </span>
       </span>
       <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
     </Link>
   )
 }
 
-/** Historiku i seancave (V2-E1-15): sa seanca të mbyllura dhe kur ishte e fundit. */
-function HistoryLink() {
-  const { t, fmt } = useI18n()
-  const glance = useLocalQuery(() => historyGlance(store), [])
-  const [today] = useState(() => localDate(new Date()))
-  const [yesterday] = useState(() => {
-    const now = new Date()
-    return localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1))
-  })
-  if (!glance) return null
-  const when = !glance.last
-    ? null
-    : glance.last === today
-      ? t('history.when.today')
-      : glance.last === yesterday
-        ? t('history.when.yesterday')
-        : t('history.when.on', { date: fmt.date(new Date(`${glance.last}T12:00:00`), { weekday: false }) })
+/** Pesha (bordi "Progresi"): mesatarja 7-ditore me ndryshimin, grafiku, matjet, fotot dhe "Shto matjen". */
+function WeightSection({ view }: { view: Awaited<ReturnType<typeof progressView>> }) {
+  const i18n = useI18n()
+  const { t } = i18n
+  const timeline = useLocalQuery(() => photos.timeline(), [])
+  const { weight } = view
+  const measured = view.metrics.filter((entry) => entry.latest)
+  const photoCount = timeline?.reduce((total, day) => total + Object.values(day.photos).filter(Boolean).length, 0) ?? 0
   return (
-    <Link
-      to="/progresi/historiku"
-      className={cn(
-        surfaceClass,
-        'flex min-h-row items-center gap-3 rounded-lg py-3 pr-3 pl-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+    <section aria-labelledby="weight-title" className="flex flex-col gap-3 pt-1">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 id="weight-title" className="type-label text-muted-foreground">
+          {t('progress.weight')}
+        </h2>
+        <Link to="/progresi/weight_kg" className="-my-3 -mr-2 flex min-h-12 items-center rounded-md px-2 text-sm font-semibold underline underline-offset-[3px] focus-visible:outline-2 focus-visible:outline-foreground">
+          {t('progress.history')}
+        </Link>
+      </div>
+      {weight.latest ? (
+        <div className="flex items-end gap-3">
+          <span className="font-display text-[64px] leading-[0.85] font-extrabold tracking-[-0.02em] tabular-nums">{numberText(i18n, weight.latest.value)}</span>
+          <span className="flex flex-col gap-px pb-0.5 text-[15px]">
+            <span className="text-muted-foreground">{t('progress.weightUnit')}</span>
+            <span className="font-semibold text-data tabular-nums">{weight.change ? changeText(i18n, WEIGHT, weight.change) : t('progress.changeLater')}</span>
+          </span>
+        </div>
+      ) : (
+        <span className="type-title">{t('progress.noWeight')}</span>
       )}
-    >
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="type-title">{t('history.title')}</span>
-        <span className="type-caption text-muted-foreground tabular-nums">{when ? t('history.linkText', { count: glance.total, when }) : t('history.linkEmpty')}</span>
-      </span>
-      <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
-    </Link>
+      {weight.averages.length > 1 ? (
+        <TrendChart
+          ground="page"
+          line={since(weight.averages, 56)}
+          points={since(weight.points, 56)}
+          lineLabel={t('progress.average')}
+          pointsLabel={t('progress.dailyWeight')}
+          label={t('progress.weightChart', { value: valueText(i18n, WEIGHT, weight.latest!.value) })}
+          format={(value) => valueText(i18n, WEIGHT, value)}
+        />
+      ) : null}
+      <div className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
+        {measured.map(({ metric, latest, change }) => (
+          <Link
+            key={metric.key}
+            to={`/progresi/${metric.key}`}
+            className="flex min-h-[56px] items-center gap-3 border-b border-border py-2 pr-3.5 pl-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+          >
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="type-body-strong">{metricName(i18n, metric)}</span>
+              <span className="type-caption text-muted-foreground tabular-nums">{change ? changeText(i18n, metric, change) : dayText(i18n, latest!.date)}</span>
+            </span>
+            <span className="font-display text-xl font-bold whitespace-nowrap tabular-nums">{valueText(i18n, metric, latest!.value)}</span>
+          </Link>
+        ))}
+        <Link
+          to="/progresi/fotot"
+          className="flex min-h-[56px] items-center gap-3 py-2 pr-3.5 pl-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+        >
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="type-body-strong">{t('photos.title')}</span>
+            <span className="type-caption text-muted-foreground tabular-nums">
+              {timeline && timeline.length > 0 ? t('progress.photosDetail', { count: photoCount, date: dayText(i18n, timeline[0].date) }) : t('progress.photosNone')}
+            </span>
+          </span>
+          <Icon name="hap" size={18} className="shrink-0 text-muted-foreground" />
+        </Link>
+      </div>
+      {measured.length === 0 ? <p className="type-caption text-muted-foreground">{t('progress.noPerimeters')}</p> : null}
+      <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'w-full')}>
+        {t('progress.addMeasurement')}
+      </Link>
+    </section>
   )
 }
 
@@ -299,13 +308,24 @@ export function MetricPage() {
   )
 }
 
-function TrainingSections() {
+function useTrainingProgress() {
   const [now] = useState(() => new Date())
-  const progress = useLocalQuery(() => trainingProgress(store, now), [])
+  return useLocalQuery(() => trainingProgress(store, now), [])
+}
+
+/** Forca (bordi "Progresi"): ushtrimi i parë me e1RM-në e madhe dhe ndryshimin, pastaj të tjerët si lista. */
+function TrainingSections() {
+  const progress = useTrainingProgress()
+  if (!progress) return null
+  return <Strength rows={progress.strength.slice(0, 8)} />
+}
+
+/** Volumi javor dhe ushqimi i 7 ditëve, pas peshës. */
+function TrainingExtras() {
+  const progress = useTrainingProgress()
   if (!progress) return null
   return (
     <>
-      <Strength rows={progress.strength.slice(0, 8)} />
       <Volume rows={progress.volume} />
       <Compliance days={progress.compliance} />
     </>
@@ -320,8 +340,36 @@ function Strength({ rows }: { rows: StrengthRow[] }) {
   if (rows.length === 0) {
     return <p className="type-caption text-muted-foreground">{t('progress.strengthEmpty')}</p>
   }
+  const [lead, ...rest] = rows
   return (
-    <Group title={t('progress.strength')}>
+    <section aria-labelledby="strength-title" className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="strength-title" className="type-label text-muted-foreground">
+          {t('progress.strength')}
+        </h2>
+        <Link
+          to={`/ushtrimi/${lead.exerciseId}`}
+          className="-my-3 -mr-2 flex min-h-12 min-w-0 items-center truncate rounded-md px-2 text-sm font-semibold underline underline-offset-[3px] focus-visible:outline-2 focus-visible:outline-foreground"
+        >
+          {lead.name}
+        </Link>
+      </div>
+      <div className="flex items-end gap-3">
+        <span className="font-display text-[72px] leading-[0.85] font-extrabold tracking-[-0.02em] tabular-nums">{numberText(i18n, lead.latest.value)}</span>
+        <span className="flex flex-col gap-px pb-0.5 text-[15px]">
+          <span className="text-muted-foreground">{KG.unit}</span>
+          <span className="font-semibold text-data tabular-nums">{lead.change ? changeText(i18n, KG, lead.change) : dayText(i18n, lead.latest.date)}</span>
+        </span>
+      </div>
+      {rest.length > 0 ? <StrengthList rows={rest} /> : null}
+    </section>
+  )
+}
+
+function StrengthList({ rows }: { rows: StrengthRow[] }) {
+  const i18n = useI18n()
+  return (
+    <div className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
       {rows.map((row) => (
         <LinkRow
           key={row.exerciseId}
@@ -331,7 +379,7 @@ function Strength({ rows }: { rows: StrengthRow[] }) {
           detail={row.change ? changeText(i18n, KG, row.change) : dayText(i18n, row.latest.date)}
         />
       ))}
-    </Group>
+    </div>
   )
 }
 
