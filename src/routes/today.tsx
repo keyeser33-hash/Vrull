@@ -32,8 +32,8 @@ import { UpdateNotice } from './app-update'
 import { achievementName } from './achievement-format'
 import { repsText, targetLine } from './today-format'
 import { atNoon, capitalize, goalCells, goalsSpoken, summaryTitle, weekRangeText } from './week-format'
-import { useGoalCelebration } from './goal-motion'
-import { GoalMeters, GoalMetersShort } from './week-parts'
+import { useGoalCelebration, WEEK_COMPLETE } from './goal-motion'
+import { GoalMeters, GoalMetersShort, WeekSpark } from './week-parts'
 
 // Sot (V2-E1-06; pamja e re e 0.23, SPEC §0.3c, bordet "Sot", "Sot · Ditë · EN", "Kthimi", "Sot ·
 // Diela"): titulli "Sot" me datën dhe javën e programit; java me rripin e ditëve dhe tre matësit e
@@ -143,7 +143,8 @@ function WeekSection({ view, goals, days, fresh = false }: { view: TodayView; go
   const { t } = i18n
   const plan = view.snapshot!.plan
   const cells = goalCells(i18n, goals)
-  const celebrate = useGoalCelebration(goals.monday, cells.filter((cell) => cell.met).map((cell) => cell.key))
+  const met = cells.filter((cell) => cell.met).map((cell): string => cell.key)
+  const celebrate = useGoalCelebration(goals.monday, goals.complete ? [...met, WEEK_COMPLETE] : met)
   const title = fresh ? t('today.week.fresh') : t('plan.week', { week: plan.week })
   const spare = goals.spare
   return (
@@ -158,7 +159,10 @@ function WeekSection({ view, goals, days, fresh = false }: { view: TodayView; go
         </Link>
       </div>
       {days ? <WeekStrip days={days} /> : null}
-      <GoalMeters cells={cells} to="/sot/java" label={goalsSpoken(i18n, cells, goals.complete)} celebrate={celebrate} />
+      <div className="relative">
+        <GoalMeters cells={cells} to="/sot/java" label={goalsSpoken(i18n, cells, goals.complete)} celebrate={celebrate} />
+        {celebrate.has(WEEK_COMPLETE) ? <WeekSpark /> : null}
+      </div>
       {fresh && spare && !spare.used ? <span className="type-caption text-muted-foreground">{t('week.spare.blockFree', { block: programBlockName(t, spare.blockName) })}</span> : null}
     </section>
   )

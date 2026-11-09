@@ -4,16 +4,20 @@ import { type RefObject, useEffect, useRef, useState } from 'react'
 import { store } from '@/data/app-data'
 
 // Qëllimi i arritur (SPEC §0.3c, bordi "Lëvizja e 0.23"): segmenti mbushet (320 ms), pastaj një unazë
-// shkëndije 600 ms me `ease-vrull` dhe një dridhje e mesme; një herë në javë për qëllim. Telefoni mban
-// cilat qëllime u festuan këtë javë (`writeDevice`, pa sinkronizim). Me lëvizje të reduktuar unaza vetëm
-// zbehet në 120 ms; dridhja mbetet. Asnjë festim nuk vonon një prekje: matësit janë gati që në fillim.
+// shkëndije 600 ms me `ease-vrull` dhe një dridhje e mesme; një herë në javë për qëllim. Java e plotë (të
+// tre qëllimet) ka festimin e vet: unaza rreth tre matësve, një herë në javë, me çelësin `complete`.
+// Telefoni mban cilat u festuan këtë javë (`writeDevice`, pa sinkronizim). Me lëvizje të reduktuar unazat
+// vetëm zbehen në 120 ms; dridhja mbetet. Asnjë festim nuk vonon një prekje: matësit janë gati që në fillim.
 
 const KEY = 'goal-celebrated'
 const VRULL = 'cubic-bezier(0.34, 1.56, 0.64, 1)'
 
 const reducedMotion = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-/** Qëllimet që arritën këtë javë dhe s'janë festuar ende; i shënon si të festuara. */
+/** Çelësi i festimit të javës së plotë, pranë çelësave të qëllimeve. */
+export const WEEK_COMPLETE = 'complete'
+
+/** Qëllimet (dhe `WEEK_COMPLETE`) që arritën këtë javë dhe s'janë festuar ende; i shënon si të festuara. */
 export function useGoalCelebration(monday: string | null, met: readonly string[]): ReadonlySet<string> {
   const [celebrate, setCelebrate] = useState<ReadonlySet<string>>(new Set())
   const metKey = met.join(',')
@@ -36,14 +40,20 @@ export function useGoalCelebration(monday: string | null, met: readonly string[]
   return celebrate
 }
 
+// Unaza e qëllimit zgjerohet nga vlera; ajo e javës së plotë rri rreth tre matësve dhe lëviz pak.
+const SPARKS = {
+  goal: [{ opacity: 0, transform: 'scale(0.6)' }, { opacity: 1, offset: 0.3 }, { opacity: 0, transform: 'scale(1.6)' }],
+  week: [{ opacity: 0, transform: 'scale(0.97)' }, { opacity: 1, offset: 0.3 }, { opacity: 0, transform: 'scale(1.03)' }],
+} satisfies Record<string, Keyframe[]>
+
 /** Unaza e shkëndijës: pas mbushjes së segmentit (320 ms), 600 ms, një herë. */
-export function useSpark<T extends HTMLElement>(): RefObject<T | null> {
+export function useSpark<T extends HTMLElement>(kind: keyof typeof SPARKS = 'goal'): RefObject<T | null> {
   const ref = useRef<T>(null)
   useEffect(() => {
     const element = ref.current
     if (!element || typeof element.animate !== 'function') return
     if (reducedMotion()) element.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 120, delay: 320, fill: 'both' })
-    else element.animate([{ opacity: 0, transform: 'scale(0.6)' }, { opacity: 1, offset: 0.3 }, { opacity: 0, transform: 'scale(1.6)' }], { duration: 600, delay: 320, easing: VRULL, fill: 'both' })
-  }, [])
+    else element.animate(SPARKS[kind], { duration: 600, delay: 320, easing: VRULL, fill: 'both' })
+  }, [kind])
   return ref
 }
