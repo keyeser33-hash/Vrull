@@ -3,7 +3,7 @@ import { recordPulse, savePulse } from './session-motion'
 // Dridhjet e seancës (SPEC §0.3c, DESIGN.md › Lëvizja): e lehtë te çdo "Ruaj setin", e rëndë te rekordi.
 // Plugin-i i Capacitor-it imitohet; në shfletues asnjë dridhje.
 
-const native = vi.hoisted(() => ({ isNative: true, impact: vi.fn((_: { style: string }) => Promise.resolve()) }))
+const native = vi.hoisted(() => ({ isNative: true, impact: vi.fn<(options: { style: string }) => Promise<void>>(() => Promise.resolve()) }))
 
 vi.mock('@capacitor/core', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@capacitor/core')>()),
