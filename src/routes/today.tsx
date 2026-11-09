@@ -13,6 +13,7 @@ import { type TodayView, todayView } from '@/data/today'
 import { MissedDayCard } from './missed-day-card'
 import { WeeklyCheckCard } from './weekly-check-card'
 import { WaterCard } from './water-card'
+import { AiBoxDock } from './ai-box-dock'
 import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
 import { dayThemeName, muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
@@ -71,6 +72,9 @@ export function TodayPage() {
         </>
       )}
       <WaterCard date={view.date} training={view.trainingDay} />
+      {/* Vendi i kutisë së AI-së mbi tab-bar-in, që karta e fundit të mos mbetet poshtë saj. */}
+      <div aria-hidden className="h-[76px] shrink-0" />
+      <AiBoxDock />
     </div>
   )
 }

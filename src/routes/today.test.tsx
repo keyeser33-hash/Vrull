@@ -79,6 +79,7 @@ async function renderToday() {
       { path: '/seanca', element: <h1>Seanca</h1> },
       { path: '/programet', element: <h1>Programet</h1> },
       { path: '/ushqimi', element: <h1>Ushqimi</h1> },
+      { path: '/kutia', element: <h1>Kutia</h1> },
       { path: '/progresi/historiku/:sessionId', element: <h1>Seanca e kaluar</h1> },
     ],
     { initialEntries: ['/'] },
@@ -164,6 +165,23 @@ describe('Sot', () => {
     await act(() => router.navigate('/'))
     await user.click(await screen.findByRole('button', { name: /^Proteina 38 gramë/ }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/ushqimi'))
+  })
+
+  it('kutia e AI-së rri poshtë, gati; teksti që pret dërgimin del te ajo dhe e hap kutinë', async () => {
+    const user = userEvent.setup()
+    const { boxText } = await import('@/lib/box-text')
+    await boardWeek()
+    boxText.set('Në drekë 200 g pulë')
+    const router = await renderToday()
+    const dock = await screen.findByRole('link', { name: 'Kutia e AI-së: Pret dërgimin' })
+    expect(dock).toHaveTextContent('Në drekë 200 g pulë')
+    await user.click(dock)
+    await waitFor(() => expect(router.state.location.pathname).toBe('/kutia'))
+    boxText.set('')
+    await act(() => router.navigate('/'))
+    expect(await screen.findByRole('link', { name: 'Kutia e AI-së' })).toHaveTextContent('Shkruaj ose thuaj çfarë bëre')
+    // Kutia nuk është veprimi kryesor i ekranit: prushi mbetet i stërvitjes.
+    expect(emberButtons()).toHaveLength(1)
   })
 
   it('një ditë e bërë e javës hap seancën e saj te historiku', async () => {

@@ -11,6 +11,7 @@ import { supabase } from './supabase'
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
 import { labelResultFrom, type LabelRemote } from './supplement-label'
+import { type BoxRemote, boxResultFrom } from './ai-box'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
 import { currentI18n, language } from '@/i18n'
@@ -222,6 +223,25 @@ export const supplementLabelRemote: LabelRemote = {
       result = labelResultFrom(response.status, await response.json().catch(() => null))
     } else result = labelResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
     if (result.ok || result.costEur !== undefined) void scheduler.syncNow()
+    return result
+  },
+}
+
+/**
+ * Kutia e AI-së (V40), përmes funksionit `log-parse` (vetëm me sesion): kthen draftin; asgjë nuk regjistrohet
+ * para konfirmimit. Kostoja ruhet në server dhe vjen me sinkronizimin.
+ */
+export const boxRemote: BoxRemote = {
+  async parse(request) {
+    if (!navigator.onLine) return boxResultFrom(null, null)
+    const { data, error } = await supabase.functions.invoke('log-parse', { body: request })
+    let result
+    if (!error) result = boxResultFrom(200, data)
+    else if (error instanceof FunctionsHttpError) {
+      const response = error.context as Response
+      result = boxResultFrom(response.status, await response.json().catch(() => null))
+    } else result = boxResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
+    if (result.ok || result.error === 'unreadable') void scheduler.syncNow()
     return result
   },
 }

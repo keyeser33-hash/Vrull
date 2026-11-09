@@ -256,6 +256,11 @@ export async function setDayType(store: LocalStore, date: string, dayType: DayTy
 
 /** Ushqimi i shabllonit si ushqim i përdoruesit, një herë për çdo artikull. */
 /** Ushqimi i një artikulli të shabllonit: i Jimit (`jim:<çelësi>`) ose i zëvendësimeve të PDF-së (`pdf:<çelësi>`). */
+/** Rreshti te foods për një ushqim të planit: `food:<id>` është vetë ushqimi; çelësat e Jimit dhe të PDF-së krijohen një herë. */
+export async function planFoodId(store: LocalStore, food: string): Promise<string> {
+  return food.startsWith('food:') ? food.slice('food:'.length) : templateFood(store, food)
+}
+
 async function templateFood(store: LocalStore, food: string) {
   const pdf = pdfKey(food)
   const sourceId = pdf ? `${PDF_PREFIX}${pdf}` : `jim:${food}`
@@ -289,7 +294,7 @@ export async function logTemplateMeal(store: LocalStore, date: string, meal: Mea
     rows.push({
       date,
       meal,
-      food_id: item.food.startsWith('food:') ? item.food.slice('food:'.length) : await templateFood(store, item.food),
+      food_id: await planFoodId(store, item.food),
       grams: item.grams,
       kcal: round1(item.kcal),
       protein_g: round1(item.proteinG),

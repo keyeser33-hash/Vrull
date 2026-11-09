@@ -69,7 +69,8 @@ export const appRoutes: RouteObject[] = [
       { path: 'cilesimet/ai', ...screen(() => import('@/routes/settings-ai'), (m) => m.AiSettingsPage), ...tab(null) },
     ],
   },
-  // Seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
+  // Kutia e AI-së, seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
+  { path: '/kutia', ...screen(() => import('@/routes/ai-box'), (m) => m.AiBoxPage) },
   { path: '/seanca', ...screen(() => import('@/routes/session'), (m) => m.SessionPage) },
   { path: '/seanca/mbyllja/:sessionId', ...screen(() => import('@/routes/session-summary'), (m) => m.SessionSummaryPage) },
 ]

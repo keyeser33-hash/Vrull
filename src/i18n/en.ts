@@ -11,6 +11,7 @@ import * as photos from './areas/photos'
 import * as programme from './areas/programme'
 import * as progress from './areas/progress'
 import * as reminders from './areas/reminders'
+import * as box from './areas/box'
 import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
@@ -259,4 +260,5 @@ export const en: Translation = {
   ...photos.en,
   ...progress.en,
   ...reminders.en,
+  ...box.en,
 }
