@@ -107,8 +107,9 @@ export function TodayPage() {
         <WelcomeBackCard view={view} />
       ) : (
         <>
-          <WorkoutCard view={view} />
-          {view.mode === 'session' ? null : <SkipWorkout />}
+          {/* Stërvitja e shtyrë për nesër (V50): vetëm karta "Ditë pushimi sot" te sugjerimi, si te bordi. */}
+          {view.postponed ? null : <WorkoutCard view={view} />}
+          {view.mode === 'session' || view.postponed ? null : <SkipWorkout />}
         </>
       )}
       {back && goals ? <WeekSection view={view} goals={goals} fresh /> : null}

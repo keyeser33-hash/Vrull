@@ -9,6 +9,8 @@ import { useI18n } from '@/i18n/use-i18n'
 export function DayLine({ view }: { view: TodayView }) {
   const { t } = useI18n()
   const mode = useLocalQuery(async () => (await readinessView(store, view)).mode, [view])
+  // Karta e stërvitjes së shtyrë e thotë vetë "Ritëm i butë sot." (bordi "Sot · Stërvitja shtyhet për nesër").
+  if (view.postponed) return null
   if (mode === 'tired') return <p className="type-body-strong -mt-1 text-ember-text">{t('daymode.tired')}</p>
   if (mode === 'energetic') return <p className="type-body-strong -mt-1">{t('daymode.energetic')}</p>
   return null

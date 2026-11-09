@@ -155,6 +155,10 @@ describe('Sot · sugjerimi i gatishmërisë së ulët', () => {
     expect(postponed).toHaveTextContent('Vlen deri në setin e parë.')
     expect(await choice()).toBe('tomorrow')
     expect(screen.queryByRole('region', { name: 'Sugjerim për sot' })).toBeNull()
+    // Vetëm karta e shtyrë, si te bordi: pa kartën e stërvitjes, pa "Kapërce" dhe pa fjalinë e ditës dy herë.
+    expect(screen.queryByRole('region', { name: 'Stërvitja e sotme' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Kapërce këtë stërvitje' })).toBeNull()
+    expect(screen.getAllByText('Ritëm i butë sot.')).toHaveLength(1)
 
     await user.click(within(postponed).getByRole('button', { name: 'Ktheje për sot' }))
     await waitFor(() => expect(screen.queryByRole('region', { name: 'Ditë pushimi sot' })).toBeNull())
