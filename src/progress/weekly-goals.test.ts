@@ -103,9 +103,22 @@ describe('qëllimi i stërvitjes dhe dita rezervë', () => {
     // Java 2 ka vetëm të martën ditë stërvitjeje (të tjerat pushim me dorë) dhe asnjë seancë.
     const rest = { '2026-11-09': 'rest', '2026-11-12': 'rest', '2026-11-13': 'rest' } as const
     const later = trainingLedger(input([...week(W1, [0, 1, 3, 4]), ...week(W3, [0, 1, 3, 4], 'P2')], { dayTypes: rest }), W4)
-    expect(later.weeks[1]).toMatchObject({ target: 1, done: 0, block: 'P2', met: true, spare: { block: 'P2', date: '2026-11-10' } })
+    expect(later.weeks[1]).toMatchObject({ target: 1, done: 0, block: 'P2' })
     const none = trainingLedger(input(week(W1, [0, 1, 3, 4]), { dayTypes: rest }, 'P3'), W3)
-    expect(none.weeks[1]).toMatchObject({ block: 'P3', spare: { block: 'P3' } })
+    expect(none.weeks[1]).toMatchObject({ block: 'P3' })
+  })
+
+  it('dita rezervë nuk mbulon një javë pa asnjë seancë: objektivi 1 me 0 të bëra nuk arrihet dhe ndërpret vargun', () => {
+    // Rishikimi i 0.23: fillimi të premten 6 nëntor, java e parë ka vetëm të premten dhe asnjë seancë.
+    const ledger = trainingLedger(input([], { startedOn: '2026-11-06' }, '1:block-0'), '2026-11-10')
+    expect(ledger.weeks[0]).toMatchObject({ target: 1, done: 0, closed: true, met: false, spare: null })
+    expect(ledger.spareUsed.size).toBe(0)
+    expect(streakAt(ledger.weeks, W2)).toBe(0)
+    // Me dy javë rresht pa seancë (pushimi me dorë lë një ditë), dita rezervë mbetet e lirë për bllokun.
+    const rest = { '2026-11-09': 'rest', '2026-11-12': 'rest', '2026-11-13': 'rest' } as const
+    const later = trainingLedger(input([...week(W1, [0, 1, 3, 4]), ...week(W3, [0, 1, 3], 'P1')], { dayTypes: rest }), W4)
+    expect(later.weeks[1]).toMatchObject({ target: 1, done: 0, met: false, spare: null })
+    expect(later.weeks[2]).toMatchObject({ done: 3, met: true, spare: { block: 'P1', date: '2026-11-20' } })
   })
 
   it('java e tanishme mbetet e hapur: pa ditë rezervë para se të mbyllet', () => {
