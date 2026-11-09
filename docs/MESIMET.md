@@ -71,6 +71,7 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Agjenti i Seancës (0.23) hoqi rekordin e peshës për përsëritje, një vendim i miratuar → brief-i rendit vendimet që nuk ndryshojnë, dhe aksi Spec i rishikimit i krahason me to.
 - Ndihmësit u kopjuan (`atNoon`, `capitalize`, `isoWeekday`; kthimi mbrapa në 10 vende) → brief-i përmend ndihmësit dhe komponentët që ekzistojnë.
 - Nën-agjentët e 0.23 harxhuan ~4,15 milionë tokena, 45 % te rishikimi; të gjithë me Opus → modeli zgjidhet sipas punës (Sonnet për tiketat e specifikuara dhe akset Standards/Spec, Haiku për punët mekanike); rishikimi me tri akse vetëm për valët e mëdha (`docs/research/optimizimi-i-ndertimeve.md`).
+- Bordet e 0.24 i shkruan tre agjentë paralelë, dhe pllaka "Gati" doli në tri vende dhe në tri forma, sepse brief-i thoshte çfarë tregon, jo ku dhe si → brief-i i bordeve paralele përshkruan vendin dhe formën e çdo elementi që shfaqet në më shumë se një bord, njësoj si skeleti i valës te kodi.
 - Push-e njëra pas tjetrës te `main` anuluan 21 nisje të CI-së, dhe minutat deri te anulimi paguhen → një push në fund të valës, pasi provat lokale kanë kaluar; dokumentet nuk e nisin CI-në (`paths-ignore`).
 
 ## Logjika

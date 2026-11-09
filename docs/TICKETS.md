@@ -236,6 +236,8 @@ Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
 
 Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
 
+**Gjendja (09.11.2026, 23:35):** 9 bordet janë te faqja "0.24 · Gatishmëria", me shënimin "Si ta komentosh" dhe 9 vendimet. I shkruan tre agjentë me Sonnet, sipas brief-it të përbashkët, dhe orkestruesi i njësoi. Presin komentet e përdoruesit.
+
 ## V2-E2-00 · Pastrimi i E1
 
 Lista te "Pas rishikimit të E1", si detyrë e parë e etapës, pa ndryshuar sjelljen. **Pranimi:** `npm test`, `npm run lint`, `npm run build` kalojnë; provat e2e të reja për `week_weights`, `form_videos` dhe `ai_usage` kalojnë me përdorues prove të përkohshëm, i fshirë pas provës.
