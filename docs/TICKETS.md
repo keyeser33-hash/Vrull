@@ -318,6 +318,9 @@ Kufiri mujor për person (pronari €40, miqtë €10) në server, i ndryshuesh�
 
 Si E2-11. **Pranimi:** përdoruesi e merr 0.22.0 nga app-i.
 
+
+**Gjendja e 0.22 (09.11.2026, pasdite):** kodi i E2-13 … E2-17 është gati në degën main, me prova përpara (data, ekrane, funksione) dhe prova me AI-në e vërtetë (`scripts/ai-box-trial.mjs`): ushqimi, uji, suplementet, setet, pyetjet, mjeku për dhimbjen. Mbeten: (1) përdoruesi zbaton migrimin `20261109140000_ai_limits_favorites.sql` (mesazhi i 09.11 me SQL-në); (2) deploy i log-parse (foto + kufiri i personit), supplement-label, program-import dhe ai-admin; (3) prova e fotos me një pjatë të vërtetë (Haiku; Sonnet vetëm nëse Haiku nuk mjafton); (4) QA 390 px në tri temat dhe dy gjuhët, rishikimi në tri boshte, prova në Android; (5) fshirja e përdoruesit të provës `e2e-aibox-6cde362f@example.invalid` (SQL te mesazhi i 09.11); (6) lëshimi pas pyetjes te përdoruesi.
+
 ## V2-E2-19 · Bordet e dizajnit 0.23
 
 Qëllimet javore, "Mirë se u ktheve", banderola e rekordit, përmbledhja e së dielës me kartën për ndarje, distinktivët, pamja e re e katër ekraneve, shembujt e lëvizjes (video të shkurtra ose prototip). **Pranimi:** përdoruesi i komenton para kodit.

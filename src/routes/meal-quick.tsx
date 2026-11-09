@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
+import { aiMonth } from '@/data/ai-usage'
 import { store, useLocalQuery } from '@/data/app-data'
 import { logTemplateMeal, type MealSlot } from '@/data/nutrition'
 import { copyYesterdayMeal, favoriteFoods, logPortion, logQuickMacros, type Portion, quickMacrosKcal, recentPortions, setFavorite, yesterdayMeal } from '@/data/quick-food'
@@ -34,7 +35,7 @@ export function QuickActions({ date, meal, onMacros }: { date: string; meal: Mea
   const photoInput = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const quick = useLocalQuery(
-    async () => ({ yesterday: await yesterdayMeal(store, date, meal.meal), recent: await recentPortions(store, RECENT), favorites: await favoriteFoods(store) }),
+    async () => ({ yesterday: await yesterdayMeal(store, date, meal.meal), recent: await recentPortions(store, RECENT), favorites: await favoriteFoods(store), aiReached: (await aiMonth(store)).reached }),
     [date, meal.meal],
   )
   const run = (action: () => Promise<unknown>) => {
@@ -77,7 +78,7 @@ export function QuickActions({ date, meal, onMacros }: { date: string; meal: Mea
         </Button>
       ) : null}
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="outline" size="lg" disabled={!online} onClick={() => photoInput.current?.click()} className="font-text text-base font-semibold normal-case tracking-normal">
+        <Button variant="outline" size="lg" disabled={!online || quick?.aiReached} onClick={() => photoInput.current?.click()} className="font-text text-base font-semibold normal-case tracking-normal">
           <Icon name="kamera" size={20} />
           {t('food.quick.photo')}
         </Button>
