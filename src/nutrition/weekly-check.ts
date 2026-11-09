@@ -9,6 +9,9 @@ export const MIN_WEIGH_INS = 1
 export const MAX_STEP_KCAL = 150
 /** Një ditë numërohet si e regjistruar kur ka të paktën gjysmën e objektivit të saj. */
 export const LOGGED_SHARE = 0.5
+
+/** Dita e regjistruar (`LOGGED_SHARE`): kontrolli javor dhe mesatarja e ushqimit te përmbledhja e së dielës. */
+export const isLoggedDay = (day: { kcal: number; targetKcal: number | null }) => day.targetKcal !== null && day.kcal >= day.targetKcal * LOGGED_SHARE
 /** Energjia e një kg, si te kalkulatori: shtimi 5 600 kcal (muskul dhe yndyrë), humbja 7 700. */
 const KCAL_PER_KG = { gain: 5600, other: 7700 }
 
@@ -63,7 +66,7 @@ export function trendWeight(weights: readonly Weight[], date: string): number | 
 
 export function weeklyCheck(input: WeeklyCheckInput): WeeklyCheck {
   const weekEnd = shift(input.weekStart, 6)
-  const logged = input.days.filter((day) => day.targetKcal !== null && day.kcal >= day.targetKcal * LOGGED_SHARE)
+  const logged = input.days.filter(isLoggedDay)
   const weekWeights = [...input.weights].filter((weight) => weight.date >= input.weekStart && weight.date <= weekEnd).sort((a, b) => a.date.localeCompare(b.date))
   const before = [...input.weights].filter((weight) => weight.date < input.weekStart).sort((a, b) => a.date.localeCompare(b.date))
   // Pika e nisjes: trendi i javës para, pesha e fundit para javës, ose peshimi i parë i javës kur ka dy.

@@ -171,6 +171,21 @@ describe('përmbledhja e javës', () => {
     expect(current.food?.days[0].state).toBe('partial')
   })
 
+  it('ushqimi: mesatarja në ditët e regjistruara (≥ 50%, si kontrolli javor), jo vetëm në ditët e qëllimit', async () => {
+    const context = await twoWeeks()
+    // Java 3: e hëna 80%, e marta 55% (e regjistruar, jo e numëruar te qëllimi), e mërkura 30% (jo).
+    const kcal = { '2026-11-16': 0.8, '2026-11-17': 0.55, '2026-11-18': 0.3 } as const
+    const eaten: number[] = []
+    for (const [date, share] of Object.entries(kcal)) {
+      eaten.push(Math.round((await kcalTarget(context, date)) * share))
+      await eat(context, date, eaten.at(-1)!, date === '2026-11-18' ? 40 : 100 + eaten.length * 20)
+    }
+    context.setClock(at('2026-11-23', '10:00'))
+    const summary = (await weekSummary(context.store, '2026-11-16'))!
+    expect(summary.goals.food).toMatchObject({ counted: 1 })
+    expect(summary.food).toEqual({ averageKcal: Math.round((eaten[0] + eaten[1]) / 2), averageProteinG: 130 })
+  })
+
   it('java e ardhshme dhe java para fillimit: asnjë përmbledhje', async () => {
     const context = await twoWeeks()
     context.setClock(at('2026-11-16'))

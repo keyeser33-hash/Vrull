@@ -39,6 +39,15 @@ export function weekDates(monday: string): string[] {
 
 // --- Stërvitja ---
 
+/** Blloku si çelës i qëllimeve: xhiroja dhe blloku (dita rezervë është një për bllok në çdo xhiro). */
+export const blockKey = (run: number, blockId: string) => `${run}:${blockId}`
+
+/** Xhiroja dhe blloku nga çelësi i `blockKey`. */
+export function parseBlockKey(key: string): { run: number; blockId: string } {
+  const index = key.indexOf(':')
+  return { run: Number(key.slice(0, index)), blockId: key.slice(index + 1) }
+}
+
 export interface GoalSession {
   id: string
   /** Data e seancës (YYYY-MM-DD), si te rripi i Sot. */
@@ -46,7 +55,7 @@ export interface GoalSession {
   /** Çasti i fillimit ose i mbylljes: radha brenda ditës. */
   at: string
   status: 'completed' | 'skipped' | 'in_progress'
-  /** Blloku i programit si çelës (xhiroja dhe blloku, `blockKey` te data); null kur mungon. */
+  /** Blloku i programit si çelës (xhiroja dhe blloku, `blockKey`); null kur mungon. */
   block: string | null
 }
 
