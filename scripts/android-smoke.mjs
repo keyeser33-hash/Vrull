@@ -1492,11 +1492,13 @@ try {
     await expandShade()
     await tapNotificationButton('Piva një gotë', 'Uji: 0,5 nga 3,0 L')
     await waitForNotificationTitle(5194, 'U shtua një gotë')
-    const shifted = reminderPrefs().queue.filter((entry) => entry.action === 'drank')
-    check('id e ripërdorur: butoni vepron mbi njoftimin që shihet', shifted.length === 1 && shifted[0].key === `water|${today}|`, JSON.stringify(reminderPrefs().queue))
+    // App-i jeton: dëgjuesi e zbaton prekjen menjëherë, ndaj kontrollohet uji te baza, jo radha.
     collapseShade()
     page = await open()
     await waitFor(() => reminderPrefs().queue.length === 0, 'radha e zbrazur pas id-së së ripërdorur', 45_000)
+    const afterShift = await readDb(page, ['water_logs'])
+    const glasses = afterShift.water_logs.filter((row) => row.date === today && !row.deleted_at)
+    check('id e ripërdorur: butoni vepron mbi njoftimin që shihet (një gotë uji, jo darka)', glasses.length === 1 && Number(glasses[0].ml) === 250, JSON.stringify(glasses.map((row) => row.ml)))
   })
 
   // ==== E. Trupi 3D, butoni mbrapa dhe tema ====
