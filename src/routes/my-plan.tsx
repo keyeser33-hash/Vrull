@@ -390,7 +390,7 @@ function SwapSheet({ item, onPick, onClose }: { item: MyPlanItem | null; onPick:
   const jim = jimFoodOptions(item).filter((option) => matches(option) && !pdf.some((entry) => entry.food === option.food))
   const base = item ? macrosOf(item) : null
   const name = item ? nameInSentence(foodName(t, item), lang) : ''
-  const hint = !item || !base ? t('food.plan.addHint') : isProteinFood(item) ? t('food.plan.swapHintProtein', { grams: Math.round(base.proteinG) }) : t('food.plan.swapHintKcal', { kcal: kcalText(i18n, base.kcal) })
+  const hint = !item || !base ? t('food.plan.addHint') : isProteinFood(item) ? t('food.plan.swapHintProtein', { grams: fmt.unit(Math.round(base.proteinG), 'g') }) : t('food.plan.swapHintKcal', { kcal: kcalText(i18n, base.kcal) })
   const chosen = selected ? nameInSentence(foodName(t, selected), lang) : ''
 
   const row = (option: MyPlanItem) => {

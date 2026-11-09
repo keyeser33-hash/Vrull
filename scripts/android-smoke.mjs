@@ -1379,19 +1379,25 @@ try {
       // e provës para se procesi të vritet: pas vrasjes lista kontrollohet, dhe provohet sërish.
       let item = template
       for (let attempt = 1; ; attempt++) {
-        await sleep(4000)
+        // Pritet që plani i app-it të qetësohet (hapja, sinkronizimi, prekjet e zbatuara): lista e
+        // rikujtuesve nuk ndryshon për 4 s.
+        let last = ''
+        let still = 0
+        for (let waited = 0; waited < 30 && still < 4; waited++) {
+          await sleep(1000)
+          const now = JSON.stringify(reminderPrefs().list)
+          still = now === last ? still + 1 : 0
+          last = now
+        }
         item = { ...template, at: Date.now() + 8000 }
         await page.evaluate(
           `window.Capacitor.nativePromise('Reminders', 'schedule', ${JSON.stringify({ reminders: [item], channel: { name: 'Rikujtuesit', description: 'Prova' }, cancelKeys: [], snoozeMinutes })})`,
         )
         page.close()
-        adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
-        await sleep(800)
-        await waitFor(() => {
-          adb('shell', 'am', 'kill', PKG)
-          return pidOf() === ''
-        }, 'procesi i vrarë me am kill', 10_000).catch(() => adb('shell', 'run-as', PKG, 'kill', '-9', pidOf()))
+        // Vrasja menjëherë (si sistemi kur i duhet kujtesa), para se app-i të planifikojë sërish; alarmet mbeten.
+        adb('shell', 'run-as', PKG, 'kill', '-9', pidOf())
         await waitFor(() => pidOf() === '', 'procesi i vrarë', 10_000)
+        adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
         if (reminderPrefs().list.some((entry) => entry.id === item.id && entry.key === item.key)) break
         if (attempt === 3) throw new Error(`Planifikimi i app-it zëvendësoi rikujtuesin e provës ${item.id} tri herë`)
         info('planifikimi i app-it zëvendësoi rikujtuesin e provës', `${item.id}, përpjekja ${attempt + 1}`)
