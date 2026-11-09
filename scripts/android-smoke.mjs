@@ -401,7 +401,7 @@ function reminderPrefs() {
   try {
     xml = adb('shell', 'run-as', PKG, 'cat', 'shared_prefs/vrull_reminders.xml')
   } catch {
-    return { queue: [], snoozed: {}, log: [] }
+    return { queue: [], snoozed: {}, log: [], list: [] }
   }
   const value = (name) => {
     const raw = xml.match(new RegExp(`<string name="${name}">([\\s\\S]*?)</string>`))?.[1]
@@ -413,7 +413,7 @@ function reminderPrefs() {
       return null
     }
   }
-  return { queue: value('queue') ?? [], snoozed: value('snoozed') ?? {}, log: value('log') ?? [] }
+  return { queue: value('queue') ?? [], snoozed: value('snoozed') ?? {}, log: value('log') ?? [], list: value('list') ?? [] }
 }
 
 /** Një buton i njoftimit me këtë tekst (paneli ose ekrani i kyçur), pa dallim shkronjash. */
@@ -422,7 +422,21 @@ function notificationButton(label) {
   return (uiNodes() ?? []).find((node) => node.text.toLocaleLowerCase() === wanted && node.x > 0) ?? null
 }
 
-async function tapNotificationButton(label) {
+/**
+ * Prekja e një butoni të njoftimit. Ekrani i kyçur dhe paneli e tregojnë njoftimin të mbledhur, pa
+ * butona: shigjeta "Zgjero" pranë titullit e hap, si përdoruesi.
+ */
+async function tapNotificationButton(label, title) {
+  for (let attempt = 0; attempt < 3 && !notificationButton(label); attempt++) {
+    const nodes = uiNodes() ?? []
+    const heading = nodes.find((node) => node.text === title)
+    const expand = nodes
+      .filter((node) => /expand_button$/.test(node.id) || /^(Expand|Zgjero)/i.test(node.desc))
+      .sort((a, b) => Math.abs(a.y - (heading?.y ?? a.y)) - Math.abs(b.y - (heading?.y ?? b.y)))[0]
+    if (!expand) break
+    shell(`input tap ${expand.x} ${expand.y}`)
+    await sleep(1500)
+  }
   const button = await waitFor(() => notificationButton(label), `butoni "${label}" te njoftimi`, 15_000)
   shell(`input tap ${button.x} ${button.y}`)
 }
@@ -1380,7 +1394,7 @@ try {
     )
     check('rikujtuesi i drekës vjen me procesin e vrarë', notification(5190)?.title === 'Dreka', notification(5190)?.title)
     screenshot('rikujtuesi-dreka')
-    await tapNotificationButton('Hëngra si në plan')
+    await tapNotificationButton('Hëngra si në plan', 'Dreka')
     await waitForNotificationTitle(5190, 'Dreka u regjistrua')
     const ate = reminderPrefs().queue.filter((entry) => entry.action === 'ate')
     check('"Hëngra si në plan" pa shkyçur: njoftimi "Dreka u regjistrua" dhe prekja në radhë', ate.length === 1 && keyguardShowing() !== false, JSON.stringify(ate))
@@ -1402,7 +1416,7 @@ try {
 
     // 2. "Shty 30 min": njoftimi ikën dhe vjen sërish me alarmin e shtyrjes.
     await scheduleAndKill(reminder(5191, 'supplements', 'dinner', [{ id: 'took', title: 'E mora' }, { id: 'snooze', title: 'Shty 30 min' }], { took: { title: 'Suplementet u shënuan', body: '' } }))
-    await tapNotificationButton('Shty 30 min')
+    await tapNotificationButton('Shty 30 min', 'Dreka')
     await waitFor(() => !notification(5191), 'njoftimi i shtyrë ikën', 10_000)
     const snoozed = Object.values(reminderPrefs().snoozed)
     check('"Shty 30 min": shtyrja ruhet për pas 30 minutash', snoozed.length === 1 && Math.abs(snoozed[0].at - (Date.now() + 30 * 60_000)) < 120_000, JSON.stringify(snoozed.map((item) => [item.id, item.at])))
@@ -1412,9 +1426,9 @@ try {
     await unlock()
     page = await open()
     await scheduleAndKill(reminder(5192, 'water', null, [{ id: 'drank', title: 'Piva një gotë' }], { drank: { title: 'U shtua një gotë', body: '0,75 nga 3,0 L' } }))
-    await tapNotificationButton('Piva një gotë')
+    await tapNotificationButton('Piva një gotë', 'Uji: 0,5 nga 3,0 L')
     await waitForNotificationTitle(5192, 'U shtua një gotë')
-    await tapNotificationButton('Kthe mbrapsht')
+    await tapNotificationButton('Kthe mbrapsht', 'U shtua një gotë')
     await waitFor(() => !notification(5192), 'njoftimi i ujit ikën pas "Kthe mbrapsht"', 10_000)
     check('"Kthe mbrapsht" heq gotën nga radha para se ta zbatojë app-i', reminderPrefs().queue.every((entry) => entry.action !== 'drank'), JSON.stringify(reminderPrefs().queue))
     collapseShade()
@@ -1470,8 +1484,9 @@ try {
     await pressBack()
     await waitForHeading(page, 'Cilësimet')
     check('mbrapa nga Pamja kthen te Cilësimet', (await page.evaluate('location.pathname')) === '/cilesimet')
-    const pendingReminders = `Capacitor.Plugins.LocalNotifications.getPending().then((r) => r.notifications.filter((n) => n.id >= 5000 && n.id < 5200).length)`
-    check('rikujtuesit planifikohen pas lejes së njoftimeve', (await page.evaluate(pendingReminders)) > 0, `${await page.evaluate(pendingReminders)} njoftime`)
+    // Që nga 0.21 (V2-E2-08) rikujtuesit i mban plugin-i native Reminders, me alarmet e veta.
+    const planned = await waitFor(() => (reminderPrefs().list.length > 0 ? reminderPrefs().list.length : null), 'rikujtuesit te plugin-i Reminders', 20_000).catch(() => 0)
+    check('rikujtuesit planifikohen pas lejes së njoftimeve', planned > 0, `${planned} rikujtues`)
     page.close()
     // Mbrapa në fillim të historisë (app-i i sapohapur te Sot) e çon app-in në sfond pa e mbyllur.
     adb('shell', 'am', 'force-stop', PKG)
@@ -1524,6 +1539,9 @@ try {
     await clickButton(page, 'Vazhdo')
     await waitForHeading(page, 'Ditët dhe oraret')
     await clickButton(page, 'Vazhdo')
+    // Objektivat (V2-E2-03): hapi 4 kapërcehet me "Më vonë"; mbeten objektivat e Jimit.
+    await waitForHeading(page, 'Objektivat e tua')
+    await clickButton(page, 'Më vonë')
     await waitForHeading(page, 'Zgjidh programin')
     await clickButton(page, 'Fillo programin')
     await waitForPath(page, '/')
