@@ -4,7 +4,7 @@
 //   të njëjtin çelës, të drejtuara te https://smoke.invalid (VITE_SUPABASE_URL): çdo kërkesë drejt Supabase
 //   kapet këtu me CDP (Fetch) dhe merr një përgjigje të imituar; asnjë kërkesë nuk arrin te projekti i vërtetë.
 // - muzika.apk: app-i i provës android-test/music-player (sesion medie pa zë); pa të, prova e muzikës
-//   kontrollon vetëm kartën "Lidh muzikën tënde" dhe lejen.
+//   kontrollon vetëm ikonën "Lidh muzikën tënde" dhe lejen.
 //
 // Rrjedha: v1 me të dhënat e veta (seanca me një set, ushqimi, matja, fotoja) → përditësimi nga app-i te v2
 // ("Vrull u përditësua" shqip, pa gjuhë të dërguar) → v2 i gjen të dhënat → seanca: "Ruaj setin", pushimi me
@@ -764,6 +764,9 @@ const clickButton = async (page, label) => {
   await waitFor(() => hasButton(page, label), `butoni "${label}"`, 20_000)
   await page.evaluate(`${buttonExpression(label)}.click()`)
 }
+// Ikona e muzikës te kreu i seancës (0.23): emri mban këngën dhe tempon ("Hap Trupi në ritëm: Prova e ritmit, …, 128 BPM").
+const musicLabel = (page) =>
+  page.evaluate(`[...document.querySelectorAll('header button')].map((b) => ${NORMALIZE}(b.getAttribute('aria-label'))).find((label) => label.startsWith('Hap Trupi në ritëm')) ?? null`)
 const clickButtonStarting = async (page, prefix) => {
   const find = `[...document.querySelectorAll('button')].find((b) => ${NORMALIZE}(b.getAttribute('aria-label') ?? b.textContent).startsWith(${JSON.stringify(prefix)}))`
   await waitFor(() => page.evaluate(`!!${find}`), `butoni "${prefix}…"`, 20_000)
@@ -1115,8 +1118,8 @@ try {
     check('seanca e v1 vazhdon te v2: Bench Press, seti 2 nga 3', await atStep(page, { exercise: 'Bench Press', set: 'Seti 2 nga 3' }))
     await waitForNotificationTitle(4200, 'Bench Press · Seti 2 nga 3')
     check('njoftimi i seancës: Bench Press · Seti 2 nga 3, me peshën e setit 1', notification(4200).text.startsWith('60 kg × 12'), notification(4200).text)
-    // Muzika pa leje: karta "Lidh muzikën tënde" (V2-E1-12).
-    check('muzika pa leje: karta "Lidh muzikën tënde" te seanca', await waitFor(() => hasText(page, 'Lidh muzikën tënde'), 'Lidh muzikën tënde', 15_000).then(() => true, () => false))
+    // Muzika pa leje: ikona "Lidh muzikën tënde" te kreu (V2-E1-12; ikonë që nga 0.23).
+    check('muzika pa leje: ikona "Lidh muzikën tënde" te seanca', await waitFor(() => hasButton(page, 'Lidh muzikën tënde'), 'Lidh muzikën tënde', 15_000).then(() => true, () => false))
     screenshot('seanca-v2')
 
     // D1. Prekja e dyfishtë te paneli i njoftimeve ruan një set (Bench Press seti 2), jo dy.
@@ -1277,27 +1280,30 @@ try {
     adb('shell', 'input', 'keyevent', 'KEYCODE_HOME')
     await sleep(1000)
     launch()
-    await waitFor(async () => !(await hasText(page, 'Lidh muzikën tënde')), 'karta e lidhjes ikën pas lejes', 20_000)
-    // Emulatori mund të ketë vetë një sesion medie pa titull (app-et e Google-it): atëherë del mini-player-i.
-    const musicIdle = await waitFor(async () => (await hasText(page, 'Asnjë app muzike nuk luan')) || (await page.evaluate(`!!document.querySelector('section[aria-label="Muzika"]')`)), 'muzika me lejen', 15_000)
-    check('muzika: me lejen, karta e lidhjes ikën dhe del muzika', Boolean(musicIdle))
-    info('muzika para app-it të provës', (await hasText(page, 'Asnjë app muzike nuk luan')) ? 'Asnjë app muzike nuk luan' : 'mini-player-i i një sesioni tjetër të emulatorit')
+    await waitFor(async () => !(await hasButton(page, 'Lidh muzikën tënde')), 'ikona e lidhjes ikën pas lejes', 20_000)
+    // Emulatori mund të ketë vetë një sesion medie pa titull (app-et e Google-it): atëherë ikona mban atë.
+    const musicIdle = await waitFor(async () => (await musicLabel(page)) !== null, 'muzika me lejen', 15_000)
+    check('muzika: me lejen, ikona e lidhjes ikën dhe del muzika', Boolean(musicIdle))
+    info('muzika para app-it të provës', (await musicLabel(page)) === 'Hap Trupi në ritëm: asnjë app muzike nuk luan' ? 'Asnjë app muzike nuk luan' : 'ikona me një sesion tjetër të emulatorit')
     if (apkPlayer) {
       adb('install', apkPlayer)
       adb('shell', 'pm', 'grant', PLAYER, 'android.permission.POST_NOTIFICATIONS')
       adb('logcat', '-c')
       adb('shell', 'am', 'start', '-W', '-n', `${PLAYER}/.MainActivity`)
       launch()
-      await waitForText(page, 'Prova e ritmit', 20_000)
-      await waitForText(page, '128 BPM', 20_000)
-      check('muzika: mini-player-i tregon këngën dhe tempon', true)
+      await waitFor(async () => ((await musicLabel(page)) ?? '').includes('Prova e ritmit'), 'ikona me "Prova e ritmit"', 20_000)
+      await waitFor(async () => ((await musicLabel(page)) ?? '').endsWith('128 BPM'), 'ikona me 128 BPM', 20_000)
+      check('muzika: ikona te kreu mban këngën dhe tempon', true, await musicLabel(page))
       screenshot('muzika-seanca')
       const playerLog = () => adb('logcat', '-d', '-s', 'VrullProva').split('\n').filter((line) => line.includes('komanda'))
-      // Kontrollet te seanca.
+      // Kontrollet te ekrani i plotë, që hap ikona.
+      await clickButtonStarting(page, 'Hap Trupi në ritëm')
+      await waitForText(page, 'Prova e ritmit', 20_000)
       await clickButton(page, 'Kënga tjetër')
       await waitFor(() => playerLog().some((line) => line.includes('komanda next -> Kënga e dytë')), 'kënga tjetër nga seanca', 15_000)
       await waitForText(page, 'Kënga e dytë', 15_000)
       check('muzika: "Kënga tjetër" te seanca ndërron këngën', true)
+      await clickButton(page, 'Kthehu te seanca')
       // Pozicioni (rrëshqitësi i "Trupi në ritëm"): numri vjen si Integer nga JS-i (CallNumbers.java).
       const seek = await page.evaluate(`Capacitor.Plugins.Music.control({ action: 'seekTo', positionMs: 30000 }).then(() => 'ok', (e) => e.code)`)
       await waitFor(() => playerLog().some((line) => line.includes('komanda seekTo')), 'pozicioni te app-i i muzikës', 15_000)

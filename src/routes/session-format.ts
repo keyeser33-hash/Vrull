@@ -55,6 +55,9 @@ export function setValue(set: SetRecord, { t, fmt }: Texts, { unit = false }: { 
   return `${unit ? fmt.unit(set.weightKg, 'kg') : fmt.number(set.weightKg)} × ${fmt.number(reps)}${segmentsText(set, fmt)}`
 }
 
+/** Vetëm setet me përsëritje ndryshohen te fleta "Ndrysho setin" (pesha, përsëritjet, RIR-i), si te historiku. */
+export const editable = (set: Pick<SetRecord, 'reps'>) => set.reps !== null
+
 /** Setet e një ushtrimi te lista: "62,5 kg · 12, 10, 9, 9 + 3"; me pesha të ndryshme "12 × 11, 14 × 9". */
 export function setsDetail(sets: SetRecord[], texts: Texts): string {
   const { fmt } = texts

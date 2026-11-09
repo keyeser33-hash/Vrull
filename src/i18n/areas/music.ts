@@ -6,9 +6,9 @@ import type { Messages, TranslationOf } from '../translate'
 // Titulli "Trupi në ritëm" / "Body beat" është termi i bazës `term.bodyBeat`.
 
 export const sq = {
-  // Mini-player-i te seanca (bordi "Seanca").
-  'music.label': 'Muzika',
+  // Ikona te kreu i seancës (0.23; më parë mini-player-i, bordi "Seanca").
   'music.open': 'Hap Trupi në ritëm: {song}',
+  'music.openIdle': 'Hap Trupi në ritëm: asnjë app muzike nuk luan',
   'music.bpm': '{bpm} BPM',
   'music.bpmUnit': 'BPM',
   'music.play': 'Luaj',
@@ -17,7 +17,6 @@ export const sq = {
   'music.previous': 'Kënga e mëparshme',
   'music.untitled': 'Kënga pa titull',
   'music.connectCard': 'Lidh muzikën tënde',
-  'music.connectCardText': 'Muskujt e sotëm pulsojnë me këngën.',
   'music.idle': 'Asnjë app muzike nuk luan',
   'music.idleText': 'Luaj një këngë dhe trupi pulson me të.',
   'music.refused': 'App-i i muzikës nuk e pranon këtë veprim.',
@@ -97,8 +96,8 @@ export const sq = {
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
-  'music.label': 'Music',
   'music.open': 'Open Body beat: {song}',
+  'music.openIdle': 'Open Body beat: no music app is playing',
   'music.bpm': '{bpm} BPM',
   'music.bpmUnit': 'BPM',
   'music.play': 'Play',
@@ -107,7 +106,6 @@ export const en: TranslationOf<typeof sq> = {
   'music.previous': 'Previous song',
   'music.untitled': 'Untitled song',
   'music.connectCard': 'Connect your music',
-  'music.connectCardText': "Today's muscles pulse with the song.",
   'music.idle': 'No music app is playing',
   'music.idleText': 'Play a song and your body pulses with it.',
   'music.refused': "The music app doesn't accept this action.",

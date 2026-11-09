@@ -19,7 +19,7 @@ import { spokenDuration } from './session-format'
 import { clock } from './training-format'
 
 // Muzika "Trupi në ritëm" te seanca (SPEC V29, V2-E1-12; bordet "Muzika · *" dhe "Seanca"):
-// - mini-player-i në vendin e rezervuar mbi "Ruaj setin" (dhe poshtë pushimit), ose karta "Lidh muzikën";
+// - ikona te kreu i seancës (0.23; më parë mini-player-i mbi "Ruaj setin"), që hap lidhjen ose ekranin e plotë;
 // - ekrani i plotë: muskujt e sotëm në prush që pulsojnë me tempon e këngës, gjysma e saj gjatë
 //   pushimit, kontrollet që pranon app-i, "Pastaj" kur app-i jep radhën, ose "Kalo këngën";
 // - lidhja dhe leja ("Qasja te njoftimet", "Allow restricted settings" te Android 13+);
@@ -40,94 +40,33 @@ const tempoLine = (beat: SessionBeat, t: ReturnType<typeof useI18n>['t']) => {
 }
 
 /**
- * Vendi i rezervuar te seanca (bordi "Seanca"): kënga që luan me gjoksin që pulson, tempon, "Pauzë"
- * dhe "Kënga tjetër"; ose "Lidh muzikën tënde" pa leje; ose "Asnjë app muzike nuk luan". Jashtë
- * telefonit (pa plugin) dhe para përgjigjes së parë mbetet bosh.
+ * Muzika te kreu i seancës (0.23, SPEC §0.3c; bordi "Seanca"): një ikonë 44 px që hap atë që hapte
+ * mini-player-i: "Lidh muzikën tënde" pa leje, ekranin "Trupi në ritëm" me lejen (edhe kur s'luan asgjë,
+ * që e thotë vetë). Kur luan një këngë, një pikë `ember-text` te ikona e tregon dhe emri për lexuesin e
+ * ekranit mban këngën dhe tempon; "Pauzë" dhe "Kënga tjetër" janë te ekrani i plotë, një prekje larg, dhe
+ * te njoftimi i seancës. Jashtë telefonit (pa plugin), para përgjigjes së parë dhe pas "Më vonë" për
+ * këtë seancë: asgjë.
  */
-export function MusicSlot({ beat, sessionId, onOpen, onConnect }: { beat: SessionBeat; sessionId: string; onOpen: () => void; onConnect: () => void }) {
+export function MusicButton({ beat, sessionId, onOpen, onConnect }: { beat: SessionBeat; sessionId: string; onOpen: () => void; onConnect: () => void }) {
   const { t } = useI18n()
   const { status, session } = beat
   if (status === 'unavailable' || status === 'unknown') return null
-  const card = cn(surfaceClass, 'flex h-[68px] shrink-0 items-center gap-1 rounded-lg pr-1.5 pl-[7px]')
   if (status === 'no-access') {
     if (safeStorage.getItem(LATER_KEY) === sessionId) return null
     return (
-      <section aria-label={t('music.label')} className={card}>
-        <button type="button" onClick={onConnect} className="flex h-14 min-w-0 grow items-center gap-3 rounded-md text-left">
-          <MusicTile />
-          <span className="flex min-w-0 flex-col gap-0.5">
-            <span className="truncate type-body-strong">{t('music.connectCard')}</span>
-            <span className="truncate type-caption text-muted-foreground">{t('music.connectCardText')}</span>
-          </span>
-        </button>
-        <Icon name="hap" size={20} className="mr-2 text-muted-foreground" />
-      </section>
+      <Button variant="ghost" size="icon" aria-label={t('music.connectCard')} aria-haspopup="dialog" className="rounded-pill" onClick={onConnect}>
+        <Icon name="muzika" size={22} />
+      </Button>
     )
   }
-  if (!session) {
-    return (
-      <section aria-label={t('music.label')} className={card}>
-        <MusicTile />
-        <span className="ml-2 flex min-w-0 flex-col gap-0.5">
-          <span className="truncate type-body-strong">{t('music.idle')}</span>
-          <span className="truncate type-caption text-muted-foreground">{t('music.idleText')}</span>
-        </span>
-      </section>
-    )
-  }
-  const controls = controlsOf(session)
-  const playing = isPlaying(session)
-  const title = session.title ?? t('music.untitled')
-  const detail = [tempoLine(beat, t), session.artist].filter(Boolean).join(' · ')
+  const label = session
+    ? t('music.open', { song: [session.title ?? t('music.untitled'), session.artist, tempoLine(beat, t)].filter(Boolean).join(', ') })
+    : t('music.openIdle')
   return (
-    <section aria-label={t('music.label')} className={card}>
-      <button
-        type="button"
-        aria-label={t('music.open', { song: [title, session.artist, tempoLine(beat, t)].filter(Boolean).join(', ') })}
-        onClick={onOpen}
-        className="flex h-14 min-w-0 grow items-center gap-3 rounded-md text-left"
-      >
-        <span className="relative size-[52px] shrink-0 overflow-hidden rounded-md bg-background">
-          {beat.stills ? <BeatBody stills={beat.stills} pulse={beat.pulse} anchor={beat.tempo.anchor} scale={1.35} rings={1} ringClassName="w-11" /> : <MusicGlyph />}
-        </span>
-        <span className="flex min-w-0 flex-col gap-0.5">
-          <span className="truncate text-[15px] leading-[1.35] font-semibold">{title}</span>
-          {detail ? <span className="truncate text-[13px] leading-[1.35] text-muted-foreground tabular-nums">{detail}</span> : null}
-        </span>
-      </button>
-      {controls.playPause ? (
-        <Button
-          variant="secondary"
-          size="icon"
-          aria-label={t(playing ? 'music.pause' : 'music.play')}
-          className="rounded-pill border-0"
-          onClick={() => void beat.act(playing ? 'pause' : 'play')}
-        >
-          <Icon name={playing ? 'pauze' : 'luaj'} size={20} />
-        </Button>
-      ) : null}
-      {controls.next ? (
-        <Button variant="ghost" size="icon" aria-label={t('music.next')} className="rounded-pill" onClick={() => void beat.act('next')}>
-          <Icon name="kenga-para" size={20} />
-        </Button>
-      ) : null}
-    </section>
-  )
-}
-
-function MusicTile() {
-  return (
-    <span className="flex size-[52px] shrink-0 items-center justify-center rounded-md bg-surface-2 text-muted-foreground">
-      <Icon name="muzika" size={24} />
-    </span>
-  )
-}
-
-function MusicGlyph() {
-  return (
-    <span className="flex size-full items-center justify-center bg-surface-2 text-muted-foreground">
+    <Button variant="ghost" size="icon" aria-label={label} aria-haspopup="dialog" className="relative rounded-pill" onClick={onOpen}>
       <Icon name="muzika" size={22} />
-    </span>
+      {session && isPlaying(session) ? <span data-playing aria-hidden className="absolute top-2 right-2 size-2 rounded-pill bg-ember-text" /> : null}
+    </Button>
   )
 }
 
