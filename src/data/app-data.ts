@@ -496,8 +496,25 @@ export function useDataUpgrades(ready: boolean) {
     if (!ready || !userId) return
     void upgradeShortcutToSize(store).catch(() => {})
     void ensureSupplements(store).catch(() => {})
-    // Arritjet (V43): ato që u plotësuan pa u dhënë (p.sh. ushqimi i së dielës) jepen në hapje.
-    void awardAchievements(store).catch(() => {})
+    // Arritjet (V43): ato që u plotësuan pa u dhënë (p.sh. ushqimi i së dielës) jepen në hapje. Para marrjes
+    // së parë të tabelës së arritjeve (telefoni që vjen nga 0.22) dhënia pret: provohet pas çdo
+    // sinkronizimi, derisa marrja të ketë ndodhur, pastaj një herë.
+    let awarded = false
+    const award = () => {
+      if (awarded) return
+      void store
+        .pulled('achievements')
+        .then(async (pulled) => {
+          if (!pulled || awarded) return
+          awarded = true
+          await awardAchievements(store)
+        })
+        .catch(() => {})
+    }
+    award()
+    return scheduler.subscribe(() => {
+      if (!scheduler.getStatus().syncing) award()
+    })
   }, [ready, userId])
 }
 

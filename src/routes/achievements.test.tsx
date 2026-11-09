@@ -39,6 +39,7 @@ async function seed() {
   const { dayTargets } = await import('@/data/nutrition')
   const { waterDay } = await import('@/data/water')
   await Promise.all(data.db.tables.map((table) => table.clear()))
+  await (await import('@/test/fake-remote')).pullOnce(data.db, '11111111-1111-4111-8111-111111111111')
   data.clock = at('2026-11-01', '08:00')
   await completeOnboarding(data.store, { weightKg: 88, trainingDays: [1, 2, 4, 5], trainingTime: '21:00', wakeTime: '08:20', sleepTime: '01:00' }, () => data.clock!)
   await data.store.put('body_measurements', { date: '2026-11-01', weight_kg: 88 })

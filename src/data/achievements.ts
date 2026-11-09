@@ -27,7 +27,9 @@ import { waterDay } from './water'
 // historia ndryshon. Id-ja vjen nga çelësi (`achievementId`), që dy telefona të shkruajnë një rresht.
 //
 // Kur jepen: në hapjen e app-it (`useDataUpgrades`), te Progresi › Arritjet dhe te mbyllja e seancës;
-// çdo lexim i mëposhtëm i jep vetë ato që mungojnë para se të kthejë listën.
+// çdo lexim i mëposhtëm i jep vetë ato që mungojnë para se të kthejë listën. Vetëm pasi ky telefon ka
+// marrë një herë tabelën `achievements` nga serveri (`store.pulled`), që të mos ri-datojë një arritje
+// të dhënë nga një telefon tjetër.
 
 export type { AchievementKey, AchievementProgress, StreakWeek } from '@/progress/achievements'
 
@@ -158,16 +160,24 @@ async function computeStates(store: LocalStore, saved: Map<string, string>) {
   return { today, states, programmeName }
 }
 
-/** Ruan arritjet e plotësuara që s'janë ruajtur ende, me datën kur u plotësuan; kthen çelësat e rinj. */
+/**
+ * Ruan arritjet e plotësuara që s'janë ruajtur ende, me datën kur u plotësuan; kthen çelësat e rinj. Pa marrë
+ * një herë tabelën nga serveri telefoni nuk jep asgjë: një telefon tjetër mund ta ketë dhënë me datën e vet,
+ * dhe një shkrim i ri do ta ri-datonte te të gjithë (rishikimi i 0.23).
+ */
 async function persist(store: LocalStore, states: AchievementState[], saved: Map<string, string>): Promise<AchievementKey[]> {
   const userId = store.userId()
-  if (!userId) return []
+  if (!userId || !states.some((state) => state.met && !saved.has(state.key)) || !(await store.pulled('achievements'))) return []
   const added: AchievementKey[] = []
   for (const state of states) {
     if (!state.met || saved.has(state.key)) continue
-    // `revive`: një rresht i fshirë me këtë id kthehet, në vend që indeksi unik i serverit ta refuzojë.
-    await store.put('achievements', { id: await achievementId(userId, state.key), key: state.key, earned_on: state.met.date }, { revive: true })
-    saved.set(state.key, state.met.date)
+    const id = await achievementId(userId, state.key)
+    // Një rresht që ekziston (edhe i fshirë) mban datën e vet. `revive`: i fshiri kthehet, në vend që
+    // indeksi unik i serverit ta refuzojë.
+    const existing = await store.get('achievements', id, { deleted: true })
+    const earnedOn = existing?.earned_on ? day(existing.earned_on) : state.met.date
+    await store.put('achievements', { id, key: state.key, earned_on: earnedOn }, { revive: true })
+    saved.set(state.key, earnedOn)
     added.push(state.key)
   }
   return added
