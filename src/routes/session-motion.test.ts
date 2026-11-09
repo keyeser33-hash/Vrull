@@ -1,3 +1,4 @@
+import { setDayAttribute } from '@/lib/day-mode'
 import { recordPulse, savePulse } from './session-motion'
 
 // Dridhjet e seancës (SPEC §0.3c, DESIGN.md › Lëvizja): e lehtë te çdo "Ruaj setin", e rëndë te rekordi.
@@ -19,6 +20,13 @@ describe('dridhjet e seancës', () => {
   beforeEach(() => {
     native.isNative = true
     native.impact.mockClear()
+  })
+  afterEach(() => setDayAttribute('normal'))
+
+  it('ditë e lodhur: seti me rekord jep dridhjen e lehtë, jo të rëndën dhe jo asnjë', async () => {
+    setDayAttribute('tired')
+    await recordPulse()
+    expect(native.impact.mock.calls).toEqual([[{ style: 'LIGHT' }]])
   })
 
   it('"Ruaj setin": e lehtë; rekordi: e rëndë', async () => {

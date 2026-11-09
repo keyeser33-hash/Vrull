@@ -6,6 +6,7 @@ import type { Messages, TranslationOf } from '../translate'
 
 export const sq = {
   'readiness.tile': 'Gati',
+  'readiness.tile.fill': 'Gati · Plotëso',
   'readiness.tile.aria': 'Gatishmëria {percent} për qind, {level}. Hap detajet',
   'readiness.level.low': 'E ulët',
   'readiness.level.normal': 'Normale',
@@ -36,10 +37,21 @@ export const sq = {
   'readiness.day.empty': '{date}, pa check-in',
   'readiness.change': 'Ndrysho gjendjen',
   'readiness.disclaimer': 'Nuk është vlerësim mjekësor.',
+  'readiness.strength.line': 'Gatishmëria {percent}%',
+  'readiness.strength.line1': 'Gatishmëria {percent}% · {first}',
+  'readiness.strength.line2': 'Gatishmëria {percent}% · {first}, {second}',
+  'readiness.strength.sleepGood': 'gjumë i mirë',
+  'readiness.strength.sleepLong': 'gjumë i gjatë',
+  'readiness.strength.sleepQuality': 'gjumë me cilësi të mirë',
+  'readiness.strength.energyHigh': 'energji e lartë',
+  'readiness.strength.moodGood': 'gjendje e mirë',
+  'readiness.strength.soreNone': 'pa dhimbje',
+  'readiness.strength.soreLight': 'pak dhimbje',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
   'readiness.tile': 'Ready',
+  'readiness.tile.fill': 'Ready · Fill in',
   'readiness.tile.aria': 'Readiness {percent} per cent, {level}. Open details',
   'readiness.level.low': 'Low',
   'readiness.level.normal': 'Normal',
@@ -70,4 +82,14 @@ export const en: TranslationOf<typeof sq> = {
   'readiness.day.empty': '{date}, no check-in',
   'readiness.change': 'Change check-in',
   'readiness.disclaimer': 'Not a medical assessment.',
+  'readiness.strength.line': 'Readiness {percent}%',
+  'readiness.strength.line1': 'Readiness {percent}% · {first}',
+  'readiness.strength.line2': 'Readiness {percent}% · {first}, {second}',
+  'readiness.strength.sleepGood': 'good sleep',
+  'readiness.strength.sleepLong': 'long sleep',
+  'readiness.strength.sleepQuality': 'good-quality sleep',
+  'readiness.strength.energyHigh': 'high energy',
+  'readiness.strength.moodGood': 'good mood',
+  'readiness.strength.soreNone': 'no soreness',
+  'readiness.strength.soreLight': 'little soreness',
 }

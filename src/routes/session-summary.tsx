@@ -14,6 +14,7 @@ import { sessionSummary, type SessionSummary } from '@/data/training'
 import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
+import { isTiredDay } from '@/lib/day-mode'
 import { shiftDate } from '@/lib/calendar'
 import { achievementName } from './achievement-format'
 import { AchievementBadge } from './achievement-parts'
@@ -274,9 +275,11 @@ const SPARK_DOTS = [
   [12, 120],
 ]
 
-function RecordHero({ record }: { record: SessionSummary['records'][number] }) {
+export function RecordHero({ record }: { record: SessionSummary['records'][number] }) {
   const { t, fmt } = useI18n()
   const { sparks, number } = useRecordBurst<SVGSVGElement, HTMLSpanElement>()
+  // Ditë e lodhur (V50): pa festim, ndaj pa shkëndija (as statike); numri mbetet.
+  const sparkle = !isTiredDay()
   useEffect(() => {
     void recordPulse()
   }, [])
@@ -286,21 +289,23 @@ function RecordHero({ record }: { record: SessionSummary['records'][number] }) {
     <section aria-label={t('session.summary.recordSpoken', { exercise: record.exerciseName, e1rm, gain })} className="flex flex-col items-center gap-1 text-center">
       <h1 className="type-display-l">{t('session.summary.record')}</h1>
       <div aria-hidden className="relative h-[200px] w-full max-w-[358px]">
-        <svg ref={sparks} viewBox="0 0 358 200" className="absolute inset-0 size-full">
-          <g fill="none" strokeWidth={5} strokeLinecap="round" className="stroke-ember-text">
-            {SPARK_LINES.map((path) => (
-              <path key={path} d={path} />
-            ))}
-          </g>
-          <g className="fill-ember-text">
-            {SPARK_DIAMONDS.map(([x, y]) => (
-              <rect key={`${x}:${y}`} x={x - 5} y={y - 5} width={10} height={10} transform={`rotate(45 ${x} ${y})`} />
-            ))}
-            {SPARK_DOTS.map(([x, y]) => (
-              <circle key={`${x}:${y}`} cx={x} cy={y} r={4} />
-            ))}
-          </g>
-        </svg>
+        {sparkle ? (
+          <svg ref={sparks} viewBox="0 0 358 200" className="absolute inset-0 size-full">
+            <g fill="none" strokeWidth={5} strokeLinecap="round" className="stroke-ember-text">
+              {SPARK_LINES.map((path) => (
+                <path key={path} d={path} />
+              ))}
+            </g>
+            <g className="fill-ember-text">
+              {SPARK_DIAMONDS.map(([x, y]) => (
+                <rect key={`${x}:${y}`} x={x - 5} y={y - 5} width={10} height={10} transform={`rotate(45 ${x} ${y})`} />
+              ))}
+              {SPARK_DOTS.map(([x, y]) => (
+                <circle key={`${x}:${y}`} cx={x} cy={y} r={4} />
+              ))}
+            </g>
+          </svg>
+        ) : null}
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
           <span ref={number} className="type-display-hero text-ember-text">
             {fmt.number(record.e1rmKg, { maxDigits: 1 })}

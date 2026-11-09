@@ -7,7 +7,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { SuggestionCard } from './readiness-suggestion'
 import { barCostText } from './readiness-suggestion-text'
 import type { TrainingSnapshot } from '@/data/training'
-import { useSessionSuggestion } from './readiness-suggestion-state'
+import { useDayMode, useSessionSuggestion } from './readiness-suggestion-state'
 
 // Sugjerimi dhe shiriti i seancës më të lehtë në krye të seancës (V50, V2-E3-06; bordi "Seanca më e lehtë"):
 // para setit të parë, kur sugjerimi s'është vendosur, e njëjta kartë si te Sot; kur seanca është më e lehtë,
@@ -16,7 +16,10 @@ export function SessionLighter({ snapshot, started }: { snapshot: TrainingSnapsh
   const i18n = useI18n()
   const { t } = i18n
   const suggestion = useSessionSuggestion(snapshot, started)
+  const dayMode = useDayMode()
   const [busy, setBusy] = useState(false)
+  // Ditë me energji (V50): para setit të parë, fjalia e shkurtër e ditës; në ditë të tjera asgjë.
+  if (dayMode === 'energetic' && !started && !suggestion?.kind) return <p className="mx-4 mt-1 type-body-strong">{t('daymode.energetic')}</p>
   if (!suggestion) return null
   if (suggestion.kind === 'suggest') return <SuggestionCard suggestion={suggestion} className="mx-4 mt-1" />
   if (suggestion.kind !== 'lighter') return null

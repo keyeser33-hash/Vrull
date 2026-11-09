@@ -42,6 +42,23 @@ describe('java kalendarike te Sot', () => {
     expect(week[6]).toMatchObject({ date: '2026-11-15', state: 'rest' })
   })
 
+  it('llojet e ditëve me dorë (stërvitja e shtyrë, dita e humbur) mbizotërojnë ditët e profilit; seanca e bërë dhe dita e humbur mbizotërojnë llojin', () => {
+    // Sot e diel është ditë stërvitjeje e profilit, por u shty: sot pushim, e mërkura (pushim në profil) stërvitje.
+    const moved = calendarWeek(SUNDAY, [7, 1, 2, 4], [], () => false, { '2026-11-08': 'rest', '2026-11-04': 'training' })
+    expect(moved.map((day) => [day.date, day.state])).toEqual([
+      ['2026-11-02', 'planned'],
+      ['2026-11-03', 'planned'],
+      ['2026-11-04', 'planned'],
+      ['2026-11-05', 'planned'],
+      ['2026-11-06', 'rest'],
+      ['2026-11-07', 'rest'],
+      ['2026-11-08', 'rest'],
+    ])
+    const done = calendarWeek(SUNDAY, [7], [{ date: '2026-11-08', id: 's' }], (date) => date === '2026-11-03', { '2026-11-08': 'rest', '2026-11-03': 'training' })
+    expect(done[6]).toMatchObject({ state: 'done', sessionId: 's' })
+    expect(done[1].state).toBe('missed')
+  })
+
   it('dita e radhës e stërvitjes pas sotme; pa ditë stërvitjeje, asnjë', () => {
     expect(nextTrainingDate(at(7, 11), [7, 1, 2, 4])).toBe('2026-11-08')
     expect(nextTrainingDate(SUNDAY, [7, 1, 2, 4])).toBe('2026-11-09')

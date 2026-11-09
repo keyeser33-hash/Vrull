@@ -1,14 +1,12 @@
 import type { RecoveryStatus } from '@/program/recovery'
 import type { PlannedSlot, Target, Tracking } from '@/program/types'
 import { type CheckIn, LIGHTER, lighterSlots, type Readiness, type ReadinessPartKey } from './readiness'
+import { chipsOf, type SoreChip } from './sore-chips'
 
 // "Seanca më e lehtë" (V50, V2-E3-06) si logjikë e pastër mbi stërvitjen e ditës: setet dhe RIR-i e ndryshojnë
 // planin (`trainingSnapshot`), pesha ndryshon me `workoutWeights`; të dyja kalojnë nga `lighterSlots`
 // (readiness.ts), që rregulli të jetë një i vetëm. Këtu janë edhe fjalët e kartës: çfarë kushton seanca më e
 // lehtë dhe pse e ofrojmë (dy pjesët me pikët më të ulëta).
-
-/** Opsioni i `lighterSlots` (readiness.ts) që e le peshën siç është; këtu quhet `keepWeight`. */
-const keepWeight = (keep: boolean) => ({ welcomeBack: keep })
 
 const rirOf = (target: Target): { min: number; max: number } | null => (target.kind === 'reps' && target.rir ? target.rir : null)
 
@@ -16,7 +14,7 @@ const rirOf = (target: Target): { min: number; max: number } | null => (target.k
 export function lightenPlan<T extends Pick<PlannedSlot, 'sets' | 'target'>>(slots: T[]): T[] {
   const lighter = lighterSlots(
     slots.map((slot) => ({ sets: slot.sets, rir: rirOf(slot.target)?.min ?? null, weightKg: null })),
-    keepWeight(true),
+    { keepWeight: true },
   )
   return slots.map((slot, index) => {
     const range = rirOf(slot.target)
@@ -39,7 +37,7 @@ export function lightenWeights(
 ): (number | null)[] {
   return lighterSlots(
     rows.map((row) => ({ sets: row.sets, rir: rirOf(row.target)?.min ?? null, weightKg: row.weightKg, stepKg: row.stepKg })),
-    keepWeight(options.keepWeight),
+    { keepWeight: options.keepWeight },
   ).map((slot) => slot.weightKg)
 }
 
@@ -88,9 +86,11 @@ export type ReasonKey =
 
 export interface Reason {
   key: ReasonKey
-  /** Grupet e muskujve (`MUSCLE_GROUPS[].id`) për `soreGroups` dhe `recovery*`. */
+  /** Grupet e muskujve (`MUSCLE_GROUPS[].id`) për `recovery*`. */
   groups?: string[]
-  /** Numri i grupeve për `soreMany`. */
+  /** Çipat e dhimbjeve (`SORE_CHIPS`) për `soreGroups`: "dhimbjet te këmbët", jo te pesë grupe. */
+  chips?: SoreChip[]
+  /** Numri i çipave për `soreMany`. */
   count?: number
 }
 
@@ -122,11 +122,11 @@ function reasonFor(part: ReadinessPartKey, input: ReasonInput): Reason {
     case 'recovery':
       return { key: recovery?.status === 'i_lodhur' ? 'recoveryPoor' : 'recoveryPartial', groups: recovery ? [recovery.group] : [] }
     case 'soreness': {
-      // Grupet që stërviten sot e ulin gatishmërinë; pa to, çdo grup me dhimbje.
+      // Grupet që stërviten sot e ulin gatishmërinë; pa to, çdo grup me dhimbje. Numërohen dhe emërtohen si çipat.
       const today = checkIn.soreGroups.filter((group) => input.trainedGroups.includes(group))
-      const groups = today.length > 0 ? today : checkIn.soreGroups
-      if (groups.length === 0) return { key: 'sore' }
-      return groups.length > MAX_NAMED_GROUPS ? { key: 'soreMany', count: groups.length } : { key: 'soreGroups', groups }
+      const chips = chipsOf(today.length > 0 ? today : checkIn.soreGroups)
+      if (chips.length === 0) return { key: 'sore' }
+      return chips.length > MAX_NAMED_GROUPS ? { key: 'soreMany', count: chips.length } : { key: 'soreGroups', chips }
     }
   }
 }
@@ -139,4 +139,42 @@ export function readinessReasons(input: ReasonInput): Reason[] {
     .slice(0, 2)
     .sort((a, b) => a.index - b.index)
     .map(({ part }) => reasonFor(part.key, input))
+}
+
+// --- Pse është e lartë ---
+
+/** Fjalët e pjesëve të forta (nga 85%): çdo çelës ka tekstin e vet te katalogu, `readiness.strength.*`. */
+export type StrengthKey = 'sleepGood' | 'sleepLong' | 'sleepQuality' | 'energyHigh' | 'moodGood' | 'soreNone' | 'soreLight'
+
+const GOOD_SLEEP_MINUTES = 7 * 60
+
+/** Fjala e saktë e një pjese sipas vlerës që përdoruesi dha, ose null kur pjesa s'ka fjalë të sakta pozitive. */
+function strengthFor(part: ReadinessPartKey, checkIn: CheckIn): StrengthKey | null {
+  switch (part) {
+    case 'sleep': {
+      const long = checkIn.sleepMinutes >= GOOD_SLEEP_MINUTES
+      const good = checkIn.sleepQuality >= 4
+      return long && good ? 'sleepGood' : long ? 'sleepLong' : good ? 'sleepQuality' : null
+    }
+    case 'energy':
+      return checkIn.energy >= 4 ? 'energyHigh' : null
+    case 'mood':
+      return checkIn.mood >= 4 ? 'moodGood' : null
+    case 'soreness':
+      return checkIn.soreness === 0 ? 'soreNone' : checkIn.soreness === 1 ? 'soreLight' : null
+    case 'recovery':
+      // Rikuperimi thuhet tashmë në rreshtin e kartës ("Gjoksi: gati").
+      return null
+  }
+}
+
+/** Dy pjesët më të forta me fjalë të sakta (në barazim, sipas radhës së pjesëve), të thëna sipas radhës së pjesëve. */
+export function readinessStrengths(input: { checkIn: CheckIn; readiness: Readiness }): StrengthKey[] {
+  return input.readiness.parts
+    .map((part, index) => ({ index, key: strengthFor(part.key, input.checkIn), score: part.score }))
+    .filter((item): item is { index: number; key: StrengthKey; score: number } => item.key !== null)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .slice(0, 2)
+    .sort((a, b) => a.index - b.index)
+    .map((item) => item.key)
 }

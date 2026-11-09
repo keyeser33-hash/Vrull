@@ -1,15 +1,22 @@
 import type { I18n } from '@/i18n'
 import { muscleName, nameInSentence } from '@/i18n/domain'
-import type { LighterCost, Reason } from '@/readiness/lighter-session'
+import type { LighterCost, Reason, StrengthKey } from '@/readiness/lighter-session'
 import { capitalize } from './history-format'
+import { CHIP_LABEL } from './readiness-format'
 
 // Fjalët e kartës së sugjerimit (V50, V2-E3-06): pse ofrohet, dhe çfarë kushton seanca më e lehtë. Logjika e
 // zgjedhjes së pjesëve: readiness/lighter-session.ts; këtu vetëm teksti në gjuhën e app-it.
 
+const joinNames = ({ t }: I18n, names: string[]) => (names.length > 1 ? `${names[0]} ${t('lighter.and')} ${names[1]}` : (names[0] ?? ''))
+
 /** "gjoksi", "gjoksi dhe shpatullat". */
-function groupList({ t, lang }: I18n, groups: string[] | undefined): string {
-  const names = (groups ?? []).map((group) => nameInSentence(muscleName(t, group), lang))
-  return names.length > 1 ? `${names[0]} ${t('lighter.and')} ${names[1]}` : (names[0] ?? '')
+function groupList(i18n: I18n, groups: string[] | undefined): string {
+  return joinNames(i18n, (groups ?? []).map((group) => nameInSentence(muscleName(i18n.t, group), i18n.lang)))
+}
+
+/** Çipat e dhimbjeve: "këmbët", "gjoksi dhe krahët" (të njëjtat emra si çipat e fletës). */
+function chipList(i18n: I18n, chips: Reason['chips']): string {
+  return joinNames(i18n, (chips ?? []).map((chip) => nameInSentence(i18n.t(CHIP_LABEL[chip]), i18n.lang)))
 }
 
 /** Fjala e saktë për një pjesë: "gjumi i shkurtër", "dhimbjet te gjoksi". */
@@ -18,8 +25,9 @@ function reasonText(i18n: I18n, reason: Reason): string {
   switch (reason.key) {
     case 'recoveryPoor':
     case 'recoveryPartial':
-    case 'soreGroups':
       return t(`lighter.reason.${reason.key}`, { groups: groupList(i18n, reason.groups) })
+    case 'soreGroups':
+      return t('lighter.reason.soreGroups', { groups: chipList(i18n, reason.chips) })
     case 'soreMany':
       return t('lighter.reason.soreMany', { count: reason.count ?? 0 })
     default:
@@ -49,3 +57,11 @@ export function barCostText(i18n: I18n, cost: LighterCost): string {
   return [cost.sets ? i18n.t('lighter.bar.sets') : null, effectText(i18n, cost)].filter(Boolean).join(', ')
 }
 
+
+/** "Gatishmëria 88% · gjumë i mirë, pa dhimbje": rreshti i kartës së stërvitjes në ditë të lartë (V50). */
+export function strengthLine({ t, fmt }: I18n, percent: number, strengths: StrengthKey[]): string {
+  const [first, second] = strengths.map((key) => t(`readiness.strength.${key}`))
+  const value = fmt.number(percent)
+  if (!first) return t('readiness.strength.line', { percent: value })
+  return second ? t('readiness.strength.line2', { percent: value, first, second }) : t('readiness.strength.line1', { percent: value, first })
+}

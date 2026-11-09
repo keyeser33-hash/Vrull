@@ -6,7 +6,7 @@ import type { LocalStore } from '@/data/store'
 import { isTrainingMode, type TodayView, todayView } from '@/data/today'
 import type { TrainingSnapshot } from '@/data/training'
 import { welcomeBack } from '@/data/welcome-back'
-import { type LighterCost, lighterCost, type Reason, readinessReasons } from '@/readiness/lighter-session'
+import { type LighterCost, lighterCost, type Reason, readinessReasons, readinessStrengths, type StrengthKey } from '@/readiness/lighter-session'
 
 // Gjendja e sugjerimit për pjesët e tjera të Sot dhe të seancës (V50, V2-E3-06). Një lexim i vetëm
 // (`suggestionFor`) thotë çfarë tregohet: kartën e sugjerimit, stërvitjen e shtyrë, ose shiritin e seancës më të
@@ -102,4 +102,18 @@ export async function sessionSuggestionFor(db: LocalStore, snapshot: TrainingSna
 
 export function useSessionSuggestion(snapshot: TrainingSnapshot, started: boolean): Suggestion | undefined {
   return useLocalQuery(() => sessionSuggestionFor(store, snapshot, started), [snapshot, started])
+}
+
+/** Gatishmëria e lartë (nga 85%) e ditës dhe dy pjesët më të forta, për rreshtin e kartës së stërvitjes; null përndryshe. */
+export function useStrengths(date: string): { percent: number; strengths: StrengthKey[] } | null | undefined {
+  return useLocalQuery(async () => {
+    const ready = await readinessView(store, date)
+    if (!ready.state || ready.readiness?.level !== 'high') return null
+    return { percent: ready.readiness.percent, strengths: readinessStrengths({ checkIn: ready.state, readiness: ready.readiness }) }
+  }, [date])
+}
+
+/** Pamja e ditës e sotme (`energetic` vetëm me çelësin "Pamja ndjek gjendjen"), për fjalinë në krye të seancës. */
+export function useDayMode(): ReadinessView['mode'] | undefined {
+  return useLocalQuery(async () => (await readinessView(store)).mode, [])
 }

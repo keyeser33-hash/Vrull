@@ -9,12 +9,15 @@
 
 /* Të njëjta në çdo temë. */
 :root {
-  --ember: #FF5B2E;
+  /* Vlera bazë e prushit: `ember` e merr prej saj, dhe pamja e lodhur (më poshtë) e ndërron `ember` me rërën; historiku
+     e rikthen me var(). Hex-i i prushit jeton vetëm këtu. */
+  --ember-base: #FF5B2E;
+  --ember: var(--ember-base);
   --on-ember: #0B0B0C;
   --sand: #E0B48A;
   --scrim: #00000099;
   --model-light: #FFFFFF;
-  --volume-3: #FF5B2E;
+  --volume-3: var(--ember-base);
   /* Çifti i kundërt: butoni i errët mbi kartën me prush, me tekst fiks (jo foreground, që në Ditë
      do të dilte i zi mbi të zi). */
   --ink: #0B0B0C;
@@ -31,7 +34,10 @@
   --foreground: #0B0B0C;
   --muted-foreground: #52525B;
   --subtle: #D4D4D8;
-  --ember-text: #C2410C;
+  --ember-text-base: #C2410C;
+  --ember-text: var(--ember-text-base);
+  /* Rëra si tekst në ditë të lodhur: në Ditë `sand` mbi të çelët del nën 4,5:1, ndaj një rërë e errët. */
+  --sand-text: #8A5A24;
   --data: #5B4BDB;
   --success: #15803D;
   --danger: #B91C1C;
@@ -56,7 +62,9 @@
   --foreground: #FAFAFA;
   --muted-foreground: #A1A1AA;
   --subtle: #3F3F46;
-  --ember-text: #FF5B2E;
+  --ember-text-base: var(--ember-base);
+  --ember-text: var(--ember-text-base);
+  --sand-text: var(--sand);
   --data: #8B7CFF;
   --success: #4ADE80;
   --danger: #F87171;
@@ -81,7 +89,9 @@
   --foreground: #FAFAFA;
   --muted-foreground: #A1A1AA;
   --subtle: #3F3F46;
-  --ember-text: #FF5B2E;
+  --ember-text-base: var(--ember-base);
+  --ember-text: var(--ember-text-base);
+  --sand-text: var(--sand);
   --data: #8B7CFF;
   --success: #4ADE80;
   --danger: #F87171;
@@ -96,19 +106,16 @@
   color-scheme: dark;
 }
 
-/* Pamja e lodhur (V20, V50, V2-E3-07; DESIGN.md › Gjendja e ditës): korniza vendos data-day="tired" te <html>
-   kur gatishmëria është e ulët. Tokenat e prushit marrin rërën: veprimi kryesor, mbushjet (`ember`, me
-   `on-ember` sipër) dhe prushi si tekst (`ember-text`: rërë e errët në Ditë, ku `sand` mbi të çelët del nën
-   4,5:1). Lëvizjet 360 ms pa kërcim; festimet i heq kodi (lib/day-mode.ts). Lëvizja e reduktuar mbetet si
-   është: rregullat e saj kanë `!important`. */
+/* Pamja e lodhur (V20, V50, V2-E3-07; DESIGN.md › Gjendja e ditës): `DayModeRoot` vendos data-day="tired" te <html>
+   kur gatishmëria është e ulët, për gjithë app-in atë ditë. Tokenat e prushit marrin rërën: veprimi kryesor,
+   mbushjet (`ember`, me `on-ember` sipër) dhe prushi si tekst (`ember-text` bëhet `sand-text`: rërë e errët në
+   Ditë, ku `sand` mbi të çelët del nën 4,5:1). Lëvizjet 360 ms pa kërcim; festimet i heq kodi (lib/day-mode.ts).
+   Lëvizja e reduktuar mbetet si është: rregullat e saj kanë `!important`. */
 :root[data-day="tired"] {
   --ember: var(--sand);
-  --ember-text: #8A5A24;
+  --ember-text: var(--sand-text);
   --ease-vrull: ease-out;
   --animate-fill: fill 360ms ease-out both;
-}
-:root.dark[data-day="tired"] {
-  --ember-text: var(--sand);
 }
 :root[data-day="tired"] .duration-320 {
   transition-duration: 360ms;
@@ -116,13 +123,11 @@
 :root[data-day="tired"] .roll-digit {
   animation-duration: 360ms;
 }
-/* Historia nuk ndryshon ngjyrë: faqet e historikut (data-day-keep) rikthejnë prushin në nënpemën e tyre. */
+/* Historia nuk ndryshon ngjyrë: faqet e historikut (data-day-keep) rikthejnë prushin në nënpemën e tyre, me
+   vlerat bazë të temës (`--ember-text-base` është i ndryshëm në Ditë dhe në Natë, ndaj nuk duhen dy rregulla). */
 :root[data-day="tired"] [data-day-keep] {
-  --ember: #FF5B2E;
-  --ember-text: #C2410C;
-}
-:root.dark[data-day="tired"] [data-day-keep] {
-  --ember-text: #FF5B2E;
+  --ember: var(--ember-base);
+  --ember-text: var(--ember-text-base);
 }
 
 /* Aliaset e v1 (emrat e Omal UI v2 që ekranet e v1 përdorin ende), drejt tokenave të Vrullit.

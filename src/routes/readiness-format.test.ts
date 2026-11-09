@@ -3,12 +3,13 @@ import { MUSCLE_GROUPS } from '@/program/muscles'
 import { averagePercent, chipsOf, dayBars, groupsOf, lastDays, profileSleepMinutes, SORE_CHIPS, stepSleep } from './readiness-format'
 
 describe('çipat e grupeve me dhimbje', () => {
-  it('çdo grup i muskujve bie te një çip, përveç qafës, dhe asnjë id nuk është e panjohur', () => {
+  it('çdo grup i muskujve bie te saktësisht një çip (7 çipa, me qafën), dhe asnjë id nuk është e panjohur', () => {
     const ids = new Set(MUSCLE_GROUPS.map((group) => group.id))
     const chipped: string[] = SORE_CHIPS.flatMap((chip) => [...chip.groups])
     expect(chipped.every((id) => ids.has(id))).toBe(true)
     expect(new Set(chipped).size).toBe(chipped.length)
-    expect([...ids].filter((id) => !chipped.includes(id))).toEqual(['qafa'])
+    expect([...ids].filter((id) => !chipped.includes(id))).toEqual([])
+    expect(SORE_CHIPS).toHaveLength(7)
   })
 
   it('ruan id-të e grupeve sipas çipave', () => {
@@ -21,6 +22,7 @@ describe('çipat e grupeve me dhimbje', () => {
   it('çipat e ndezur nga grupet e ruajtura', () => {
     expect(chipsOf(['gjoksi', 'bicepsi', 'tricepsi', 'parakrahet'])).toEqual(['gjoksi', 'krahet'])
     expect(chipsOf(['trapezi'])).toEqual(['shpina'])
+    expect(chipsOf(['qafa', 'barku'])).toEqual(['qafa', 'barku'])
     expect(chipsOf([])).toEqual([])
   })
 })

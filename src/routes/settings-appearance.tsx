@@ -79,10 +79,10 @@ export function AppearancePage() {
         <div role="img" aria-label={t('daymode.sampleLabel')} className="flex flex-col gap-1.5 px-4 pt-2 pb-3.5">
           <div aria-hidden className="grid grid-cols-2 gap-2">
             {/* Mostra është e fiksuar: prushi i vërtetë (edhe në ditë të lodhur) dhe rëra. */}
-            <span data-day-keep className="flex h-touch items-center justify-center rounded-md bg-ember px-2 font-display text-[17px] font-extrabold tracking-[0.02em] whitespace-nowrap text-on-ember uppercase">
+            <span data-day-keep className="flex h-touch items-center justify-center rounded-md bg-ember px-2 type-label whitespace-nowrap text-on-ember">
               {t('daymode.sampleUsual')}
             </span>
-            <span className="flex h-touch items-center justify-center rounded-md bg-sand px-2 font-display text-[17px] font-extrabold tracking-[0.02em] whitespace-nowrap text-on-ember uppercase">
+            <span className="flex h-touch items-center justify-center rounded-md bg-sand px-2 type-label whitespace-nowrap text-on-ember">
               {t('daymode.sampleTired')}
             </span>
           </div>

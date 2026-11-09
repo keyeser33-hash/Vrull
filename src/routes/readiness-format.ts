@@ -6,27 +6,8 @@ import type { ReadinessLevel } from '@/readiness/readiness'
 // Ndihmësit e pastër të check-in-it dhe të fletës "Gati" (V50, V2-E3-04/05): çipat e grupeve me dhimbje,
 // gjumi nga profili, 14 ditët. Pa UI dhe pa bazë.
 
-/** Çipat e fletës: çdo çip ruan id-të e grupeve të muskujve (`MUSCLE_GROUPS`), jo vetë çipin. */
-export const SORE_CHIPS = [
-  { id: 'gjoksi', groups: ['gjoksi'] },
-  { id: 'shpina', groups: ['shpina', 'mesi', 'trapezi'] },
-  { id: 'shpatullat', groups: ['shpatullat'] },
-  { id: 'krahet', groups: ['bicepsi', 'tricepsi', 'parakrahet'] },
-  { id: 'kembet', groups: ['kuadricepsi', 'kofshet-e-pasme', 'pulpat', 'vithet', 'aduktoret'] },
-  { id: 'barku', groups: ['barku'] },
-] as const
-
-export type SoreChip = (typeof SORE_CHIPS)[number]['id']
-
-/** Çipat e ndezur për grupet e ruajtura: një çip është i ndezur kur ka të paktën një nga grupet e tij. */
-export function chipsOf(groups: readonly string[]): SoreChip[] {
-  return SORE_CHIPS.filter((chip) => chip.groups.some((group) => groups.includes(group))).map((chip) => chip.id)
-}
-
-/** Id-të e grupeve për çipat e zgjedhur, pa përsëritje, sipas radhës së çipave. */
-export function groupsOf(chips: readonly SoreChip[]): string[] {
-  return SORE_CHIPS.filter((chip) => chips.includes(chip.id)).flatMap((chip) => [...chip.groups])
-}
+// Çipat e dhimbjeve jetojnë te `readiness/sore-chips.ts` (i përdor edhe fjalia e sugjerimit).
+export { chipsOf, groupsOf, SORE_CHIPS, type SoreChip } from '@/readiness/sore-chips'
 
 /** Çelësat e muskujve të grupeve (për ngjyrosjen e figurës). */
 export function keysOfGroups(groups: readonly string[]): Set<string> {
@@ -88,6 +69,7 @@ export const CHIP_LABEL = {
   gjoksi: 'checkin.sore.gjoksi',
   shpina: 'checkin.sore.shpina',
   shpatullat: 'checkin.sore.shpatullat',
+  qafa: 'checkin.sore.qafa',
   krahet: 'checkin.sore.krahet',
   kembet: 'checkin.sore.kembet',
   barku: 'checkin.sore.barku',

@@ -120,16 +120,16 @@ const DEFAULT_STEP_KG = 2.5
 /**
  * "Seanca më e lehtë": nga ushtrimi i 3-të një set më pak (jo nën 1); me RIR, RIR +1 (deri në 4); pa RIR,
  * pesha × 0,9 e rrumbullakosur poshtë sipas hapit (`stepKg` i ushtrimit, parazgjedhja 2,5; si peshat e
- * javës). Me "Mirë se u ktheve" pesha është ulur tashmë me 0,9 (V43) dhe nuk ulet përsëri. Nuk e ndryshon hyrjen.
+ * javës). Me `keepWeight` (p.sh. "Mirë se u ktheve": pesha është ulur tashmë me 0,9, V43) pesha nuk ulet përsëri. Nuk e ndryshon hyrjen.
  */
 export function lighterSlots<T extends { sets: number; rir: number | null; weightKg: number | null; stepKg?: number }>(
   slots: T[],
-  options: { welcomeBack: boolean },
+  options: { keepWeight: boolean },
 ): T[] {
   return slots.map((slot, index) => {
     const sets = index >= LIGHTER.fromIndex ? Math.max(LIGHTER.minSets, slot.sets - 1) : slot.sets
     if (slot.rir !== null) return { ...slot, sets, rir: slot.rir < LIGHTER.maxRir ? slot.rir + 1 : slot.rir }
-    if (options.welcomeBack || slot.weightKg === null) return { ...slot, sets }
+    if (options.keepWeight || slot.weightKg === null) return { ...slot, sets }
     return { ...slot, sets, weightKg: lighterWeight(slot.weightKg, slot.stepKg ?? DEFAULT_STEP_KG) }
   })
 }

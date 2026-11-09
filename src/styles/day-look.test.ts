@@ -15,8 +15,7 @@ function rule(selector: string) {
   return css.slice(at, css.indexOf('}', at))
 }
 
-const tiredText = (theme: Theme) =>
-  theme === 'light' ? /--ember-text:\s*(#[0-9A-F]{6})/i.exec(rule(':root[data-day="tired"]'))![1] : themes[theme].sand
+const tiredText = (theme: Theme) => themes[theme]['sand-text']
 
 describe('pamja e lodhur te globals.css', () => {
   it('ember = sand; teksti on-ember mbi të ≥ 4,5:1 në çdo temë', () => {
@@ -25,16 +24,26 @@ describe('pamja e lodhur te globals.css', () => {
   })
 
   it.each(THEMES)('%s: ember-text i ditës së lodhur lexohet mbi faqen, kartën, insight dhe tab-bar-in', (theme) => {
-    if (theme !== 'light') expect(rule(':root.dark[data-day="tired"]')).toContain('--ember-text: var(--sand)')
+    expect(rule(':root[data-day="tired"]')).toContain('--ember-text: var(--sand-text)')
     const failing = ['background', 'surface', 'insight', 'nav'].filter((ground) => contrastRatio(tiredText(theme), themes[theme][ground]) < 4.5)
     expect(failing).toEqual([])
   })
 
   it('historiku rikthen prushin e temës (ember dhe ember-text)', () => {
-    const keep = rule(':root[data-day="tired"] [data-day-keep]').toUpperCase()
-    expect(keep).toContain(`--EMBER: ${themes.light.ember.toUpperCase()}`)
-    expect(keep).toContain(`--EMBER-TEXT: ${themes.light['ember-text'].toUpperCase()}`)
-    expect(rule(':root.dark[data-day="tired"] [data-day-keep]').toUpperCase()).toContain(`--EMBER-TEXT: ${themes.dark['ember-text'].toUpperCase()}`)
+    const keep = rule(':root[data-day="tired"] [data-day-keep]')
+    // Me var() te vlerat bazë të temës, jo me kopje të hex-it: një vlerë e vetme për temën, në një vend.
+    expect(keep).toContain('--ember: var(--ember-base)')
+    expect(keep).toContain('--ember-text: var(--ember-text-base)')
+    expect(keep).not.toMatch(/#[0-9a-f]{3,6}/i)
+    for (const theme of THEMES) expect(themes[theme]['ember-text-base']).toBe(themes[theme]['ember-text'])
+  })
+
+  it('hex-i i prushit dhe i rërës jeton një herë te globals.css', () => {
+    const code = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    for (const hex of ['#FF5B2E', '#E0B48A', '#8A5A24', '#C2410C']) {
+      const count = (code.match(new RegExp(hex, 'gi')) ?? []).length
+      expect({ hex, count }).toEqual({ hex, count: 1 })
+    }
   })
 
   it('lëvizjet 360 ms pa kërcim: ease-vrull bëhet ease-out, shiritat dhe shifrat 360 ms', () => {

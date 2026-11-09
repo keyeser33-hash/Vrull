@@ -32,6 +32,8 @@ Tokenat jetojnë vetëm te `globals.css`, në tri tema. Klasa e Tailwind-it ësh
 | `ember-text` | `#FF5B2E` | `#FF5B2E` | `#C2410C` | Prushi si tekst, ikonë ose vijë e hollë |
 | `data` | `#8B7CFF` | `#8B7CFF` | `#5B4BDB` | Vjollca: të dhënat dytësore ("+2,5 kg", kufiri i AI-së, miqtë) |
 | `sand` | `#E0B48A` | = | = | Rëra: zë vendin e `ember` në ditë të lodhura |
+| `sand-text` | `#E0B48A` | `#E0B48A` | `#8A5A24` | Rëra si tekst në ditë të lodhura: zë vendin e `ember-text` (në Ditë `sand` mbi të çelët del nën 4,5:1) |
+| `ember-base`, `ember-text-base` | `#FF5B2E` | `#FF5B2E` | `#C2410C` | Vlerat bazë të prushit (`ember-text-base` ndjek temën). `ember` dhe `ember-text` i marrin prej tyre; `[data-day-keep]` i rikthen me `var()`. Mos i përdor në komponentë |
 | `success` | `#4ADE80` | `#4ADE80` | `#15803D` | Vetëm gjendje, gjithnjë me fjalë |
 | `danger` | `#F87171` | `#F87171` | `#B91C1C` | Gabime dhe fshirje, gjithnjë me fjalë |
 | `insight` | `#1A1206` | `#1A1206` | `#FFF1EA` | Kartat e rekordit dhe të sugjerimit |
@@ -156,7 +158,13 @@ E qetë dhe me qëllim (SPEC §0.3c, E2-23; bordi "Lëvizja e 0.23"): pak moment
 
 ## Gjendja e ditës
 
-Check-in-i dhe gatishmëria (V7, V20) zgjedhin pamjen: **energik** (parazgjedhje: `ember`, festime, "Shko fort") ose **i lodhur** (`sand` në vend të `ember` vetëm te veprimi i sotëm, pa festime, "Ritëm i butë"). Historia nuk ndryshon ngjyrë. Programi nuk ndryshon pa konfirmimin e përdoruesit (V23).
+Check-in-i dhe gatishmëria (V7, V20) zgjedhin pamjen: **energik** (parazgjedhje: `ember`, festime, "Shko fort") ose **i lodhur** (`sand` në vend të `ember`, pa festime, "Ritëm i butë"). Programi nuk ndryshon pa konfirmimin e përdoruesit (V23).
+
+Në kod (V50, V2-E3-07), pamja e lodhur vlen për **gjithë app-in atë ditë**, jo vetëm për veprimin e sotëm:
+- `DayModeRoot` (`components/layout/day-mode-root.tsx`) vendos `data-day="tired" | "energetic"` te `<html>` mbi të gjitha rrugët, edhe ato jashtë kornizës (`/seanca`, `/seanca/mbyllja`, `/kutia`); `normal` nuk lë asgjë. Pastrohet vetëm kur del nga llogaria. Dita vjen nga rreshti i ditës së ushqimit (`readinessView`) dhe çelësi "Pamja ndjek gjendjen".
+- `globals.css`, te `:root[data-day="tired"]`, ndërron `ember` me `sand` dhe `ember-text` me `sand-text`. Meqë tokenat ndërrohen, ndryshon çdo gjë që i përdor: veprimi kryesor, mbushjet, lidhjet, figurat, shiritat, shenjat e holla. Mbi to teksti mbetet `on-ember`. Lëvizjet bëhen 360 ms `ease-out`, pa kërcim, dhe festimet i heq kodi (`lib/day-mode.ts`).
+- **Historia nuk ndryshon ngjyrë:** nënpema me `data-day-keep` (faqet e Historikut, mostra e Cilësimeve › Pamja) rikthen `ember` dhe `ember-text` nga `ember-base` dhe `ember-text-base`.
+- `sand-text` është token i emërtuar me kontrastin te `tokens.test.ts`; asnjë hex i përsëritur nuk futet në komponentë.
 
 ## Sfondet
 

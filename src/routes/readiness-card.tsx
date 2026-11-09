@@ -16,7 +16,7 @@ import { ReadinessSheet } from './readiness-sheet'
 // Vendi i kartës "Si ndihesh sot?" dhe i pllakës "Gati" te Sot, menjëherë nën kre (V50, V2-E3-04, V2-E3-05;
 // bordet "Sot · Si ndihesh sot?", "Gjendja e ditës", "Fleta Gati"):
 // - pa gjendje dhe pa "Jo sot": karta me "Plotëso" (hap fletën) dhe "Jo sot";
-// - me "Jo sot" dhe pa gjendje: asgjë;
+// - me "Jo sot" dhe pa gjendje: pllaka e vogël "Gati · Plotëso", që e hap fletën (dita plotësohet më vonë);
 // - me gjendje: pllaka "Gati" me përqindjen e rillogaritur (jo të ruajtur), nivelin dhe shigjetën; hap fletën "Gati".
 // Fletët hapen me një parametër në adresë (`fleta=gjendja|gati`), që butoni mbrapa i Android-it t'i mbyllë.
 
@@ -94,6 +94,15 @@ export function ReadinessCard({ view }: { view: TodayView }) {
             </Button>
           </div>
         </section>
+      ) : !state && rv.skipped ? (
+        <button
+          type="button"
+          onClick={() => open('gjendja')}
+          className={cn(surfaceClass, 'flex min-h-touch w-full items-center justify-between gap-3 rounded-lg px-4 text-left text-foreground')}
+        >
+          <span className="type-body-strong">{t('readiness.tile.fill')}</span>
+          <Icon name="hap" size={16} className="text-muted-foreground" />
+        </button>
       ) : null}
       {sheet === 'gjendja' ? <CheckInSheet view={view} state={state} onClose={close} /> : null}
       {sheet === 'gati' && state && readiness ? <ReadinessSheet view={view} rv={rv} onClose={close} onChange={() => open('gjendja', true)} /> : null}

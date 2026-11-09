@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router'
 import { AppShell } from '@/components/layout/app-shell'
+import { DayModeRoot } from '@/components/layout/day-mode-root'
 import type { ShellHandle, TabId } from '@/components/layout/nav-places'
 import { AppGate } from '@/routes/gate'
 import { Moved } from '@/routes/moved'
@@ -28,7 +29,7 @@ const progress = () => import('@/routes/progress')
 
 // Ekranet e app-it pas hyrjes (testet i përdorin pa portën). Pesë tab-et: Sot, Programi, Ushqimi,
 // Progresi, Miqtë; Trupi jeton brenda Progresit që nga v2 (V2-E1-05).
-export const appRoutes: RouteObject[] = [
+const appScreens: RouteObject[] = [
   {
     path: '/',
     element: <AppShell />,
@@ -80,6 +81,9 @@ export const appRoutes: RouteObject[] = [
   { path: '/seanca', ...screen(() => import('@/routes/session'), (m) => m.SessionPage) },
   { path: '/seanca/mbyllja/:sessionId', ...screen(() => import('@/routes/session-summary'), (m) => m.SessionSummaryPage) },
 ]
+
+// Pamja e ditës (`data-day`, V50) vendoset mbi të gjitha rrugët e mësipërme, edhe ato jashtë kornizës.
+export const appRoutes: RouteObject[] = [{ element: <DayModeRoot />, children: appScreens }]
 
 // E gjithë app-i: porta vendos nëse shfaqet hyrja, hapat e para apo ekranet e mësipërme.
 export const routes: RouteObject[] = [

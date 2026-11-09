@@ -19,7 +19,8 @@ import { DayLine } from './day-line'
 import { MissedDayCard } from './missed-day-card'
 import { ReadinessCard } from './readiness-card'
 import { ReadinessSuggestion } from './readiness-suggestion'
-import { useSuggestionPending } from './readiness-suggestion-state'
+import { useStrengths, useSuggestionPending } from './readiness-suggestion-state'
+import { strengthLine } from './readiness-suggestion-text'
 import { WeeklyCheckCard } from './weekly-check-card'
 import { WaterCard } from './water-card'
 import { AiBoxDock } from './ai-box-dock'
@@ -210,6 +211,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
   const { t } = i18n
   const { busy, start } = useStart()
   const quiet = useSuggestionPending(view)
+  const strength = useStrengths(view.date)
   const { mode, workout } = view
   const plan = view.snapshot!.plan
   if (!workout) return null
@@ -253,6 +255,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
           })}
         </p>
       ) : null}
+      {strength && !upcoming ? <p className="relative type-caption text-muted-foreground tabular-nums">{strengthLine(i18n, strength.percent, strength.strengths)}</p> : null}
       <Button variant={upcoming || quiet ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={busy || workout.exercises === 0} onClick={() => void start()}>
         {action}
       </Button>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LIGHTER, dayMode, lighterSlots, readiness, readinessLevel, sleepScore, type CheckIn, type Readiness } from './readiness'
+import { dayMode, lighterSlots, readiness, readinessLevel, sleepScore, type CheckIn, type Readiness } from './readiness'
 
 type Scale = 1 | 2 | 3 | 4 | 5
 type Soreness = 0 | 1 | 2 | 3 | 4
@@ -109,25 +109,19 @@ describe('readiness', () => {
 describe('lighterSlots', () => {
   const slot = (sets: number, rir: number | null, weightKg: number | null, stepKg?: number) => ({ sets, rir, weightKg, stepKg })
 
-  it('konstantet', () => {
-    expect(LIGHTER.fromIndex).toBe(2)
-    expect(LIGHTER.maxRir).toBe(4)
-    expect(LIGHTER.weightShare).toBe(0.9)
-  })
-
   it('një set më pak nga ushtrimi i 3-të, jo nën 1', () => {
-    const result = lighterSlots([slot(4, 2, 50), slot(3, 2, 50), slot(3, 2, 50), slot(1, 2, 50), slot(5, 2, 50)], { welcomeBack: false })
+    const result = lighterSlots([slot(4, 2, 50), slot(3, 2, 50), slot(3, 2, 50), slot(1, 2, 50), slot(5, 2, 50)], { keepWeight: false })
     expect(result.map((item) => item.sets)).toEqual([4, 3, 2, 1, 4])
   })
 
   it('me RIR: RIR +1 deri në 4, pesha mbetet', () => {
-    const result = lighterSlots([slot(3, 1, 60), slot(3, 3, 60), slot(3, 4, 60)], { welcomeBack: false })
+    const result = lighterSlots([slot(3, 1, 60), slot(3, 3, 60), slot(3, 4, 60)], { keepWeight: false })
     expect(result.map((item) => item.rir)).toEqual([2, 4, 4])
     expect(result.map((item) => item.weightKg)).toEqual([60, 60, 60])
   })
 
   it('pa RIR: pesha x 0,9 poshtë sipas hapit', () => {
-    const [a, b, c] = lighterSlots([slot(3, null, 62.5, 2.5), slot(3, null, 20, 2), slot(3, null, 0.5, 2.5)], { welcomeBack: false })
+    const [a, b, c] = lighterSlots([slot(3, null, 62.5, 2.5), slot(3, null, 20, 2), slot(3, null, 0.5, 2.5)], { keepWeight: false })
     expect(a.weightKg).toBe(55) // 56,25 -> 55
     expect(a.rir).toBeNull()
     expect(b.weightKg).toBe(18)
@@ -135,15 +129,15 @@ describe('lighterSlots', () => {
   })
 
   it('hapi parazgjedhur 2,5 kur ushtrimi nuk e ka', () => {
-    expect(lighterSlots([slot(3, null, 100)], { welcomeBack: false })[0].weightKg).toBe(90)
+    expect(lighterSlots([slot(3, null, 100)], { keepWeight: false })[0].weightKg).toBe(90)
   })
 
   it('pesha null mbetet null', () => {
-    expect(lighterSlots([slot(3, null, null)], { welcomeBack: false })[0].weightKg).toBeNull()
+    expect(lighterSlots([slot(3, null, null)], { keepWeight: false })[0].weightKg).toBeNull()
   })
 
   it('"Mirë se u ktheve" e ka ulur peshën: nuk ulet dy herë, setet dhe RIR ndryshojnë', () => {
-    const result = lighterSlots([slot(3, null, 90, 2.5), slot(3, null, 90, 2.5), slot(3, null, 90, 2.5), slot(3, 1, 90, 2.5)], { welcomeBack: true })
+    const result = lighterSlots([slot(3, null, 90, 2.5), slot(3, null, 90, 2.5), slot(3, null, 90, 2.5), slot(3, 1, 90, 2.5)], { keepWeight: true })
     expect(result.map((item) => item.weightKg)).toEqual([90, 90, 90, 90])
     expect(result.map((item) => item.sets)).toEqual([3, 3, 2, 2])
     expect(result[3].rir).toBe(2)
@@ -151,7 +145,7 @@ describe('lighterSlots', () => {
 
   it('nuk ndryshon hyrjen dhe ruan fushat e tjera', () => {
     const input = [{ ...slot(3, null, 100), id: 'x' }]
-    const result = lighterSlots(input, { welcomeBack: false })
+    const result = lighterSlots(input, { keepWeight: false })
     expect(input[0].weightKg).toBe(100)
     expect(result[0].id).toBe('x')
   })

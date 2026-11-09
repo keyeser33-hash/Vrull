@@ -106,7 +106,7 @@ export function savePulse() {
 
 /** Dridhja e rëndë e rekordit në telefon; në shfletues asgjë. */
 export function recordPulse() {
-  // Ditë e lodhur (V50): pa festim, as dridhja e rëndë.
-  if (isTiredDay()) return Promise.resolve()
+  // Ditë e lodhur (V50): pa festim, ndaj jo dridhja e rëndë, por seti jep dridhjen e lehtë si çdo "Ruaj setin".
+  if (isTiredDay()) return savePulse()
   return pulse(ImpactStyle.Heavy)
 }

@@ -27,7 +27,7 @@ export function Segments({ legend, options, selected, onSelect }: { legend: stri
             aria-pressed={index === selected}
             onClick={() => onSelect(index)}
             className={cn(
-              'min-h-[52px] min-w-0 px-[3px] text-center font-display text-sm leading-[1.05] font-bold uppercase outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground',
+              'min-h-[52px] min-w-0 px-[3px] text-center type-label text-sm leading-[1.05] tracking-normal outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground',
               index > 0 && 'border-l border-surface-border',
               index === selected ? 'bg-foreground font-extrabold text-background' : 'text-foreground',
             )}
@@ -192,7 +192,7 @@ function CheckInForm({
                       aria-pressed={on}
                       onClick={() => toggle(chip.id)}
                       className={cn(
-                        'h-touch rounded-pill border px-4 font-display text-base font-bold uppercase',
+                        'h-touch rounded-pill border px-4 type-label',
                         on ? 'border-foreground bg-foreground text-background' : 'border-surface-border bg-surface-2 text-foreground',
                       )}
                     >

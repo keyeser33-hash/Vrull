@@ -81,6 +81,28 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(screen.queryByRole('button', { name: /Gatishmëria/ })).not.toBeInTheDocument()
   })
 
+  it('pas "Jo sot" mbetet pllaka e vogël "Gati · Plotëso" që e hap fletën; dita plotësohet më vonë', async () => {
+    await setup()
+    await renderCard()
+    await userEvent.click(await screen.findByRole('button', { name: 'Jo sot' }))
+    const tile = await screen.findByRole('button', { name: 'Gati · Plotëso' })
+    await userEvent.click(tile)
+    const sheet = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
+    await userEvent.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    expect(await stored()).not.toBeNull()
+    expect(await screen.findByRole('button', { name: /Gatishmëria/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Gati · Plotëso' })).not.toBeInTheDocument()
+  })
+
+  it('pllaka "Gati · Plotëso" edhe në anglisht', async () => {
+    await setup()
+    await act(() => language.set('en'))
+    await renderCard()
+    await userEvent.click(await screen.findByRole('button', { name: 'Not today' }))
+    expect(await screen.findByRole('button', { name: 'Ready · Fill in' })).toBeInTheDocument()
+  })
+
   it('me gjendje: pllaka e ka përqindjen nga rreshti (rikuperimi i çastit të check-in-it)', async () => {
     const store = await setup()
     const { readinessOfState, saveDailyState } = await import('@/data/daily-state')
@@ -112,7 +134,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     await userEvent.click(within(within(sheet).getByRole('group', { name: 'Energjia' })).getByRole('button', { name: 'E ulët' }))
     await userEvent.click(within(sheet).getByRole('button', { name: 'Mesatare' }))
     const chips = within(sheet).getByRole('group', { name: 'Grupet me dhimbje' })
-    expect(within(chips).getAllByRole('button').map((chip) => chip.textContent)).toEqual(['Gjoksi', 'Shpina', 'Shpatullat', 'Krahët', 'Këmbët', 'Barku'])
+    expect(within(chips).getAllByRole('button').map((chip) => chip.textContent)).toEqual(['Gjoksi', 'Shpina', 'Shpatullat', 'Qafa', 'Krahët', 'Këmbët', 'Barku'])
     await userEvent.click(within(chips).getByRole('button', { name: 'Krahët' }))
     expect(within(sheet).getByRole('img', { name: /të zgjedhur: Krahët/ })).toBeInTheDocument()
     await userEvent.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
@@ -162,7 +184,8 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(within(parts[1]).getByText('E ulët')).toBeInTheDocument()
     expect(within(parts[3]).getByText(/Mesatare te gjoksi/)).toBeInTheDocument()
     expect(within(sheet).getByText('Nuk është vlerësim mjekësor.')).toBeInTheDocument()
-    if (before.level === 'low') expect(within(sheet).getByText('Nën 60% Vrull propozon seancën më të lehtë. Vendos ti.')).toBeInTheDocument()
+    expect(before.level).toBe('low')
+    expect(within(sheet).getByText('Nën 60% Vrull propozon seancën më të lehtë. Vendos ti.')).toBeInTheDocument()
 
     await userEvent.click(within(sheet).getByRole('button', { name: 'Ndrysho gjendjen' }))
     const form = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
@@ -217,7 +240,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
   })
 
   it('anglishtja: karta, fleta e check-in-it dhe fleta "Gati"', async () => {
-    const store = await setup()
+    await setup()
     await act(() => language.set('en'))
     await renderCard()
     expect(await screen.findByRole('heading', { name: 'How are you feeling today?' })).toBeInTheDocument()
@@ -236,6 +259,5 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(within(sheet).getByText('Not a medical assessment.')).toBeInTheDocument()
     expect(within(sheet).getByRole('button', { name: 'Change check-in' })).toBeInTheDocument()
     expect((await stored())?.soreness).toBe(1)
-    expect(store).toBe(data.store)
   })
 })
