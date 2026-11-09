@@ -120,6 +120,17 @@ describe('Programi', () => {
     expect(review.days[0].date?.toDateString()).toBe(new Date(2026, 10, 15).toDateString())
   })
 
+  it('dita e humbur (V38): stërvitja e radhës thotë ditën kur duhej bërë', async () => {
+    const { store, now, setClock } = await atPhaseOneWeekTwo()
+    // Seanca e fundit ishte e diela 1 nëntor; e hëna 2 ishte ditë stërvitjeje pa seancë.
+    expect((await activeProgramHome(store, now()))!.next).toMatchObject({ missedOn: '2026-11-02' })
+    setClock(new Date(2026, 10, 8, 17, 0))
+    const sessionId = await startWorkout(store)
+    expect((await activeProgramHome(store, now()))!.next).toMatchObject({ inProgress: true, missedOn: null })
+    await finishWorkout(store, sessionId)
+    expect((await activeProgramHome(store, now()))!.next).toMatchObject({ missedOn: null })
+  })
+
   it('pa program aktiv: null', async () => {
     const store = createLocalStore(createDatabase(`programme-${crypto.randomUUID()}`), { userId: () => USER })
     expect(await activeProgramHome(store, new Date())).toBeNull()

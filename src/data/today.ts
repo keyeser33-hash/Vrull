@@ -1,11 +1,14 @@
 import { localDate, weekRange } from '@/lib/calendar'
 import { dayTheme, type DayTheme } from '@/progress/history'
 import { MUSCLE_GROUPS, type MuscleGroup } from '@/program/muscles'
+import { isMissed, missedYesterday } from '@/program/missed-day'
 import { recoveryFor, type RecoveryStatus } from '@/program/recovery'
 import { workoutMinutes } from '@/program/week-plan'
 import type { Target, Tracking } from '@/program/types'
-import { currentFoodDate, nutritionDay } from './nutrition'
+import { readMissedInput } from './missed-day'
+import { currentFoodDate, dayTargets, nutritionDay } from './nutrition'
 import { readProfile } from './profile'
+import { readSchedule, trainingTimeOn } from './schedule-settings'
 import type { LocalStore } from './store'
 import { trainingHistory, trainingSnapshot, type TrainingSnapshot } from './training'
 import { workoutWeights } from './week-weights'
@@ -16,7 +19,8 @@ import { workoutWeights } from './week-weights'
 // `workoutWeights`, si te seanca dhe Programi), dhe proteina e sotme (§9).
 // Gatishmëria, uji, faktet, sfida dhe miqtë vijnë me Etapat 3 dhe 4.
 
-export type TodayDayState = 'done' | 'rest' | 'planned'
+/** missed: ditë stërvitjeje e kaluar pa seancë (V38). */
+export type TodayDayState = 'done' | 'rest' | 'planned' | 'missed'
 
 export interface TodayWeekDay {
   /** "2026-11-02" */
@@ -40,7 +44,7 @@ const addDays = (date: Date, days: number) => new Date(date.getFullYear(), date.
  * një ditë jashtë ditëve të stërvitjes është pushim; të tjerat janë ditë stërvitjeje. Seancat vijnë
  * me radhën e mbylljes: e fundit e një dite është ajo që hapet.
  */
-export function calendarWeek(now: Date, trainingDays: number[], completed: { date: string; id: string }[]): TodayWeekDay[] {
+export function calendarWeek(now: Date, trainingDays: number[], completed: { date: string; id: string }[], missed: (date: string) => boolean = () => false): TodayWeekDay[] {
   const [monday] = weekRange(now)
   const today = localDate(now)
   const done = new Map(completed.map((session) => [session.date, session.id]))
@@ -52,7 +56,7 @@ export function calendarWeek(now: Date, trainingDays: number[], completed: { dat
       date: key,
       weekday,
       day: date.getDate(),
-      state: done.has(key) ? 'done' : trainingDays.includes(weekday) ? 'planned' : 'rest',
+      state: done.has(key) ? 'done' : missed(key) ? 'missed' : trainingDays.includes(weekday) ? 'planned' : 'rest',
       today: key === today,
       sessionId: done.get(key) ?? null,
     }
@@ -136,6 +140,19 @@ export interface TodayView {
   /** Data e ushqimit dhe e ujit, dhe nëse sot është ditë stërvitjeje (objektivi i ujit, V36). */
   date: string
   trainingDay: boolean
+  /** Pyetja e ditës së humbur (V38): dje ishte ditë stërvitjeje pa seancë; null kur nuk ka. */
+  missed: TodayMissed | null
+}
+
+export interface TodayMissed {
+  /** Dita e humbur. */
+  date: string
+  /** Sa ditë stërvitjeje rresht janë humbur deri dje. */
+  streak: number
+  /** Ora e stërvitjes nëse bëhet sot. */
+  time: string
+  /** Kaloritë e sotme si ditë stërvitjeje. */
+  trainingKcal: number | null
 }
 
 export async function todayView(store: LocalStore): Promise<TodayView> {
@@ -143,18 +160,25 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
   const today = localDate(now)
   // Ushqimi dhe uji ndjekin ditën e ushqimit (V46); stërvitja dhe java mbeten sipas kalendarit.
   const eatingDate = await currentFoodDate(store, now)
-  const [snapshot, history, profile, sessions, nutrition] = await Promise.all([
+  const [snapshot, history, profile, sessions, nutrition, schedule] = await Promise.all([
     trainingSnapshot(store),
     trainingHistory(store),
     readProfile(store),
     store.all('workout_sessions'),
     nutritionDay(store, eatingDate, now),
+    readSchedule(store),
   ])
   const completed = sessions
     .filter((row) => row.status === 'completed')
     .sort((a, b) => String(a.ended_at).localeCompare(String(b.ended_at)))
     .map((row) => ({ date: String(row.date), id: row.id }))
-  const week = calendarWeek(now, profile.trainingDays, completed)
+  const missedInput = await readMissedInput(store)
+  const week = calendarWeek(now, profile.trainingDays, completed, (date) => isMissed(missedInput, date, today))
+  const question = snapshot && !snapshot.completed && !snapshot.session ? missedYesterday(missedInput, today) : null
+  const missed: TodayMissed | null = question
+    ? { ...question, time: trainingTimeOn(schedule, today), trainingKcal: (await dayTargets(store, today, 'training'))?.kcal ?? null }
+    : null
+  const trainingToday = profile.trainingDays.includes(isoWeekday(now)) || missedInput.dayTypes[today] === 'training'
   const base = {
     now,
     snapshot,
@@ -164,6 +188,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     protein: { eatenG: Math.round(nutrition.totals.proteinG), targetG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null },
     date: eatingDate,
     trainingDay: nutrition.dayType === 'training',
+    missed,
   }
   if (!snapshot) return { ...base, mode: 'none', workout: null }
 
@@ -174,7 +199,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
       ? 'session'
       : completed.some((session) => session.date === today)
         ? 'done'
-        : profile.trainingDays.includes(isoWeekday(now))
+        : trainingToday
           ? 'train'
           : 'rest'
   if (mode === 'completed') return { ...base, mode, workout: null }

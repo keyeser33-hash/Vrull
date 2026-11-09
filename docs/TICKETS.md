@@ -262,6 +262,8 @@ Sipas §13 (V37): pa rikujtues për atë që është regjistruar (edhe pas sinkr
 
 Sipas §13 (V38): gjendja "E humbur" te java (Sot, Programi), karta dhe njoftimi i mëngjesit "Dje nuk u stërvite. Stërvitja N sot?", "Po" e bën sot ditë stërvitjeje (lloji i ditës, objektivat, orari), "Jo" e lë. **Pranimi:** prova me kalendarë: një ditë e humbur, dy rresht, dita e humbur e shtunë me javën që mbyllet; treguesi nuk lëviz pa seancë.
 
+**Gjendja (09.11.2026):** kodi dhe provat gati: logjika `program/missed-day.ts` (dita e humbur, pyetja e sotme, ditët rresht), `data/missed-day.ts` (seancat, llojet e ditëve me dorë, "Po"/"Jo" si lloji i ditës së sotme, pa tabelë të re), gjendja "E humbur" te java e Sot me legjendën, karta `routes/missed-day-card.tsx`, "E humbur: …" te stërvitja e radhës te Programi, njoftimi i mëngjesit te `reminders/plan.ts`. Ditët e stërvitjes te java marrin unazën `subtle` të bordit, që legjenda të përputhet.
+
 ## V2-E2-10 · Suplementet e mia
 
 Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushqimi për pluhurin e proteinës, ndryshimi dhe heqja; funksioni `supplement-label` (Supabase, JWT, kufiri dhe rezervimi i AI-së si te `program-import`, logjika në modul pa Deno me prova, `tsc` i funksioneve) që lexon foton e etiketës. Fotoja nuk ruhet. `ai_usage.feature` ka nevojë për vlerën e re (`supplement_label`) me migrim. **Pranimi:** etiketa e vërtetë e një whey-i lexohet saktë (provë me përdorues të përkohshëm, si te importi); pa internet fleta punon me dorë; "E mora" te proteina shton makrot te vakti një herë.

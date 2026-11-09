@@ -45,6 +45,9 @@ export interface ReminderInput {
   trainingTimes?: Record<number, string>
   /** Plani i vakteve (V35): vlen nga `from`, para saj `previous`. */
   mealPlan?: MealPlan & { from: string | null; previous: MealPlan | null }
+  /** Dita e humbur (V38): dita e parë që numërohet dhe datat me seancë; pa to, pa njoftimin. */
+  startedOn?: string | null
+  sessionDates?: readonly string[]
 }
 
 export interface Reminder {
@@ -78,11 +81,15 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     : null
   const reminders: Reminder[] = []
   let labelUsed = false
+  const isTraining = (date: string, weekday: number) => (input.dayTypes[date] ?? (input.trainingDays.includes(weekday) ? 'training' : 'rest')) === 'training'
+  const done = new Set(input.sessionDates ?? [])
+  // Ditët e stërvitjes së planit pa seancë ende: pas tyre treguesi i programit nuk dihet.
+  let pending = 0
   for (let offset = 0; offset < input.days; offset++) {
     const day = new Date(input.from.getFullYear(), input.from.getMonth(), input.from.getDate() + offset)
     const date = isoDate(day)
     const weekday = day.getDay() || 7
-    const training = (input.dayTypes[date] ?? (input.trainingDays.includes(weekday) ? 'training' : 'rest')) === 'training'
+    const training = isTraining(date, weekday)
     const trainingTime = input.trainingTimes?.[weekday] ?? input.trainingTime
     const plan = input.mealPlan && input.mealPlan.from !== null && date < input.mealPlan.from ? (input.mealPlan.previous ?? undefined) : input.mealPlan
     const idBase = REMINDER_IDS.first + offset * 20
@@ -91,6 +98,25 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     if (input.toggles.measurements && weekday === input.measurementDay) {
       dayItems.push({ at: at(day, input.wakeTime), title: t('reminders.notify.measurement'), body: t('reminders.notify.measurementText'), kind: 'measurement' })
     }
+    // Dita e humbur (V38): dje ishte ditë stërvitjeje pa seancë dhe sot është pushim pa zgjedhje. Kur
+    // dje ka ende kohë (një ditë e planit), njoftimi ikën vetë me seancën, sepse plani rillogaritet.
+    const yesterday = new Date(day.getFullYear(), day.getMonth(), day.getDate() - 1)
+    const before = isoDate(yesterday)
+    const missed =
+      input.toggles.training &&
+      !!input.startedOn &&
+      before >= input.startedOn &&
+      !training &&
+      input.dayTypes[date] === undefined &&
+      isTraining(before, yesterday.getDay() || 7) &&
+      !done.has(before)
+    if (missed) {
+      const pendingBefore = offset === 0 ? 0 : pending - 1
+      const body =
+        input.nextWorkout && pendingBefore === 0 ? t('reminders.notify.missedText', { day: String(input.nextWorkout.dayNumber) }) : t('reminders.notify.missedNext')
+      dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title: t('reminders.notify.missed'), body, kind: 'training' })
+    }
+    if (training && !done.has(date)) pending += 1
     if (input.toggles.training && training) {
       const title = !labelUsed && workoutLabel ? t('reminders.notify.workout', { label: workoutLabel }) : t('reminders.notify.workoutToday')
       labelUsed = true

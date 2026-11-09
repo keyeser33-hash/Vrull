@@ -175,6 +175,7 @@ export const sq = {
   'programme.weights.pending': 'presin vendimin tënd',
   'programme.weights.accepted': 'pranuar',
   'programme.weights.postponed': 'për më vonë',
+  'programme.missedOn': 'E humbur: {date}',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -340,4 +341,5 @@ export const en: TranslationOf<typeof sq> = {
   'programme.weights.pending': 'waiting for you',
   'programme.weights.accepted': 'accepted',
   'programme.weights.postponed': 'for later',
+  'programme.missedOn': 'Missed: {date}',
 }

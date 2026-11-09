@@ -104,3 +104,31 @@ describe('rikujtuesit (§13)', () => {
     expect(night.at(-1)).toMatchObject({ title: 'Para gjumit', at: new Date('2026-12-10T04:30:00') })
   })
 })
+
+describe('dita e humbur (V38)', () => {
+  // E marta 8 dhjetor është ditë stërvitjeje; e mërkura 9 është pushim.
+  const missed = (overrides: Partial<ReminderInput> = {}) => lines(base({ startedOn: '2026-12-01', sessionDates: ['2026-12-07'], ...overrides })).filter((item) => item.includes('Dje') || item.includes('yesterday'))
+
+  it('e mërkurë pas një të marte pa seancë: njoftimi i mëngjesit me stërvitjen e radhës', () => {
+    expect(missed()).toEqual(['07:30 Dje nuk u stërvite: Stërvitja 3 sot? Hap app-in për ta sjellë.'])
+    expect(lines(base({ startedOn: '2026-12-01', sessionDates: [] }), en)).toContain('07:30 You didn’t train yesterday: Workout 3 today? Open the app to bring it over.')
+  })
+
+  it('pa njoftim kur dje kishte seancë, kur sot u zgjodh, ose para fillimit', () => {
+    expect(missed({ sessionDates: ['2026-12-08'] })).toEqual([])
+    expect(missed({ dayTypes: { '2026-12-09': 'rest' } })).toEqual([])
+    expect(missed({ startedOn: '2026-12-09' })).toEqual([])
+    expect(lines(base({ sessionDates: [] })).some((item) => item.includes('Dje'))).toBe(false)
+  })
+
+  it('e marta që vjen: njoftimi i së mërkurës planifikohet dhe ikën kur e marta ka seancë', () => {
+    const from = new Date('2026-12-08T06:00:00')
+    expect(missed({ from, days: 2 })).toEqual(['07:30 Dje nuk u stërvite: Stërvitja 3 sot? Hap app-in për ta sjellë.'])
+    expect(missed({ from, days: 2, sessionDates: ['2026-12-07', '2026-12-08'] })).toEqual([])
+    // Pas disa ditësh stërvitjeje, stërvitja e radhës nuk dihet: pa numër.
+    expect(missed({ from: new Date('2026-12-07T06:00:00'), days: 7 })).toEqual([
+      '07:30 Dje nuk u stërvite: Stërvitja 3 sot? Hap app-in për ta sjellë.',
+      '07:30 Dje nuk u stërvite: E bën sot stërvitjen e radhës? Hap app-in për ta sjellë.',
+    ])
+  })
+})

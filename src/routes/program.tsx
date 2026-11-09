@@ -174,6 +174,7 @@ function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: Program
   const next = home.next!
   const first = next.first
   const when = day.date ? (sameDay(day.date, now) ? t('programme.todayOn', { date: fmt.date(day.date) }) : capitalize(fmt.date(day.date), fmt.locale)) : null
+  const missed = next.missedOn ? t('programme.missedOn', { date: fmt.date(new Date(`${next.missedOn}T12:00:00`)) }) : null
 
   async function start() {
     setBusy(true)
@@ -194,13 +195,14 @@ function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: Program
     >
       <Link
         to={dayPath(home, day.dayId)}
-        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: programDayName(t, day.name), when: dotted([when, t('programme.minutes', { minutes: day.minutes })]) })}
+        aria-label={t('programme.dayLabel', { number: day.dayNumber, name: programDayName(t, day.name), when: dotted([missed, when, t('programme.minutes', { minutes: day.minutes })]) })}
         className="flex items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         <span aria-hidden className="flex size-[34px] shrink-0 items-center justify-center rounded-pill border-2 border-ember-text text-sm font-bold tabular-nums">
           {day.dayNumber}
         </span>
         <span className="flex min-w-0 flex-col">
+          {missed ? <span className="type-caption text-muted-foreground">{missed}</span> : null}
           <span className="type-caption text-muted-foreground tabular-nums">{dotted([when, t('programme.minutes', { minutes: day.minutes })])}</span>
           <span className="font-display text-[26px] leading-none font-extrabold uppercase">{programDayName(t, day.name)}</span>
         </span>

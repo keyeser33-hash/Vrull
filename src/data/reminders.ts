@@ -1,5 +1,6 @@
 import type { ReminderInput, ReminderToggles } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
+import { readMissedInput } from './missed-day'
 import { readProfile } from './profile'
 import { readSchedule } from './schedule-settings'
 import type { LocalStore } from './store'
@@ -36,13 +37,14 @@ export async function setMeasurementDay(store: LocalStore, day: number) {
 
 /** Gjithçka që i duhet planit të rikujtuesve për 7 ditët nga `now`. */
 export async function reminderInput(store: LocalStore, now: Date): Promise<ReminderInput> {
-  const [profile, settings, supplements, snapshot, targets, schedule] = await Promise.all([
+  const [profile, settings, supplements, snapshot, targets, schedule, missed] = await Promise.all([
     readProfile(store),
     reminderSettings(store),
     supplementList(store),
     trainingSnapshot(store),
     store.all('nutrition_targets'),
     readSchedule(store),
+    readMissedInput(store),
   ])
   return {
     from: now,
@@ -67,5 +69,7 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     dayTypes: Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date), row.day_type as DayType])),
     trainingTimes: schedule.trainingTimes,
     mealPlan: schedule.plan,
+    startedOn: missed.startedOn,
+    sessionDates: missed.sessionDates,
   }
 }

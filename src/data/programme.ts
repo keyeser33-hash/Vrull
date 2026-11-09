@@ -5,6 +5,7 @@ import type { HistorySet } from '@/program/loads'
 import type { Equipment, ProgramWeek, Target, Technique } from '@/program/types'
 import { upcomingDates, workoutMinutes } from '@/program/week-plan'
 import type { WeekRef, WeekWeightRow } from '@/progress/week-weights'
+import { firstMissedSinceLastSession, readMissedInput } from './missed-day'
 import type { LocalStore } from './store'
 import { programView, type TrainingHistory, trainingHistory, trainingSnapshot } from './training'
 import { weekWeightsView, workoutWeights } from './week-weights'
@@ -52,6 +53,8 @@ export interface ActiveProgramHome {
   next: {
     dayId: string
     inProgress: boolean
+    /** Dita e humbur kur kjo stërvitje duhej bërë (V38); null kur nuk ka. */
+    missedOn: string | null
     first: { exerciseId: string; name: string; sets: number; target: Target; weightKg: number | null } | null
   } | null
   /** Peshat e javës që shqyrtohet (§7): presin vendimin, të pranuara ose për më vonë. */
@@ -70,11 +73,12 @@ const isFinished = (status: DayStatus) => status === 'done' || status === 'skipp
 export async function activeProgramHome(store: LocalStore, now: Date): Promise<ActiveProgramHome | null> {
   const view = await programView(store)
   if (!view) return null
-  const [snapshot, [settings], sessions, program] = await Promise.all([
+  const [snapshot, [settings], sessions, program, missed] = await Promise.all([
     trainingSnapshot(store),
     store.all('user_settings'),
     store.where('workout_sessions', 'program_id', view.programId),
     store.get('programs', view.programId),
+    readMissedInput(store),
   ])
   const { programId, overview, pointer, exercises } = view
   const current = overview.weeks[overview.currentWeek]
@@ -95,7 +99,11 @@ export async function activeProgramHome(store: LocalStore, now: Date): Promise<A
 
   const ahead = current.days.filter((day) => !isFinished(day.status))
   // Ditët që mbeten dhe java pas saj, për peshat e javës.
-  const dates = pointer.completed ? [] : upcomingDates({ count: ahead.length + current.days.length, trainingDays, today: now, trainedToday })
+  const count = ahead.length + current.days.length
+  // Një ditë pushimi e bërë stërvitje me dorë ("Po" te dita e humbur, V38) është data e parë.
+  const movedToday = missed.dayTypes[today] === 'training' && !trainingDays.includes(now.getDay() || 7) && !trainedToday
+  const upcoming = pointer.completed ? [] : upcomingDates({ count, trainingDays, today: now, trainedToday })
+  const dates = movedToday ? [new Date(now.getFullYear(), now.getMonth(), now.getDate()), ...upcoming].slice(0, count) : upcoming
   const days: ProgrammeDay[] = current.days.map((day) => {
     const plan = view.plan(current.blockId, current.week, day.dayId)
     const names = plan.slots.map((slot) => exercises[slot.exerciseId]?.name ?? '')
@@ -119,6 +127,7 @@ export async function activeProgramHome(store: LocalStore, now: Date): Promise<A
     next = {
       dayId: pointer.dayId,
       inProgress: snapshot.session !== null,
+      missedOn: snapshot.session ? null : firstMissedSinceLastSession(missed, today),
       first: slot
         ? {
             exerciseId: slot.exerciseId,

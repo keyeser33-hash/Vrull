@@ -10,6 +10,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { type WeekDay, WeekStrip } from '@/components/ui/week-strip'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type TodayView, todayView } from '@/data/today'
+import { MissedDayCard } from './missed-day-card'
 import { WeeklyCheckCard } from './weekly-check-card'
 import { WaterCard } from './water-card'
 import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
@@ -56,6 +57,7 @@ export function TodayPage() {
       <TodayHeader view={view} />
       {view.mode === 'none' || view.mode === 'completed' ? null : <WeekStrip days={weekDays(view, i18n, (id) => navigate(`/progresi/historiku/${id}`))} />}
       <UpdateNotice />
+      <MissedDayCard view={view} />
       <WeeklyCheckCard date={view.date} />
       {view.mode === 'none' ? (
         <NoProgramme />

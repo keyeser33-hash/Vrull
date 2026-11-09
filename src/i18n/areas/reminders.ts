@@ -36,6 +36,9 @@ export const sq = {
   'reminders.notify.workoutAt': 'Stërvitja {time}',
   'reminders.notify.mealWith': '{foods} · me {supplements}',
   'reminders.notify.supplements': 'Suplementet · {meal}',
+  'reminders.notify.missed': 'Dje nuk u stërvite',
+  'reminders.notify.missedText': 'Stërvitja {day} sot? Hap app-in për ta sjellë.',
+  'reminders.notify.missedNext': 'E bën sot stërvitjen e radhës? Hap app-in për ta sjellë.',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -67,4 +70,7 @@ export const en: TranslationOf<typeof sq> = {
   'reminders.notify.workoutAt': 'Workout at {time}',
   'reminders.notify.mealWith': '{foods} · with {supplements}',
   'reminders.notify.supplements': 'Supplements · {meal}',
+  'reminders.notify.missed': 'You didn’t train yesterday',
+  'reminders.notify.missedText': 'Workout {day} today? Open the app to bring it over.',
+  'reminders.notify.missedNext': 'Do your next workout today? Open the app to bring it over.',
 }

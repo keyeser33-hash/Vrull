@@ -211,6 +211,46 @@ describe('Sot', () => {
     expect(within(screen.getByRole('region', { name: 'Next workout' })).getByText('Workout 1 · 9 exercises · ~65 min')).toBeInTheDocument()
   })
 
+  it('dita e humbur: e mërkura pyet për të martën; "Po" e bën sot ditë stërvitjeje', async () => {
+    const { train } = await boardWeek()
+    await train(at(8, 11, 17, 15), [{ weightKg: 62.5, reps: 12 }])
+    await train(at(9, 11, 17, 15), [{ weightKg: 40, reps: 10 }])
+    data.clock = at(11, 11)
+    await renderToday()
+    const card = await screen.findByRole('region', { name: 'Dje nuk u stërvite' })
+    expect(within(card).getByText('E martë, 10 nëntor')).toBeInTheDocument()
+    expect(within(card).getByText(/^Stërvitja 3, .+, të pret\. E bën sot\?$/)).toBeInTheDocument()
+    expect(within(card).getByText(/^Me "Po", sot bëhet ditë stërvitjeje: .+ kcal dhe vaktet rreth stërvitjes\./)).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'E martë 10, e humbur' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Ditë pushimi' })).toBeInTheDocument()
+    expect(emberButtons().map((button) => button.textContent)).toEqual(['Po, sot në 17:15'])
+
+    await userEvent.setup().click(within(card).getByRole('button', { name: 'Po, sot në 17:15' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'Dje nuk u stërvite' })).not.toBeInTheDocument())
+    expect(screen.queryByRole('heading', { level: 1, name: 'Ditë pushimi' })).not.toBeInTheDocument()
+    expect(emberButtons().map((button) => button.textContent)).toEqual(['Fillo stërvitjen'])
+    const { nutritionDay } = await import('@/data/nutrition')
+    expect((await nutritionDay(data.store, '2026-11-11', data.clock)).dayType).toBe('training')
+    // E marta mbetet e humbur te java.
+    expect(screen.getByRole('img', { name: 'E martë 10, e humbur' })).toBeInTheDocument()
+  })
+
+  it('dita e humbur: "Jo, të enjten" e lë pushim; në anglisht', async () => {
+    const { train } = await boardWeek()
+    await train(at(8, 11, 17, 15), [{ weightKg: 62.5, reps: 12 }])
+    await train(at(9, 11, 17, 15), [{ weightKg: 40, reps: 10 }])
+    data.clock = at(11, 11)
+    await renderToday()
+    act(() => language.set('en'))
+    const card = await screen.findByRole('region', { name: 'You didn’t train yesterday' })
+    expect(within(card).getByRole('button', { name: 'Yes, today at 17:15' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Tuesday 10, missed' })).toBeInTheDocument()
+    act(() => language.set('sq'))
+    await userEvent.setup().click(within(screen.getByRole('region', { name: 'Dje nuk u stërvite' })).getByRole('button', { name: 'Jo, të enjten' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'Dje nuk u stërvite' })).not.toBeInTheDocument())
+    expect(screen.getByRole('heading', { level: 1, name: 'Ditë pushimi' })).toBeInTheDocument()
+  })
+
   it('pas mbylljes së sotme: "U krye për sot", dita e sotme e bërë, e radhës e hëna', async () => {
     const { train } = await boardWeek()
     await train(at(8, 11, 17, 15), [{ weightKg: 62.5, reps: 12 }])
