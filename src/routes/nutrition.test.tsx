@@ -129,7 +129,10 @@ describe('Ushqimi', () => {
 
     await user.click(screen.getByRole('button', { name: /^Lunch, 13:00/ }))
     const sheet = screen.getByRole('dialog', { name: 'Lunch · 13:00' })
-    expect(within(sheet).getByText('Albacore tuna in water')).toBeInTheDocument()
+    // Të fundit (0.22) ngarkohen më vonë dhe kanë të njëjtin emër: pritet lista, që prova të mos varet nga koha,
+    // dhe rreshti i regjistruar njihet nga butoni i tij.
+    await within(sheet).findByRole('region', { name: 'Recent' })
+    expect(within(sheet).getByRole('button', { name: 'Remove Albacore tuna in water' })).toBeInTheDocument()
     expect(within(sheet).getByRole('button', { name: 'Remove Wholemeal bread' })).toBeInTheDocument()
     expect(within(sheet).getByText('64 g · 161 kcal')).toBeInTheDocument()
     expect(within(sheet).getByRole('link', { name: 'Search for a food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
