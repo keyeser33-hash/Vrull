@@ -1,8 +1,10 @@
 import { type ReactNode, useId, useState } from 'react'
+import { Group, SwitchRow } from '@/components/layout/list-group'
 import { BackHeader } from '@/components/layout/page'
 import { Icon } from '@/components/ui/icons'
-import { store } from '@/data/app-data'
+import { store, useLocalQuery } from '@/data/app-data'
 import { chooseBackground } from '@/data/background'
+import { followDayState, setFollowDayState } from '@/data/daily-state'
 import { chooseLanguage } from '@/data/language'
 import { LANGUAGE_NAMES, LANGUAGES, LOCALES } from '@/i18n/language'
 import { useI18n } from '@/i18n/use-i18n'
@@ -11,8 +13,8 @@ import { cn } from '@/lib/cn'
 import { readTheme, saveTheme, THEMES, type Theme } from '@/lib/theme'
 
 // Pamja (bordi "Pamja", V2-E1-05): tema OLED, Natë, Ditë me një parapamje në vetë temën; sfondi
-// "I plotë" ose "Vija shpejtësie"; gjuha. Çdo zgjedhje vlen menjëherë. "Pamja ndjek gjendjen" vjen
-// me gjendjen e ditës (Etapa 3) dhe deri atëherë mungon.
+// "I plotë" ose "Vija shpejtësie"; "Pamja ndjek gjendjen" (V2-E3-07, vetëm në telefon) me mostrën e dy
+// butonave; gjuha. Çdo zgjedhje vlen menjëherë: fikja e çelësit e kthen pamjen e ditës te normalja.
 
 export function AppearancePage() {
   const { t, lang } = useI18n()
@@ -21,6 +23,7 @@ export function AppearancePage() {
   const themeTitle = useId()
   const backgroundTitle = useId()
   const languageTitle = useId()
+  const follow = useLocalQuery(() => followDayState(store), []) ?? true
 
   return (
     <div className="flex flex-col gap-[18px]">
@@ -70,6 +73,24 @@ export function AppearancePage() {
         </div>
         <p className="type-caption text-muted-foreground">{t('appearance.backgroundHint')}</p>
       </section>
+
+      <Group>
+        <SwitchRow label={t('daymode.follow')} detail={t('daymode.followDetail')} checked={follow} onChange={(on) => void setFollowDayState(store, on)} />
+        <div role="img" aria-label={t('daymode.sampleLabel')} className="flex flex-col gap-1.5 px-4 pt-2 pb-3.5">
+          <div aria-hidden className="grid grid-cols-2 gap-2">
+            {/* Mostra është e fiksuar: prushi i vërtetë (edhe në ditë të lodhur) dhe rëra. */}
+            <span data-day-keep className="flex h-touch items-center justify-center rounded-md bg-ember px-2 font-display text-[17px] font-extrabold tracking-[0.02em] whitespace-nowrap text-on-ember uppercase">
+              {t('daymode.sampleUsual')}
+            </span>
+            <span className="flex h-touch items-center justify-center rounded-md bg-sand px-2 font-display text-[17px] font-extrabold tracking-[0.02em] whitespace-nowrap text-on-ember uppercase">
+              {t('daymode.sampleTired')}
+            </span>
+          </div>
+          <span aria-hidden className="type-caption text-muted-foreground">
+            {t('daymode.sampleNote')}
+          </span>
+        </div>
+      </Group>
 
       <section aria-labelledby={languageTitle} className="flex flex-col gap-2.5">
         <h2 id={languageTitle} className="type-label text-muted-foreground">
@@ -146,7 +167,7 @@ function Option({
 /** Parapamja e një teme me tokenat e asaj teme (`data-theme`): tekst, kartë dhe veprimi kryesor. */
 function ThemePreview({ theme }: { theme: Theme }) {
   return (
-    <span data-theme={theme} className="flex h-[92px] flex-col justify-end gap-1.5 rounded-[10px] bg-background p-2.5">
+    <span data-theme={theme} data-day-keep className="flex h-[92px] flex-col justify-end gap-1.5 rounded-[10px] bg-background p-2.5">
       <span className="block h-1.5 w-11 max-w-full rounded-[3px] bg-foreground" />
       <span className="block h-1 w-[30px] rounded-[2px] bg-muted-foreground" />
       <span className="block h-6 rounded-[6px] border border-surface-border bg-surface" />

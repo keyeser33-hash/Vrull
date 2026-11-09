@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { type RefObject, useCallback, useEffect, useRef } from 'react'
+import { isTiredDay, TIRED_MOTION } from '@/lib/day-mode'
 
 // Lëvizja e seancës (DESIGN.md › Lëvizja): banderola e rekordit mbi pushimin dhe shkëndija e rekordit
 // te mbyllja, me Web Animations, që të respektojnë "lëvizjen e reduktuar" edhe jashtë CSS-së: atëherë
@@ -21,6 +22,11 @@ export function useRecordBurst<S extends Element, N extends Element>(): { sparks
   const number = useRef<N>(null)
   useEffect(() => {
     const reduced = reducedMotion()
+    // Ditë e lodhur (V50): pa shkëndija dhe pa kërcim; numri hyn me zbehje 360 ms, ease-out.
+    if (isTiredDay()) {
+      if (canAnimate(number.current) && !reduced) number.current.animate([{ opacity: 0 }, { opacity: 1 }], { duration: TIRED_MOTION.ms, easing: TIRED_MOTION.easing })
+      return
+    }
     if (canAnimate(sparks.current)) {
       sparks.current.animate(
         reduced ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'scale(0.6)' }, { opacity: 1, offset: 0.4 }, { opacity: 1, transform: 'scale(1)' }],
@@ -100,5 +106,7 @@ export function savePulse() {
 
 /** Dridhja e rëndë e rekordit në telefon; në shfletues asgjë. */
 export function recordPulse() {
+  // Ditë e lodhur (V50): pa festim, as dridhja e rëndë.
+  if (isTiredDay()) return Promise.resolve()
   return pulse(ImpactStyle.Heavy)
 }

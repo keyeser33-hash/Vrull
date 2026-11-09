@@ -96,6 +96,35 @@
   color-scheme: dark;
 }
 
+/* Pamja e lodhur (V20, V50, V2-E3-07; DESIGN.md › Gjendja e ditës): korniza vendos data-day="tired" te <html>
+   kur gatishmëria është e ulët. Tokenat e prushit marrin rërën: veprimi kryesor, mbushjet (`ember`, me
+   `on-ember` sipër) dhe prushi si tekst (`ember-text`: rërë e errët në Ditë, ku `sand` mbi të çelët del nën
+   4,5:1). Lëvizjet 360 ms pa kërcim; festimet i heq kodi (lib/day-mode.ts). Lëvizja e reduktuar mbetet si
+   është: rregullat e saj kanë `!important`. */
+:root[data-day="tired"] {
+  --ember: var(--sand);
+  --ember-text: #8A5A24;
+  --ease-vrull: ease-out;
+  --animate-fill: fill 360ms ease-out both;
+}
+:root.dark[data-day="tired"] {
+  --ember-text: var(--sand);
+}
+:root[data-day="tired"] .duration-320 {
+  transition-duration: 360ms;
+}
+:root[data-day="tired"] .roll-digit {
+  animation-duration: 360ms;
+}
+/* Historia nuk ndryshon ngjyrë: faqet e historikut (data-day-keep) rikthejnë prushin në nënpemën e tyre. */
+:root[data-day="tired"] [data-day-keep] {
+  --ember: #FF5B2E;
+  --ember-text: #C2410C;
+}
+:root.dark[data-day="tired"] [data-day-keep] {
+  --ember-text: #FF5B2E;
+}
+
 /* Aliaset e v1 (emrat e Omal UI v2 që ekranet e v1 përdorin ende), drejt tokenave të Vrullit.
    Deklarohen edhe te [data-theme], që të zgjidhen me temën e asaj pjese. Hiqen kur ekranet kalojnë
    te Vrull (E1-05 … E1-15); roja e dizajnit nuk i lejon në kod të ri (LEGACY_FILES). */

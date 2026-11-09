@@ -1,8 +1,12 @@
-import { Outlet, useMatches } from 'react-router'
+import { useEffect } from 'react'
+import { Outlet, useLocation, useMatches } from 'react-router'
 import { TabBar } from '@/components/ui/tab-bar'
+import { store, useLocalQuery } from '@/data/app-data'
+import { dayModeNow } from '@/data/day-mode'
 import { useI18n } from '@/i18n/use-i18n'
 import { useBackground } from '@/lib/background'
 import { cn } from '@/lib/cn'
+import { KEEP_EMBER_ATTRIBUTE, keepsEmber, setDayAttribute } from '@/lib/day-mode'
 import { activeTab, NAV_PLACES } from './nav-places'
 import { OfflineBanner } from './offline-banner'
 
@@ -13,6 +17,12 @@ export function AppShell() {
   const { t } = useI18n()
   const tab = activeTab(useMatches())
   const background = useBackground()
+  const { pathname } = useLocation()
+  // Pamja e ditës (V20, V50): gatishmëria dhe çelësi "Pamja ndjek gjendjen" vendosin `data-day` te <html>;
+  // rifreskohet kur ndryshon `daily_states` ose çelësi. Historiku mban prushin (`data-day-keep`).
+  const dayMode = useLocalQuery(() => dayModeNow(store), [])
+  useEffect(() => setDayAttribute(dayMode ?? 'normal'), [dayMode])
+  useEffect(() => () => setDayAttribute('normal'), [])
   const items = NAV_PLACES.map((place) => ({ id: place.id, label: t(place.label), icon: place.icon, to: place.to }))
   return (
     <div className="relative isolate min-h-dvh bg-background pt-[var(--safe-top)]">
@@ -24,6 +34,7 @@ export function AppShell() {
       <div aria-hidden className="fixed inset-x-0 top-0 z-30 h-[var(--safe-top)] bg-background" />
       <OfflineBanner />
       <main
+        {...(keepsEmber(pathname) ? { [KEEP_EMBER_ATTRIBUTE]: '' } : {})}
         className={cn(
           'mx-auto w-full max-w-[480px] px-4 pt-5',
           tab ? 'pb-[calc(var(--spacing-tab-bar)+var(--safe-bottom)+24px)]' : 'pb-[calc(var(--safe-bottom)+24px)]',

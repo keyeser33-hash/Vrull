@@ -11,7 +11,7 @@ vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
   data.store = createLocalStore(createDatabase(`appearance-${crypto.randomUUID()}`), { userId: () => '11111111-1111-4111-8111-111111111111' })
-  return { store: data.store }
+  return { store: data.store, useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(data.store) }
 })
 
 async function renderAppearance() {
@@ -92,11 +92,37 @@ describe('Pamja', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Pamja' })).toBeInTheDocument()
   })
 
-  it('"Pamja ndjek gjendjen" mungon deri te gjendja e ditës (Etapa 3); mbrapa te Cilësimet', async () => {
+  it('"Pamja ndjek gjendjen": çelës i ndezur si parazgjedhje, shpjegimi dhe mostra me dy butona që s\'preken; fikja ruhet vetëm në telefon', async () => {
+    const { followDayState } = await import('@/data/daily-state')
+    const user = userEvent.setup()
+    await renderAppearance()
+    const follow = screen.getByRole('switch', { name: /Pamja ndjek gjendjen/ })
+    await waitFor(() => expect(follow).toBeChecked())
+    expect(screen.getByText(/rërë në vend të prushit, lëvizje e qetë, pa festime\. Historia nuk ndryshon\./)).toBeInTheDocument()
+    const sample = screen.getByRole('img', { name: /Mostër, jo veprim: dy butona/ })
+    expect(within(sample).queryByRole('button')).toBeNull()
+    expect(screen.getByText('Ditë e zakonshme')).toBeInTheDocument()
+    expect(screen.getByText('Ditë e lodhur')).toBeInTheDocument()
+    expect(screen.getByText('Mostër: ky është ilustrim, nuk prek.')).toBeInTheDocument()
+    await user.click(follow)
+    await waitFor(() => expect(follow).not.toBeChecked())
+    expect(await followDayState(data.store)).toBe(false)
+    await user.click(follow)
+    await waitFor(() => expect(follow).toBeChecked())
+    expect(await followDayState(data.store)).toBe(true)
+  })
+
+  it('"Pamja ndjek gjendjen" në anglisht', async () => {
+    await renderAppearance()
+    act(() => language.set('en'))
+    expect(await screen.findByRole('switch', { name: /Look follows how you feel/ })).toBeInTheDocument()
+    expect(screen.getByText('Tired day')).toBeInTheDocument()
+    expect(screen.getByText('Sample: an illustration, not tappable.')).toBeInTheDocument()
+  })
+
+  it('mbrapa te Cilësimet', async () => {
     const user = userEvent.setup()
     const router = await renderAppearance()
-    expect(screen.queryByText(/ndjek gjendjen/)).toBeNull()
-    expect(screen.queryByRole('switch')).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Mbrapa te Cilësimet' }))
     expect(router.state.location.pathname).toBe('/cilesimet')
   })

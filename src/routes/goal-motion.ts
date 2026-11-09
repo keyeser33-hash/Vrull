@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core'
 import { Haptics, ImpactStyle } from '@capacitor/haptics'
 import { type RefObject, useEffect, useRef, useState } from 'react'
 import { store } from '@/data/app-data'
+import { isTiredDay } from '@/lib/day-mode'
 
 // Qëllimi i arritur (SPEC §0.3c, bordi "Lëvizja e 0.23"): segmenti mbushet (320 ms), pastaj një unazë
 // shkëndije 600 ms me `ease-vrull` dhe një dridhje e mesme; një herë në javë për qëllim. Java e plotë (të
@@ -30,6 +31,8 @@ export function useGoalCelebration(monday: string | null, met: readonly string[]
       const fresh = metKey.split(',').filter((key) => !done.includes(key))
       if (cancelled || fresh.length === 0) return
       await store.writeDevice(KEY, { monday, keys: [...done, ...fresh] })
+      // Ditë e lodhur (V50): pa festime, as dridhje; qëllimi shënohet i festuar, që të mos shfaqet ditën tjetër.
+      if (isTiredDay()) return
       setCelebrate(new Set(fresh))
       if (Capacitor.isNativePlatform()) await Haptics.impact({ style: ImpactStyle.Medium }).catch(() => undefined)
     })().catch(() => undefined)
@@ -52,6 +55,7 @@ export function useSpark<T extends HTMLElement>(kind: keyof typeof SPARKS = 'goa
   useEffect(() => {
     const element = ref.current
     if (!element || typeof element.animate !== 'function') return
+    if (isTiredDay()) return
     if (reducedMotion()) element.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 120, delay: 320, fill: 'both' })
     else element.animate(SPARKS[kind], { duration: 600, delay: 320, easing: VRULL, fill: 'both' })
   }, [kind])
