@@ -1083,9 +1083,11 @@ try {
   check('v2: pa scroll anësor', await page.evaluate('document.documentElement.scrollWidth <= innerWidth'))
   await click(page, 'a[href="/progresi"]')
   await waitForText(page, '85 cm')
-  await waitFor(() => page.evaluate(`!!document.querySelector('button[aria-label^="Para, "]')`), 'fotoja "Para" te Progresi')
-  check('v2: Progresi tregon matjen dhe foton e v1', true)
   screenshot('v2-progresi')
+  // 0.23: Progresi tregon vetëm rreshtin e fotove; fotot dhe shtimi i tyre janë te faqja e fotove.
+  await click(page, 'a[href="/progresi/fotot"]')
+  await waitFor(() => page.evaluate(`!!document.querySelector('button[aria-label^="Para, "]')`), 'fotoja "Para" te faqja e fotove')
+  check('v2: Progresi tregon matjen dhe foton e v1', true)
   await click(page, 'a[href="/ushqimi"]')
   // Dita e ushqimit (V46) ndërrohet 3 orë para zgjimit: para saj (p.sh. në 01:20) Ushqimi tregon ditën
   // e djeshme, ndërsa vakti i v1 u regjistrua me datën kalendarike të sotme.
