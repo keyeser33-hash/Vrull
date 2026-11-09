@@ -30,7 +30,7 @@ export interface DailyState extends CheckInAnswers {
 
 const MAX_SLEEP_MINUTES = 14 * 60
 const MAX_SORE_GROUPS = 12
-const GROUP = /^[a-z][a-z0-9_]{0,39}$/
+const GROUP = /^[a-z][a-z0-9_-]{0,39}$/
 const CHOICES: readonly ReadinessChoice[] = ['lighter', 'tomorrow', 'normal']
 const SKIP_KEY = (date: string) => `checkin-skip:${date}`
 const FOLLOW_KEY = 'day-mode-follow'

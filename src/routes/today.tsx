@@ -15,7 +15,11 @@ import { store, useLocalQuery } from '@/data/app-data'
 import { type TodayView, todayView } from '@/data/today'
 import { type WeekGoalsView, weekGoalsView, type WeekSummary, weekSummary } from '@/data/weekly-goals'
 import { setLighterFirstSession } from '@/data/welcome-back'
+import { DayLine } from './day-line'
 import { MissedDayCard } from './missed-day-card'
+import { ReadinessCard } from './readiness-card'
+import { ReadinessSuggestion } from './readiness-suggestion'
+import { useSuggestionPending } from './readiness-suggestion-state'
 import { WeeklyCheckCard } from './weekly-check-card'
 import { WaterCard } from './water-card'
 import { AiBoxDock } from './ai-box-dock'
@@ -81,6 +85,10 @@ export function TodayPage() {
   return (
     <div className="flex flex-col gap-3.5">
       <TodayHeader view={view} />
+      {/* Vala e gatishmërisë (V50): secili vend ka skedarin e vet. */}
+      <DayLine view={view} />
+      <ReadinessCard view={view} />
+      <ReadinessSuggestion view={view} />
       <UpdateNotice />
       {weekRow ? <WeekRow summary={weekRow} /> : null}
       {programme && goals && !back && !weekCard ? <WeekSection view={view} goals={goals} days={weekDays(view, i18n, openDay)} /> : null}
@@ -200,6 +208,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
   const i18n = useI18n()
   const { t } = i18n
   const { busy, start } = useStart()
+  const quiet = useSuggestionPending(view)
   const { mode, workout } = view
   const plan = view.snapshot!.plan
   if (!workout) return null
@@ -243,7 +252,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
           })}
         </p>
       ) : null}
-      <Button variant={upcoming ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={busy || workout.exercises === 0} onClick={() => void start()}>
+      <Button variant={upcoming || quiet ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={busy || workout.exercises === 0} onClick={() => void start()}>
         {action}
       </Button>
     </section>
