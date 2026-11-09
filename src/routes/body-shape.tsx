@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { baselineKind, SHAPE_MEASURES, type ShapeChange, type ShapeComparison, type ShapeScales } from '@/body/body-shape'
 import type { Tone } from '@/body/model-math'
 import type { Still } from '@/components/body/body-still'
+import { Group, LinkRow } from '@/components/layout/list-group'
 import { BackHeader } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -18,7 +19,8 @@ import { oneDecimal, signedDecimal } from './body-format'
 
 // Trupi sipas matjeve (V12, V2-E1-14; bordi "Trupi sipas matjeve"). Dy pamje të modelit 3D, Java 0
 // dhe sot, ku muskujt e çdo zone ndjekin raportin e perimetrit (body/body-shape.ts); në mes, ndryshimi
-// në cm me vijat te zona. Poshtë, perimetrat nga baza te matja e fundit dhe "Shto matjen e sotme".
+// në cm me vijat te zona. Poshtë, perimetrat nga baza te matja e fundit, rruga te Makina e kohës
+// (V52: e njëjta bazë, matje pas matjeje) dhe "Shto matjen e sotme".
 // Pamjet renderohen një herë si imazhe (body-still.ts), pa një kontekst WebGL për secilën.
 
 const IMAGE = { width: 118, height: 300 }
@@ -108,6 +110,10 @@ export function BodyShapePage() {
           ))}
         </ul>
       </section>
+
+      <Group>
+        <LinkRow to="/progresi/trupi/koha" label={t('bodyModel.time.open')} detail={t('bodyModel.time.openText')} />
+      </Group>
 
       {add}
     </div>

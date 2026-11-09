@@ -220,6 +220,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-06 | Sugjerimi, seanca më e lehtë, "Shtyje për nesër", "Më e lehtë" te historiku | E3-02, E3-03 |
 | V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
 | V2-E3-08 | Bordet e Mëso, Health Connect, ujit sipas motit, zakoneve dhe raportit PDF | E3-01 |
+| V2-E3-09 | Makina e kohës: trupi 3D matje pas matjeje, me parashikim (V52) | – |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-01 · Bordet e dizajnit 0.24
@@ -238,6 +239,14 @@ Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
 Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
 
 **Gjendja (09.11.2026, 23:35):** 9 bordet janë te faqja "0.24 · Gatishmëria", me shënimin "Si ta komentosh" dhe 9 vendimet. I shkruan tre agjentë me Sonnet, sipas brief-it të përbashkët, dhe orkestruesi i njësoi. Presin komentet e përdoruesit.
+
+## V2-E3-09 · Makina e kohës
+
+Sipas SPEC §11, "Makina e kohës" (V52). Logjika pa UI te `src/body/body-time.ts`, me prova përpara kodit: ndalesat, vlera e mbajtur e një zone, forma mes dy ndalesave, theksimi, shkallët e ngjyrës, parashikimi me interval. Ekrani `/progresi/trupi/koha` (`routes/body-time.tsx`), i hapur nga Trupi sipas matjeve; fotoja e përbashkët te `components/photos/photo-thumb.tsx`. Pa migrim.
+
+**Pranimi:** me tri matje, rrëshqitësi ka tri ndalesa dhe lista, forma dhe ngjyra e modelit ndjekin secilën; ndalesa e fundit e matur jep numrat e Trupit sipas matjeve; me katër matje në tri javë del ndalesa e parashikimit me interval; "Thekso ndryshimin" ndryshon formën, jo numrat; ekrani në 390 px, në tri temat dhe në anglisht.
+
+**Gjendja (10.11.2026):** e ndërtuar paraprakisht, pa borde, në degën `makina-e-kohes`; pret që përdoruesi ta shohë. Mbetet prova në telefon e rrjedhshmërisë gjatë luajtjes (emulatori vizaton me CPU, §18).
 
 ## V2-E2-00 · Pastrimi i E1
 

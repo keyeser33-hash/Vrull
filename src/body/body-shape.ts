@@ -68,10 +68,11 @@ export interface ShapeComparison {
   changes: ShapeChange[]
 }
 
-const round1 = (value: number) => Math.round(value * 10) / 10
+export const round1 = (value: number) => Math.round(value * 10) / 10
 const DAY_MS = 86_400_000
 
-function series(rows: MeasurementRow[], key: MetricKey): ShapePoint[] {
+/** Matjet e një çelësi me radhën e datave. */
+export function series(rows: MeasurementRow[], key: MetricKey): ShapePoint[] {
   return rows
     .filter((row) => typeof row.values[key] === 'number')
     .map((row) => ({ date: row.date, value: Number(row.values[key]) }))
@@ -79,7 +80,7 @@ function series(rows: MeasurementRow[], key: MetricKey): ShapePoint[] {
 }
 
 /** Baza e një matjeje: e fundit deri në `start` (përfshirë), përndryshe e para pas saj. */
-function baseline(points: ShapePoint[], start: string | null): ShapePoint | undefined {
+export function baseline(points: ShapePoint[], start: string | null): ShapePoint | undefined {
   if (!start) return points[0]
   return points.filter((point) => point.date <= start).at(-1) ?? points.find((point) => point.date > start)
 }

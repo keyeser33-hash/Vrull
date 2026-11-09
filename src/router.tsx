@@ -59,6 +59,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'progresi/trupi', ...screen(() => import('@/routes/body'), (m) => m.BodyPage), ...tab('progress') },
       { path: 'progresi/trupi/shtresat', ...screen(() => import('@/routes/body-layers'), (m) => m.BodyLayersPage), ...tab('progress') },
       { path: 'progresi/trupi/matjet', ...screen(() => import('@/routes/body-shape'), (m) => m.BodyShapePage), ...tab('progress') },
+      { path: 'progresi/trupi/koha', ...screen(() => import('@/routes/body-time'), (m) => m.BodyTimePage), ...tab('progress') },
       { path: 'progresi/historiku', ...screen(history, (m) => m.HistoryPage), ...tab('progress') },
       { path: 'progresi/historiku/:sessionId', ...screen(history, (m) => m.PastSessionPage), ...tab('progress') },
       { path: 'progresi/arritjet', ...screen(() => import('@/routes/achievements'), (m) => m.AchievementsPage), ...tab('progress') },

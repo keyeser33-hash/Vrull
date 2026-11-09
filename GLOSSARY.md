@@ -189,6 +189,18 @@ Muskuli që fsheh një **Muskul të thellë** (p.sh. trapezi për romboidët).
 Pamja e modelit 3D që ndjek **Perimetrat**: trupi i **Javës 0** pranë atij të sotëm, me ndryshimin në cm për çdo zonë.
 _Avoid_: trupi i personalizuar, avatari
 
+**Makina e kohës**:
+Pamja e modelit 3D që kalon nëpër **Ndalesat**, nga baza e **Trupit sipas matjeve** te matja e fundit dhe **Parashikimi**.
+_Avoid_: 4D, historia e trupit
+
+**Ndalesa**:
+Një datë me të paktën një matje perimetri, te **Makina e kohës**; një zonë e pamatur atë ditë mban matjen e saj të fundit.
+_Avoid_: pika, hapi
+
+**Parashikimi**:
+**Ndalesa** e fundit e **Makinës së kohës**: vlera e pritshme e një perimetri nëse ecuria vazhdon, gjithnjë me intervalin e saj.
+_Avoid_: objektivi, premtimi
+
 **Rikuperimi**:
 Gjendja e një grupi muskujsh sipas orëve nga seanca e fundit ku ishte kryesor: I lodhur (nën 48), Pothuajse gati (48–72), Gati (mbi 72).
 

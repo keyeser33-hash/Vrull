@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
+import { PhotoThumb as Thumb } from '@/components/photos/photo-thumb'
 import { photos, useLocalQuery } from '@/data/app-data'
 import { localDate } from '@/lib/calendar'
 import { type Pose, POSES, type PhotoDay, type PhotoRef } from '@/data/photos'
@@ -20,33 +21,6 @@ import { cn } from '@/lib/cn'
 
 /** "8 nëntor" / "8 November"; me ditën e javës te titujt e ditëve. */
 const dayText = (fmt: Format, date: string, weekday = false) => fmt.date(new Date(`${date}T12:00:00`), { weekday })
-
-function usePhotoUrl(photo: PhotoRef | undefined) {
-  const [state, setState] = useState<{ id: string; url: string | null } | null>(null)
-  useEffect(() => {
-    if (!photo) return
-    let cancelled = false
-    let created: string | null = null
-    void photos.data(photo).then((data) => {
-      if (cancelled) return
-      created = data ? URL.createObjectURL(new Blob([data], { type: 'image/jpeg' })) : null
-      setState({ id: photo.id, url: created })
-    })
-    return () => {
-      cancelled = true
-      if (created) URL.revokeObjectURL(created)
-    }
-  }, [photo])
-  return photo && state?.id === photo.id ? state.url : undefined
-}
-
-function Thumb({ photo, className }: { photo: PhotoRef; className?: string }) {
-  const { t } = useI18n()
-  const url = usePhotoUrl(photo)
-  if (url === undefined) return <span aria-hidden className={cn('block bg-surface-2', className)} />
-  if (url === null) return <span className={cn('flex items-center justify-center p-2 text-center type-caption text-muted-foreground', className)}>{t('photos.waiting')}</span>
-  return <img src={url} alt="" className={cn('object-cover', className)} />
-}
 
 /** Butoni që hap kamerën (ose galerinë) dhe ruan foton e kompresuar për sot. */
 function CaptureButton({ pose, className, children, onSaved }: { pose: Pose; className?: string; children: React.ReactNode; onSaved?: () => void }) {

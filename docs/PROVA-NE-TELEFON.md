@@ -33,5 +33,6 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 ## 5. Pjesa tjetër (1 min)
 
 - [ ] Trupi 3D vizatohet dhe rrotullohet (emulatori shpesh nuk ka WebGL).
+- [ ] Progresi › Trupi › matjet › "Makina e kohës" (me të paktën dy matje): "Luaj nga fillimi" kalon ndalesat pa ngecur, edhe me "Thekso ndryshimin"; modeli rrotullohet gjatë luajtjes.
 - [ ] Cilësimet › Gjuha › English: njoftimi i seancës kalon në anglisht.
 - [ ] Butoni mbrapa i Android-it kthen te faqja e mëparshme; te Sot e çon app-in në sfond.

@@ -1,5 +1,6 @@
 import { allRecovery, keyLoad, loadLevel, muscleLoad } from '@/body/body-map'
 import { type MeasurementRow, type ShapeComparison, shapeComparison, type ShapeScales, shapeScales } from '@/body/body-shape'
+import { type BodyTimeline, bodyTimeline } from '@/body/body-time'
 import { DEEP_ENTRIES, programRoles } from '@/body/layers'
 import { MUSCLE_INFO } from '@/body/muscle-info'
 import { localDay } from '@/lib/calendar'
@@ -94,14 +95,33 @@ export interface ShapeView {
   scales: ShapeScales
 }
 
-/** Trupi sipas matjeve (V12, V2-E1-14): perimetrat nga Java 0 te matja e fundit. */
-export async function shapeView(store: LocalStore): Promise<ShapeView> {
+/** Matjet dhe nisja e programit aktiv: nga se nisen "Trupi sipas matjeve" dhe "Makina e kohës". */
+async function shapeSource(store: LocalStore) {
   const [measurements, loaded] = await Promise.all([measurementRows(store), activeProgram(store)])
   const startedAt = loaded?.state.started_at as string | null | undefined
-  const start = startedAt ? localDay(startedAt) : null
   const first = loaded ? [...loaded.engine.blocks].sort((a, b) => a.position - b.position)[0] : undefined
+  return { measurements, start: startedAt ? localDay(startedAt) : null, startLabel: first?.name ?? null }
+}
+
+/** Trupi sipas matjeve (V12, V2-E1-14): perimetrat nga Java 0 te matja e fundit. */
+export async function shapeView(store: LocalStore): Promise<ShapeView> {
+  const { measurements, start, startLabel } = await shapeSource(store)
   const comparison = shapeComparison(measurements, start)
-  return { comparison, start, startLabel: first?.name ?? null, scales: shapeScales(comparison) }
+  return { comparison, start, startLabel, scales: shapeScales(comparison) }
+}
+
+export interface TimeView {
+  /** Null pa asnjë perimetër me dy matje. */
+  timeline: BodyTimeline | null
+  /** Dita kur nisi programi aktiv dhe emri i bllokut të parë, si te `ShapeView`. */
+  start: string | null
+  startLabel: string | null
+}
+
+/** Makina e kohës (V52, V2-E3-09): ndalesat nga baza te matja e fundit dhe parashikimi. */
+export async function timeView(store: LocalStore): Promise<TimeView> {
+  const { measurements, start, startLabel } = await shapeSource(store)
+  return { timeline: bodyTimeline(measurements, start), start, startLabel }
 }
 
 /** Të gjitha matjet, një rresht për datë, me vlerat si numra (null kur mungojnë). */

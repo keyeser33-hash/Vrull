@@ -167,6 +167,7 @@ Në kod (V2-E1-05): zgjedhja është te Cilësimet › Pamja, ruhet te `user_set
 ## Modeli 3D, fotot, Mëso
 
 - Modeli i trupit ndriçohet nga `model-light`, kurrë nga `foreground` (në Ditë do të dilte i zi); edhe theksimi i muskulit në fokus shkon drejt `model-light`. Muskujt pa vlerë `muted-foreground` mbi `surface`, kryesorët `ember`, ndihmësit gri; volumi me `volume-1…3`, "Pa sete" me `subtle`; mbulesat e Shtresave gri të tejdukshme. Tokenat lexohen nga CSS-i (`components/body/body-scene.ts`), kurrë hex në kod. Çipi i muskulit rri sipër modelit, mbi `background` me kufi `subtle`, me vijën `foreground` te muskuli (bordi "Trupi").
+- Makina e kohës (V52): ndryshimi i një zone nga baza është `data` në tri shkallë, njësoj te modeli, figura 2D dhe legjenda: nën 1% `data/35`, 1–3% `data/65`, mbi 3% `data`; zona pa ndryshim mbetet gri. Parashikimi (teksti nën datë, shenja e fundit e rrëshqitësit) është `data`. Rrëshqitësi i kohës (`.time-range` te `globals.css`) rri mbi sfondin e faqes: gjurma `track` 6 px, doreza 28 px `foreground` me unazë `background`, lartësia 44 px; shenjat e ndalesave poshtë gjurmës, të kaluarat `foreground`, të tjerat `subtle`. Data e ndalesës rri mbi modelin, jo sipër tij.
 - Fotot e ushtrimeve bardh e zi (`grayscale`); foto që mungon: vend-mbajtës `surface-2` me "Pa foto", kurrë imazh i shpikur.
 - Kartat "A e dije?" (`FactCard`): etiketa në `data`, burimi gjithnjë i pranishëm.
 

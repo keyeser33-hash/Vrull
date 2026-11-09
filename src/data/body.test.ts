@@ -1,4 +1,4 @@
-import { bodyView, layersView, shapeView } from './body'
+import { bodyView, layersView, shapeView, timeView } from './body'
 import { saveMeasurement } from './progress'
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
@@ -103,6 +103,26 @@ describe('shtresat dhe trupi sipas matjeve', () => {
     expect(next.comparison!.changes.find((change) => change.id === 'chest')!.delta).toBe(1.4)
     expect(next.scales.chest).toBeCloseTo(99.4 / 98, 6)
     expect(next.scales.arm).toBeCloseTo(34.4 / 34, 6)
+  })
+
+  it('makina e kohës: një ndalesë për çdo matje, nga Java 0; pa dy matje, asnjë vijë', async () => {
+    const store = await started()
+    expect(await timeView(store)).toEqual({ timeline: null, start: null, startLabel: 'Java 0' })
+    await saveMeasurement(store, '2026-10-25', { weight_kg: 80, arm_right_cm: 34, chest_cm: 98 })
+    await startWorkout(store)
+    await saveMeasurement(store, '2026-11-01', { arm_right_cm: 34.4, chest_cm: 98.6 })
+    await saveMeasurement(store, '2026-11-08', { chest_cm: 99.4 })
+    const view = await timeView(store)
+    expect(view).toMatchObject({ start: '2026-10-25', startLabel: 'Java 0' })
+    expect(view.timeline!.stops.map((stop) => [stop.date, stop.kind])).toEqual([
+      ['2026-10-25', 'measured'],
+      ['2026-11-01', 'measured'],
+      ['2026-11-08', 'measured'],
+    ])
+    expect(view.timeline!.stops[2].zones.map((zone) => [zone.id, zone.delta, zone.measuredOn])).toEqual([
+      ['arm', 0.4, '2026-11-01'],
+      ['chest', 1.4, '2026-11-08'],
+    ])
   })
 })
 
