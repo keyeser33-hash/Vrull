@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useId, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { ScreenHeader } from '@/components/layout/screen-header'
 import { Sheet } from '@/components/layout/sheet'
@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
 import { InsightCard } from '@/components/ui/insight-card'
+import { ProgressTrack } from '@/components/ui/progress-bar'
+import { RollingNumber } from '@/components/ui/rolling-number'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
-import { setSupplementEnabled, supplementList, toggleSupplement } from '@/data/supplements'
-import { waterDay } from '@/data/water'
-import { currentFoodDate, logTemplateMeal, type MealSlot, type MealStatus, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
+import { setSupplementEnabled, setSupplementTaken, supplementList, toggleSupplement } from '@/data/supplements'
+import { currentFoodDate, logTemplateMeal, type MealSlot, type MealSupplement, type NutritionDay, nutritionDay, removeDiaryEntry, setDayType } from '@/data/nutrition'
 import { type I18n, NBSP } from '@/i18n'
 import { foodName, mealName, nameInSentence, portionText, supplementDose, supplementEvidence, supplementName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -21,11 +22,13 @@ import { cn } from '@/lib/cn'
 import { gramsText, kcalText, macrosLine, relativeTime } from './nutrition-format'
 import { QuickActions, QuickMacrosSheet } from './meal-quick'
 
-// Ushqimi i v1 në sistemin Vrull (V2-E1-05; ekrani i ri vjen me Etapën 2): kreu me butonin e
-// profilit, shiriti i kcal të ditës; karta "Vakti i radhës" me artikujt e planit, "Regjistro
-// <vaktin>" (veprimi kryesor, prushi) dhe "Ndrysho"; poshtë dita si orar vertikal; në fund makrot
-// kundrejt objektivave. Një vakt hapet në fletë (?vakti=...), që butoni mbrapa i Android-it ta mbyllë.
-// Tekstet nga katalogu ('food.*'); emrat e shabllonit dhe të suplementeve nga `@/i18n/domain`.
+// Ushqimi (0.23, SPEC §0.3c "Pamja e re", bordi "Ushqimi · pamja e re"): kreu me datën dhe llojin e
+// ditës; kaloritë që mbeten si numri i ekranit, me makrot dhe shiritat poshtë; karta "Vakti i radhës"
+// me "Si në plan" (veprimi kryesor, prushi) dhe "Ndrysho"; "Dita": vaktet e regjistruara në një rresht
+// që hapet, të tjerat me orën; suplementet sipas orës, me një buton për gjithë grupin; në fund
+// Objektivat · Plani im · Oraret. Uji mbetet vetëm te Sot. Një vakt hapet në fletë (?vakti=...), që
+// butoni mbrapa i Android-it ta mbyllë. Tekstet nga katalogu ('food.*'); emrat e shabllonit dhe të
+// suplementeve nga `@/i18n/domain`.
 
 /** Ora rifreskohet çdo minutë, që "Vakti i radhës" dhe "pas 20 min" të ndjekin kohën. */
 function useNow() {
@@ -50,7 +53,7 @@ export function NutritionPage() {
     return (
       <div className="flex flex-col gap-4">
         <FoodHeader />
-        <div aria-hidden className="h-11 rounded-md bg-surface" />
+        <div aria-hidden className="h-36 rounded-xl bg-surface" />
         <div aria-hidden className="h-72 rounded-xl bg-surface" />
         <div aria-hidden className="h-80 rounded-lg bg-surface" />
       </div>
@@ -60,125 +63,164 @@ export function NutritionPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <FoodHeader />
-      <DayHeader day={day} now={now} />
+      <FoodHeader day={day} now={now} />
+      <DayHero day={day} />
       {day.next ? <NextMeal day={day} meal={day.next} now={now} onEdit={() => openMeal(day.next!.meal)} /> : <DayDone day={day} />}
-      <Timeline day={day} onOpen={openMeal} />
+      <DayMeals day={day} onOpen={openMeal} />
       <Supplements day={day} onEdit={() => setParams({ ndrysho: 'suplementet' })} />
-      <MacroTotals day={day} />
-      <WaterTotal date={day.date} />
+      <PlanLinks day={day} />
       {meal ? <MealSheet date={day.date} meal={meal} onClose={() => navigate(-1)} /> : null}
       {params.get('ndrysho') === 'suplementet' ? <SupplementsSheet onClose={() => navigate(-1)} /> : null}
     </div>
   )
 }
 
-function FoodHeader() {
-  const { t } = useI18n()
-  return <ScreenHeader title={t('tab.food')} />
+/** Kreu: data dhe lloji i ditës, që ndërrohet me një prekje (vlen vetëm për këtë datë). */
+function FoodHeader({ day, now }: { day?: NutritionDay; now?: Date }) {
+  const { t, fmt } = useI18n()
+  const training = day?.dayType === 'training'
+  const subtitle =
+    day && now ? (
+      <span className="tabular-nums">
+        {fmt.date(now, { weekday: false })}
+        {`${NBSP}·${NBSP}`}
+        <button
+          type="button"
+          aria-label={t(training ? 'food.dayType.toRest' : 'food.dayType.toTraining')}
+          onClick={() => void setDayType(store, day.date, training ? 'rest' : 'training')}
+          className="-mx-1 -my-[11px] inline-flex min-h-11 min-w-11 items-center rounded-md px-1 underline decoration-dotted underline-offset-4 hover:text-foreground"
+        >
+          {t(training ? 'food.dayType.training' : 'food.dayType.rest')}
+        </button>
+      </span>
+    ) : undefined
+  return <ScreenHeader title={t('tab.food')} subtitle={subtitle} />
 }
 
 /** "3 037 kcal · P 260 · K 255 · Y 108 g" / "3,037 kcal · P 260 · C 255 · F 108 g". */
 const totalsLine = (i18n: I18n, macros: Macros) => i18n.t('food.totals', { kcal: kcalText(i18n, macros.kcal), macros: macrosLine(i18n, macros) })
 
-function DayHeader({ day, now }: { day: NutritionDay; now: Date }) {
+/**
+ * Kaloritë që mbeten (bordi: numri i madh, "1 640 nga 3 020"), pastaj proteina, karbohidratet dhe
+ * yndyrat me shiritat kundrejt objektivave. Numrat rrotullohen kur ndryshojnë (`RollingNumber`); mbi
+ * objektiv numri thotë sa kaloi dhe shiriti mbetet plot me fjalët "mbi objektiv".
+ */
+function DayHero({ day }: { day: NutritionDay }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
-  const training = day.dayType === 'training'
-  const progress = day.targets ? Math.min(100, (day.totals.kcal / day.targets.kcal) * 100) : 0
+  const eaten = Math.round(day.totals.kcal)
+  const target = day.targets ? Math.round(day.targets.kcal) : null
+  const left = target === null ? null : target - eaten
+  const spoken =
+    target === null || left === null
+      ? t('food.hero.noTargets', { eaten })
+      : left >= 0
+        ? t('food.hero.left', { eaten, target, left })
+        : t('food.hero.over', { eaten, target, over: -left })
+  const macros = day.targets
+    ? [
+        { key: 'protein', label: t('food.protein'), value: Math.round(day.totals.proteinG), target: Math.round(day.targets.proteinG) },
+        { key: 'carbs', label: t('food.carbs'), value: Math.round(day.totals.carbsG), target: Math.round(day.targets.carbsG) },
+        { key: 'fat', label: t('food.fat'), value: Math.round(day.totals.fatG), target: Math.round(day.targets.fatG) },
+      ]
+    : []
   return (
-    <header className="flex flex-col gap-1">
-      <div className="flex min-h-11 items-center justify-between gap-3 text-sm leading-5 text-muted-foreground tabular-nums">
-        <span className="flex min-w-0 items-center">
-          <span className="truncate">{fmt.date(now, { weekday: false })}</span>
-          {`${NBSP}·${NBSP}`}
-          <button
-            type="button"
-            aria-label={t(training ? 'food.dayType.toRest' : 'food.dayType.toTraining')}
-            onClick={() => void setDayType(store, day.date, training ? 'rest' : 'training')}
-            className="-mx-1 min-h-11 min-w-11 shrink-0 rounded-md px-1 underline decoration-dotted underline-offset-4 hover:text-foreground"
-          >
-            {t(training ? 'food.dayType.training' : 'food.dayType.rest')}
-          </button>
-        </span>
-        <span className="shrink-0">
-          <b className="font-semibold text-foreground">{kcalText(i18n, day.totals.kcal)}</b>
-          {day.targets ? ` / ${kcalText(i18n, day.targets.kcal)}` : ''} kcal
+    <section aria-label={spoken} className="flex flex-col gap-3.5">
+      <div className="flex items-end gap-3">
+        <RollingNumber value={left === null ? eaten : Math.abs(left)} format={(value) => kcalText(i18n, value)} className="type-display-xl" />
+        <span className="flex min-w-0 flex-col gap-0.5 pb-0.5">
+          <span className="type-body-strong">{t(left === null ? 'food.eatenKcal' : left >= 0 ? 'food.left' : 'food.overTarget')}</span>
+          {target === null ? null : <span className="type-caption text-muted-foreground tabular-nums">{t('food.eatenOf', { eaten, target })}</span>}
         </span>
       </div>
-      <div
-        role="progressbar"
-        aria-label={t('food.kcalToday')}
-        aria-valuemin={0}
-        aria-valuemax={day.targets?.kcal ?? 0}
-        aria-valuenow={Math.round(day.totals.kcal)}
-        className="h-1.5 overflow-hidden rounded-pill bg-track"
-      >
-        <div className="h-full rounded-pill bg-ember" style={{ width: `${progress}%` }} />
-      </div>
-    </header>
+      {day.targets ? (
+        <div className="grid grid-cols-3 gap-3">
+          {macros.map((row) => {
+            const over = row.value > row.target
+            return (
+              <div
+                key={row.key}
+                role="group"
+                aria-label={t(over ? 'ui.progress.spokenOver' : 'ui.progress.spoken', { label: row.label, value: row.value, target: row.target, unit: t('food.gramsName') })}
+                className="flex min-w-0 flex-col gap-1.5"
+              >
+                <span aria-hidden className="truncate text-[13px] leading-[1.35] text-muted-foreground">
+                  {row.label}
+                </span>
+                <span aria-hidden className="font-display text-[22px] leading-none font-extrabold whitespace-nowrap tabular-nums">
+                  <RollingNumber value={row.value} />
+                  <span className="font-text text-[13px] font-normal text-muted-foreground"> / {fmt.unit(row.target, 'g')}</span>
+                </span>
+                <ProgressTrack ratio={row.target > 0 ? row.value / row.target : 0} ground="page" />
+                {over ? (
+                  <span aria-hidden className="text-[13px] leading-[1.35] text-muted-foreground">
+                    {t('ui.progress.over')}
+                  </span>
+                ) : null}
+              </div>
+            )
+          })}
+        </div>
+      ) : (
+        <p className="text-sm leading-5 text-muted-foreground">{t('food.noTargets')}</p>
+      )}
+    </section>
   )
 }
 
 /** Artikujt e shabllonit të Jimit: emri në gjuhën e app-it dhe sasia si te PDF-ja. */
-function TemplateLines({ lines, rowClassName, nameClassName, amountClassName }: { lines: MealSlot['template']; rowClassName: string; nameClassName?: string; amountClassName: string }) {
+function TemplateLines({ lines }: { lines: MealSlot['template'] }) {
   const { t, fmt } = useI18n()
   return (
-    <ul className="flex flex-col tabular-nums">
+    <ul className="flex flex-col border-b border-border tabular-nums">
       {lines.map((item, index) => (
-        <li key={`${item.food}-${index}`} className={cn('flex justify-between gap-3 border-t border-border', rowClassName)}>
-          <span className={nameClassName}>{foodName(t, { name: item.name, sourceId: item.sourceId })}</span>
-          <span className={cn('shrink-0 text-muted-foreground', amountClassName)}>{portionText(t, fmt, item.portion)}</span>
+        <li key={`${item.food}-${index}`} className="flex min-h-10 items-center justify-between gap-3 border-t border-border py-1.5 text-[15px] leading-5">
+          <span>{foodName(t, { name: item.name, sourceId: item.sourceId })}</span>
+          <span className="shrink-0 text-muted-foreground">{portionText(t, fmt, item.portion)}</span>
         </li>
       ))}
     </ul>
   )
 }
 
+/** Karta e vetme e ekranit: vakti i radhës me planin; "Si në plan" e regjistron me një prekje. */
 function NextMeal({ day, meal, now, onEdit }: { day: NutritionDay; meal: MealSlot; now: Date; onEdit: () => void }) {
   const i18n = useI18n()
   const { t } = i18n
   const [busy, setBusy] = useState(false)
-  const today = day.isToday
+  const when = day.isToday ? `${meal.time} · ${relativeTime(i18n, meal.time, now)}` : meal.time
   return (
-    <section aria-labelledby="next-meal" className={cn(surfaceClass, 'flex flex-col gap-3.5 rounded-xl p-4')}>
-      <div className="flex flex-col gap-1">
-        <span className="type-label text-muted-foreground">{t('food.next')}</span>
-        <div className="flex flex-wrap items-baseline gap-x-2.5">
-          <h2 id="next-meal" className="type-display-s">
-            {mealName(t, meal.meal)}
-          </h2>
-          <span className="type-body text-muted-foreground tabular-nums">
-            {meal.time}
-            {today ? ` · ${relativeTime(i18n, meal.time, now)}` : ''}
-          </span>
-        </div>
-      </div>
+    <section aria-labelledby="next-meal" className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-xl p-4')}>
+      <span className="type-caption text-muted-foreground tabular-nums">
+        {t('food.next')} · {when}
+      </span>
+      <h2 id="next-meal" className="type-display-s">
+        {mealName(t, meal.meal)}
+      </h2>
       {meal.template.length > 0 ? (
         <>
-          <TemplateLines lines={meal.template} rowClassName="py-[7px] text-sm leading-5" amountClassName="" />
-          <div className="flex justify-between gap-3 text-xs leading-4 text-muted-foreground tabular-nums">
-            <span>{t('food.about', { kcal: Math.round(meal.templateTotals.kcal) })}</span>
-            <span>{macrosLine(i18n, meal.templateTotals)}</span>
-          </div>
+          <TemplateLines lines={meal.template} />
+          <span className="text-[13px] leading-[1.35] text-muted-foreground tabular-nums">
+            {t('food.about', { kcal: Math.round(meal.templateTotals.kcal) })} · {macrosLine(i18n, meal.templateTotals)}
+          </span>
         </>
       ) : (
         <p className="type-caption text-muted-foreground">{t('food.noTemplate')}</p>
       )}
-      <div className="flex gap-2">
+      <div className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-2 pt-0.5">
         <Button
           variant="primary"
           size="lg"
-          className="min-w-0 flex-1 px-4"
+          className="min-w-0 px-3"
           disabled={busy || meal.template.length === 0}
           onClick={() => {
             setBusy(true)
             void logTemplateMeal(store, day.date, meal.meal).finally(() => setBusy(false))
           }}
         >
-          {t(`food.log.${meal.meal}`)}
+          {t('food.quick.plan')}
         </Button>
-        <Button variant="secondary" size="lg" className="shrink-0 px-5" onClick={onEdit}>
+        <Button variant="secondary" size="lg" className="min-w-0 px-3" onClick={onEdit}>
           {t('food.edit')}
         </Button>
       </div>
@@ -198,153 +240,96 @@ function DayDone({ day }: { day: NutritionDay }) {
   )
 }
 
-const BADGE: Record<MealStatus, string> = {
-  done: 'bg-surface-2 text-success',
-  next: 'bg-surface-2 text-foreground',
-  todo: 'text-muted-foreground',
-  missed: 'text-muted-foreground',
-}
-
-const DOT: Record<MealStatus, string> = {
-  done: 'bg-foreground',
-  next: 'bg-ember ring-[3px] ring-insight-border',
-  todo: 'border-[1.5px] border-subtle',
-  missed: 'border-[1.5px] border-dashed border-subtle',
-}
-
 function statusText(i18n: I18n, meal: MealSlot) {
   return meal.status === 'done' ? i18n.t('food.status.done', { kcal: kcalText(i18n, meal.totals.kcal) }) : i18n.t(`food.status.${meal.status}`)
 }
 
-function Timeline({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) => void }) {
+/** Emrat e një liste në fjali: i pari siç është, të tjerët me shkronjë të vogël ("Kreatinë, beta-alaninë, BCAA"). */
+const nameList = (names: string[], lang: string) => [...new Set(names)].map((name, index) => (index === 0 ? name : nameInSentence(name, lang))).join(', ')
+
+/** Rreshti që hapet/mbyllet: shigjeta poshtë rrotullohet 150 ms (ndryshim gjendjeje). */
+function Chevron({ open }: { open: boolean }) {
+  return <Icon name="poshte" size={18} className={cn('text-muted-foreground transition-transform duration-150 ease-out', open && 'rotate-180')} />
+}
+
+/**
+ * "Dita": vaktet e regjistruara bashkë në një rresht që hapet ("4 vakte të regjistruara", emrat dhe
+ * kaloritë), pastaj vaktet e tjera me orën; i radhësi me shenjën "I radhës". Çdo vakt hap fletën e tij.
+ */
+function DayMeals({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealKey) => void }) {
   const i18n = useI18n()
   const { t, lang } = i18n
+  const listId = useId()
+  const [open, setOpen] = useState(false)
+  const logged = day.meals.filter((meal) => meal.status === 'done')
+  const rest = day.meals.filter((meal) => meal.status !== 'done')
+  const loggedKcal = logged.reduce((sum, meal) => sum + meal.totals.kcal, 0)
   return (
     <section aria-labelledby="day-title" className="flex flex-col">
-      <h2 id="day-title" className="mb-1 type-label text-muted-foreground">
+      <h2 id="day-title" className="mb-1.5 type-label text-muted-foreground">
         {t('food.day')}
       </h2>
-      <ol className="flex flex-col">
-        {day.meals.map((meal) => (
-          <li key={meal.meal}>
+      <div className="flex flex-col border-b border-border">
+        {logged.length > 0 ? (
+          <>
             <button
               type="button"
-              onClick={() => onOpen(meal.meal)}
-              aria-label={`${mealName(t, meal.meal)}, ${meal.time}, ${statusText(i18n, meal)}`}
-              className="grid min-h-12 w-full grid-cols-[44px_20px_minmax(0,1fr)_auto] items-center gap-2 rounded-md text-left tabular-nums hover:bg-surface"
+              aria-expanded={open}
+              aria-controls={listId}
+              onClick={() => setOpen((value) => !value)}
+              className="flex min-h-[52px] w-full items-center gap-3 border-t border-border py-1.5 text-left hover:bg-surface"
             >
-              <span className="text-xs leading-4 text-muted-foreground">{meal.time}</span>
-              <span aria-hidden className={cn('size-2.5 justify-self-center rounded-full', DOT[meal.status])} />
-              <span className="flex min-w-0 flex-col">
-                <span className={cn('truncate text-sm leading-5', meal.status === 'todo' || meal.status === 'missed' ? 'text-muted-foreground' : 'font-semibold')}>
-                  {mealName(t, meal.meal)}
-                </span>
-                {meal.supplements.length > 0 ? (
-                  <span className="truncate text-xs leading-4 text-muted-foreground">
-                    {t('food.withSupplements', { list: meal.supplements.map((item) => nameInSentence(supplementName(t, item.name), lang)).join(', ') })}
-                  </span>
-                ) : null}
+              <span aria-hidden className="flex w-12 shrink-0 justify-center text-ember-text">
+                <Icon name="zgjedhur" size={20} />
               </span>
-              <span className={cn('rounded-full px-2 py-1 text-xs leading-4 font-medium whitespace-nowrap', BADGE[meal.status])}>{statusText(i18n, meal)}</span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="text-[15px] leading-5 font-semibold">{t('food.loggedMeals', { count: logged.length })}</span>
+                <span className="truncate text-[13px] leading-[1.35] text-muted-foreground">{nameList(logged.map((meal) => mealName(t, meal.meal)), lang)}</span>
+              </span>
+              <span className="shrink-0 text-sm leading-5 text-muted-foreground tabular-nums">{kcalText(i18n, loggedKcal)} kcal</span>
+              <Chevron open={open} />
             </button>
-          </li>
-        ))}
-      </ol>
-    </section>
-  )
-}
-
-function MacroTotals({ day }: { day: NutritionDay }) {
-  const { t, fmt } = useI18n()
-  // Makrot me ngjyrat e Vrullit: proteina prushi, karbohidratet vjollcë, yndyrat rërë.
-  const rows = [
-    { key: 'protein', label: t('food.protein'), value: day.totals.proteinG, target: day.targets?.proteinG, fill: 'bg-ember' },
-    { key: 'carbs', label: t('food.carbs'), value: day.totals.carbsG, target: day.targets?.carbsG, fill: 'bg-data' },
-    { key: 'fat', label: t('food.fat'), value: day.totals.fatG, target: day.targets?.fatG, fill: 'bg-sand' },
-  ]
-  return (
-    <section aria-labelledby="macros-title" className="flex flex-col gap-3">
-      <h2 id="macros-title" className="type-label text-muted-foreground">
-        {t('food.macrosTitle')}
-      </h2>
-      {day.targets ? null : <p className="text-sm leading-5 text-muted-foreground">{t('food.noTargets')}</p>}
-      {day.targetsSource === 'jim' ? (
-        <InsightCard
-          icon={null}
-          actions={
-            <Link to="/ushqimi/objektivat" className={buttonVariants({ variant: 'secondary', ground: 'card' })}>
-              {t('food.targets.ctaAction')}
-            </Link>
-          }
-        >
-          <b className="font-semibold">{t('food.targets.cta')}</b>
-          <br />
-          {t('food.targets.ctaText')}
-        </InsightCard>
-      ) : null}
-      <dl className="flex flex-col gap-3 tabular-nums">
-        {rows.map((row) => (
-          <div key={row.key} className="flex flex-col gap-1.5">
-            <div className="flex justify-between text-sm leading-5">
-              <dt>{row.label}</dt>
-              <dd className="text-muted-foreground">
-                <b className="font-semibold text-foreground">{fmt.number(Math.round(row.value))}</b>
-                {row.target ? ` / ${fmt.number(row.target)}` : ''} g
-              </dd>
-            </div>
-            {row.target ? (
-              <div aria-hidden className="h-1.5 overflow-hidden rounded-pill bg-track">
-                <div className={cn('h-full rounded-pill', row.fill)} style={{ width: `${Math.min(100, (row.value / row.target) * 100)}%` }} />
-              </div>
+            {open ? (
+              <ul id={listId} className="flex flex-col">
+                {logged.map((meal) => (
+                  <MealRow key={meal.meal} meal={meal} onOpen={onOpen} end={<span className="text-[13px] leading-[1.35] text-muted-foreground tabular-nums">{kcalText(i18n, meal.totals.kcal)} kcal</span>} />
+                ))}
+              </ul>
             ) : null}
-          </div>
-        ))}
-      </dl>
-      {day.targetsSource === 'jim' ? (
-        <p className="text-xs leading-4 text-muted-foreground">{t('food.proteinNote', { jimLow: 3.3, jimHigh: 4.1, studyLow: 1.6, studyHigh: 2.2 })}</p>
-      ) : null}
-      <Link
-        to="/ushqimi/objektivat"
-        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-      >
-        {t('food.targets.link')}
-        <Icon name="hap" size={20} className="text-muted-foreground" />
-      </Link>
-      <Link
-        to="/ushqimi/plani"
-        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-      >
-        {t('food.plan.title')}
-        <Icon name="hap" size={20} className="text-muted-foreground" />
-      </Link>
-      <Link
-        to="/ushqimi/oraret"
-        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-      >
-        {t('food.schedule.title')}
-        <Icon name="hap" size={20} className="text-muted-foreground" />
-      </Link>
-      {day.outsideJimRange ? (
-        <p className="text-xs leading-4 text-muted-foreground">{t('food.outsideJim', { min: JIM_RANGE_KG.min, max: JIM_RANGE_KG.max })}</p>
-      ) : null}
+          </>
+        ) : null}
+        <ul className="flex flex-col">
+          {rest.map((meal) => {
+            const count = meal.supplements.length
+            const end =
+              meal.status === 'next' ? (
+                <span className="flex h-6 shrink-0 items-center rounded-[6px] bg-ember px-2 text-xs leading-4 font-bold text-on-ember">{t('food.status.next')}</span>
+              ) : meal.status === 'missed' ? (
+                <span className="shrink-0 text-[13px] leading-[1.35] text-muted-foreground">{t('food.status.missed')}</span>
+              ) : count > 0 ? (
+                <span className="shrink-0 text-[13px] leading-[1.35] text-muted-foreground">{t('food.supplementCount', { count })}</span>
+              ) : null
+            return <MealRow key={meal.meal} meal={meal} onOpen={onOpen} end={end} extra={meal.status === 'todo' && count > 0 ? t('food.supplementCount', { count }) : undefined} />
+          })}
+        </ul>
+      </div>
     </section>
   )
 }
 
-/** Uji i ditës (V36): totali kundrejt objektivit; gotat shtohen te Sot. */
-function WaterTotal({ date }: { date: string }) {
-  const { t, fmt } = useI18n()
-  const water = useLocalQuery(() => waterDay(store, date), [date])
-  if (!water) return null
-  const litres = (ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 2 })
+function MealRow({ meal, onOpen, end, extra }: { meal: MealSlot; onOpen: (meal: MealKey) => void; end: ReactNode; extra?: string }) {
+  const i18n = useI18n()
+  const { t } = i18n
+  const next = meal.status === 'next'
+  const label = [mealName(t, meal.meal), meal.time, statusText(i18n, meal), extra].filter(Boolean).join(', ')
   return (
-    <div className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-sm leading-5 tabular-nums">
-      <span>{t('food.water')}</span>
-      <span className="text-muted-foreground">
-        <b className="font-semibold text-foreground">{litres(water.totalMl)}</b>
-        {water.targetMl === null ? ' L' : ` / ${litres(water.targetMl)} L`}
-      </span>
-    </div>
+    <li>
+      <button type="button" onClick={() => onOpen(meal.meal)} aria-label={label} className="flex min-h-12 w-full items-center gap-3 border-t border-border py-1.5 text-left hover:bg-surface">
+        <span className={cn('w-12 shrink-0 text-sm leading-5 tabular-nums', next ? 'font-bold text-foreground' : 'text-muted-foreground')}>{meal.time}</span>
+        <span className={cn('min-w-0 flex-1 truncate text-[15px] leading-5', (next || meal.status === 'done') && 'font-semibold')}>{mealName(t, meal.meal)}</span>
+        {end}
+      </button>
+    </li>
   )
 }
 
@@ -382,53 +367,202 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
   )
 }
 
+interface Taken {
+  meal: MealSlot
+  item: MealSupplement
+}
+
+/**
+ * Suplementet sipas orës (bordi): një rresht për të marrat ("Marrë" dhe emrat), pastaj një rresht për çdo
+ * vakt me ato që mbeten, me një buton që i shënon të gjitha ("Të 5"; "E mora" kur është një). Rreshti i
+ * të marrave dhe grupet hapen në listën me një kuti për secilin, që një suplement shënohet ose hiqet më vete.
+ */
 function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void }) {
-  const { t, fmt } = useI18n()
-  const meals = day.meals.filter((meal) => meal.supplements.length > 0)
-  const total = meals.reduce((count, meal) => count + meal.supplements.length, 0)
-  const taken = meals.reduce((count, meal) => count + meal.supplements.filter((item) => item.taken).length, 0)
+  const i18n = useI18n()
+  const { t, lang } = i18n
+  const [open, setOpen] = useState<ReadonlySet<string>>(() => new Set())
+  const [busy, setBusy] = useState(false)
+  const idBase = useId()
+  const slots = day.meals.filter((meal) => meal.supplements.length > 0)
+  const total = slots.reduce((count, meal) => count + meal.supplements.length, 0)
+  const taken: Taken[] = slots.flatMap((meal) => meal.supplements.filter((item) => item.taken).map((item) => ({ meal, item })))
+  const groups = slots.map((meal) => ({ meal, items: meal.supplements.filter((item) => !item.taken) })).filter((group) => group.items.length > 0)
+  const toggleOpen = (key: string) =>
+    setOpen((current) => {
+      const next = new Set(current)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  // Grupi shënohet një nga një, me rregullat e `setSupplementTaken` (pluhuri që numërohet te ushqimi).
+  const takeAll = (meal: MealSlot, items: MealSupplement[]) => {
+    setBusy(true)
+    void (async () => {
+      for (const item of items) await setSupplementTaken(store, { date: day.date, supplementId: item.id, meal: meal.meal }, true)
+    })().finally(() => setBusy(false))
+  }
+  const name = (item: MealSupplement) => supplementName(t, item.name)
   return (
-    <section aria-labelledby="supplements-title" className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-3">
+    <section aria-labelledby="supplements-title" className="flex flex-col">
+      <div className="mb-1.5 flex items-center justify-between gap-3">
         <h2 id="supplements-title" className="type-label text-muted-foreground">
-          {t('food.supplements')} <span className="tabular-nums">· {t('food.supplementsTaken', { taken, total })}</span>
+          {t('food.supplements')} <span className="tabular-nums">· {t('food.supplementsTaken', { taken: taken.length, total })}</span>
         </h2>
-        <Button variant="ghost" onClick={onEdit}>
+        <Button variant="ghost" className="-mr-2 px-2" onClick={onEdit}>
           {t('food.editList')}
         </Button>
       </div>
-      {meals.length === 0 ? (
+      {slots.length === 0 ? (
         <p className="text-sm leading-5 text-muted-foreground">{t('food.noSupplements')}</p>
       ) : (
-        <div className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
-          {meals.map((meal) => (
-            <fieldset key={meal.meal} className="border-t border-border px-4 py-1 first:border-t-0">
-              <legend className="sr-only">
-                {mealName(t, meal.meal)}, {meal.time}
-              </legend>
-              <span aria-hidden className="block pt-2 text-xs leading-4 text-muted-foreground tabular-nums">
-                {meal.time} · {mealName(t, meal.meal)}
+        <div className="flex flex-col border-b border-border">
+          {taken.length > 0 ? (
+            <div className="border-t border-border">
+              <button
+                type="button"
+                aria-expanded={open.has('taken')}
+                aria-controls={`${idBase}-taken`}
+                onClick={() => toggleOpen('taken')}
+                className="flex min-h-[52px] w-full items-center gap-3 py-1.5 text-left hover:bg-surface"
+              >
+                <span aria-hidden className="flex w-12 shrink-0 justify-center text-ember-text">
+                  <Icon name="zgjedhur" size={20} />
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="text-[15px] leading-5 font-semibold">{t('food.supplementsDone')}</span>
+                  <span className="truncate text-[13px] leading-[1.35] text-muted-foreground">{nameList(taken.map(({ item }) => name(item)), lang)}</span>
+                </span>
+                <Chevron open={open.has('taken')} />
+              </button>
+              {open.has('taken') ? (
+                <ul id={`${idBase}-taken`} className="flex flex-col pb-1 pl-[60px]">
+                  {taken.map(({ meal, item }) => (
+                    <SupplementCheck key={`${meal.meal}-${item.id}`} date={day.date} meal={meal} item={item} withMeal />
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
+          {groups.map(({ meal, items }) => {
+            const single = items.length === 1
+            const key = meal.meal
+            const title = single ? name(items[0]) : `${mealName(t, meal.meal)} · ${items.length}`
+            const detail = single ? `${mealName(t, meal.meal)} · ${doseText(i18n, items[0])}` : nameList(items.map(name), lang)
+            const text = (
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="text-[15px] leading-5">{title}</span>
+                <span className="truncate text-[13px] leading-[1.35] text-muted-foreground">{detail}</span>
               </span>
-              {meal.supplements.map((item) => (
-                <label key={item.id} className="flex min-h-12 cursor-pointer items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={item.taken}
-                    onChange={() => void toggleSupplement(store, { date: day.date, supplementId: item.id, meal: meal.meal })}
-                    className="size-5 shrink-0 accent-current"
-                  />
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className={cn('text-base leading-6', item.taken && 'text-muted-foreground line-through')}>{supplementName(t, item.name)}</span>
-                    <span className="text-xs leading-4 text-muted-foreground">{supplementDose(t, item.name, item.doseText, { amount: item.doseAmount, unit: item.doseUnit, fmt })}</span>
-                  </span>
-                  <span className="shrink-0 rounded-pill bg-surface-2 px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">{t(`food.evidence.${item.evidence}`)}</span>
-                </label>
-              ))}
-            </fieldset>
-          ))}
+            )
+            return (
+              <div key={key} className="border-t border-border">
+                <div className="flex min-h-[60px] items-center gap-3 py-1.5">
+                  <span className="w-12 shrink-0 text-sm leading-5 text-muted-foreground tabular-nums">{meal.time}</span>
+                  {single ? (
+                    text
+                  ) : (
+                    <button
+                      type="button"
+                      aria-expanded={open.has(key)}
+                      aria-controls={`${idBase}-${key}`}
+                      onClick={() => toggleOpen(key)}
+                      className="flex min-h-touch min-w-0 flex-1 items-center gap-2 text-left"
+                    >
+                      {text}
+                      <Chevron open={open.has(key)} />
+                    </button>
+                  )}
+                  <Button
+                    variant="secondary"
+                    ground="page"
+                    className="px-3.5"
+                    disabled={busy}
+                    aria-label={t('food.takeGroupLabel', { count: items.length, name: name(items[0]), meal: mealName(t, meal.meal) })}
+                    onClick={() => takeAll(meal, items)}
+                  >
+                    {t('food.takeGroup', { count: items.length })}
+                  </Button>
+                </div>
+                {!single && open.has(key) ? (
+                  <ul id={`${idBase}-${key}`} className="flex flex-col pb-1 pl-[60px]">
+                    {items.map((item) => (
+                      <SupplementCheck key={item.id} date={day.date} meal={meal} item={item} />
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            )
+          })}
         </div>
       )}
     </section>
+  )
+}
+
+/** Doza në gjuhën e app-it ("1,5–5 g", "1 lugë"). */
+const doseText = ({ t, fmt }: Pick<I18n, 't' | 'fmt'>, item: MealSupplement) => supplementDose(t, item.name, item.doseText, { amount: item.doseAmount, unit: item.doseUnit, fmt })
+
+/** Një suplement me kutinë e vet: e shënon ose e heq më vete, me dozën dhe evidencën. */
+function SupplementCheck({ date, meal, item, withMeal = false }: { date: string; meal: MealSlot; item: MealSupplement; withMeal?: boolean }) {
+  const i18n = useI18n()
+  const { t } = i18n
+  const dose = doseText(i18n, item)
+  return (
+    <li>
+      <label className="flex min-h-12 cursor-pointer items-center gap-3">
+        <input
+          type="checkbox"
+          checked={item.taken}
+          onChange={() => void toggleSupplement(store, { date, supplementId: item.id, meal: meal.meal })}
+          className="size-5 shrink-0 accent-current"
+        />
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="text-[15px] leading-5">{supplementName(t, item.name)}</span>
+          <span className="text-xs leading-4 text-muted-foreground tabular-nums">{withMeal ? `${meal.time} · ${mealName(t, meal.meal)} · ${dose}` : dose}</span>
+        </span>
+        <span className="shrink-0 rounded-pill bg-surface-2 px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">{t(`food.evidence.${item.evidence}`)}</span>
+      </label>
+    </li>
+  )
+}
+
+/** Objektivat · Plani im · Oraret në një rresht; ftesa te kalkulatori dhe shënimet e planit të Jimit poshtë. */
+function PlanLinks({ day }: { day: NutritionDay }) {
+  const { t } = useI18n()
+  const link =
+    'flex h-12 min-w-0 items-center justify-center rounded-md border border-border px-2 text-center text-sm leading-5 font-semibold transition-transform duration-100 ease-out hover:bg-surface motion-safe:active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  return (
+    <div className="flex flex-col gap-3">
+      {day.targetsSource === 'jim' ? (
+        <InsightCard
+          icon={null}
+          actions={
+            <Link to="/ushqimi/objektivat" className={buttonVariants({ variant: 'secondary', ground: 'card' })}>
+              {t('food.targets.ctaAction')}
+            </Link>
+          }
+        >
+          <b className="font-semibold">{t('food.targets.cta')}</b>
+          <br />
+          {t('food.targets.ctaText')}
+        </InsightCard>
+      ) : null}
+      <nav aria-label={t('food.planNav')} className="grid grid-cols-3 gap-2">
+        <Link to="/ushqimi/objektivat" className={link}>
+          {t('food.targets.link')}
+        </Link>
+        <Link to="/ushqimi/plani" className={link}>
+          {t('food.plan.title')}
+        </Link>
+        <Link to="/ushqimi/oraret" className={link}>
+          {t('food.schedule.short')}
+        </Link>
+      </nav>
+      {day.targetsSource === 'jim' ? (
+        <p className="text-xs leading-4 text-muted-foreground">{t('food.proteinNote', { jimLow: 3.3, jimHigh: 4.1, studyLow: 1.6, studyHigh: 2.2 })}</p>
+      ) : null}
+      {day.outsideJimRange ? <p className="text-xs leading-4 text-muted-foreground">{t('food.outsideJim', { min: JIM_RANGE_KG.min, max: JIM_RANGE_KG.max })}</p> : null}
+    </div>
   )
 }
 

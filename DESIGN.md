@@ -107,6 +107,7 @@ OLED (parazgjedhja, e zeza e plotë), Natë dhe Ditë. Në kod emrat e ruajtur m
 | `ListRow` | Rreshti 56 px brenda `<ul>`: emri, detaji, vlera djathtas; i gjithë rreshti preket, veprimi brenda ka zonën e vet |
 | `StatTile` | Numri i madh me etiketë; `aria-label` me fjalë të plota; `tone="data"` |
 | `ProgressBar`, `ProgressTrack` | Shiriti 6 px kundrejt objektivit (proteina `ember`, karbohidratet `data`, yndyrat `sand`); mbi 100% e thotë me fjalë |
+| `RollingNumber` (`rolling-number.tsx`) | Numri që ndryshon: `value` dhe `format` (parazgjedhja `fmt.number`); teksti është ai i `fmt`, shifrat që ndryshuan rrotullohen (Lëvizja); lexuesi i ekranit dëgjon vetëm vlerën e fundit |
 | `InsightCard` | Rekordi ose sugjerimi (`insight`), gatishmëria e ulët (`tired`, me "Prano" dhe "Jo sot"); një në ekran |
 | `FactCard` | "A e dije?" me burim ose "Shpjeguar nga AI" |
 | `WeekStrip` | Java me rrathë 34 px: e bërë prush, sot me unazë `ember-text`, pushim `mark`; çdo rreth e thotë gjendjen |
@@ -135,10 +136,21 @@ Vijë 2 px në rrjetë 24 px, cepa dhe nyje të rrumbullakëta, pa mbushje (për
 
 ## Lëvizja
 
-- **Me vrull:** 240–320 ms me kërcim (`ease-vrull`, `cubic-bezier(.34,1.56,.64,1)`) për hyrjen e kartave dhe për butonin kur shtypet.
-- **Tabela e rezultateve:** numrat që ndryshojnë rrotullohen shifër pas shifre, 200 ms. **Rekordi:** shkëndija prushi 600 ms, një herë, dridhje e shkurtër.
-- **Shiriti i progresit** mbushet nga e majta në 320 ms (`animate-fill`).
-- **Ditë e lodhur:** 360 ms pa kërcim, pa festime. **Lëvizje e reduktuar:** vetëm zbehje 120 ms (`globals.css` e zbaton për çdo element).
+E qetë dhe me qëllim (SPEC §0.3c, E2-23; bordi "Lëvizja e 0.23"): pak momente lëvizin, çdo gjë tjetër rri; festimi vetëm te rekordet dhe qëllimet. **Asnjë animacion nuk vonon një prekje:** veprimi ndodh në prekje, lëvizja vjen pas.
+
+| Koha | Çfarë | Si |
+|---|---|---|
+| 100 ms | Shtypja e çdo butoni | `.97 → 1`, ease-out, pa kërcim (`button-variants.ts`: `duration-100 ease-out motion-safe:active:scale-[0.97]`) |
+| 150 ms | Ndryshimi i gjendjes: çip, çelës, shenjë, shigjeta e rreshtit që hapet | ease-out |
+| 200 ms | Numrat që ndryshojnë (kcal, proteina, uji, setet) rrotullohen, 40 ms mes shifrave nga e majta; shifrat e njëjta rrinë (`RollingNumber`) | ease-out; rritja lart, zbritja poshtë |
+| 250 ms | Rreshti → detaji (zgjerohet në vend), banderola e rekordit, tab-et | ease-out |
+| 320 ms | Shiritat mbushen nga e majta (`animate-fill`) dhe ndjekin vlerën e re (`ProgressTrack`) | ease-out |
+| 600 ms | Festimi: rekordi te mbyllja, qëllimi i arritur, java e plotë; një herë | `ease-vrull` |
+
+- **`ease-vrull`** (`cubic-bezier(.34,1.56,.64,1)`, me kërcim) vetëm për hyrjet e kartave dhe festimet; çdo gjë tjetër ease-out, pa kërcim.
+- **Dridhjet:** e lehtë te "Ruaj setin", e mesme te qëllimi, e rëndë te rekordi.
+- **Ditë e lodhur:** 360 ms pa kërcim, pa festime.
+- **Lëvizje e reduktuar:** asgjë nuk lëviz, vetëm zbehje 120 ms; dridhjet mbeten. `globals.css` e zbaton për çdo element (animacionet mbarojnë menjëherë dhe pa vonesë, tranzicionet vetëm `opacity`), `RollingNumber` vetëm zbeh shifrat e reja, shtypja nuk shkallëzohet (`motion-safe:`). `src/styles/motion.test.ts` e kontrollon, edhe që asnjë `active:scale-` të mos jetë pa `motion-safe:`.
 
 ## Gjendja e ditës
 

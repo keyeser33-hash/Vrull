@@ -1101,7 +1101,8 @@ try {
   if (foodDayIsYesterday) {
     info('v2: Ushqimi', 'para ndërrimit të ditës së ushqimit (V46): vakti i v1 i përket ditës që vjen; kontrollohet vetëm te baza')
   } else {
-    await waitForText(page, 'Regjistruar ·')
+    // 0.23: vaktet e regjistruara mblidhen në një rresht ("1 vakt i regjistruar").
+    await waitFor(() => page.evaluate(`/\\d+ vakte? (?:i|të) regjistruar/.test(${PAGE_TEXT})`), 'rreshti "vakt i regjistruar"')
     check('v2: Ushqimi tregon vaktin e regjistruar te v1', true)
   }
   screenshot('v2-ushqimi')

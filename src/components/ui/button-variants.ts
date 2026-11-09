@@ -3,9 +3,11 @@ import { cva } from 'class-variance-authority'
 // Butonat e Vrullit (DESIGN.md › Butonat). Barlow Condensed uppercase nga stili, teksti në sentence
 // case. `primary` (prushi) është veprimi i vetëm kryesor i ekranit: "Fillo stërvitjen", "Ruaj setin",
 // "Mbyll stërvitjen"; 52 px në karta (`lg`), 58 px në fund të ekranit (`xl`), `tired` në ditë të
-// lodhura. Çdo madhësi që preket ka të paktën 44 px.
+// lodhura. Çdo madhësi që preket ka të paktën 44 px. Shtypja (SPEC §0.3c, E2-23): 100 ms, .97 → 1, ease-out,
+// pa kërcim; me "lëvizje të reduktuar" pa shkallëzim (`motion-safe:`). `ease-vrull` mbetet për hyrjet
+// e kartave dhe festimet.
 export const buttonVariants = cva(
-  'inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap uppercase tracking-[0.02em] select-none transition-transform duration-240 ease-vrull active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+  'inline-flex shrink-0 items-center justify-center gap-2 font-display font-bold whitespace-nowrap uppercase tracking-[0.02em] select-none transition-transform duration-100 ease-out motion-safe:active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
   {
     variants: {
       variant: {

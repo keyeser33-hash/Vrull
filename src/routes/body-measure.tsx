@@ -463,7 +463,7 @@ function StepButton({ label, onClick, large, children }: { label: string; onClic
       aria-label={label}
       onClick={onClick}
       className={cn(
-        'flex shrink-0 items-center justify-center rounded-sm bg-surface-2 font-display font-bold text-foreground tabular-nums outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground active:scale-[0.97]',
+        'flex shrink-0 items-center justify-center rounded-sm bg-surface-2 font-display font-bold text-foreground tabular-nums outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground transition-transform duration-100 ease-out motion-safe:active:scale-[0.97]',
         large ? 'h-14 rounded-md border border-surface-border text-xl' : 'size-11 text-[22px]',
       )}
     >
