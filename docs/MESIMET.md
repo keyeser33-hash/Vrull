@@ -65,3 +65,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Një fletë që ndryshon një vlerë (ora e stërvitjes te Cilësimet) rishkruante gjithë fushën (`training_times` për çdo ditë) dhe fshinte orët e veçanta që ruante një ekran tjetër (Oraret e vakteve) → një ruajtje shkruan vetëm atë që përdoruesi ndryshoi; kur dy ekrane shkruajnë të njëjtën fushë, prova ruan nga njëri dhe lexon nga tjetri.
 - Proteina me "Numëroje te ushqimi" dhe pluhuri i planit numëroheshin dy herë → një sasi që mund të vijë nga dy rrugë (plani, suplementi) ka një rregull të vetëm që vendos kush e numëron (`mealPowder`), me provë për të dy radhët.
 - Vlerat që llogarit telefoni (mirëmbajtja e kontrollit javor) mund të dalin jashtë `check`-ut të serverit dhe rreshti refuzohej përgjithmonë → çdo vlerë e llogaritur që shkon te një kolonë me kufij kontrollohet para shkrimit (bosh kur del jashtë), me provë me të dhëna ekstreme.
+
+## AI-ja
+
+- Kutia e AI-së (log-parse, 09.11.2026), me AI-në e vërtetë: me Haiku 5.5 dhe `effort: low` mesazhi i parë kushtoi 0,001 € (cache-i shkruhet, ~1 200 tokena dalje), i njëjti kontekst pas tij 0,0001–0,0006 € (cache-i lexohet, 4 175 tokena). Përgjigja te pyetja ("dy feta") ktheu vetëm rreshtin e përgjigjur → udhëzimi e kërkon shprehimisht, dhe app-i e bashkon me draftin sipas emrit; zgjedhjet (1/2/3 feta) plotësohen në telefon pa thirrje të re.

@@ -2,9 +2,12 @@
 // me foton dhe skemën e daljes, kostoja nga tokenat dhe interpretimi i përgjigjes. index.ts e lidh me
 // Deno.serve; provat: logic.test.ts dhe handler.test.ts.
 //
-// Kursi, muaji dhe kufiri janë të njëjtë me program-import (provë te logic.test.ts): kufiri i AI-së është një
-// për të gjitha veçoritë. Modeli zgjidhet për çdo veçori: etiketa me Haiku, importi i PDF-së me Sonnet.
+// Kursi, muaji, çmimet dhe kufiri vijnë nga _shared/ai.ts (një kufi për të gjitha veçoritë; provë te
+// logic.test.ts që janë ata të program-import). Modeli zgjidhet për çdo veçori: etiketa me Haiku, importi i PDF-së me Sonnet.
+import { AI_MONTHLY_LIMIT_EUR, costOf as costFor, LIMIT_TIME_ZONE, monthStart, USD_PER_EUR } from '../_shared/ai.ts'
 import type { LabelFields, LabelKind, LabelUnit } from './shared.ts'
+
+export { AI_MONTHLY_LIMIT_EUR, LIMIT_TIME_ZONE, monthStart, USD_PER_EUR }
 
 export type { LabelErrorCode, LabelFields } from './shared.ts'
 export { MAX_IMAGE_BYTES } from './shared.ts'
@@ -15,12 +18,6 @@ export { MAX_IMAGE_BYTES } from './shared.ts'
  */
 export const MODEL = 'claude-haiku-5-5'
 export const API_VERSION = '2026-10-21'
-/** Çmimi i Haiku 5.5 deri në 100 000 tokena në kërkesë; një lexim ka rreth 2 000. */
-export const PRICE_USD_PER_MTOK = { input: 0.1, output: 0.5 } as const
-export const USD_PER_EUR = 1.1165
-export const LIMIT_TIME_ZONE = 'Europe/Tirane'
-/** Kufiri për person në muaj (V25), si te program-import/shared.ts. */
-export const AI_MONTHLY_LIMIT_EUR = 10
 /** Dalja: një JSON i vogël dhe pak mendim. */
 export const MAX_TOKENS = 2_000
 export const EFFORT = 'low'
@@ -28,17 +25,8 @@ export const AI_TIMEOUT_MS = 60_000
 /** Kostoja më e keqe e një leximi: ~5 000 tokena hyrje dhe 2 000 dalje, rreth $0,0015; me rezervë. */
 export const AI_CALL_RESERVE_EUR = 0.01
 
-export function monthStart(date: Date): string {
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: LIMIT_TIME_ZONE, year: 'numeric', month: '2-digit' }).formatToParts(date)
-  const part = (type: string) => parts.find((entry) => entry.type === type)?.value ?? ''
-  return `${part('year')}-${part('month')}-01`
-}
-
-export function costOf(usage: { inputTokens: number; outputTokens: number }): { usd: number; eur: number } {
-  const usd = (usage.inputTokens * PRICE_USD_PER_MTOK.input + usage.outputTokens * PRICE_USD_PER_MTOK.output) / 1_000_000
-  const round = (value: number) => Math.round(value * 1_000_000) / 1_000_000
-  return { usd: round(usd), eur: round(usd / USD_PER_EUR) }
-}
+/** Kostoja e një leximi pa cache (një foto e re çdo herë); çmimet te _shared/ai.ts. */
+export const costOf = (usage: { inputTokens: number; outputTokens: number }) => costFor(MODEL, { ...usage, cacheWriteTokens: 0, cacheReadTokens: 0 })
 
 export type ImageType = 'image/jpeg' | 'image/png' | 'image/webp'
 
