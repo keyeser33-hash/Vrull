@@ -44,6 +44,25 @@ export function setRecord(set: HistorySet, history: HistorySet[]): SetRecordResu
 
 export const isRecord = (set: HistorySet, history: HistorySet[]) => setRecord(set, history) !== null
 
+const chronological = (a: HistorySet, b: HistorySet) => a.loggedAt.localeCompare(b.loggedAt) || a.id.localeCompare(b.id)
+
+/**
+ * Rekordi i çdo seti të seancës në kohën kur u bë (`setRecord`, si seti i sapo ruajtur): e1RM-ja, ose
+ * pesha më e madhe për ato përsëritje (pulpat me 30 përsëritje, pa e1RM). Secili krahasohet vetëm me
+ * setet para tij, ndaj seti 1 mbetet rekord edhe kur seti 2 e kalon. Çipat dhe rreshtat e pushimit e
+ * lexojnë nga këtu (0.23); historiku mbetet me rekordin e e1RM-së (`recordsAtTheTime`).
+ */
+export function sessionSetRecords(history: HistorySet[], sessionId: string): Map<string, SetRecordResult> {
+  const sorted = [...history].sort(chronological)
+  const records = new Map<string, SetRecordResult>()
+  sorted.forEach((entry, index) => {
+    if (entry.sessionId !== sessionId || entry.isWarmup) return
+    const record = setRecord(entry, sorted.slice(0, index))
+    if (record) records.set(entry.id, record)
+  })
+  return records
+}
+
 /**
  * Rekordet e seancës (`sessionRecords` i historikut: seti më i mirë që theu rekord, kundrejt më të
  * mirit para seancës); më i madhi i pari.

@@ -5,8 +5,8 @@ import type { LocalDatabase } from '@/data/db'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n'
 
-// Muzika "Trupi në ritëm" te seanca (V2-E1-12): mini-player-i në vendin e rezervuar, ekrani i plotë,
-// pushimi, lidhja dhe leja, "Prek ritmin". Seanca e vërtetë mbi IndexedDB në memorie; plugin-i native
+// Muzika "Trupi në ritëm" te seanca (V2-E1-12): ikona te kreu (0.23, në vend të mini-player-it), ekrani
+// i plotë, pushimi, lidhja dhe leja, "Prek ritmin". Seanca e vërtetë mbi IndexedDB në memorie; plugin-i native
 // i muzikës dhe tempo (GetSongBPM, AcousticBrainz) janë të imituara, pa asnjë kërkesë rrjeti.
 
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, db: null as unknown as LocalDatabase }))
@@ -105,7 +105,9 @@ async function renderSession(path = '/seanca') {
   return router
 }
 
-const music = () => screen.findByRole('region', { name: /^(Muzika|Music)$/ })
+/** Ikona e muzikës te kreu i seancës (0.23); emri thotë këngën, ose lidhjen. */
+const music = (name: string | RegExp) => screen.findByRole('button', { name })
+const SONG = 'Hap Trupi në ritëm: Edhe një përsëritje, Kaltrina V., 138 BPM'
 
 beforeEach(async () => {
   native.state.granted = true
@@ -132,40 +134,45 @@ function backFromSettings() {
   }
 }
 
-describe('mini-player-i te seanca', () => {
-  it('kënga që luan me tempon, "Pauzë" dhe "Kënga tjetër" mbi "Ruaj setin"; prekja dërgon kërkesën te app-i', async () => {
+describe('muzika te kreu i seancës (0.23)', () => {
+  it('ikona mban këngën që luan dhe tempon; prekja hap ekranin e plotë, ku "Pauzë" dhe "Kënga tjetër" i dërgon te app-i', async () => {
     const user = userEvent.setup()
     await renderSession()
-    const card = await music()
-    await within(card).findByText('138 BPM · Kaltrina V.')
-    expect(within(card).getByText('Edhe një përsëritje')).toBeInTheDocument()
-    // Vendi i rezervuar: mbi veprimin kryesor.
-    const save = screen.getByRole('button', { name: 'Ruaj setin' })
-    expect(card.compareDocumentPosition(save) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    await user.click(within(card).getByRole('button', { name: 'Pauzë' }))
+    const button = await music(SONG)
+    // Te kreu, me shenjën që luan; mini-player-i mbi "Ruaj setin" nuk është më.
+    expect(button.closest('header')).not.toBeNull()
+    expect(button.querySelector('[data-playing]')).not.toBeNull()
+    expect(screen.queryByRole('region', { name: 'Muzika' })).toBeNull()
+    await user.click(button)
+    const dialog = await screen.findByRole('dialog', { name: 'Trupi në ritëm' })
+    await user.click(within(dialog).getByRole('button', { name: 'Pauzë' }))
     expect(native.bridge.control).toHaveBeenLastCalledWith({ action: 'pause' })
-    await user.click(within(card).getByRole('button', { name: 'Kënga tjetër' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Kënga tjetër' }))
     expect(native.bridge.control).toHaveBeenLastCalledWith({ action: 'next' })
   })
 
-  it('shfaq vetëm kontrollet që pranon app-i; kënga e re vjen nga ngjarja e plugin-it', async () => {
+  it('kënga e re vjen nga ngjarja e plugin-it; në pauzë pa shenjën, me vetëm kontrollet që pranon app-i', async () => {
+    const user = userEvent.setup()
     native.state.session = playing({ actions: ['play'], state: 'paused' })
     await renderSession()
-    const card = await music()
-    expect(await within(card).findByRole('button', { name: 'Luaj' })).toBeInTheDocument()
-    expect(within(card).queryByRole('button', { name: 'Kënga tjetër' })).toBeNull()
+    expect((await music(SONG)).querySelector('[data-playing]')).toBeNull()
     tempos.values.set('Rekord i ri', { bpm: 136, source: 'acousticbrainz', url: null, at: 1 })
-    native.state.session = playing({ title: 'Rekord i ri', artist: 'DJ Prush' })
+    native.state.session = playing({ title: 'Rekord i ri', artist: 'DJ Prush', actions: ['play'], state: 'paused' })
     act(() => native.emit())
-    await within(card).findByText('136 BPM · DJ Prush')
+    await user.click(await music('Hap Trupi në ritëm: Rekord i ri, DJ Prush, 136 BPM'))
+    const dialog = await screen.findByRole('dialog', { name: 'Trupi në ritëm' })
+    expect(within(dialog).getByRole('button', { name: 'Luaj' })).toBeInTheDocument()
+    expect(within(dialog).queryByRole('button', { name: 'Kënga tjetër' })).toBeNull()
   })
 
-  it('pa këngë: "Asnjë app muzike nuk luan", pa kontrolle', async () => {
+  it('pa këngë: ikona e thotë dhe ekrani i plotë tregon "Asnjë app muzike nuk luan"', async () => {
+    const user = userEvent.setup()
     native.state.session = null
     await renderSession()
-    const card = await music()
-    expect(await within(card).findByText('Asnjë app muzike nuk luan')).toBeInTheDocument()
-    expect(within(card).queryAllByRole('button')).toHaveLength(0)
+    await user.click(await music('Hap Trupi në ritëm: asnjë app muzike nuk luan'))
+    const dialog = await screen.findByRole('dialog', { name: 'Trupi në ritëm' })
+    expect(within(dialog).getByRole('heading', { name: 'Asnjë app muzike nuk luan' })).toBeInTheDocument()
+    expect(within(dialog).queryByRole('button', { name: /^(Pauzë|Luaj|Kënga tjetër)$/ })).toBeNull()
   })
 
   it('një veprim që app-i nuk e pranon thuhet me fjalë te ekrani i plotë', async () => {
@@ -182,7 +189,7 @@ describe('ekrani "Trupi në ritëm"', () => {
   it('muskujt e sotëm, tempo me lidhjen te GetSongBPM.com, kontrollet dhe pozicioni', async () => {
     const user = userEvent.setup()
     await renderSession()
-    await user.click(await within(await music()).findByRole('button', { name: /^Hap Trupi në ritëm: Edhe një përsëritje, Kaltrina V., 138 BPM$/ }))
+    await user.click(await music(SONG))
     const dialog = await screen.findByRole('dialog', { name: 'Trupi në ritëm' })
     expect(within(dialog).getByText('Luhet te Spotify')).toBeInTheDocument()
     expect(within(dialog).getByText('Muskujt e sotëm', { selector: 'span' })).toBeInTheDocument()
@@ -258,7 +265,7 @@ describe('ekrani "Trupi në ritëm"', () => {
     await renderSession()
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
     await screen.findByRole('button', { name: 'Kapërce' })
-    await user.click(await within(await music()).findByRole('button', { name: /^Hap Trupi në ritëm/ }))
+    await user.click(await music(SONG))
     const dialog = await screen.findByRole('dialog', { name: 'Trupi në ritëm' })
     expect(within(dialog).getByText(/ · pas setit 1 nga \d$/)).toBeInTheDocument()
     expect(within(dialog).getByRole('timer', { name: /^Pushimi: mbeten / })).toBeInTheDocument()
@@ -297,23 +304,23 @@ describe('ekrani "Trupi në ritëm"', () => {
 })
 
 describe('lidhja dhe leja', () => {
-  it('pa leje: karta "Lidh muzikën tënde"; "Më vonë" e heq për këtë seancë', async () => {
+  it('pa leje: ikona "Lidh muzikën tënde" hap lidhjen; "Më vonë" e heq për këtë seancë', async () => {
     const user = userEvent.setup()
     native.state.granted = false
     await renderSession()
-    await user.click(await within(await music()).findByRole('button', { name: /Lidh muzikën tënde/ }))
+    await user.click(await music('Lidh muzikën tënde'))
     const dialog = await screen.findByRole('dialog', { name: 'Lidh muzikën tënde' })
     expect(within(dialog).getByText(/Vrull lexon vetëm këngën që luhet dhe kontrollet e saj, asnjë njoftim\.$/)).toBeInTheDocument()
     await user.click(within(dialog).getByRole('button', { name: 'Më vonë' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
-    expect(screen.queryByRole('region', { name: 'Muzika' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Lidh muzikën tënde' })).toBeNull()
   })
 
-  it('Android 13+ me APK nga lidhja: kur leja nuk vjen, hapat e "Allow restricted settings"; pas lejes, mini-player-i', async () => {
+  it('Android 13+ me APK nga lidhja: kur leja nuk vjen, hapat e "Allow restricted settings"; pas lejes, ikona me këngën', async () => {
     const user = userEvent.setup()
     native.state.granted = false
     await renderSession()
-    await user.click(await within(await music()).findByRole('button', { name: /Lidh muzikën tënde/ }))
+    await user.click(await music('Lidh muzikën tënde'))
     const dialog = await screen.findByRole('dialog', { name: 'Lidh muzikën tënde' })
     await user.click(within(dialog).getByRole('button', { name: 'Lidh muzikën' }))
     expect(native.bridge.openAccessSettings).toHaveBeenCalled()
@@ -327,7 +334,7 @@ describe('lidhja dhe leja', () => {
     native.state.granted = true
     backFromSettings()
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
-    await within(await music()).findByText('138 BPM · Kaltrina V.')
+    expect(await music(SONG)).toBeInTheDocument()
   })
 
   it('pa APK nga lidhja (ose para Android 13): vetëm kujtesa për "Qasja te njoftimet"', async () => {
@@ -377,15 +384,13 @@ describe('"Prek ritmin"', () => {
 })
 
 describe('anglisht', () => {
-  it('mini-player-i, ekrani i plotë dhe lidhja në anglishten britanike', async () => {
+  it('ikona, ekrani i plotë dhe lidhja në anglishten britanike', async () => {
     const user = userEvent.setup()
     language.set('en')
     await renderSession()
-    const card = await music()
-    await within(card).findByText('138 BPM · Kaltrina V.')
-    expect(within(card).getByRole('button', { name: 'Pause' })).toBeInTheDocument()
-    await user.click(within(card).getByRole('button', { name: /^Open Body beat: / }))
+    await user.click(await music('Open Body beat: Edhe një përsëritje, Kaltrina V., 138 BPM'))
     const dialog = await screen.findByRole('dialog', { name: 'Body beat' })
+    expect(within(dialog).getByRole('button', { name: 'Pause' })).toBeInTheDocument()
     expect(within(dialog).getByText('Playing in Spotify')).toBeInTheDocument()
     expect(within(dialog).getByRole('link', { name: 'Tempo from GetSongBPM.com' })).toBeInTheDocument()
     expect(within(dialog).getByText("Today's muscles", { selector: 'span' })).toBeInTheDocument()
@@ -400,5 +405,7 @@ describe('anglisht', () => {
     const dialog = await screen.findByRole('dialog', { name: 'Connect your music' })
     expect(within(dialog).getByRole('button', { name: 'Connect music' })).toBeInTheDocument()
     expect(within(dialog).getByRole('button', { name: 'Later' })).toBeInTheDocument()
+    // Ikona te kreu, pas dialogut.
+    expect(screen.getByRole('button', { name: 'Connect your music' }).closest('header')).not.toBeNull()
   })
 })

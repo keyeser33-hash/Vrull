@@ -1,11 +1,9 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
-import { InsightCard } from '@/components/ui/insight-card'
 import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
-import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { workoutWeights } from '@/data/week-weights'
@@ -13,7 +11,7 @@ import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
 import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
-import { isRecord, recordHint, setRecord, type SetRecordResult } from '@/progress/records'
+import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
 import type { WeekWeightRow } from '@/progress/week-weights'
@@ -23,17 +21,22 @@ import { openedSet, sessionView } from '@/lib/session-notification'
 import { useRestTimer } from '@/lib/use-rest-timer'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideoScreen, type FormVideoTarget } from './form-video'
-import { type BeatContext, BodyBeatScreen, MusicConnectScreen, MusicSlot, TapSheet } from './music'
+import { type BeatContext, BodyBeatScreen, MusicButton, MusicConnectScreen, TapSheet } from './music'
 import { useSessionBeat } from './music-beat'
-import { elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
-import { useEntrance, recordPulse } from './session-motion'
+import { editable, elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
+import { type BannerRecord, RecordBanner } from './session-banner'
+import { recordPulse } from './session-motion'
+import { SavedSets, SetChips } from './session-sets'
 import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
+import { EditSetSheet } from './set-edit-sheet'
 import { clock } from './training-format'
 
-// Seanca e stërvitjes në Vrull (V2-E1-07; bordet "Seanca", "Pushimi", "Ushtrimet"): një ushtrim dhe
-// një set në ekran, me numrat e mëdhenj, "Herën e kaluar", pragun e rekordit dhe "Ruaj setin" si
-// veprimin e vetëm me prush. Pas setit vjen pushimi si unazë e madhe, me rekordin në moment. Seti i
-// fundit me rest-pause ose drop set ka segmentin e vet. Pa tab-bar, jashtë kornizës.
+// Seanca e stërvitjes në Vrull (V2-E1-07; bordet "Seanca", "Pushimi", "Ushtrimet"; pamja e 0.23, SPEC
+// §0.3c): një ushtrim dhe një set në ekran, me çipat e seteve sipër, numrat e mëdhenj, "Herën e kaluar"
+// dhe pragun e rekordit si rreshta, dhe "Ruaj setin" si veprimin e vetëm me prush. Muzika është ikonë
+// te kreu. Pas setit vjen pushimi si unazë e madhe, me setet e ruajtura poshtë; kur seti jep rekord,
+// banderola zbret mbi pushimin. Seti i fundit me rest-pause ose drop set ka segmentin e vet. Pa tab-bar,
+// jashtë kornizës.
 
 /** Një lexim i vetëm, që seti i ruajtur dhe historia të jenë gjithnjë në të njëjtën gjendje. */
 async function sessionData() {
@@ -100,11 +103,6 @@ function asHistory(set: SetRecord, plan: SessionPlan, sessionId: string): Histor
   }
 }
 
-/** Rekordi i setit të fundit, për kartën e pushimit; seti merret nga historia kur leximi e ka sjellë. */
-function savedRecord(set: SetRecord, history: HistorySet[], plan: SessionPlan, sessionId: string): SetRecordResult | null {
-  return setRecord(history.find((candidate) => candidate.id === set.id) ?? asHistory(set, plan, sessionId), history)
-}
-
 function ActiveSession({
   snapshot,
   session,
@@ -129,6 +127,8 @@ function ActiveSession({
   const [busy, setBusy] = useState(false)
   // Pas ruajtjes, setin tjetër e lejon vetëm leximi që e ka parë setin e ruajtur (pa dyfishim).
   const [awaiting, setAwaiting] = useState<{ id: string; segments: number } | null>(null)
+  // Banderola e rekordit (0.23): seti i sapo ruajtur që dha rekord, deri sa banderola të ikë.
+  const [banner, setBanner] = useState<BannerRecord | null>(null)
   const rest = useRestTimer(session.id, () => void restFinishedInApp())
   // "Ndrysho" te njoftimi i seancës (V2-E1-08): ushtrimi i setit dhe vlerat e zgjedhura atje.
   const opened = openedSet(location.state)
@@ -143,6 +143,9 @@ function ActiveSession({
   const now = useNow(1000)
   const { plan, exercises } = snapshot
   const progress = sessionProgress(plan, session.sets, selected)
+  // Rekordi i çdo seti në kohën e vet (§6: e1RM-ja, ose pesha më e madhe për ato përsëritje): çipat,
+  // rreshtat e pushimit dhe fleta e ndryshimit; seti 1 mbetet rekord edhe kur seti 2 e kalon.
+  const records = useMemo(() => sessionSetRecords(history.sets, session.id), [history.sets, session.id])
   const elapsed = (now - Date.parse(session.startedAt)) / 1000
   const shown = awaiting ? session.sets.find((set) => set.id === awaiting.id) : undefined
   const waiting = awaiting !== null && !(shown && shown.segments.length >= awaiting.segments)
@@ -161,7 +164,7 @@ function ActiveSession({
   const videoTarget: FormVideoTarget | null =
     slot && exercise ? { exerciseId: slot.exerciseId, exerciseName: exercise.name, sessionId: session.id, setNumber } : null
 
-  // Muzika "Trupi në ritëm" (V2-E1-12): mini-player-i, ekrani i plotë dhe lidhja, mbi seancën.
+  // Muzika "Trupi në ritëm" (V2-E1-12): ikona te kreu (0.23), ekrani i plotë dhe lidhja, mbi seancën.
   const beat = useSessionBeat({ slots: plan.slots, exercises, phase: rest.running ? 'rest' : 'set' })
   // Kreu i ekranit të plotë: seti në ekran; gjatë pushimit dhe pas setit të fundit, seti i ruajtur.
   const beatContext: BeatContext | null =
@@ -189,7 +192,10 @@ function ActiveSession({
     if (remaining > 0) rest.start(after.restSeconds)
   }
 
-  const musicSlot = <MusicSlot beat={beat} sessionId={session.id} onOpen={() => openSheet('ritmi')} onConnect={() => openSheet('lidh-muziken')} />
+  // "Ndrysho setin" (0.23): prekja e një seti të ruajtur te çipat ose te pushimi; fleta e historikut.
+  const editId = params.get('seti')
+  const edited = editId ? session.sets.find((set) => set.id === editId && editable(set)) : undefined
+  const openEdit = (set: SetRecord) => setParams({ seti: set.id })
 
   const frame = (children: ReactNode, restNext: { exercise: string | null; text: string } | null = null) => (
     <SessionFrame
@@ -200,8 +206,10 @@ function ActiveSession({
       onList={() => openSheet('lista')}
       onMuscles={exercise ? () => openSheet('muskujt') : undefined}
       onVideo={videoTarget ? () => openSheet('video') : undefined}
+      music={<MusicButton beat={beat} sessionId={session.id} onOpen={() => openSheet('ritmi')} onConnect={() => openSheet('lidh-muziken')} />}
     >
       {children}
+      <RecordBanner banner={banner} onDone={() => setBanner(null)} />
       {params.has('lista') ? (
         <ExerciseListSheet
           snapshot={snapshot}
@@ -231,6 +239,8 @@ function ActiveSession({
       ) : null}
       {params.has('prek') && beat.session ? <TapSheet beat={beat} onClose={closeSheet} /> : null}
       {params.has('lidh-muziken') ? <MusicConnectScreen beat={beat} sessionId={session.id} onClose={closeSheet} /> : null}
+      {/* Fleta e historikut mban rregullin e vet (e1RM-ja): "nuk është më rekord" vlen për rekordin e e1RM-së. */}
+      {edited ? <EditSavedSet set={edited} snapshot={snapshot} history={history} record={records.get(edited.id)?.kind === 'e1rm'} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 
@@ -251,9 +261,10 @@ function ActiveSession({
       <RestView
         rest={rest}
         saved={waiting ? null : lastSet}
-        record={waiting ? null : savedRecord(lastSet, history.sets, plan, session.id)}
+        sets={session.sets.filter((set) => set.slotId === lastSet.slotId)}
+        records={records}
         next={waiting ? null : next}
-        music={musicSlot}
+        onEdit={openEdit}
       />,
       waiting ? null : next,
     )
@@ -267,7 +278,6 @@ function ActiveSession({
           <p className="type-body text-muted-foreground">{t('session.allDoneText')}</p>
         </main>
         <SessionFooter>
-          {musicSlot}
           <Button variant="primary" size="xl" disabled={busy} onClick={finish}>
             {t('session.finish')}
           </Button>
@@ -330,8 +340,13 @@ function ActiveSession({
         technique: technique.type,
       })
       setAwaiting({ id: saved.id, segments: 0 })
-      // Rekordi del në moment: një dridhje e shkurtër këtu, karta te pushimi.
-      if (isRecord(asHistory(saved, plan, session.id), history.sets)) void recordPulse()
+      // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
+      // mbi pushimin dhe një dridhje e rëndë.
+      const record = setRecord(asHistory(saved, plan, session.id), history.sets)
+      if (record) {
+        setBanner({ id: saved.id, exercise: exercise?.name ?? '', record })
+        void recordPulse()
+      }
       if (technique.type === 'rest_pause' || technique.type === 'drop_set') {
         setSelected(null)
         if (technique.type === 'rest_pause') rest.start(technique.restSeconds ?? 15)
@@ -361,8 +376,8 @@ function ActiveSession({
       history={history.sets}
       dropTo={slot.technique.type === 'drop_set' ? drop(defaults.weightKg) : null}
       next={next ? { name: exercises[next.exerciseId]?.name ?? '', sets: next.sets } : null}
+      chips={<SetChips slot={slot} sets={session.sets.filter((set) => set.slotId === slot.slotId)} current={setNumber} records={records} onEdit={openEdit} />}
       busy={busy || waiting}
-      music={musicSlot}
       onSave={(values) => void save(values)}
       onSkipSegment={
         segment
@@ -376,7 +391,10 @@ function ActiveSession({
   )
 }
 
-/** Korniza e seancës: shiriti i seteve, kreu me "Mbrapa", listën e ushtrimeve, videon e formës dhe muskujt. */
+/**
+ * Korniza e seancës: shiriti i seteve, kreu me "Mbrapa", listën e ushtrimeve, dhe djathtas muzikën
+ * (0.23: ikona që zë vendin e mini-player-it), videon e formës dhe muskujt, si te bordi "Seanca".
+ */
 function SessionFrame({
   progress,
   position,
@@ -384,6 +402,7 @@ function SessionFrame({
   onList,
   onMuscles,
   onVideo,
+  music,
   children,
 }: {
   progress: SessionProgress
@@ -393,6 +412,8 @@ function SessionFrame({
   onList: () => void
   onMuscles?: () => void
   onVideo?: () => void
+  /** Ikona e muzikës ("Trupi në ritëm"); pa plugin nuk vizaton asgjë. */
+  music?: ReactNode
   children: ReactNode
 }) {
   const { t } = useI18n()
@@ -401,8 +422,8 @@ function SessionFrame({
       <div aria-hidden className="fixed inset-x-0 top-0 z-30 h-[var(--safe-top)] bg-background" />
       <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col">
         <SessionBar progress={progress} />
-        <header className="grid h-14 shrink-0 grid-cols-[88px_minmax(0,1fr)_88px] items-center px-2">
-          <Button variant="ghost" size="icon" aria-label={t('common.back')} className="rounded-pill" onClick={onBack}>
+        <header className="grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center px-2">
+          <Button variant="ghost" size="icon" aria-label={t('common.back')} className="justify-self-start rounded-pill" onClick={onBack}>
             <Icon name="mbrapa" size={22} />
           </Button>
           <Button
@@ -416,6 +437,7 @@ function SessionFrame({
             <Icon name="poshte" size={18} />
           </Button>
           <div className="flex justify-end">
+            {music}
             {onVideo ? (
               <Button variant="ghost" size="icon" aria-label={t('videos.title')} className="rounded-pill" onClick={onVideo}>
                 <Icon name="kamera-video" size={22} />
@@ -456,12 +478,7 @@ function SessionBar({ progress }: { progress: SessionProgress }) {
   )
 }
 
-/**
- * Fundi i ekranit: veprimi kryesor. Sipër tij rri mini-player-i i muzikës ("Trupi në ritëm",
- * V2-E1-12, `MusicSlot` te music.tsx): një kartë 68 px `surface`, `rounded-lg`, me gjoksin që pulson,
- * titullin, tempon dhe "Pauzë" / "Kënga tjetër". Pa muzikë (jashtë telefonit) vendi mbetet bosh; `main`
- * sipër ka `flex-1`, ndaj karta zë hapësirën e lirë pa e shtyrë ekranin.
- */
+/** Fundi i ekranit: veprimi kryesor ("Ruaj setin", "Mbyll stërvitjen"); `main` sipër ka `flex-1`. */
 function SessionFooter({ children }: { children: ReactNode }) {
   return <div className="flex shrink-0 flex-col gap-2 px-4 pt-2.5 pb-5">{children}</div>
 }
@@ -482,8 +499,8 @@ function SetView({
   history,
   dropTo,
   next,
+  chips,
   busy,
-  music,
   onSave,
   onSkipSegment,
 }: {
@@ -504,9 +521,9 @@ function SetView({
   history: HistorySet[]
   dropTo: number | null
   next: { name: string; sets: number } | null
+  /** Çipat e seteve të ushtrimit (0.23). */
+  chips: ReactNode
   busy: boolean
-  /** Mini-player-i i muzikës mbi "Ruaj setin" (V2-E1-12). */
-  music?: ReactNode
   onSave: (values: SetValues) => void
   onSkipSegment?: () => void
 }) {
@@ -536,9 +553,10 @@ function SetView({
         <div className="flex flex-col">
           <h1 className="type-display-l">{exerciseName}</h1>
           <p className="mt-1.5 type-body text-muted-foreground tabular-nums">{subtitle}</p>
-          {segment ? null : <ReferenceLine previous={previous} weightKg={tracking === 'timed' ? null : weightKg} basis={basis} range={range} />}
           {tracking === 'bodyweight_reps' && !segment ? <p className="mt-0.5 type-body text-muted-foreground">{t('session.extraWeight')}</p> : null}
         </div>
+
+        {chips}
 
         {timed ? (
           <SecondsStepper setNumber={setNumber} seconds={seconds} onChange={(value) => setSeconds(clamp(value))} onEdit={() => edit('sekondat')} />
@@ -562,26 +580,22 @@ function SetView({
 
         {segment ? null : <TechniqueNote technique={technique} sets={sets} dropTo={dropTo} />}
 
-        {hint ? (
-          <InsightCard>
-            {hint.kind === 'reps'
-              ? t('session.recordReps', { count: hint.reps, e1rm: fmt.unit(hint.e1rmKg, 'kg', { maxDigits: 1 }) })
-              : t('session.recordAny', { e1rm: fmt.unit(hint.e1rmKg, 'kg', { maxDigits: 1 }) })}
-          </InsightCard>
-        ) : null}
-
-        {next && !segment ? (
-          <section aria-label={t('session.nextExercise')} className="flex min-h-10 items-center justify-between gap-3 type-body text-muted-foreground">
-            <span className="shrink-0">{t('session.next')}</span>
-            <span className="min-w-0 truncate text-right">
-              {next.name} · {t('session.sets', { count: next.sets })}
-            </span>
-          </section>
-        ) : null}
+        {segment ? null : (
+          <div className="flex flex-col divide-y divide-border">
+            <SetRows previous={previous} weightKg={tracking === 'timed' ? null : weightKg} basis={basis} range={range} hint={hint} />
+            {next ? (
+              <section aria-label={t('session.nextExercise')} className="flex min-h-10 items-center justify-between gap-3 py-2 text-sm leading-[1.35]">
+                <span className="shrink-0 text-muted-foreground">{t('session.next')}</span>
+                <span className="min-w-0 truncate text-right">
+                  {next.name} · {t('session.sets', { count: next.sets })}
+                </span>
+              </section>
+            ) : null}
+          </div>
+        )}
       </main>
 
       <SessionFooter>
-        {music}
         <Button
           variant="primary"
           size="xl"
@@ -615,32 +629,71 @@ function SetView({
   )
 }
 
-/** "Herën e kaluar 60 × 13 · +2,5 kg" (ose e njëjta javë e bllokut të kaluar), ose si të zgjidhet pesha. */
-function ReferenceLine({ previous, weightKg, basis, range }: { previous: Reference | null; weightKg: number | null; basis: WeightBasis | null; range: string | null }) {
+/**
+ * Rreshtat poshtë setit (bordi "Seanca", 0.23): "Herën e kaluar · 60 × 13 · +2,5 kg" (ose e njëjta javë e
+ * bllokut të kaluar), ose si të zgjidhet pesha; pastaj pragu i rekordit (`recordHint`) me kupën.
+ */
+function SetRows({
+  previous,
+  weightKg,
+  basis,
+  range,
+  hint,
+}: {
+  previous: Reference | null
+  weightKg: number | null
+  basis: WeightBasis | null
+  range: string | null
+  hint: RecordHint | null
+}) {
   const { t, fmt } = useI18n()
-  if (!previous) {
+  const row = 'flex min-h-10 items-center justify-between gap-3 py-2 text-sm leading-[1.35]'
+  let reference: ReactNode = null
+  if (previous) {
+    const value = previous.weightKg ? `${fmt.number(previous.weightKg)} × ${fmt.number(previous.reps ?? 0)}` : t('session.target.reps', { count: previous.reps ?? 0 })
+    const label =
+      previous.kind === 'last_time'
+        ? t('session.lastTime')
+        : programWeekLabel(t, { blockName: previous.blockName, blockWeeks: previous.blockWeeks, week: previous.week, run: 1 })
+    const diff = weightKg && previous.weightKg ? Math.round((weightKg - previous.weightKg) * 100) / 100 : 0
+    reference = (
+      <div className={row}>
+        <span className="shrink-0 text-muted-foreground">{label}</span>
+        <span className="min-w-0 text-right tabular-nums">
+          {value}
+          {diff !== 0 ? (
+            <>
+              {' · '}
+              <span className="font-semibold text-data">
+                {diff > 0 ? '+' : '−'}
+                {fmt.unit(Math.abs(diff), 'kg')}
+              </span>
+            </>
+          ) : null}
+        </span>
+      </div>
+    )
+  } else {
     const text = basis?.kind === 'choose' && range ? t('session.choose', { range }) : basis?.kind === 'needs_one_rm' ? t('session.needsOneRm') : null
-    return text ? <p className="mt-0.5 type-body text-muted-foreground">{text}</p> : null
+    if (text) reference = <p className={cn(row, 'text-muted-foreground')}>{text}</p>
   }
-  const value = previous.weightKg ? `${fmt.number(previous.weightKg)} × ${fmt.number(previous.reps ?? 0)}` : t('session.target.reps', { count: previous.reps ?? 0 })
-  const text =
-    previous.kind === 'last_time'
-      ? t('session.lastTime', { value })
-      : t('session.previousBlock', { label: programWeekLabel(t, { blockName: previous.blockName, blockWeeks: previous.blockWeeks, week: previous.week, run: 1 }), value })
-  const diff = weightKg && previous.weightKg ? Math.round((weightKg - previous.weightKg) * 100) / 100 : 0
+  if (!reference && !hint) return null
+  const e1rm = hint ? fmt.unit(hint.e1rmKg, 'kg', { maxDigits: 1 }) : ''
   return (
-    <p className="mt-0.5 type-body text-muted-foreground tabular-nums">
-      {text}
-      {diff !== 0 ? (
-        <>
-          {' · '}
-          <span className="font-semibold text-data">
-            {diff > 0 ? '+' : '−'}
-            {fmt.unit(Math.abs(diff), 'kg')}
+    <section aria-label={t('session.rows')} className="flex flex-col divide-y divide-border">
+      {reference}
+      {hint ? (
+        <div className={row}>
+          <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
+            <Icon name="kupa" size={16} className="text-ember-text" />
+            {t('session.record.label')}
           </span>
-        </>
+          <span className="min-w-0 text-right tabular-nums">
+            {hint.kind === 'reps' ? t('session.record.reps', { count: hint.reps, e1rm }) : t('session.record.any', { e1rm })}
+          </span>
+        </div>
       ) : null}
-    </p>
+    </section>
   )
 }
 
@@ -679,21 +732,28 @@ function SecondsStepper({ setNumber, seconds, onChange, onEdit }: { setNumber: n
   )
 }
 
-/** Pushimi (bordi "Pushimi"): seti i ruajtur me rekordin në moment, unaza, seti që vjen dhe −15 / +15. */
+/**
+ * Pushimi (bordet "Pushimi" dhe, nga 0.23, "Pushimi · banderola e rekordit"): unaza, −15 / +15 dhe
+ * "Kapërce", seti që vjen dhe setet e ruajtura të ushtrimit me "rekord" dhe "Ndrysho". Rekordi i setit
+ * të sapo ruajtur del te banderola sipër (`RecordBanner`); lexuesi i ekranit dëgjon "Seti 1 u ruajt".
+ */
 function RestView({
   rest,
   saved,
-  record,
+  sets,
+  records,
   next,
-  music,
+  onEdit,
 }: {
   rest: ReturnType<typeof useRestTimer>
   /** Seti i fundit; null derisa leximi i ri ta sjellë. */
   saved: SetRecord | null
-  record: SetRecordResult | null
+  /** Setet e ruajtura të ushtrimit të setit të fundit. */
+  sets: SetRecord[]
+  /** Setet që ishin rekord në kohën e tyre (`sessionSetRecords`). */
+  records: ReadonlyMap<string, SetRecordResult>
   next: { exercise: string | null; text: string } | null
-  /** Mini-player-i i muzikës poshtë (V2-E1-12); pulsi i trupit bie në gjysmë gjatë pushimit. */
-  music?: ReactNode
+  onEdit: (set: SetRecord) => void
 }) {
   const texts = useI18n()
   const { t, fmt } = texts
@@ -702,9 +762,11 @@ function RestView({
   const length = 2 * Math.PI * radius
   const fraction = rest.total > 0 ? rest.remaining / rest.total : 0
   return (
-    <main className="flex flex-1 flex-col gap-3.5 px-4 pt-1 pb-5">
+    <main className="flex flex-1 flex-col gap-3.5 px-4 pt-2 pb-5">
       <h1 className="sr-only">{t('session.rest.label')}</h1>
-      {saved ? <SavedCard key={saved.id} saved={saved} record={record} /> : <div aria-hidden className="min-h-16" />}
+      <p aria-live="polite" className="sr-only">
+        {saved ? t('session.rest.saved', { set: saved.setNumber, value: setValue(saved, texts) }) : null}
+      </p>
 
       <div
         role="timer"
@@ -732,14 +794,6 @@ function RestView({
         </div>
       </div>
 
-      {next ? (
-        <div className="flex flex-col items-center gap-0.5 text-center">
-          <span className="type-caption text-muted-foreground">{t('session.next')}</span>
-          {next.exercise ? <span className="type-body-strong">{next.exercise}</span> : null}
-          <span className="type-body-strong tabular-nums">{next.text}</span>
-        </div>
-      ) : null}
-
       <div className="grid grid-cols-3 gap-2">
         <Button variant="secondary" ground="page" size="lg" aria-label={t('session.rest.less')} className="px-0 text-xl tabular-nums" onClick={() => rest.add(-15)}>
           <span className="normal-case">−{fmt.unit(15, 's')}</span>
@@ -751,35 +805,45 @@ function RestView({
           {t('session.rest.skip')}
         </Button>
       </div>
-      {music ? <div className="mt-auto flex flex-col pt-2">{music}</div> : null}
+
+      {next ? (
+        <div className="flex flex-col items-center gap-0.5 text-center">
+          <span className="type-caption text-muted-foreground">{t('session.next')}</span>
+          {next.exercise ? <span className="type-body-strong">{next.exercise}</span> : null}
+          <span className="type-body-strong tabular-nums">{next.text}</span>
+        </div>
+      ) : null}
+
+      <SavedSets sets={sets} records={records} onEdit={onEdit} />
     </main>
   )
 }
 
-/** "Seti 1 u ruajt: 62,5 × 12" me rekordin, kur ka, në kartën e rekordit; hyn me vrull. */
-function SavedCard({ saved, record }: { saved: SetRecord; record: SetRecordResult | null }) {
-  const texts = useI18n()
-  const { t, fmt } = texts
-  const ref = useEntrance<HTMLDivElement>()
-  const title = t('session.rest.saved', { set: saved.setNumber, value: setValue(saved, texts) })
-  if (!record) {
-    return (
-      <div ref={ref} aria-live="polite" className={cn(surfaceClass, 'flex items-center gap-3 rounded-lg px-3.5 py-3')}>
-        <Icon name="zgjedhur" size={22} className="text-muted-foreground" />
-        <span className="type-body-strong tabular-nums">{title}</span>
-      </div>
-    )
-  }
-  const detail =
-    record.kind === 'e1rm'
-      ? t('session.rest.recordE1rm', { e1rm: fmt.unit(record.e1rmKg, 'kg', { maxDigits: 1 }), gain: fmt.unit(record.gainKg, 'kg', { maxDigits: 1 }) })
-      : t('session.rest.recordWeight', { weight: fmt.unit(record.weightKg, 'kg'), count: record.reps })
+/** Fleta "Ndrysho setin" për një set të seancës së hapur, me hapin e pajisjes dhe RIR-in kur receta e kërkon. */
+function EditSavedSet({
+  set,
+  snapshot,
+  history,
+  record,
+  onClose,
+}: {
+  set: SetRecord
+  snapshot: TrainingSnapshot
+  history: TrainingHistory
+  record: boolean
+  onClose: () => void
+}) {
+  const exercise = snapshot.exercises[set.exerciseId]
+  const target = snapshot.plan.slots.find((slot) => slot.slotId === set.slotId)?.target
   return (
-    <div ref={ref} aria-live="polite">
-      <InsightCard>
-        <span className="block type-body-strong tabular-nums">{title}</span>
-        <span className="block type-caption text-muted-foreground tabular-nums">{detail}</span>
-      </InsightCard>
-    </div>
+    <EditSetSheet
+      key={set.id}
+      set={{ id: set.id, setNumber: set.setNumber, weightKg: set.weightKg, reps: set.reps, rir: set.rir, record }}
+      description={exercise?.name ?? ''}
+      step={exercise ? weightStep(exercise.equipment, history.weightSteps) : 2.5}
+      showRir={set.rir !== null || (target?.kind === 'reps' && target.rir !== undefined)}
+      history={history.sets}
+      onClose={onClose}
+    />
   )
 }

@@ -11,7 +11,7 @@ import { MUSCLE_GROUPS } from '@/program/muscles'
 import type { PlannedSlot } from '@/program/types'
 
 // Muzika e seancës ("Trupi në ritëm", SPEC V29, V2-E1-12): një hook për gjithë ekranin e seancës, që
-// mini-player-i, ekrani i plotë, lidhja dhe "Prek ritmin" (music.tsx) ndajnë sesionin, tempon, pulsin
+// ikona te kreu, ekrani i plotë, lidhja dhe "Prek ritmin" (music.tsx) ndajnë sesionin, tempon, pulsin
 // dhe imazhet e trupit. Faza (seti ose pushimi) vjen nga seanca.
 
 export interface SessionBeat {
