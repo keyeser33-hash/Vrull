@@ -337,6 +337,10 @@ describe('Kutia e AI-së', () => {
   })
 
   it('dje dhe sot në një mesazh: secili rresht me ditën e vet, totali i sotëm pa të djeshmin', async () => {
+    // Ora e fiksuar në mesditë: mes mesnatës dhe zgjimit dita e ushqimit është ende e djeshmja (V46) dhe "dje" lëviz
+    // (MESIMET › Provat). Vetëm Date: kohëmatësit mbeten të vërtetë për IndexedDB-në.
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-11-10T12:00:00') })
+    onTestFinished(() => void vi.useRealTimers())
     const user = userEvent.setup()
     const row = (name: string, meal: 'bedtime' | 'lunch', day: 0 | -1, grams: number): Draft['foods'][number] => ({ said: name, ref: null, name, grams, portion: '', estimated: false, per100: { kcal: 100, proteinG: 10, carbsG: 5, fatG: 2 }, options: [], meal, time: null, day })
     data.reply = () => ({ ok: true, costEur: 0.0005, month: MONTH, draft: { ...empty, foods: [row('Gjizë', 'bedtime', -1, 250), row('Pulë', 'lunch', 0, 200)] } })

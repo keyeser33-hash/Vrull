@@ -18,6 +18,7 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 | `src/test/hardcoded-text.test.ts` | Tekst i UI-së jashtë katalogut `i18n` |
 | `src/i18n/catalog.test.ts` | Çelës, parametër ose formë shumësi që mungon në njërën gjuhë |
 | `src/test/smoke-texts.test.ts` | Prova e Android-it pret një tekst që app-i nuk e ka më |
+| `src/test/clock-guard.test.ts` | Një provë e re me orën e vërtetë (`new Date()`, `Date.now()`), që bie mes mesnatës dhe zgjimit (dita e ushqimit) |
 | `scripts/check-design.mjs`, `src/test/design-guard.test.ts`, `src/styles/tokens.test.ts` | Ngjyra jashtë tokenave, alias i v1, kontrast nën 4,5:1 |
 | `tsc -p supabase/functions/tsconfig.json` (te `npm run lint`) | Gabim tipesh te Edge Functions |
 | `src/data/v1-upgrade.test.ts` | Të dhënat e v1 që nuk hapen në v2 |
@@ -50,6 +51,7 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Gjithë provat (>1 000) varen më shumë se 600 s kur një gabim runtime bllokon një ekran → pas një merge nis fillimisht provat e skedarëve të prekur, pastaj të gjitha.
 - Prova që varet nga rreshti i lënë nga prova e mëparshme (`form-video.test`) → çdo provë pastron tabelat që lexon (`db[table].clear()`), fixture-t kanë të gjitha fushat që lexon ekrani.
 - Prova që dështon vetëm kur punojnë disa agjentë njëkohësisht → nis vetëm atë skedar përsëri para se ta quash gabim; afatet jetojnë te `src/test/setup.ts` dhe `vite.config.ts`, jo te secila provë.
+- Provat me orën e vërtetë ranë tri herë mes mesnatës dhe zgjimit, sepse dita e ushqimit (V46) është ende e djeshmja: te seanca, te seanca më e lehtë dhe te kutia e AI-së (00:21) → provat përdorin orë të fiksuar (`now` te store-i ose `vi.useFakeTimers({ toFake: ['Date'], now })`). Roja: `src/test/clock-guard.test.ts`, një listë që vetëm ulet.
 - `vi.useFakeTimers()` pa `toFake` ndali IndexedDB-në në memorie (fake-indexeddb ecën me `setImmediate`) dhe prova e `app-data` u var pa asnjë gabim → me bazën lokale imitohen vetëm `setTimeout`/`setInterval` (`toFake`).
 - Prova e seancës (0.23) nuk gjeti butonin "Ndrysho setin 1: 62,5 kg × 12": `fmt.unit` vendos hapësirën që nuk thyhet, dhe `getByRole({ name })` me tekst nuk e normalizon si `getByText` → emrat me njësi shkruhen me ` ` te prova (`62,5 kg`).
 - QA në shfletues nga një worktree (node_modules si lidhje te repo-ja kryesore): Vite i refuzon fontet me 403 (`server.fs.allow`), faqet dalin me fontin rezervë dhe karta e canvas-it u vizatua me Arial pa asnjë gabim të dukshëm → para QA-së vizuale kontrollo që fontet ngarkohen (`document.fonts.load` në shfletues); në worktree nis Vite me një konfigurim të përkohshëm që lejon `node_modules` e repo-s kryesore (nuk shkon në commit).
