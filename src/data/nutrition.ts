@@ -331,6 +331,25 @@ export async function logFood(store: LocalStore, input: { date: string; meal: Me
   })
 }
 
+/** Një porcion pa gramë (makrot e shpejta, V2-E2-16): makrot e porcionit ruhen te regjistrimi. */
+export async function logServing(store: LocalStore, input: { date: string; meal: MealKey; foodId: string; servings: number; macros: Macros }) {
+  const profile = await readProfile(store)
+  const { dayType } = await dayTypeFor(store, input.date, profile.trainingDays)
+  await saveTargets(store, input.date, dayType, false)
+  await store.put('diary_entries', {
+    date: input.date,
+    meal: input.meal,
+    food_id: input.foodId,
+    grams: null,
+    servings: input.servings,
+    kcal: round1(input.macros.kcal * input.servings),
+    protein_g: round1(input.macros.proteinG * input.servings),
+    carbs_g: round1(input.macros.carbsG * input.servings),
+    fat_g: round1(input.macros.fatG * input.servings),
+    logged_at: store.now().toISOString(),
+  })
+}
+
 export async function removeDiaryEntry(store: LocalStore, id: string) {
   await store.remove('diary_entries', id)
 }

@@ -19,6 +19,7 @@ import type { Macros } from '@/nutrition/targets'
 import { JIM_RANGE_KG } from '@/nutrition/targets'
 import { cn } from '@/lib/cn'
 import { gramsText, kcalText, macrosLine, relativeTime } from './nutrition-format'
+import { QuickActions, QuickMacrosSheet } from './meal-quick'
 
 // Ushqimi i v1 në sistemin Vrull (V2-E1-05; ekrani i ri vjen me Etapën 2): kreu me butonin e
 // profilit, shiriti i kcal të ditës; karta "Vakti i radhës" me artikujt e planit, "Regjistro
@@ -350,76 +351,34 @@ function WaterTotal({ date }: { date: string }) {
 function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onClose: () => void }) {
   const i18n = useI18n()
   const { t } = i18n
-  const [busy, setBusy] = useState(false)
+  const [macros, setMacros] = useState(false)
+  if (macros) return <QuickMacrosSheet date={date} meal={meal} onClose={() => setMacros(false)} onSaved={() => setMacros(false)} />
   return (
-    <Sheet title={`${mealName(t, meal.meal)} · ${meal.time}`} onClose={onClose}>
+    <Sheet title={`${mealName(t, meal.meal)} · ${meal.time}`} description={meal.entries.length > 0 ? totalsLine(i18n, meal.totals) : t('food.quick.empty')} onClose={onClose}>
       {meal.entries.length > 0 ? (
-        <>
-          <ul className="flex flex-col tabular-nums">
-            {meal.entries.map((entry) => {
-              const name = foodName(t, entry)
-              return (
-                <li key={entry.id} className="flex min-h-12 items-center gap-3 border-t border-border first:border-t-0">
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-base leading-6">{name}</span>
-                    <span className="text-xs leading-4 text-muted-foreground">
-                      {entry.grams === null ? '' : `${gramsText(i18n, entry.grams)} · `}
-                      {kcalText(i18n, entry.kcal)} kcal
-                    </span>
+        <ul className="flex shrink-0 flex-col tabular-nums">
+          {meal.entries.map((entry) => {
+            const name = foodName(t, entry)
+            return (
+              <li key={entry.id} className="flex min-h-12 items-center gap-3 border-t border-border first:border-t-0">
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="truncate text-base leading-6">{name}</span>
+                  <span className="text-xs leading-4 text-muted-foreground">
+                    {entry.grams === null ? '' : `${gramsText(i18n, entry.grams)} · `}
+                    {kcalText(i18n, entry.kcal)} kcal
                   </span>
-                  <Button variant="ghost" size="icon" aria-label={t('food.remove', { food: name })} onClick={() => void removeDiaryEntry(store, entry.id)}>
-                    <Icon name="fshi" size={20} />
-                  </Button>
-                </li>
-              )
-            })}
-          </ul>
-          <p className="text-sm leading-5 text-muted-foreground tabular-nums">{totalsLine(i18n, meal.totals)}</p>
-          {meal.status === 'done' ? null : (
-            // Vetëm proteina e shënuar "E mora": plani i vaktit mbetet për t'u regjistruar.
-            <Button
-              variant="secondary"
-              size="lg"
-              disabled={busy || meal.template.length === 0}
-              onClick={() => {
-                setBusy(true)
-                void logTemplateMeal(store, date, meal.meal).finally(() => setBusy(false))
-              }}
-            >
-              {t('food.logPlan')}
-            </Button>
-          )}
-          <AddFoodLink meal={meal.meal} />
-        </>
-      ) : (
-        <>
-          <p className="text-sm leading-5 text-muted-foreground">{t('food.fromPlan')}</p>
-          <TemplateLines lines={meal.template} rowClassName="min-h-11 items-center first:border-t-0" nameClassName="text-base leading-6" amountClassName="text-sm leading-5" />
-          <Button
-            variant="secondary"
-            size="lg"
-            disabled={busy || meal.template.length === 0}
-            onClick={() => {
-              setBusy(true)
-              void logTemplateMeal(store, date, meal.meal).finally(() => setBusy(false))
-            }}
-          >
-            {t('food.logPlan')}
-          </Button>
-          <AddFoodLink meal={meal.meal} />
-        </>
-      )}
+                </span>
+                <Button variant="ghost" size="icon" aria-label={t('food.remove', { food: name })} onClick={() => void removeDiaryEntry(store, entry.id)}>
+                  <Icon name="fshi" size={20} />
+                </Button>
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
+      {/* Vakti me ≤ 2 prekje (V2-E2-16): "Si në plan" mbetet kur vakti ka vetëm proteinën e shënuar "E mora". */}
+      <QuickActions date={date} meal={meal} onMacros={() => setMacros(true)} />
     </Sheet>
-  )
-}
-
-function AddFoodLink({ meal }: { meal: MealKey }) {
-  const { t } = useI18n()
-  return (
-    <Link to={`/ushqimi/shto/${meal}`} replace className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full')}>
-      <Icon name="shto" size={20} />
-      {t('food.add')}
-    </Link>
   )
 }
 

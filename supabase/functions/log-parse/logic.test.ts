@@ -43,6 +43,7 @@ const REQUEST = {
   time: '22:40',
   context: CONTEXT,
 }
+const lastText = (request: ReturnType<typeof buildRequest>) => (request.messages.at(-1)!.content as { type: string; text?: string }[]).find((block) => block.type === 'text')!.text!
 const reply = (draft: unknown) => ({
   content: [{ type: 'text', text: JSON.stringify(draft) }],
   usage: { input_tokens: 300, output_tokens: 400 },
@@ -92,19 +93,29 @@ describe('kërkesa', () => {
     expect(context.text).toContain('w2 | next | next | Stërvitja 2 · Shpina, biceps, barku | e3 Barbell Row')
     // Data dhe ora ndryshojnë çdo mesazh: jashtë cache-it.
     expect(context.text).not.toContain('22:40')
-    const last = request.messages.at(-1)!
-    expect(last.role).toBe('user')
-    expect(last.content).toContain('2026-11-18')
-    expect(last.content).toContain('22:40')
-    expect(last.content).toContain('dy tost')
-    expect(last.content).not.toContain('Facts')
+    expect(request.messages.at(-1)!.role).toBe('user')
+    expect(lastText(request)).toContain('2026-11-18')
+    expect(lastText(request)).toContain('22:40')
+    expect(lastText(request)).toContain('dy tost')
+    expect(lastText(request)).not.toContain('Facts')
     // Faktet e trajnerit ndryshojnë pas çdo regjistrimi: me mesazhin, jo në cache.
     const withFacts = buildRequest({
       ...REQUEST,
       facts: 'Protein today: 132 of 176 g.',
     })
-    expect(withFacts.messages.at(-1)!.content).toContain('Facts:\nProtein today: 132 of 176 g.')
+    expect(lastText(withFacts)).toContain('Facts:\nProtein today: 132 of 176 g.')
     expect(withFacts.system[1].text).toBe(context.text)
+  })
+
+  it('foto e pjatës shkon para tekstit, si bllok imazhi', () => {
+    const image = { mediaType: 'image/jpeg' as const, data: 'A'.repeat(400) }
+    const request = buildRequest({ ...REQUEST, image })
+    const content = request.messages.at(-1)!.content as { type: string }[]
+    expect(content.map((block) => block.type)).toEqual(['image', 'text'])
+    expect(content[0]).toEqual({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image.data } })
+    expect(parseRequest({ ...REQUEST, image })).toMatchObject({ ok: true, request: { image } })
+    expect(parseRequest({ ...REQUEST, image: { mediaType: 'image/gif', data: image.data } })).toEqual({ ok: false, error: 'bad_request' })
+    expect(parseRequest({ ...REQUEST, image: { mediaType: 'image/jpeg', data: 'A'.repeat(7_000_001) } })).toEqual({ ok: false, error: 'too_long' })
   })
 
   it('udhëzimet e kalojnë pragun e cache-it (512 tokena te Haiku 5.5)', () => {

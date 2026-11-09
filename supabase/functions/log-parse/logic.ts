@@ -18,8 +18,11 @@ import {
   type DraftSet,
   type DraftSupplement,
   type DraftWater,
+  IMAGE_TYPES,
+  type ImageType,
   MAX_FACTS,
   MAX_FOODS,
+  MAX_IMAGE_BASE64,
   MAX_HISTORY,
   MAX_SUPPLEMENTS,
   MAX_TEXT,
@@ -157,6 +160,9 @@ Foods
 - Amount: use the grams the user gives. For a count, multiply by the usual portion of the known food ("2 vezë" with "1 copë = 50 g" → 100 g) or by a typical piece size. For a vague amount ("gjysmë pule", "një pjatë", "pak") estimate the grams and set vague_amount to true. When there is no amount at all and the food has no usual single portion (bread loaf cake, pasta, rice, meat), set grams to -1 and give 3 options in the user's language, small to large ("1 fetë" 80, "2 feta" 160, "3 feta" 240). A food eaten as one unit ("një banane", "një jogurt") is not missing: use one unit.
 - A protein shake or protein powder ("proteinën", "whey", "shake") is a supplement when a known supplement matches, not a food.
 
+Photo
+- When a photo is attached, it shows what the user ate: list each food you can see, with grams estimated from the photo (vague_amount true) and the meal the message names. Use a known food when it matches what you see; otherwise give its typical values per 100 g. When the photo shows no food, return no rows and put "photo" in not_understood.
+
 Water
 - One glass is 250 ml, one small bottle 500 ml, one large bottle 1500 ml. "dy gota ujë" → 500 ml.
 
@@ -228,7 +234,10 @@ export function buildRequest(request: ParseRequest) {
       ...history,
       {
         role: 'user' as const,
-        content: `Food day: ${request.date}. Now: ${request.time}.${request.facts ? `\n\nFacts:\n${request.facts}` : ''}\n\nMessage: ${request.text}`,
+        content: [
+          ...(request.image ? [{ type: 'image' as const, source: { type: 'base64' as const, media_type: request.image.mediaType, data: request.image.data } }] : []),
+          { type: 'text' as const, text: `Food day: ${request.date}. Now: ${request.time}.${request.facts ? `\n\nFacts:\n${request.facts}` : ''}\n\nMessage: ${request.text}` },
+        ],
       },
     ],
     output_config: {
@@ -301,6 +310,14 @@ export function parseRequest(raw: unknown): RequestCheck {
         })),
     }))
   const facts = typeof raw.facts === 'string' ? raw.facts.trim().slice(0, MAX_FACTS) : ''
+  let image: ParseRequest['image']
+  if (raw.image !== undefined && raw.image !== null) {
+    const candidate = isObject(raw.image) ? raw.image : {}
+    const data = typeof candidate.data === 'string' ? candidate.data : ''
+    if (!(IMAGE_TYPES as readonly unknown[]).includes(candidate.mediaType) || !/^[A-Za-z0-9+/]+=*$/.test(data.slice(0, 200)) || data.length < 100) return { ok: false, error: 'bad_request' }
+    if (data.length > MAX_IMAGE_BASE64) return { ok: false, error: 'too_long' }
+    image = { mediaType: candidate.mediaType as ImageType, data }
+  }
   const turns: ParseTurn[] = list(raw.history)
     .filter((turn) => (turn.role === 'user' || turn.role === 'assistant') && typeof turn.text === 'string' && turn.text.trim())
     .map((turn) => ({
@@ -325,6 +342,7 @@ export function parseRequest(raw: unknown): RequestCheck {
       },
       facts,
       history,
+      ...(image ? { image } : {}),
     },
   }
 }

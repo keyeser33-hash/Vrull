@@ -26,7 +26,7 @@ import {
 import { boxRemote, store, useLocalQuery } from '@/data/app-data'
 import { nutritionDay } from '@/data/nutrition'
 import type { MonthSpend } from '@/data/pdf-import'
-import type { CoachAnswer, ParseTurn } from '../../supabase/functions/log-parse/shared'
+import type { CoachAnswer, ParseRequest, ParseTurn } from '../../supabase/functions/log-parse/shared'
 import type { I18n } from '@/i18n'
 import { mealName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -38,6 +38,9 @@ import type { MealKey } from '@/nutrition/meals'
 // Kutia e AI-së (V40, V2-E2-13; bordet V22-Kutia-*): shkrimi ose zëri i tastierës, pyetja kur mungon një
 // sasi, përmbledhja ku çdo rresht ndryshohet ose hiqet, dhe "Regjistro të gjitha". Asgjë nuk shkruhet
 // para konfirmimit. Pa internet teksti mbetet dhe "Dërgo" pret rrjetin (V22-Kutia-PaInternet).
+
+/** Foto e pjatës si e dërgon fleta e vaktit (meal-quick.tsx). */
+type BoxPhoto = NonNullable<ParseRequest['image']>
 
 type Phase = { kind: 'compose'; error: BoxError | null; month?: MonthSpend } | { kind: 'reading'; text: string } | { kind: 'review'; review: Review }
 
@@ -60,13 +63,24 @@ export function AiBoxPage() {
   const [phase, setPhase] = useState<Phase>({ kind: 'compose', error: null })
   const close = () => (location.key === 'default' ? navigate('/', { replace: true }) : navigate(-1))
 
+  // Foto e pjatës nga fleta e vaktit (V2-E2-16): dërgohet menjëherë, një herë, pa prekur tekstin e ruajtur.
+  const photoSent = useRef(false)
+  useEffect(() => {
+    const state = location.state as { photo?: BoxPhoto; text?: string } | null
+    if (!state?.photo || photoSent.current) return
+    photoSent.current = true
+    navigate(location.pathname, { replace: true, state: null })
+    void send(state.text ?? '', null, state.photo)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const changeText = (value: string) => {
     setText(value)
     boxText.set(value)
   }
 
   /** Dërgon mesazhin (ose përgjigjen e lirë te pyetja) dhe e bashkon me draftin që ekziston. */
-  async function send(message: string, previous: Review | null) {
+  async function send(message: string, previous: Review | null, image?: BoxPhoto) {
     const now = new Date()
     const history = previous?.history ?? []
     setPhase({ kind: 'reading', text: message })
@@ -77,7 +91,7 @@ export function AiBoxPage() {
       setPhase(previous ? { kind: 'review', review: previous } : { kind: 'compose', error: 'ai_failed' })
       return
     }
-    const result = await boxRemote.parse({ ...box.request, text: message, history }).catch(() => ({ ok: false as const, error: 'ai_failed' as const }))
+    const result = await boxRemote.parse({ ...box.request, text: message, history, ...(image ? { image } : {}) }).catch(() => ({ ok: false as const, error: 'ai_failed' as const }))
     if (!result.ok) {
       setPhase(previous ? { kind: 'review', review: previous } : { kind: 'compose', error: result.error, month: 'month' in result ? result.month : undefined })
       return

@@ -2,11 +2,12 @@
 // kontekstin e tij (vaktet e sotme, ushqimet e njohura, suplementet), kontrollon kufirin e muajit (një për
 // të gjitha veçoritë me AI) dhe kthen një draft që telefoni ia tregon përdoruesit për ta konfirmuar.
 // Asgjë nuk regjistrohet këtu: regjistrimi bëhet në telefon pas "Regjistro të gjitha". Kostoja ruhet te
-// ai_usage (feature food_text), edhe kur përgjigja nuk lexohet pasi AI-ja ka punuar.
+// ai_usage (feature food_text, ose food_photo me foton e pjatës), edhe kur përgjigja nuk lexohet pasi AI-ja
+// ka punuar.
 //
 // - Çelësi ANTHROPIC_API_KEY është secret i funksionit (si te program-import); nuk shkon te telefoni.
 // - verify_jwt aktiv; përdoruesi lexohet nga i njëjti token. Kostoja shkruhet me çelësin sekret.
-// - Kërkesa: JSON { text, date, time, context, history? } (shared.ts).
+// - Kërkesa: JSON { text, date, time, context, facts?, history?, image? } (shared.ts).
 // - Përgjigja 200: { draft, usage: { inputTokens, outputTokens, cacheWriteTokens, cacheReadTokens, costEur, ms }, month }.
 //   Gabimet: { error, month?, costEur? } me 400 (bad_request, too_long), 401, 429 (limit), 502 (ai_failed,
 //   unreadable, timeout), 503 (not_configured).
@@ -63,12 +64,14 @@ Deno.serve(async (req: Request) => {
   if (!checked.ok) return json({ error: checked.error }, 400)
 
   const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
+  // Foto e pjatës numërohet veç te Cilësimet › AI dhe te Admini (V2-E2-16).
+  const feature = checked.request.image ? 'food_photo' : 'food_text'
   const touched = () => new Date().toISOString()
   const usage: UsageStore = {
     async reserve(month, eur) {
       const { data, error } = await admin
         .from('ai_usage')
-        .insert({ user_id: userId, month, feature: 'food_text', model: MODEL, input_tokens: 0, output_tokens: 0, cost_usd: Math.round(eur * USD_PER_EUR * 1e6) / 1e6, cost_eur: eur })
+        .insert({ user_id: userId, month, feature, model: MODEL, input_tokens: 0, output_tokens: 0, cost_usd: Math.round(eur * USD_PER_EUR * 1e6) / 1e6, cost_eur: eur })
         .select('id')
         .single()
       if (error || !data) throw new Error(`rezervimi: ${error?.code ?? 'pa rresht'}`)

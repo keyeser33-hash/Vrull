@@ -13,6 +13,10 @@ export const MAX_WORKOUTS = 8
 export const MAX_FACTS = 4_000
 /** Përgjigjet e mëparshme të së njëjtës bisedë (përgjigja e lirë te pyetja). */
 export const MAX_HISTORY = 6
+/** Foto e pjatës (V2-E2-16): app-i e zvogëlon në 1 568 px (rreth 300 KB); base64 deri në ~5 MB. */
+export const MAX_IMAGE_BASE64 = 7_000_000
+export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
+export type ImageType = (typeof IMAGE_TYPES)[number]
 
 export const PARSE_ERRORS = ['unauthorized', 'not_configured', 'limit', 'bad_request', 'too_long', 'unreadable', 'timeout', 'ai_failed'] as const
 export type ParseErrorCode = (typeof PARSE_ERRORS)[number]
@@ -78,6 +82,8 @@ export interface ParseRequest {
   /** Të dhënat e ditës për trajnerin (objektivat, ushqimi, plani, stërvitjet), si tekst i shkurtër. */
   facts?: string
   history?: ParseTurn[]
+  /** Foto e pjatës (V2-E2-16): kostoja numërohet si food_photo. */
+  image?: { mediaType: ImageType; data: string }
 }
 
 export type DayOffset = 0 | -1

@@ -132,7 +132,7 @@ describe('Ushqimi', () => {
     expect(within(sheet).getByText('Albacore tuna in water')).toBeInTheDocument()
     expect(within(sheet).getByRole('button', { name: 'Remove Wholemeal bread' })).toBeInTheDocument()
     expect(within(sheet).getByText('64 g · 161 kcal')).toBeInTheDocument()
-    expect(within(sheet).getByRole('link', { name: 'Add food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
+    expect(within(sheet).getByRole('link', { name: 'Search for a food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
     await user.click(within(sheet).getByRole('button', { name: 'Close' }))
 
     await user.click(screen.getByRole('button', { name: 'Edit list' }))

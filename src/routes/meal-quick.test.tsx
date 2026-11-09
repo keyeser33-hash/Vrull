@@ -1,0 +1,106 @@
+import { render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { createMemoryRouter, RouterProvider } from 'react-router'
+import type { LocalStore } from '@/data/store'
+import { language } from '@/i18n'
+
+// Vakti me ≤ 2 prekje (V2-E2-16; bordet V22-Vakti-Shpejt, V22-Makrot): "Si në plan", "Si dje", të fundit dhe
+// të preferuarat, makrot e shpejta. E mërkura 9 dhjetor, 12:40; dje (e marta) dreka kishte pulë me oriz.
+const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
+vi.mock('@/data/app-data', async () => {
+  const { createDatabase } = await import('@/data/db')
+  const { createLocalStore } = await import('@/data/store')
+  const store = createLocalStore(createDatabase(`meal-quick-${crypto.randomUUID()}`), { userId: () => '11111111-1111-4111-8111-111111111111' })
+  data.store = store
+  return { store, useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store) }
+})
+
+const TODAY = '2026-12-09'
+const lunchEntries = async () => (await data.store.where('diary_entries', 'date', TODAY)).filter((row) => row.meal === 'lunch')
+
+describe('Vakti i shpejtë', () => {
+  beforeAll(async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-12-09T12:40:00'))
+    await import('@/data/app-data')
+    const { completeOnboarding } = await import('@/data/profile')
+    await completeOnboarding(data.store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' })
+    const { createCustomFood } = await import('@/data/foods')
+    const { logFood } = await import('@/data/nutrition')
+    const chicken = await createCustomFood(data.store, { name: 'Gjoks pule', kcal: 120, proteinG: 22.5, carbsG: 0, fatG: 2.6 })
+    const rice = await createCustomFood(data.store, { name: 'Oriz kaf', kcal: 123, proteinG: 2.7, carbsG: 25.6, fatG: 1 })
+    await logFood(data.store, { date: '2026-12-08', meal: 'lunch', foodId: chicken, grams: 200 })
+    await logFood(data.store, { date: '2026-12-08', meal: 'lunch', foodId: rice, grams: 250 })
+  })
+  afterAll(() => vi.useRealTimers())
+  beforeEach(async () => {
+    for (const row of await data.store.where('diary_entries', 'date', TODAY)) await data.store.remove('diary_entries', row.id)
+  })
+  afterEach(() => language.set('sq'))
+
+  async function openLunch() {
+    const { NutritionPage } = await import('./nutrition')
+    const router = createMemoryRouter(
+      [
+        { path: '/ushqimi', element: <NutritionPage /> },
+        { path: '/ushqimi/shto/:meal', element: <h1>Shto ushqim</h1> },
+      ],
+      { initialEntries: ['/ushqimi', '/ushqimi?vakti=lunch'], initialIndex: 1 },
+    )
+    render(<RouterProvider router={router} />)
+    return screen.findByRole('dialog', { name: /^(Dreka|Lunch) · / })
+  }
+
+  it('"Si në plan" është veprimi kryesor; "Si dje" e kopjon vaktin e djeshëm me një prekje', async () => {
+    const user = userEvent.setup()
+    const sheet = await openLunch()
+    const plan = within(sheet).getByRole('button', { name: /^Si në plan/ })
+    expect(plan.className).toContain('bg-ember')
+    expect(within(sheet).getAllByRole('button').filter((button) => button.className.includes('bg-ember'))).toHaveLength(1)
+    const yesterday = await within(sheet).findByRole('button', { name: /^Si dje/ })
+    expect(yesterday).toHaveTextContent(/Gjoks pule 200\sg/)
+    expect(yesterday).toHaveTextContent(/Oriz kaf 250\sg/)
+    expect(yesterday).toHaveTextContent(/548\skcal/)
+    await user.click(yesterday)
+    await waitFor(async () => expect((await lunchEntries()).map((row) => Number(row.grams)).sort()).toEqual([200, 250]))
+  })
+
+  it('të fundit me porcionin e fundit, ylli i bën të preferuar, + regjistron me një prekje', async () => {
+    const user = userEvent.setup()
+    const sheet = await openLunch()
+    const recent = await within(sheet).findByRole('region', { name: 'Të fundit' })
+    await user.click(within(recent).getByRole('button', { name: 'Ruaje Gjoks pule te të preferuarat' }))
+    const favorites = await within(sheet).findByRole('region', { name: 'Të preferuarat' })
+    expect(favorites).toHaveTextContent(/Gjoks pule.*200\sg · 240 kcal · 45 g proteinë/)
+    await user.click(within(favorites).getByRole('button', { name: /^Shto Gjoks pule, 200\sg$/ }))
+    await waitFor(async () => expect((await lunchEntries()).map((row) => Number(row.kcal))).toEqual([240]))
+    await user.click(within(favorites).getByRole('button', { name: 'Hiqe Gjoks pule nga të preferuarat' }))
+    await waitFor(() => expect(within(sheet).queryByRole('region', { name: 'Të preferuarat' })).toBeNull())
+  })
+
+  it('makrot e shpejta: kaloritë e shkruara ruhen dhe rreshti e thotë diferencën', async () => {
+    const user = userEvent.setup()
+    const sheet = await openLunch()
+    await user.click(within(sheet).getByRole('button', { name: 'Makrot' }))
+    const macros = await screen.findByRole('dialog', { name: 'Makrot e shpejta' })
+    const save = within(macros).getByRole('button', { name: 'Ruaj te Dreka' })
+    expect(save).toBeDisabled()
+    await user.type(within(macros).getByLabelText(/^Emri/), 'Drekë jashtë')
+    await user.type(within(macros).getByLabelText('Kalori'), '650')
+    await user.type(within(macros).getByLabelText('Proteina'), '40')
+    await user.type(within(macros).getByLabelText('Karbohidrate'), '60')
+    await user.type(within(macros).getByLabelText('Yndyrë'), '25')
+    expect(within(macros).getByRole('status')).toHaveTextContent('Nga makrot dalin 625 kcal (4 × 40 + 4 × 60 + 9 × 25); ti shkrove 650. Ruhet 650.')
+    await user.click(save)
+    await waitFor(async () => expect((await lunchEntries()).map((row) => [Number(row.kcal), row.grams ?? null, Number(row.servings)])).toEqual([[650, null, 1]]))
+    expect(await within(await screen.findByRole('dialog', { name: /^Dreka · / })).findByText('Drekë jashtë')).toBeInTheDocument()
+  })
+
+  it('anglisht', async () => {
+    language.set('en')
+    const sheet = await openLunch()
+    expect(within(sheet).getByRole('button', { name: /^As planned/ })).toBeInTheDocument()
+    expect(await within(sheet).findByRole('button', { name: /^Like yesterday/ })).toBeInTheDocument()
+    expect(within(sheet).getByRole('link', { name: 'Search for a food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
+  })
+})
