@@ -329,7 +329,7 @@ Si E2-11. **Pranimi:** përdoruesi e merr 0.22.0 nga app-i.
 
 Qëllimet javore, "Mirë se u ktheve", banderola e rekordit, përmbledhja e së dielës me kartën për ndarje, distinktivët, pamja e re e katër ekraneve, shembujt e lëvizjes (video të shkurtra ose prototip). **Pranimi:** përdoruesi i komenton para kodit.
 
-**Gjendja (09.11.2026):** 13 bordet janë te kanavaca "Training Hub v2 · Vrull", faqja "0.23 · Motivimi dhe pamja e re" (OLED, shqip, Faza 1 · Java 3 me numrat e përdoruesit): Sot me javën, Qëllimet e javës, Mirë se u ktheve, Seanca, Pushimi me banderolën e rekordit, Mbyllja, Java jote (e diela), Karta për ndarje, Arritjet, Ushqimi, Progresi · Përmbledhja dhe "Lëvizja e 0.23" (demo CSS me "lëvizje të reduktuar"). Shënimi "Si ta komentosh" liston 12 vendimet që presin përgjigjen; kodi nis pas komenteve.
+**Gjendja (09.11.2026):** 17 bordet janë te kanavaca "Training Hub v2 · Vrull", faqja "0.23 · Motivimi dhe pamja e re" (OLED, shqip, Faza 1 · Java 3 me numrat e përdoruesit): Sot me javën, Qëllimet e javës, Mirë se u ktheve, Seanca, Pushimi me banderolën e rekordit, Mbyllja, Java jote (e diela), Karta për ndarje, Arritjet, Ushqimi, Progresi · Përmbledhja "Lëvizja e 0.23" (demo CSS me "lëvizje të reduktuar"), pastaj, pas pyetjes së përdoruesit për detaje: Sot të dielën me javën gati, java me ditën rezervë (2 qëllime nga 3, pa faj), detaji i arritjes dhe Today në temën Ditë në anglisht; ngjyrat e bordeve kaluan te tokenat e Vrullit (`ember-text` = prushi në OLED, disabled me 50%). Shënimi "Si ta komentosh" liston 12 vendimet që presin përgjigjen; kodi nis pas komenteve.
 
 ## V2-E2-20 · Qëllimet javore
 
