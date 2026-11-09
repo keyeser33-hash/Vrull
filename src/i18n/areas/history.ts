@@ -10,11 +10,6 @@ export const sq = {
   'history.subtitleNoProgramme': { one: '{count} seancë që nga {date}', other: '{count} seanca që nga {date}' },
   'history.emptyTitle': 'Ende pa seanca',
   'history.emptyText': 'Çdo stërvitje që mbyll del këtu, sipas javës së programit, me setet dhe rekordet.',
-  'history.linkText': { one: '{count} seancë · e fundit {when}', other: '{count} seanca · e fundit {when}' },
-  'history.linkEmpty': 'Seancat e mbyllura, sipas javëve',
-  'history.when.today': 'sot',
-  'history.when.yesterday': 'dje',
-  'history.when.on': 'më {date}',
 
   // Kalendari i muajit.
   'history.sessions': { one: '{count} seancë', other: '{count} seanca' },
@@ -105,11 +100,6 @@ export const en: TranslationOf<typeof sq> = {
   'history.subtitleNoProgramme': { one: '{count} session since {date}', other: '{count} sessions since {date}' },
   'history.emptyTitle': 'No sessions yet',
   'history.emptyText': 'Every workout you finish appears here by programme week, with its sets and records.',
-  'history.linkText': { one: '{count} session · last {when}', other: '{count} sessions · last {when}' },
-  'history.linkEmpty': 'Finished sessions, by week',
-  'history.when.today': 'today',
-  'history.when.yesterday': 'yesterday',
-  'history.when.on': 'on {date}',
 
   'history.sessions': { one: '{count} session', other: '{count} sessions' },
   'history.records': { one: '{count} record', other: '{count} records' },

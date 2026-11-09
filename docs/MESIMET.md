@@ -27,6 +27,8 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova që varet nga rreshti i lënë nga prova e mëparshme (`form-video.test`) → çdo provë pastron tabelat që lexon (`db[table].clear()`), fixture-t kanë të gjitha fushat që lexon ekrani.
 - Prova që dështon vetëm kur punojnë disa agjentë njëkohësisht → nis vetëm atë skedar përsëri para se ta quash gabim; afatet jetojnë te `src/test/setup.ts` dhe `vite.config.ts`, jo te secila provë.
 
+- QA në shfletues nga një worktree (node_modules si lidhje te repo-ja kryesore): Vite i refuzon fontet me 403 (`server.fs.allow`), faqet dalin me fontin rezervë dhe karta e canvas-it u vizatua me Arial pa asnjë gabim të dukshëm → para QA-së vizuale kontrollo që fontet ngarkohen (`document.fonts.load` në shfletues); në worktree nis Vite me një konfigurim të përkohshëm që lejon `node_modules` e repo-s kryesore (nuk shkon në commit).
+
 - `program-import.test` dështonte rastësisht: kontrollonte thirrjen e AI-së menjëherë pas gjendjes "AI po e lexon", që del para thirrjes → një thirrje async pritet me `vi.waitFor`, nuk supozohet nga gjendja e ekranit.
 
 - Një ekran me skelet (kreu del para të dhënave) dështonte rastësisht: `findByRole` gjente kreun e skeletit, që zëvendësohej menjëherë → prova pret fillimisht një element që vjen nga baza, pastaj kontrollon kreun.

@@ -17,13 +17,18 @@ import org.json.JSONObject;
 /**
  * Ura e rikujtuesve të zgjuar me JS-in (V37, V2-E2-08; lib/reminders-native.ts). Planifikimi, alarmet,
  * butonat dhe radha jetojnë te ReminderNotifier, që punon edhe pa këtë plugin; plugin-i i përcjell dhe
- * i thotë JS-it kur ka një prekje të re ("action").
+ * i thotë JS-it kur ka një prekje të re ("action"). Prekja e "Java jote është gati" (V43) ruan çelësin
+ * e njoftimit dhe i thotë JS-it ("open"), që hap përmbledhjen e javës (`consumeOpen`, një herë).
  */
 @CapacitorPlugin(name = "Reminders")
 public class RemindersPlugin extends Plugin {
 
     @Nullable
     private static volatile RemindersPlugin instance;
+
+    /** Çelësi i njoftimit që hap një faqe ("week|2026-11-16|"), deri sa JS-i ta marrë. */
+    @Nullable
+    private String openKey;
 
     @Override
     public void load() {
@@ -97,11 +102,30 @@ public class RemindersPlugin extends Plugin {
         }
     }
 
+    /** Çelësi i njoftimit të fundit që hap një faqe, një herë; null kur s'ka. */
+    @PluginMethod
+    public void consumeOpen(PluginCall call) {
+        JSObject result = new JSObject();
+        synchronized (this) {
+            result.put("key", openKey == null ? JSONObject.NULL : openKey);
+            openKey = null;
+        }
+        call.resolve(result);
+    }
+
     /** Hapja nga njoftimi (edhe intent-i i nisjes vjen këtu): rikujtuesi u prek. */
     @Override
     protected void handleOnNewIntent(Intent intent) {
         if (!ReminderNotifier.ACTION_OPEN.equals(intent.getAction())) return;
-        ReminderNotifier.markActed(getContext(), intent.getStringExtra(ReminderNotifier.EXTRA_KEY));
+        String key = intent.getStringExtra(ReminderNotifier.EXTRA_KEY);
+        ReminderNotifier.markActed(getContext(), key);
+        // Një rikrijim i aktivitetit (p.sh. rrotullimi) nuk e hap faqen përsëri.
         intent.setAction(Intent.ACTION_MAIN);
+        if (key != null && key.startsWith("week|")) {
+            synchronized (this) {
+                openKey = key;
+            }
+            notifyListeners("open", new JSObject());
+        }
     }
 }

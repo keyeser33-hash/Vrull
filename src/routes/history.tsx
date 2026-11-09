@@ -1,6 +1,7 @@
 import { type FormEvent, useId, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
+import { ProgressTabs } from './progress-tabs'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
@@ -68,7 +69,13 @@ export function HistoryPage() {
   const { t, fmt } = useI18n()
   const overview = useLocalQuery(() => historyOverview(store), [])
   const [today] = useState(() => localDate(new Date()))
-  const header = <BackHeader title={t('history.title')} back={t('body.backToProgress')} fallback="/progresi" />
+  const back = <BackHeader title={t('history.title')} back={t('body.backToProgress')} fallback="/progresi" />
+  const header = (
+    <>
+      {back}
+      <ProgressTabs current="history" />
+    </>
+  )
   if (!overview) {
     return (
       <div className="flex flex-col gap-3.5">
@@ -95,9 +102,10 @@ export function HistoryPage() {
   return (
     <div className="flex flex-col gap-3.5">
       <div className="flex flex-col">
-        {header}
+        {back}
         <span className="-mt-1 type-caption text-muted-foreground tabular-nums">{subtitle}</span>
       </div>
+      <ProgressTabs current="history" />
       <MonthCard overview={overview} today={today} />
       {overview.weeks.map((week) => (
         <WeekSection key={week.key} week={week} today={today} activeProgram={overview.programName} />

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n'
 
-// Uji te Sot (V2-E2-07): 88 kg, e hënë (ditë stërvitjeje): objektivi 3,5 L = 14 gota.
+// Uji te Sot (V2-E2-07; pamja e 0.23 si listë me shiritin): 88 kg, e hënë (ditë stërvitjeje): objektivi 3,5 L.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
@@ -32,24 +32,23 @@ describe('Uji te Sot', () => {
   it('një prekje shton një gotë; "Kthe mbrapsht" e heq', async () => {
     const user = userEvent.setup()
     await renderCard('2026-12-07', true)
-    expect(await screen.findByText('0,0 nga 3,5 L')).toBeInTheDocument()
-    expect(screen.getByRole('list', { name: '0 gota nga 14' })).toBeInTheDocument()
-    expect(screen.getByText('Ditë stërvitjeje: +0,5 L')).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: '0,0 nga 3,5 litra' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Uji' })).toHaveTextContent(/^UjiDitë stërvitjeje: \+0,5 L0,0 \/ 3,5 L/)
 
     await user.click(screen.getByRole('button', { name: 'Shto një gotë ujë, 250 ml' }))
-    expect(await screen.findByText('0,25 nga 3,5 L')).toBeInTheDocument()
-    expect(screen.getByRole('list', { name: '1 gotë nga 14' })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: '0,25 nga 3,5 litra' })).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('U shtua një gotë · 0,25 L')
 
     await user.click(screen.getByRole('button', { name: 'Kthe mbrapsht' }))
-    expect(await screen.findByText('0,0 nga 3,5 L')).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: '0,0 nga 3,5 litra' })).toBeInTheDocument()
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
   it('në anglisht, ditë pushimi', async () => {
     language.set('en')
     await renderCard('2026-12-09', false)
-    expect(await screen.findByText('0.0 of 3.0 L')).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: '0.0 of 3.0 litres' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Water' })).toHaveTextContent('0.0 / 3.0 L')
     expect(screen.getByRole('button', { name: 'Add a glass of water, 250 ml' })).toHaveTextContent('Glass, 250 ml')
     expect(screen.queryByText(/Training day/)).not.toBeInTheDocument()
   })

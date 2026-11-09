@@ -15,6 +15,7 @@ import {
 } from '@/data/app-data'
 import { useI18n } from '@/i18n/use-i18n'
 import { APP_NAME } from '@/lib/app-name'
+import { useReminderOpen } from '@/lib/reminder-open'
 import { useSessionNotification } from '@/lib/session-notification-hook'
 
 const onboardingPath = (pathname: string) => pathname === '/fillimi' || pathname.startsWith('/fillimi/')
@@ -31,6 +32,7 @@ export function AppGate() {
   useLanguageSync(phase === 'ready')
   useBackgroundSync(phase === 'ready')
   useSessionNotification(phase === 'ready')
+  useReminderOpen(phase === 'ready')
 
   switch (phase) {
     case 'loading':

@@ -17,10 +17,10 @@ describe('cilësimet e rikujtuesve', () => {
   it('parazgjedhja: të gjitha ndezur, matja të dielën; ndryshimet ruhen', async () => {
     const store = await setup()
     const empty = { quiet: null, muted: {}, resumed: {} }
-    expect(await reminderSettings(store)).toEqual({ toggles: { meals: true, supplements: true, training: true, measurements: true, water: true }, measurementDay: 7, ...empty })
+    expect(await reminderSettings(store)).toEqual({ toggles: { meals: true, supplements: true, training: true, measurements: true, water: true, week: true }, measurementDay: 7, ...empty })
     await setReminderToggle(store, 'meals', false)
     await setMeasurementDay(store, 1)
-    expect(await reminderSettings(store)).toEqual({ toggles: { meals: false, supplements: true, training: true, measurements: true, water: true }, measurementDay: 1, ...empty })
+    expect(await reminderSettings(store)).toEqual({ toggles: { meals: false, supplements: true, training: true, measurements: true, water: true, week: true }, measurementDay: 1, ...empty })
   })
 
   it('orët e qeta dhe heshtja (V37) ruhen te i njëjti jsonb pa prekur çelësat', async () => {

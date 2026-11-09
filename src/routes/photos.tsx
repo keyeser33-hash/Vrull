@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -85,26 +85,22 @@ function CaptureButton({ pose, className, children, onSaved }: { pose: Pose; cla
   )
 }
 
-/** Fotot e fundit për çdo pozë, te Progresi. */
-export function PhotoSection() {
+/**
+ * Fotot e fundit për çdo pozë, me shtimin e fotos së sotme, në krye të faqes së fotove (që nga 0.23
+ * Progresi ka vetëm rreshtin e fotove, bordi "Progresi"). Prekja e një fotoje e hap faqja, në fletë.
+ */
+function PhotoSection() {
   const { t, fmt } = useI18n()
   const timeline = useLocalQuery(() => photos.timeline(), [])
-  const [params, setParams] = useSearchParams()
-  const navigate = useNavigate()
+  const [, setParams] = useSearchParams()
   if (!timeline) return null
   const latest = Object.fromEntries(POSES.map((pose) => [pose, timeline.find((day) => day.photos[pose])?.photos[pose]])) as Partial<Record<Pose, PhotoRef>>
-  const opened = timeline.flatMap((day) => Object.values(day.photos)).find((photo) => photo?.id === params.get('foto'))
   return (
     <section aria-labelledby="photos-title" className="flex flex-col gap-2">
       <div className="flex min-h-11 items-center justify-between gap-3">
         <h2 id="photos-title" className="type-label text-muted-foreground">
           {t('photos.title')}
         </h2>
-        {timeline.length > 0 ? (
-          <Link to="/progresi/fotot" className={cn(buttonVariants({ variant: 'ghost' }), '-mr-3')}>
-            {t('photos.all')}
-          </Link>
-        ) : null}
       </div>
       <div className="grid grid-cols-3 gap-2">
         {POSES.map((pose) => {
@@ -137,7 +133,6 @@ export function PhotoSection() {
         {timeline.length > 0 ? `${t('photos.latest', { date: dayText(fmt, timeline[0].date) })} ` : ''}
         {t('photos.hint')}
       </p>
-      {opened ? <PhotoViewer photo={opened} onClose={() => navigate(-1)} /> : null}
     </section>
   )
 }
@@ -152,6 +147,7 @@ export function PhotosPage() {
   return (
     <div className="flex flex-col gap-5">
       <BackHeader title={t('photos.title')} back={t('body.backToProgress')} fallback="/progresi" />
+      <PhotoSection />
       {timeline.length === 0 ? <p className="type-body text-muted-foreground">{t('photos.none')}</p> : null}
       {timeline.map((day: PhotoDay) => (
         <section key={day.date} aria-label={dayText(fmt, day.date, true)} className="flex flex-col gap-2">

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { FocusChip } from '@/components/body/focus-chip'
 import { BackHeader } from '@/components/layout/page'
+import { ProgressTabs } from './progress-tabs'
 import { Sheet } from '@/components/layout/sheet'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -48,21 +49,24 @@ const headerAction = buttonVariants({ variant: 'secondary', ground: 'page', size
 function BodyHeader() {
   const { t } = useI18n()
   return (
-    <BackHeader
-      title={t('tab.body')}
-      back={t('body.backToProgress')}
-      fallback="/progresi"
-      actions={
-        <>
-          <Link to="/progresi/trupi/shtresat" aria-label={t('bodyModel.layers')} className={headerAction}>
-            <Icon name="shtresat" size={20} />
-          </Link>
-          <Link to="/progresi/trupi/matjet" aria-label={t('bodyModel.byMeasurements')} className={headerAction}>
-            <Icon name="matja" size={20} />
-          </Link>
-        </>
-      }
-    />
+    <>
+      <BackHeader
+        title={t('tab.body')}
+        back={t('body.backToProgress')}
+        fallback="/progresi"
+        actions={
+          <>
+            <Link to="/progresi/trupi/shtresat" aria-label={t('bodyModel.layers')} className={headerAction}>
+              <Icon name="shtresat" size={20} />
+            </Link>
+            <Link to="/progresi/trupi/matjet" aria-label={t('bodyModel.byMeasurements')} className={headerAction}>
+              <Icon name="matja" size={20} />
+            </Link>
+          </>
+        }
+      />
+      <ProgressTabs current="body" />
+    </>
   )
 }
 

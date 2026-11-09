@@ -5,12 +5,7 @@ import type { Messages, TranslationOf } from '../translate'
 // Shqipja është burimi i çelësave; anglishtja britanike ndjek të njëjtat çelësa dhe parametra.
 
 export const sq = {
-  // Kreu: titulli si te historiku, nga muskuli kryesor i ushtrimit të parë (dayTheme), ose sipas ditës.
-  'today.subtitle.ready': 'Je gati. Shko fort.',
-  'today.subtitle.recovering': 'Dëgjo trupin sot.',
-  'today.subtitle.first': 'Seanca e parë: gjej peshën e çdo ushtrimi.',
-  'today.subtitle.session': 'Seanca është e hapur.',
-  'today.subtitle.next': 'Stërvitja e radhës: {day}.',
+  // Gjendja e kartës kur sot s'ka stërvitje (0.23: titulli i ekranit është gjithnjë "Sot").
   'today.restTitle': 'Ditë pushimi',
   'today.doneTitle': 'U krye për sot',
   'today.workoutTitle': 'Stërvitja {day}',
@@ -24,8 +19,14 @@ export const sq = {
   'today.weekLetter.6': 'Sh',
   'today.weekLetter.7': 'D',
   'today.weekDay': '{weekday} {day}',
+  // Java (0.23, bordi "Sot"): "Java 3" me lidhjen te Qëllimet e javës; pas pushimit "Java e re".
+  'today.week.goals': 'Qëllimet',
+  'today.week.fresh': 'Java e re',
 
   // Karta e stërvitjes.
+  'today.when.today': 'Sot',
+  'today.when.tomorrow': 'Nesër',
+  'today.openBody': 'Hap trupin 3D: muskujt e stërvitjes dhe rikuperimi',
   'today.workoutLabel': 'Stërvitja e sotme',
   'today.nextLabel': 'Stërvitja e radhës',
   'today.exercises': { one: '{count} ushtrim', other: '{count} ushtrime' },
@@ -45,10 +46,26 @@ export const sq = {
   'today.startFirst': 'Fillo stërvitjen e parë',
   'today.resume': 'Vazhdo stërvitjen',
 
-  // Pllakat: proteina tani; gatishmëria dhe uji vijnë me Etapën 3.
-  'today.protein': 'Proteina',
-  'today.proteinSpoken': { one: 'Proteina {count} gram', other: 'Proteina {count} gramë' },
-  'today.proteinSpokenOf': { one: 'Proteina {count} gram nga {target}', other: 'Proteina {count} gramë nga {target}' },
+  // "Mirë se u ktheve" (V43, bordi "Kthimi"): pa faj, pa fjalë për vargun.
+  'today.back.title': 'Mirë se u ktheve',
+  'today.back.text': {
+    one: '{count} ditë pa stërvitje. Ndodh. Programi të pret aty ku e le.',
+    other: '{count} ditë pa stërvitje. Ndodh. Programi të pret aty ku e le.',
+  },
+  'today.back.lighter': 'Seanca e parë më e lehtë',
+  'today.back.lighterExample': 'Peshat 90%. {exercise} {weight}\u00A0×\u00A0{reps} në vend të {week}.',
+  'today.back.lighterOn': 'Peshat 90% e peshës së javës.',
+  'today.back.lighterOff': 'Peshat e javës, si në program.',
+
+  // Ushqimi si listë (0.23): kaloritë dhe proteina kundrejt objektivave, vakti i radhës.
+  'today.food.title': 'Ushqimi',
+  'today.food.next': 'I radhës: {meal}, {time}',
+  'today.food.kcalOf': '/ {target} kcal',
+  'today.food.kcal': 'kcal',
+  'today.food.proteinOf': '/ {target} g proteinë',
+  'today.food.protein': 'g proteinë',
+  'today.food.spoken': 'Ushqimi: {kcal} nga {target} kcal, proteina {protein} nga {proteinTarget} gramë',
+  'today.food.spokenNoTarget': 'Ushqimi: {kcal} kcal, proteina {protein} gramë',
 
   // Kapërce (SPEC §4: vetëm me dorë).
   'today.skip': 'Kapërce këtë stërvitje',
@@ -64,9 +81,9 @@ export const sq = {
   'today.noProgrammeText': 'Zgjidh një program dhe stërvitja e radhës del këtu.',
   'today.chooseProgramme': 'Zgjidh programin',
   'today.water.title': 'Uji',
-  'today.water.of': '{total} nga {target} L',
-  'today.water.ofNoTarget': '{total} L sot',
-  'today.water.glasses': { one: '{count} gotë nga {target}', other: '{count} gota nga {target}' },
+  'today.water.of': '/ {target} L',
+  'today.water.ofNoTarget': 'L sot',
+  'today.water.spoken': '{total} nga {target} litra',
   'today.water.add': 'Gotë, {ml} ml',
   'today.water.addLabel': 'Shto një gotë ujë, {ml} ml',
   'today.water.trainingExtra': 'Ditë stërvitjeje: +{litres} L',
@@ -112,11 +129,6 @@ export const sq = {
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
-  'today.subtitle.ready': "You're ready. Go hard.",
-  'today.subtitle.recovering': 'Listen to your body today.',
-  'today.subtitle.first': 'First session: find your weight for each exercise.',
-  'today.subtitle.session': 'Your session is open.',
-  'today.subtitle.next': 'Next workout: {day}.',
   'today.restTitle': 'Rest day',
   'today.doneTitle': 'Done for today',
   'today.workoutTitle': 'Workout {day}',
@@ -129,7 +141,12 @@ export const en: TranslationOf<typeof sq> = {
   'today.weekLetter.6': 'S',
   'today.weekLetter.7': 'S',
   'today.weekDay': '{weekday} {day}',
+  'today.week.goals': 'Goals',
+  'today.week.fresh': 'New week',
 
+  'today.when.today': 'Today',
+  'today.when.tomorrow': 'Tomorrow',
+  'today.openBody': 'Open the 3D body: the workout’s muscles and recovery',
   'today.workoutLabel': "Today's workout",
   'today.nextLabel': 'Next workout',
   'today.exercises': { one: '{count} exercise', other: '{count} exercises' },
@@ -149,9 +166,24 @@ export const en: TranslationOf<typeof sq> = {
   'today.startFirst': 'Start your first workout',
   'today.resume': 'Continue workout',
 
-  'today.protein': 'Protein',
-  'today.proteinSpoken': { one: 'Protein {count} gram', other: 'Protein {count} grams' },
-  'today.proteinSpokenOf': { one: 'Protein {count} gram of {target}', other: 'Protein {count} grams of {target}' },
+  'today.back.title': 'Welcome back',
+  'today.back.text': {
+    one: '{count} day without training. It happens. Your programme is waiting where you left it.',
+    other: '{count} days without training. It happens. Your programme is waiting where you left it.',
+  },
+  'today.back.lighter': 'Lighter first session',
+  'today.back.lighterExample': 'Weights at 90%. {exercise} {weight}\u00A0×\u00A0{reps} instead of {week}.',
+  'today.back.lighterOn': 'Weights at 90% of the week’s weight.',
+  'today.back.lighterOff': 'The week’s weights, as in the programme.',
+
+  'today.food.title': 'Food',
+  'today.food.next': 'Next: {meal}, {time}',
+  'today.food.kcalOf': '/ {target} kcal',
+  'today.food.kcal': 'kcal',
+  'today.food.proteinOf': '/ {target} g protein',
+  'today.food.protein': 'g protein',
+  'today.food.spoken': 'Food: {kcal} of {target} kcal, protein {protein} of {proteinTarget} grams',
+  'today.food.spokenNoTarget': 'Food: {kcal} kcal, protein {protein} grams',
 
   'today.skip': 'Skip this workout',
   'today.skipText': 'You move on to the next workout without doing this one. It is marked as skipped.',
@@ -165,9 +197,9 @@ export const en: TranslationOf<typeof sq> = {
   'today.noProgrammeText': 'Choose a programme and your next workout shows up here.',
   'today.chooseProgramme': 'Choose a programme',
   'today.water.title': 'Water',
-  'today.water.of': '{total} of {target} L',
-  'today.water.ofNoTarget': '{total} L today',
-  'today.water.glasses': { one: '{count} glass of {target}', other: '{count} glasses of {target}' },
+  'today.water.of': '/ {target} L',
+  'today.water.ofNoTarget': 'L today',
+  'today.water.spoken': '{total} of {target} litres',
   'today.water.add': 'Glass, {ml} ml',
   'today.water.addLabel': 'Add a glass of water, {ml} ml',
   'today.water.trainingExtra': 'Training day: +{litres} L',

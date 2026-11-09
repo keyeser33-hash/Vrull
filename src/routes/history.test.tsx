@@ -277,13 +277,14 @@ describe('Historiku', () => {
     expect(screen.getByRole('button', { name: 'Edit a set' })).toBeInTheDocument()
   })
 
-  it('Progresi hap historikun, me numrin e seancave dhe të fundit', async () => {
+  it('Progresi hap historikun nga tab-i "Historiku" (0.23); historiku e mban tab-in të zgjedhur', async () => {
     await seed()
     const user = userEvent.setup()
     await renderAt('/progresi')
-    const link = await screen.findByRole('link', { name: /^Historiku/ })
-    await waitFor(() => expect(link).toHaveTextContent('6 seanca · e fundit sot'))
-    await user.click(link)
+    const tabs = await screen.findByRole('tablist', { name: 'Pamjet e Progresit' })
+    expect(within(tabs).getByRole('tab', { name: 'Përmbledhja' })).toHaveAttribute('aria-selected', 'true')
+    await user.click(within(tabs).getByRole('tab', { name: 'Historiku' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Historiku' })).toBeInTheDocument()
+    expect(within(screen.getByRole('tablist', { name: 'Pamjet e Progresit' })).getByRole('tab', { name: 'Historiku' })).toHaveAttribute('aria-selected', 'true')
   })
 })
