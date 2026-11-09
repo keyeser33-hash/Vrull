@@ -5,11 +5,12 @@ import { surfaceClass } from './surface'
 
 // Shiriti 6 px kundrejt objektivit, në kartë me vlerën dhe objektivin ("96/180"). Makrot dallohen
 // me ngjyra me lartësi drite të ndryshme: proteina `ember`, karbohidratet `data`, yndyrat `sand`.
-// Mbi 100% shiriti mbetet plot dhe karta e thotë me fjalë. Mbushet nga e majta në 320 ms.
+// Mbi 100% shiriti mbetet plot dhe karta e thotë me fjalë. Mbushet nga e majta në 320 ms, edhe kur
+// vlera ndryshon (E2-23).
 
 export type ProgressTone = 'ember' | 'data' | 'sand'
 
-const fill = cva('h-full origin-left animate-fill rounded-pill', {
+const fill = cva('h-full origin-left animate-fill rounded-pill transition-[width] duration-320 ease-out', {
   variants: { tone: { ember: 'bg-ember', data: 'bg-data', sand: 'bg-sand' } },
 })
 

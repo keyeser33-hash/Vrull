@@ -1,7 +1,8 @@
 import type { Messages, TranslationOf } from '../translate'
 
 // Ushqimi (V2-E1-16b): ekrani i ditës, Shto ushqim, vaktet, shablloni i Jimit dhe suplementet.
-// Çelësat: 'food.*'. Ridizajni i plotë vjen me Etapën 2 (V2-E2); këtu janë tekstet e ekranit të v1.
+// Çelësat: 'food.*'. Pamja e re e ekranit të ditës (0.23, SPEC §0.3c): kaloritë që mbeten, "Dita" dhe
+// suplementet sipas orës.
 // Emrat e shabllonit të Jimit dhe të suplementeve ruhen shqip në bazë: `@/i18n/domain` (`foodName`,
 // `supplementName`, `supplementDose`) i përkthen kur emri është ende ai i planit. Emrat e Open Food
 // Facts dhe USDA, si edhe ushqimet e përdoruesit, mbeten siç janë.
@@ -19,17 +20,6 @@ export const sq = {
   'food.meal.pre_workout': 'Para stërvitjes',
   'food.meal.intra_workout': 'Gjatë stërvitjes',
   'food.meal.post_workout': 'Pas stërvitjes',
-  // Butoni i vaktit të radhës; titulli i kartës e thotë vaktin e plotë.
-  'food.log.breakfast_1': 'Regjistro mëngjesin',
-  'food.log.breakfast_2': 'Regjistro mëngjesin',
-  'food.log.snack_am': 'Regjistro snack-un',
-  'food.log.lunch': 'Regjistro drekën',
-  'food.log.snack_pm': 'Regjistro snack-un',
-  'food.log.dinner': 'Regjistro darkën',
-  'food.log.bedtime': 'Regjistro vaktin',
-  'food.log.pre_workout': 'Regjistro vaktin',
-  'food.log.intra_workout': 'Regjistro vaktin',
-  'food.log.post_workout': 'Regjistro vaktin',
 
   // Ushqimet e shabllonit të Jimit (`JIM_FOODS`), sipas çelësit.
   'food.jim.protein': 'Pluhur proteine',
@@ -110,7 +100,15 @@ export const sq = {
   'food.dayType.rest': 'ditë pushimi',
   'food.dayType.toRest': 'Lloji i ditës: stërvitje. Ndrysho në ditë pushimi',
   'food.dayType.toTraining': 'Lloji i ditës: pushim. Ndrysho në ditë stërvitjeje',
-  'food.kcalToday': 'Kalori të ditës',
+  // Kaloritë që mbeten (0.23): numri i madh, "nga" objektivi dhe fjalia e plotë për lexuesin e ekranit.
+  'food.left': 'kcal mbeten',
+  'food.overTarget': 'kcal mbi objektiv',
+  'food.eatenKcal': 'kcal të ngrëna',
+  'food.eatenOf': '{eaten} nga {target}',
+  'food.hero.left': 'Sot: {eaten} nga {target} kcal, mbeten {left}',
+  'food.hero.over': 'Sot: {eaten} nga {target} kcal, {over} mbi objektiv',
+  'food.hero.noTargets': 'Sot: {eaten} kcal',
+  'food.gramsName': 'gramë',
   // Vakti i radhës.
   'food.next': 'Vakti i radhës',
   'food.time.now': 'tani',
@@ -119,21 +117,21 @@ export const sq = {
   'food.time.minutes': '{minutes} min',
   'food.time.hours': { one: '{count} orë', other: '{count} orë' },
   'food.time.hoursMinutes': { one: '{count} orë {minutes} min', other: '{count} orë {minutes} min' },
-  'food.about': 'rreth {kcal} kcal',
+  'food.about': 'Rreth {kcal} kcal',
   'food.macros': 'P {protein} · K {carbs} · Y {fat} g',
   'food.totals': '{kcal} kcal · {macros}',
   'food.noTemplate': 'Ky vakt nuk ka artikuj në plan.',
   'food.edit': 'Ndrysho',
   'food.dayDone': 'Vaktet e ditës u regjistruan',
-  // Dita si orar vertikal.
+  // Dita (0.23): vaktet e regjistruara në një rresht që hapet, të tjerat me orën; i radhës me shenjë.
   'food.day': 'Dita',
   'food.status.done': 'Regjistruar · {kcal} kcal',
-  'food.status.next': 'E radhës',
+  'food.status.next': 'I radhës',
   'food.status.todo': 'Në pritje',
   'food.status.missed': 'Pa regjistruar',
-  'food.withSupplements': 'me {list}',
+  'food.loggedMeals': { one: '{count} vakt i regjistruar', other: '{count} vakte të regjistruara' },
+  'food.supplementCount': { one: '{count} suplement', other: '{count} suplemente' },
   // Makrot e ditës.
-  'food.macrosTitle': 'Makrot e ditës',
   'food.noTargets': 'Shkruaj peshën te Cilësimet që të dalin objektivat.',
   'food.protein': 'Proteina',
   'food.carbs': 'Karbohidratet',
@@ -179,6 +177,11 @@ export const sq = {
   'food.editList': 'Ndrysho listën',
   'food.noSupplements': 'Asnjë suplement aktiv për sot.',
   'food.supplementsHint': 'Ato të çaktivizuara nuk dalin te dita. Evidenca tregon sa e mbështesin studimet.',
+  // Suplementet sipas orës (0.23): të marrat në një rresht, pastaj një rresht për çdo vakt me një buton
+  // për gjithë grupin.
+  'food.supplementsDone': 'Marrë',
+  'food.takeGroup': { one: 'E mora', other: 'Të {count}' },
+  'food.takeGroupLabel': { one: 'E mora: {name}, {meal}', other: 'Të {count} të marra: {meal}' },
 
   // Shto ushqim (SPEC §9, varianti A).
   'food.backToFood': 'Kthehu te ushqimi',
@@ -323,8 +326,10 @@ export const sq = {
   'food.targets.cta': 'Llogarit objektivat e tua',
   'food.targets.ctaText': 'Tani objektivat vijnë nga plani i Jimit. Me të dhënat e tua dalin më afër.',
   'food.targets.ctaAction': 'Llogarit',
-  'food.water': 'Uji',
   'food.schedule.title': 'Oraret e vakteve',
+  // Butoni i shkurtër te rreshti Objektivat · Plani im · Oraret (0.23).
+  'food.schedule.short': 'Oraret',
+  'food.planNav': 'Plani i ushqimit',
   'food.schedule.yourDay': 'Dita jote',
   'food.schedule.afterMidnight': 'Pas mesnate: vakti i fundit i përket ditës që mbaron',
   'food.schedule.trainingHint': 'Ditët vijnë nga programi. Çdo ditë ka orën e vet.',
@@ -520,16 +525,6 @@ export const en: TranslationOf<typeof sq> = {
   'food.meal.pre_workout': 'Pre-workout',
   'food.meal.intra_workout': 'During the workout',
   'food.meal.post_workout': 'Post-workout',
-  'food.log.breakfast_1': 'Log breakfast',
-  'food.log.breakfast_2': 'Log breakfast',
-  'food.log.snack_am': 'Log snack',
-  'food.log.lunch': 'Log lunch',
-  'food.log.snack_pm': 'Log snack',
-  'food.log.dinner': 'Log dinner',
-  'food.log.bedtime': 'Log meal',
-  'food.log.pre_workout': 'Log meal',
-  'food.log.intra_workout': 'Log meal',
-  'food.log.post_workout': 'Log meal',
 
   'food.jim.protein': 'Protein powder',
   'food.jim.cantaloupe': 'Cantaloupe',
@@ -605,7 +600,14 @@ export const en: TranslationOf<typeof sq> = {
   'food.dayType.rest': 'rest day',
   'food.dayType.toRest': 'Day type: training. Change to a rest day',
   'food.dayType.toTraining': 'Day type: rest. Change to a training day',
-  'food.kcalToday': 'Calories today',
+  'food.left': 'kcal left',
+  'food.overTarget': 'kcal over target',
+  'food.eatenKcal': 'kcal eaten',
+  'food.eatenOf': '{eaten} of {target}',
+  'food.hero.left': 'Today: {eaten} of {target} kcal, {left} left',
+  'food.hero.over': 'Today: {eaten} of {target} kcal, {over} over target',
+  'food.hero.noTargets': 'Today: {eaten} kcal',
+  'food.gramsName': 'grams',
   'food.next': 'Next meal',
   'food.time.now': 'now',
   'food.time.in': 'in {span}',
@@ -613,7 +615,7 @@ export const en: TranslationOf<typeof sq> = {
   'food.time.minutes': '{minutes} min',
   'food.time.hours': { one: '{count} hr', other: '{count} hr' },
   'food.time.hoursMinutes': { one: '{count} hr {minutes} min', other: '{count} hr {minutes} min' },
-  'food.about': 'about {kcal} kcal',
+  'food.about': 'About {kcal} kcal',
   'food.macros': 'P {protein} · C {carbs} · F {fat} g',
   'food.totals': '{kcal} kcal · {macros}',
   'food.noTemplate': 'This meal has nothing in the plan.',
@@ -624,8 +626,8 @@ export const en: TranslationOf<typeof sq> = {
   'food.status.next': 'Next',
   'food.status.todo': 'Coming up',
   'food.status.missed': 'Not logged',
-  'food.withSupplements': 'with {list}',
-  'food.macrosTitle': 'Today’s macros',
+  'food.loggedMeals': { one: '{count} meal logged', other: '{count} meals logged' },
+  'food.supplementCount': { one: '{count} supplement', other: '{count} supplements' },
   'food.noTargets': 'Add your weight in Settings to see your targets.',
   'food.protein': 'Protein',
   'food.carbs': 'Carbs',
@@ -669,6 +671,9 @@ export const en: TranslationOf<typeof sq> = {
   'food.editList': 'Edit list',
   'food.noSupplements': 'No active supplements today.',
   'food.supplementsHint': 'Switched-off supplements don’t appear in your day. The evidence shows how well studies support them.',
+  'food.supplementsDone': 'Taken',
+  'food.takeGroup': { one: 'Took it', other: 'All {count}' },
+  'food.takeGroupLabel': { one: 'Took it: {name}, {meal}', other: 'All {count} taken: {meal}' },
 
   'food.backToFood': 'Back to Food',
   'food.addTo': 'Add to {meal}',
@@ -809,8 +814,9 @@ export const en: TranslationOf<typeof sq> = {
   'food.targets.cta': 'Work out your targets',
   'food.targets.ctaText': 'Your targets come from Jim’s plan for now. With your details they get closer.',
   'food.targets.ctaAction': 'Work out',
-  'food.water': 'Water',
   'food.schedule.title': 'Meal times',
+  'food.schedule.short': 'Meal times',
+  'food.planNav': 'Food plan',
   'food.schedule.yourDay': 'Your day',
   'food.schedule.afterMidnight': 'After midnight: the last meal belongs to the day that’s ending',
   'food.schedule.trainingHint': 'The days come from your programme. Each day has its own time.',

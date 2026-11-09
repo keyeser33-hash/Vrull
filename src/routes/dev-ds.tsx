@@ -7,6 +7,7 @@ import { ListRow } from '@/components/ui/list-row'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { QuickAdd } from '@/components/ui/quick-add'
 import { RirPicker } from '@/components/ui/rir-picker'
+import { RollingNumber } from '@/components/ui/rolling-number'
 import { StatTile } from '@/components/ui/stat-tile'
 import { Stepper } from '@/components/ui/stepper'
 import { surfaceClass } from '@/components/ui/surface'
@@ -98,6 +99,7 @@ function ThemeShowcase({ theme }: { theme: Theme }) {
   const [reps, setReps] = useState(9)
   const [rir, setRir] = useState<number | null>(2)
   const [food, setFood] = useState('')
+  const [kcal, setKcal] = useState(1380)
   const tabs: TabBarItem[] = TABS.map((tab) => ({ ...tab, label: t(tab.label), to: '/dev/ds' }))
 
   return (
@@ -182,6 +184,21 @@ function ThemeShowcase({ theme }: { theme: Theme }) {
           <ProgressBar label="Yndyrat" value={92} target={80} unitName="gramë" tone="sand" />
         </div>
         <WeekStrip days={WEEK} />
+        {/* Numri që rrotullohet (E2-23): vetëm shifrat që ndryshojnë, 200 ms, 40 ms mes shifrave. */}
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <span className="flex items-end gap-2">
+            <RollingNumber value={kcal} className="type-display-xl" />
+            <span className="pb-1 type-caption text-muted-foreground">kcal mbeten</span>
+          </span>
+          <span className="flex gap-2">
+            <Button variant="secondary" ground="page" onClick={() => setKcal((value) => Math.max(0, value - 470))}>
+              −470
+            </Button>
+            <Button variant="secondary" ground="page" onClick={() => setKcal((value) => value + 470)}>
+              +470
+            </Button>
+          </span>
+        </div>
       </Group>
 
       <Group title="Inteligjenca">

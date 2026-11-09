@@ -406,16 +406,78 @@
     fill: currentColor;
     stroke: none;
   }
-  /* Lëvizje e reduktuar: vetëm zbehje e shkurtër, pa kërcim e pa rrotullim. */
+  /* Lëvizje e reduktuar (SPEC §0.3c, E2-23): asgjë nuk lëviz, vetëm zbehje 120 ms. Animacionet mbarojnë
+     menjëherë dhe pa vonesë (as shkallët e shifrave), tranzicionet ndryshojnë vetëm `opacity`; shtypja
+     e butonave nuk shkallëzohet (`motion-safe:` te button-variants.ts). Dridhjet mbeten.
+     src/styles/motion.test.ts e kontrollon. */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
       animation-iteration-count: 1 !important;
       transition-duration: 120ms !important;
+      transition-delay: 0s !important;
       transition-property: opacity !important;
       scroll-behavior: auto !important;
     }
+    /* Shifrat e reja të `RollingNumber` vetëm zbehen; shifra e vjetër nuk vizatohet. Në të njëjtën
+       shtresë me rregullin sipër, që `!important` i klasës ta mposhtë atë të `*`. */
+    .roll-digit {
+      animation: roll-fade 120ms ease-out both !important;
+    }
+    .roll-digit::before {
+      content: none !important;
+    }
+  }
+}
+
+/* RollingNumber (src/components/ui/rolling-number.tsx, E2-23): kolona e shifrës pret gjithçka jashtë
+   kutisë së rreshtit (clip-path, që vija bazë të mos ndryshojë si me overflow); shifra e re hyn nga
+   poshtë kur numri rritet dhe nga lart kur zbret, 200 ms ease-out, 40 ms pas shifrës së majtë.
+   Shifra e vjetër vjen nga `data-from` dhe nuk është tekst: lexuesi i ekranit dëgjon vetëm vlerën e
+   re (`/ ""` i heq edhe tekstin alternativ të `content`). */
+@layer components {
+  .roll-col {
+    display: inline-block;
+    clip-path: inset(0);
+  }
+  .roll-digit {
+    display: inline-block;
+    position: relative;
+    animation: roll-up 200ms ease-out both;
+    animation-delay: calc(var(--roll-i, 0) * 40ms);
+  }
+  .roll-digit[data-dir="down"] {
+    animation-name: roll-down;
+  }
+  .roll-digit::before {
+    content: attr(data-from);
+    content: attr(data-from) / "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    text-align: center;
+  }
+  .roll-digit[data-dir="down"]::before {
+    top: 100%;
+    bottom: auto;
+  }
+}
+
+@keyframes roll-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes roll-down {
+  from {
+    transform: translateY(-100%);
+  }
+}
+@keyframes roll-fade {
+  from {
+    opacity: 0;
   }
 }
