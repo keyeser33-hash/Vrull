@@ -241,6 +241,61 @@ describe('Kutia e AI-së', () => {
     expect(screen.getByRole('button', { name: 'Regjistro të gjitha' })).toBeDisabled()
   })
 
+  it('setet te stërvitja e radhës: tabela, pyetja për ushtrimin shtesë dhe regjistrimi', async () => {
+    const user = userEvent.setup()
+    data.reply = (request) => {
+      const next = request.context.workouts.find((workout) => workout.status === 'next')!
+      return {
+        ok: true,
+        costEur: 0.0004,
+        month: MONTH,
+        draft: {
+          ...empty,
+          sets: [
+            { said: 'bench', workoutRef: next.ref, exerciseRef: next.exercises[0].ref, exerciseName: next.exercises[0].name, sets: [1, 2, 3].map(() => ({ reps: 10, weightKg: 60, rir: null })), day: 0 },
+            { said: 'dips', workoutRef: next.ref, exerciseRef: null, exerciseName: 'Dips', sets: [1, 2].map(() => ({ reps: 12, weightKg: null, rir: 2 })), day: 0 },
+          ],
+        },
+      }
+    }
+    await renderPage()
+    await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'sot bëra bench 3×10 me 60 kg dhe dips 2×12')
+    await user.click(screen.getByRole('button', { name: 'Dërgo' }))
+    const [table] = await screen.findAllByRole('table', { name: /^Setet e / })
+    expect(within(table).getAllByRole('row')).toHaveLength(4)
+    expect(screen.getByText(/e1RM 80,0\skg/)).toBeInTheDocument()
+    expect(screen.getByText('Dips - Chest Version nuk është te ' + data.requests[0].context.workouts[0].label + '. Ta shtoj si ushtrim shtesë?')).toBeInTheDocument()
+    expect(screen.getByText(/Dips - Chest Version pret përgjigjen tënde/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Po, si shtesë' }))
+    await user.click(screen.getByRole('button', { name: 'Regjistro të gjitha' }))
+    expect(await screen.findByText('Sot')).toBeInTheDocument()
+    const sets = await data.store.all('set_logs')
+    expect(sets).toHaveLength(5)
+    expect(sets.filter((row) => row.slot_id == null).map((row) => Number(row.rir))).toEqual([2, 2])
+    expect((await data.store.all('workout_sessions')).filter((row) => row.status === 'in_progress')).toHaveLength(1)
+    for (const row of sets) await data.store.remove('set_logs', row.id)
+    for (const row of await data.store.all('workout_sessions')) await data.store.remove('workout_sessions', row.id)
+  })
+
+  it('trajneri: pyetja merr përgjigjen nga faktet, pa "Regjistro"', async () => {
+    const user = userEvent.setup()
+    data.reply = () => ({ ok: true, costEur: 0.0003, month: MONTH, draft: { ...empty, answer: { headline: '44 g proteinë', text: 'Ke 132 nga 176 g.' } } })
+    await renderPage()
+    await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'Sa proteinë më mbetet sot?')
+    await user.click(screen.getByRole('button', { name: 'Dërgo' }))
+    expect(await screen.findByRole('heading', { name: '44 g proteinë' })).toBeInTheDocument()
+    expect(screen.getByText('Ke 132 nga 176 g.')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Regjistro të gjitha' })).toBeNull()
+    expect(data.requests[0].facts).toMatch(/^Food day /)
+    await user.type(screen.getByLabelText('Pyet ose shkruaj çfarë bëre'), 'Po nesër?')
+    await user.click(screen.getByRole('button', { name: 'Dërgo' }))
+    await vi.waitFor(() => expect(data.requests).toHaveLength(2))
+    expect(data.requests[1].history).toEqual([
+      { role: 'user', text: 'Sa proteinë më mbetet sot?' },
+      { role: 'assistant', text: '44 g proteinë. Ke 132 nga 176 g.' },
+    ])
+  })
+
   it('pa internet: teksti mbetet, "Dërgo" pret rrjetin dhe karta e thotë', async () => {
     vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
     boxText.set('Në drekë 200 g pulë me oriz')

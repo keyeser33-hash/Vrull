@@ -8,12 +8,16 @@ import {
   type BoxContext,
   type BoxDraft,
   type BoxError,
+  type BoxExercise,
   type BoxFood,
+  acceptExtra,
   boxContext,
   chooseOption,
+  draftRows,
   draftTotals,
   logBoxDraft,
   mergeAnswer,
+  pendingExtra,
   removeRow,
   resolveDraft,
   setGrams,
@@ -22,7 +26,7 @@ import {
 import { boxRemote, store, useLocalQuery } from '@/data/app-data'
 import { nutritionDay } from '@/data/nutrition'
 import type { MonthSpend } from '@/data/pdf-import'
-import type { ParseTurn } from '../../supabase/functions/log-parse/shared'
+import type { CoachAnswer, ParseTurn } from '../../supabase/functions/log-parse/shared'
 import type { I18n } from '@/i18n'
 import { mealName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -83,6 +87,7 @@ export function AiBoxPage() {
     const pending = firstPending(draft)
     const turns: ParseTurn[] = [...history, { role: 'user', text: message }]
     if (pending) turns.push({ role: 'assistant', text: t('box.question.amount', { food: nameInSentence(pending.name, i18n.lang) }) })
+    else if (result.draft.answer) turns.push({ role: 'assistant', text: [result.draft.answer.headline, result.draft.answer.text].filter(Boolean).join('. ') })
     setPhase({ kind: 'review', review: { draft, history: turns, costEur: (previous?.costEur ?? 0) + result.costEur } })
   }
 
@@ -241,11 +246,10 @@ function ReviewView({
 }) {
   const pending = firstPending(review.draft)
   const said = review.history.filter((turn) => turn.role === 'user').map((turn) => turn.text)
-  return pending ? (
-    <QuestionView draft={review.draft} pending={pending} said={said} online={online} onChange={onChange} onAnswer={onAnswer} />
-  ) : (
-    <SummaryView review={review} said={said} onChange={onChange} onLog={onLog} />
-  )
+  if (pending) return <QuestionView draft={review.draft} pending={pending} said={said} online={online} onChange={onChange} onAnswer={onAnswer} />
+  // Vetëm një pyetje për trajnerin, pa asgjë për të regjistruar: përgjigja dhe kutia për mesazhin e radhës.
+  if (review.draft.answer && draftRows(review.draft) === 0 && !pendingExtra(review.draft)) return <CoachView answer={review.draft.answer} said={said} online={online} onAnswer={onAnswer} />
+  return <SummaryView review={review} said={said} onChange={onChange} onLog={onLog} />
 }
 
 function Said({ texts }: { texts: string[] }) {
@@ -378,7 +382,9 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
       return dateA === dateB ? (order.get(mealA as MealKey) ?? 99) - (order.get(mealB as MealKey) ?? 99) : dateA.localeCompare(dateB)
     })
   }, [draft.foods, today])
-  const empty = draft.foods.length + draft.supplements.length + draft.water.length === 0
+  const rows = draftRows(draft)
+  const extra = pendingExtra(draft)
+  const empty = rows === 0 && !extra && !draft.answer
   const added = draftTotals({ ...draft, foods: draft.foods.filter((row) => row.date === today?.date) })
   const edited = draft.foods.find((row) => row.key === editing) ?? null
   const cost = Math.max(0.001, Math.round(review.costEur * 1000) / 1000)
@@ -393,8 +399,12 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
     <div className="flex flex-1 flex-col">
       <div className="flex flex-1 flex-col gap-3.5 px-4 pt-4 pb-4">
         <Said texts={said} />
+        {draft.answer ? <CoachCard answer={draft.answer} /> : null}
         <h2 className="m-0 type-display-s">{t('box.summary.title')}</h2>
         {empty ? <p className="m-0 type-body-l text-muted-foreground">{t('box.summary.empty')}</p> : null}
+        {draft.exercises.map((row) => (
+          <ExerciseCard key={row.key} row={row} onExtra={(accept) => onChange(acceptExtra(draft, row.key, accept))} onRemove={() => onChange(removeRow(draft, row.key))} />
+        ))}
         {groups.map(([key, rows]) => (
           <section key={key} aria-label={header(rows[0])} className={cn(surfaceClass, 'flex flex-col rounded-lg px-3.5 py-1')}>
             <h3 className="m-0 pt-2.5 pb-1.5 type-label text-muted-foreground">{header(rows[0])}</h3>
@@ -475,7 +485,7 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
         <Button
           variant="primary"
           size="xl"
-          disabled={empty || saving}
+          disabled={rows === 0 || saving}
           onClick={() => {
             setSaving(true)
             onLog(draft)
@@ -483,7 +493,9 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
         >
           {t('box.summary.log')}
         </Button>
-        <span className="text-center type-caption text-muted-foreground tabular-nums">{t('box.summary.cost', { cost: fmt.unit(cost, '€', { minDigits: 3, maxDigits: 3 }) })}</span>
+        <span className="text-center type-caption text-muted-foreground tabular-nums">
+          {[extra ? t('box.sets.waiting', { exercise: extra.exerciseName }) : null, t('box.summary.cost', { cost: fmt.unit(cost, '€', { minDigits: 3, maxDigits: 3 }) })].filter(Boolean).join(' · ')}
+        </span>
       </div>
       {edited ? (
         <EditFoodSheet
@@ -581,5 +593,138 @@ function GramsInput({ id, grams, onCommit }: { id: string; grams: number; onComm
       onBlur={() => onCommit(Number(typed.replace(',', '.')))}
       className="h-[52px] min-w-0 flex-1 rounded-md border border-subtle bg-background text-center font-display text-3xl font-extrabold tabular-nums text-foreground"
     />
+  )
+}
+
+/** Përgjigja e trajnerit (V41; bordi V22-Trajneri): numri ose fakti kryesor, pastaj fjalitë. */
+function CoachCard({ answer }: { answer: CoachAnswer }) {
+  const { t } = useI18n()
+  const id = useId()
+  return (
+    <article aria-labelledby={id} className="flex flex-col gap-2.5">
+      <span className="flex items-center gap-2 type-label text-data">
+        <Icon name="shkendija" size={16} />
+        {t('box.coach.label')}
+      </span>
+      <h2 id={id} className="m-0 type-display-s tabular-nums">
+        {answer.headline || t('box.coach.label')}
+      </h2>
+      {answer.text ? <p className="m-0 type-body-l">{answer.text}</p> : null}
+      <span className="type-caption text-muted-foreground">{t('box.coach.source')}</span>
+    </article>
+  )
+}
+
+function CoachView({ answer, said, online, onAnswer }: { answer: CoachAnswer; said: string[]; online: boolean; onAnswer: (message: string) => void }) {
+  const { t } = useI18n()
+  const fieldId = useId()
+  const [message, setMessage] = useState('')
+  const submit = (event: FormEvent) => {
+    event.preventDefault()
+    if (online && message.trim()) onAnswer(message.trim())
+  }
+  return (
+    <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col gap-4 px-4 pt-4 pb-4">
+        <Said texts={said} />
+        <CoachCard answer={answer} />
+      </div>
+      <form onSubmit={submit} className="sticky bottom-0 flex flex-col gap-2 border-t border-border bg-background px-4 pt-2.5 pb-[calc(var(--safe-bottom)+16px)]">
+        <div className="flex items-end gap-2">
+          <label htmlFor={fieldId} className="sr-only">
+            {t('box.coach.ask')}
+          </label>
+          <textarea
+            id={fieldId}
+            rows={1}
+            value={message}
+            placeholder={t('box.coach.ask')}
+            onChange={(event) => setMessage(event.target.value)}
+            className="min-h-[52px] min-w-0 flex-1 resize-none rounded-lg border border-subtle bg-surface p-3.5 type-body-l text-foreground placeholder:text-muted-foreground"
+          />
+          <Button type="submit" variant="secondary" ground="page" size="icon" aria-label={online ? t('box.send') : t('box.sendOffline')} disabled={!online || !message.trim()} className="size-[52px] rounded-lg">
+            <Icon name="dergo" size={22} />
+          </Button>
+        </div>
+        <span className="type-caption text-muted-foreground">{t('box.coach.note')}</span>
+      </form>
+    </div>
+  )
+}
+
+const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1)
+
+/** Setet e një ushtrimi (bordi V22-Kutia-Setet): seanca, tabela, e1RM-ja me rekordin, ose pyetja për shtesën. */
+function ExerciseCard({ row, onExtra, onRemove }: { row: BoxExercise; onExtra: (accept: boolean) => void; onRemove: () => void }) {
+  const { t, fmt } = useI18n()
+  const id = useId()
+  const workout = t('box.sets.header', { date: capitalize(fmt.date(new Date(`${row.date}T12:00:00`))), workout: row.workoutLabel })
+  const kg = (value: number) => fmt.unit(value, 'kg', { minDigits: 1, maxDigits: 1 })
+  const waiting = !row.slot && !row.extra
+  return (
+    <section aria-labelledby={id} className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-lg px-3.5 py-3', waiting && 'border-data')}>
+      <div className="flex items-start gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="type-caption text-muted-foreground">{workout}</span>
+          <h3 id={id} className="m-0 type-title">
+            {row.exerciseName}
+          </h3>
+        </div>
+        <Button variant="ghost" size="icon" aria-label={t('box.edit.remove')} onClick={onRemove} className="-mr-2 text-muted-foreground">
+          <Icon name="mbyll-vrull" size={18} />
+        </Button>
+      </div>
+      <table className="w-full border-collapse type-body tabular-nums">
+        <caption className="sr-only">{t('box.sets.caption', { exercise: row.exerciseName })}</caption>
+        <thead>
+          <tr className="text-left type-caption text-muted-foreground">
+            <th scope="col" className="pb-1.5 font-normal">{t('box.sets.set')}</th>
+            <th scope="col" className="pb-1.5 font-normal">{t('box.sets.weight')}</th>
+            <th scope="col" className="pb-1.5 font-normal">{t('box.sets.reps')}</th>
+            <th scope="col" className="pb-1.5 font-normal">{t('box.sets.rir')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {row.sets.map((set, index) => (
+            <tr key={index} className="border-t border-border">
+              <td className="h-touch">{index + 1}</td>
+              <td>{set.weightKg === null ? t('box.sets.bodyweight') : fmt.unit(set.weightKg, 'kg')}</td>
+              <td>{set.reps}</td>
+              <td className={set.rir === null ? 'text-muted-foreground' : undefined}>{set.rir ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {row.e1rmKg !== null ? (
+        <div className="flex flex-col gap-1 border-t border-border pt-2.5">
+          <span className="flex items-baseline gap-2">
+            <span className="font-display text-2xl font-extrabold tabular-nums">{t('box.sets.e1rm', { value: kg(row.e1rmKg) })}</span>
+            {row.record ? <span className="rounded-sm border border-ember-text px-1.5 type-caption text-ember-text">{t('box.sets.record')}</span> : null}
+          </span>
+          {row.previousBestKg !== null || row.sets.some((set) => set.rir === null) ? (
+            <span className="type-caption text-muted-foreground tabular-nums">
+              {[row.previousBestKg !== null ? t('box.sets.was', { value: kg(row.previousBestKg) }) : null, row.sets.some((set) => set.rir === null) ? t('box.sets.noRir') : null].filter(Boolean).join(' ')}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+      {waiting ? (
+        <div className="flex flex-col gap-2.5 border-t border-border pt-2.5">
+          <span className="flex items-center gap-2 type-label text-data">
+            <Icon name="shkendija" size={16} />
+            {t('box.sets.extraLabel')}
+          </span>
+          <p className="m-0 type-body-strong">{t('box.sets.extraQuestion', { exercise: row.exerciseName, workout: row.workoutLabel })}</p>
+          <div className="flex gap-2">
+            <Button variant="secondary" className="h-12 flex-1 rounded-md font-text text-base font-semibold normal-case tracking-normal" onClick={() => onExtra(true)}>
+              {t('box.sets.extraYes')}
+            </Button>
+            <Button variant="outline" className="h-12 flex-1 rounded-md font-text text-base font-semibold normal-case tracking-normal" onClick={() => onExtra(false)}>
+              {t('box.sets.extraNo')}
+            </Button>
+          </div>
+        </div>
+      ) : null}
+    </section>
   )
 }
