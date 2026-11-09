@@ -92,8 +92,10 @@ describe('Progresi › Arritjet', () => {
     await renderAt('/progresi/arritjet')
 
     const list = await tiles()
-    expect(screen.getByRole('heading', { level: 1, name: 'Progresi' })).toBeInTheDocument()
-    expect(screen.getByText(/^E enjte, 12 nëntor/)).toBeInTheDocument()
+    // Kreu i Progresit si te Përmbledhja (bordi V23-Progresi): titulli, pastaj data dhe java e programit poshtë.
+    const title = screen.getByRole('heading', { level: 1, name: 'Progresi' })
+    expect(title.previousElementSibling).toBeNull()
+    await waitFor(() => expect(title.nextElementSibling).toHaveTextContent(/^E enjte, 12 nëntor · Faza 1 · Java 1$/))
     const tabs = screen.getByRole('tablist', { name: 'Pamjet e Progresit' })
     expect(within(tabs).getAllByRole('tab').map((tab) => [tab.textContent, tab.getAttribute('href'), tab.getAttribute('aria-selected')])).toEqual([
       ['Trupi', '/progresi/trupi', 'false'],

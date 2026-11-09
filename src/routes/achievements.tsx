@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { ProgressTabs } from '@/components/layout/progress-tabs'
-import { ScreenHeader } from '@/components/layout/screen-header'
+import { ProgressHeader } from '@/components/layout/progress-tabs'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { ProgressTrack } from '@/components/ui/progress-bar'
@@ -34,8 +32,7 @@ export function AchievementsPage() {
   const label = snapshot && !snapshot.completed ? programWeekLabel(t, snapshot.plan) : undefined
   return (
     <div className="flex flex-col gap-3.5">
-      <AchievementsHeader label={label} />
-      <ProgressTabs active="achievements" />
+      <ProgressHeader active="achievements" label={label} />
       {view ? (
         <>
           <div className="flex items-baseline justify-between gap-2">
@@ -59,15 +56,6 @@ export function AchievementsPage() {
       {open && view ? <AchievementSheet achievement={open} view={view} onClose={() => navigate(-1)} /> : null}
     </div>
   )
-}
-
-/** Kreu i Progresit: data dhe java e programit sipër, titulli "Progresi". */
-function AchievementsHeader({ label }: { label?: string }) {
-  const { t, fmt } = useI18n()
-  const [now] = useState(() => new Date())
-  const date = fmt.date(now)
-  const eyebrow = date.charAt(0).toLocaleUpperCase() + date.slice(1) + (label ? ` · ${label}` : '')
-  return <ScreenHeader eyebrow={eyebrow} title={t('tab.progress')} />
 }
 
 function AchievementTile({ achievement, view, onOpen }: { achievement: Achievement; view: AchievementsView; onOpen: () => void }) {
