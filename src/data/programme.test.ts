@@ -5,6 +5,7 @@ import { activeProgramHome, weekReview } from './programme'
 import { createLocalStore, type LocalStore } from './store'
 import { finishWorkout, saveSet, skipWorkout, startWorkout, switchProgram, trainingSnapshot } from './training'
 import { acceptWeekWeights } from './week-weights'
+import { setLighterFirstSession } from './welcome-back'
 
 // Ekrani Programi (bordi "Programi"): blloqet me javët, java e treguesit me ditët, datat dhe kohën,
 // ushtrimi i parë me peshën e javës, dhe peshat e javës që presin vendimin. Mostra: e diel 8 nëntor,
@@ -65,7 +66,10 @@ describe('Programi', () => {
     const { store, now } = await atPhaseOneWeekTwo()
     const home = (await activeProgramHome(store, now()))!
     expect(home.next).toMatchObject({ dayId: home.days[0].dayId, inProgress: false })
-    expect(home.next?.first).toMatchObject({ name: 'Bench Press', sets: 4, target: { kind: 'reps', min: 9, max: 11 }, weightKg: 62.5 })
+    // Seanca e fundit e mbyllur ishte 1 nëntor, 7 ditë më parë: "Mirë se u ktheve" (V43) e ul në 90%.
+    expect(home.next?.first).toMatchObject({ name: 'Bench Press', sets: 4, target: { kind: 'reps', min: 9, max: 11 }, weightKg: 55 })
+    await setLighterFirstSession(store, false)
+    expect((await activeProgramHome(store, now()))!.next?.first?.weightKg).toBe(62.5)
   })
 
   it('pas stërvitjes së sotme, e radha bie nesër; seanca e nisur thuhet', async () => {

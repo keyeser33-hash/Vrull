@@ -12,6 +12,7 @@ import { readSchedule, trainingTimeOn } from './schedule-settings'
 import type { LocalStore } from './store'
 import { trainingHistory, trainingSnapshot, type TrainingSnapshot } from './training'
 import { workoutWeights } from './week-weights'
+import { type WelcomeBack, welcomeBack } from './welcome-back'
 
 // Ekrani Sot (V2-E1-06, bordi "Sot"): çfarë i duhet nga baza lokale, në një vend. Java kalendarike
 // me ditët e bëra dhe të pushimit, stërvitja e radhës me kohëzgjatjen (`workoutMinutes`, si te
@@ -106,6 +107,8 @@ export interface TodayExercise {
   target: Target
   /** Pesha e javës (vendimi i përdoruesit ose propozimi); null kur zgjidhet te seti. */
   weightKg: number | null
+  /** Pesha e javës kur seanca e parë pas pushimit e ul `weightKg` në 90% (V43): "55 në vend të 62,5"; përndryshe null. */
+  weekKg: number | null
 }
 
 export interface TodayWorkout {
@@ -142,6 +145,11 @@ export interface TodayView {
   trainingDay: boolean
   /** Pyetja e ditës së humbur (V38): dje ishte ditë stërvitjeje pa seancë; null kur nuk ka. */
   missed: TodayMissed | null
+  /**
+   * "Mirë se u ktheve" (V43): 7 ditë ose më shumë pa seancë të mbyllur, me një program me stërvitje;
+   * null kur nuk ka. Zë vendin e kartës së ditës së humbur. Çelësi: `setLighterFirstSession`.
+   */
+  welcomeBack: WelcomeBack | null
 }
 
 export interface TodayMissed {
@@ -182,6 +190,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     ? { ...question, time: trainingTimeOn(schedule, eatingDate), trainingKcal: (await dayTargets(store, eatingDate, 'training'))?.kcal ?? null }
     : null
   const trainingToday = profile.trainingDays.includes(isoWeekday(now)) || missedInput.dayTypes[today] === 'training'
+  const back = programmeOpen ? await welcomeBack(store) : null
   const base = {
     now,
     snapshot,
@@ -192,6 +201,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     date: eatingDate,
     trainingDay: nutrition.dayType === 'training',
     missed,
+    welcomeBack: back,
   }
   if (!snapshot) return { ...base, mode: 'none', workout: null }
 
@@ -215,11 +225,13 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
   let first: TodayExercise | null = null
   if (current) {
     const exercise = exercises[current.exerciseId]
+    const weight = (await workoutWeights(store, plan)).get(current.slotId)
     first = {
       name: exercise?.name ?? '',
       tracking: exercise?.tracking ?? 'weight_reps',
       target: current.target,
-      weightKg: (await workoutWeights(store, plan)).get(current.slotId)?.weightKg ?? null,
+      weightKg: weight?.weightKg ?? null,
+      weekKg: weight?.weekKg ?? null,
     }
   }
   return {
