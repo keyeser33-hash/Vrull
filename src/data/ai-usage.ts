@@ -1,4 +1,4 @@
-import { AI_MONTHLY_LIMIT_EUR } from '../../supabase/functions/program-import/shared'
+import { AI_MONTHLY_LIMIT_EUR, limitReached } from '../../supabase/functions/_shared/ai'
 import type { LocalStore } from './store'
 
 // Përdorimi i AI-së këtë muaj (V2-E1-11; SPEC V25, bordi "Cilësimet · AI"). Rreshtat e `ai_usage` i
@@ -59,7 +59,7 @@ export async function aiMonth(store: LocalStore, now = store.now()): Promise<AiM
     spentEur,
     limitEur: limit,
     remainingEur: cents(Math.max(0, limit - spent)),
-    reached: spent >= limit,
+    reached: limitReached(spent, limit),
     byFeature,
     resetsOn: new Date(now.getFullYear(), now.getMonth() + 1, 1),
   }

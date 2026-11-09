@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       skip:
-        description: 'Pjesët që kapërcehen, të ndara me presje: njoftimi, kamera, muzika, anglishtja, mbyllja, rikujtuesit, navigimi, instalimi'
+        description: 'Pjesët që kapërcehen, të ndara me presje: njoftimi, kamera, muzika, anglishtja, mbyllja, rikujtuesit, navigimi, kutia, instalimi'
         required: false
         default: ''
         type: string

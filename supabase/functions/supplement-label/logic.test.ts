@@ -1,5 +1,5 @@
 import * as importLogic from '../program-import/logic'
-import { AI_MONTHLY_LIMIT_EUR as IMPORT_LIMIT } from '../program-import/shared'
+import { AI_MONTHLY_LIMIT_EUR as IMPORT_LIMIT } from '../program-import/logic'
 import { AI_MONTHLY_LIMIT_EUR, API_VERSION, buildRequest, costOf, imageType, interpret, LABEL_SCHEMA, MODEL, monthStart, USD_PER_EUR } from './logic'
 
 // Leximi i etiketës (V39, V2-E2-10): kërkesa, kostoja dhe interpretimi i përgjigjes.

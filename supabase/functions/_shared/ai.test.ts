@@ -1,4 +1,4 @@
-import { AI_MONTHLY_LIMIT_EUR, costOf, limitFrom, monthStart, tokensOf, withBudget, type UsageStore } from './ai'
+import { AI_MONTHLY_LIMIT_EUR, costOf, limitFrom, limitReached, monthStart, tokensOf, withBudget, type UsageStore } from './ai'
 
 // Kostoja dhe kufiri i përbashkët i AI-së (V42): tokenat me cache-in, rezervimi para punës, kërkesat paralele.
 const MONTH = '2026-11-01'
@@ -71,6 +71,16 @@ describe('kufiri', () => {
     expect(outcome).toEqual({ kind: 'limit', month: { month: MONTH, spentEur: AI_MONTHLY_LIMIT_EUR, limitEur: AI_MONTHLY_LIMIT_EUR } })
     expect(called).toBe(false)
     expect(usage.live().map((row) => row.eur)).toEqual([AI_MONTHLY_LIMIT_EUR])
+  })
+
+  it('"u arrit" kur nuk mbetet as për thirrjen më të vogël; numrat me presje nuk e kalojnë kufirin', async () => {
+    expect([limitReached(9.98, 10), limitReached(9.99, 10), limitReached(9.995, 10), limitReached(10, 10)]).toEqual([false, false, true, true])
+    expect(limitReached(0.1 + 0.2, 0.31)).toBe(false)
+    // withBudget me rezervimin 0,01 € refuzon pikërisht kur limitReached thotë "u arrit".
+    for (const spent of [9.98, 9.99, 9.995]) {
+      const outcome = await run(memoryUsage(spent).store, async () => reply({ input_tokens: 1, output_tokens: 1 }))
+      expect(outcome.kind === 'limit').toBe(limitReached(spent, AI_MONTHLY_LIMIT_EUR))
+    }
   })
 
   it('kufiri i personit vjen nga thirrësi', async () => {

@@ -260,10 +260,30 @@ Regjistrimet që përdoruesi bën më shpesh në një vakt; "Hëngra si zakonish
 Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kalorinë që mbeten nga **Objektivat** e ditës.
 
 **Kufiri i AI-së**:
-Shuma mujore që AI mund të harxhojë për një përdorues (parazgjedhje €10); kur arrihet, AI ndalet deri në muajin tjetër.
+Shuma mujore që AI mund të harxhojë për një përdorues (pronari 40 €, çdo mik 10 €; e ndryshon **Admini**); kur arrihet, AI ndalet deri në muajin tjetër.
 
 **Kostoja e AI-së**:
 Sa kushtoi një thirrje te AI-ja, nga tokenat që kthen ofruesi, në euro; ruhet në server për përdoruesin dhe muajin dhe numërohet te **Kufiri i AI-së**, edhe kur leximi dështon.
+
+**Kutia e AI-së**:
+Fusha te Sot ku përdoruesi shkruan ose thotë çfarë hëngri, piu, mori ose bëri, ose pyet për ditën e vet; AI-ja e kthen në rreshta që kontrollohen te **Përmbledhja e kutisë** para se të regjistrohen.
+_Avoid_: chat, asistenti
+
+**Përmbledhja e kutisë**:
+Rreshtat që lexoi kutia (ushqime, ujë, suplemente, sete), secili me ditën, vaktin dhe sasinë, që përdoruesi i ndryshon ose i heq para "Regjistro të gjitha".
+_Avoid_: drafti (është programi që po ndërtohet)
+
+**Trajneri**:
+Përgjigja e kutisë kur mesazhi është pyetje, vetëm nga të dhënat e përdoruesit (objektivat, ushqimi, plani, stërvitjet), pa këshilla mjekësore.
+
+**Si dje**:
+I njëjti vakt i djeshëm, i regjistruar sot me një prekje me porcionet e tij.
+
+**Të preferuarat**:
+Ushqimet e shënuara me yll, secili me porcionin e vet, që regjistrohen me një prekje te çdo vakt.
+
+**Makrot e shpejta**:
+Një vakt pa ushqime, vetëm me emrin, kaloritë dhe makrot (p.sh. një drekë jashtë); regjistrohet si një porcion.
 
 **Versioni i listës**:
 Një publikim i ndryshimeve të **Adminit** te lista vendase e ushqimeve; përdoruesit e marrin në sinkronizimin e radhës.

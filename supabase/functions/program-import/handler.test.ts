@@ -69,6 +69,14 @@ describe('importi i programit: kufiri dhe kostoja', () => {
     expect(usage.live()).toHaveLength(1)
   })
 
+  it('i njëjti rregull "u arrit" si kutia (_shared/ai.ts): me 9,995 € jo; me 8,50 € po, edhe pse rezervimi është 2 €', async () => {
+    const refused = vi.fn()
+    expect(await runImport({ month: MONTH, request: {}, usage: memoryUsage(9.995).store, callClaude: refused })).toMatchObject({ status: 429, body: { error: 'limit' } })
+    expect(refused).not.toHaveBeenCalled()
+    const reply = await runImport({ month: MONTH, request: {}, usage: memoryUsage(8.5).store, callClaude: async () => streamResponse(complete()) })
+    expect(reply.status).toBe(200)
+  })
+
   it('50 kërkesa paralele nuk e kapërcejnë kufirin më shumë se me një thirrje', async () => {
     // Rishikimi i E1: kufiri kontrollohej para thirrjes dhe kostoja shkruhej pas saj (deri në 140 s), ndaj
     // 50 kërkesa njëkohësisht kalonin të gjitha.

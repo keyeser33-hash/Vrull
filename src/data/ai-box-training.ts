@@ -3,11 +3,15 @@ import type { LocalStore } from './store'
 import { activeProgram, exerciseFromLibrary, finishWorkout, saveSet, sessionForNext, trainingHistory } from './training'
 import type { I18n } from '@/i18n'
 import { programDayName } from '@/i18n/domain'
-import { localDate } from '@/lib/calendar'
+import { localDate, shiftDate } from '@/lib/calendar'
 import { planSession } from '@/program/engine'
 import type { Pointer } from '@/program/types'
 import { loadLibrary } from '@/program/library'
-import { e1rm } from '@/program/loads'
+import { e1rm, e1rmRecord, type HistorySet } from '@/program/loads'
+
+type DraftSetRow = DraftExercise['sets'][number]
+/** Seti i mesazhit si set historie, vetëm për rregullin e rekordit (nuk ruhet). */
+const BOX_SET: HistorySet = { id: 'box', exerciseId: '', sessionId: 'box', run: 0, blockPosition: 0, blockName: '', blockWeeks: 0, week: 0, setNumber: 1, weightKg: null, reps: null, rir: null, isWarmup: false, loggedAt: '' }
 
 // Setet nga kutia e AI-së (V40, V2-E2-14; bordi V22-Kutia-Setet): stërvitjet që mund të marrin sete (e sotmja
 // ose e radhës dhe ato të 7 ditëve të fundit), setet e zgjidhura te sloti i tyre me e1RM-në dhe rekordin,
@@ -37,11 +41,7 @@ export interface TrainingRefs {
   >
 }
 
-const daysBefore = (date: string, days: number) => {
-  const day = new Date(`${date}T12:00:00`)
-  day.setDate(day.getDate() - days)
-  return localDate(day)
-}
+const daysBefore = (date: string, days: number) => shiftDate(date, -days)
 
 /** Stërvitjet e kontekstit: seancat e bëra ose të hapura të 7 ditëve dhe e radha kur s'është nisur. */
 export async function workoutContext(store: LocalStore, today: string, { t }: I18n): Promise<{ workouts: ContextWorkout[]; refs: TrainingRefs }> {
@@ -188,6 +188,9 @@ export async function resolveSets(store: LocalStore, sets: DraftExercise[], refs
     const previous = exerciseId
       ? Math.max(0, ...history.filter((set) => set.exerciseId === exerciseId && !set.isWarmup).map((set) => e1rm(set.weightKg, set.reps, set.rir) ?? 0))
       : 0
+    // Rregulli i rekordit vetëm te e1rmRecord (MESIMET): seti më i mirë i mesazhit kundrejt historisë.
+    const top = item.sets.reduce<DraftSetRow | null>((winner, set) => ((e1rm(set.weightKg, set.reps, set.rir) ?? 0) > (winner ? (e1rm(winner.weightKg, winner.reps, winner.rir) ?? 0) : 0) ? set : winner), null)
+    const record = exerciseId && top ? e1rmRecord({ ...BOX_SET, exerciseId, weightKg: top.weightKg, reps: top.reps, rir: top.rir }, history) : null
     exercises.push({
       key: `exercise-${++nextKey}`,
       said: item.said,
@@ -201,7 +204,7 @@ export async function resolveSets(store: LocalStore, sets: DraftExercise[], refs
       match,
       e1rmKg: best > 0 ? Math.round(best * 10) / 10 : null,
       previousBestKg: previous > 0 ? Math.round(previous * 10) / 10 : null,
-      record: best > 0 && previous > 0 && best > previous,
+      record: record !== null,
     })
   }
   return { exercises, unmatched }
@@ -258,7 +261,8 @@ export async function logSets(store: LocalStore, exercises: BoxExercise[], refs:
         setNumber,
         weightKg: set.weightKg,
         reps: set.reps,
-        rir: set.rir,
+        // set_logs.rir në server: numër i plotë 0–10.
+        rir: set.rir === null ? null : Math.min(10, Math.max(0, Math.round(set.rir))),
       })
       saved += 1
     }

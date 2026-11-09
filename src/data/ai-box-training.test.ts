@@ -97,4 +97,20 @@ describe('setet', () => {
     expect(session).toMatchObject({ status: 'completed', day_id: before.dayId })
     expect((await trainingSnapshot(store))!.pointer.dayId).not.toBe(before.dayId)
   })
+
+  it('dy ushtrime shtesë në të njëjtën seancë: secili me setin 1 të vet; RIR-i ruhet numër i plotë', async () => {
+    const { store, sessionId } = await setup()
+    const { refs } = await workoutContext(store, '2026-11-17', sq)
+    const extra = (said: string, exerciseName: string, rir: number | null) => ({ said, workoutRef: 'w2', exerciseRef: null, exerciseName, sets: [{ reps: 12, weightKg: null, rir }], day: -1 as const })
+    const { exercises } = await resolveSets(store, [extra('dips', 'Dips', null), extra('pushups', 'Pushups', 2.5)], refs, '2026-11-17')
+    expect(exercises.map((row) => row.exerciseName)).toEqual(['Dips - Chest Version', 'Pushups'])
+    expect(await logSets(store, exercises.map((row) => ({ ...row, extra: true })), refs)).toBe(2)
+    const extras = (await store.where('set_logs', 'session_id', sessionId)).filter((row) => row.slot_id == null)
+    expect(new Set(extras.map((row) => row.exercise_id)).size).toBe(2)
+    expect(extras.map((row) => [Number(row.set_number), row.rir ?? null])).toEqual(expect.arrayContaining([
+      [1, 3],
+      [1, null],
+    ]))
+    expect(extras).toHaveLength(2)
+  })
 })

@@ -2,9 +2,6 @@
 // (`src/data/ai-usage.ts`, `src/program/pdf-import.ts`, ekrani "Importo nga PDF"). Pa varësi dhe pa
 // Deno: skema e daljes dhe udhëzimet e modelit mbeten te logic.ts, jashtë app-it.
 
-/** Kufiri i AI-së për person në muaj (V25). Faqja e Adminit e bën për person me Etapën 2 (V31). */
-export const AI_MONTHLY_LIMIT_EUR = 10
-
 /** 15 MB: PDF-ja, base64-ja dhe kërkesa rrinë bashkë në 256 MB memorie të funksionit. */
 export const MAX_PDF_BYTES = 15 * 1024 * 1024
 

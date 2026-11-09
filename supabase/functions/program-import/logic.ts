@@ -10,9 +10,11 @@
 //   https://platform.claude.com/docs/en/build-with-claude/streaming
 // Kufijtë dhe tipet që i lexon edhe app-i jetojnë te shared.ts, që skema dhe udhëzimet e modelit të mos
 // hyjnë në app.
-import { AI_MONTHLY_LIMIT_EUR, type Draft, type ImportErrorCode, type Language, MAX_PDF_BYTES } from './shared.ts'
+import { AI_MONTHLY_LIMIT_EUR, costOf as costFor, LIMIT_TIME_ZONE, monthStart, type Tokens, USD_PER_EUR } from '../_shared/ai.ts'
+import { type Draft, type ImportErrorCode, type Language, MAX_PDF_BYTES } from './shared.ts'
 
-export { AI_MONTHLY_LIMIT_EUR, MAX_PDF_BYTES }
+// Kursi, muaji, çmimet dhe kufiri: _shared/ai.ts, të njëjtët për çdo veçori me AI.
+export { AI_MONTHLY_LIMIT_EUR, LIMIT_TIME_ZONE, MAX_PDF_BYTES, monthStart, USD_PER_EUR }
 export type { Draft, Language, Target } from './shared.ts'
 
 /**
@@ -25,19 +27,6 @@ export type { Draft, Language, Target } from './shared.ts'
  */
 export const MODEL = 'claude-sonnet-5-5'
 export const API_VERSION = '2026-10-21'
-
-/** Çmimet e Claude Sonnet 5.5 në USD për milion tokena (pricing, 08.11.2026). */
-export const PRICE_USD_PER_MTOK = { input: 2, output: 10, cacheWrite: 2.5, cacheRead: 0.1 } as const
-
-/**
- * Kursi i referencës i Bankës Qendrore Evropiane më 06.11.2026: 1 EUR = 1,1165 USD
- * (https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml). Përditësohet me dorë kur kursi
- * lëviz dukshëm; kostoja e ruajtur mban të dyja vlerat.
- */
-export const USD_PER_EUR = 1.1165
-
-/** Muaji i kufirit sipas orës së Tiranës: AI-ja rinis më 1 të muajit atje. */
-export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 
 /** Dalja (mendimi dhe JSON-i); programi i Shortcut to Size zë rreth 7 000. */
 export const MAX_TOKENS = 32_000
@@ -60,30 +49,10 @@ export type ImportError = Extract<ImportErrorCode, 'ai_failed' | 'unreadable' | 
 
 // ——— Muaji dhe kostoja ———
 
-/** "2026-11-01": dita e parë e muajit të `date` në Tiranë. */
-export function monthStart(date: Date): string {
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: LIMIT_TIME_ZONE, year: 'numeric', month: '2-digit' }).formatToParts(date)
-  const part = (type: string) => parts.find((entry) => entry.type === type)?.value ?? ''
-  return `${part('year')}-${part('month')}-01`
-}
+export type Usage = Tokens
 
-export interface Usage {
-  inputTokens: number
-  outputTokens: number
-  cacheWriteTokens: number
-  cacheReadTokens: number
-}
-
-export function costOf(usage: Usage): { usd: number; eur: number } {
-  const usd =
-    (usage.inputTokens * PRICE_USD_PER_MTOK.input +
-      usage.outputTokens * PRICE_USD_PER_MTOK.output +
-      usage.cacheWriteTokens * PRICE_USD_PER_MTOK.cacheWrite +
-      usage.cacheReadTokens * PRICE_USD_PER_MTOK.cacheRead) /
-    1_000_000
-  const round = (value: number) => Math.round(value * 1_000_000) / 1_000_000
-  return { usd: round(usd), eur: round(usd / USD_PER_EUR) }
-}
+/** Kostoja e një leximi me çmimet e Sonnet 5.5 (_shared/ai.ts). */
+export const costOf = (usage: Usage) => costFor(MODEL, usage)
 
 // ——— Skedari dhe kërkesa ———
 

@@ -554,6 +554,19 @@ function fakeResponse(request) {
   if (url.pathname === '/functions/v1/song-tempo') {
     return [200, body?.title === 'Prova e ritmit' ? { configured: true, bpm: 128, url: 'https://getsongbpm.com/' } : { configured: true, bpm: null }]
   }
+  // Kutia e AI-së (log-parse, V2-E2-13): një draft si nga AI-ja; foto e pjatës (V2-E2-16) kthen një ushqim të ri.
+  if (url.pathname === '/functions/v1/log-parse') {
+    const food = (name, grams, per100, meal) => ({ said: name, ref: null, name, grams, portion: '', estimated: !!body?.image, per100, options: [], meal, time: null, day: 0 })
+    const draft = { foods: [], water: [], supplements: [], sets: [], answer: null, notUnderstood: [] }
+    const usage = { inputTokens: 2500, outputTokens: 170, cacheWriteTokens: 0, cacheReadTokens: 6200, costEur: 0.0004, ms: 3000 }
+    const month = { month: '2026-12-01', spentEur: 0.01, limitEur: 10 }
+    // Një trup i madh (fotoja) mund të vijë pa postData te Fetch.requestPaused (CDP e shkurton): atëherë është fotoja.
+    if (body?.image || (request.hasPostData && !request.postData)) {
+      report.photoRequest = body?.image ? { mediaType: body.image.mediaType, bytes: Math.round((body.image.data.length * 3) / 4), text: body.text } : { mediaType: null, bytes: null, text: null }
+      return [200, { draft: { ...draft, foods: [food('Makarona me karkaleca', 350, { kcal: 165, proteinG: 7.5, carbsG: 20, fatG: 6 }, 'dinner')] }, usage, month }]
+    }
+    return [200, { draft: { ...draft, foods: [food('Pulë e pjekur', 200, { kcal: 239, proteinG: 27.3, carbsG: 0, fatG: 13.6 }, 'lunch')], water: [{ ml: 500, time: null, day: 0 }] }, usage, month }]
+  }
   if (url.pathname.startsWith('/rest/v1/')) {
     if (request.method === 'GET') return [200, []]
     // upsert me return=representation: serveri kthen rreshtat me kursorin e tij.
@@ -1580,6 +1593,62 @@ try {
   }
 
   // ==== F. Instalim i ri (një mik): hyrja në gjuhën e telefonit, hapat e parë me gjuhën ====
+  // D10. Kutia e AI-së dhe vakti i shpejtë (V2-E2-13, V2-E2-16): tastiera te kutia, drafti dhe regjistrimi,
+  // makrot e shpejta pa AI, foto e pjatës e zvogëluar me canvas në WebView. log-parse është i imituar.
+  await section('kutia', 'Kutia e AI-së, makrot dhe foto e pjatës', async () => {
+    await goHome(page)
+    await click(page, 'a[href="/kutia"]')
+    await waitForHeading(page, 'Kutia e AI-së')
+    await page.evaluate(`(() => {
+      const field = document.querySelector('textarea')
+      field.focus()
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(field, 'Në drekë 200 g pulë dhe dy gota ujë')
+      field.dispatchEvent(new Event('input', { bubbles: true }))
+    })()`)
+    await clickButton(page, 'Dërgo')
+    await waitForText(page, 'Pulë e pjekur')
+    screenshot('kutia-permbledhja')
+    await clickButton(page, 'Regjistro të gjitha')
+    await waitForPath(page, '/')
+    const afterBox = await readDb(page, ['diary_entries', 'water_logs'])
+    check('kutia: ushqimi dhe uji regjistrohen nga drafti', afterBox.diary_entries.some((row) => row.grams === 200 && !row.deleted_at) && afterBox.water_logs.some((row) => Number(row.ml) === 500 && !row.deleted_at), `${afterBox.diary_entries.length} ushqime, ${afterBox.water_logs.length} ujë`)
+
+    await page.evaluate(`location.assign('/ushqimi?vakti=dinner')`)
+    await clickButton(page, 'Makrot')
+    await waitForText(page, 'Makrot e shpejta')
+    for (const [label, value] of [['Emri', 'Darkë jashtë'], ['Kalori', '650'], ['Proteina', '40'], ['Karbohidrate', '60'], ['Yndyrë', '25']]) {
+      await page.evaluate(`(() => {
+        const label = [...document.querySelectorAll('[role="dialog"] label')].find((item) => item.textContent.trim().startsWith(${JSON.stringify(label)}))
+        const input = label.control ?? document.getElementById(label.htmlFor)
+        input.focus()
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, ${JSON.stringify(value)})
+        input.dispatchEvent(new Event('input', { bubbles: true }))
+      })()`)
+    }
+    await waitForText(page, 'Ruhet 650.')
+    screenshot('makrot')
+    await clickButton(page, 'Ruaj te Darka')
+    await waitFor(async () => (await readDb(page, ['diary_entries'])).diary_entries.some((row) => Number(row.kcal) === 650 && row.meal === 'dinner' && !row.deleted_at), 'makrot te Darka')
+    check('makrot e shpejta: 650 kcal te Darka, pa AI', true)
+
+    // "Foto" do të hapte zgjedhësin e kamerës; skedari i jepet drejt input-it, si pas fotos.
+    await page.evaluate(`location.assign('/ushqimi?vakti=dinner')`)
+    await waitFor(() => page.evaluate(`!!document.querySelector('[role="dialog"] input[type="file"]')`), 'fleta e Darkës me Foto')
+    await choosePhoto(page, '[role="dialog"] input[type="file"]')
+    await waitForPath(page, '/kutia')
+    await waitForText(page, 'Makarona me karkaleca')
+    const photo = report.photoRequest
+    if (photo && photo.mediaType === null) info('foto e pjatës', 'CDP nuk e dha trupin e kërkesës (i madh); fotoja u dërgua')
+    else check('foto e pjatës: JPEG i zvogëluar dërgohet me vaktin', photo?.mediaType === 'image/jpeg' && photo.bytes > 1000 && photo.bytes < 7_000_000, JSON.stringify(photo))
+    const placed = (await readDb(page, ['diary_entries'])).diary_entries.filter((row) => Number(row.grams) === 350 && !row.deleted_at)
+    check('foto e pjatës: ushqimi te Darka e fletës, jo te dreka që tha AI-ja', placed.length === 0, `${placed.length} rreshta para regjistrimit`)
+    await clickButton(page, 'Regjistro të gjitha')
+    await waitFor(async () => (await readDb(page, ['diary_entries'])).diary_entries.some((row) => Number(row.grams) === 350 && row.meal === 'dinner' && !row.deleted_at), 'foto te Darka')
+    check('foto e pjatës: regjistrohet te Darka', true)
+    screenshot('foto-pjata')
+    await goHome(page)
+  })
+
   await section('instalimi', 'Instalim i ri, hapat e parë dhe përditësimi v2 → v3', async () => {
     page?.close()
     adb('uninstall', PKG)

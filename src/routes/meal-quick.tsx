@@ -51,7 +51,7 @@ export function QuickActions({ date, meal, onMacros }: { date: string; meal: Mea
     event.target.value = ''
     if (!file) return
     const { data } = await compressPhoto(file, PHOTO_MAX_PX, 0.85)
-    navigate('/kutia', { state: { photo: { mediaType: 'image/jpeg', data: toBase64(data) }, text: t('food.photo.message', { meal: nameInSentence(mealName(t, meal.meal), lang) }) } })
+    navigate('/kutia', { state: { photo: { mediaType: 'image/jpeg', data: toBase64(data) }, text: t('food.photo.message', { meal: nameInSentence(mealName(t, meal.meal), lang) }), target: { date, meal: meal.meal } } })
   }
 
   const planProtein = Math.round(meal.templateTotals.proteinG)
@@ -160,9 +160,9 @@ function PortionList({
                 aria-pressed={starred}
                 disabled={busy}
                 onClick={() => onStar(item)}
-                className={cn('text-xl', starred ? 'text-foreground' : 'text-muted-foreground')}
+                className={starred ? 'text-ember-text' : 'text-muted-foreground'}
               >
-                <span aria-hidden>{starred ? '★' : '☆'}</span>
+                <Icon name="yll" size={20} />
               </Button>
               <Button variant="outline" size="icon" aria-label={t('food.quick.add', { food: name, portion: portionText(item) })} disabled={busy} onClick={() => onAdd(item)} className="rounded-md">
                 <Icon name="plus" size={20} />

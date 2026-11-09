@@ -329,6 +329,9 @@ describe('drafti', () => {
         water: [
           { ml: 500, time: '', day: 'today' },
           { ml: 90_000, time: '', day: 'today' },
+          // "3 litra" dhe një e treta e litrit: mililitra të plotë (water_logs.ml smallint); app-i ndan mbi 2 000.
+          { ml: 3_000, time: '', day: 'today' },
+          { ml: 333.3, time: '', day: 'today' },
         ],
         supplements: [
           { ref: 's2', amount: 1, meal: '', time: '', day: 'yesterday' },
@@ -349,7 +352,11 @@ describe('drafti', () => {
       ok: true,
       draft: {
         foods: [],
-        water: [{ ml: 500, time: null, day: 0 }],
+        water: [
+          { ml: 500, time: null, day: 0 },
+          { ml: 3000, time: null, day: 0 },
+          { ml: 333, time: null, day: 0 },
+        ],
         supplements: [
           { ref: 's2', amount: 1, meal: null, time: null, day: -1 },
           { ref: 's1', amount: 1, meal: 'breakfast_1', time: '07:00', day: 0 },
@@ -379,7 +386,7 @@ describe('drafti', () => {
             workout_ref: 'w1',
             exercise_ref: 'e9',
             exercise_name: 'Dips',
-            sets: [{ reps: 12, weight_kg: -1, rir: 2 }],
+            sets: [{ reps: 12, weight_kg: -1, rir: 2.5 }],
             day: 'yesterday',
           },
           {
@@ -417,7 +424,8 @@ describe('drafti', () => {
         workoutRef: 'w1',
         exerciseRef: null,
         exerciseName: 'Dips',
-        sets: [{ reps: 12, weightKg: null, rir: 2 }],
+        // set_logs.rir smallint: 2,5 → 3.
+        sets: [{ reps: 12, weightKg: null, rir: 3 }],
         day: -1,
       },
     ])

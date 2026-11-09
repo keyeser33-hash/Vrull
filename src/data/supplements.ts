@@ -176,13 +176,14 @@ export async function setSupplementEnabled(store: LocalStore, id: string, enable
 /**
  * Shënon suplementin të marrë (ose e heq shenjën). Një pluhur proteine që numërohet te ushqimi shton
  * te vakti një regjistrim me makrot e tij, një herë dhe vetëm kur vakti nuk ka pluhurin e planit;
- * heqja e shenjës e heq. Kthen rreshtat e krijuar.
+ * heqja e shenjës e heq. `amount`: sa doza (kutia e AI-së, "dy lugë"); pa të, një. Kthen rreshtat e krijuar.
  */
 export async function setSupplementTaken(
   store: LocalStore,
-  input: { date: string; supplementId: string; meal: MealKey },
+  input: { date: string; supplementId: string; meal: MealKey; amount?: number },
   taken: boolean,
 ): Promise<{ log: string | null; diary: string | null }> {
+  const doses = input.amount !== undefined && Number.isFinite(input.amount) && input.amount > 0 ? Math.round(input.amount * 100) / 100 : 1
   const logs = await store.where('supplement_logs', 'date', input.date)
   const existing = logs.find((row) => row.supplement_id === input.supplementId && row.timing === input.meal)
   const supplement = (await supplementList(store)).find((item) => item.id === input.supplementId)
@@ -194,7 +195,9 @@ export async function setSupplementTaken(
     for (const row of entries) await store.remove('diary_entries', row.id)
     return { log: null, diary: null }
   }
-  const log = existing ? null : (await store.put('supplement_logs', { date: input.date, supplement_id: input.supplementId, timing: input.meal, taken_at: store.now().toISOString() })).id
+  const log = existing
+    ? null
+    : (await store.put('supplement_logs', { date: input.date, supplement_id: input.supplementId, timing: input.meal, taken_at: store.now().toISOString(), ...(input.amount === undefined ? {} : { amount: doses }) })).id
   let diary: string | null = null
   if (foodId && serving && supplement && entries.length === 0 && !(await mealPowder(store, input.date, input.meal)).plan) {
     const round1 = (value: number) => Math.round(value * 10) / 10
@@ -203,11 +206,11 @@ export async function setSupplementTaken(
         date: input.date,
         meal: input.meal,
         food_id: foodId,
-        grams: round1(serving.grams),
-        kcal: round1(supplement.macros!.kcal * serving.scoops),
-        protein_g: round1(supplement.macros!.proteinG * serving.scoops),
-        carbs_g: round1(supplement.macros!.carbsG * serving.scoops),
-        fat_g: round1(supplement.macros!.fatG * serving.scoops),
+        grams: round1(serving.grams * doses),
+        kcal: round1(supplement.macros!.kcal * serving.scoops * doses),
+        protein_g: round1(supplement.macros!.proteinG * serving.scoops * doses),
+        carbs_g: round1(supplement.macros!.carbsG * serving.scoops * doses),
+        fat_g: round1(supplement.macros!.fatG * serving.scoops * doses),
         logged_at: store.now().toISOString(),
       })
     ).id

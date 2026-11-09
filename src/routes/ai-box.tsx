@@ -10,6 +10,7 @@ import {
   type BoxError,
   type BoxExercise,
   type BoxFood,
+  type BoxSupplement,
   acceptExtra,
   boxContext,
   chooseOption,
@@ -19,11 +20,13 @@ import {
   mergeAnswer,
   notLogged,
   pendingExtra,
+  placeFoods,
   removeRow,
   resolveDraft,
   setGrams,
   setMeal,
 } from '@/data/ai-box'
+import { AI_MONTHLY_LIMIT_EUR } from '@/data/ai-usage'
 import { boxRemote, store, useLocalQuery } from '@/data/app-data'
 import { nutritionDay } from '@/data/nutrition'
 import type { MonthSpend } from '@/data/pdf-import'
@@ -31,6 +34,7 @@ import type { CoachAnswer, ParseRequest, ParseTurn } from '../../supabase/functi
 import type { I18n } from '@/i18n'
 import { mealName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
+import { shiftDate } from '@/lib/calendar'
 import { euro } from './ai-format'
 import { boxText } from '@/lib/box-text'
 import { cn } from '@/lib/cn'
@@ -51,6 +55,14 @@ interface Review {
   /** Mesazhet e përdoruesit dhe pyetjet, për një përgjigje të lirë. */
   history: ParseTurn[]
   costEur: number
+  /** Dita e ushqimit kur u dërgua mesazhi (V46): "sot" te përmbledhja, edhe kur rreshti i parë është i djeshëm. */
+  foodDate: string
+}
+
+/** Foto nga fleta e vaktit (V2-E2-16): vakti dhe dita e fletës, që fotoja të mos varet nga fjalët. */
+interface PhotoTarget {
+  date: string
+  meal: MealKey
 }
 
 const firstPending = (draft: BoxDraft) => draft.foods.find((row) => row.grams === null) ?? null
@@ -68,11 +80,11 @@ export function AiBoxPage() {
   // Foto e pjatës nga fleta e vaktit (V2-E2-16): dërgohet menjëherë, një herë, pa prekur tekstin e ruajtur.
   const photoSent = useRef(false)
   useEffect(() => {
-    const state = location.state as { photo?: BoxPhoto; text?: string } | null
+    const state = location.state as { photo?: BoxPhoto; text?: string; target?: PhotoTarget } | null
     if (!state?.photo || photoSent.current) return
     photoSent.current = true
     navigate(location.pathname, { replace: true, state: null })
-    void send(state.text ?? '', null, state.photo)
+    void send(state.text ?? '', null, state.photo, state.target)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -82,7 +94,7 @@ export function AiBoxPage() {
   }
 
   /** Dërgon mesazhin (ose përgjigjen e lirë te pyetja) dhe e bashkon me draftin që ekziston. */
-  async function send(message: string, previous: Review | null, image?: BoxPhoto) {
+  async function send(message: string, previous: Review | null, image?: BoxPhoto, target?: PhotoTarget) {
     const now = new Date()
     const history = previous?.history ?? []
     setPhase({ kind: 'reading', text: message })
@@ -98,13 +110,14 @@ export function AiBoxPage() {
       setPhase(previous ? { kind: 'review', review: previous } : { kind: 'compose', error: result.error, month: 'month' in result ? result.month : undefined })
       return
     }
-    const resolved = await resolveDraft(store, result.draft, box, now)
+    const parsed = await resolveDraft(store, result.draft, box, now)
+    const resolved = target ? placeFoods(parsed, target) : parsed
     const draft = previous ? mergeAnswer(previous.draft, resolved) : resolved
     const pending = firstPending(draft)
     const turns: ParseTurn[] = [...history, { role: 'user', text: message }]
     if (pending) turns.push({ role: 'assistant', text: t('box.question.amount', { food: nameInSentence(pending.name, i18n.lang) }) })
     else if (result.draft.answer) turns.push({ role: 'assistant', text: [result.draft.answer.headline, result.draft.answer.text].filter(Boolean).join('. ') })
-    setPhase({ kind: 'review', review: { draft, history: turns, costEur: (previous?.costEur ?? 0) + result.costEur } })
+    setPhase({ kind: 'review', review: { draft, history: turns, costEur: (previous?.costEur ?? 0) + result.costEur, foodDate: previous?.foodDate ?? box.request.date } })
   }
 
   async function logAll(draft: BoxDraft) {
@@ -145,7 +158,7 @@ export function AiBoxPage() {
 }
 
 function errorText({ t, fmt }: I18n, error: BoxError, month?: MonthSpend): string {
-  if (error === 'limit') return t('box.error.limit', { spent: euro(fmt, month?.spentEur ?? 0), limit: euro(fmt, month?.limitEur ?? 10) })
+  if (error === 'limit') return t('box.error.limit', { spent: euro(fmt, month?.spentEur ?? 0), limit: euro(fmt, month?.limitEur ?? AI_MONTHLY_LIMIT_EUR) })
   if (error === 'too_long') return t('box.error.tooLong')
   if (error === 'unauthorized') return t('box.error.unauthorized')
   return t('box.error.failed')
@@ -377,8 +390,8 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
   const { draft } = review
   const [editing, setEditing] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
-  const date = draft.foods[0]?.date ?? draft.supplements[0]?.date ?? draft.water[0]?.date
-  const today = useLocalQuery(async () => (date ? nutritionDay(store, date, new Date()) : null), [date])
+  const date = review.foodDate
+  const today = useLocalQuery(() => nutritionDay(store, date, new Date()), [date])
   const slotTime = useMemo(() => new Map((today?.meals ?? []).map((slot) => [slot.meal, slot.time])), [today])
   const groups = useMemo(() => {
     const order = new Map((today?.meals ?? []).map((slot, index) => [slot.meal, index]))
@@ -399,10 +412,14 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
   const skipped = notLogged(draft)
   const added = draftTotals({ ...draft, foods: draft.foods.filter((row) => row.date === today?.date) })
   const edited = draft.foods.find((row) => row.key === editing) ?? null
+  const editedSupplement = draft.supplements.find((row) => row.key === editing) ?? null
+  const mealKeys = (today?.meals ?? []).map((slot) => slot.meal)
   const cost = Math.max(0.001, Math.round(review.costEur * 1000) / 1000)
   const header = (row: { date: string; meal: MealKey }) => {
     const meal = mealName(t, row.meal)
-    if (today && row.date !== today.date) return t('box.summary.yesterday', { meal })
+    if (row.date === shiftDate(date, -1)) return t('box.summary.yesterday', { meal })
+    // Foto nga fleta e një dite tjetër (V2-E2-16): data me fjalë.
+    if (row.date !== date) return t('box.summary.onDate', { meal, date: fmt.date(new Date(`${row.date}T12:00:00`), { weekday: false }) })
     const time = slotTime.get(row.meal)
     return time ? t('box.summary.mealAt', { meal, time }) : meal
   }
@@ -452,14 +469,15 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
             <h3 className="m-0 pt-2.5 pb-1.5 type-label text-muted-foreground">{t('box.summary.supplements')}</h3>
             <ul className="m-0 list-none p-0">
               {draft.supplements.map((row) => (
-                <li key={row.key} className="flex min-h-row items-center gap-3 border-t border-border">
-                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="type-body-strong">{row.name}</span>
-                    <span className="type-caption text-muted-foreground">{`${header(row)} · ${t('box.summary.doses', { count: row.amount })}`}</span>
-                  </span>
-                  <Button variant="ghost" size="icon" aria-label={t('box.edit.remove')} onClick={() => onChange(removeRow(draft, row.key))} className="text-muted-foreground">
-                    <Icon name="mbyll-vrull" size={18} />
-                  </Button>
+                <li key={row.key} className="border-t border-border">
+                  {/* Vakti i suplementit vendos ku numërohet proteina (V39): ndryshohet si te ushqimi. */}
+                  <button type="button" aria-label={t('box.summary.edit', { name: row.name })} onClick={() => setEditing(row.key)} className="flex min-h-row w-full items-center gap-3 py-2 text-left">
+                    <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                      <span className="type-body-strong">{row.name}</span>
+                      <span className="type-caption text-muted-foreground">{`${header(row)} · ${t('box.summary.doses', { count: row.amount })}`}</span>
+                    </span>
+                    <Icon name="laps" size={18} className="shrink-0 text-muted-foreground" />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -510,10 +528,22 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
           {[extra ? t('box.sets.waiting', { exercise: extra.exerciseName }) : null, t('box.summary.cost', { cost: euro(fmt, cost, 3) })].filter(Boolean).join(' · ')}
         </span>
       </div>
+      {editedSupplement ? (
+        <EditSupplementSheet
+          row={editedSupplement}
+          meals={mealKeys}
+          onClose={() => setEditing(null)}
+          onMeal={(meal) => onChange(setMeal(draft, editedSupplement.key, meal))}
+          onRemove={() => {
+            setEditing(null)
+            onChange(removeRow(draft, editedSupplement.key))
+          }}
+        />
+      ) : null}
       {edited ? (
         <EditFoodSheet
           row={edited}
-          meals={(today?.meals ?? []).map((slot) => slot.meal)}
+          meals={mealKeys}
           onClose={() => setEditing(null)}
           onGrams={(grams) => onChange(setGrams(draft, edited.key, grams))}
           onMeal={(meal) => onChange(setMeal(draft, edited.key, meal))}
@@ -574,24 +604,60 @@ function EditFoodSheet({
           <Icon name="plus" size={22} />
         </Button>
       </div>
+      <MealPicker meals={meals} value={row.meal} onChange={onMeal} />
+      <RemoveRow onRemove={onRemove} />
+    </Sheet>
+  )
+}
+
+/** Suplementi te përmbledhja: vakti me një prekje, ose hiqet nga lista. */
+function EditSupplementSheet({ row, meals, onClose, onMeal, onRemove }: { row: BoxSupplement; meals: MealKey[]; onClose: () => void; onMeal: (meal: MealKey) => void; onRemove: () => void }) {
+  const { t } = useI18n()
+  return (
+    <Sheet
+      title={row.name}
+      description={t('box.summary.doses', { count: row.amount })}
+      onClose={onClose}
+      footer={
+        <Button variant="primary" size="xl" onClick={onClose}>
+          {t('box.edit.done')}
+        </Button>
+      }
+    >
+      <MealPicker meals={meals} value={row.meal} onChange={onMeal} />
+      <RemoveRow onRemove={onRemove} />
+    </Sheet>
+  )
+}
+
+function MealPicker({ meals, value, onChange }: { meals: MealKey[]; value: MealKey; onChange: (meal: MealKey) => void }) {
+  const { t } = useI18n()
+  return (
+    <>
       <span className="type-label text-muted-foreground">{t('box.edit.meal')}</span>
       <div role="group" aria-label={t('box.edit.meal')} className="flex flex-wrap gap-2">
         {meals.map((meal) => (
           <button
             key={meal}
             type="button"
-            aria-pressed={meal === row.meal}
-            onClick={() => onMeal(meal)}
-            className={cn('h-touch rounded-md border px-3 type-body', meal === row.meal ? 'border-foreground bg-foreground text-background' : 'border-border text-foreground')}
+            aria-pressed={meal === value}
+            onClick={() => onChange(meal)}
+            className={cn('h-touch rounded-md border px-3 type-body', meal === value ? 'border-foreground bg-foreground text-background' : 'border-border text-foreground')}
           >
             {mealName(t, meal)}
           </button>
         ))}
       </div>
-      <Button variant="outline" className="mt-1 h-touch shrink-0 rounded-md font-text text-base font-semibold normal-case tracking-normal" onClick={onRemove}>
-        {t('box.edit.remove')}
-      </Button>
-    </Sheet>
+    </>
+  )
+}
+
+function RemoveRow({ onRemove }: { onRemove: () => void }) {
+  const { t } = useI18n()
+  return (
+    <Button variant="outline" className="mt-1 h-touch shrink-0 rounded-md font-text text-base font-semibold normal-case tracking-normal" onClick={onRemove}>
+      {t('box.edit.remove')}
+    </Button>
   )
 }
 

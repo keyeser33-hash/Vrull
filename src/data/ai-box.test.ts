@@ -3,6 +3,7 @@ import { boxContext, chooseOption, logBoxDraft, mergeAnswer, nearestMeal, remove
 import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
+import { logQuickMacros } from './quick-food'
 import { createLocalStore } from './store'
 import { ensureSupplements, saveSupplement } from './supplements'
 import { i18nFor } from '@/i18n'
@@ -86,6 +87,13 @@ describe('konteksti', () => {
     const whey = box.request.context.supplements.find((item) => item.name === 'Gold Standard 100% Whey')
     expect(whey?.dose).toBe('1 lugë = 30\u00a0g')
     expect(new Set(box.request.context.foods.map((item) => item.ref)).size).toBe(box.request.context.foods.length)
+  })
+
+  it('një vakt me makrot e shpejta shkon si një porcion, që AI-ja të mos e shumëzojë me gramë', async () => {
+    const { store } = await setup()
+    await logQuickMacros(store, { date: WEDNESDAY, meal: 'lunch', name: 'Drekë jashtë', kcal: 650, proteinG: 40, carbsG: 60, fatG: 25, favorite: false })
+    const box = await boxContext(store, EVENING, sq)
+    expect(box.request.context.foods.find((item) => item.name === 'Drekë jashtë')?.portion).toBe('1 porcion = 100 g')
   })
 
   it('pas mesnate, para ndërrimit të ditës së ushqimit: dita e djeshme', async () => {
@@ -342,7 +350,41 @@ describe('regjistrimi', () => {
     await logBoxDraft(store, await resolveDraft(store, { ...empty, foods: [parsed.foods[1]] }, box, EVENING))
     const chickens = (await store.all('foods')).filter((row) => row.name === 'Pulë e pjekur me lëkurë')
     expect(chickens).toHaveLength(1)
-    expect(chickens[0]).toMatchObject({ source: 'custom', source_id: 'ai' })
+    expect(chickens[0]).toMatchObject({ source: 'custom', source_id: expect.stringMatching(/^ai:/) })
+  })
+
+  // Baza lokale nuk i ka kontrollet e serverit (MESIMET): rreshtat provohen kundrejt migrimeve.
+  it('rreshtat që serveri pranon: ushqimet e reja me source_id të veçantë, uji deri në 2 000 ml, doza e suplementit', async () => {
+    const { store, wheyId } = await setup()
+    const box = await boxContext(store, EVENING, sq)
+    const supplement = box.request.context.supplements.find((item) => item.name === 'Gold Standard 100% Whey')!.ref
+    const parsed: Draft = {
+      ...empty,
+      foods: [food({ name: 'Panetone', grams: 80, meal: 'dinner' }), food({ name: 'Byrek me spinaq', grams: 150, meal: 'dinner' })],
+      water: [
+        { ml: 3000, time: null, day: 0 },
+        { ml: 333.3, time: null, day: 0 },
+        { ml: 2010, time: null, day: 0 },
+      ],
+      supplements: [{ ref: supplement, amount: 2, meal: 'snack_pm', time: null, day: 0 }],
+    }
+    await logBoxDraft(store, await resolveDraft(store, parsed, box, EVENING))
+
+    // foods_source_unique: (user_id, source, source_id) një herë për rreshtat e gjallë.
+    const foods = (await store.all('foods')).filter((row) => row.source_id !== null && row.source_id !== undefined)
+    const keys = foods.map((row) => `${row.source}|${row.source_id}`)
+    expect(new Set(keys).size).toBe(keys.length)
+    expect(foods.filter((row) => String(row.source_id).startsWith('ai:'))).toHaveLength(2)
+
+    // water_logs.ml: smallint, 50–2 000.
+    const water = (await store.where('water_logs', 'date', WEDNESDAY)).map((row) => Number(row.ml))
+    expect(water.every((ml) => Number.isInteger(ml) && ml >= 50 && ml <= 2000)).toBe(true)
+    expect(water.reduce((sum, ml) => sum + ml, 0)).toBe(3000 + 333 + 2010)
+
+    // Dy lugë: supplement_logs.amount 2 dhe proteina e dy lugëve te vakti.
+    expect(await store.where('supplement_logs', 'date', WEDNESDAY)).toEqual([expect.objectContaining({ supplement_id: wheyId, timing: 'snack_pm', amount: 2 })])
+    const scoops = (await store.where('diary_entries', 'date', WEDNESDAY)).filter((row) => row.meal === 'snack_pm')
+    expect(scoops.map((row) => [Number(row.grams), Number(row.protein_g)])).toEqual([[60, 48]])
   })
 })
 

@@ -50,6 +50,8 @@ export const VRULL_ICONS = {
   // Kutia e AI-së (bordet "0.22 · AI dhe ushqimi i shpejtë"): shkëndija e AI-së dhe dërgimi.
   shkendija: '<path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>',
   dergo: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  // Të preferuarat te vakti (bordi V22-Vakti-Shpejt): pa mbushje; i zgjedhuri merr ngjyrën ember-text.
+  yll: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
   // Muzika "Trupi në ritëm" (bordet "Muzika · *", V2-E1-12).
   pauze: '<path d="M9 5v14M15 5v14"/>',
   'kenga-para': '<path d="M6 6l9 6-9 6V6zM18 6v12"/>',

@@ -4,11 +4,12 @@ import { coachFacts } from './ai-coach'
 import { createCustomFood, recentFoods } from './foods'
 import type { MonthSpend } from './pdf-import'
 import { currentFoodDate, logFood, nutritionDay, planFoodId } from './nutrition'
+import { isQuickFood } from './quick-food'
 import type { LocalStore } from './store'
 import { supplementList, setSupplementTaken } from './supplements'
 import { addWater } from './water'
 import { foodName, mealName, portionText, supplementDose, supplementName } from '@/i18n/domain'
-import { localDate } from '@/lib/calendar'
+import { localDate, shiftDate } from '@/lib/calendar'
 import type { I18n } from '@/i18n'
 import { macrosFor } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
@@ -91,7 +92,9 @@ export async function boxContext(store: LocalStore, now: Date, i18n: I18n): Prom
   }
   for (const food of recent) {
     if (food.sourceId?.startsWith('supplement:')) continue
-    const portion = food.servingLabel && food.servingG ? `${food.servingLabel} = ${fmt.unit(food.servingG, 'g')}` : null
+    // Makrot e shpejta janë një vakt i tërë (vlerat "për 100 g" me serving_g 100): një porcion, që AI-ja ta numërojë si të tillë.
+    const label = isQuickFood(food.sourceId) ? t('food.quick.serving') : food.servingLabel
+    const portion = label && food.servingG ? `${label} = ${fmt.unit(food.servingG, 'g')}` : null
     addFood(
       {
         target: { kind: 'food', id: food.id },
@@ -220,11 +223,7 @@ const withMacros = (row: Omit<BoxFood, 'macros'>): BoxFood => ({
   macros: row.grams === null ? ZERO : macrosFor(row.per100, row.grams),
 })
 
-const previousDate = (date: string) => {
-  const day = new Date(`${date}T12:00:00`)
-  day.setDate(day.getDate() - 1)
-  return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`
-}
+const previousDate = (date: string) => shiftDate(date, -1)
 
 let nextKey = 0
 const newKey = (kind: string) => `${kind}-${++nextKey}`
@@ -352,6 +351,12 @@ export const pendingExtra = (draft: BoxDraft) => draft.exercises.find((row) => !
 /** Sa rreshta do të regjistrohen: ushqimet me sasi, setet e pranuara, suplementet dhe uji. */
 export const draftRows = (draft: BoxDraft) => draft.foods.filter((row) => row.grams !== null).length + draft.exercises.filter((row) => row.slot || row.extra).reduce((sum, row) => sum + row.sets.length, 0) + draft.supplements.length + draft.water.length
 
+/** Foto nga fleta e vaktit (V2-E2-16): ushqimet shkojnë te vakti dhe dita e fletës, jo te ato që lexoi AI-ja. */
+export const placeFoods = (draft: BoxDraft, target: { date: string; meal: MealKey }): BoxDraft => ({
+  ...draft,
+  foods: draft.foods.map((row) => ({ ...row, date: target.date, meal: target.meal })),
+})
+
 /** Pjesët e paregjistruara pa shenjën e fotos pa ushqim (V2-E2-16), që ekrani e thotë me fjalë. */
 export function notLogged(draft: Pick<BoxDraft, 'notUnderstood'>): { parts: string[]; photoWithoutFood: boolean } {
   const isMarker = (part: string) => part.trim().toLowerCase() === NO_FOOD_IN_PHOTO
@@ -409,13 +414,26 @@ export const draftTotals = (draft: BoxDraft): Macros =>
     ZERO,
   )
 
-/** Ushqimi i ri i AI-së ruhet një herë sipas emrit (`source_id` "ai"), që herën tjetër të jetë i njohur. */
+/** Ushqimet që krijon AI-ja: `source_id` "ai:<id>", i veçantë për çdo rresht (serveri: foods_source_unique). */
+const AI_SOURCE = 'ai:'
+export const isAiFood = (sourceId: unknown) => typeof sourceId === 'string' && sourceId.startsWith(AI_SOURCE)
+
+/** Ushqimi i ri i AI-së ruhet një herë sipas emrit, që herën tjetër të jetë i njohur. */
 async function newFoodId(store: LocalStore, row: BoxFood): Promise<string> {
-  const existing = (await store.all('foods')).find((food) => food.source === 'custom' && food.source_id === 'ai' && plain(String(food.name)) === plain(row.name))
+  const existing = (await store.all('foods')).find((food) => food.source === 'custom' && isAiFood(food.source_id) && plain(String(food.name)) === plain(row.name))
   if (existing) return existing.id
   const id = await createCustomFood(store, { name: row.name, ...row.per100 })
-  await store.put('foods', { id, source_id: 'ai' })
+  await store.put('foods', { id, source_id: `${AI_SOURCE}${id}` })
   return id
+}
+
+/** water_logs.ml në server: numër i plotë 50–2 000; një sasi më e madhe ndahet në pjesë të barabarta. */
+export function waterPortions(ml: number): number[] {
+  const total = Math.round(ml)
+  if (total < 50) return []
+  const parts = Math.ceil(total / 2000)
+  const base = Math.floor(total / parts)
+  return Array.from({ length: parts }, (_, index) => base + (index < total - base * parts ? 1 : 0))
 }
 
 const atClock = (date: string, clock: string) => new Date(`${date}T${clock}:00`)
@@ -443,8 +461,8 @@ export async function logBoxDraft(
     })
     foods += 1
   }
-  for (const row of draft.supplements) await setSupplementTaken(store, { date: row.date, supplementId: row.supplementId, meal: row.meal }, true)
-  for (const row of draft.water) await addWater(store, row.date, row.time ? atClock(row.date, row.time) : store.now(), row.ml)
+  for (const row of draft.supplements) await setSupplementTaken(store, { date: row.date, supplementId: row.supplementId, meal: row.meal, amount: row.amount }, true)
+  for (const row of draft.water) for (const ml of waterPortions(row.ml)) await addWater(store, row.date, row.time ? atClock(row.date, row.time) : store.now(), ml)
   const sets = await logSets(store, draft.exercises, draft.training)
   return {
     foods,

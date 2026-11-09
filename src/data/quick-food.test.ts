@@ -80,4 +80,13 @@ describe('makrot e shpejta', () => {
     const dinner = (await nutritionDay(store, TODAY, store.now())).meals.find((slot) => slot.meal === 'dinner')!
     expect(dinner.entries.map((entry) => [entry.name, entry.kcal])).toEqual([['Drekë jashtë', 650]])
   })
+
+  it('çdo vakt me makrot e shpejta ka source_id të vetin (serveri: foods_source_unique)', async () => {
+    const { store } = await setup()
+    const first = await logQuickMacros(store, { date: TODAY, meal: 'lunch', name: 'Drekë jashtë', kcal: 650, proteinG: 40, carbsG: 60, fatG: 25, favorite: false })
+    const second = await logQuickMacros(store, { date: TODAY, meal: 'dinner', name: 'Darkë jashtë', kcal: 800, proteinG: 50, carbsG: 70, fatG: 30, favorite: true })
+    const sources = await Promise.all([first, second].map(async (id) => (await store.get('foods', id))!.source_id))
+    expect(sources).toEqual([`quick:${first}`, `quick:${second}`])
+    expect(await favoriteFoods(store)).toEqual([expect.objectContaining({ name: 'Darkë jashtë', servings: 1, grams: null })])
+  })
 })

@@ -8,7 +8,7 @@
 //   403 forbidden (jo admin), 502 failed, 503 not_configured.
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0'
 import { AI_MONTHLY_LIMIT_EUR, monthStart } from '../_shared/ai.ts'
-import { parseAdminRequest, summarize } from './logic.ts'
+import { authPeople, type LimitStore, parseAdminRequest, saveLimit, summarize } from './logic.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -59,14 +59,27 @@ Deno.serve(async (req: Request) => {
   if (!request) return json({ error: 'bad_request' }, 400)
 
   const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
-  const now = () => new Date().toISOString()
+  const limitStore: LimitStore = {
+    async find(userId) {
+      const { data, error } = await admin.from('ai_limits').select('id').eq('user_id', userId).is('deleted_at', null).limit(1)
+      if (error) throw new Error(`leximi: ${error.code ?? 'pa kod'}`)
+      return data?.[0] ? { id: data[0].id as string } : null
+    },
+    async update(id, limitEur) {
+      const { error } = await admin.from('ai_limits').update({ monthly_eur: limitEur, updated_at: new Date().toISOString() }).eq('id', id)
+      if (error) throw new Error(`ndryshimi: ${error.code ?? 'pa kod'}`)
+    },
+    async insert(userId, limitEur) {
+      const { error } = await admin.from('ai_limits').insert({ user_id: userId, monthly_eur: limitEur })
+      if (error) throw new Error(`shtimi: ${error.code ?? 'pa kod'}`)
+    },
+  }
   if (request.action === 'set') {
-    const { data: existing, error: readError } = await admin.from('ai_limits').select('id').eq('user_id', request.userId).is('deleted_at', null).limit(1)
-    if (readError) return json({ error: 'failed' }, 502)
-    const { error } = existing?.length
-      ? await admin.from('ai_limits').update({ monthly_eur: request.limitEur, updated_at: now() }).eq('id', existing[0].id)
-      : await admin.from('ai_limits').insert({ user_id: request.userId, monthly_eur: request.limitEur })
-    if (error) return json({ error: 'failed' }, 502)
+    try {
+      await saveLimit(limitStore, request.userId, request.limitEur)
+    } catch {
+      return json({ error: 'failed' }, 502)
+    }
   }
 
   const month = monthStart(new Date())
@@ -77,12 +90,7 @@ Deno.serve(async (req: Request) => {
   ])
   if (listError || usageError || limitsError) return json({ error: 'failed' }, 502)
   const people = summarize({
-    people: (list?.users ?? []).map((user) => ({
-      id: user.id,
-      email: user.email ?? null,
-      name: (user.user_metadata?.name as string | undefined) ?? (user.user_metadata?.full_name as string | undefined) ?? null,
-      isAdmin: user.app_metadata?.vrull_admin === true,
-    })),
+    people: authPeople(list?.users ?? []),
     usage: usage ?? [],
     limits: limits ?? [],
     defaultLimitEur: AI_MONTHLY_LIMIT_EUR,

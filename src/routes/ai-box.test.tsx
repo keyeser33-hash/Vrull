@@ -1,7 +1,7 @@
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
-import type { Draft, ParseRequest } from '../../supabase/functions/log-parse/shared'
+import { type Draft, NO_FOOD_IN_PHOTO, type ParseRequest } from '../../supabase/functions/log-parse/shared'
 import type { BoxResult } from '@/data/ai-box'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n'
@@ -128,14 +128,15 @@ describe('Kutia e AI-së', () => {
   beforeEach(async () => {
     data.requests = []
     boxText.set('')
-    for (const table of ['diary_entries', 'supplement_logs', 'water_logs'] as const) for (const row of await data.store.all(table)) await data.store.remove(table, row.id)
+    // Çdo provë nis pa regjistrimet e tjetrës (MESIMET, "Provat"): edhe setet dhe seancat.
+    for (const table of ['diary_entries', 'supplement_logs', 'water_logs', 'set_logs', 'workout_sessions'] as const) for (const row of await data.store.all(table)) await data.store.remove(table, row.id)
   })
   afterEach(() => {
     language.set('sq')
     vi.restoreAllMocks()
   })
 
-  async function renderPage(state?: { photo: NonNullable<ParseRequest['image']>; text: string }) {
+  async function renderPage(state?: { photo: NonNullable<ParseRequest['image']>; text: string; target?: { date: string; meal: string } }) {
     const { AiBoxPage } = await import('./ai-box')
     const router = createMemoryRouter(
       [
@@ -220,14 +221,14 @@ describe('Kutia e AI-së', () => {
 
   it('një rresht ndryshohet (gramët, vakti) ose hiqet para regjistrimit', async () => {
     const user = userEvent.setup()
-    data.reply = () => ({
+    data.reply = (request) => ({
       ok: true,
       costEur: 0.0002,
       month: MONTH,
-      draft: { ...empty, foods: [panetone(80)] },
+      draft: { ...empty, foods: [panetone(80)], supplements: [{ ref: supplementRef(request, 'Kreatinë'), amount: 2, meal: 'breakfast_1', time: null, day: 0 }] },
     })
     await renderPage()
-    await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'një fetë panetone')
+    await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'një fetë panetone, 10 g kreatinë')
     await user.click(screen.getByRole('button', { name: 'Dërgo' }))
     await user.click(await screen.findByRole('button', { name: 'Ndrysho Panetone' }))
     const sheet = screen.getByRole('dialog', { name: 'Panetone' })
@@ -237,6 +238,15 @@ describe('Kutia e AI-së', () => {
     expect(screen.getByRole('region', { name: /^Para gjumit/ })).toHaveTextContent('90 g')
     await user.click(screen.getByRole('button', { name: 'Ndrysho Panetone' }))
     await user.click(within(screen.getByRole('dialog', { name: 'Panetone' })).getByRole('button', { name: 'Hiqe nga lista' }))
+    // Suplementi: vakti ndryshohet me një prekje (ai vendos ku numërohet proteina), pastaj hiqet.
+    await user.click(screen.getByRole('button', { name: 'Ndrysho Kreatinë' }))
+    const supplement = screen.getByRole('dialog', { name: 'Kreatinë' })
+    expect(supplement).toHaveTextContent('2 doza')
+    await user.click(within(supplement).getByRole('button', { name: 'Darka' }))
+    await user.click(within(supplement).getByRole('button', { name: 'Gati' }))
+    expect(screen.getByRole('region', { name: 'Suplementet' })).toHaveTextContent(/Darka.*2 doza/)
+    await user.click(screen.getByRole('button', { name: 'Ndrysho Kreatinë' }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Kreatinë' })).getByRole('button', { name: 'Hiqe nga lista' }))
     expect(screen.getByText(/Nuk gjeta asgjë për të regjistruar/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Regjistro të gjitha' })).toBeDisabled()
   })
@@ -308,17 +318,37 @@ describe('Kutia e AI-së', () => {
         foods: [{ said: 'foto', ref: null, name: 'Makarona me karkaleca', grams: 350, portion: '', estimated: true, per100: { kcal: 165, proteinG: 7.5, carbsG: 20, fatG: 6 }, options: [], meal: 'lunch', time: null, day: 0 }],
       },
     })
-    await renderPage({ photo, text: 'Foto e pjatës për Dreka.' })
-    expect(await screen.findByRole('button', { name: /Makarona me karkaleca/ })).toHaveTextContent(/350\sg · vlerësim/)
+    // Fleta e Mëngjesit 2 të 1 dhjetorit: AI-ja tha "lunch", por vakti dhe dita janë ato të fletës.
+    const user = userEvent.setup()
+    await renderPage({ photo, text: 'Foto e pjatës për mëngjesin 2.', target: { date: '2026-12-01', meal: 'breakfast_2' } })
+    const group = await screen.findByRole('region', { name: /^1 dhjetor · Mëngjesi 2$/ })
+    expect(within(group).getByRole('button', { name: /Makarona me karkaleca/ })).toHaveTextContent(/350\sg · vlerësim/)
     expect(data.requests).toHaveLength(1)
-    expect(data.requests[0]).toMatchObject({ text: 'Foto e pjatës për Dreka.', image: photo })
+    expect(data.requests[0]).toMatchObject({ text: 'Foto e pjatës për mëngjesin 2.', image: photo })
+    await user.click(screen.getByRole('button', { name: 'Regjistro të gjitha' }))
+    await vi.waitFor(async () => expect((await data.store.where('diary_entries', 'date', '2026-12-01')).map((row) => [row.meal, Number(row.grams)])).toEqual([['breakfast_2', 350]]))
     cleanup()
 
     // Si e ktheu AI-ja e vërtetë një foto pa ushqim: shenja nuk del si tekst.
-    data.reply = () => ({ ok: true, costEur: 0.00034, month: MONTH, draft: { ...empty, notUnderstood: ['photo'] } })
+    data.reply = () => ({ ok: true, costEur: 0.00034, month: MONTH, draft: { ...empty, notUnderstood: [NO_FOOD_IN_PHOTO] } })
     await renderPage({ photo, text: 'Foto e pjatës për Dreka.' })
     expect(await screen.findByText('Në foto nuk dallova ushqim. Provo një foto tjetër ose shkruaje me fjalë.')).toBeInTheDocument()
     expect(screen.queryByText(/Nuk e regjistrova/)).toBeNull()
+  })
+
+  it('dje dhe sot në një mesazh: secili rresht me ditën e vet, totali i sotëm pa të djeshmin', async () => {
+    const user = userEvent.setup()
+    const row = (name: string, meal: 'bedtime' | 'lunch', day: 0 | -1, grams: number): Draft['foods'][number] => ({ said: name, ref: null, name, grams, portion: '', estimated: false, per100: { kcal: 100, proteinG: 10, carbsG: 5, fatG: 2 }, options: [], meal, time: null, day })
+    data.reply = () => ({ ok: true, costEur: 0.0005, month: MONTH, draft: { ...empty, foods: [row('Gjizë', 'bedtime', -1, 250), row('Pulë', 'lunch', 0, 200)] } })
+    await renderPage()
+    await user.type(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre'), 'dje para gjumit 250 g gjizë, sot në drekë 200 g pulë')
+    await user.click(screen.getByRole('button', { name: 'Dërgo' }))
+    expect(within(await screen.findByRole('region', { name: 'Dje · Para gjumit' })).getByText('Gjizë')).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: /^Dreka( · \d\d:\d\d)?$/ })).getByText('Pulë')).toBeInTheDocument()
+    // "Sot pas regjistrimit" shton vetëm 200 kcal e drekës së sotme.
+    const { nutritionDay, currentFoodDate } = await import('@/data/nutrition')
+    const today = await nutritionDay(data.store, await currentFoodDate(data.store, new Date()), new Date())
+    expect((await screen.findByText('Sot pas regjistrimit')).parentElement).toHaveTextContent(new RegExp(`${Math.round(today.totals.kcal + 200)}\\s/`))
   })
 
   it('pa internet: teksti mbetet, "Dërgo" pret rrjetin dhe karta e thotë', async () => {

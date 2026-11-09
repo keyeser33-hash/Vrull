@@ -7,6 +7,7 @@
 // shkroi rezervimin e fundit i sheh të gjitha të tjerat, ndaj kërkesat që kalojnë e kapërcejnë kufirin të
 // shumtën me një thirrje, si thirrjet njëra pas tjetrës. Pas thirrjes rezervimi merr koston e vërtetë, ose
 // hiqet kur AI-ja nuk harxhoi asgjë.
+import { limitReached } from '../_shared/ai.ts'
 import {
   AI_CALL_RESERVE_EUR,
   AI_MONTHLY_LIMIT_EUR,
@@ -90,7 +91,9 @@ export async function runImport({
     return { status: 502, body: { error: 'ai_failed' } }
   }
   const monthInfo = (spent: number) => ({ month, spentEur: round2(spent), limitEur })
-  if (spentBefore >= limitEur) {
+  // Rezervimi i PDF-së (2 €) mbron nga thirrjet paralele; kufiri "u arrit" sipas rregullit të përbashkët
+  // (_shared/ai.ts), që një lexim të mos refuzohet kur mbeten 1,50 € dhe kostoja e zakonshme është 0,30 €.
+  if (limitReached(spentBefore, limitEur)) {
     await release()
     return { status: 429, body: { error: 'limit', month: monthInfo(spentBefore) } }
   }

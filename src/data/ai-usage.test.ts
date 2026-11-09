@@ -60,6 +60,12 @@ describe('përdorimi i AI-së', () => {
     expect((await aiMonth(store)).resetsOn).toEqual(new Date(2027, 0, 1))
   })
 
+  it('"u arrit" me rregullin e serverit: kur nuk mbetet as 0,01 € për kutinë', async () => {
+    const { store, pulled } = setup()
+    await pulled('2026-11-01', 'food_text', 9.995)
+    expect(await aiMonth(store)).toMatchObject({ reached: true })
+  })
+
   it('rezervimi i një leximi që është ende në punë (pa tokena) nuk numërohet si shpenzim', async () => {
     // Funksioni shkruan €2 para thirrjes dhe e zëvendëson me koston e vërtetë pas saj (handler.ts).
     const { store, pulled } = setup()

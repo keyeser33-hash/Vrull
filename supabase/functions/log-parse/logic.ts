@@ -28,6 +28,7 @@ import {
   MAX_TEXT,
   MAX_WORKOUTS,
   MEAL_KEYS,
+  NO_FOOD_IN_PHOTO,
   type ParseContext,
   type ParseMealKey,
   type ParseRequest,
@@ -161,7 +162,7 @@ Foods
 - A protein shake or protein powder ("proteinën", "whey", "shake") is a supplement when a known supplement matches, not a food.
 
 Photo
-- When a photo is attached, it shows what the user ate: list each food you can see, with grams estimated from the photo (vague_amount true) and the meal the message names. Use a known food when it matches what you see; otherwise give its typical values per 100 g. When the photo shows no food, return no rows and put "photo" in not_understood.
+- When a photo is attached, it shows what the user ate: list each food you can see, with grams estimated from the photo (vague_amount true) and the meal the message names. Use a known food when it matches what you see; otherwise give its typical values per 100 g. When the photo shows no food, return no rows and put "${NO_FOOD_IN_PHOTO}" in not_understood.
 
 Water
 - One glass is 250 ml, one small bottle 500 ml, one large bottle 1500 ml. "dy gota ujë" → 500 ml.
@@ -420,8 +421,9 @@ export function interpret(body: unknown, context: ParseContext): Outcome {
   const water: DraftWater[] = list(raw.water)
     .slice(0, 10)
     .flatMap((item) => {
-      const ml = inRange(item.ml, 50, 3_000)
-      return ml === null ? [] : [{ ml, time: clock(item.time), day: day(item.day) }]
+      // Mililitra të plotë; mbi 2 000 ml (kufiri i një rreshti te water_logs) app-i i ndan në pjesë.
+      const ml = inRange(item.ml, 50, 6_000)
+      return ml === null ? [] : [{ ml: Math.round(ml), time: clock(item.time), day: day(item.day) }]
     })
 
   const supplements: DraftSupplement[] = list(raw.supplements)
@@ -455,7 +457,8 @@ export function interpret(body: unknown, context: ParseContext): Outcome {
           {
             reps: Math.round(reps),
             weightKg: inRange(set.weight_kg, 0, 1_000),
-            rir: set.rir === -1 ? null : inRange(set.rir, 0, 10),
+            // set_logs.rir: numër i plotë 0–10.
+            rir: set.rir === -1 || inRange(set.rir, 0, 10) === null ? null : Math.round(set.rir as number),
           },
         ]
       })

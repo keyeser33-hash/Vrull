@@ -4,6 +4,7 @@ import type { LocalStore } from './store'
 import { isSupplementSource } from './supplements'
 import type { LocalRow } from './tables'
 import { macrosFor } from '@/nutrition/jim'
+import { shiftDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
 import type { Macros } from '@/nutrition/targets'
 
@@ -22,12 +23,7 @@ export interface Portion {
   proteinG: number
 }
 
-const pad = (value: number) => String(value).padStart(2, '0')
-const previousDate = (date: string) => {
-  const day = new Date(`${date}T12:00:00`)
-  day.setDate(day.getDate() - 1)
-  return `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`
-}
+const previousDate = (date: string) => shiftDate(date, -1)
 const per100 = (food: LocalRow): Macros => ({ kcal: Number(food.kcal), proteinG: Number(food.protein_g), carbsG: Number(food.carbs_g), fatG: Number(food.fat_g) })
 const byLogged = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
 /** Ushqimi i një suplementi (pluhuri që numërohet te ushqimi) regjistrohet nga suplementet, jo nga këtu. */
@@ -90,7 +86,7 @@ export async function favoriteFoods(store: LocalStore): Promise<Portion[]> {
     .filter((food) => food.favorite_g !== null && food.favorite_g !== undefined && Number(food.favorite_g) > 0)
     .sort((a, b) => String(a.name).localeCompare(String(b.name)))
     .map((food) => {
-      const quick = food.source_id === QUICK
+      const quick = isQuickFood(food.source_id)
       const grams = quick ? null : Number(food.favorite_g)
       const macros = quick ? per100(food) : macrosFor(per100(food), grams!)
       return { foodId: food.id, name: String(food.name), sourceId: (food.source_id as string | null | undefined) ?? null, grams, servings: quick ? 1 : null, kcal: Math.round(macros.kcal), proteinG: Math.round(macros.proteinG * 10) / 10 }
@@ -114,8 +110,12 @@ export async function logPortion(store: LocalStore, input: { date: string; meal:
   await logServing(store, { date: input.date, meal: input.meal, foodId: portion.foodId, servings: portion.servings ?? 1, macros: per100(food) })
 }
 
-/** Ushqimi i makrove të shpejta: një porcion, vlerat e tij ruhen si "për 100 g" me `serving_g` 100. */
-const QUICK = 'quick'
+/**
+ * Ushqimi i makrove të shpejta: një porcion, vlerat e tij ruhen si "për 100 g" me `serving_g` 100. `source_id`
+ * "quick:<id>", i veçantë për çdo rresht (serveri: foods_source_unique).
+ */
+const QUICK = 'quick:'
+export const isQuickFood = (sourceId: unknown) => typeof sourceId === 'string' && sourceId.startsWith(QUICK)
 
 export interface QuickMacros {
   kcal: number | null
@@ -135,7 +135,7 @@ export async function logQuickMacros(store: LocalStore, input: QuickMacros & { d
   const { kcal } = quickMacrosKcal(input)
   const macros = { kcal, proteinG: input.proteinG, carbsG: input.carbsG, fatG: input.fatG }
   const foodId = await createCustomFood(store, { name: input.name, ...macros, servingG: 100 })
-  await store.put('foods', { id: foodId, source_id: QUICK, favorite_g: input.favorite ? 100 : null })
+  await store.put('foods', { id: foodId, source_id: `${QUICK}${foodId}`, favorite_g: input.favorite ? 100 : null })
   await logServing(store, { date: input.date, meal: input.meal, foodId, servings: 1, macros })
   return foodId
 }

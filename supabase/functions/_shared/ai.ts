@@ -5,10 +5,28 @@
 // (kostoja më e keqe e një thirrjeje) shkruhet te ai_usage; shuma e muajit pa rezervimin e vet, plus
 // rezervimi, nuk kalon kufirin. Pas thirrjes rezervimi merr koston e vërtetë, ose hiqet kur AI-ja nuk punoi.
 
+/**
+ * Kursi i referencës i Bankës Qendrore Evropiane më 06.11.2026: 1 EUR = 1,1165 USD
+ * (https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml). Përditësohet me dorë kur kursi lëviz
+ * dukshëm; kostoja e ruajtur mban të dyja vlerat.
+ */
 export const USD_PER_EUR = 1.1165
 export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 /** Kufiri për person në muaj (V25), deri te kufiri i Adminit për çdo person (V42, E2-17). */
 export const AI_MONTHLY_LIMIT_EUR = 10
+
+/** Rezervimi më i vogël i një thirrjeje (kutia, etiketa). */
+export const AI_SMALLEST_RESERVE_EUR = 0.01
+/** Mbetja e numrave me presje (0,1 + 0,2): një shumë e barabartë me kufirin nuk e kalon. */
+const EPSILON = 1e-9
+
+/**
+ * Kufiri "u arrit" kur nuk mbetet as për thirrjen më të vogël: i njëjti rregull te funksionet dhe te app-i
+ * (Sot, Foto, Cilësimet › AI), që ekrani të mos premtojë një thirrje që serveri e refuzon.
+ */
+export function limitReached(spentEur: number, limitEur: number): boolean {
+  return spentEur + AI_SMALLEST_RESERVE_EUR > limitEur + EPSILON
+}
 
 /** Kufiri i personit nga rreshtat e ai_limits (V42); pa rresht ose me vlerë të gabuar, 10 €. */
 export function limitFrom(rows: readonly { monthly_eur: number | string | null }[] | null | undefined): number {
@@ -143,7 +161,7 @@ export async function withBudget({
     return { kind: 'store_failed' }
   }
   const monthInfo = (spent: number): MonthInfo => ({ month, spentEur: round2(spent), limitEur })
-  if (spentBefore + reserveEur > limitEur) {
+  if (spentBefore + reserveEur > limitEur + EPSILON) {
     await release()
     return { kind: 'limit', month: monthInfo(spentBefore) }
   }

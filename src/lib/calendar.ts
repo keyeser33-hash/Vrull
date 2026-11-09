@@ -9,6 +9,13 @@ export function localDate(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 }
 
+/** Data `days` ditë më vonë (negative: më parë), në mesditë që ndërrimi i orës verore të mos e lëvizë. */
+export function shiftDate(date: string, days: number) {
+  const day = new Date(`${date}T12:00:00`)
+  day.setDate(day.getDate() + days)
+  return localDate(day)
+}
+
 /** Data lokale e një çasti të ruajtur si tekst ISO. */
 export function localDay(at: string) {
   return localDate(new Date(at))

@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
@@ -94,6 +94,21 @@ describe('Vakti i shpejtë', () => {
     await user.click(save)
     await waitFor(async () => expect((await lunchEntries()).map((row) => [Number(row.kcal), row.grams ?? null, Number(row.servings)])).toEqual([[650, null, 1]]))
     expect(await within(await screen.findByRole('dialog', { name: /^Dreka · / })).findByText('Drekë jashtë')).toBeInTheDocument()
+  })
+
+  it('kufiri i AI-së i arritur: Foto e çaktivizuar te vakti, kutia te Sot e thotë; makrot mbeten', async () => {
+    const usage = await data.store.put('ai_usage', { month: '2026-12-01', feature: 'food_text', model: 'claude-haiku-5-5', input_tokens: 400, output_tokens: 600, cost_usd: 11.165, cost_eur: 10 })
+    try {
+      const sheet = await openLunch()
+      await waitFor(() => expect(within(sheet).getByRole('button', { name: 'Foto' })).toBeDisabled())
+      expect(within(sheet).getByRole('button', { name: 'Makrot' })).toBeEnabled()
+      cleanup()
+      const { AiBoxDock } = await import('./ai-box-dock')
+      render(<RouterProvider router={createMemoryRouter([{ path: '/', element: <AiBoxDock /> }])} />)
+      expect(await screen.findByText('Kufiri i AI-së u arrit; rinis më 1 janar')).toBeInTheDocument()
+    } finally {
+      await data.store.remove('ai_usage', usage.id)
+    }
   })
 
   it('anglisht', async () => {

@@ -1,4 +1,4 @@
-import { parseAdminRequest, summarize } from './logic'
+import { authPeople, type LimitStore, parseAdminRequest, saveLimit, summarize } from './logic'
 
 // Kufiri i AI-së te Admini (V42, V2-E2-17): përmbledhja e muajit dhe kontrolli i kërkesës.
 const OWNER = '11111111-1111-4111-8111-111111111111'
@@ -48,5 +48,55 @@ describe('kërkesa', () => {
     expect(parseAdminRequest({ action: 'set', userId: 'jo-uuid', limitEur: 10 })).toBeNull()
     expect(parseAdminRequest({ action: 'delete' })).toBeNull()
     expect(parseAdminRequest(null)).toBeNull()
+  })
+})
+
+describe('ruajtja e kufirit', () => {
+  /** ai_limits në memorie, me rregullin e serverit: një rresht i gjallë për person. */
+  function memoryLimits() {
+    const rows: { id: string; userId: string; eur: number }[] = []
+    const store: LimitStore = {
+      find: async (userId) => rows.find((row) => row.userId === userId) ?? null,
+      update: async (id, eur) => void (rows.find((row) => row.id === id)!.eur = eur),
+      insert: async (userId, eur) => {
+        if (rows.some((row) => row.userId === userId)) throw new Error('23505')
+        rows.push({ id: `l${rows.length + 1}`, userId, eur })
+      },
+    }
+    return { store, rows }
+  }
+
+  it('i pari shtohet, i dyti ndryshon të njëjtin rresht; personat e tjerë mbeten', async () => {
+    const { store, rows } = memoryLimits()
+    await saveLimit(store, KLEA, 15)
+    await saveLimit(store, FRIEND, 5)
+    await saveLimit(store, KLEA, 20)
+    expect(rows).toEqual([
+      { id: 'l1', userId: KLEA, eur: 20 },
+      { id: 'l2', userId: FRIEND, eur: 5 },
+    ])
+  })
+
+  it('një gabim i bazës nuk fshihet', async () => {
+    const store: LimitStore = { find: async () => Promise.reject(new Error('42P01')), update: vi.fn(), insert: vi.fn() }
+    await expect(saveLimit(store, KLEA, 15)).rejects.toThrow('42P01')
+    expect(store.insert).not.toHaveBeenCalled()
+  })
+})
+
+describe('personat e Auth-it', () => {
+  it('emri nga name, pastaj full_name; admini vetëm nga app_metadata', () => {
+    expect(
+      authPeople([
+        { id: OWNER, email: 'pronari@example.com', user_metadata: { name: '  ' }, app_metadata: { vrull_admin: true } },
+        { id: FRIEND, email: null, user_metadata: { full_name: 'Arben Hoxha' }, app_metadata: {} },
+        // user_metadata e shkruan përdoruesi: nuk e bën admin.
+        { id: KLEA, user_metadata: { name: 'Klea', vrull_admin: true }, app_metadata: { provider: 'email' } },
+      ]),
+    ).toEqual([
+      { id: OWNER, email: 'pronari@example.com', name: null, isAdmin: true },
+      { id: FRIEND, email: null, name: 'Arben Hoxha', isAdmin: false },
+      { id: KLEA, email: null, name: 'Klea', isAdmin: false },
+    ])
   })
 })
