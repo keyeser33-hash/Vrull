@@ -309,6 +309,13 @@ function MacroTotals({ day }: { day: NutritionDay }) {
         {t('food.targets.link')}
         <Icon name="hap" size={20} className="text-muted-foreground" />
       </Link>
+      <Link
+        to="/ushqimi/oraret"
+        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      >
+        {t('food.schedule.title')}
+        <Icon name="hap" size={20} className="text-muted-foreground" />
+      </Link>
       {day.outsideJimRange ? (
         <p className="text-xs leading-4 text-muted-foreground">{t('food.outsideJim', { min: JIM_RANGE_KG.min, max: JIM_RANGE_KG.max })}</p>
       ) : null}

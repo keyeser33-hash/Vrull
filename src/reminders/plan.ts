@@ -1,7 +1,7 @@
 import type { I18n } from '@/i18n'
 import { foodName, mealName, nameInSentence, programWeekLabel, supplementName } from '@/i18n/domain'
 import { JIM_FOODS, JIM_MEALS } from '@/nutrition/jim'
-import { mealSchedule } from '@/nutrition/schedule'
+import { type MealPlan, mealSchedule } from '@/nutrition/schedule'
 import type { SupplementDef } from '@/nutrition/supplements'
 import type { DayType } from '@/nutrition/targets'
 
@@ -41,6 +41,10 @@ export interface ReminderInput {
   supplements: (Omit<SupplementDef, 'key'> & { id: string; enabled: boolean })[]
   /** Llojet e ditëve të ndryshuara me dorë, sipas datës. */
   dayTypes: Record<string, DayType>
+  /** Ora e stërvitjes sipas ditës ISO (V35); pa të, `trainingTime` për çdo ditë. */
+  trainingTimes?: Record<number, string>
+  /** Plani i vakteve (V35): vlen nga `from`, para saj `previous`. */
+  mealPlan?: MealPlan & { from: string | null; previous: MealPlan | null }
 }
 
 export interface Reminder {
@@ -79,6 +83,8 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     const date = isoDate(day)
     const weekday = day.getDay() || 7
     const training = (input.dayTypes[date] ?? (input.trainingDays.includes(weekday) ? 'training' : 'rest')) === 'training'
+    const trainingTime = input.trainingTimes?.[weekday] ?? input.trainingTime
+    const plan = input.mealPlan && input.mealPlan.from !== null && date < input.mealPlan.from ? (input.mealPlan.previous ?? undefined) : input.mealPlan
     const idBase = REMINDER_IDS.first + offset * 20
     const dayItems: Omit<Reminder, 'id'>[] = []
 
@@ -89,11 +95,11 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
       const title = !labelUsed && workoutLabel ? t('reminders.notify.workout', { label: workoutLabel }) : t('reminders.notify.workoutToday')
       labelUsed = true
       // Ora e stërvitjes me formatin e gjuhës (24 orë në të dyja).
-      const [hours, minutes] = input.trainingTime.split(':').map(Number)
+      const [hours, minutes] = trainingTime.split(':').map(Number)
       const trainingAt = fmt.time(new Date(day.getFullYear(), day.getMonth(), day.getDate(), hours, minutes))
       dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body: t('reminders.notify.workoutAt', { time: trainingAt }), kind: 'training' })
     }
-    for (const { meal, minutes } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? input.trainingTime : null })) {
+    for (const { meal, minutes } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? trainingTime : null, plan })) {
       // Minutat e ditës: një vakt pas mesnate bie të nesërmen kalendarike, por i përket kësaj dite (V46).
       const mealAt = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, minutes)
       const supplements = input.toggles.supplements

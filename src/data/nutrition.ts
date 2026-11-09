@@ -5,6 +5,7 @@ import { mealSchedule } from '@/nutrition/schedule'
 import type { Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
+import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
 import { supplementList } from './supplements'
 import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
 import type { LocalStore } from './store'
@@ -114,7 +115,7 @@ async function weightFor(store: LocalStore, date: string) {
 }
 
 export async function nutritionDay(store: LocalStore, date: string, now: Date): Promise<NutritionDay> {
-  const [profile, targetsProfile] = await Promise.all([readProfile(store), readTargetsProfile(store)])
+  const [profile, targetsProfile, schedule] = await Promise.all([readProfile(store), readTargetsProfile(store), readSchedule(store)])
   const [{ dayType, manual, saved }, measuredKg, entries, foods, supplements, supplementLogs] = await Promise.all([
     dayTypeFor(store, date, profile.trainingDays),
     weightFor(store, date),
@@ -124,15 +125,20 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     store.where('supplement_logs', 'date', date),
   ])
   const foodsById = new Map(foods.map((food) => [food.id, food]))
-  const schedule = mealSchedule({ wakeTime: profile.wakeTime, sleepTime: profile.sleepTime, trainingTime: dayType === 'training' ? profile.trainingTime : null })
+  const planned = mealSchedule({
+    wakeTime: profile.wakeTime,
+    sleepTime: profile.sleepTime,
+    trainingTime: dayType === 'training' ? trainingTimeOn(schedule, date) : null,
+    plan: mealPlanOn(schedule.plan, date),
+  })
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
 
   // Dita e ushqimit (V46): pas mesnate, deri 3 orë para zgjimit, është ende dita e djeshme.
   const current = foodDate(now, profile.wakeTime)
   const today = date === current
   const nowMinutes = minutesInFoodDay(now, date)
-  const minutesByMeal = new Map(schedule.map((entry) => [entry.meal, entry.minutes]))
-  const meals: MealSlot[] = schedule.map(({ meal, time }) => {
+  const minutesByMeal = new Map(planned.map((entry) => [entry.meal, entry.minutes]))
+  const meals: MealSlot[] = planned.map(({ meal, time }) => {
     const rows = entries.filter((row) => row.meal === meal).sort(byLoggedAt)
     const list = rows.map((row) => {
       const food = foodsById.get(String(row.food_id))

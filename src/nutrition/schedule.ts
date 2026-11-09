@@ -31,7 +31,44 @@ const toTime = (minutes: number) => {
   return `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`
 }
 
-export function mealSchedule({ wakeTime, sleepTime, trainingTime }: { wakeTime: string; sleepTime: string; trainingTime: string | null }): ScheduledMeal[] {
+/**
+ * Ndryshimet e përdoruesit (V35): vaktet e hequra dhe orët e lëvizura me dorë. Vaktet para dhe pas
+ * stërvitjes ndjekin stërvitjen dhe nuk lëvizen me dorë, por hiqen.
+ */
+export interface MealPlan {
+  removed: MealKey[]
+  times: Partial<Record<MealKey, string>>
+}
+
+/** Radha kur ulet numri i vakteve; mëngjesi 1, dreka dhe darka mbeten. */
+export const MEAL_REMOVAL_ORDER: readonly MealKey[] = ['snack_am', 'snack_pm', 'breakfast_2', 'bedtime', 'post_workout', 'pre_workout']
+export const MIN_MEALS = 3
+
+/** Vaktet e hequra për një numër vaktesh nga `total` të mundshme (3 deri në `total`). */
+export function withMealCount(removed: readonly MealKey[], total: number, count: number, order: readonly MealKey[] = MEAL_REMOVAL_ORDER): MealKey[] {
+  const wanted = Math.min(total - MIN_MEALS, Math.max(0, total - count))
+  const next = [...removed]
+  while (next.length > wanted) next.pop()
+  for (const meal of order) {
+    if (next.length >= wanted) break
+    if (!next.includes(meal)) next.push(meal)
+  }
+  return next
+}
+
+const WORKOUT_MEALS: readonly MealKey[] = ['pre_workout', 'post_workout']
+
+export function mealSchedule({
+  wakeTime,
+  sleepTime,
+  trainingTime,
+  plan,
+}: {
+  wakeTime: string
+  sleepTime: string
+  trainingTime: string | null
+  plan?: MealPlan
+}): ScheduledMeal[] {
   const wake = toMinutes(wakeTime)
   let sleep = toMinutes(sleepTime)
   if (sleep <= wake) sleep += 1440
@@ -54,7 +91,17 @@ export function mealSchedule({ wakeTime, sleepTime, trainingTime }: { wakeTime: 
 
   // Asnjë vakt pas vaktit para gjumit: ato që shtyhen përtej tij mblidhen para tij.
   meals = meals.map((entry) => ({ ...entry, minutes: Math.min(entry.minutes, bedtime - 30) }))
+  // Orët e lëvizura me dorë (V35): ora para zgjimit − 1 orë kalon pas mesnate, në fund të ditës.
+  const moved = (entry: { meal: MealKey; minutes: number }) => {
+    const time = WORKOUT_MEALS.includes(entry.meal) ? undefined : plan?.times[entry.meal]
+    if (!time) return entry
+    let minutes = toMinutes(time)
+    if (minutes < wake - 60) minutes += 1440
+    return { ...entry, minutes }
+  }
   return [...meals, ...extra, { meal: 'bedtime' as MealKey, minutes: bedtime }]
+    .filter((entry) => !plan?.removed.includes(entry.meal))
+    .map(moved)
     .sort((a, b) => a.minutes - b.minutes)
     .map((entry) => ({ meal: entry.meal, time: toTime(entry.minutes), minutes: Math.round(entry.minutes) }))
 }
