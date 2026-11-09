@@ -28,6 +28,8 @@ export const TABLES = [
   'ai_usage',
   // Uji (V36, V2-E2-07).
   'water_logs',
+  // Kontrolli javor (V33, V2-E2-04).
+  'weekly_checks',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -82,6 +84,7 @@ export const INDEXES: Record<TableName, string[]> = {
   supplements: [],
   supplement_logs: ['date', 'supplement_id'],
   water_logs: ['date'],
+  weekly_checks: ['week_start'],
   user_settings: [],
   week_weights: ['program_id'],
   form_videos: ['exercise_id', 'session_id'],

@@ -69,6 +69,20 @@ const tick = (ms = 60_000) => {
 
 const storeFor = (db: LocalDatabase) => createLocalStore(db, { userId: () => USER, now })
 
+/**
+ * Dyqani i fazës v1: kodi i v2 që përdoret për të krijuar të dhënat e v1 lexon edhe tabela që v1 nuk
+ * i kishte (p.sh. `weekly_checks`); në bazën e v1 ato lexohen bosh, si te v1.
+ */
+function v1StoreFor(db: LocalDatabase): LocalStore {
+  const store = storeFor(db)
+  const missing = (table: TableName) => !(table in V1_SCHEMA)
+  return {
+    ...store,
+    all: (table) => (missing(table) ? Promise.resolve([]) : store.all(table)),
+    where: (table, index, value) => (missing(table) ? Promise.resolve([]) : store.where(table, index, value)),
+  }
+}
+
 /** Një javë e parë në v1: hapat e parë, Stërvitja 1 me dy sete, matja, një vakt, suplementet, një foto. */
 async function useV1(store: LocalStore, db: LocalDatabase) {
   await completeOnboarding(store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' }, now)
@@ -124,7 +138,7 @@ describe('të dhënat e v1 në v2', () => {
   it('baza lokale e v1 hapet në v2 pa humbur asnjë rresht, dhe ekranet shohin të njëjtat të dhëna', async () => {
     const name = `v1-local-${crypto.randomUUID()}`
     const v1 = openV1(name)
-    const v1Store = storeFor(v1)
+    const v1Store = v1StoreFor(v1)
     await useV1(v1Store, v1)
     // Tema e v1 ruhej vetëm në telefon.
     window.localStorage.setItem('th-theme', 'light')
@@ -166,7 +180,7 @@ describe('të dhënat e v1 në v2', () => {
   it('rreshtat e v1 në Supabase (pa kolonat e reja) vijnë të plotë në një instalim të ri të v2', async () => {
     const remote = createFakeRemote()
     const v1 = openV1(`v1-phone-${crypto.randomUUID()}`)
-    const v1Store = storeFor(v1)
+    const v1Store = v1StoreFor(v1)
     await useV1(v1Store, v1)
     expect(await createSync({ db: v1, remote, userId: () => USER, now, tables: V1_TABLES }).run()).toMatchObject({ status: 'ok', rejected: 0 })
     const seen = await whatTheUserSees(v1Store, v1)

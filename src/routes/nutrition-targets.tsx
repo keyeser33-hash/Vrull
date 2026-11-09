@@ -7,7 +7,7 @@ import { Icon } from '@/components/ui/icons'
 import { inputClass } from '@/components/ui/field-styles'
 import { store, useLocalQuery } from '@/data/app-data'
 import { targetsPageData } from '@/data/nutrition'
-import { EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, type TargetsInput } from '@/data/targets-profile'
+import { adjustmentOn, EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, type TargetsInput, withAdjustment } from '@/data/targets-profile'
 import { useI18n } from '@/i18n/use-i18n'
 import { localDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
@@ -24,6 +24,7 @@ import {
 } from '@/nutrition/calculator'
 import { EditorFooter, Segmented, StepButton } from './builder-parts'
 import { DEFAULT_GOAL, GOAL_ORDER, goalSummary, rateText } from './targets-format'
+import { WeeklyCheckCard, WeeklyCheckSummary } from './weekly-check-card'
 import { ActivityPicker, TargetsCard } from './targets-parts'
 
 // Ushqimi › Objektivat (V32, V2-E2-03, bordi "Objektivat"): kcal dhe makrot e dy llojeve të ditës,
@@ -45,7 +46,17 @@ export function TargetsPage() {
   const [date] = useState(() => localDate(new Date()))
   const data = useLocalQuery(() => targetsPageData(store, date), [date])
   if (!data) return <TargetsSkeleton />
-  return <TargetsEditor key={data.targets.from ?? 'new'} date={date} initial={data.targets} weightKg={data.weightKg} sessionsPerWeek={data.sessionsPerWeek} />
+  return (
+    <TargetsEditor
+      key={data.targets.from ?? 'new'}
+      date={date}
+      initial={data.targets}
+      from={data.targets.from}
+      adjustment={adjustmentOn(data.targets.adjustments, date)}
+      weightKg={data.weightKg}
+      sessionsPerWeek={data.sessionsPerWeek}
+    />
+  )
 }
 
 function TargetsSkeleton() {
@@ -58,7 +69,35 @@ function TargetsSkeleton() {
   )
 }
 
-function TargetsEditor({ date, initial, weightKg, sessionsPerWeek }: { date: string; initial: TargetsInput; weightKg: number | null; sessionsPerWeek: number }) {
+/** Rezultati i kalkulatorit me korrigjimet e pranuara të kontrollit javor (V33). */
+function adjusted(result: TargetsResult, kcal: number): TargetsResult {
+  if (kcal === 0) return result
+  const rest = withAdjustment(result.rest, kcal)
+  const training = withAdjustment(result.training, kcal)
+  return {
+    ...result,
+    rest,
+    training,
+    breakdown: { ...result.breakdown, rest: result.breakdown.rest + rest.kcal - result.rest.kcal, training: result.breakdown.training + training.kcal - result.training.kcal },
+  }
+}
+
+function TargetsEditor({
+  date,
+  initial,
+  from,
+  adjustment,
+  weightKg,
+  sessionsPerWeek,
+}: {
+  date: string
+  initial: TargetsInput
+  from: string | null
+  /** Shuma e korrigjimeve javore që vlejnë sot. */
+  adjustment: number
+  weightKg: number | null
+  sessionsPerWeek: number
+}) {
   const i18n = useI18n()
   const { t, fmt } = i18n
   const navigate = useNavigate()
@@ -67,7 +106,8 @@ function TargetsEditor({ date, initial, weightKg, sessionsPerWeek }: { date: str
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
   const set = (patch: Partial<TargetsInput>) => setDraft((current) => ({ ...current, ...patch }))
-  const result = weightKg === null ? null : personalTargets(draft, { weightKg, sessionsPerWeek, date })
+  const calculated = weightKg === null ? null : personalTargets(draft, { weightKg, sessionsPerWeek, date })
+  const result = calculated && adjusted(calculated, adjustment)
   const sheet = params.get('flete') as SheetName | null
   const goal = draft.goal ?? DEFAULT_GOAL
 
@@ -106,7 +146,10 @@ function TargetsEditor({ date, initial, weightKg, sessionsPerWeek }: { date: str
         <p className="rounded-xl border border-border bg-surface p-4 text-[15px] leading-[1.45]">{weightKg === null ? t('food.targets.noWeight') : t('food.targets.missing')}</p>
       )}
 
-      {result ? <Breakdown result={result} draft={draft} /> : null}
+      {from !== null ? <WeeklyCheckCard date={date} /> : null}
+
+      {result ? <Breakdown result={result} draft={draft} adjustment={adjustment} /> : null}
+      {from !== null ? <WeeklyCheckSummary date={date} from={from} /> : null}
 
       <section aria-labelledby="targets-you" className="flex flex-col">
         <h2 id="targets-you" className="mb-1.5 type-label text-muted-foreground">
@@ -282,7 +325,7 @@ function TargetsEditor({ date, initial, weightKg, sessionsPerWeek }: { date: str
   )
 }
 
-function Breakdown({ result, draft }: { result: TargetsResult; draft: TargetsInput }) {
+function Breakdown({ result, draft, adjustment }: { result: TargetsResult; draft: TargetsInput; adjustment: number }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
   const goal = draft.goal ?? DEFAULT_GOAL
@@ -305,6 +348,7 @@ function Breakdown({ result, draft }: { result: TargetsResult; draft: TargetsInp
             tone: 'data' as const,
           },
         ]),
+    ...(adjustment === 0 ? [] : [{ label: t('food.targets.adjustments'), value: plus(adjustment), tone: 'data' as const }]),
     { label: t('food.targets.rest'), value: fmt.number(result.breakdown.rest), tone: 'total' },
     { label: t('food.targets.trainingExtra', { kcal: TRAINING_KCAL_PER_KG }), value: plus(result.breakdown.trainingExtra), tone: 'data' },
     { label: t('food.targets.training'), value: fmt.number(result.breakdown.training), tone: 'total' },

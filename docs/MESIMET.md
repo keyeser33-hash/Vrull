@@ -54,3 +54,4 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Provat që imitojnë kthimin në app me një `visibilitychange` "visible" pa "hidden" para tij nuk janë realiste → kthimi provohet me të dy hapat (`backFromSettings` te `music.test.tsx`).
 - Pranimi i importit me AI u provua vetëm me një fixture të plotë; me PDF-në e vërtetë dhe `effort: low` AI-ja ktheu 4 nga 9 slotet e ditës së parë (13 nga 66 ushtrime) → çdo veçori me AI provohet me të dhënat e vërteta para lëshimit (`scripts`/prova me përdorues të përkohshëm), jo vetëm me fixture. Me `medium` dhe udhëzimin për plotësinë: 9/10/7/8 slote, 67 ushtrime, 86 s, €0,25.
 
+- Prova e kalimit nga v1 krijon të dhënat e v1 me kodin e v2 mbi bazën e v1; kur një lexim i zakonshëm (objektivat te `logTemplateMeal`) nisi të lexonte tabelën e re `weekly_checks`, prova ra pa faj të app-it → faza v1 përdor `v1StoreFor`, që tabelat që v1 nuk i kishte i lexon bosh.

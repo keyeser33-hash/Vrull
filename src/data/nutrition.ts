@@ -333,6 +333,17 @@ export async function dayBasics(store: LocalStore, date: string): Promise<{ dayT
   return { dayType, weightKg }
 }
 
+/** Objektivat e një date (kontrolli javor, V33): të ruajturat, ose ato që do të dilnin atë ditë. */
+export async function dayTargets(store: LocalStore, date: string): Promise<Macros | null> {
+  const [profile, targetsProfile] = await Promise.all([readProfile(store), readTargetsProfile(store)])
+  const [{ dayType, saved }, measuredKg] = await Promise.all([dayTypeFor(store, date, profile.trainingDays), weightFor(store, date)])
+  if (saved) return savedMacros(saved)
+  return measuredKg === null ? null : targetsFor(targetsProfile, { weightKg: measuredKg, dayType, date, sessionsPerWeek: profile.trainingDays.length }).macros
+}
+
+/** Pesha e objektivave të një date: mesatarja 7-ditore ose pesha e fundit (V32). */
+export const targetsWeight = weightFor
+
 /** Dita e ushqimit e tanishme sipas orës së zgjimit (V46). */
 export async function currentFoodDate(store: LocalStore, now: Date): Promise<string> {
   return foodDate(now, (await readProfile(store)).wakeTime)

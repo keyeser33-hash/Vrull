@@ -361,6 +361,15 @@ export const sq = {
   'food.plan.kcalProtein': 'kcal · {protein} g P',
   'food.plan.swapWith': 'Ndërro me {food}',
   'food.plan.addFood': 'Shto {food}',
+  'food.targets.weeklyCheck.title': 'Kontrolli javor',
+  'food.targets.weeklyCheck.first': 'Kontrolli i parë del {date}. Deri atëherë regjistro ushqimin dhe peshohu të paktën një herë në javë.',
+  'food.targets.weeklyCheck.insufficient': 'Java {week} kishte pak të dhëna. Regjistro të paktën 4 ditë ushqim dhe 1 peshim këtë javë; kontrolli tjetër del {date}.',
+  'food.targets.weeklyCheck.accepted': 'Java {week}: korrigjimi u pranua. Kontrolli tjetër del {date}.',
+  'food.targets.weeklyCheck.dismissed': 'Java {week}: objektivat mbetën si ishin. Kontrolli tjetër del {date}.',
+  'food.targets.weeklyCheck.history': 'Korrigjimet',
+  'food.targets.weeklyCheck.week': 'Java {week}',
+  'food.targets.weeklyCheck.from': 'nga {date}',
+  'food.targets.adjustments': 'Korrigjimet javore',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -701,4 +710,13 @@ export const en: TranslationOf<typeof sq> = {
   'food.plan.kcalProtein': 'kcal · {protein} g P',
   'food.plan.swapWith': 'Swap for {food}',
   'food.plan.addFood': 'Add {food}',
+  'food.targets.weeklyCheck.title': 'Weekly review',
+  'food.targets.weeklyCheck.first': 'The first review comes on {date}. Until then, log your food and weigh in at least once a week.',
+  'food.targets.weeklyCheck.insufficient': 'Week {week} had too little data. Log food on at least 4 days and weigh in once this week; the next review comes on {date}.',
+  'food.targets.weeklyCheck.accepted': 'Week {week}: change accepted. The next review comes on {date}.',
+  'food.targets.weeklyCheck.dismissed': 'Week {week}: your targets stayed as they were. The next review comes on {date}.',
+  'food.targets.weeklyCheck.history': 'Changes',
+  'food.targets.weeklyCheck.week': 'Week {week}',
+  'food.targets.weeklyCheck.from': 'from {date}',
+  'food.targets.adjustments': 'Weekly reviews',
 }
