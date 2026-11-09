@@ -46,17 +46,38 @@ const CONTEXT = {
     { ref: 's2', name: 'Kreatinë', dose: '5 g' },
     { ref: 's3', name: 'Multivitaminë', dose: '1 tabletë' },
   ],
+  workouts: [
+    { ref: 'w1', date: null, label: 'Stërvitja 2 · Shpinë, biceps, bark', status: 'next', exercises: [{ ref: 'e1', name: 'Dumbbell Bent-Over Row' }, { ref: 'e2', name: 'Wide-Grip Pulldown' }, { ref: 'e3', name: 'Barbell Curl' }] },
+    { ref: 'w2', date: '2026-11-16', label: 'Stërvitja 1 · Gjoks, triceps, pulpa', status: 'done', exercises: [{ ref: 'e4', name: 'Bench Press' }, { ref: 'e5', name: 'Incline Dumbbell Press' }, { ref: 'e6', name: 'Lying Triceps Extension' }] },
+  ],
 }
 
+// Faktet e trajnerit si i ndërton app-i (ai-coach.ts).
+const FACTS = [
+  'Food day 2026-11-18 (rest day). Eaten: 1431 kcal, protein 132 g, carbs 120 g, fat 55 g.',
+  'Targets: 2720 kcal, protein 176 g, carbs 300 g, fat 79 g. Left: 1289 kcal, protein 44 g.',
+  'Plan, Para gjumit 00:30: Gjizë me pak yndyrë 230 g (28 g protein, 166 kcal).',
+  'Water: 1.5 of 3.0 L.',
+  'Next workout (2026-11-19 21:00): Stërvitja 3 · Shpatulla, trapez, pulpa, Faza 1 · Java 3. 7 exercises: Dumbbell Shoulder Press 4 sets; Lateral Raise 3 sets; Barbell Shrug 3 sets.',
+  'Done 2026-11-16: Stërvitja 1. Bench Press 60 kg × 10; Incline Dumbbell Press 22 kg × 10.',
+].join('\n')
+
 const FIRST = 'Proteinën e mora në 07:00, në 12:00 hëngra dy tost me dy vezë. Në darkë gjysmë pule dhe panetone. Mora edhe kreatinën.'
-const CASES = [
+const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(',').map(Number)) : null
+const ALL_CASES = [
   { text: FIRST, time: '22:40' },
   { text: FIRST, time: '22:41', note: 'i njëjti mesazh: cache-i duhet lexuar' },
   { text: 'ne dreke hengra 200 g pule me oriz dhe piva dy gota uje', time: '15:10' },
   { text: 'dje para gjumit 250 g gjize', time: '09:30' },
   { text: 'nje banane dhe nje grusht bajame, pastaj shkova ne palester', time: '17:40' },
   { text: 'dy feta', time: '22:42', history: [{ role: 'user', text: FIRST }, { role: 'assistant', text: 'Sa panetone hëngre?' }] },
+  { text: 'dje bera bench 3x10 me 60 kg, edhe dips 3x12 me trupin', time: '08:45', date: '2026-11-17' },
+  { text: 'Sa proteinë më mbetet sot?', time: '22:50' },
+  { text: 'Çfarë stërvitje kam nesër?', time: '22:51' },
+  { text: 'hengra nje banane, sa kalori me mbeten?', time: '16:00' },
+  { text: 'me dhemb gjuri kur bej squat, cfare te marr?', time: '16:05' },
 ]
+const CASES = ALL_CASES.filter((_, index) => !ONLY || ONLY.has(index + 1))
 
 const auth = await fetch(`${URL}/auth/v1/token?grant_type=password`, {
   method: 'POST',
@@ -72,7 +93,7 @@ for (const item of CASES) {
   const response = await fetch(`${URL}/functions/v1/log-parse`, {
     method: 'POST',
     headers: { apikey: KEY, authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ text: item.text, date: '2026-11-18', time: item.time, context: CONTEXT, history: item.history ?? [] }),
+    body: JSON.stringify({ text: item.text, date: item.date ?? '2026-11-18', time: item.time, context: CONTEXT, facts: FACTS, history: item.history ?? [] }),
   })
   const body = await response.json()
   console.log(`\n### ${item.text}${item.note ? ` (${item.note})` : ''}`)
