@@ -1035,8 +1035,26 @@ try {
   check('v2: Progresi tregon matjen dhe foton e v1', true)
   screenshot('v2-progresi')
   await click(page, 'a[href="/ushqimi"]')
-  await waitForText(page, 'Regjistruar ·')
-  check('v2: Ushqimi tregon vaktin e regjistruar te v1', true)
+  // Dita e ushqimit (V46) ndërrohet 3 orë para zgjimit: para saj (p.sh. në 01:20) Ushqimi tregon ditën
+  // e djeshme, ndërsa vakti i v1 u regjistrua me datën kalendarike të sotme.
+  const foodDayIsYesterday = await page.evaluate(`new Promise((resolve) => {
+    const request = indexedDB.open('training-hub')
+    request.onsuccess = () => {
+      const query = request.result.transaction('user_settings').objectStore('user_settings').getAll()
+      query.onsuccess = () => {
+        const [hours, minutes] = String(query.result[0]?.wake_time ?? '07:00').split(':').map(Number)
+        const now = new Date()
+        resolve(now.getHours() * 60 + now.getMinutes() < hours * 60 + minutes - 180)
+      }
+    }
+    request.onerror = () => resolve(false)
+  })`)
+  if (foodDayIsYesterday) {
+    info('v2: Ushqimi', 'para ndërrimit të ditës së ushqimit (V46): vakti i v1 i përket ditës që vjen; kontrollohet vetëm te baza')
+  } else {
+    await waitForText(page, 'Regjistruar ·')
+    check('v2: Ushqimi tregon vaktin e regjistruar te v1', true)
+  }
   screenshot('v2-ushqimi')
   await click(page, 'a[href="/"]')
 
