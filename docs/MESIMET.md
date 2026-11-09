@@ -21,6 +21,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - WebView-ja e nisur për herë të parë pas ndezjes së emulatorit nuk iu përgjigj CDP-së brenda 15 s ("Log.enable pa përgjigje") → lidhja me WebView-në provohet deri në 3 herë dhe përpjekjet shënohen te raporti.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
 - Prova e 0.23 ra duke kërkuar foton te Progresi: ekrani u ridizajnua (vetëm rreshti i fotove) dhe `scripts/android-smoke.mjs` kërkonte ende pamjen e vjetër; rregulli më sipër u përsërit → një degë që ridizajnon një ekran kërkon te `android-smoke.mjs` tekstet dhe hapat e atij ekrani dhe i ndryshon në të njëjtën degë, para provës së Android-it.
+- Porta e Release-it të 0.23.0 ra te "asnjë gabim JavaScript" me `TypeError: Cannot read properties of undefined (reading 'triggerEvent') at <anonymous>:1:18`, pa vendin: `Runtime.exceptionThrown` nuk shënonte kontrollin e fundit. Logcat-i (artifact-i `android-smoke`) e tregoi: `navigimi` mbaron me app-in në sfond pas butonit mbrapa, `kutia` bënte `location.assign('/')` menjëherë, dhe `bridge.triggerJSEvent("backbutton")` i vonuar i Capacitor-it ra te faqja që po ngarkohej, ku `window.Capacitor` mungon ende → çdo gabim i provës mban `[pas: …]`; një pjesë që vjen pas një app-i të çuar në sfond nis me `force-stop` dhe `open()`, jo me navigim brenda tij; për një gabim pa vend, logcat-i i artifact-it lexohet para kodit.
 
 ## Provat (Vitest)
 

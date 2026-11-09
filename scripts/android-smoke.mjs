@@ -673,13 +673,13 @@ async function connectOnce() {
       }).catch(() => {})
       return
     }
+    // Çdo gabim mban kontrollin e fundit që kaloi, që të dihet ku ndodhi.
+    const after = report.checks.at(-1)?.name ?? 'fillimi'
     if (message.method === 'Runtime.exceptionThrown') {
-      report.errors.push(message.params.exceptionDetails.exception?.description ?? 'exception')
+      report.errors.push(`${message.params.exceptionDetails.exception?.description ?? 'exception'} [pas: ${after}]`)
     }
     if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
-      // Një objekt tregohet me fushat e tij (p.sh. refuzimi i një plugin-i: { code, message }), me kontrollin
-      // e fundit që kaloi, që të dihet ku ndodhi.
-      const after = report.checks.at(-1)?.name ?? 'fillimi'
+      // Një objekt tregohet me fushat e tij (p.sh. refuzimi i një plugin-i: { code, message }).
       const text = async (arg) => {
         if (arg.value !== undefined) return arg.value
         if (arg.objectId) {
@@ -1609,7 +1609,12 @@ try {
   // D10. Kutia e AI-së dhe vakti i shpejtë (V2-E2-13, V2-E2-16): tastiera te kutia, drafti dhe regjistrimi,
   // makrot e shpejta pa AI, foto e pjatës e zvogëluar me canvas në WebView. log-parse është i imituar.
   await section('kutia', 'Kutia e AI-së, makrot dhe foto e pjatës', async () => {
-    await goHome(page)
+    // Nga një app i hapur rishtas: navigimi mbaron me app-in në sfond pas butonit mbrapa, dhe një location.assign
+    // aty mund të marrë "backbutton"-in e vonuar të Capacitor-it te faqja që po ngarkohet (window.Capacitor mungon).
+    page?.close()
+    adb('shell', 'am', 'force-stop', PKG)
+    page = await open()
+    await waitForPath(page, '/')
     await click(page, 'a[href="/kutia"]')
     await waitForHeading(page, 'Kutia e AI-së')
     await page.evaluate(`(() => {
