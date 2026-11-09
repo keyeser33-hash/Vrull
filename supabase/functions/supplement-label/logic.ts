@@ -2,17 +2,21 @@
 // me foton dhe skemën e daljes, kostoja nga tokenat dhe interpretimi i përgjigjes. index.ts e lidh me
 // Deno.serve; provat: logic.test.ts dhe handler.test.ts.
 //
-// Modeli, çmimet, kursi dhe muaji janë të njëjtë me program-import (provë te logic.test.ts): kufiri i AI-së
-// është një për të gjitha veçoritë.
+// Kursi, muaji dhe kufiri janë të njëjtë me program-import (provë te logic.test.ts): kufiri i AI-së është një
+// për të gjitha veçoritë. Modeli zgjidhet për çdo veçori: etiketa me Haiku, importi i PDF-së me Sonnet.
 import type { LabelFields, LabelKind, LabelUnit } from './shared.ts'
 
 export type { LabelErrorCode, LabelFields } from './shared.ts'
 export { MAX_IMAGE_BYTES } from './shared.ts'
 
-/** Si te program-import: Sonnet 5.5 e lexon etiketën saktë; një foto 1 568 px zë rreth 1 600 tokena. */
-export const MODEL = 'claude-sonnet-5-5'
+/**
+ * Haiku 5.5: leximi i disa numrave nga një tabelë është i thjeshtë. Me të njëjtën etiketë prove lexoi 8 fusha
+ * nga 8 si Sonnet 5.5, rreth 20 herë më lirë (09.11.2026). Një foto 1 568 px zë rreth 1 600–2 500 tokena.
+ */
+export const MODEL = 'claude-haiku-5-5'
 export const API_VERSION = '2026-10-21'
-export const PRICE_USD_PER_MTOK = { input: 2, output: 10 } as const
+/** Çmimi i Haiku 5.5 deri në 100 000 tokena në kërkesë; një lexim ka rreth 2 000. */
+export const PRICE_USD_PER_MTOK = { input: 0.1, output: 0.5 } as const
 export const USD_PER_EUR = 1.1165
 export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 /** Kufiri për person në muaj (V25), si te program-import/shared.ts. */
@@ -21,8 +25,8 @@ export const AI_MONTHLY_LIMIT_EUR = 10
 export const MAX_TOKENS = 2_000
 export const EFFORT = 'low'
 export const AI_TIMEOUT_MS = 60_000
-/** Kostoja më e keqe e një leximi: ~5 000 tokena hyrje dhe 2 000 dalje, rreth $0,03; me rezervë. */
-export const AI_CALL_RESERVE_EUR = 0.1
+/** Kostoja më e keqe e një leximi: ~5 000 tokena hyrje dhe 2 000 dalje, rreth $0,0015; me rezervë. */
+export const AI_CALL_RESERVE_EUR = 0.01
 
 export function monthStart(date: Date): string {
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: LIMIT_TIME_ZONE, year: 'numeric', month: '2-digit' }).formatToParts(date)

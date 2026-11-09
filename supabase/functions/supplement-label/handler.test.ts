@@ -29,7 +29,7 @@ describe('leximi i etiketës', () => {
     const reply = await runLabel({ month: MONTH, request: {}, usage: usage.store, callClaude: async () => ok() })
     expect(reply.status).toBe(200)
     expect(reply.body).toMatchObject({ read: 8, total: 8, fields: { name: 'Gold Standard 100% Whey', proteinG: 24 }, usage: { inputTokens: 1700, outputTokens: 120 } })
-    expect(usage.live().map((row) => row.eur)).toEqual([(1700 * 2 + 120 * 10) / 1e6 / 1.1165].map((eur) => Math.round(eur * 1e6) / 1e6))
+    expect(usage.live().map((row) => row.eur)).toEqual([(1700 * 0.1 + 120 * 0.5) / 1e6 / 1.1165].map((eur) => Math.round(eur * 1e6) / 1e6))
   })
 
   it('kufiri i muajit: pa thirrje, rezervimi hiqet', async () => {

@@ -7,11 +7,13 @@ const reply = (fields: Record<string, unknown>) => ({ content: [{ type: 'text', 
 const WHEY = { is_label: true, name: 'Gold Standard 100% Whey', kind: 'protein', dose_amount: 1, dose_unit: 'scoop', serving_g: 30.4, kcal: 120, protein_g: 24, carbs_g: 3, fat_g: 1.5 }
 
 describe('funksioni supplement-label', () => {
-  it('modeli, çmimet, kursi, muaji dhe kufiri janë ata të importit: një kufi për të gjitha', () => {
-    expect([MODEL, API_VERSION, USD_PER_EUR]).toEqual([importLogic.MODEL, importLogic.API_VERSION, importLogic.USD_PER_EUR])
+  it('kursi, muaji dhe kufiri janë ata të importit (një kufi për të gjitha); modeli i vet, Haiku', () => {
+    expect([API_VERSION, USD_PER_EUR]).toEqual([importLogic.API_VERSION, importLogic.USD_PER_EUR])
     expect(AI_MONTHLY_LIMIT_EUR).toBe(IMPORT_LIMIT)
-    expect(costOf({ inputTokens: 1700, outputTokens: 120 })).toEqual(importLogic.costOf({ inputTokens: 1700, outputTokens: 120, cacheReadTokens: 0, cacheWriteTokens: 0 }))
     expect(monthStart(new Date('2026-11-30T23:30:00Z'))).toBe(importLogic.monthStart(new Date('2026-11-30T23:30:00Z')))
+    expect(MODEL).toBe('claude-haiku-5-5')
+    // 1 700 × 0,10 $ + 120 × 0,50 $ për milion = 0,00023 $.
+    expect(costOf({ inputTokens: 1700, outputTokens: 120 })).toEqual({ usd: 0.00023, eur: 0.000206 })
   })
 
   it('foto: JPEG, PNG dhe WebP nga fillimi i skedarit; çdo gjë tjetër jo', () => {
