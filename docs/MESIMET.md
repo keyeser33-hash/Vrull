@@ -1,13 +1,32 @@
 # Mësimet nga gabimet
 
-Çdo gabim që kushton kohë shkruhet këtu, me rregullin që e shmang herën tjetër. Lexoje para një detyre të re; shto një rresht kur një gabim përsëritet ose kur një provë dështon për arsye që nuk ishte te app-i.
+Çdo gabim që kushton kohë shkruhet këtu, me rregullin që e shmang herën tjetër. Lexoje para një detyre të re. Rreshtat i shton orkestruesi te retro e valës (`docs/agents/ORKESTRIMI.md`, hapi 9), nga dështimet e valës dhe nga "Mësimet" e raporteve të agjentëve.
 
 Formati: **çfarë ndodhi** → **rregulli**.
+
+Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mjaftoi:
+
+1. **Rresht këtu**: lexohet para detyrës.
+2. **Rregull te hapi ku ndodh gabimi**: te agjenti (`.claude/agents/`), te hapat e valës ose te forma e brief-it; lexohet në moment.
+3. **Rojë**: një provë, lint ose kontroll i workflow-it që bie kur gabimi kthehet. Kjo është shkalla e fundit. Rreshti këtu shkurtohet dhe tregon rojën.
+
+## Rojet
+
+| Rojet | Kap |
+|---|---|
+| `src/data/tables.test.ts` | Një migrim pa `TABLES`/`INDEXES`, ose anasjelltas |
+| `src/test/hardcoded-text.test.ts` | Tekst i UI-së jashtë katalogut `i18n` |
+| `src/i18n/catalog.test.ts` | Çelës, parametër ose formë shumësi që mungon në njërën gjuhë |
+| `src/test/smoke-texts.test.ts` | Prova e Android-it pret një tekst që app-i nuk e ka më |
+| `scripts/check-design.mjs`, `src/test/design-guard.test.ts`, `src/styles/tokens.test.ts` | Ngjyra jashtë tokenave, alias i v1, kontrast nën 4,5:1 |
+| `tsc -p supabase/functions/tsconfig.json` (te `npm run lint`) | Gabim tipesh te Edge Functions |
+| `src/data/v1-upgrade.test.ts` | Të dhënat e v1 që nuk hapen në v2 |
+| Krahasimi i nënshkrimeve te `android-smoke.yml` | APK-të v1, v2, v3 me çelësa të ndryshëm, në minutën e 3-të |
 
 ## Prova e Android-it (emulatori te GitHub Actions)
 
 - Prova e plotë zgjat ~15 min dhe nisej nga e para për çdo ndreqje të vogël (16 nisje të kuqe për një degë) → prova ndahet në pjesë (`skip` / `SMOKE_SKIP`); pas një dështimi niset vetëm pjesa që dështoi, prova e plotë vetëm në fund.
-- Prova te `main` mbeti e kuqe që nga vala A, sepse UI ndryshoi te Vrull dhe skripti kërkonte ende tekstet e v1 → kur ndryshon një ekran që prova e prek, skripti ndryshon në të njëjtin ndryshim; prova nuk niset në çdo push te `main`, vetëm me dorë dhe para lëshimit.
+- Prova te `main` mbeti e kuqe që nga vala A, sepse UI ndryshoi te Vrull dhe skripti kërkonte ende tekstet e v1 → kur ndryshon një ekran që prova e prek, skripti ndryshon në të njëjtin ndryshim; prova nuk niset në çdo push te `main`, vetëm me dorë dhe para lëshimit. Roja: `src/test/smoke-texts.test.ts`.
 - Rreshtat `ERROR: could not get idle state` vijnë nga uiautomator gjatë animacioneve → nuk janë shkaku; shkaku është rreshti `Error:` i fundit.
 - Një provë që dështon disa herë në të njëjtin hap nuk është gjithmonë emulatori: Home gjatë videos ishte defekt i vërtetë (pamja e ekranit e tregoi: regjistrimi vazhdonte) → para se ta quash "të paqëndrueshme", shih pamjen e ekranit të gabimit. Ato që emulatori nuk i bën dot (kamera e vërtetë, Spotify, telefon i vërtetë) janë te `docs/PROVA-NE-TELEFON.md`.
 - Prova tregonte vetëm gabimin e parë, pastaj ndalej → pjesët pas bazës (A–C) e shënojnë gabimin, e kthejnë app-in te Sot dhe vazhdojnë; një nisje tregon të gjitha gabimet. `skip` te "Run workflow" (ose `SMOKE_SKIP`) kapërcen pjesët që nuk preken.
@@ -20,7 +39,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova qëndroi 33 min pa dalë pas një hapjeje të app-it: `fetch` te socket-i i WebView-së dhe hapja e WebSocket-it nuk kishin afat, dhe `waitFor` nuk e ndalon një thirrje që nuk kthehet kurrë → çdo pritje jashtë (fetch, WebSocket, adb) ka afatin e vet; `waitFor` mat vetëm ciklin.
 - WebView-ja e nisur për herë të parë pas ndezjes së emulatorit nuk iu përgjigj CDP-së brenda 15 s ("Log.enable pa përgjigje") → lidhja me WebView-në provohet deri në 3 herë dhe përpjekjet shënohen te raporti.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
-- Prova e 0.23 ra duke kërkuar foton te Progresi: ekrani u ridizajnua (vetëm rreshti i fotove) dhe `scripts/android-smoke.mjs` kërkonte ende pamjen e vjetër; rregulli më sipër u përsërit → një degë që ridizajnon një ekran kërkon te `android-smoke.mjs` tekstet dhe hapat e atij ekrani dhe i ndryshon në të njëjtën degë, para provës së Android-it.
+- Prova e 0.23 ra duke kërkuar foton te Progresi: ekrani u ridizajnua (vetëm rreshti i fotove) dhe `scripts/android-smoke.mjs` kërkonte ende pamjen e vjetër; rregulli më sipër u përsërit → një degë që ridizajnon një ekran kërkon te `android-smoke.mjs` tekstet dhe hapat e atij ekrani dhe i ndryshon në të njëjtën degë, para provës së Android-it. Roja: `src/test/smoke-texts.test.ts`.
 - Porta e Release-it të 0.23.0 ra te "asnjë gabim JavaScript" me `TypeError: Cannot read properties of undefined (reading 'triggerEvent') at <anonymous>:1:18`, pa vendin: `Runtime.exceptionThrown` nuk shënonte kontrollin e fundit. Logcat-i (artifact-i `android-smoke`) e tregoi: `navigimi` mbaron me app-in në sfond pas butonit mbrapa, `kutia` bënte `location.assign('/')` menjëherë, dhe `bridge.triggerJSEvent("backbutton")` i vonuar i Capacitor-it ra te faqja që po ngarkohej, ku `window.Capacitor` mungon ende → çdo gabim i provës mban `[pas: …]`; një pjesë që vjen pas një app-i të çuar në sfond nis me `force-stop` dhe `open()`, jo me navigim brenda tij; për një gabim pa vend, logcat-i i artifact-it lexohet para kodit.
 - Prova e Android-it ra në 01:22 UTC te "Ushqimi tregon vaktin e v1": dita e ushqimit (V46) ndërrohet 3 orë para zgjimit, ndaj para saj Ushqimi tregon ditën e djeshme → kontrollet që varen nga ora e ditës e llogaritin vetë ditën e ushqimit (`foodDayIsYesterday` te android-smoke.mjs).
 - Prova e Android-it e 0.23 ra te "asnjë gabim JavaScript" me `{message: timeout, code: SocketTimeoutException}`: CapacitorHttp në build-in debug e shkruan çdo refuzim si console.error edhe kur app-i e kap (kërkimi i tempos mbaron me "offline") → gabimet native që app-i i kap pranohen te `ignoredError` vetëm me formën e tyre të saktë dhe me arsyen; një emulator që zhduket në mes ("no devices/emulators found") është infrastrukturë, jo app-i, dhe përsëritet vetëm ajo pjesë.
@@ -63,7 +82,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 
 - `apply_migration` me `drop policy`/`revoke` u anulua automatikisht → migrime të tilla i jepen përdoruesit si skedar SQL për SQL Editor që në fillim.
 - Edhe një `alter table … add column` me `apply_migration` u refuzua (09.11.2026, baza e prodhimit) → çdo migrim i ri i jepet përdoruesit si skedar te `supabase/migrations/` për SQL Editor, ose aplikohet vetëm pasi ai e lejon shprehimisht; asnjë lëshim nuk shkon para se migrimi të jetë në Supabase, sepse sinkronizimi i rreshtave me kolonat e reja refuzohet.
-- Migrimi i arritjeve (0.23) hyri te main para regjistrimit të tabelës te `TABLES`, dhe `tables.test.ts` (që krahason migrimet me tabelat e app-it) e bëri CI-në të kuqe → migrimi, `TABLES`/`INDEXES` dhe versioni i `db.ts` hyjnë në të njëjtin commit; kur migrimi duhet t'i jepet përdoruesit më herët, jepet SQL-ja në mesazh dhe skedari pret kodin.
+- Migrimi i arritjeve (0.23) hyri te main para regjistrimit të tabelës te `TABLES`, dhe `tables.test.ts` (që krahason migrimet me tabelat e app-it) e bëri CI-në të kuqe → migrimi, `TABLES`/`INDEXES` dhe versioni i `db.ts` hyjnë në të njëjtin commit; kur migrimi duhet t'i jepet përdoruesit më herët, jepet SQL-ja në mesazh dhe skedari pret kodin. Roja: `src/data/tables.test.ts`.
 - Historia e migrimeve merrte orën e aplikimit si version → pas aplikimit, versioni dhe emri vendosen sipas skedarit lokal.
 - Prova e RLS-it me MCP: `format('%s', boolean)` jep `t`/`f`, jo `true`/`false` → numëro sipas `t`/`f`; prova niset si një bllok `do` që mbaron me `raise exception`, që asgjë të mos mbetet në bazë.
 - Fshirja e përdoruesit të provës me `execute_sql` kërkon konfirmimin e përdoruesit; kur ai nuk ishte aty, përdoruesi mbeti → përdoruesi i përkohshëm krijohet vetëm kur përdoruesi është i pranishëm, dhe SQL-ja e fshirjes i jepet gati që ta zbatojë vetë nëse konfirmimi nuk vjen.

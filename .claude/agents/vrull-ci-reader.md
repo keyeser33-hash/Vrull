@@ -29,4 +29,5 @@ Raporti ka deri në 200 fjalë dhe përmban:
 - rreshtat e shkakut, të cituar;
 - kontekstin e logcat-it, kur ka;
 - llojin e shkakut;
-- pjesën e provës që duhet përsëritur (`skip`).
+- pjesën e provës që duhet përsëritur (`skip`);
+- kur shkaku është skripti ose infrastruktura, **Mësimin** në një rresht: çfarë ndodhi → rregulli, dhe nëse `docs/MESIMET.md` e kishte tashmë.

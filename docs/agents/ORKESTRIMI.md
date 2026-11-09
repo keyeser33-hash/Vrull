@@ -35,7 +35,21 @@ Një fork përdoret për një detyrë anësore që i duhet biseda e tanishme. Nj
 8. **Prova e Android-it.** CI-ja kontrollon tekstet e skriptit (`src/test/smoke-texts.test.ts`). Emulatori niset vetëm kur vala prek native-n ose një ekran që prova e prek, dhe vetëm për pjesët e prekura:
    `gh workflow run android-smoke.yml -R keyeser33-hash/Vrull -f skip=<pjesët e paprekura>`
    Orkestruesi pret me `gh run watch <id> --exit-status` në sfond. Kur prova bie, niset `vrull-ci-reader` dhe përsëritet vetëm pjesa që ra. Prova e plotë niset vetëm para lëshimit.
-9. **Mbyllja e valës.** Gjendja shkruhet te `docs/TICKETS.md`, dhe çdo gabim që kushtoi kohë shkruhet te `docs/MESIMET.md`.
+9. **Retro.** Mblidh dështimet e valës:
+   - nisjet e kuqe (`gh run list -R keyeser33-hash/Vrull --created ">=<data>" --status failure`);
+   - gjetjet P0–P2 të rishikimit;
+   - korrigjimet e përdoruesit;
+   - "Mësimet" e raporteve të agjentëve.
+   Për secilin dështim:
+   - kur nuk ka mësim te `docs/MESIMET.md`, shto një rresht;
+   - kur mësimi ekzistonte, ngjite një shkallë (MESIMET, krye).
+   Shkruaj gjendjen te `docs/TICKETS.md` dhe një rresht te `docs/agents/KOSTOT.md`:
+   - tokenat e agjentëve (shuma e `subagent_tokens`);
+   - minutat (`node scripts/actions-usage.mjs --since <data>`);
+   - provat e Android-it;
+   - gjetjet;
+   - rojet e reja.
+   Hapi mbaron kur çdo dështim ka mësimin ose rojën e vet.
 
 ## Forma e brief-it
 
@@ -47,8 +61,16 @@ Ekzistojnë tashmë: <ndihmësit dhe komponentët, me shtegun>
 Skedarët e orkestruesit: <hyrjet e regjistruara te i18n, router, tables>
 Provat: <skedarët>; prova e Android-it prek: <pjesët ose "asgjë">
 Commit-et mbarojnë me: <rreshtat e atribuimit të sesionit>
-Raporti: deri në 300 fjalë
+Raporti: deri në 300 fjalë, me "Mësimet": çfarë kushtoi kohë dhe pse, deri në 3 rreshta
 ```
+
+## Mbyllja e etapës
+
+Para versionit të fundit të etapës lexo `docs/MESIMET.md` të tërë:
+- shkurto rreshtat që kanë rojë;
+- bashko rreshtat që thonë të njëjtën gjë;
+- hiq ato që nuk vlejnë më.
+Krahaso rreshtat e `docs/agents/KOSTOT.md` me etapën e kaluar. Kur një kosto rritet, shkaku shkruhet si mësim.
 
 ## Lëshimi
 

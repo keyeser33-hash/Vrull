@@ -23,4 +23,5 @@ Lint-i, provat dhe build-i janë të gjelbër. Raporti, deri në 300 fjalë, tho
 - çfarë u bë dhe çfarë mbeti;
 - konfliktet me vendimet;
 - rreziqet;
-- çdo skedar i prekur jashtë brief-it.
+- çdo skedar i prekur jashtë brief-it;
+- **Mësimet**, deri në 3 rreshta: çfarë kushtoi kohë ose ra, dhe pse. Ky është burimi i retros; MESIMET i shkruan orkestruesi.
