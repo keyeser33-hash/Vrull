@@ -1,4 +1,5 @@
-import { JIM_FOODS, JIM_MEALS, type JimFoodKey, macrosFor, type Portion, sumMacros } from '@/nutrition/jim'
+import { JIM_FOODS, type JimFoodKey, macrosFor, type Portion, sumMacros } from '@/nutrition/jim'
+import { localDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
 import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
 import { mealSchedule } from '@/nutrition/schedule'
@@ -6,6 +7,7 @@ import type { Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
+import { myPlan, type MyPlanItem } from './my-plan'
 import { supplementList } from './supplements'
 import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
 import type { LocalStore } from './store'
@@ -25,10 +27,14 @@ export interface DiaryEntry extends Macros {
 }
 
 export interface TemplateLine extends Macros {
-  food: JimFoodKey
-  /** Emri shqip i shabllonit; ekrani e përkthen sipas `food`. */
+  /** Çelësi i ushqimit të Jimit ose `food:<id>` për një ushqim të përdoruesit (Plani im). */
+  food: string
+  /** Emri si ruhet; ekrani e përkthen me `foodName` sipas `sourceId`. */
   name: string
+  sourceId: string | null
   portion: Portion
+  /** Artikulli i Planit tim, për ndryshimin te faqja Plani im. */
+  item: MyPlanItem
   grams: number
 }
 
@@ -68,6 +74,8 @@ export interface NutritionDay {
   targets: Macros | null
   /** Nga kalkulatori (V32) ose nga totalet e Jimit (Q15). */
   targetsSource: TargetsSource
+  /** Plani im i ndryshuar nga përdoruesi për këtë lloj dite (V34); përndryshe ai i Jimit. */
+  planCustom: boolean
   totals: Macros
   meals: MealSlot[]
   next: MealSlot | null
@@ -132,6 +140,15 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     plan: mealPlanOn(schedule.plan, date),
   })
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
+  // Pesha e objektivave të ruajtura, që shënimet e ditës të përputhen me to.
+  const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
+  const computed = weightKg === null ? null : targetsFor(targetsProfile, { weightKg, dayType, date, sessionsPerWeek: profile.trainingDays.length })
+  const targetsSource = computed?.source ?? (targetsProfile.from !== null && date >= targetsProfile.from ? 'personal' : 'jim')
+  const targets = saved ? savedMacros(saved) : (computed?.macros ?? null)
+  // Artikujt e çdo vakti vijnë nga Plani im (V34): plani i Jimit i shkallëzuar ose ai i përdoruesit.
+  // Me objektivat e Jimit plani mbetet si në PDF (vlen për 72,6–90,7 kg); me ato personale shkallëzohet.
+  const plan = await myPlan(store, dayType, planned.map((entry) => entry.meal), targetsSource === 'personal' ? targets : null)
+  const planByMeal = new Map(plan.meals.map((entry) => [entry.meal, entry.items]))
 
   // Dita e ushqimit (V46): pas mesnate, deri 3 orë para zgjimit, është ende dita e djeshme.
   const current = foodDate(now, profile.wakeTime)
@@ -150,12 +167,14 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
         ...entryMacros(row),
       }
     })
-    const template = (JIM_MEALS[meal] ?? []).map((item) => ({
+    const template: TemplateLine[] = (planByMeal.get(meal) ?? []).map((item) => ({
       food: item.food,
-      name: JIM_FOODS[item.food].name,
-      portion: item.portion,
+      name: item.name,
+      sourceId: item.sourceId,
+      portion: { count: item.count, unit: item.unit },
       grams: item.grams,
-      ...macrosFor(JIM_FOODS[item.food], item.grams),
+      item,
+      ...macrosFor(item.per100, item.grams),
     }))
     return {
       meal,
@@ -187,10 +206,6 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     else if (meal.status === 'todo' && (past || (today && minutesOf(meal) < nowMinutes - 60))) meal.status = 'missed'
   }
 
-  // Pesha e objektivave të ruajtura, që shënimet e ditës të përputhen me to.
-  const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
-  const computed = weightKg === null ? null : targetsFor(targetsProfile, { weightKg, dayType, date, sessionsPerWeek: profile.trainingDays.length })
-  const targetsSource = computed?.source ?? (targetsProfile.from !== null && date >= targetsProfile.from ? 'personal' : 'jim')
   return {
     date,
     isToday: today,
@@ -198,8 +213,9 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     dayTypeManual: manual,
     weightKg,
     outsideJimRange: targetsSource === 'jim' && weightKg !== null && (weightKg < JIM_RANGE_KG.min || weightKg > JIM_RANGE_KG.max),
-    targets: saved ? savedMacros(saved) : (computed?.macros ?? null),
+    targets,
     targetsSource,
+    planCustom: plan.custom,
     totals: sumMacros(meals.flatMap((meal) => meal.entries)),
     meals,
     next: next ?? null,
@@ -253,23 +269,21 @@ const round1 = (value: number) => Math.round(value * 10) / 10
 
 /** Vakti i Jimit në ditar me një prekje (Q18); artikujt pastaj ndryshohen një nga një. */
 export async function logTemplateMeal(store: LocalStore, date: string, meal: MealKey) {
-  const items = JIM_MEALS[meal] ?? []
-  const profile = await readProfile(store)
-  const { dayType } = await dayTypeFor(store, date, profile.trainingDays)
-  await saveTargets(store, date, dayType, false)
+  const day = await nutritionDay(store, date, store.now())
+  const items = day.meals.find((entry) => entry.meal === meal)?.template ?? []
+  await saveTargets(store, date, day.dayType, false)
   const loggedAt = store.now().getTime()
   const rows = []
   for (const [index, item] of items.entries()) {
-    const macros = macrosFor(JIM_FOODS[item.food], item.grams)
     rows.push({
       date,
       meal,
-      food_id: await templateFood(store, item.food),
+      food_id: item.food.startsWith('food:') ? item.food.slice('food:'.length) : await templateFood(store, item.food as JimFoodKey),
       grams: item.grams,
-      kcal: round1(macros.kcal),
-      protein_g: round1(macros.proteinG),
-      carbs_g: round1(macros.carbsG),
-      fat_g: round1(macros.fatG),
+      kcal: round1(item.kcal),
+      protein_g: round1(item.proteinG),
+      carbs_g: round1(item.carbsG),
+      fat_g: round1(item.fatG),
       // Radha e artikujve ruhet me një milisekondë mes tyre.
       logged_at: new Date(loggedAt + index).toISOString(),
     })
@@ -322,4 +336,24 @@ export async function dayBasics(store: LocalStore, date: string): Promise<{ dayT
 /** Dita e ushqimit e tanishme sipas orës së zgjimit (V46). */
 export async function currentFoodDate(store: LocalStore, now: Date): Promise<string> {
   return foodDate(now, (await readProfile(store)).wakeTime)
+}
+
+/**
+ * Plani im për një lloj dite (V34): dita e ushqimit e parë nga sot me atë lloj sipas ditëve të
+ * stërvitjes, që vaktet, orët dhe objektivat të jenë ato të një dite të vërtetë.
+ */
+export async function planDay(store: LocalStore, dayType: DayType, now: Date): Promise<NutritionDay> {
+  const profile = await readProfile(store)
+  const start = foodDate(now, profile.wakeTime)
+  const [year, month, day] = start.split('-').map(Number)
+  // Dita e parë e këtij lloji nga sot; një ditë e ndryshuar me dorë (pushim në vend të stërvitjes) kapërcehet.
+  let found: NutritionDay | null = null
+  for (let offset = 0; offset < 14; offset++) {
+    const iso = localDate(new Date(year, month - 1, day + offset))
+    if (profile.trainingDays.includes(isoWeekday(iso)) !== (dayType === 'training')) continue
+    const candidate = await nutritionDay(store, iso, now)
+    if (candidate.dayType === dayType) return candidate
+    found ??= candidate
+  }
+  return found ?? nutritionDay(store, start, now)
 }

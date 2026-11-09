@@ -124,9 +124,9 @@ function TemplateLines({ lines, rowClassName, nameClassName, amountClassName }: 
   const { t, fmt } = useI18n()
   return (
     <ul className="flex flex-col tabular-nums">
-      {lines.map((item) => (
-        <li key={item.food} className={cn('flex justify-between gap-3 border-t border-border', rowClassName)}>
-          <span className={nameClassName}>{foodName(t, { name: item.name, sourceId: `jim:${item.food}` })}</span>
+      {lines.map((item, index) => (
+        <li key={`${item.food}-${index}`} className={cn('flex justify-between gap-3 border-t border-border', rowClassName)}>
+          <span className={nameClassName}>{foodName(t, { name: item.name, sourceId: item.sourceId })}</span>
           <span className={cn('shrink-0 text-muted-foreground', amountClassName)}>{portionText(t, fmt, item.portion)}</span>
         </li>
       ))}
@@ -307,6 +307,13 @@ function MacroTotals({ day }: { day: NutritionDay }) {
         className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         {t('food.targets.link')}
+        <Icon name="hap" size={20} className="text-muted-foreground" />
+      </Link>
+      <Link
+        to="/ushqimi/plani"
+        className="flex min-h-touch items-center justify-between gap-3 border-t border-border pt-2 text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      >
+        {t('food.plan.title')}
         <Icon name="hap" size={20} className="text-muted-foreground" />
       </Link>
       <Link

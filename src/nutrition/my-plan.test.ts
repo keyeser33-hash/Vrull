@@ -47,3 +47,25 @@ describe('Plani im', () => {
     expect(roundToPortion(176, { unitGrams: 1, step: 10 })).toEqual({ grams: 180, count: 180 })
   })
 })
+
+describe('ndërrimi i ushqimit', () => {
+  it('ushqimet e Jimit të së njëjtës lloj, me porcionin që mban proteinën', async () => {
+    const { jimSwaps } = await import('./my-plan')
+    const tuna = jimPlan(['lunch'])[0].items.find((item) => item.food === 'tuna')!
+    const options = jimSwaps(tuna)
+    expect(options.map((option) => option.food)).toEqual(expect.arrayContaining(['salmon', 'cottage_cheese', 'egg_white']))
+    expect(options.some((option) => option.food === 'tuna')).toBe(false)
+    const salmon = options.find((option) => option.food === 'salmon')!
+    // 142 g ton = 33,5 g proteinë → rreth 170 g salmon, në hapa 10 g.
+    expect(salmon).toMatchObject({ unit: 'gram', grams: 170 })
+  })
+
+  it('karbohidratet ndërrohen me të njëjtat kalori', async () => {
+    const { jimSwaps } = await import('./my-plan')
+    const bread = jimPlan(['lunch'])[0].items.find((item) => item.food === 'wheat_bread')!
+    const options = jimSwaps(bread)
+    expect(options.map((option) => option.food)).toContain('oatmeal')
+    const oatmeal = options.find((option) => option.food === 'oatmeal')!
+    expect(Math.abs((oatmeal.per100.kcal * oatmeal.grams) / 100 - 161)).toBeLessThan(60)
+  })
+})

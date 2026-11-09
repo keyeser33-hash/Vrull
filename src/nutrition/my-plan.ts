@@ -99,7 +99,7 @@ export function planTotals(meals: readonly PlanMeal[]): Macros {
 
 /** Një ushqim "me proteinë" kur proteina jep të paktën 40% të kalorive të tij. */
 const PROTEIN_SHARE = 0.4
-const isProteinFood = (item: Pick<PlanItem, 'per100'>) => item.per100.kcal > 0 && (item.per100.proteinG * 4) / item.per100.kcal >= PROTEIN_SHARE
+export const isProteinFood = (item: Pick<PlanItem, 'per100'>) => item.per100.kcal > 0 && (item.per100.proteinG * 4) / item.per100.kcal >= PROTEIN_SHARE
 const FACTOR = { min: 0.25, max: 3 }
 const clamp = (value: number) => Math.min(FACTOR.max, Math.max(FACTOR.min, value))
 
@@ -174,4 +174,66 @@ function refine(meals: PlanMeal[], target: Macros) {
     const chosen: { meal: number; item: number; next: PlanItem } = best
     meals[chosen.meal].items[chosen.item] = chosen.next
   }
+}
+
+/** Llojet e ushqimeve të Jimit për ndërrimin (V34): proteina, karbohidrate, fruta dhe perime, yndyra. */
+export const JIM_GROUPS: Record<JimFoodKey, 'protein' | 'carbs' | 'produce' | 'fat'> = {
+  protein: 'protein',
+  egg: 'protein',
+  egg_white: 'protein',
+  american_cheese: 'protein',
+  cottage_cheese: 'protein',
+  tuna: 'protein',
+  salmon: 'protein',
+  oatmeal: 'carbs',
+  wheat_bread: 'carbs',
+  clif_bar: 'carbs',
+  gummies: 'carbs',
+  jam: 'carbs',
+  cantaloupe: 'produce',
+  pineapple: 'produce',
+  apple: 'produce',
+  broccoli: 'produce',
+  greens: 'produce',
+  olive_oil: 'fat',
+  peanut_butter: 'fat',
+  light_mayo: 'fat',
+  dressing: 'fat',
+}
+
+/** Njësia e parë e një ushqimi te plani i Jimit ("1 kanoçe" = 142 g). */
+export function jimUnit(food: JimFoodKey): { unit: PortionUnit; unitGrams: number } {
+  for (const items of Object.values(JIM_MEALS)) {
+    const item = items?.find((entry) => entry.food === food)
+    if (item) return { unit: item.portion.unit, unitGrams: item.grams / item.portion.count }
+  }
+  return { unit: 'gram', unitGrams: 1 }
+}
+
+/** Gramët e një ushqimi tjetër që mbajnë proteinën (ushqimet me proteinë) ose kaloritë e artikullit. */
+export function matchingGrams(item: Pick<PlanItem, 'per100' | 'grams'>, per100: Macros): number {
+  const byProtein = isProteinFood(item) && per100.proteinG > 0
+  const wanted = byProtein ? (item.per100.proteinG * item.grams) / 100 : (item.per100.kcal * item.grams) / 100
+  const per = byProtein ? per100.proteinG : per100.kcal
+  return per > 0 ? (wanted / per) * 100 : item.grams
+}
+
+/** Ushqimet e Jimit të së njëjtës lloj, me porcionin e rrumbullakosur në njësinë e tyre. */
+export function jimSwaps(item: PlanItem): PlanItem[] {
+  const group = Object.hasOwn(JIM_GROUPS, item.food) ? JIM_GROUPS[item.food as JimFoodKey] : isProteinFood(item) ? 'protein' : 'carbs'
+  return (Object.keys(JIM_GROUPS) as JimFoodKey[])
+    .filter((food) => food !== item.food && JIM_GROUPS[food] === group)
+    .map((food) => {
+      const per100 = JIM_FOODS[food]
+      const { unit, unitGrams } = jimUnit(food)
+      const step = stepFor(unit, unitGrams)
+      return { food, unit, per100, ...step, ...roundToPortion(matchingGrams(item, per100), step) }
+    })
+}
+
+/** Një ushqim i Jimit për "Shto ushqim": një njësi (1 vezë, 1 fetë), ose 100 g kur njësia është gram. */
+export function jimFoodItem(food: JimFoodKey): PlanItem {
+  const { unit, unitGrams } = jimUnit(food)
+  const step = stepFor(unit, unitGrams)
+  return { food, unit, per100: JIM_FOODS[food], ...step, ...roundToPortion(unit === 'gram' ? 100 : unitGrams * Math.max(1, step.step), step) }
 }
