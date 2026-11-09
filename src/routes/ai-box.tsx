@@ -459,19 +459,19 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
           </section>
         ) : null}
         {draft.notUnderstood.length ? <p className="m-0 type-caption text-muted-foreground">{t('box.summary.notUnderstood', { text: draft.notUnderstood.join('; ') })}</p> : null}
-        {today?.targets && draft.foods.length ? (
-          <section aria-label={t('box.summary.after')} className="flex flex-col gap-1 tabular-nums">
-            <span className="type-label text-muted-foreground">{t('box.summary.after')}</span>
-            <span className="type-body-strong">
-              {t('box.summary.kcal', { eaten: Math.round(today.totals.kcal + added.kcal), target: Math.round(today.targets.kcal) })}
-            </span>
-            <span className="type-caption text-muted-foreground">
-              {t('box.summary.protein', { eaten: Math.round(today.totals.proteinG + added.proteinG), target: Math.round(today.targets.proteinG) })}
-            </span>
-          </section>
-        ) : null}
       </div>
       <div className="sticky bottom-0 flex shrink-0 flex-col gap-2 bg-background px-4 pt-2.5 pb-[calc(var(--safe-bottom)+20px)]">
+        {today?.targets && draft.foods.length ? (
+          <p className="m-0 flex items-baseline justify-between gap-3 border-t border-border pt-2.5 tabular-nums">
+            <span className="type-caption text-muted-foreground">{t('box.summary.after')}</span>
+            <span className="flex flex-col items-end">
+              <span className="type-body-strong">{t('box.summary.kcal', { eaten: Math.round(today.totals.kcal + added.kcal), target: Math.round(today.targets.kcal) })}</span>
+              <span className="type-caption text-muted-foreground">
+                {t('box.summary.protein', { eaten: Math.round(today.totals.proteinG + added.proteinG), target: Math.round(today.targets.proteinG) })}
+              </span>
+            </span>
+          </p>
+        ) : null}
         <Button
           variant="primary"
           size="xl"
