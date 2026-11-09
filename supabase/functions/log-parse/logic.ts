@@ -2,8 +2,8 @@
 // Claude me kontekstin në cache dhe skemën e daljes, dhe drafti i pastër. index.ts e lidh me Deno.serve;
 // provat: logic.test.ts dhe handler.test.ts.
 //
-// Modeli kthen vetëm atë që u tha: ushqimet (me gramë, ose me 2–3 zgjedhje kur sasia mungon), ujin dhe
-// suplementet. Vakti nga ora e vendos telefoni (SPEC §9 "Kutia e AI-së"); makrot e ushqimeve të njohura i
+// Modeli kthen vetëm atë që u tha: ushqimet (me gramë, ose me 2–3 zgjedhje kur sasia mungon), ujin,
+// suplementet, setet (V2-E2-14) dhe përgjigjen e trajnerit nga faktet që dërgon telefoni (V2-E2-15). Vakti nga ora e vendos telefoni (SPEC §9 "Kutia e AI-së"); makrot e ushqimeve të njohura i
 // llogarit telefoni nga vlerat e veta, AI-ja jep vlera për 100 g vetëm për një ushqim të ri.
 import {
   type ContextFood,
@@ -147,9 +147,9 @@ export const PARSE_SCHEMA: Schema = object({
   },
 })
 
-const INSTRUCTIONS = `You turn a gym-goer's short message about what they ate and drank into rows for a food diary. The message is usually Albanian, sometimes English, often typed fast or dictated by voice, without punctuation or diacritics ("hengra" = "hëngra", "dreke" = "drekë"). Return only JSON in the given schema.
+const INSTRUCTIONS = `You turn a gym-goer's short message about what they ate, drank, took or trained into diary rows, and answer their questions about their own day. The message is usually Albanian, sometimes English, often typed fast or dictated by voice, without punctuation or diacritics ("hengra" = "hëngra", "dreke" = "drekë"). Return only JSON in the given schema.
 
-Split the message into foods, water and supplements. Record only what the user says they ate, drank or took; never add anything. Anything else (feelings, training, plans, questions) goes to not_understood, in the user's words.
+Split the message into foods, water, supplements, gym sets and a question. Record only what the user says they ate, drank, took or did; never add anything. Anything else (feelings, plans, chat) goes to not_understood, in the user's words.
 
 Foods
 - Match each food to the user's known foods by meaning, not spelling: "tost" or "dy feta buke" can be "Bukë integrale"; "vezë", "veze", "eggs" are the same food. When one matches, set ref and leave the four *_100 values at -1: the app has its own values.
