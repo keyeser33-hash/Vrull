@@ -336,7 +336,12 @@ describe('Sot', () => {
       await waitFor(() => expect(weekSpark()).not.toBeNull())
       expect(goalsLink()).toHaveAccessibleName('Qëllimet e javës: stërvitja 4 nga 4, ushqimi 5 nga 7 ditë, uji 5 nga 7 ditë, të tre qëllimet të arritura')
       expect(await data.store.readDevice('goal-celebrated')).toEqual({ monday: '2026-11-02', keys: ['training', 'food', 'water', 'complete'] })
-      const ring = animations.find((call) => call.element === weekSpark())!
+      // Animacioni niset në një efekt pas vizatimit: pritet vetë, jo vetëm elementi (rrjedhja e 0.24 e shtyu më vonë).
+      const ring = await waitFor(() => {
+        const call = animations.find((entry) => entry.element === weekSpark())
+        if (!call) throw new Error('pa animacion')
+        return call
+      })
       expect(ring.options).toMatchObject({ duration: 600, delay: 320, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' })
       expect(ring.keyframes.some((frame) => 'transform' in frame)).toBe(true)
       // Një herë në javë: pas rihapjes asnjë festim.
@@ -352,7 +357,11 @@ describe('Sot', () => {
       await renderToday()
       await waitFor(() => expect(weekSpark()).not.toBeNull())
       expect(goalsLink().querySelectorAll('.border-ember-text')).toHaveLength(0)
-      const reduced = animations.find((call) => call.element === weekSpark())!
+      const reduced = await waitFor(() => {
+        const call = animations.find((entry) => entry.element === weekSpark())
+        if (!call) throw new Error('pa animacion')
+        return call
+      })
       expect(reduced.options.duration).toBe(120)
       expect(reduced.keyframes.some((frame) => 'transform' in frame)).toBe(false)
     } finally {
