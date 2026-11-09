@@ -920,7 +920,10 @@ async function goHome(page) {
 //   debug: muzika pa "Qasjen te njoftimet" (NO_ACCESS) dhe shkarkimi me SHA-256 të gabuar (HASH_MISMATCH).
 const ignoredError = (text) =>
   /(ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED).*smoke\.invalid|smoke\.invalid.*(ERR_NAME_NOT_RESOLVED|ERR_INTERNET_DISCONNECTED)/.test(text) ||
-  /^\{.*code: (NO_ACCESS|HASH_MISMATCH)\b/.test(text)
+  /^\{.*code: (NO_ACCESS|HASH_MISMATCH)\b/.test(text) ||
+  // CapacitorHttp në build-in debug shkruan çdo refuzim si console.error, edhe kur app-i e kap: kërkimi i
+  // tempos (MusicBrainz/AcousticBrainz) mbaron me "offline" kur rrjeti i emulatorit vonon.
+  /^\{message: timeout, code: SocketTimeoutException\}/.test(text)
 
 try {
   // Nis nga një pajisje pa app-in; çinstalimi dështon kur s'ka çfarë të heqë.
@@ -1701,7 +1704,8 @@ try {
     await clickButton(page, 'Fillo programin')
     await waitForPath(page, '/')
     await waitForText(page, 'Java 0')
-    check('hapat e parë mbarojnë te Sot me Java 0, shqip', await waitFor(() => hasText(page, 'Stërvitja 1 ·'), 'Stërvitja 1 ·', 15_000).then(() => true, () => false))
+    // 0.23: karta e Sot thotë "Sot · 21:00 · Stërvitja 1" (Stërvitja N në fund të rreshtit).
+    check('hapat e parë mbarojnë te Sot me Java 0, shqip', await waitFor(() => hasText(page, 'Stërvitja 1'), 'Stërvitja 1', 15_000).then(() => true, () => false))
     await waitFor(() => posted('user_settings').some((row) => row.language === 'sq'), 'gjuha te user_settings', 20_000)
     screenshot('sot-instalim-i-ri')
 
