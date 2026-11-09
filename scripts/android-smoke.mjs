@@ -39,8 +39,10 @@ const report = { checks: [], info: [], errors: [], requests: [], posts: [] }
 /** Gabimet e konsolës me objekte, që lexohen me CDP pasi vijnë (Runtime.getProperties). */
 const errorDetails = []
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-const adb = (...args) => execFileSync('adb', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
-const shell = (command) => execFileSync('adb', ['shell', command], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }).trim()
+// Çdo thirrje e adb-së ka afat: një adb i bllokuar e ndal provën me gabim, jo deri te afati i punës.
+const ADB_OPTIONS = { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120_000 }
+const adb = (...args) => execFileSync('adb', args, ADB_OPTIONS).trim()
+const shell = (command) => execFileSync('adb', ['shell', command], ADB_OPTIONS).trim()
 
 function check(name, ok, detail = '') {
   report.checks.push({ name, ok, detail })
@@ -592,14 +594,25 @@ async function connectOnce() {
   adb('forward', '--remove-all')
   adb('forward', 'tcp:9222', `localabstract:${socket}`)
   const target = await waitFor(async () => {
-    const list = await (await fetch('http://127.0.0.1:9222/json')).json()
+    // Me afat: një socket i vjetër mund ta pranojë lidhjen pa u përgjigjur kurrë.
+    const list = await (await fetch('http://127.0.0.1:9222/json', { signal: AbortSignal.timeout(5000) })).json()
     return list.find((entry) => entry.type === 'page')
   }, 'faqja në WebView')
 
   const ws = new WebSocket(target.webSocketDebuggerUrl)
   await new Promise((resolve, reject) => {
-    ws.onopen = resolve
-    ws.onerror = reject
+    const timer = setTimeout(() => {
+      ws.close()
+      reject(new Error('WebSocket-i i WebView-së nuk u hap brenda 10 s'))
+    }, 10_000)
+    ws.onopen = () => {
+      clearTimeout(timer)
+      resolve()
+    }
+    ws.onerror = (error) => {
+      clearTimeout(timer)
+      reject(error)
+    }
   })
   let nextId = 0
   const pending = new Map()
