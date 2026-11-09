@@ -211,7 +211,9 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     ? { ...question, time: trainingTimeOn(schedule, eatingDate), trainingKcal: (await dayTargets(store, eatingDate, 'training'))?.kcal ?? null }
     : null
   const trainingToday = profile.trainingDays.includes(isoWeekday(now)) || missedInput.dayTypes[today] === 'training'
-  const back = programmeOpen ? await welcomeBack(store) : null
+  // Me seancën të hapur "Mirë se u ktheve" matet në datën e saj, si peshat (`workoutWeights`).
+  const openDate = snapshot?.session ? (await store.get('workout_sessions', snapshot.session.id))?.date : null
+  const back = programmeOpen ? await welcomeBack(store, openDate ? String(openDate).slice(0, 10) : today) : null
   const nextDate = nextTrainingDate(now, profile.trainingDays)
   const base = {
     now,
