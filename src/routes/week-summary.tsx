@@ -11,6 +11,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { atNoon, capitalize, goalCells, hoursText, metGoals, signedText, summaryCaption, summaryTitle } from './week-format'
 import { BackLink, GoalSegments } from './week-parts'
+import { spokenDuration } from './session-format'
 import { achievementName, achievementRule } from './achievement-format'
 import { AchievementBadge } from './achievement-parts'
 import { shiftDate } from '@/lib/calendar'
@@ -117,7 +118,7 @@ function Summary({ summary, back }: { summary: WeekSummary; back: ReactNode }) {
           <Stat
             label={t('week.summary.time')}
             value={hoursText(training.minutes)}
-            spoken={t('week.summary.timeSpoken', { hours: Math.floor(training.minutes / 60), minutes: Math.round(training.minutes % 60) })}
+            spoken={spokenDuration(Math.round(training.minutes) * 60, t)}
           />
           <Stat label={t('week.summary.records')} value={fmt.number(training.records.count)} />
         </dl>

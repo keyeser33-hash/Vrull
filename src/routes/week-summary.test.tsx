@@ -128,6 +128,17 @@ describe('Përmbledhja e javës', () => {
     await waitFor(() => expect(router.state.location.pathname).toBe('/progresi/java/2026-10-26'))
   })
 
+  it('koha për lexuesin e ekranit me rregullat e shumësit: "1 orë e 6 minuta", "1 hour 6 minutes"', async () => {
+    await trainedWeeks(await freshStore())
+    // Java 19–25 tetor: vetëm seanca e së dielës, 66 minuta.
+    await renderAt('/progresi/java/2026-10-19')
+    const time = async (label: string) => within(await screen.findByRole('region', { name: label === 'Koha' ? 'Stërvitja' : 'Training' })).getByText(label).nextSibling
+    expect(await time('Koha')).toHaveTextContent('1:06')
+    expect(await time('Koha')).toHaveAttribute('aria-label', '1 orë e 6 minuta')
+    act(() => language.set('en'))
+    expect(await time('Time')).toHaveAttribute('aria-label', '1 hour 6 minutes')
+  })
+
   it('një javë para fillimit nuk ka përmbledhje', async () => {
     await trainedWeeks(await freshStore())
     await renderAt('/progresi/java/2026-12-07')
