@@ -1,3 +1,4 @@
+import { saveDailyState } from './daily-state'
 import { createDatabase } from './db'
 import { completeOnboarding } from './profile'
 import { muteIgnored, muteReminders, reminderInput, reminderSettings, setMeasurementDay, setQuietHours, setReminderToggle, unmuteReminders } from './reminders'
@@ -49,6 +50,14 @@ describe('cilësimet e rikujtuesve', () => {
       dayTypes: { '2026-12-09': 'training' },
     })
     expect(input.supplements).toHaveLength(10)
+  })
+
+  it('ditët me check-in (V50) shkojnë te plani, që rikujtuesi të pyesë vetëm në ditët pa të', async () => {
+    const store = await setup()
+    expect((await reminderInput(store, new Date('2026-12-09T06:00:00'))).checkedIn).toEqual([])
+    await saveDailyState(store, '2026-12-09', { mood: 3, energy: 3, sleepMinutes: 420, sleepQuality: 3, soreness: 0, soreGroups: [] })
+    await saveDailyState(store, '2026-11-01', { mood: 3, energy: 3, sleepMinutes: 420, sleepQuality: 3, soreness: 0, soreGroups: [] })
+    expect((await reminderInput(store, new Date('2026-12-09T06:00:00'))).checkedIn).toEqual(['2026-12-09'])
   })
 })
 

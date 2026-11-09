@@ -416,6 +416,7 @@ const REMINDER_TABLES = new Set([
   'water_logs',
   'meal_templates',
   'body_measurements',
+  'daily_states',
 ])
 
 /**

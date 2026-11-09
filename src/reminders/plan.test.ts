@@ -45,6 +45,19 @@ describe('rikujtuesit (§13)', () => {
     ])
   })
 
+  it('rikujtuesi i stërvitjes shton "Si ndihesh?" vetëm kur dita s\'ka check-in (V50)', () => {
+    const monday = base({ from: new Date('2026-12-07T06:00:00') })
+    const workout = (input: ReminderInput, texts = sq) => lines(input, texts).filter((item) => item.startsWith('07:30'))
+    expect(workout({ ...monday, checkedIn: [] })).toEqual(['07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00. Si ndihesh?'])
+    expect(workout({ ...monday, checkedIn: ['2026-12-07'] })).toEqual(['07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00'])
+    expect(workout({ ...monday, checkedIn: ['2026-12-06'] })).toEqual(['07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00. Si ndihesh?'])
+    // Pa listën (thirrës të vjetër) teksti mbetet si më parë.
+    expect(workout(monday)).toEqual(['07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00'])
+    expect(workout({ ...monday, checkedIn: [] }, en)).toEqual(['07:30 Today: Phase 1 · Week 2 · Workout 3: Workout at 18:00. How are you feeling?'])
+    // Ditë pushimi: asnjë rikujtues stërvitjeje, pra asnjë pyetje.
+    expect(lines(base({ checkedIn: [] })).some((item) => item.includes('Si ndihesh?'))).toBe(false)
+  })
+
   it('në anglisht: vaktet, ushqimet, suplementet dhe stërvitja në gjuhën e app-it', () => {
     const items = lines(base({ from: new Date('2026-12-07T06:00:00'), days: 7 }), en)
     expect(items).toContain('07:30 Today: Phase 1 · Week 2 · Workout 3: Workout at 18:00')

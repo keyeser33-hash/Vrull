@@ -76,6 +76,11 @@ export interface ReminderInput {
   /** Dita e humbur (V38): dita e parë që numërohet dhe datat me seancë; pa to, pa njoftimin. */
   startedOn?: string | null
   sessionDates?: readonly string[]
+  /**
+   * Datat që kanë check-in (V50): rikujtuesi i stërvitjes shton "Si ndihesh?" në ditët pa të. Pa këtë fushë
+   * (thirrës të vjetër) teksti nuk ndryshon.
+   */
+  checkedIn?: readonly string[]
   smart?: SmartInput
 }
 
@@ -211,7 +216,10 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
       labelUsed = true
       // Ora e stërvitjes me formatin e gjuhës (24 orë në të dyja).
       const trainingAt = fmt.time(at(day, trainingTime))
-      dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body: t('reminders.notify.workoutAt', { time: trainingAt }), kind: 'training' })
+      const workoutAt = t('reminders.notify.workoutAt', { time: trainingAt })
+      // Dita pa check-in (V50): "Stërvitja 18:00. Si ndihesh?"; prekja hap Sot, ku pret karta.
+      const body = input.checkedIn && !input.checkedIn.includes(date) ? `${workoutAt}. ${t('checkin.reminder')}` : workoutAt
+      dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body, kind: 'training' })
     }
 
     // Vaktet dhe suplementet e tyre: një njoftim për vakt. Me rikujtuesit e zgjuar, pa vaktet dhe
