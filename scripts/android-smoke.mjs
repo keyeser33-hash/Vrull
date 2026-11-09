@@ -1394,7 +1394,7 @@ try {
         await waitFor(() => pidOf() === '', 'procesi i vrarë', 10_000)
         if (reminderPrefs().list.some((entry) => entry.id === item.id && entry.key === item.key)) break
         if (attempt === 3) throw new Error(`Planifikimi i app-it zëvendësoi rikujtuesin e provës ${item.id} tri herë`)
-        info(`planifikimi i app-it zëvendësoi rikujtuesin e provës ${item.id}; përpjekja ${attempt + 1}`)
+        info('planifikimi i app-it zëvendësoi rikujtuesin e provës', `${item.id}, përpjekja ${attempt + 1}`)
         page = await open()
       }
       await sleepScreen()
@@ -1459,7 +1459,9 @@ try {
     // 4. Shtyrja që vjen sërish: butonat e saj punojnë (shtyrja hiqet nga lista e saj kur bie).
     await scheduleAndKill(reminder(5193, 'meal', 'dinner', [{ id: 'ate', title: 'Hëngra si në plan' }, { id: 'snooze', title: 'Shty 30 min' }], { ate: { title: 'Darka u regjistrua', body: '' } }), 0.15)
     await tapNotificationButton('Shty 30 min', 'Dreka')
-    const snoozeId = Number(Object.entries(reminderPrefs().snoozed).find(([, item]) => item.key === `meal|${today}|dinner`)?.[0])
+    const snoozeId = Number(
+      await waitFor(() => Object.entries(reminderPrefs().snoozed).find(([, item]) => item.key === `meal|${today}|dinner`)?.[0], 'shtyrja e darkës te lista e shtyrjeve', 10_000),
+    )
     await waitFor(() => notification(snoozeId), `shtyrja ${snoozeId} vjen sërish`, 40_000)
     await tapNotificationButton('Hëngra si në plan', 'Dreka')
     await waitForNotificationTitle(snoozeId, 'Darka u regjistrua')
