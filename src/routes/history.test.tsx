@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
@@ -286,5 +286,30 @@ describe('Historiku', () => {
     await user.click(within(tabs).getByRole('tab', { name: 'Historiku' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Historiku' })).toBeInTheDocument()
     expect(within(screen.getByRole('tablist', { name: 'Pamjet e Progresit' })).getByRole('tab', { name: 'Historiku' })).toHaveAttribute('aria-selected', 'true')
+  })
+  it('seanca e një dite "Më e lehtë" (V50) ka shënimin te lista dhe te seanca, në të dyja gjuhët', async () => {
+    const { weekOne, today } = await seed()
+    const { saveDailyState, setReadinessChoice } = await import('@/data/daily-state')
+    await saveDailyState(data.store, '2026-11-01', { mood: 2, energy: 2, sleepMinutes: 330, sleepQuality: 2, soreness: 3, soreGroups: ['gjoksi'] }, 40)
+    await setReadinessChoice(data.store, '2026-11-01', 'lighter')
+    await renderAt('/progresi/historiku')
+    const lighter = await screen.findByRole('link', { name: /^E diel, 1 nëntor.*Më e lehtë/ })
+    expect(lighter).toHaveTextContent('Më e lehtë')
+    expect(screen.getByRole('link', { name: /^Sot, e diel 8 nëntor/ })).not.toHaveTextContent('Më e lehtë')
+    cleanup()
+
+    await renderAt(`/progresi/historiku/${weekOne}`)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dita e gjoksit' })).toBeInTheDocument()
+    expect(screen.getByText('Më e lehtë')).toBeInTheDocument()
+    cleanup()
+    await renderAt(`/progresi/historiku/${today}`)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Dita e gjoksit' })).toBeInTheDocument()
+    expect(screen.queryByText('Më e lehtë')).toBeNull()
+    cleanup()
+
+    language.set('en')
+    await renderAt(`/progresi/historiku/${weekOne}`)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Chest day' })).toBeInTheDocument()
+    expect(screen.getByText('Lighter')).toBeInTheDocument()
   })
 })

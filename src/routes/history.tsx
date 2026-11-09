@@ -219,6 +219,12 @@ function WeekSection({ week, today, activeProgram }: { week: HistoryWeek; today:
   )
 }
 
+/** "Më e lehtë" (V50): dita u stërvit me "Seanca më e lehtë". */
+function LighterTag() {
+  const { t } = useI18n()
+  return <span className="ml-2 rounded-pill border border-surface-border px-2 py-px align-middle type-caption font-normal text-muted-foreground">{t('lighter.history')}</span>
+}
+
 function SessionLink({ session, today }: { session: HistorySession; today: string }) {
   const { t, fmt, lang } = useI18n()
   const date = sessionDateText(t, fmt, lang, session.date, today)
@@ -230,6 +236,7 @@ function SessionLink({ session, today }: { session: HistorySession; today: strin
     name ? name.toLocaleLowerCase(lang) : null,
     session.minutes === null ? null : spokenDuration(t, session.minutes),
     t('history.setsCount', { count: session.workSets }),
+    session.lighter ? t('lighter.history') : null,
   ]
     .filter(Boolean)
     .join(', ')
@@ -244,7 +251,10 @@ function SessionLink({ session, today }: { session: HistorySession; today: strin
       </span>
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="flex items-baseline justify-between gap-2">
-          <span className="min-w-0 type-body-strong">{name || t('history.workout', { n: session.dayNumber ?? 1 })}</span>
+          <span className="min-w-0 type-body-strong">
+            {name || t('history.workout', { n: session.dayNumber ?? 1 })}
+            {session.lighter ? <LighterTag /> : null}
+          </span>
           {session.minutes === null ? null : <span className="shrink-0 type-caption text-muted-foreground tabular-nums">{durationText(t, session.minutes)}</span>}
         </span>
         <span className="flex items-baseline justify-between gap-2">
@@ -326,7 +336,10 @@ function PastSessionView({ session }: { session: PastSession }) {
       <BackHeader title={title} back={t('history.backToHistory')} fallback="/progresi/historiku" />
       <div className="-mt-2 flex flex-col gap-px">
         <span className="type-body-strong">{capitalize(fmt.date(dayDate(session.date), { year: true }), lang)}</span>
-        <span className="type-caption text-muted-foreground">{planLine}</span>
+        <span className="type-caption text-muted-foreground">
+          {planLine}
+          {session.lighter ? <LighterTag /> : null}
+        </span>
       </div>
 
       <div className="grid grid-cols-3 gap-2">
