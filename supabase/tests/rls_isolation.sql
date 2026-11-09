@@ -37,6 +37,8 @@ begin
   set local role service_role;
   insert into public.ai_usage (user_id, month, feature, model, input_tokens, output_tokens, cost_usd, cost_eur)
     values (user_a, '2026-11-01', 'program_pdf', 'claude-sonnet-5-5', 120000, 6000, 0.3, 0.268698);
+  -- Kufiri i A-së, si e shkruan funksioni ai-admin (V42).
+  insert into public.ai_limits (user_id, monthly_eur) values (user_a, 40);
   reset role;
 
   -- Përdoruesi A shkruan një rresht në çdo tabelë përmes rolit authenticated (si nga app-i).
@@ -105,6 +107,28 @@ begin
     results := results || 'A nuk fshin koston te ai_usage|true|refuzohet'::text;
   end;
 
+  -- Kufiri i AI-së (V42): A e lexon, por nuk e shton, nuk e ndryshon dhe nuk e fshin (vetëm ai-admin).
+  select count(*) into n from public.ai_limits;
+  results := results || format('A sheh kufirin e vet te ai_limits|%s|%s', n = 1, n);
+  begin
+    insert into public.ai_limits (monthly_eur) values (500);
+    results := results || 'A nuk shton kufi te ai_limits|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk shton kufi te ai_limits|true|refuzohet'::text;
+  end;
+  begin
+    update public.ai_limits set monthly_eur = 500;
+    results := results || 'A nuk ngre kufirin e vet|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk ngre kufirin e vet|true|refuzohet'::text;
+  end;
+  begin
+    delete from public.ai_limits;
+    results := results || 'A nuk fshin kufirin e vet|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk fshin kufirin e vet|true|refuzohet'::text;
+  end;
+
   -- A nuk shkruan dot në emër të B, as në dosjen e fotove të B.
   begin
     insert into public.exercises (name, equipment, user_id) values ('Squat', 'barbell', user_b);
@@ -145,6 +169,8 @@ begin
 
   select count(*) into n from public.ai_usage;
   results := results || format('B nuk sheh koston e A te ai_usage|%s|%s', n = 0, n);
+  select count(*) into n from public.ai_limits;
+  results := results || format('B nuk sheh kufirin e A te ai_limits|%s|%s', n = 0, n);
 
   foreach bucket in array buckets loop
     select count(*) into n from storage.objects where bucket_id = bucket;
