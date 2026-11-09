@@ -292,6 +292,8 @@ Kutia e AI-së te Sot (shkrimi, mikrofoni i tastierës, pyetja kur mungon diçka
 
 **Gjendja (09.11.2026):** 9 bordet janë te kanavaca "Training Hub v2 · Vrull", faqja "0.22 · AI dhe ushqimi i shpejtë" (OLED, shqip, me numrat e përdoruesit): Sot me kutinë, pyetja, përmbledhja, setet, trajneri, pa internet, kufiri te Admini, vakti i shpejtë, makrot. Foto e pjatës mbetet bordi ekzistues te "Vrull · Ekranet". Shënimi "Si ta komentosh" liston 9 vendimet që presin përgjigjen; kodi nis pas komenteve.
 
+**Gjendja (09.11.2026, 09:54):** përdoruesi kërkoi ndërtimin ("mund t'i ndërtojmë?") pa komente mbi borde; sipas udhëzimit të tij të përhershëm ("vazhdo vetë me rekomandimet") bordet merren të pranuara me 9 vendimet e rekomanduara, të shkruara te SPEC (V40–V42, §9 "Kutia e AI-së").
+
 ## V2-E2-13 · Kutia e AI-së: ushqimi, uji, suplementet
 
 Funksioni `log-parse` (JWT, kufiri, rezervimi, prompt caching me kontekstin e përdoruesit: Plani im, ushqimet dhe porcionet e tij, suplementet, të shpeshtat, shembuj në shqip) kthen një draft me ushqime (me gramë dhe vakt), ujë dhe suplemente; pyet vetëm kur mungon ora ose sasia; përmbledhja te Sot konfirmohet me një prekje dhe çdo rresht ndryshohet ose hiqet. **Pranimi:** mesazhi shembull i përdoruesit (08.11.2026, proteina në 07:00, tostet dhe vezët në 12:00, gjysmë pule dhe panetone në darkë, kreatina) jep regjistrimet e duhura pas një konfirmimi (provë me AI-në e vërtetë); pa internet kutia thotë që kërkon rrjet dhe ruan tekstin.
