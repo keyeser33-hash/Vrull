@@ -330,8 +330,32 @@ _Avoid_: readiness (në UI shqip)
 Një veprim ditor që përdoruesi zgjedh ta ndjekë (p.sh. 10 mijë hapa, gjumë para 23:00).
 
 **Vargu**:
-Ditët ose javët radhazi pa ndërprerje në një zakon, në stërvitje ose në një sfidë.
+Ditët ose javët radhazi pa ndërprerje në një zakon, në stërvitje ose në një sfidë. Vargu i stërvitjes numëron javët rresht me **Qëllimet e javës** për stërvitjen.
 _Avoid_: streak (në UI shqip)
+
+**Qëllimet e javës**:
+Tri synime për javën kalendarike (e hënë–e diel): stërvitjet e programit, ushqimi i regjistruar 5 ditë nga 7, uji 5 ditë nga 7.
+_Avoid_: objektivat javore (objektivi është sasia e ditës)
+
+**Dita rezervë**:
+Një stërvitje që mund të mungojë një herë në fazë pa e prishur qëllimin e stërvitjes së javës.
+
+**Java e plotë**:
+Java kur arrihen të tre **Qëllimet e javës**.
+
+**Përmbledhja e javës**:
+Ekrani i së dielës me qëllimet, stërvitjen, ushqimin, ujin dhe javën tjetër; prej tij ndahet karta e javës.
+_Avoid_: raporti (raporti është PDF-ja mujore)
+
+**Arritja**:
+Një shenjë me rregull të qartë që jepet një herë kur rregulli plotësohet (p.sh. "Vargu 4 javë").
+_Avoid_: distinktivi, badge (në UI)
+
+**Mirë se u ktheve**:
+Karta e Sot pas 7 ditësh ose më shumë pa seancë: programi vazhdon aty ku mbeti, pa faj.
+
+**Banderola e rekordit**:
+Njoftimi i shkurtër mbi pushim kur seti sapo ruajtur jep **Rekordin personal**.
 
 ## Muzika
 

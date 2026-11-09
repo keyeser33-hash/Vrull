@@ -333,11 +333,11 @@ Qëllimet javore, "Mirë se u ktheve", banderola e rekordit, përmbledhja e së 
 
 ## V2-E2-20 · Qëllimet javore
 
-Sipas V43: stërvitja sipas programit, ushqimi ≥ 5 ditë nga 7, uji; një ditë rezervë për fazë; "Mirë se u ktheve" pas një pushimi, pa faj. **Pranimi:** prova të logjikës për javë të plota, me ditë rezervë dhe pas pushimit.
+Sipas SPEC §0.3c: java e hënë–e diel; stërvitja sipas ditëve të stërvitjes, ushqimi 5 ditë nga 7 (≥ 60% e kalorive), uji 5 ditë nga 7; dita rezervë një për bllok, e rillogaritur; vargu; "Mirë se u ktheve" pas 7 ditësh me peshat 90%. **Pranimi:** prova të logjikës përpara kodit për javë të plota, me ditë rezervë (një herë për bllok, jo dy stërvitje), pa objektiva, pas pushimit, me ditën e ushqimit (V46).
 
 ## V2-E2-21 · Festimet dhe distinktivët
 
-Banderola e rekordit te seanca, përmbledhja e së dielës (stërvitjet, volumi, rekordet, ushqimi, uji) me kartë për ndarje si imazh, distinktivët me rregulla të qarta. **Pranimi:** karta ndahet nga Android-i; distinktivët jepen një herë dhe sinkronizohen.
+Sipas SPEC §0.3c: banderola e rekordit mbi pushim; e diela (njoftimi 20:00, karta te Sot, përmbledhja); karta PNG 1080 × 1350 vetëm me stërvitjen ("Ndaj", "Ruaj në galeri"); 10 arritjet (tabela `achievements`, migrim) me faqen dhe detajin. **Pranimi:** karta ndahet nga Android-i; arritjet jepen një herë dhe sinkronizohen; asnjë lëshim para migrimit.
 
 ## V2-E2-22 · Pamja e re
 
