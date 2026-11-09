@@ -206,9 +206,9 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E2-23 | Lëvizja | E2-22 |
 | V2-E2-24 | Lëshimi 0.23.0 | E2-19 … E2-23 |
 
-### Etapa 3 · 0.24 Gatishmëria (plani i 09.11.2026)
+### Etapa 3 · 0.40.0 (plani i 09.11.2026)
 
-**Mënyra e punës.** Si Etapa 2: bordet → komentet e përdoruesit → kodi, me hapat dhe agjentët e `docs/agents/ORKESTRIMI.md` dhe retron e çdo vale (V49). Rregullat janë te SPEC §0.3d. Pjesët e tjera të Etapës 3 vijnë me versionet e tyre: Mëso, Health Connect me ujin sipas motit dhe zakonet, raporti PDF.
+**Mënyra e punës.** Si Etapa 2: bordet → komentet e përdoruesit → kodi, me hapat dhe agjentët e `docs/agents/ORKESTRIMI.md` dhe retron e çdo vale (V49). Një publikim i vetëm në fund, 0.40.0 (V51): pjesët ndërtohen njëra pas tjetrës te `main` pa ndryshuar versionin. Vala e parë është gatishmëria (rregullat te SPEC §0.3d, bordet te faqja "0.24 · Gatishmëria"). Pastaj vijnë Mëso, Health Connect me ujin sipas motit dhe zakonet, dhe raporti PDF; tiketat e tyre shkruhen kur nisin bordet e tyre.
 
 | ID | Detyra | Varet nga |
 |---|---|---|
@@ -219,7 +219,8 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-05 | Pllaka "Gati" dhe fleta me pjesët dhe 14 ditët | E3-02, E3-03 |
 | V2-E3-06 | Sugjerimi, seanca më e lehtë, "Shtyje për nesër", "Më e lehtë" te historiku | E3-02, E3-03 |
 | V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
-| V2-E3-08 | Lëshimi 0.24.0 | E3-01 … E3-07 |
+| V2-E3-08 | Bordet e Mëso, Health Connect, ujit sipas motit, zakoneve dhe raportit PDF | E3-01 |
+| V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
