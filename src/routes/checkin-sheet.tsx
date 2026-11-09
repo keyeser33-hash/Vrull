@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type CheckInAnswers, type DailyState, normalizeCheckIn, saveDailyState, skipCheckIn } from '@/data/daily-state'
 import { readProfile } from '@/data/profile'
-import { readinessFor } from '@/data/readiness-view'
+import { checkInContext } from '@/data/readiness-view'
 import type { TodayView } from '@/data/today'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
@@ -88,8 +88,7 @@ function CheckInForm({
     setFailed(false)
     try {
       const values = answers()
-      const percent = readinessFor(view, { ...values, date: view.date, readiness: null, choice: null })?.percent ?? null
-      await saveDailyState(store, view.date, values, percent)
+      await saveDailyState(store, view.date, values, checkInContext(view, values))
       onChanged?.()
       onClose()
     } catch {

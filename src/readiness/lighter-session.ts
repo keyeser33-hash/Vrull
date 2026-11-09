@@ -7,13 +7,16 @@ import { type CheckIn, LIGHTER, lighterSlots, type Readiness, type ReadinessPart
 // (readiness.ts), që rregulli të jetë një i vetëm. Këtu janë edhe fjalët e kartës: çfarë kushton seanca më e
 // lehtë dhe pse e ofrojmë (dy pjesët me pikët më të ulëta).
 
+/** Opsioni i `lighterSlots` (readiness.ts) që e le peshën siç është; këtu quhet `keepWeight`. */
+const keepWeight = (keep: boolean) => ({ welcomeBack: keep })
+
 const rirOf = (target: Target): { min: number; max: number } | null => (target.kind === 'reps' && target.rir ? target.rir : null)
 
 /** Plani pa peshat: nga ushtrimi i 3-të një set më pak, dhe RIR +1 (deri në 4) kur java ka RIR. */
 export function lightenPlan<T extends Pick<PlannedSlot, 'sets' | 'target'>>(slots: T[]): T[] {
   const lighter = lighterSlots(
     slots.map((slot) => ({ sets: slot.sets, rir: rirOf(slot.target)?.min ?? null, weightKg: null })),
-    { welcomeBack: true },
+    keepWeight(true),
   )
   return slots.map((slot, index) => {
     const range = rirOf(slot.target)
@@ -27,16 +30,16 @@ export function lightenPlan<T extends Pick<PlannedSlot, 'sets' | 'target'>>(slot
 }
 
 /**
- * Pesha e çdo sloti pas rregullit: pa RIR 90% poshtë sipas hapit, me RIR e njëjta. Me "Mirë se u ktheve"
- * (pesha 90% tashmë) nuk ulet përsëri. Kthen peshat në radhën e hyrjes.
+ * Pesha e çdo sloti pas rregullit: pa RIR 90% poshtë sipas hapit, me RIR e njëjta. Me `keepWeight` (p.sh. "Mirë se u ktheve":
+ * pesha 90% tashmë) nuk ulet përsëri. Kthen peshat në radhën e hyrjes.
  */
 export function lightenWeights(
   rows: { sets: number; target: Target; weightKg: number | null; stepKg: number }[],
-  options: { welcomeBack: boolean },
+  options: { keepWeight: boolean },
 ): (number | null)[] {
   return lighterSlots(
     rows.map((row) => ({ sets: row.sets, rir: rirOf(row.target)?.min ?? null, weightKg: row.weightKg, stepKg: row.stepKg })),
-    options,
+    keepWeight(options.keepWeight),
   ).map((slot) => slot.weightKg)
 }
 
@@ -57,11 +60,11 @@ export interface LighterCost {
 export function lighterCost(
   slots: Pick<PlannedSlot, 'exerciseId' | 'target'>[],
   trackings: Record<string, Tracking | undefined>,
-  options: { welcomeBack: boolean },
+  options: { keepWeight: boolean },
 ): LighterCost {
   const rir = slots.some((slot) => rirOf(slot.target) !== null)
   const weight =
-    !options.welcomeBack &&
+    !options.keepWeight &&
     slots.some((slot) => rirOf(slot.target) === null && slot.target.kind !== 'timed' && (trackings[slot.exerciseId] ?? 'weight_reps') === 'weight_reps')
   return { sets: slots.length > LIGHTER.fromIndex, effect: rir && weight ? 'both' : rir ? 'rir' : weight ? 'weight' : null }
 }

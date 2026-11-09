@@ -7,7 +7,7 @@ import { workoutMinutes } from '@/program/week-plan'
 import type { Target, Tracking } from '@/program/types'
 import type { MealKey } from '@/nutrition/meals'
 import { weekCardMonday } from '@/progress/weekly-goals'
-import { readDailyState } from './daily-state'
+import { readDailyChoice } from './daily-state'
 import { readMissedInput } from './missed-day'
 import { currentFoodDate, dayTargets, nutritionDay } from './nutrition'
 import { readProfile } from './profile'
@@ -197,6 +197,9 @@ export interface TodayMissed {
   trainingKcal: number | null
 }
 
+/** Sot ka stërvitje të radhës: dita e stërvitjes ose seanca e nisur. */
+export const isTrainingMode = (view: Pick<TodayView, 'mode'>) => view.mode === 'train' || view.mode === 'session'
+
 export async function todayView(store: LocalStore): Promise<TodayView> {
   const now = store.now()
   const today = localDate(now)
@@ -215,10 +218,10 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     .sort((a, b) => String(a.ended_at).localeCompare(String(b.ended_at)))
     .map((row) => ({ date: String(row.date), id: row.id }))
   // Dita e humbur ndjek ditën e ushqimit (V46): dita e stërvitjes nuk ka mbaruar para ndërrimit të saj.
-  const [state, previous, rawMissed] = await Promise.all([readDailyState(store, eatingDate), readDailyState(store, shiftDate(eatingDate, -1)), readMissedInput(store)])
+  const [choice, previous, rawMissed] = await Promise.all([readDailyChoice(store, eatingDate), readDailyChoice(store, shiftDate(eatingDate, -1)), readMissedInput(store)])
   // Stërvitja e shtyrë (V50): sot pushim dhe nesër stërvitje, edhe pa objektiva të ruajtur (pa peshë nuk ka rresht
   // të llojit të ditës); dje e shtyrë këtu, sot është ditë stërvitjeje dhe dje nuk është ditë e humbur.
-  const postponedHere = state?.choice === 'tomorrow'
+  const postponedHere = choice?.choice === 'tomorrow'
   const moved: Record<string, 'training' | 'rest'> = {
     ...(previous?.choice === 'tomorrow' ? { [shiftDate(eatingDate, -1)]: 'rest', [eatingDate]: 'training' } : {}),
     ...(postponedHere ? { [eatingDate]: 'rest', [shiftDate(eatingDate, 1)]: 'training' } : {}),
@@ -237,7 +240,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
   const back = programmeOpen ? await welcomeBack(store, openDate ? String(openDate).slice(0, 10) : today) : null
   // Pa seancë të nisur dhe pa stërvitje të bërë sot, "Shtyje për nesër" vlen; stërvitja e radhës është nesër.
   const postponed = postponedHere && programmeOpen && !snapshot.session && !completed.some((session) => session.date === today)
-  const nextDate = postponed ? shiftDate(today, 1) : nextTrainingDate(now, profile.trainingDays)
+  const nextDate = postponed ? shiftDate(eatingDate, 1) : nextTrainingDate(now, profile.trainingDays)
   const base = {
     now,
     snapshot,

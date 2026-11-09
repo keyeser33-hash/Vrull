@@ -1,9 +1,9 @@
 import { store, useLocalQuery } from '@/data/app-data'
-import { readDailyState } from '@/data/daily-state'
-import { currentDay } from '@/data/lighter-day'
+import { type DailyChoice, readDailyChoice, type ReadinessChoice } from '@/data/daily-state'
+import { decisionDate, workoutKey } from '@/data/lighter-day'
 import { type ReadinessView, readinessView, trainedGroups } from '@/data/readiness-view'
 import type { LocalStore } from '@/data/store'
-import { type TodayView, todayView } from '@/data/today'
+import { isTrainingMode, type TodayView, todayView } from '@/data/today'
 import type { TrainingSnapshot } from '@/data/training'
 import { welcomeBack } from '@/data/welcome-back'
 import { type LighterCost, lighterCost, type Reason, readinessReasons } from '@/readiness/lighter-session'
@@ -33,23 +33,29 @@ const NO_COST: LighterCost = { sets: false, effect: null }
 
 /** Sot ka stërvitje të radhës pa asnjë set të ruajtur: Sot e seanca e hapur pa sete. */
 function beforeFirstSet(view: TodayView): boolean {
-  return (view.mode === 'train' || view.mode === 'session') && !!view.workout && view.workout.loggedSets === 0
+  return isTrainingMode(view) && !!view.workout && view.workout.loggedSets === 0
+}
+
+/** Vendimi i ditës kur vlen për stërvitjen e radhës; një vendim për stërvitje tjetër (e mbyllur) nuk vlen. */
+function choiceFor(choice: DailyChoice | null, snapshot: TrainingSnapshot | null): ReadinessChoice | null {
+  if (!choice) return null
+  return choice.workout === null || !snapshot || choice.workout === workoutKey(snapshot.pointer) ? choice.choice : null
 }
 
 /**
  * Karta del kur sot ka stërvitje pa set të ruajtur, gatishmëria është e ulët dhe vendimi s'është marrë;
  * stërvitja e shtyrë del deri sa të kthehet; "lighter" kur seanca më e lehtë është zgjedhur dhe stërvitja ekziston.
  */
-export function suggestionOf(view: TodayView, ready: ReadinessView): Suggestion {
-  const choice = ready.state?.choice ?? null
+export function suggestionOf(view: TodayView, ready: ReadinessView, decision: DailyChoice | null): Suggestion {
+  const choice = choiceFor(decision, view.snapshot)
   const before = beforeFirstSet(view)
   const plan = view.snapshot && !view.snapshot.completed ? view.snapshot : null
   const cost = plan
-    ? lighterCost(plan.plan.slots, Object.fromEntries(Object.entries(plan.exercises).map(([id, exercise]) => [id, exercise.tracking])), { welcomeBack: view.welcomeBack?.lighter ?? false })
+    ? lighterCost(plan.plan.slots, Object.fromEntries(Object.entries(plan.exercises).map(([id, exercise]) => [id, exercise.tracking])), { keepWeight: view.welcomeBack?.lighter ?? false })
     : NO_COST
   const base = { date: view.date, cost, beforeFirstSet: before }
   if (view.postponed) return { ...base, kind: 'postponed', reasons: [] }
-  if (choice === 'lighter' && (view.mode === 'train' || view.mode === 'session')) return { ...base, kind: 'lighter', reasons: [] }
+  if (choice === 'lighter' && isTrainingMode(view)) return { ...base, kind: 'lighter', reasons: [] }
   if (!(before && choice === null && ready.state && ready.readiness?.level === 'low')) return { ...base, kind: null, reasons: [] }
   const focus = view.workout?.focus
   return {
@@ -66,7 +72,8 @@ export function suggestionOf(view: TodayView, ready: ReadinessView): Suggestion 
 
 export async function suggestionFor(db: LocalStore, view?: TodayView): Promise<Suggestion> {
   const today = view ?? (await todayView(db))
-  return suggestionOf(today, await readinessView(db, today))
+  const date = await decisionDate(db, today.snapshot?.session)
+  return suggestionOf(today, await readinessView(db, today.date), await readDailyChoice(db, date))
 }
 
 /** Sugjerimi i Sot (me pamjen që ekrani e ka lexuar) ose i seancës (pa pamje: e lexon vetë); undefined derisa të lexohet. */
@@ -84,13 +91,13 @@ export function useSuggestionPending(view: TodayView): boolean {
  * `todayView`) bëhet vetëm para setit të parë dhe kur vendimi s'është marrë; përndryshe mjafton gjendja e ditës.
  */
 export async function sessionSuggestionFor(db: LocalStore, snapshot: TrainingSnapshot, started: boolean): Promise<Suggestion> {
-  const date = await currentDay(db)
-  const choice = (await readDailyState(db, date))?.choice ?? null
+  const date = await decisionDate(db, snapshot.session)
+  const choice = choiceFor(await readDailyChoice(db, date), snapshot)
   if (choice === null && !started) return suggestionFor(db)
   if (choice !== 'lighter') return { kind: null, date, reasons: [], cost: NO_COST, beforeFirstSet: false }
   const trackings = Object.fromEntries(Object.entries(snapshot.exercises).map(([id, exercise]) => [id, exercise.tracking]))
   const back = await welcomeBack(db)
-  return { kind: 'lighter', date, reasons: [], cost: lighterCost(snapshot.plan.slots, trackings, { welcomeBack: back?.lighter ?? false }), beforeFirstSet: !started }
+  return { kind: 'lighter', date, reasons: [], cost: lighterCost(snapshot.plan.slots, trackings, { keepWeight: back?.lighter ?? false }), beforeFirstSet: !started }
 }
 
 export function useSessionSuggestion(snapshot: TrainingSnapshot, started: boolean): Suggestion | undefined {

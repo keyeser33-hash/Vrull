@@ -13,7 +13,8 @@ vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
   const db = createDatabase(`session-lighter-${crypto.randomUUID()}`)
-  let clock = Date.now()
+  // Ora e fiksuar (e hëna 9 nëntor, 12:00): dita e ushqimit ndërrohet 3 orë para zgjimit, ndaj ora e vërtetë e bënte provën të binte mes 00:00 dhe 04:00.
+  let clock = new Date(2026, 10, 9, 12, 0, 0).getTime()
   const store = createLocalStore(db, { userId: () => '11111111-1111-4111-8111-111111111111', now: () => new Date((clock += 1000)) })
   data.store = store
   data.db = db
@@ -52,7 +53,7 @@ async function lowReadinessSession() {
   for (const row of await store.all('workout_sessions')) await store.put('workout_sessions', { id: row.id, date: yesterday })
   const sessionId = await startWorkout(store)
   const date = String((await store.get('workout_sessions', sessionId))!.date)
-  await saveDailyState(store, date, { ...LOW, soreGroups: [...LOW.soreGroups] }, 50)
+  await saveDailyState(store, date, { ...LOW, soreGroups: [...LOW.soreGroups] }, { recovery: 'gati', soreTrained: true })
   const plan = (await trainingSnapshot(store))!.plan
   return { sessionId, date, plan }
 }
@@ -64,7 +65,7 @@ async function renderApp(path = '/seanca') {
   return router
 }
 
-const choice = async (date: string) => (await data.store.where('daily_states', 'date', date))[0]?.choice
+const choice = async (date: string) => (await data.store.where('daily_choices', 'date', date))[0]?.choice ?? null
 const suggestion = () => screen.findByRole('region', { name: /^(Sugjerim për sot|Suggestion for today)$/ })
 
 describe('seanca më e lehtë', () => {
@@ -84,7 +85,7 @@ describe('seanca më e lehtë', () => {
     expect(await screen.findByRole('group', { name: 'Seti 1: 62,5 kg, 9 përsëritje' })).toBeInTheDocument()
 
     await user.click(within(card).getByRole('button', { name: /^Seanca më e lehtë/ }))
-    expect(await choice(date)).toBe('lighter')
+    await waitFor(async () => expect(await choice(date)).toBe('lighter'))
     await waitFor(() => expect(screen.queryByRole('region', { name: 'Sugjerim për sot' })).toBeNull())
     const bar = await screen.findByText('Seanca më e lehtë sot · −1 set, pesha −10%')
     expect(bar.closest('[role="status"]')).toContainElement(screen.getByRole('button', { name: 'Kthe si zakonisht' }))
@@ -94,7 +95,7 @@ describe('seanca më e lehtë', () => {
 
     await user.click(screen.getByRole('button', { name: 'Kthe si zakonisht' }))
     await waitFor(() => expect(screen.queryByText('Seanca më e lehtë sot · −1 set, pesha −10%')).toBeNull())
-    expect(await choice(date)).toBe('normal')
+    await waitFor(async () => expect(await choice(date)).toBe('normal'))
     expect(await screen.findByRole('group', { name: 'Seti 1: 62,5 kg, 9 përsëritje' })).toBeInTheDocument()
     expect(screen.queryByText('ishte 62,5 kg')).toBeNull()
     expect(screen.getByRole('progressbar', { name: 'Progresi i seancës' })).toHaveAttribute('aria-valuetext', `0 nga ${total} sete`)
@@ -127,7 +128,7 @@ describe('seanca më e lehtë', () => {
     const router = await renderApp()
     await user.click(within(await suggestion()).getByRole('button', { name: 'Shtyje për nesër' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
-    expect(await choice(date)).toBe('tomorrow')
+    await waitFor(async () => expect(await choice(date)).toBe('tomorrow'))
     const { trainingSnapshot } = await import('@/data/training')
     expect((await trainingSnapshot(data.store))!.session).toBeNull()
   })

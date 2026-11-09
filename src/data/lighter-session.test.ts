@@ -50,7 +50,7 @@ async function lastTrainedThursday() {
   return context
 }
 
-const checkIn = (context: Context, date: string) => saveDailyState(context.store, date, { ...CHECK_IN, soreGroups: [...CHECK_IN.soreGroups] }, 40)
+const checkIn = (context: Context, date: string) => saveDailyState(context.store, date, { ...CHECK_IN, soreGroups: [...CHECK_IN.soreGroups] }, { recovery: 'gati', soreTrained: true })
 
 async function plan(context: Context) {
   const snapshot = (await trainingSnapshot(context.store))!
@@ -215,7 +215,7 @@ describe('shtyje për nesër', () => {
     expect(back.food.targetKcal).toBe(before.food.targetKcal)
     expect(back.week.find((day) => day.date === '2026-11-13')?.state).toBe('rest')
     expect((await nutritionDay(context.store, '2026-11-13', at(12, 11))).dayTypeManual).toBe(false)
-    expect((await context.store.where('daily_states', 'date', '2026-11-12'))[0].choice).toBeNull()
+    expect(await context.store.where('daily_choices', 'date', '2026-11-12')).toHaveLength(0)
   })
 
   it('vlen para setit të parë: një seancë e hapur pa sete hiqet, me sete s\'ka shtyrje', async () => {

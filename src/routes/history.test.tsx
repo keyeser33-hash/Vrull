@@ -290,8 +290,10 @@ describe('Historiku', () => {
   it('seanca e një dite "Më e lehtë" (V50) ka shënimin te lista dhe te seanca, në të dyja gjuhët', async () => {
     const { weekOne, today } = await seed()
     const { saveDailyState, setReadinessChoice } = await import('@/data/daily-state')
-    await saveDailyState(data.store, '2026-11-01', { mood: 2, energy: 2, sleepMinutes: 330, sleepQuality: 2, soreness: 3, soreGroups: ['gjoksi'] }, 40)
-    await setReadinessChoice(data.store, '2026-11-01', 'lighter')
+    await saveDailyState(data.store, '2026-11-01', { mood: 2, energy: 2, sleepMinutes: 330, sleepQuality: 2, soreness: 3, soreGroups: ['gjoksi'] })
+    const { workoutKey } = await import('@/data/lighter-day')
+    const first = (await data.store.all('workout_sessions')).find((row) => String(row.date) === '2026-11-01')!
+    await setReadinessChoice(data.store, '2026-11-01', 'lighter', { workout: workoutKey({ blockId: first.block_id as string, week: Number(first.week), dayId: first.day_id as string }) })
     await renderAt('/progresi/historiku')
     const lighter = await screen.findByRole('link', { name: /^E diel, 1 nëntor.*Më e lehtë/ })
     expect(lighter).toHaveTextContent('Më e lehtë')

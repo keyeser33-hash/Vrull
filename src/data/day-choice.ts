@@ -1,30 +1,29 @@
 import { shiftDate } from '@/lib/calendar'
-import { readDailyState, setReadinessChoice } from './daily-state'
+import { type DailyChoice, type DayType, readDailyChoice, setReadinessChoice } from './daily-state'
+import { decisionDate, workoutKey } from './lighter-day'
 import { setDayType } from './nutrition'
 import type { LocalStore } from './store'
 import { activeProgram, openSession } from './training'
 
 // Zgjedhjet e kartës së sugjerimit (V50, V2-E3-06; SPEC §0.3d) mbi gjendjen e ditës: "Seanca më e lehtë", "Jo sot",
 // "Kthe si zakonisht", "Shtyje për nesër" dhe "Ktheje për sot". Programi nuk ndryshon: treguesi mbetet te stërvitja
-// e radhës, kështu që nesër kjo stërvitje është e radhës (Q3). Data është dita e ushqimit të check-in-it (V46).
+// e radhës, kështu që nesër kjo stërvitje është e radhës (Q3). Data është dita e ushqimit e vendimit (V46). Vendimi
+// mban stërvitjen ku vlen dhe llojet e ditëve para shtyrjes (`daily_choices`), kështu që çdo telefon e kthen shtyrjen.
 
-type DayType = 'training' | 'rest'
-/** Lloji i zgjedhur me dorë i një dite para shtyrjes; null kur ishte automatik. */
-interface PreviousTypes {
-  today: DayType | null
-  tomorrow: DayType | null
+/** Çelësi i stërvitjes së radhës; null pa program aktiv. */
+async function currentWorkout(store: LocalStore): Promise<string | null> {
+  const loaded = await activeProgram(store)
+  return loaded && !loaded.pointer.completed ? workoutKey(loaded.pointer) : null
 }
 
-const POSTPONE_KEY = (date: string) => `postponed-from:${date}`
-
-/** "Seanca më e lehtë". */
+/** "Seanca më e lehtë": vlen vetëm për stërvitjen e radhës së këtij çasti. */
 export async function chooseLighter(store: LocalStore, date: string) {
-  await setReadinessChoice(store, date, 'lighter')
+  await setReadinessChoice(store, date, 'lighter', { workout: await currentWorkout(store) })
 }
 
 /** "Jo sot" te karta, dhe "Kthe si zakonisht" te seanca: stërvitja mbetet siç është në program. */
 export async function keepUsual(store: LocalStore, date: string) {
-  await setReadinessChoice(store, date, 'normal')
+  await setReadinessChoice(store, date, 'normal', { workout: await currentWorkout(store) })
 }
 
 async function manualType(store: LocalStore, date: string): Promise<DayType | null> {
@@ -57,25 +56,38 @@ export async function postponeWorkout(store: LocalStore, date: string): Promise<
   const open = await loggedSets(store)
   if (open.sets > 0) return false
   const tomorrow = shiftDate(date, 1)
-  const previous: PreviousTypes = { today: await manualType(store, date), tomorrow: await manualType(store, tomorrow) }
-  await store.writeDevice(POSTPONE_KEY(date), previous)
+  const previous = { prevToday: await manualType(store, date), prevTomorrow: await manualType(store, tomorrow) }
+  await setReadinessChoice(store, date, 'tomorrow', { workout: await currentWorkout(store), ...previous })
   await setDayType(store, date, 'rest')
   await setDayType(store, tomorrow, 'training')
   if (open.sessionId) await store.remove('workout_sessions', open.sessionId)
-  await setReadinessChoice(store, date, 'tomorrow')
+  return true
+}
+
+/** Llojet e dy ditëve kthehen siç ishin para shtyrjes, dhe vendimi hiqet. */
+async function revertPostponement(store: LocalStore, choice: DailyChoice) {
+  await restoreType(store, choice.date, choice.prevToday)
+  await restoreType(store, shiftDate(choice.date, 1), choice.prevTomorrow)
+  await setReadinessChoice(store, choice.date, null)
+}
+
+/**
+ * "Ktheje për sot": llojet e ditëve kthehen siç ishin dhe vendimi hiqet. Vlen deri në setin e parë; pas tij
+ * (seancë e nisur me dorë) vendimi s'ndryshon. Kthen false kur nuk ka shtyrje ose seanca ka sete.
+ */
+export async function undoPostpone(store: LocalStore, date: string): Promise<boolean> {
+  const choice = await readDailyChoice(store, date)
+  if (choice?.choice !== 'tomorrow') return false
+  if ((await loggedSets(store)).sets > 0) return false
+  await revertPostponement(store, choice)
   return true
 }
 
 /**
- * "Ktheje për sot": llojet e ditëve kthehen siç ishin dhe vendimi bëhet null. Vlen deri në setin e parë; pas tij
- * (seancë e nisur me dorë) vendimi s'ndryshon. Kthen false kur nuk ka shtyrje ose seanca ka sete.
+ * Nisja e stërvitjes (`startWorkout`) në ditën e shtyrë e anulon shtyrjen: stërvitja bëhet sot, nesër kthehet siç
+ * ishte dhe nuk mbetet një stërvitje e dytë atje.
  */
-export async function undoPostpone(store: LocalStore, date: string): Promise<boolean> {
-  if ((await readDailyState(store, date))?.choice !== 'tomorrow') return false
-  if ((await loggedSets(store)).sets > 0) return false
-  const saved = (await store.readDevice(POSTPONE_KEY(date))) as Partial<PreviousTypes> | undefined
-  await restoreType(store, date, saved?.today ?? null)
-  await restoreType(store, shiftDate(date, 1), saved?.tomorrow ?? null)
-  await setReadinessChoice(store, date, null)
-  return true
+export async function cancelPostponement(store: LocalStore): Promise<void> {
+  const choice = await readDailyChoice(store, await decisionDate(store))
+  if (choice?.choice === 'tomorrow') await revertPostponement(store, choice)
 }

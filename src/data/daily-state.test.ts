@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { type CheckInAnswers, checkInSkipped, dailyStateId, dailyStates, followDayState, normalizeCheckIn, readDailyState, saveDailyState, setFollowDayState, setReadinessChoice, skipCheckIn } from './daily-state'
+import { type CheckInAnswers, checkInSkipped, dailyChoiceId, dailyStateId, dailyStates, followDayState, normalizeCheckIn, readDailyChoice, readDailyState, readinessOfState, saveDailyState, setFollowDayState, setReadinessChoice, skipCheckIn } from './daily-state'
 import { createLocalStore } from './store'
 
 // Gjendja e ditës (V50, V2-E3-03; SPEC §0.3d): një rresht për ditë ushqimi, me id nga (përdoruesi, data), kufijtë e
@@ -19,7 +19,7 @@ describe('gjendja e ditës', () => {
     const rows = await store.where('daily_states', 'date', DAY)
     expect(rows).toHaveLength(1)
     expect(rows[0].id).toBe(await dailyStateId(USER, DAY))
-    expect(await readDailyState(store, DAY)).toEqual({ date: DAY, ...CHECK_IN, soreGroups: ['chest'], energy: 4, readiness: null, choice: null })
+    expect(await readDailyState(store, DAY)).toEqual({ date: DAY, ...CHECK_IN, soreGroups: ['chest'], energy: 4, readiness: expect.any(Number), recovery: null, soreTrained: false })
   })
 
   it('dy telefona shkruajnë të njëjtin rresht', async () => {
@@ -30,27 +30,42 @@ describe('gjendja e ditës', () => {
     expect(a).toEqual(b)
   })
 
-  it('vendimi i sugjerimit mbetet kur check-in-i ndryshon', async () => {
+  it('vendimi është rresht më vete, me id nga përdoruesi dhe data, dhe mbetet kur check-in-i ndryshon', async () => {
     const store = storeFor()
     await saveDailyState(store, DAY, CHECK_IN)
-    await setReadinessChoice(store, DAY, 'lighter')
+    await setReadinessChoice(store, DAY, 'lighter', { workout: 'b|1|d' })
     await saveDailyState(store, DAY, { ...CHECK_IN, mood: 4 })
-    expect((await readDailyState(store, DAY))?.choice).toBe('lighter')
-    await setReadinessChoice(store, DAY, null)
-    expect((await readDailyState(store, DAY))?.choice).toBeNull()
+    expect(await readDailyChoice(store, DAY)).toEqual({ date: DAY, choice: 'lighter', workout: 'b|1|d', prevToday: null, prevTomorrow: null })
+    expect((await store.where('daily_choices', 'date', DAY))[0].id).toBe(await dailyChoiceId(USER, DAY))
   })
 
-  it('gatishmëria e mëngjesit ruhet brenda 0–100', async () => {
+  it('fshirja e vendimit e heq rreshtin, dhe një vendim i ri e kthen me të njëjtin id', async () => {
     const store = storeFor()
-    expect((await saveDailyState(store, DAY, CHECK_IN, 54)).readiness).toBe(54)
-    expect((await saveDailyState(store, DAY, CHECK_IN, 130.4)).readiness).toBe(100)
-    expect((await saveDailyState(store, DAY, CHECK_IN)).readiness).toBeNull()
+    await setReadinessChoice(store, DAY, 'tomorrow', { workout: 'b|1|d', prevToday: 'training', prevTomorrow: null })
+    const id = (await store.where('daily_choices', 'date', DAY))[0].id
+    await setReadinessChoice(store, DAY, null)
+    expect(await readDailyChoice(store, DAY)).toBeNull()
+    expect((await store.get('daily_choices', id, { deleted: true }))?.deleted_at).not.toBeNull()
+    await setReadinessChoice(store, DAY, 'normal')
+    expect((await store.where('daily_choices', 'date', DAY))[0].id).toBe(id)
+    expect(await readDailyChoice(store, DAY)).toMatchObject({ choice: 'normal', prevToday: null })
   })
 
-  it('vendimi pa check-in nuk krijon rresht', async () => {
+  it('gatishmëria ruhet e llogaritur nga rreshti, brenda 0–100', async () => {
+    const store = storeFor()
+    const base = await saveDailyState(store, DAY, CHECK_IN)
+    const trained = await saveDailyState(store, DAY, CHECK_IN, { recovery: 'i_lodhur', soreTrained: true })
+    expect(base.readiness).toBeGreaterThanOrEqual(0)
+    expect(trained).toMatchObject({ recovery: 'i_lodhur', soreTrained: true })
+    expect(trained.readiness).toBeLessThan(100)
+    expect(trained.readiness).toBe(readinessOfState(trained).percent)
+  })
+
+  it('vendimi mund të ruhet pa check-in', async () => {
     const store = storeFor()
     await setReadinessChoice(store, DAY, 'normal')
     expect(await readDailyState(store, DAY)).toBeNull()
+    expect((await readDailyChoice(store, DAY))?.choice).toBe('normal')
   })
 
   it('një rresht i fshirë kthehet me check-in-in e ri', async () => {
@@ -70,7 +85,7 @@ describe('gjendja e ditës', () => {
       sleepMinutes: 840,
       sleepQuality: 3,
       soreness: 4,
-      soreGroups: ['chest', 'g0', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8', 'g9', 'g10'],
+      soreGroups: ['chest', ...Array.from({ length: 14 }, (_, i) => `g${i}`)],
     })
     // Gjumi me hap 0,5 orë (SPEC §0.3d); pa dhimbje, pa grupe.
     expect(normalizeCheckIn({ ...CHECK_IN, sleepMinutes: 410, soreness: 0 })).toMatchObject({ sleepMinutes: 420, soreGroups: [] })

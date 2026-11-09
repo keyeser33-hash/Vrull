@@ -15,7 +15,7 @@ import type { LocalStore } from './store'
 import { activeProgram, openSession, trainingHistory } from './training'
 import { naturalId } from './natural-id'
 import { lightenWeights } from '@/readiness/lighter-session'
-import { lighterDates, lighterDay } from './lighter-day'
+import { lighterDay, lighterSessions, workoutKey } from './lighter-day'
 import { lighterFirstSession } from './welcome-back'
 
 // Peshat e javës (V23) mbi bazën lokale: propozimi i §7 për javën që shqyrtohet dhe vendimi i
@@ -52,8 +52,7 @@ async function readWeek(store: LocalStore, week?: WeekRef) {
   ])
   // Seanca më e lehtë (V50) nuk është dështim: pesha e saj e ulur dhe setet më pak nuk e ulin propozimin e
   // peshës së radhës, ndaj setet e saj nuk hyjnë te propozimet (rekordet dhe e1RM-ja e historikut mbeten).
-  const lighterOn = await lighterDates(store)
-  const lighterSessions = new Set((await store.all('workout_sessions')).filter((row) => lighterOn.has(String(row.date).slice(0, 10))).map((row) => row.id))
+  const lighterIds = await lighterSessions(store)
   // Seanca e parë e javës që shqyrtohet, në këtë xhiro: rregulli i progresit lexon vetëm setet para saj.
   const weekStarts = sessions
     .filter((row) => Number(row.run) === run && row.block_id === target.blockId && Number(row.week) === target.week && row.started_at)
@@ -64,7 +63,7 @@ async function readWeek(store: LocalStore, week?: WeekRef) {
     week: target,
     // Setet e seancës së hapur nuk e lëvizin peshën e javës: seti i dytë i Bench Press nuk e ndryshon
     // atë që Sot dhe Programi thanë për të para seancës. Pas mbylljes hyjnë te historia.
-    history: history.sets.filter((set) => set.sessionId !== open?.id && !lighterSessions.has(set.sessionId)),
+    history: history.sets.filter((set) => set.sessionId !== open?.id && !lighterIds.has(set.sessionId)),
     weekStartedAt: weekStarts[0] ?? null,
     now: store.now(),
     overrides: history.overrides,
@@ -121,7 +120,7 @@ export async function workoutWeights(store: LocalStore, plan: WeekRef & { dayId:
   })
   // "Seanca më e lehtë" (V50): pesha × 0,9 pa RIR, e njëjta rregull si setet (`lighterSlots`); me "Mirë se u ktheve"
   // pesha është ulur tashmë dhe nuk ulet përsëri. Vlen për stërvitjen e ditës, jo për ditë të tjera të planit.
-  if (next && weights.length > 0 && (await lighterDay(store, read?.open?.date as string | undefined))) {
+  if (next && weights.length > 0 && (await lighterDay(store, workoutKey(read.loaded.pointer), read.open ? { startedAt: read.open.started_at as string | null, date: read.open.date as string } : null))) {
     const lightened = lightenWeights(
       weights.map((row) => ({
         sets: row.sets,
@@ -129,7 +128,7 @@ export async function workoutWeights(store: LocalStore, plan: WeekRef & { dayId:
         weightKg: row.weightKg,
         stepKg: weightStep(read?.loaded.exercises[row.exerciseId]?.equipment ?? 'other', steps),
       })),
-      { welcomeBack: lighter },
+      { keepWeight: lighter },
     )
     return new Map(
       weights.map((row, index): [string, WorkoutWeight] => {

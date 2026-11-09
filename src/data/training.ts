@@ -26,7 +26,7 @@ import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { numberOrNull } from '@/lib/number'
 import { lightenPlan } from '@/readiness/lighter-session'
-import { lighterDay } from './lighter-day'
+import { lighterDay, workoutKey } from './lighter-day'
 
 // Programi aktiv, treguesi i radhës dhe stërvitjet, mbi bazën lokale (SPEC §4, §6). Motori i
 // programit (src/program) llogarit; ky modul lexon dhe shkruan rreshtat përmes store-it.
@@ -291,7 +291,8 @@ export async function trainingSnapshot(store: LocalStore): Promise<TrainingSnaps
   const session = await openSession(store, row.id, pointer)
   // "Seanca më e lehtë" (V50): setet dhe RIR-i e stërvitjes së ditës ndryshojnë këtu, në vendin e vetëm ku
   // vendosen, që Sot, njoftimi i seancës dhe seanca të thonë të njëjtën gjë; pesha: `workoutWeights`.
-  const plan = (await lighterDay(store, session?.date as string | undefined)) ? { ...planned, slots: lightenPlan(planned.slots) } : planned
+  const lighter = await lighterDay(store, workoutKey(pointer), session ? { startedAt: session.started_at as string | null, date: session.date as string } : null)
+  const plan = lighter ? { ...planned, slots: lightenPlan(planned.slots) } : planned
   const sets = session ? (await store.where('set_logs', 'session_id', session.id)).map(toSet) : []
   sets.sort((a, b) => a.loggedAt.localeCompare(b.loggedAt))
   return {
@@ -315,6 +316,8 @@ export async function startWorkout(store: LocalStore): Promise<string> {
   const { row, state, pointer } = loaded
   const open = await openSession(store, row.id, pointer)
   if (open) return open.id
+  // Nisja e stërvitjes në një ditë të shtyrë e anulon shtyrjen (V50): nesër nuk ka dy stërvitje.
+  await (await import('./day-choice')).cancelPostponement(store)
   const startedAt = store.now()
   const session = await store.put('workout_sessions', {
     program_id: row.id,

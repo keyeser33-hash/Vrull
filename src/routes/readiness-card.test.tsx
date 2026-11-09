@@ -81,14 +81,14 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(screen.queryByRole('button', { name: /Gatishmëria/ })).not.toBeInTheDocument()
   })
 
-  it('me gjendje: pllaka rillogarit përqindjen, nuk lexon vlerën e ruajtur', async () => {
+  it('me gjendje: pllaka e ka përqindjen nga rreshti (rikuperimi i çastit të check-in-it)', async () => {
     const store = await setup()
-    const { saveDailyState } = await import('@/data/daily-state')
-    await saveDailyState(store, '2026-11-08', ANSWERS, 99)
-    const { readinessFor } = await import('@/data/readiness-view')
+    const { readinessOfState, saveDailyState } = await import('@/data/daily-state')
+    const { checkInContext } = await import('@/data/readiness-view')
     const { todayView } = await import('@/data/today')
-    const expected = readinessFor(await todayView(store), await stored())!
-    expect(expected.percent).not.toBe(99)
+    await saveDailyState(store, '2026-11-08', ANSWERS, checkInContext(await todayView(store), ANSWERS))
+    const expected = readinessOfState((await stored())!)
+    expect((await stored())?.readiness).toBe(expected.percent)
     await renderCard()
     const tile = await screen.findByRole('button', { name: /Gatishmëria/ })
     expect(tile).toHaveAccessibleName(new RegExp(`${expected.percent} për qind`))
@@ -120,9 +120,11 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     const tile = await screen.findByRole('button', { name: /Gatishmëria/ })
     const state = await stored()
     expect(state).toMatchObject({ mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 2, soreGroups: ['bicepsi', 'tricepsi', 'parakrahet'] })
-    const { readinessFor } = await import('@/data/readiness-view')
+    const { readinessOfState } = await import('@/data/daily-state')
     const { todayView } = await import('@/data/today')
-    const percent = readinessFor(await todayView(store), state)!.percent
+    // Rreshti mban rikuperimin e stërvitjes së sotme dhe dhimbjen (triceps stërvitet sot).
+    expect(state).toMatchObject({ recovery: (await todayView(store)).workout?.recovery, soreTrained: true })
+    const percent = readinessOfState(state!).percent
     expect(state?.readiness).toBe(percent)
     expect(within(tile).getByText(`${percent}%`)).toBeInTheDocument()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
@@ -142,13 +144,13 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
 
   it('fleta "Gati" ditë stërvitjeje: përqindja, pesë pjesët, fjalia e nivelit të ulët; "Ndrysho gjendjen" e hap të mbushur dhe ruan ndryshimin', async () => {
     const store = await setup()
-    const { saveDailyState } = await import('@/data/daily-state')
-    await saveDailyState(store, '2026-11-08', ANSWERS)
-    const { readinessFor } = await import('@/data/readiness-view')
+    const { readinessOfState, saveDailyState } = await import('@/data/daily-state')
+    const { checkInContext } = await import('@/data/readiness-view')
     const { todayView } = await import('@/data/today')
     const view = await todayView(store)
     expect(view.workout).not.toBeNull()
-    const before = readinessFor(view, await stored())!
+    await saveDailyState(store, '2026-11-08', ANSWERS, checkInContext(view, ANSWERS))
+    const before = readinessOfState((await stored())!)
     await renderCard()
     await userEvent.click(await screen.findByRole('button', { name: /Gatishmëria/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Gatishmëria' })
@@ -175,7 +177,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     const state = await stored()
     expect(state).toMatchObject({ mood: 5, energy: 5, soreGroups: ['gjoksi'] })
-    const after = readinessFor(await todayView(store), state)!.percent
+    const after = readinessOfState(state!).percent
     expect(after).toBeGreaterThan(before.percent)
     expect(state?.readiness).toBe(after)
     expect(await screen.findByText(`${after}%`)).toBeInTheDocument()
@@ -194,15 +196,13 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(within(parts[2]).getByText('Asnjë')).toBeInTheDocument()
   })
 
-  it('14 ditët: vlera e ruajtur e ditëve të kaluara, "—" pa check-in, sot me vlerën e tanishme, mesatarja', async () => {
+  it('14 ditët: vlera e ruajtur e ditëve të kaluara, "—" pa check-in, sot nga rreshti, mesatarja', async () => {
     const store = await setup()
     const { saveDailyState } = await import('@/data/daily-state')
-    await saveDailyState(store, '2026-11-07', ANSWERS, 70)
-    await saveDailyState(store, '2026-11-05', ANSWERS, 80)
-    await saveDailyState(store, '2026-11-08', ANSWERS, 5)
-    const { readinessFor } = await import('@/data/readiness-view')
-    const { todayView } = await import('@/data/today')
-    const now = readinessFor(await todayView(store), await stored())!.percent
+    const day7 = (await saveDailyState(store, '2026-11-07', { ...ANSWERS, energy: 4 })).readiness!
+    const day5 = (await saveDailyState(store, '2026-11-05', { ...ANSWERS, energy: 5, mood: 5 })).readiness!
+    const now = (await saveDailyState(store, '2026-11-08', ANSWERS)).readiness!
+    expect(new Set([day7, day5, now]).size).toBe(3)
     await renderCard()
     await userEvent.click(await screen.findByRole('button', { name: /Gatishmëria/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Gatishmëria' })
@@ -210,10 +210,10 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     await waitFor(() => expect(days.filter((day) => /pa check-in/.test(day.getAttribute('aria-label') ?? ''))).toHaveLength(11))
     expect(days).toHaveLength(14)
     expect(days[13].getAttribute('aria-label')).toMatch(new RegExp(`^Sot, .*8 nëntor, ${now}%`))
-    expect(days[12].getAttribute('aria-label')).toMatch(/7 nëntor, 70%$/)
-    expect(days[10].getAttribute('aria-label')).toMatch(/5 nëntor, 80%$/)
+    expect(days[12].getAttribute('aria-label')).toMatch(new RegExp(`7 nëntor, ${day7}%$`))
+    expect(days[10].getAttribute('aria-label')).toMatch(new RegExp(`5 nëntor, ${day5}%$`))
     expect(days[0]).toHaveTextContent('—')
-    expect(within(sheet).getByText(`mesatarja ${Math.round((70 + 80 + now) / 3)}%`)).toBeInTheDocument()
+    expect(within(sheet).getByText(`mesatarja ${Math.round((day7 + day5 + now) / 3)}%`)).toBeInTheDocument()
   })
 
   it('anglishtja: karta, fleta e check-in-it dhe fleta "Gati"', async () => {

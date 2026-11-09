@@ -57,7 +57,7 @@ async function setup(checkIn: typeof LOW | typeof FINE | null) {
   data.clock = at(8, 11)
   if (checkIn) {
     const { saveDailyState } = await import('@/data/daily-state')
-    await saveDailyState(data.store, '2026-11-08', { ...checkIn, soreGroups: [...checkIn.soreGroups] }, 54)
+    await saveDailyState(data.store, '2026-11-08', { ...checkIn, soreGroups: [...checkIn.soreGroups] }, { recovery: 'gati', soreTrained: true })
   }
   return data.store
 }
@@ -78,7 +78,7 @@ async function renderToday() {
   render(<RouterProvider router={router} />)
 }
 
-const choice = async () => (await data.store.where('daily_states', 'date', '2026-11-08'))[0]?.choice
+const choice = async () => (await data.store.where('daily_choices', 'date', '2026-11-08'))[0]?.choice ?? null
 const card = () => screen.findByRole('region', { name: /^(Sugjerim për sot|Suggestion for today)$/ })
 
 describe('Sot · sugjerimi i gatishmërisë së ulët', () => {

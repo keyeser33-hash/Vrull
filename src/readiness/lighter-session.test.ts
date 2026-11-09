@@ -29,19 +29,19 @@ describe('lightenWeights', () => {
   const row = (weightKg: number | null, target: Target = reps(), stepKg = 2.5) => ({ sets: 3, target, weightKg, stepKg })
 
   it('pa RIR: pesha x 0,9 poshtë sipas hapit të pajisjes (25 → 22,5; 62,5 → 55)', () => {
-    expect(lightenWeights([row(25), row(62.5), row(20, reps(), 2)], { welcomeBack: false })).toEqual([22.5, 55, 18])
+    expect(lightenWeights([row(25), row(62.5), row(20, reps(), 2)], { keepWeight: false })).toEqual([22.5, 55, 18])
   })
 
   it('me RIR pesha mbetet', () => {
-    expect(lightenWeights([row(60, reps({ min: 1, max: 2 }))], { welcomeBack: false })).toEqual([60])
+    expect(lightenWeights([row(60, reps({ min: 1, max: 2 }))], { keepWeight: false })).toEqual([60])
   })
 
   it('me "Mirë se u ktheve" pesha nuk ulet përsëri (pa ulje të dyfishtë)', () => {
-    expect(lightenWeights([row(22.5), row(55)], { welcomeBack: true })).toEqual([22.5, 55])
+    expect(lightenWeights([row(22.5), row(55)], { keepWeight: true })).toEqual([22.5, 55])
   })
 
   it('pa peshë mbetet pa peshë', () => {
-    expect(lightenWeights([row(null)], { welcomeBack: false })).toEqual([null])
+    expect(lightenWeights([row(null)], { keepWeight: false })).toEqual([null])
   })
 })
 
@@ -50,24 +50,24 @@ describe('lighterCost', () => {
   const planned = (exerciseId: string, target: Target = reps()) => ({ exerciseId, target })
 
   it('javë pa RIR: −1 set dhe pesha', () => {
-    expect(lighterCost([planned('a'), planned('b'), planned('c')], trackings, { welcomeBack: false })).toEqual({ sets: true, effect: 'weight' })
+    expect(lighterCost([planned('a'), planned('b'), planned('c')], trackings, { keepWeight: false })).toEqual({ sets: true, effect: 'weight' })
   })
 
   it('javë me RIR: −1 set dhe RIR +1', () => {
     const rir = reps({ min: 1, max: 2 })
-    expect(lighterCost([planned('a', rir), planned('b', rir), planned('c', rir)], trackings, { welcomeBack: false })).toEqual({ sets: true, effect: 'rir' })
+    expect(lighterCost([planned('a', rir), planned('b', rir), planned('c', rir)], trackings, { keepWeight: false })).toEqual({ sets: true, effect: 'rir' })
   })
 
   it('javë e përzier ose me "Mirë se u ktheve"', () => {
     const rir = reps({ min: 1, max: 2 })
-    expect(lighterCost([planned('a', rir), planned('b'), planned('c')], trackings, { welcomeBack: false }).effect).toBe('both')
-    expect(lighterCost([planned('a'), planned('b'), planned('c')], trackings, { welcomeBack: true }).effect).toBeNull()
-    expect(lighterCost([planned('a', rir), planned('b'), planned('c')], trackings, { welcomeBack: true }).effect).toBe('rir')
+    expect(lighterCost([planned('a', rir), planned('b'), planned('c')], trackings, { keepWeight: false }).effect).toBe('both')
+    expect(lighterCost([planned('a'), planned('b'), planned('c')], trackings, { keepWeight: true }).effect).toBeNull()
+    expect(lighterCost([planned('a', rir), planned('b'), planned('c')], trackings, { keepWeight: true }).effect).toBe('rir')
   })
 
   it('me më pak se tre ushtrime nuk ka set më pak; ushtrimet pa peshë nuk numërohen', () => {
-    expect(lighterCost([planned('a'), planned('b')], trackings, { welcomeBack: false }).sets).toBe(false)
-    expect(lighterCost([planned('plank', { kind: 'timed', seconds: 30 }), planned('dips')], trackings, { welcomeBack: false }).effect).toBeNull()
+    expect(lighterCost([planned('a'), planned('b')], trackings, { keepWeight: false }).sets).toBe(false)
+    expect(lighterCost([planned('plank', { kind: 'timed', seconds: 30 }), planned('dips')], trackings, { keepWeight: false }).effect).toBeNull()
   })
 })
 

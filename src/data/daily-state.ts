@@ -1,12 +1,19 @@
+import type { RecoveryStatus } from '@/program/recovery'
+import { type Readiness, readiness } from '@/readiness/readiness'
 import { naturalId } from './natural-id'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 
-// Gjendja e ditës (V50, V2-E3-03; SPEC §0.3d) në bazë: check-in-i i mëngjesit dhe vendimi i sugjerimit, një rresht
-// për ditë ushqimi (V46; data e jep thirrësi, p.sh. `currentFoodDate` te nutrition.ts). Id-ja vjen nga
-// (përdoruesi, data), që dy telefona të shkruajnë një rresht; kufijtë janë ata të migrimit
-// 20261110080000_daily_states.sql, që serveri të mos e refuzojë rreshtin (MESIMET › Supabase). Pikët dhe nivelet
-// i llogarit `src/readiness/readiness.ts`; këtu vetëm ruhet.
+// Gjendja e ditës (V50, V2-E3-03; SPEC §0.3d) në bazë, në dy tabela, secila me një rresht për ditë ushqimi (V46; data
+// e jep thirrësi, p.sh. `currentFoodDate` te nutrition.ts):
+// - `daily_states`: check-in-i i mëngjesit, me rikuperimin e grupit kryesor dhe nëse një grup me dhimbje stërvitej
+//   në çastin e check-in-it, që gatishmëria të llogaritet vetëm nga rreshti (`readinessOfState`) dhe të mos
+//   ndryshojë kur stërvitja shtyhet ose mbyllet;
+// - `daily_choices`: vendimi i sugjerimit me stërvitjen ku vlen dhe llojet e ditëve para shtyrjes. Është tabelë
+//   më vete, që check-in-i i një telefoni tjetër të mos e mbishkruajë (rreshtat sinkronizohen të tërë).
+// Id-të vijnë nga (përdoruesi, data), që dy telefona të shkruajnë një rresht; kufijtë janë ata të migrimeve
+// 20261110080000_daily_states.sql dhe 20261110120000_daily_states_v2.sql, që serveri të mos e refuzojë rreshtin
+// (MESIMET › Supabase). Pikët dhe nivelet i llogarit `src/readiness/readiness.ts`; këtu vetëm ruhet.
 
 export type Scale = 1 | 2 | 3 | 4 | 5
 export type Soreness = 0 | 1 | 2 | 3 | 4
@@ -23,22 +30,48 @@ export interface CheckInAnswers {
   soreGroups: string[]
 }
 
-export interface DailyState extends CheckInAnswers {
-  date: string
-  /** Gatishmëria në çastin e check-in-it (0–100), për historinë e 14 ditëve; null kur s'u llogarit. */
-  readiness: number | null
-  choice: ReadinessChoice | null
+/** Çfarë dinte pamja e Sot në çastin e check-in-it (`checkInContext` te readiness-view.ts). */
+export interface CheckInContext {
+  /** Rikuperimi i grupit kryesor; null në ditë pa stërvitje. */
+  recovery: RecoveryStatus | null
+  /** Një nga grupet me dhimbje stërvitej sot. */
+  soreTrained: boolean
 }
 
+export interface DailyState extends CheckInAnswers, CheckInContext {
+  date: string
+  /** Gatishmëria e llogaritur nga rreshti (0–100), për historinë e 14 ditëve. */
+  readiness: number | null
+}
+
+/** Vendimi i kartës së sugjerimit për një ditë ushqimi. */
+export interface DailyChoice {
+  date: string
+  choice: ReadinessChoice
+  /** Stërvitja ku vlen ("blloku|java|dita"); null kur s'dihej. */
+  workout: string | null
+  /** Llojet e zgjedhura me dorë para "Shtyje për nesër" (null = automatik). */
+  prevToday: DayType | null
+  prevTomorrow: DayType | null
+}
+
+export type DayType = 'training' | 'rest'
+
 const MAX_SLEEP_MINUTES = 14 * 60
-const MAX_SORE_GROUPS = 12
+const MAX_SORE_GROUPS = 15
 const GROUP = /^[a-z][a-z0-9_-]{0,39}$/
 const CHOICES: readonly ReadinessChoice[] = ['lighter', 'tomorrow', 'normal']
+const RECOVERIES: readonly RecoveryStatus[] = ['gati', 'pothuajse_gati', 'i_lodhur']
+const DAY_TYPES: readonly DayType[] = ['training', 'rest']
 const SKIP_KEY = (date: string) => `checkin-skip:${date}`
 const FOLLOW_KEY = 'day-mode-follow'
 
 export function dailyStateId(userId: string, date: string): Promise<string> {
   return naturalId(['daily_states', userId, date])
+}
+
+export function dailyChoiceId(userId: string, date: string): Promise<string> {
+  return naturalId(['daily_choices', userId, date])
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, Math.round(Number.isFinite(value) ? value : min)))
@@ -58,7 +91,6 @@ export function normalizeCheckIn(answers: CheckInAnswers): CheckInAnswers {
 }
 
 function fromRow(row: LocalRow): DailyState {
-  const choice = CHOICES.includes(row.choice as ReadinessChoice) ? (row.choice as ReadinessChoice) : null
   return {
     date: String(row.date).slice(0, 10),
     mood: Number(row.mood) as Scale,
@@ -68,8 +100,14 @@ function fromRow(row: LocalRow): DailyState {
     soreness: Number(row.soreness) as Soreness,
     soreGroups: Array.isArray(row.sore_groups) ? row.sore_groups.map(String) : [],
     readiness: typeof row.readiness === 'number' ? row.readiness : null,
-    choice,
+    recovery: RECOVERIES.includes(row.recovery as RecoveryStatus) ? (row.recovery as RecoveryStatus) : null,
+    soreTrained: row.sore_trained === true,
   }
+}
+
+/** Gatishmëria e ditës nga rreshti vetëm: e njëjtë para dhe pas shtyrjes ose mbylljes së stërvitjes. */
+export function readinessOfState(state: Pick<DailyState, keyof CheckInAnswers | keyof CheckInContext>): Readiness {
+  return readiness({ checkIn: state, recovery: state.recovery, trainedGroups: state.soreTrained ? state.soreGroups : [] })
 }
 
 async function rowFor(store: LocalStore, date: string): Promise<LocalRow | undefined> {
@@ -88,14 +126,15 @@ export async function dailyStates(store: LocalStore, dates: string[]): Promise<M
 }
 
 /**
- * Ruan ose ndryshon check-in-in e datës, me gatishmërinë e atij çasti (`readinessFor` te readiness-view.ts);
- * vendimi i sugjerimit mbetet.
+ * Ruan ose ndryshon check-in-in e datës, me rikuperimin dhe dhimbjen e stërvitur të atij çasti (`checkInContext`
+ * te readiness-view.ts) dhe gatishmërinë e llogaritur prej tyre. Vendimi i sugjerimit është rresht tjetër.
  */
-export async function saveDailyState(store: LocalStore, date: string, answers: CheckInAnswers, readiness: number | null = null): Promise<DailyState> {
+export async function saveDailyState(store: LocalStore, date: string, answers: CheckInAnswers, context: CheckInContext = { recovery: null, soreTrained: false }): Promise<DailyState> {
   const values = normalizeCheckIn(answers)
   const existing = await rowFor(store, date)
   const userId = store.userId()
   const id = existing?.id ?? (userId ? await dailyStateId(userId, date) : undefined)
+  const percent = readinessOfState({ ...values, ...context }).percent
   const row = await store.put(
     'daily_states',
     {
@@ -107,19 +146,59 @@ export async function saveDailyState(store: LocalStore, date: string, answers: C
       sleep_quality: values.sleepQuality,
       soreness: values.soreness,
       sore_groups: values.soreGroups,
-      readiness: readiness === null || !Number.isFinite(readiness) ? null : Math.min(100, Math.max(0, Math.round(readiness))),
-      choice: existing?.choice ?? null,
+      readiness: percent,
+      recovery: context.recovery,
+      sore_trained: context.soreTrained,
     },
     { revive: true },
   )
   return fromRow(row)
 }
 
-/** Vendimi i kartës së sugjerimit; pa check-in nuk ka sugjerim, ndaj as vendim. */
-export async function setReadinessChoice(store: LocalStore, date: string, choice: ReadinessChoice | null): Promise<void> {
-  const existing = await rowFor(store, date)
-  if (!existing) return
-  await store.put('daily_states', { id: existing.id, choice })
+function choiceFromRow(row: LocalRow): DailyChoice | null {
+  if (!CHOICES.includes(row.choice as ReadinessChoice)) return null
+  const type = (value: unknown) => (DAY_TYPES.includes(value as DayType) ? (value as DayType) : null)
+  return {
+    date: String(row.date).slice(0, 10),
+    choice: row.choice as ReadinessChoice,
+    workout: typeof row.workout === 'string' ? row.workout : null,
+    prevToday: type(row.prev_today),
+    prevTomorrow: type(row.prev_tomorrow),
+  }
+}
+
+export async function readDailyChoice(store: LocalStore, date: string): Promise<DailyChoice | null> {
+  const [row] = await store.where('daily_choices', 'date', date)
+  return row ? choiceFromRow(row) : null
+}
+
+/** Të gjitha vendimet e gjalla (historiku dhe peshat e propozuara). */
+export async function dailyChoices(store: LocalStore): Promise<DailyChoice[]> {
+  return (await store.all('daily_choices')).map(choiceFromRow).filter((choice): choice is DailyChoice => choice !== null)
+}
+
+/**
+ * Vendimi i kartës së sugjerimit për një ditë ushqimi: një rresht me id nga (përdoruesi, data), që dy telefona të
+ * shkruajnë të njëjtin. Null e fshin; një vendim i ri e kthen rreshtin e fshirë (`revive`).
+ */
+export async function setReadinessChoice(
+  store: LocalStore,
+  date: string,
+  choice: ReadinessChoice | null,
+  extras: { workout?: string | null; prevToday?: DayType | null; prevTomorrow?: DayType | null } = {},
+): Promise<void> {
+  const userId = store.userId()
+  const [existing] = await store.where('daily_choices', 'date', date)
+  if (choice === null) {
+    if (existing) await store.remove('daily_choices', existing.id)
+    return
+  }
+  const id = existing?.id ?? (userId ? await dailyChoiceId(userId, date) : undefined)
+  await store.put(
+    'daily_choices',
+    { ...(id ? { id } : {}), date, choice, workout: extras.workout ?? null, prev_today: extras.prevToday ?? null, prev_tomorrow: extras.prevTomorrow ?? null },
+    { revive: true },
+  )
 }
 
 /** "Jo sot" te karta "Si ndihesh sot?": e fsheh për atë ditë, vetëm në këtë telefon. */

@@ -12,7 +12,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { type WeekDay, WeekStrip } from '@/components/ui/week-strip'
 import { newAchievements } from '@/data/achievements'
 import { store, useLocalQuery } from '@/data/app-data'
-import { type TodayView, todayView } from '@/data/today'
+import { isTrainingMode, type TodayView, todayView } from '@/data/today'
 import { type WeekGoalsView, weekGoalsView, type WeekSummary, weekSummary } from '@/data/weekly-goals'
 import { setLighterFirstSession } from '@/data/welcome-back'
 import { DayLine } from './day-line'
@@ -76,7 +76,7 @@ export function TodayPage() {
   const { view, goals, summary } = screen
   const programme = view.mode !== 'none' && view.mode !== 'completed'
   const back = programme ? view.welcomeBack : null
-  const workoutToday = view.mode === 'train' || view.mode === 'session'
+  const workoutToday = isTrainingMode(view)
   // "Java jote" zë vendin e kartës kur sot s'ka stërvitje; përndryshe vjen si rresht i shkurtër. Pas
   // pushimit (Mirë se u ktheve) asnjëra: java e kaluar ishte e zbrazët dhe karta e kthimit flet pa faj.
   const weekCard = summary && !back && !workoutToday ? summary : null
@@ -181,7 +181,7 @@ function WeekSection({ view, goals, days, fresh = false }: { view: TodayView; go
 function whenLine(view: TodayView, { t, fmt }: I18n): string {
   const plan = view.snapshot!.plan
   const workout = t('today.workoutTitle', { day: plan.dayNumber })
-  if (view.mode === 'train' || view.mode === 'session') return [t('today.when.today'), view.trainingTime, workout].join(' · ')
+  if (isTrainingMode(view)) return [t('today.when.today'), view.trainingTime, workout].join(' · ')
   if (!view.nextDate) return workout
   const tomorrow = view.nextDate === shiftDate(localDate(view.now), 1)
   const when = tomorrow ? t('today.when.tomorrow') : capitalize(fmt.date(atNoon(view.nextDate)))
@@ -272,7 +272,7 @@ function WelcomeBackCard({ view }: { view: TodayView }) {
   const back = view.welcomeBack!
   const { workout, mode } = view
   const plan = view.snapshot!.plan
-  const today = mode === 'train' || mode === 'session'
+  const today = isTrainingMode(view)
   const first = workout?.first
   const example =
     first && first.weightKg !== null && first.weekKg !== null

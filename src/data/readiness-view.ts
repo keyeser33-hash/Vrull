@@ -1,21 +1,21 @@
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { type DayMode, dayMode, type Readiness, readiness } from '@/readiness/readiness'
-import { checkInSkipped, type DailyState, followDayState, readDailyState } from './daily-state'
+import { type DayMode, dayMode, type Readiness } from '@/readiness/readiness'
+import { type CheckInAnswers, type CheckInContext, checkInSkipped, type DailyState, followDayState, readDailyState, readinessOfState } from './daily-state'
+import { currentFoodDate } from './nutrition'
 import type { LocalStore } from './store'
-import { type TodayView, todayView } from './today'
+import { isTrainingMode, type TodayView } from './today'
 
-// Gatishmëria e sotme (V50, SPEC §0.3d) në një vend, për Sot, seancën dhe pamjen e ditës: gjendja e ditës së
-// ushqimit (V46), rikuperimi i grupit kryesor dhe grupet që stërviten sot vetëm kur sot ka stërvitje (ose seancë të
-// hapur); përndryshe rikuperimi mungon dhe pesha e tij ndahet te pjesët e tjera (`readiness`).
+// Gatishmëria e sotme (V50, SPEC §0.3d) në një vend, për Sot, seancën dhe pamjen e ditës. Llogaritet vetëm nga
+// rreshti i ditës së ushqimit (V46): rikuperimi i grupit kryesor dhe nëse një grup me dhimbje stërvitej u ruajtën
+// në çastin e check-in-it (`checkInContext`), ndaj përqindja mbetet e njëjtë pas shtyrjes ose mbylljes së stërvitjes
+// dhe korniza (`dayModeNow`) nuk lexon gjithë pamjen e Sot.
 
 export interface ReadinessView {
-  /** Dita e ushqimit (`TodayView.date`): dita e check-in-it. */
+  /** Dita e ushqimit (V46): dita e check-in-it. */
   date: string
   state: DailyState | null
   /** Null pa check-in: pa përqindje dhe pa sugjerim. */
   readiness: Readiness | null
-  /** Sot ka stërvitje që nuk ka nisur ende ose seancë të hapur. */
-  training: boolean
   /** "Jo sot" te karta "Si ndihesh sot?". */
   skipped: boolean
   /** "Pamja ndjek gjendjen" (Cilësimet › Pamja). */
@@ -29,28 +29,21 @@ export function trainedGroups(primaryKeys: readonly string[]): string[] {
   return MUSCLE_GROUPS.filter((group) => group.keys.some((key) => keys.has(key))).map((group) => group.id)
 }
 
-/** Gatishmëria nga pamja e Sot dhe gjendja e ditës; null pa gjendje. */
-export function readinessFor(view: Pick<TodayView, 'mode' | 'workout'>, state: DailyState | null): Readiness | null {
-  if (!state) return null
-  const training = (view.mode === 'train' || view.mode === 'session') && !!view.workout
-  return readiness({
-    checkIn: state,
-    recovery: training ? (view.workout?.recovery ?? null) : null,
-    trainedGroups: training ? trainedGroups(view.workout?.primary ?? []) : [],
-  })
+/**
+ * Çfarë ruhet me check-in-in nga pamja e Sot: rikuperimi i grupit kryesor dhe nëse një grup me dhimbje stërvitet sot,
+ * vetëm kur sot ka stërvitje (ose seancë të hapur); përndryshe rikuperimi mungon dhe pesha e tij ndahet te pjesët e tjera.
+ */
+export function checkInContext(view: Pick<TodayView, 'mode' | 'workout'>, answers: Pick<CheckInAnswers, 'soreness'> & { soreGroups: readonly string[] }): CheckInContext {
+  const workout = isTrainingMode(view) ? view.workout : null
+  if (!workout) return { recovery: null, soreTrained: false }
+  const today = trainedGroups(workout.primary)
+  return { recovery: workout.recovery, soreTrained: answers.soreness > 0 && answers.soreGroups.some((group) => today.includes(group)) }
 }
 
-export async function readinessView(store: LocalStore, view?: TodayView): Promise<ReadinessView> {
-  const today = view ?? (await todayView(store))
-  const [state, skipped, follow] = await Promise.all([readDailyState(store, today.date), checkInSkipped(store, today.date), followDayState(store)])
-  const value = readinessFor(today, state)
-  return {
-    date: today.date,
-    state,
-    readiness: value,
-    training: (today.mode === 'train' || today.mode === 'session') && !!today.workout,
-    skipped,
-    follow,
-    mode: dayMode(value, follow),
-  }
+/** Gatishmëria, pamja e ditës dhe çelësat e një dite ushqimi (parazgjedhja: sot), pa lexuar `todayView`. */
+export async function readinessView(store: LocalStore, date?: string): Promise<ReadinessView> {
+  const day = date ?? (await currentFoodDate(store, store.now()))
+  const [state, skipped, follow] = await Promise.all([readDailyState(store, day), checkInSkipped(store, day), followDayState(store)])
+  const value = state ? readinessOfState(state) : null
+  return { date: day, state, readiness: value, skipped, follow, mode: dayMode(value, follow) }
 }

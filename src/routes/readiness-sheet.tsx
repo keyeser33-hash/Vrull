@@ -4,7 +4,6 @@ import { ProgressTrack } from '@/components/ui/progress-bar'
 import { store, useLocalQuery } from '@/data/app-data'
 import { dailyStates } from '@/data/daily-state'
 import type { ReadinessView } from '@/data/readiness-view'
-import { trainedGroups } from '@/data/readiness-view'
 import type { TodayView } from '@/data/today'
 import { muscleName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -38,8 +37,9 @@ function partValue(i18n: I18n, part: ReadinessPart, view: TodayView, rv: Readine
     case 'mood':
       return t(MOOD[state.mood - 1])
     case 'recovery': {
+      // Vlera është ajo e check-in-it (rreshti); grupi vjen nga stërvitja e planifikuar, që emri ta ndjekë.
       const group = view.workout?.focus?.group.id
-      const status = view.workout?.recovery
+      const status = state.recovery
       return group && status ? t(RECOVERY[status], { group: muscleName(t, group) }) : t('readiness.recovery.unknown')
     }
     case 'soreness': {
@@ -48,8 +48,7 @@ function partValue(i18n: I18n, part: ReadinessPart, view: TodayView, rv: Readine
       const groups = chipsOf(state.soreGroups)
         .map((chip) => nameInSentence(t(CHIP_LABEL[chip]), lang))
         .join(', ')
-      const today = rv.training ? trainedGroups(view.workout?.primary ?? []) : []
-      return t(state.soreGroups.some((group) => today.includes(group)) ? 'readiness.sore.trained' : 'readiness.sore.value', { level, groups })
+      return t(state.soreTrained ? 'readiness.sore.trained' : 'readiness.sore.value', { level, groups })
     }
   }
 }

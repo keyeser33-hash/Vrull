@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
@@ -25,8 +26,18 @@ export function ReadinessCard({ view }: { view: TodayView }) {
   const { t, fmt } = useI18n()
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
-  const rv = useLocalQuery(() => readinessView(store, view), [view])
+  const rv = useLocalQuery(() => readinessView(store, view.date), [view.date])
+  const [failed, setFailed] = useState(false)
   const sheet = params.get(SHEET)
+  // "Jo sot" ruhet vetëm në këtë telefon; një gabim thuhet (si te fleta), nuk humbet në heshtje.
+  async function skip(date: string) {
+    setFailed(false)
+    try {
+      await skipCheckIn(store, date)
+    } catch {
+      setFailed(true)
+    }
+  }
   const open = (name: 'gjendja' | 'gati', replace = false) =>
     setParams(
       (current) => {
@@ -69,11 +80,16 @@ export function ReadinessCard({ view }: { view: TodayView }) {
             </h2>
             <p className="type-body text-muted-foreground">{t('checkin.card.text')}</p>
           </div>
+          {failed ? (
+            <p role="alert" className="text-sm text-danger">
+              {t('checkin.failed')}
+            </p>
+          ) : null}
           <div className="flex items-center gap-2">
             <Button variant="secondary" size="lg" className="flex-1" onClick={() => open('gjendja')}>
               {t('checkin.fill')}
             </Button>
-            <Button variant="ghost" size="lg" onClick={() => void skipCheckIn(store, rv.date)}>
+            <Button variant="ghost" size="lg" onClick={() => void skip(rv.date)}>
               {t('checkin.skip')}
             </Button>
           </div>

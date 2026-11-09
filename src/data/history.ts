@@ -15,7 +15,7 @@ import {
   targetSummary,
   type TargetSummary,
 } from '@/progress/history'
-import { lighterDates } from './lighter-day'
+import { lighterSessions } from './lighter-day'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { programModel, trainingHistory } from './training'
@@ -94,7 +94,7 @@ interface Context {
   names: Map<string, string>
   blocks: Map<string, LocalRow>
   days: Map<string, LocalRow[]>
-  /** Datat me seancë më të lehtë. */
+  /** Seancat e ndërmarra si më të lehta (V50). */
   lighter: Set<string>
 }
 
@@ -106,7 +106,7 @@ async function context(store: LocalStore): Promise<Context & { sessions: LocalRo
     store.all('exercises'),
     store.all('programs'),
     trainingHistory(store),
-    lighterDates(store),
+    lighterSessions(store),
   ])
   const days = new Map<string, LocalRow[]>()
   for (const day of [...dayRows].sort(byPosition)) days.set(String(day.program_id), [...(days.get(String(day.program_id)) ?? []), day])
@@ -142,7 +142,7 @@ function toSession(row: LocalRow, data: Context): HistorySession {
     dayNumber: dayIndex >= 0 ? dayIndex + 1 : null,
     dayName: dayIndex >= 0 ? String(days[dayIndex].name) : null,
     workSets: sets.length,
-    lighter: data.lighter.has(String(row.date).slice(0, 10)),
+    lighter: data.lighter.has(row.id),
     records: sessionRecords(data.history, row.id, data.records).map((record) => ({
       exerciseId: record.exerciseId,
       name: data.names.get(record.exerciseId) ?? '',
