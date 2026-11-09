@@ -56,3 +56,4 @@ Formati: **çfarë ndodhi** → **rregulli**.
 
 - Prova e kalimit nga v1 krijon të dhënat e v1 me kodin e v2 mbi bazën e v1; kur një lexim i zakonshëm (objektivat te `logTemplateMeal`) nisi të lexonte tabelën e re `weekly_checks`, prova ra pa faj të app-it → faza v1 përdor `v1StoreFor`, që tabelat që v1 nuk i kishte i lexon bosh.
 - Prova e Android-it ra në 01:22 UTC te "Ushqimi tregon vaktin e v1": dita e ushqimit (V46) ndërrohet 3 orë para zgjimit, ndaj para saj Ushqimi tregon ditën e djeshme → kontrollet që varen nga ora e ditës e llogaritin vetë ditën e ushqimit (`foodDayIsYesterday` te android-smoke.mjs).
+- Një `<input>` brenda fletës (`Sheet`, kolonë flex me `min-h-0` dhe scroll) u ngushtua në 21 px kur lista ishte e gjatë: fushat dhe kontrollet me lartësi fikse brenda fletës marrin `shrink-0`; QA në 390 px (prekjet nën 44 px) e kap.
