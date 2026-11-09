@@ -1,21 +1,30 @@
 import { useEffect } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router'
+import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { ListRow } from '@/components/ui/list-row'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icons'
+import { ProgressTrack } from '@/components/ui/progress-bar'
 import { StatTile } from '@/components/ui/stat-tile'
 import { surfaceClass } from '@/components/ui/surface'
 import { loadLevel, WEEKLY_TARGET } from '@/body/body-map'
+import { sessionAchievements, type SessionAchievements } from '@/data/achievements'
 import { store, useLocalQuery } from '@/data/app-data'
+import { type CloseWeek, sessionCloseWeek } from '@/data/session-close'
 import { sessionSummary, type SessionSummary } from '@/data/training'
-import { muscleName, programDayName, programWeekLabel } from '@/i18n/domain'
+import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
+import { shiftDate } from '@/lib/calendar'
+import { achievementName } from './achievement-format'
+import { AchievementBadge } from './achievement-parts'
 import { spokenDuration } from './session-format'
 import { recordPulse, useRecordBurst } from './session-motion'
 
 // Mbyllja e seancës (V2-E1-07; bordi "Mbyll"): stërvitja, rekordi më i madh me shkëndijat e prushit
 // (600 ms, një herë; me "lëvizje të reduktuar" vetëm zbehje), kohëzgjatja, setet e punës, volumi i
-// javës për grupin kryesor dhe rekordet e tjera. "Ndaj kartën" vjen me miqtë (Etapa 4).
+// javës për grupin kryesor dhe rekordet e tjera. "Ndaj kartën" vjen me miqtë (Etapa 4). Pas tyre (V43,
+// bordi "Mbyllja · java dhe rekordet"): java me stërvitjet kundrejt qëllimit, stërvitja e radhës, ushqimi
+// dhe uji, dhe "Arritje e re" ose arritja më e afërt; hapja e mbylljes jep arritjet (`sessionAchievements`).
 
 export function SessionSummaryPage() {
   const { sessionId = '' } = useParams()
@@ -31,6 +40,8 @@ const pad = (value: number) => String(value).padStart(2, '0')
 function SummaryView({ summary }: { summary: SessionSummary }) {
   const { t, fmt } = useI18n()
   const navigate = useNavigate()
+  const week = useLocalQuery(() => sessionCloseWeek(store, summary.id), [summary.id])
+  const achievements = useLocalQuery(() => sessionAchievements(store, summary.id), [summary.id])
   const [top, ...others] = summary.records
   const label = t('session.summary.workoutLabel', { label: programWeekLabel(t, summary), day: String(summary.dayNumber) })
   const seconds = summary.durationSeconds
@@ -88,6 +99,9 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
               </ul>
             </section>
           ) : null}
+
+          {week ? <CloseWeekSection week={week} summary={summary} /> : null}
+          {achievements ? <CloseAchievements achievements={achievements} /> : null}
         </main>
         <div className="shrink-0 px-4 pt-2.5 pb-5">
           <Button variant="primary" size="xl" onClick={() => navigate('/', { replace: true })}>
@@ -96,6 +110,105 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
         </div>
       </div>
     </div>
+  )
+}
+
+const noon = (date: string) => new Date(`${date}T12:00:00`)
+
+/**
+ * "Java 3 · 3 nga 4 stërvitje": një segment për çdo stërvitje të qëllimit, ai i kësaj seance me unazë;
+ * pastaj stërvitja e radhës dhe sa mungon për qëllimin, dhe ditët e ushqimit dhe ujit.
+ */
+function CloseWeekSection({ week, summary }: { week: CloseWeek; summary: SessionSummary }) {
+  const { t, fmt } = useI18n()
+  const heading = summary.blockWeeks > 1 ? t('plan.week', { week: summary.week }) : programBlockName(t, summary.blockName)
+  const segments = Math.max(week.target, week.done)
+  const sentences: string[] = []
+  if (week.next?.date) {
+    const { date } = week.next
+    const weekday = fmt.weekday(noon(date))
+    const day =
+      date === week.today ? t('achievements.close.today') : date === shiftDate(week.today, 1) ? t('achievements.close.tomorrow') : weekday.charAt(0).toLocaleUpperCase() + weekday.slice(1)
+    sentences.push(t('achievements.close.next', { day, number: week.next.dayNumber, name: programDayName(t, week.next.dayName) }))
+  }
+  if (week.target > 0) sentences.push(week.met ? t('achievements.close.goalMet') : t('achievements.close.toGo', { count: week.target - week.done }))
+  const spoken = t(week.sessionIndex === null ? 'achievements.close.segments' : 'achievements.close.segmentsWithThis', { done: week.done, target: week.target })
+  return (
+    <section aria-labelledby="close-week" className="flex flex-col gap-2.5 border-t border-border pt-3.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 id="close-week" className="type-label text-muted-foreground">
+          {heading}
+        </h2>
+        <p className="flex items-baseline gap-1">
+          <span className="font-display text-2xl leading-none font-extrabold tabular-nums">{fmt.number(week.done)}</span>
+          <span className="text-sm text-muted-foreground">{t('achievements.close.ofWorkouts', { count: week.target })}</span>
+        </p>
+      </div>
+      {segments > 0 ? (
+        <div role="img" aria-label={spoken} className="grid gap-1" style={{ gridTemplateColumns: `repeat(${segments}, minmax(0, 1fr))` }}>
+          {Array.from({ length: segments }, (_, index) => (
+            <span
+              key={index}
+              data-this={index === week.sessionIndex || undefined}
+              className={cn('h-2.5 rounded-pill', index < week.done ? 'bg-ember' : 'bg-track', index === week.sessionIndex && 'outline-1 outline-offset-2 outline-ember-text')}
+            />
+          ))}
+        </div>
+      ) : null}
+      {sentences.length ? <p className="type-body">{sentences.join(' ')}</p> : null}
+      {week.food || week.water ? (
+        <div className="flex flex-wrap gap-x-4 gap-y-1 type-caption text-muted-foreground">
+          {week.food ? (
+            <span>
+              {t('achievements.close.food')} <b className="font-semibold text-foreground tabular-nums">{fmt.number(week.food.counted)}</b> {t('achievements.close.ofDays', { goal: week.food.goal })}
+            </span>
+          ) : null}
+          {week.water ? (
+            <span>
+              {t('achievements.close.water')} <b className="font-semibold text-foreground tabular-nums">{fmt.number(week.water.counted)}</b> {t('achievements.close.ofDays', { goal: week.water.goal })}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+/** "Arritje e re" (një rresht për secilën), ose arritja më e afërt me sa mungon; hap Progresi › Arritjet. */
+function CloseAchievements({ achievements }: { achievements: SessionAchievements }) {
+  const i18n = useI18n()
+  const { t } = i18n
+  const rowClass = 'flex min-h-16 items-center gap-3 border-t border-border pt-3 text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  if (achievements.earned.length) {
+    return (
+      <ul aria-label={t('achievements.close.new')} className="flex flex-col">
+        {achievements.earned.map((achievement) => (
+          <li key={achievement.key}>
+            <Link to="/progresi/arritjet" className={rowClass}>
+              <AchievementBadge achievement={achievement} size="row" filled />
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="text-[13px] leading-[1.35] font-semibold text-ember-text">{t('achievements.close.new')}</span>
+                <span className="type-body-strong">{achievementName(i18n, achievement.key)}</span>
+              </span>
+              <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  const { nearest } = achievements
+  if (!nearest) return null
+  const { current, target } = nearest.progress
+  return (
+    <Link to="/progresi/arritjet" className={rowClass}>
+      <AchievementBadge achievement={nearest} size="row" />
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="text-[15px] leading-[1.3] font-semibold tabular-nums">{t('achievements.close.nearest', { name: achievementName(i18n, nearest.key), count: target - current })}</span>
+        <ProgressTrack ratio={current / target} ground="page" className="h-1" />
+      </span>
+      <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
+    </Link>
   )
 }
 

@@ -127,7 +127,8 @@ Tekstet e komponentëve vijnë nga katalogu (`ui.*`); numrat i formatojnë vetë
 | `ScreenHeader` | Kreu i pesë ekraneve kryesore: rreshti i vogël (`caption`), titulli `display-m`, fjalia poshtë; djathtas veprimet e ekranit dhe `ProfileButton` (logo 36 px në 44 px, "Profili dhe cilësimet", hap `/cilesimet`) |
 | `BackHeader`, `BackButton` (`page.tsx`) | Ekranet brenda një vendi: shigjeta 44 px dhe titulli `display-m`; mbrapa kthehet aty nga erdhi përdoruesi, ose te `fallback` kur ekrani është i pari në histori |
 | `Group`, `Row`, `LinkRow`, `SwitchRow`, `ChoiceRow` | Grupet e rreshtave (Cilësimet): etiketa `label`, karta `rounded-lg`, rreshta 52 px me vlerën dhe shigjetën; çelësi i ndezur në bojë |
-| `Sheet` | Fleta: `surface`, cepat 20 px, doreza, titulli `display-s` me `description` poshtë, "Mbyll" 44 px; `footer` mban veprimin kryesor jashtë pjesës që lëviz |
+| `Sheet` | Fleta: `surface`, cepat 20 px, doreza, titulli `display-s` me `description` poshtë, "Mbyll" 44 px; `footer` mban veprimin kryesor jashtë pjesës që lëviz; `hero` vë një shenjë të madhe mbi titull dhe e qendërzon kreun (bordi "Arritjet · detaji") |
+| `ProgressTabs` (`progress-tabs.tsx`) | Tab-et e Progresit: Trupi · Përmbledhja · Historiku · Arritjet, lidhje 44 px në një shirit `surface`; i zgjedhuri mbushje `foreground` me tekst `background` (V44) |
 | `EmptyState` | Gjendja bosh (bordi "Gjendje · Bosh"): fjalia `display-l`, lista me numra (një rresht me `to` hap vendin e vet), veprimi kryesor poshtë |
 
 ## Ikonat
