@@ -410,7 +410,7 @@ function AddFoodLink({ meal }: { meal: MealKey }) {
 }
 
 function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void }) {
-  const { t } = useI18n()
+  const { t, fmt } = useI18n()
   const meals = day.meals.filter((meal) => meal.supplements.length > 0)
   const total = meals.reduce((count, meal) => count + meal.supplements.length, 0)
   const taken = meals.reduce((count, meal) => count + meal.supplements.filter((item) => item.taken).length, 0)
@@ -446,7 +446,7 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
                   />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className={cn('text-base leading-6', item.taken && 'text-muted-foreground line-through')}>{supplementName(t, item.name)}</span>
-                    <span className="text-xs leading-4 text-muted-foreground">{supplementDose(t, item.name, item.doseText)}</span>
+                    <span className="text-xs leading-4 text-muted-foreground">{supplementDose(t, item.name, item.doseText, { amount: item.doseAmount, unit: item.doseUnit, fmt })}</span>
                   </span>
                   <span className="shrink-0 rounded-pill bg-surface-2 px-2 py-1 text-xs leading-4 font-medium text-muted-foreground">{t(`food.evidence.${item.evidence}`)}</span>
                 </label>
@@ -460,19 +460,37 @@ function Supplements({ day, onEdit }: { day: NutritionDay; onEdit: () => void })
 }
 
 function SupplementsSheet({ onClose }: { onClose: () => void }) {
-  const { t } = useI18n()
+  const { t, fmt } = useI18n()
   const list = useLocalQuery(() => supplementList(store), [])
   return (
-    <Sheet title={t('food.supplements')} onClose={onClose}>
+    <Sheet
+      title={t('food.supplements')}
+      onClose={onClose}
+      footer={
+        <Link to="/ushqimi/suplementi" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full gap-2')}>
+          <Icon name="plus" size={20} />
+          {t('food.supplement.add')}
+        </Link>
+      }
+    >
       <p className="text-sm leading-5 text-muted-foreground">{t('food.supplementsHint')}</p>
       <ul className="flex flex-col">
         {(list ?? []).map((item) => (
-          <li key={item.id} className="border-t border-border first:border-t-0">
-            <label className="flex min-h-14 cursor-pointer items-center gap-3 py-1.5">
+          <li key={item.id} className="flex items-center gap-1 border-t border-border first:border-t-0">
+            {item.custom ? (
+              <Link
+                to={`/ushqimi/suplementi/${item.id}`}
+                aria-label={t('food.supplement.editName', { name: item.name })}
+                className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'shrink-0 text-muted-foreground')}
+              >
+                <Icon name="laps" size={18} />
+              </Link>
+            ) : null}
+            <label className="flex min-h-14 min-w-0 flex-1 cursor-pointer items-center gap-3 py-1.5">
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-base leading-6">{supplementName(t, item.name)}</span>
                 <span className="text-xs leading-4 text-muted-foreground">
-                  {supplementDose(t, item.name, item.doseText)} · {supplementEvidence(t, item.name, item.evidence)}
+                  {supplementDose(t, item.name, item.doseText, { amount: item.doseAmount, unit: item.doseUnit, fmt })} · {supplementEvidence(t, item.name, item.evidence)}
                 </span>
               </span>
               <input

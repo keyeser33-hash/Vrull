@@ -10,6 +10,7 @@ import { createLocalStore } from './store'
 import { supabase } from './supabase'
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
+import { labelResultFrom, type LabelRemote } from './supplement-label'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
 import { currentI18n, language } from '@/i18n'
@@ -199,6 +200,27 @@ export const programImportRemote: ImportRemote = {
       // Pa lidhje (FunctionsFetchError) ose relay-i i Supabase-it pa përgjigje.
       result = readResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
     }
+    if (result.ok || result.costEur !== undefined) void scheduler.syncNow()
+    return result
+  },
+}
+
+/**
+ * Leximi i etiketës së një suplementi me AI, përmes funksionit `supplement-label` (V39; vetëm me sesion).
+ * Fotoja nuk ruhet; kostoja ruhet në server dhe vjen me sinkronizimin.
+ */
+export const supplementLabelRemote: LabelRemote = {
+  async read(image) {
+    if (!navigator.onLine) return labelResultFrom(null, null)
+    const form = new FormData()
+    form.append('file', image, 'etiketa.jpg')
+    const { data, error } = await supabase.functions.invoke('supplement-label', { body: form })
+    let result
+    if (!error) result = labelResultFrom(200, data)
+    else if (error instanceof FunctionsHttpError) {
+      const response = error.context as Response
+      result = labelResultFrom(response.status, await response.json().catch(() => null))
+    } else result = labelResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
     if (result.ok || result.costEur !== undefined) void scheduler.syncNow()
     return result
   },

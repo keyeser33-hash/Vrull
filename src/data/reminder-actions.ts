@@ -1,6 +1,7 @@
 import type { MealKey } from '@/nutrition/meals'
 import type { ReminderActionId } from '@/reminders/plan'
 import { logTemplateMeal, setDayType } from './nutrition'
+import { setSupplementTaken } from './supplements'
 import type { LocalStore } from './store'
 import { addWater } from './water'
 
@@ -34,12 +35,11 @@ export interface AppliedLog {
 const EMPTY: AppliedRecord = { diary: [], supplements: [], water: [] }
 
 async function takeSupplements(store: LocalStore, date: string, meal: MealKey, ids: readonly string[]) {
-  const logs = await store.where('supplement_logs', 'date', date)
-  const created: string[] = []
+  const created: { logs: string[]; diary: string[] } = { logs: [], diary: [] }
   for (const supplementId of ids) {
-    if (logs.some((row) => row.supplement_id === supplementId && row.timing === meal)) continue
-    const row = await store.put('supplement_logs', { date, supplement_id: supplementId, timing: meal, taken_at: store.now().toISOString() })
-    created.push(row.id)
+    const { log, diary } = await setSupplementTaken(store, { date, supplementId, meal }, true)
+    if (log) created.logs.push(log)
+    if (diary) created.diary.push(diary)
   }
   return created
 }
@@ -68,9 +68,13 @@ export async function applyReminderActions(store: LocalStore, actions: readonly 
         // "Si në plan" nuk regjistron dy herë një vakt që u regjistrua ndërkohë te app-i.
         const existing = (await store.where('diary_entries', 'date', data.date)).filter((row) => row.meal === data.meal)
         if (existing.length === 0) record.diary = await logTemplateMeal(store, data.date, data.meal)
-        record.supplements = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
+        const taken = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
+        record.supplements = taken.logs
+        record.diary.push(...taken.diary)
       } else if (entry.action === 'took' && data.meal) {
-        record.supplements = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
+        const taken = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
+        record.supplements = taken.logs
+        record.diary = taken.diary
       } else if (entry.action === 'drank') {
         record.water = [await addWater(store, data.date, store.now(), data.ml)]
       } else if (entry.action === 'yes' || entry.action === 'no') {

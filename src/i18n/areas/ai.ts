@@ -113,6 +113,8 @@ export const sq = {
   'ai.month.10': 'Tetori',
   'ai.month.11': 'Nëntori',
   'ai.month.12': 'Dhjetori',
+  'ai.settings.label': 'Etiketat e suplementeve',
+  'ai.settings.labelText': 'Plotëson suplementin nga fotoja e etiketës',
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
@@ -217,4 +219,6 @@ export const en: TranslationOf<typeof sq> = {
   'ai.month.10': 'October',
   'ai.month.11': 'November',
   'ai.month.12': 'December',
+  'ai.settings.label': 'Supplement labels',
+  'ai.settings.labelText': 'Fills in a supplement from a photo of its label',
 }

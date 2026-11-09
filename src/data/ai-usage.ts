@@ -7,7 +7,7 @@ import type { LocalStore } from './store'
 
 export { AI_MONTHLY_LIMIT_EUR }
 
-export type AiFeature = 'program_pdf' | 'food_photo' | 'food_text' | 'explain'
+export type AiFeature = 'program_pdf' | 'food_photo' | 'food_text' | 'explain' | 'supplement_label'
 
 export interface AiMonth {
   /** Dita e parë e muajit, si te serveri: "2026-11-01". */

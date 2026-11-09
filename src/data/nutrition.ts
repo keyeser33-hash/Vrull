@@ -3,7 +3,7 @@ import { localDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
 import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
 import { mealSchedule } from '@/nutrition/schedule'
-import type { Evidence } from '@/nutrition/supplements'
+import type { DoseUnit, Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
@@ -46,6 +46,8 @@ export interface MealSupplement {
   /** Emri si ruhet; ekrani e përkthen me `supplementName` kur është ai i planit. */
   name: string
   doseText: string
+  doseAmount: number
+  doseUnit: DoseUnit
   evidence: Evidence
   taken: boolean
 }
@@ -190,6 +192,8 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
           id: supplement.id,
           name: supplement.name,
           doseText: supplement.doseText,
+          doseAmount: supplement.doseAmount,
+          doseUnit: supplement.doseUnit,
           evidence: supplement.evidence,
           taken: supplementLogs.some((row) => row.supplement_id === supplement.id && row.timing === meal),
         })),

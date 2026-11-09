@@ -2,7 +2,7 @@ import type { Format } from './format'
 import type { T } from './index'
 import { JIM_FOODS, type JimFoodKey, type Portion } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
-import { type Evidence, supplementByName } from '@/nutrition/supplements'
+import { type DoseUnit, type Evidence, supplementByName } from '@/nutrition/supplements'
 import { MUSCLE_GROUPS } from '@/program/muscles'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import type { Equipment, ProgramWeek } from '@/program/types'
@@ -91,10 +91,15 @@ export function supplementName(t: T, name: string): string {
   return known ? t(`food.supplementName.${known.key}`) : name
 }
 
-/** Doza e planit në gjuhën e app-it ("1.5–5 g"); doza që përdoruesi ndryshoi mbetet siç është. */
-export function supplementDose(t: T, name: string, doseText: string): string {
+/**
+ * Doza në gjuhën e app-it: ajo e planit ("1.5–5 g"), ajo që përdoruesi shkroi si tekst, ose (V39, suplementet
+ * e tij) sasia me njësinë ("1 lugë").
+ */
+export function supplementDose(t: T, name: string, doseText: string, dose?: { amount: number; unit: DoseUnit; fmt: Format }): string {
   const known = supplementByName(name)
-  return known && known.doseText === doseText ? t(`food.supplementDose.${known.key}`) : doseText
+  if (known && known.doseText === doseText) return t(`food.supplementDose.${known.key}`)
+  if (doseText || !dose) return doseText
+  return t('food.supplement.doseText', { amount: dose.fmt.number(dose.amount, { maxDigits: 2 }), unit: t(`food.supplement.unit.${dose.unit}`) })
 }
 
 /** Evidenca me fjalë si te tabela e §10; për një suplement tjetër, etiketa e shkurtër. */

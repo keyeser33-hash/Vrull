@@ -50,6 +50,8 @@ export const appRoutes: RouteObject[] = [
       { path: 'ushqimi/objektivat', ...screen(() => import('@/routes/nutrition-targets'), (m) => m.TargetsPage), ...tab(null) },
       { path: 'ushqimi/oraret', ...screen(() => import('@/routes/meal-times'), (m) => m.MealTimesPage), ...tab(null) },
       { path: 'ushqimi/plani', ...screen(() => import('@/routes/my-plan'), (m) => m.MyPlanPage), ...tab(null) },
+      { path: 'ushqimi/suplementi', ...screen(() => import('@/routes/supplement-editor'), (m) => m.SupplementEditorPage), ...tab(null) },
+      { path: 'ushqimi/suplementi/:id', ...screen(() => import('@/routes/supplement-editor'), (m) => m.SupplementEditorPage), ...tab(null) },
       { path: 'progresi', ...screen(progress, (m) => m.ProgressPage), ...tab('progress') },
       { path: 'progresi/matja', ...screen(() => import('@/routes/body-measure'), (m) => m.MeasurePage), ...tab(null) },
       { path: 'progresi/fotot', ...screen(() => import('@/routes/photos'), (m) => m.PhotosPage), ...tab('progress') },

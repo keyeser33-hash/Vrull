@@ -75,6 +75,14 @@ export function AiSettingsPage() {
                 </span>
                 <span className="shrink-0 font-display text-xl font-bold tabular-nums">{euro(fmt, month.byFeature.program_pdf ?? 0)}</span>
               </li>
+              <li className="flex min-h-[64px] items-center gap-3 border-t border-border px-4 py-2.5">
+                <Icon name="kamera-foto" size={22} className="text-muted-foreground" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="type-body-strong">{t('ai.settings.label')}</span>
+                  <span className="type-caption text-muted-foreground">{t('ai.settings.labelText')}</span>
+                </span>
+                <span className="shrink-0 font-display text-xl font-bold tabular-nums">{euro(fmt, month.byFeature.supplement_label ?? 0)}</span>
+              </li>
             </ul>
           </section>
 

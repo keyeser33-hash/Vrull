@@ -6,8 +6,11 @@ import type { ScheduledMeal } from './schedule'
 // `supplements` (`name`, `notes`); ekrani i përkthen sipas `key` (`supplementName`, `supplementDose`),
 // dhe evidenca me fjalë vjen nga katalogu ('food.supplementEvidence.*', 'food.evidence.*').
 
-export type Evidence = 'strong' | 'moderate' | 'limited' | 'weak' | 'food' | 'deficiency_only'
-export type DoseUnit = 'g' | 'mg' | 'scoop' | 'dose' | 'piece' | 'capsule'
+/** "unknown": një suplement jashtë listës së §10 (V39: "E panjohur"); te baza ruhet null. */
+export type Evidence = 'strong' | 'moderate' | 'limited' | 'weak' | 'food' | 'deficiency_only' | 'unknown'
+export type DoseUnit = 'g' | 'mg' | 'scoop' | 'dose' | 'piece' | 'capsule' | 'tablet'
+/** Lloji i një suplementi të shtuar nga përdoruesi (V39). */
+export type SupplementKind = 'protein' | 'creatine' | 'capsule' | 'other'
 export type SupplementKey =
   | 'protein'
   | 'creatine'

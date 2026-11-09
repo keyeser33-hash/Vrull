@@ -270,6 +270,8 @@ Sipas §13 (V38): gjendja "E humbur" te java (Sot, Programi), karta dhe njoftimi
 
 Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushqimi për pluhurin e proteinës, ndryshimi dhe heqja; funksioni `supplement-label` (Supabase, JWT, kufiri dhe rezervimi i AI-së si te `program-import`, logjika në modul pa Deno me prova, `tsc` i funksioneve) që lexon foton e etiketës. Fotoja nuk ruhet. `ai_usage.feature` ka nevojë për vlerën e re (`supplement_label`) me migrim. **Pranimi:** etiketa e vërtetë e një whey-i lexohet saktë (provë me përdorues të përkohshëm, si te importi); pa internet fleta punon me dorë; "E mora" te proteina shton makrot te vakti një herë.
 
+**Gjendja (09.11.2026):** kodi dhe provat gati: `data/supplements.ts` (shto, ndrysho, hiq; proteina me makro për lugë dhe "Numëroje te ushqimi": "E mora" shton te vakti një regjistrim me ushqimin e suplementit, një herë, edhe nga rikujtuesi), evidenca "E panjohur", faqja `routes/supplement-editor.tsx` (me dorë, "Fotografo etiketën", "Nga etiketa" me fushat e palexuara, pa internet), lidhjet te fleta e suplementeve, rreshti "Etiketat e suplementeve" te Cilësimet › AI, dhe funksioni `supplement-label` (logjika dhe rrjedha pa Deno me prova, një kufi me importin; prova kontrollon që modeli, çmimet, kursi dhe kufiri janë të njëjta). Migrimi `20261109130000_supplements_custom.sql` pret përdoruesin; pas tij: vendosja e funksionit dhe prova me etiketë të vërtetë me përdorues të përkohshëm.
+
 ## V2-E2-11 · Lëshimi 0.21.0
 
 Rishikimi në tri boshtet, provat e plota, prova në emulator (pjesët e reja dhe `instalimi`), `docs/whats-new/0.21.0.txt`, pyetet përdoruesi, publikimi. **Pranimi:** të gjitha kontrollet jeshile; përdoruesi e merr 0.21.0 nga app-i.
