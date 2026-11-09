@@ -72,6 +72,9 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Ndihmësit u kopjuan (`atNoon`, `capitalize`, `isoWeekday`; kthimi mbrapa në 10 vende) → brief-i përmend ndihmësit dhe komponentët që ekzistojnë.
 - Nën-agjentët e 0.23 harxhuan ~4,15 milionë tokena, 45 % te rishikimi; të gjithë me Opus → modeli zgjidhet sipas punës (Sonnet për tiketat e specifikuara dhe akset Standards/Spec, Haiku për punët mekanike); rishikimi me tri akse vetëm për valët e mëdha (`docs/research/optimizimi-i-ndertimeve.md`).
 - Bordet e 0.24 i shkruan tre agjentë paralelë, dhe pllaka "Gati" doli në tri vende dhe në tri forma, sepse brief-i thoshte çfarë tregon, jo ku dhe si → brief-i i bordeve paralele përshkruan vendin dhe formën e çdo elementi që shfaqet në më shumë se një bord, njësoj si skeleti i valës te kodi.
+- Të tre agjentët e UI-së të valës së gatishmërisë nisën nga një worktree pa skeletin e valës (skeleti ishte vetëm te `main` lokal, pa push), dhe secili bëri vetë `git merge --ff-only main` → skeleti merr push para se të nisen agjentët, dhe brief-i i kërkon agjentit të kontrollojë me `git log` që commit-i i skeletit është aty.
+- Bash-i i worktree-ve të agjentëve refuzon komandat e përbëra me heredoc (`cd … && cat <<EOF`) → brief-i u thotë të shkruajnë me Write/Edit dhe komanda të thjeshta.
+- Prova e Sot "java e plotë" binte 1 herë në 5 para valës dhe 3 në 5 pas saj: lexonte animacionin menjëherë pas `waitFor` të elementit, ndërsa animacioni niset në një efekt pas vizatimit, dhe leximet e reja asinkrone (pamja e ditës) e shtynë → pritet vetë gjendja që kontrollohet (`waitFor` mbi animacionin), jo diçka që e paraprin.
 - Push-e njëra pas tjetrës te `main` anuluan 21 nisje të CI-së, dhe minutat deri te anulimi paguhen → një push në fund të valës, pasi provat lokale kanë kaluar; dokumentet nuk e nisin CI-në (`paths-ignore`).
 
 ## Logjika

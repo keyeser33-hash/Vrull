@@ -23,7 +23,7 @@ Një fork përdoret për një detyrë anësore që i duhet biseda e tanishme. Nj
    - rrugët te `router.tsx`;
    - migrimet bashkë me `TABLES`/`INDEXES` dhe versionin e `db.ts`;
    - komponentët që i duhen më shumë se një tiketi.
-   Hapi mbaron kur `npm test` kalon dhe çdo agjent ka ku të shtojë pa krijuar.
+   Skeleti merr push para nisjes, sepse worktree-t e agjentëve mund të nisin nga dega në server. Hapi mbaron kur `npm test` kalon, skeleti është te `origin/main`, dhe çdo agjent ka ku të shtojë pa krijuar.
 3. **Brief-i.** Një për çdo agjent, me formën e mëposhtme. Hapi mbaron kur brief-i emërton çdo § të SPEC-ut që i duhet tiketit dhe çdo ndihmës që ekziston për të.
 4. **Nisja.** Agjentët `vrull-builder` nisen paralelisht, deri në 5, në sfond. Ndërkohë orkestruesi përgatit valën tjetër ose QA-në.
 5. **Bashkimi.** Degët bashkohen një nga një (aftësia `resolving-merge-conflicts`). Pas çdo bashkimi nisen `tsc` dhe provat e skedarëve në konflikt. Në fund nisen `npm run lint`, `npm test` dhe `npm run build`. Hapi mbaron kur të tria janë të gjelbra te `main` lokal.
@@ -60,6 +60,8 @@ Vendimet e ngrira: <Vxx: një rresht secili>
 Ekzistojnë tashmë: <ndihmësit dhe komponentët, me shtegun>
 Skedarët e orkestruesit: <hyrjet e regjistruara te i18n, router, tables>
 Provat: <skedarët>; prova e Android-it prek: <pjesët ose "asgjë">
+Para fillimit: `git log --oneline -3` duhet të tregojë <commit-in e skeletit>; përndryshe `git merge --ff-only origin/main`
+Shkrimi: Write/Edit dhe komanda të thjeshta (worktree-ja refuzon heredoc-et e përbëra)
 Commit-et mbarojnë me: <rreshtat e atribuimit të sesionit>
 Raporti: deri në 300 fjalë, me "Mësimet": çfarë kushtoi kohë dhe pse, deri në 3 rreshta
 ```
