@@ -353,6 +353,8 @@ Sipas V44: kalimi rresht → detaj, numrat që rrotullohen, dridhjet e shkurtra,
 
 Si E2-11. **Pranimi:** përdoruesi e merr 0.23.0 nga app-i.
 
+**Gjendja (09.11.2026, mbrëmje):** E2-20 … E2-23 janë te main (pesë degë me nënagjentë, të bashkuara nga orkestruesi): qëllimet e javës, dita rezervë, vargu, "Mirë se u ktheve" me peshat 90%, banderola e rekordit (e1RM ose pesha më e madhe për përsëritjet), çipat e seteve, Ushqimi i ri, Sot i ri, faqja e qëllimeve, e diela (njoftimi 20:00, karta te Sot, përmbledhja), karta PNG me "Ndaj" dhe "Ruaj në galeri" (GalleryPlugin), 10 arritjet (tabela `achievements`, migrimi i zbatuar nga përdoruesi dhe i kontrolluar me SELECT), Progresi me katër tab-e, lëvizja (100/150/200–250/320/600 ms, RollingNumber, lëvizja e reduktuar). Rishikimi në tri boshte (v0.22.0 → HEAD; vetëm lexues Claude, pa lexues të jashtëm): pa P0/P1; 5 P2 dhe 7 P3 të ndrequra me prova që bien pa ndreqjen (dridhja e lehtë te "Ruaj setin", zgjerimi 250 ms, ngjyrat e makrove te DESIGN.md, 90% sipas datës së seancës së hapur, provat e njoftimit dhe të galerisë, dita rezervë pa seancë, arritjet pa ri-datim nga telefoni i dytë, mesatarja e ushqimit me ditët e regjistruara, zëri i kohëzgjatjes, festimi i javës së plotë, fjalori, koka e Progresit). Prova: 1 483 kalojnë, lint dhe build të pastër; prova e Android-it: të gjitha pjesët kaluan (instalimi u përsërit vetëm pas ndreqjes së kontrollit të kartës së re dhe timeout-it të kapur të CapacitorHttp; një emulator u zhduk një herë). Pastrimet P3 që mbetën: kopjet e `atNoon`/`capitalize`/`isoWeekday`, kthimi mbrapa me fallback (10 kopje), çelësi i Sot te `SwitchRow`. Mbetet: pyetja te përdoruesi dhe lëshimi.
+
 ---
 
 ## TH-01 · Skeleti i projektit dhe Omal UI v2
