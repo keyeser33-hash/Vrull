@@ -8,6 +8,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `docs/TICKETS.md`: radha e detyrave dhe kriteret e pranimit.
 - `DESIGN.md`: sistemi i dizajnit Vrull (tokenat, temat, komponentët). Lexoje para se të shkruash UI. Komponentët në tri temat: faqja e brendshme `/dev/ds`.
 - `GLOSSARY.md`: fjalori i domenit (bllok, stërvitje, seancë, slot, receta, gatim…). Emrat e rinj në UI, specifikim dhe kod ndjekin atë.
+- `docs/agents/ORKESTRIMI.md`: si ndahet një etapë në valë me agjentët e `.claude/agents/` (modeli për çdo rol, brief-i, rishikimi, prova e Android-it, push-i). Lexoje para se të nisësh agjentë.
 - `docs/MESIMET.md`: gabimet që kanë kushtuar kohë dhe rregulli që i shmang. Lexoje para një detyre; kur një gabim përsëritet ose një provë dështon jo për fajin e app-it, shto një rresht. Pas një dështimi përsërit vetëm pjesën që dështoi (skedarin e provës, pjesën e provës së Android-it), jo gjithçka.
 
 ## Komandat
