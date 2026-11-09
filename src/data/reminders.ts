@@ -1,8 +1,9 @@
-import { localDate } from '@/lib/calendar'
+import { localDate, shiftDate } from '@/lib/calendar'
 import { waterTargetMl } from '@/nutrition/water'
 import { ignoredStreaks, MUTE_AFTER_DAYS, type ReminderLogEntry } from '@/reminders/ignored'
 import type { MutableKind, ReminderInput, ReminderToggles, SmartInput } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
+import { dailyStates } from './daily-state'
 import { readMissedInput } from './missed-day'
 import { type NutritionDay, planDay, targetsWeight } from './nutrition'
 import { readProfile } from './profile'
@@ -103,6 +104,9 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     readSchedule(store),
     readMissedInput(store),
   ])
+  // Ditët me check-in (V50): rikujtuesi i stërvitjes shton "Si ndihesh?" vetëm në ditët pa të.
+  const today = localDate(now)
+  const checkedIn = [...(await dailyStates(store, Array.from({ length: 9 }, (_, index) => shiftDate(today, index - 1)))).keys()]
   const dayTypes = Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date), row.day_type as DayType]))
   return {
     from: now,
@@ -130,6 +134,7 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     mealPlan: schedule.plan,
     startedOn: missed.startedOn,
     sessionDates: missed.sessionDates,
+    checkedIn,
     smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes),
   }
 }
