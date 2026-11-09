@@ -22,6 +22,9 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova kapi defekte të vërteta native (numrat nga JS-i si Long, jo Integer) → provat native shkruhen me numra që vijnë nga JS-i, jo vetëm me Integer.
 - Prova e 0.23 ra duke kërkuar foton te Progresi: ekrani u ridizajnua (vetëm rreshti i fotove) dhe `scripts/android-smoke.mjs` kërkonte ende pamjen e vjetër; rregulli më sipër u përsërit → një degë që ridizajnon një ekran kërkon te `android-smoke.mjs` tekstet dhe hapat e atij ekrani dhe i ndryshon në të njëjtën degë, para provës së Android-it.
 - Porta e Release-it të 0.23.0 ra te "asnjë gabim JavaScript" me `TypeError: Cannot read properties of undefined (reading 'triggerEvent') at <anonymous>:1:18`, pa vendin: `Runtime.exceptionThrown` nuk shënonte kontrollin e fundit. Logcat-i (artifact-i `android-smoke`) e tregoi: `navigimi` mbaron me app-in në sfond pas butonit mbrapa, `kutia` bënte `location.assign('/')` menjëherë, dhe `bridge.triggerJSEvent("backbutton")` i vonuar i Capacitor-it ra te faqja që po ngarkohej, ku `window.Capacitor` mungon ende → çdo gabim i provës mban `[pas: …]`; një pjesë që vjen pas një app-i të çuar në sfond nis me `force-stop` dhe `open()`, jo me navigim brenda tij; për një gabim pa vend, logcat-i i artifact-it lexohet para kodit.
+- Prova e Android-it ra në 01:22 UTC te "Ushqimi tregon vaktin e v1": dita e ushqimit (V46) ndërrohet 3 orë para zgjimit, ndaj para saj Ushqimi tregon ditën e djeshme → kontrollet që varen nga ora e ditës e llogaritin vetë ditën e ushqimit (`foodDayIsYesterday` te android-smoke.mjs).
+- Prova e Android-it e 0.23 ra te "asnjë gabim JavaScript" me `{message: timeout, code: SocketTimeoutException}`: CapacitorHttp në build-in debug e shkruan çdo refuzim si console.error edhe kur app-i e kap (kërkimi i tempos mbaron me "offline") → gabimet native që app-i i kap pranohen te `ignoredError` vetëm me formën e tyre të saktë dhe me arsyen; një emulator që zhduket në mes ("no devices/emulators found") është infrastrukturë, jo app-i, dhe përsëritet vetëm ajo pjesë.
+- Prova e Android-it ra një herë te "sinkronizimi i setit nga njoftimi" (30 s pas nisjes së procesit të vrarë) dhe kaloi kur u përsërit vetëm ajo pjesë (`skip=` pa njoftimi) → afati 60 s; një dështim që kalon në përsëritje shënohet këtu para se të ndryshohet kodi.
 
 ## Provat (Vitest)
 
@@ -29,20 +32,27 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Prova që varet nga rreshti i lënë nga prova e mëparshme (`form-video.test`) → çdo provë pastron tabelat që lexon (`db[table].clear()`), fixture-t kanë të gjitha fushat që lexon ekrani.
 - Prova që dështon vetëm kur punojnë disa agjentë njëkohësisht → nis vetëm atë skedar përsëri para se ta quash gabim; afatet jetojnë te `src/test/setup.ts` dhe `vite.config.ts`, jo te secila provë.
 - `vi.useFakeTimers()` pa `toFake` ndali IndexedDB-në në memorie (fake-indexeddb ecën me `setImmediate`) dhe prova e `app-data` u var pa asnjë gabim → me bazën lokale imitohen vetëm `setTimeout`/`setInterval` (`toFake`).
-
 - Prova e seancës (0.23) nuk gjeti butonin "Ndrysho setin 1: 62,5 kg × 12": `fmt.unit` vendos hapësirën që nuk thyhet, dhe `getByRole({ name })` me tekst nuk e normalizon si `getByText` → emrat me njësi shkruhen me ` ` te prova (`62,5 kg`).
 - QA në shfletues nga një worktree (node_modules si lidhje te repo-ja kryesore): Vite i refuzon fontet me 403 (`server.fs.allow`), faqet dalin me fontin rezervë dhe karta e canvas-it u vizatua me Arial pa asnjë gabim të dukshëm → para QA-së vizuale kontrollo që fontet ngarkohen (`document.fonts.load` në shfletues); në worktree nis Vite me një konfigurim të përkohshëm që lejon `node_modules` e repo-s kryesore (nuk shkon në commit).
-
 - `program-import.test` dështonte rastësisht: kontrollonte thirrjen e AI-së menjëherë pas gjendjes "AI po e lexon", që del para thirrjes → një thirrje async pritet me `vi.waitFor`, nuk supozohet nga gjendja e ekranit.
-
 - Një ekran me skelet (kreu del para të dhënave) dështonte rastësisht: `findByRole` gjente kreun e skeletit, që zëvendësohej menjëherë → prova pret fillimisht një element që vjen nga baza, pastaj kontrollon kreun.
-
 - "Mirë se u ktheve" (7 ditë pa seancë të mbyllur, V43) ndryshoi mostrat e Programit: seanca e vetme e mbyllur 1 nëntor, ora e provës 8 nëntor, ditët e tjera të kapërcyera; vetëm prova e plotë e kapi → një rregull i ri që varet nga koha kërkon mostrat me të njëjtin hendek (`programme-test-setup.ts`, `atPhaseOneWeekTwo`) para provës së plotë, dhe mostra e thotë shprehimisht kur rregulli nuk i përket (çelësi i fikur).
+- Prova e kalimit nga v1 krijon të dhënat e v1 me kodin e v2 mbi bazën e v1; kur një lexim i zakonshëm (objektivat te `logTemplateMeal`) nisi të lexonte tabelën e re `weekly_checks`, prova ra pa faj të app-it → faza v1 përdor `v1StoreFor`, që tabelat që v1 nuk i kishte i lexon bosh.
+- Prova e seteve kontrollonte radhën e `store.where`, që nuk është e garantuar (id të rastit), dhe ra në CI tri herë rresht → rezultati i `where`/`all` renditet në provë ose krahasohet pa radhë.
+- Prova e Ushqimit në anglisht ra në CI me "Found multiple elements": lista "Të fundit" e fletës së vaktit ngarkohet pas renderimit dhe ka të njëjtin emër si rreshti i regjistruar; lokalisht nuk ishte ngarkuar ende → kur një ekran ka pjesë që ngarkohen më vonë, prova i pret (`findByRole`) para se të kërkojë tekst, dhe rreshti kërkohet me një emër të vetin (butoni "Remove …").
 
 ## Bashkimet (merge) e degëve paralele
 
 - Çelësa të dyfishtë te `icon-paths-vrull.ts` (TS1117) dhe një rresht i humbur te `session.tsx` (`lastSlot`) pas merge-ve → pas çdo merge: `tsc`, pastaj provat e skedarëve në konflikt, pastaj të gjitha.
 - Konflikte te `docs/SPEC.md` → zgjidhen duke mbajtur shtesat e të dyja anëve (word-diff), jo një anë.
+
+## Mënyra e punës me agjentë
+
+- Pesë agjentë paralelë shtuan zona te `i18n` (`AREAS`, `sq.ts`, `en.ts`) dhe rrugë te `router.tsx`, dhe dy krijuan secili `ProgressTabs` → orkestratori regjistron zonat, rrugët dhe komponentët e përbashkët para se të nisin agjentët; agjentët i plotësojnë, nuk i krijojnë.
+- Agjenti i Seancës (0.23) hoqi rekordin e peshës për përsëritje, një vendim i miratuar → brief-i rendit vendimet që nuk ndryshojnë, dhe aksi Spec i rishikimit i krahason me to.
+- Ndihmësit u kopjuan (`atNoon`, `capitalize`, `isoWeekday`; kthimi mbrapa në 10 vende) → brief-i përmend ndihmësit dhe komponentët që ekzistojnë.
+- Nën-agjentët e 0.23 harxhuan ~4,15 milionë tokena, 45 % te rishikimi; të gjithë me Opus → modeli zgjidhet sipas punës (Sonnet për tiketat e specifikuara dhe akset Standards/Spec, Haiku për punët mekanike); rishikimi me tri akse vetëm për valët e mëdha (`docs/research/optimizimi-i-ndertimeve.md`).
+- Push-e njëra pas tjetrës te `main` anuluan 21 nisje të CI-së, dhe minutat deri te anulimi paguhen → një push në fund të valës, pasi provat lokale kanë kaluar; dokumentet nuk e nisin CI-në (`paths-ignore`).
 
 ## Logjika
 
@@ -56,6 +66,8 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Migrimi i arritjeve (0.23) hyri te main para regjistrimit të tabelës te `TABLES`, dhe `tables.test.ts` (që krahason migrimet me tabelat e app-it) e bëri CI-në të kuqe → migrimi, `TABLES`/`INDEXES` dhe versioni i `db.ts` hyjnë në të njëjtin commit; kur migrimi duhet t'i jepet përdoruesit më herët, jepet SQL-ja në mesazh dhe skedari pret kodin.
 - Historia e migrimeve merrte orën e aplikimit si version → pas aplikimit, versioni dhe emri vendosen sipas skedarit lokal.
 - Prova e RLS-it me MCP: `format('%s', boolean)` jep `t`/`f`, jo `true`/`false` → numëro sipas `t`/`f`; prova niset si një bllok `do` që mbaron me `raise exception`, që asgjë të mos mbetet në bazë.
+- Fshirja e përdoruesit të provës me `execute_sql` kërkon konfirmimin e përdoruesit; kur ai nuk ishte aty, përdoruesi mbeti → përdoruesi i përkohshëm krijohet vetëm kur përdoruesi është i pranishëm, dhe SQL-ja e fshirjes i jepet gati që ta zbatojë vetë nëse konfirmimi nuk vjen.
+- Rishikimi i 0.22 gjeti katër rreshta që baza lokale i pranonte dhe serveri do t'i refuzonte (ushqimi i dytë me të njëjtin `source_id`, uji 2 500 ml, ml me presje, RIR 2,5): Dexie nuk ka `check` dhe indekse unike të serverit, ndaj provat kalonin → çdo shkrim i ri te një tabelë sinkronizohet lexohet kundrejt migrimit (checks, `smallint`, indekset unike) dhe prova e pohon atë rregull (p.sh. "rreshtat që serveri pranon" te `ai-box.test.ts`).
 
 ## Rishikimi i kodit
 
@@ -65,11 +77,7 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - Dy vendime njëkohësisht krijonin dy rreshta me id të rastit, që indeksi unik i serverit i refuzonte përgjithmonë → rreshtat që kanë një çelës natyror unik marrin id nga ai çelës (`weekWeightId`). Një id nga çelësi natyror bie mbi rreshtin e fshirë (fshirja është e butë) → `store.put(..., { revive: true })` e kthen; prova e plotë e kapi, provat e skedarit jo.
 - Provat që imitojnë kthimin në app me një `visibilitychange` "visible" pa "hidden" para tij nuk janë realiste → kthimi provohet me të dy hapat (`backFromSettings` te `music.test.tsx`).
 - Pranimi i importit me AI u provua vetëm me një fixture të plotë; me PDF-në e vërtetë dhe `effort: low` AI-ja ktheu 4 nga 9 slotet e ditës së parë (13 nga 66 ushtrime) → çdo veçori me AI provohet me të dhënat e vërteta para lëshimit (`scripts`/prova me përdorues të përkohshëm), jo vetëm me fixture. Me `medium` dhe udhëzimin për plotësinë: 9/10/7/8 slote, 67 ushtrime, 86 s, €0,25.
-
-- Prova e kalimit nga v1 krijon të dhënat e v1 me kodin e v2 mbi bazën e v1; kur një lexim i zakonshëm (objektivat te `logTemplateMeal`) nisi të lexonte tabelën e re `weekly_checks`, prova ra pa faj të app-it → faza v1 përdor `v1StoreFor`, që tabelat që v1 nuk i kishte i lexon bosh.
-- Prova e Android-it ra në 01:22 UTC te "Ushqimi tregon vaktin e v1": dita e ushqimit (V46) ndërrohet 3 orë para zgjimit, ndaj para saj Ushqimi tregon ditën e djeshme → kontrollet që varen nga ora e ditës e llogaritin vetë ditën e ushqimit (`foodDayIsYesterday` te android-smoke.mjs).
 - Një `<input>` brenda fletës (`Sheet`, kolonë flex me `min-h-0` dhe scroll) u ngushtua në 21 px kur lista ishte e gjatë: fushat dhe kontrollet me lartësi fikse brenda fletës marrin `shrink-0`; QA në 390 px (prekjet nën 44 px) e kap.
-- Fshirja e përdoruesit të provës me `execute_sql` kërkon konfirmimin e përdoruesit; kur ai nuk ishte aty, përdoruesi mbeti → përdoruesi i përkohshëm krijohet vetëm kur përdoruesi është i pranishëm, dhe SQL-ja e fshirjes i jepet gati që ta zbatojë vetë nëse konfirmimi nuk vjen.
 - Rishikimi i 0.21 gjeti defekte që provat nuk i kapnin, sepse provonin një gjendje, jo një ndryshim mes dy gjendjeve: butoni i njoftimit kërkonte rikujtuesin sipas id-së te lista, por plani i ri u jep id-të të tjerëve dhe shtyrja që ra hiqet nga lista e saj → një buton vepron mbi atë që njoftimi tregon (`shown` te `ReminderNotifier`), jo mbi atë që lista ka tani; një rregull "një herë në ditë" provohet edhe me një planifikim të dytë pas pikës së parë.
 - Një fletë që ndryshon një vlerë (ora e stërvitjes te Cilësimet) rishkruante gjithë fushën (`training_times` për çdo ditë) dhe fshinte orët e veçanta që ruante një ekran tjetër (Oraret e vakteve) → një ruajtje shkruan vetëm atë që përdoruesi ndryshoi; kur dy ekrane shkruajnë të njëjtën fushë, prova ruan nga njëri dhe lexon nga tjetri.
 - Proteina me "Numëroje te ushqimi" dhe pluhuri i planit numëroheshin dy herë → një sasi që mund të vijë nga dy rrugë (plani, suplementi) ka një rregull të vetëm që vendos kush e numëron (`mealPowder`), me provë për të dy radhët.
@@ -81,8 +89,3 @@ Formati: **çfarë ndodhi** → **rregulli**.
 - `npx prettier --write` pa konfigurim (repo-ja nuk ka Prettier) i ktheu skedarët në thonjëza dyshe me pikëpresje dhe rreshta 80 → mos e nis; stili i repo-s (pa pikëpresje, thonjëza teke, rreshta të gjatë) mbahet me dorë, oxlint e kontrollon.
 - Shembulli i udhëzimeve kishte vetëm kcal_100 për panetonen; AI-ja e kopjoi pa proteinë, karbohidrate e yndyrë dhe funksioni e hodhi ushqimin te "nuk e kuptova" → shembujt në prompt janë të plotë si skema; prova me AI-në e vërtetë niset pas çdo ndryshimi të udhëzimeve (`ONLY=1,10 node scripts/ai-box-trial.mjs`, vetëm rastet e prekura).
 - Udhëzimi i fotos i kërkonte AI-së shenjën "photo" te not_understood kur foto nuk ka ushqim, dhe ekrani e tregonte si tekst ("Nuk e regjistrova: photo"); provat me AI të rreme provonin vetëm foton me ushqim → çdo shenjë që i kërkohet modelit ka një konstante të përbashkët (`NO_FOOD_IN_PHOTO`) dhe app-i e kthen në fjali; prova e vërtetë niset edhe për degën negative të udhëzimeve (`PHOTO=qeni.jpg node scripts/ai-box-trial.mjs`).
-- Rishikimi i 0.22 gjeti katër rreshta që baza lokale i pranonte dhe serveri do t'i refuzonte (ushqimi i dytë me të njëjtin `source_id`, uji 2 500 ml, ml me presje, RIR 2,5): Dexie nuk ka `check` dhe indekse unike të serverit, ndaj provat kalonin → çdo shkrim i ri te një tabelë sinkronizohet lexohet kundrejt migrimit (checks, `smallint`, indekset unike) dhe prova e pohon atë rregull (p.sh. "rreshtat që serveri pranon" te `ai-box.test.ts`).
-- Prova e seteve kontrollonte radhën e `store.where`, që nuk është e garantuar (id të rastit), dhe ra në CI tri herë rresht → rezultati i `where`/`all` renditet në provë ose krahasohet pa radhë.
-- Prova e Ushqimit në anglisht ra në CI me "Found multiple elements": lista "Të fundit" e fletës së vaktit ngarkohet pas renderimit dhe ka të njëjtin emër si rreshti i regjistruar; lokalisht nuk ishte ngarkuar ende → kur një ekran ka pjesë që ngarkohen më vonë, prova i pret (`findByRole`) para se të kërkojë tekst, dhe rreshti kërkohet me një emër të vetin (butoni "Remove …").
-- Prova e Android-it e 0.23 ra te "asnjë gabim JavaScript" me `{message: timeout, code: SocketTimeoutException}`: CapacitorHttp në build-in debug e shkruan çdo refuzim si console.error edhe kur app-i e kap (kërkimi i tempos mbaron me "offline") → gabimet native që app-i i kap pranohen te `ignoredError` vetëm me formën e tyre të saktë dhe me arsyen; një emulator që zhduket në mes ("no devices/emulators found") është infrastrukturë, jo app-i, dhe përsëritet vetëm ajo pjesë.
-- Prova e Android-it ra një herë te "sinkronizimi i setit nga njoftimi" (30 s pas nisjes së procesit të vrarë) dhe kaloi kur u përsërit vetëm ajo pjesë (`skip=` pa njoftimi) → afati 60 s; një dështim që kalon në përsëritje shënohet këtu para se të ndryshohet kodi.
