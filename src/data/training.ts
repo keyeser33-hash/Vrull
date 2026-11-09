@@ -25,6 +25,8 @@ import { localDate } from '@/lib/calendar'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
 import { numberOrNull } from '@/lib/number'
+import { lightenPlan } from '@/readiness/lighter-session'
+import { lighterDay } from './lighter-day'
 
 // Programi aktiv, treguesi i radhës dhe stërvitjet, mbi bazën lokale (SPEC §4, §6). Motori i
 // programit (src/program) llogarit; ky modul lexon dhe shkruan rreshtat përmes store-it.
@@ -285,8 +287,11 @@ export async function trainingSnapshot(store: LocalStore): Promise<TrainingSnaps
   const loaded = await activeProgram(store)
   if (!loaded) return null
   const { row, state, engine, pointer, exercises } = loaded
-  const plan = planSession(engine, pointer)
+  const planned = planSession(engine, pointer)
   const session = await openSession(store, row.id, pointer)
+  // "Seanca më e lehtë" (V50): setet dhe RIR-i e stërvitjes së ditës ndryshojnë këtu, në vendin e vetëm ku
+  // vendosen, që Sot, njoftimi i seancës dhe seanca të thonë të njëjtën gjë; pesha: `workoutWeights`.
+  const plan = (await lighterDay(store, session?.date as string | undefined)) ? { ...planned, slots: lightenPlan(planned.slots) } : planned
   const sets = session ? (await store.where('set_logs', 'session_id', session.id)).map(toSet) : []
   sets.sort((a, b) => a.loggedAt.localeCompare(b.loggedAt))
   return {

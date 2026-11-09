@@ -6,7 +6,7 @@ import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
 import { store, useLocalQuery } from '@/data/app-data'
 import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
-import { workoutWeights } from '@/data/week-weights'
+import { type WorkoutWeight, workoutWeights } from '@/data/week-weights'
 import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
@@ -14,7 +14,6 @@ import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/
 import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
-import type { WeekWeightRow } from '@/progress/week-weights'
 import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { openedSet, sessionView } from '@/lib/session-notification'
@@ -26,6 +25,7 @@ import { useSessionBeat } from './music-beat'
 import { editable, elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
 import { type BannerRecord, RecordBanner } from './session-banner'
 import { recordPulse, savePulse } from './session-motion'
+import { SessionLighter } from './session-lighter'
 import { SavedSets, SetChips } from './session-sets'
 import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
 import { EditSetSheet } from './set-edit-sheet'
@@ -48,7 +48,7 @@ async function sessionData() {
  * Pesha e javës e çdo sloti të seancës (`workoutWeights`, e njëjtë me Sot dhe Programin). Lexim më
  * vete, që ruajtja e një seti të mos presë llogarinë e gjithë javës.
  */
-async function sessionWeights(): Promise<Map<string, WeekWeightRow>> {
+async function sessionWeights(): Promise<Map<string, WorkoutWeight>> {
   const snapshot = await trainingSnapshot(store)
   return snapshot?.session ? workoutWeights(store, snapshot.plan) : new Map()
 }
@@ -113,7 +113,7 @@ function ActiveSession({
   snapshot: TrainingSnapshot
   session: OpenSession
   history: TrainingHistory
-  weights: Map<string, WeekWeightRow>
+  weights: Map<string, WorkoutWeight>
   onClosing: (sessionId: string) => void
 }) {
   const texts = useI18n()
@@ -207,6 +207,7 @@ function ActiveSession({
       onMuscles={exercise ? () => openSheet('muskujt') : undefined}
       onVideo={videoTarget ? () => openSheet('video') : undefined}
       music={<MusicButton beat={beat} sessionId={session.id} onOpen={() => openSheet('ritmi')} onConnect={() => openSheet('lidh-muziken')} />}
+      top={<SessionLighter snapshot={snapshot} started={session.sets.length > 0} />}
     >
       {children}
       <RecordBanner banner={banner} onDone={() => setBanner(null)} />
@@ -361,7 +362,7 @@ function ActiveSession({
 
   return frame(
     <SetView
-      key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}`}
+      key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}`}
       exerciseId={slot.exerciseId}
       exerciseName={exercise?.name ?? ''}
       tracking={segment && tracking !== 'weight_reps' ? 'bodyweight_reps' : tracking}
@@ -374,6 +375,7 @@ function ActiveSession({
       step={step}
       previous={segment ? null : reference(history.sets, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })}
       basis={week?.proposal.basis ?? null}
+      weekKg={week?.weekKg ?? null}
       history={history.sets}
       dropTo={slot.technique.type === 'drop_set' ? drop(defaults.weightKg) : null}
       next={next ? { name: exercises[next.exerciseId]?.name ?? '', sets: next.sets } : null}
@@ -404,6 +406,7 @@ function SessionFrame({
   onMuscles,
   onVideo,
   music,
+  top,
   children,
 }: {
   progress: SessionProgress
@@ -415,6 +418,8 @@ function SessionFrame({
   onVideo?: () => void
   /** Ikona e muzikës ("Trupi në ritëm"); pa plugin nuk vizaton asgjë. */
   music?: ReactNode
+  /** Sugjerimi ose shiriti i seancës më të lehtë, nën kre (V50). */
+  top?: ReactNode
   children: ReactNode
 }) {
   const { t } = useI18n()
@@ -451,6 +456,7 @@ function SessionFrame({
             ) : null}
           </div>
         </header>
+        {top}
         {children}
       </div>
     </div>
@@ -497,6 +503,7 @@ function SetView({
   step,
   previous,
   basis,
+  weekKg,
   history,
   dropTo,
   next,
@@ -519,6 +526,8 @@ function SetView({
   step: number
   previous: Reference | null
   basis: WeightBasis | null
+  /** Pesha e javës kur e ka ulur "Mirë se u ktheve" ose seanca më e lehtë: "ishte 25 kg". */
+  weekKg: number | null
   history: HistorySet[]
   dropTo: number | null
   next: { name: string; sets: number } | null
@@ -576,6 +585,10 @@ function SetView({
             onEditReps={() => edit('perseritjet')}
           />
         )}
+
+        {!timed && weekKg !== null && weekKg !== weightKg ? (
+          <p className="-mt-2 w-[calc(50%-12px)] text-center type-caption text-muted-foreground tabular-nums">{t('lighter.was', { weight: fmt.unit(weekKg, 'kg') })}</p>
+        ) : null}
 
         {rir === null || segment ? null : <RirPicker value={rir} onChange={setRir} />}
 
