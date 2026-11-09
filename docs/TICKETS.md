@@ -237,7 +237,9 @@ Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
 
 Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
 
-**Gjendja (09.11.2026, 23:35):** 9 bordet janë te faqja "0.24 · Gatishmëria", me shënimin "Si ta komentosh" dhe 9 vendimet. I shkruan tre agjentë me Sonnet, sipas brief-it të përbashkët, dhe orkestruesi i njësoi. Presin komentet e përdoruesit.
+**Gjendja (10.11.2026, 00:40):** përdoruesi i miratoi të 9 vendimet pa ndryshime. Kodi i E3-02 … E3-07 është te `main`. Migrimet `daily_states` dhe `daily_states_v2` (me `daily_choices`) i jep përdoruesi; e para u aplikua dhe u kontrollua me SELECT, e dyta pret. Rishikimi në tri akse gjeti 1 P1 (seanca pa pamjen e lodhur) dhe 10 P2. U ndreqën të gjitha, secila me provë që bie para ndreqjes. Gjendja e provave: 1 617 kaluan, lint dhe build të pastër. Prova e Android-it nuk u nis, sepse vala nuk prek native-n dhe tekstet e saj i ruan `smoke-texts.test.ts`; niset me valën e Health Connect. Mbetet QA në telefon me APK-në e provës.
+
+**Gjendja e mëparshme (09.11.2026, 23:35):** 9 bordet janë te faqja "0.24 · Gatishmëria", me shënimin "Si ta komentosh" dhe 9 vendimet. I shkruan tre agjentë me Sonnet, sipas brief-it të përbashkët, dhe orkestruesi i njësoi. Presin komentet e përdoruesit.
 
 ## V2-E2-00 · Pastrimi i E1
 

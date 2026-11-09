@@ -13,3 +13,4 @@ Matjet:
 | 0.21–0.23 (gjithë periudha) | 7–9.11.2026 | 0.23: rreth 4,15 milionë, të gjitha me Opus; 45 % rishikimi dhe riparimi | Rreth 1 724; 37 % prova që ranë | 98 nisje, 59 ranë | 0.23: 5 P2 (dhe 7 P3) | 5 mësime për punën me agjentë; roja `smoke-texts.test.ts` |
 | Lëshimi 0.23.0 | 9.11.2026, 20:04–21:05 | Rreth 0 (orkestruesi vetëm) | Rreth 84 (porta e parë ra: 22) | 1 / 1 | – | Mësimi `triggerEvent`; gabimet e provës me `[pas: …]` |
 | Bordet e 0.24 (E3-01) | 9.11.2026, 23:10–23:35 | Rreth 427 mijë, tre agjentë me Sonnet, me ndreqjet | 0 | – | – | Mësimi për elementet e përbashkëta të bordeve |
+| Vala e gatishmërisë (E3-02 … E3-07) | 9–10.11.2026, 22:30–00:40 | Rreth 2,2 milionë: ndërtimi 0,89 (4 agjentë, Sonnet), rishikimi 0,80 (2 Sonnet, 1 Opus), ndreqjet 0,53 (2 Sonnet) | Rreth 45, vetëm CI | – (pa native; prova shkon me valën e Health Connect) | 1 P1, 10 P2, të gjitha me provë që bie para ndreqjes | 5 mësime; roja `clock-guard.test.ts` |
