@@ -36,6 +36,8 @@ export const TABLES = [
   'achievements',
   // Gjendja e ditës (V50, V2-E3-03): check-in-i i mëngjesit dhe vendimi i sugjerimit, një rresht për ditë ushqimi.
   'daily_states',
+  // Vendimi i sugjerimit të gatishmërisë (V50): "lighter", "tomorrow" ose "normal", me stërvitjen dhe llojet e ditëve.
+  'daily_choices',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -98,4 +100,5 @@ export const INDEXES: Record<TableName, string[]> = {
   ai_limits: [],
   achievements: [],
   daily_states: ['date'],
+  daily_choices: ['date'],
 }

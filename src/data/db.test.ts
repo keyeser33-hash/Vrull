@@ -182,6 +182,8 @@ describe('baza lokale', () => {
     expect(await db.achievements.get('a-1')).toMatchObject({ key: 'first_session' })
     await db.daily_states.put({ id: 's-1', _dirty: 1, date: '2026-11-19', mood: 3, energy: 2, sleep_minutes: 360, sleep_quality: 3, soreness: 2, sore_groups: ['chest'], choice: null } as never)
     expect(await db.daily_states.where('date').equals('2026-11-19').count()).toBe(1)
+    await db.daily_choices.put({ id: 'c-1', _dirty: 1, date: '2026-11-19', choice: 'lighter', workout: null, prev_today: null, prev_tomorrow: null } as never)
+    expect(await db.daily_choices.where('date').equals('2026-11-19').count()).toBe(1)
     db.close()
   })
 })
