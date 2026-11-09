@@ -284,6 +284,8 @@ Sipas §10: "Shto suplement" me dorë, makrot për lugë dhe regjistrimi te ushq
 
 Rishikimi në tri boshtet, provat e plota, prova në emulator (pjesët e reja dhe `instalimi`), `docs/whats-new/0.21.0.txt`, pyetet përdoruesi, publikimi. **Pranimi:** të gjitha kontrollet jeshile; përdoruesi e merr 0.21.0 nga app-i.
 
+**Gjendja (09.11.2026):** lëshuar si v0.21.0 (`TrainingHub-0.21.0.apk`, rreth 30 MB) pas pëlqimit të përdoruesit. Para lëshimit: rishikimi në tri boshtet (ndreqjet e P1 dhe P2 me prova), 1 261 prova, lint dhe build, QA në 390 px në tri temat dhe dy gjuhët, prova e plotë në emulator (83 kontrolle) dhe ajo e release-it, migrimet e zbatuara nga përdoruesi dhe të kontrolluara, funksioni i etiketës i provuar me përdorues të përkohshëm. Mbetet nga përdoruesi: oraret te Cilësimet (zgjimi 08:20, gjumi 01:00, stërvitja 21:00) dhe etiketa e whey-t nga telefoni.
+
 ## V2-E2-12 · Bordet e dizajnit 0.22
 
 Kutia e AI-së te Sot (shkrimi, mikrofoni i tastierës, pyetja kur mungon diçka, përmbledhja për konfirmim), trajneri, foto e ushqimit, makrot e shpejta, të fundit dhe të preferuarat, "Si dje", kufiri te Admini. **Pranimi:** përdoruesi i komenton para kodit.
