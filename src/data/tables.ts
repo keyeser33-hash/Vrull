@@ -32,6 +32,8 @@ export const TABLES = [
   'weekly_checks',
   // Kufiri i AI-së për person (V42, V2-E2-17): e shkruan vetëm funksioni ai-admin; telefoni vetëm e merr.
   'ai_limits',
+  // Arritjet (V43, V2-E2-21): një rresht për arritje të fituar, me id nga çelësi (`achievementId`).
+  'achievements',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -92,4 +94,5 @@ export const INDEXES: Record<TableName, string[]> = {
   form_videos: ['exercise_id', 'session_id'],
   ai_usage: ['month'],
   ai_limits: [],
+  achievements: [],
 }
