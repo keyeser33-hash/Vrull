@@ -8,7 +8,7 @@ import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
-import { jimFoodOptions, type MyPlanItem, myPlanTotals, resetMyPlan, saveMyPlanMeal, userFoodOptions } from '@/data/my-plan'
+import { jimFoodOptions, type MyPlanItem, myPlanTotals, pdfFoodOptions, resetMyPlan, saveMyPlanMeal, userFoodOptions } from '@/data/my-plan'
 import { type MealSlot, type NutritionDay, planDay } from '@/data/nutrition'
 import { readProfile } from '@/data/profile'
 import { foodName, mealName, nameInSentence, portionText } from '@/i18n/domain'
@@ -384,7 +384,10 @@ function SwapSheet({ item, onPick, onClose }: { item: MyPlanItem | null; onPick:
   const [selected, setSelected] = useState<MyPlanItem | null>(null)
   const yours = useLocalQuery(() => userFoodOptions(store, item, query), [item, query])
   const fold = (text: string) => text.toLocaleLowerCase(lang).normalize('NFD').replace(/\p{M}/gu, '')
-  const jim = jimFoodOptions(item).filter((option) => !query.trim() || fold(foodName(t, option)).includes(fold(query.trim())))
+  const matches = (option: MyPlanItem) => !query.trim() || fold(foodName(t, option)).includes(fold(query.trim()))
+  // Zëvendësimet e PDF-së së pari (V34), pastaj ushqimet e shabllonit dhe ato të përdoruesit.
+  const pdf = pdfFoodOptions(item, matches, query.trim() !== '')
+  const jim = jimFoodOptions(item).filter((option) => matches(option) && !pdf.some((entry) => entry.food === option.food))
   const base = item ? macrosOf(item) : null
   const name = item ? nameInSentence(foodName(t, item), lang) : ''
   const hint = !item || !base ? t('food.plan.addHint') : isProteinFood(item) ? t('food.plan.swapHintProtein', { grams: Math.round(base.proteinG) }) : t('food.plan.swapHintKcal', { kcal: kcalText(i18n, base.kcal) })
@@ -431,6 +434,14 @@ function SwapSheet({ item, onPick, onClose }: { item: MyPlanItem | null; onPick:
       }
     >
       <input type="search" aria-label={t('food.plan.search')} placeholder={t('food.plan.search')} value={query} onChange={(event) => setQuery(event.target.value)} className={cn(inputClass, 'shrink-0')} />
+      {pdf.length > 0 ? (
+        <section aria-labelledby="swap-pdf" className="flex flex-col gap-2">
+          <h3 id="swap-pdf" className="type-label text-muted-foreground">
+            {t('food.plan.fromPdf')}
+          </h3>
+          <ul className="m-0 flex list-none flex-col gap-2 p-0">{pdf.map(row)}</ul>
+        </section>
+      ) : null}
       {jim.length > 0 ? (
         <section aria-labelledby="swap-jim" className="flex flex-col gap-2">
           <h3 id="swap-jim" className="type-label text-muted-foreground">

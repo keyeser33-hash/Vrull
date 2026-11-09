@@ -2,6 +2,7 @@ import { JIM_FOODS, type JimFoodKey, macrosFor, type Portion, sumMacros } from '
 import { localDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
 import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
+import { PDF_FOODS, PDF_PREFIX, pdfKey } from '@/nutrition/pdf-swaps'
 import { mealSchedule } from '@/nutrition/schedule'
 import type { DoseUnit, Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
@@ -254,18 +255,21 @@ export async function setDayType(store: LocalStore, date: string, dayType: DayTy
 }
 
 /** Ushqimi i shabllonit si ushqim i përdoruesit, një herë për çdo artikull. */
-async function templateFood(store: LocalStore, key: JimFoodKey) {
-  const [existing] = await store.where('foods', '[source+source_id]', ['template', `jim:${key}`])
+/** Ushqimi i një artikulli të shabllonit: i Jimit (`jim:<çelësi>`) ose i zëvendësimeve të PDF-së (`pdf:<çelësi>`). */
+async function templateFood(store: LocalStore, food: string) {
+  const pdf = pdfKey(food)
+  const sourceId = pdf ? `${PDF_PREFIX}${pdf}` : `jim:${food}`
+  const [existing] = await store.where('foods', '[source+source_id]', ['template', sourceId])
   if (existing) return existing.id
-  const food = JIM_FOODS[key]
+  const values = pdf ? PDF_FOODS[pdf] : JIM_FOODS[food as JimFoodKey]
   const row = await store.put('foods', {
     source: 'template',
-    source_id: `jim:${key}`,
-    name: food.name,
-    kcal: food.kcal,
-    protein_g: food.proteinG,
-    carbs_g: food.carbsG,
-    fat_g: food.fatG,
+    source_id: sourceId,
+    name: values.name,
+    kcal: values.kcal,
+    protein_g: values.proteinG,
+    carbs_g: values.carbsG,
+    fat_g: values.fatG,
   })
   return row.id
 }
@@ -285,7 +289,7 @@ export async function logTemplateMeal(store: LocalStore, date: string, meal: Mea
     rows.push({
       date,
       meal,
-      food_id: item.food.startsWith('food:') ? item.food.slice('food:'.length) : await templateFood(store, item.food as JimFoodKey),
+      food_id: item.food.startsWith('food:') ? item.food.slice('food:'.length) : await templateFood(store, item.food),
       grams: item.grams,
       kcal: round1(item.kcal),
       protein_g: round1(item.proteinG),

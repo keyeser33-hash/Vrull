@@ -1,4 +1,5 @@
 import { JIM_FOODS, JIM_MEALS, type JimFoodKey, type PortionUnit } from './jim'
+import { isPdfFood, PDF_FOODS, PDF_PREFIX, type PdfFoodKey, SWAP_LIST_GROUP, SWAP_LISTS, swapListFor } from './pdf-swaps'
 import type { MealKey } from './meals'
 import type { Macros } from './targets'
 
@@ -223,9 +224,17 @@ export function matchingGrams(item: Pick<PlanItem, 'per100' | 'grams'>, per100: 
   return per > 0 ? (wanted / per) * 100 : item.grams
 }
 
+/** Lloji i një artikulli për ndërrimin: i shabllonit, i listës së PDF-së, ose sipas proteinës. */
+function groupOf(item: PlanItem): 'protein' | 'carbs' | 'produce' | 'fat' {
+  if (Object.hasOwn(JIM_GROUPS, item.food)) return JIM_GROUPS[item.food as JimFoodKey]
+  const list = isPdfFood(item.food) ? swapListFor(item.food) : null
+  if (list) return SWAP_LIST_GROUP[list]
+  return isProteinFood(item) ? 'protein' : 'carbs'
+}
+
 /** Ushqimet e Jimit të së njëjtës lloj, me porcionin e rrumbullakosur në njësinë e tyre. */
 export function jimSwaps(item: PlanItem): PlanItem[] {
-  const group = Object.hasOwn(JIM_GROUPS, item.food) ? JIM_GROUPS[item.food as JimFoodKey] : isProteinFood(item) ? 'protein' : 'carbs'
+  const group = groupOf(item)
   return (Object.keys(JIM_GROUPS) as JimFoodKey[])
     .filter((food) => food !== item.food && JIM_GROUPS[food] === group)
     .map((food) => {
@@ -234,6 +243,28 @@ export function jimSwaps(item: PlanItem): PlanItem[] {
       const step = stepFor(unit, unitGrams)
       return { food, unit, per100, ...step, ...roundToPortion(matchingGrams(item, per100), step) }
     })
+}
+
+/**
+ * Zëvendësimet e PDF-së (V34) për një artikull: lista që zëvendëson ushqimin e shabllonit (salmoni →
+ * mishrat), ose të tjerët e listës së tij; në gramë, me porcionin që mban proteinën ose kaloritë.
+ */
+export function pdfSwaps(item: PlanItem): PlanItem[] {
+  const list = swapListFor(item.food)
+  if (!list) return []
+  const step = stepFor('gram', 1)
+  return SWAP_LISTS[list]
+    .filter((key) => `${PDF_PREFIX}${key}` !== item.food)
+    .map((key) => {
+      const per100 = PDF_FOODS[key]
+      return { food: `${PDF_PREFIX}${key}`, unit: 'gram' as const, per100, ...step, ...roundToPortion(matchingGrams(item, per100), step) }
+    })
+}
+
+/** Një ushqim i PDF-së për "Shto ushqim": 100 g. */
+export function pdfFoodItem(key: PdfFoodKey): PlanItem {
+  const step = stepFor('gram', 1)
+  return { food: `${PDF_PREFIX}${key}`, unit: 'gram', per100: PDF_FOODS[key], ...step, ...roundToPortion(100, step) }
 }
 
 /** Një ushqim i Jimit për "Shto ushqim": një njësi (1 vezë, 1 fetë), ose 100 g kur njësia është gram. */

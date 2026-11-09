@@ -1,6 +1,7 @@
 import { JIM_FOODS, type JimFoodKey, type PortionUnit } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
-import { jimFoodItem, jimPlan, jimSwaps, matchingGrams, type PlanItem, type PlanMeal, planTotals, roundToPortion, scalePlan, stepFor } from '@/nutrition/my-plan'
+import { jimFoodItem, jimPlan, jimSwaps, matchingGrams, pdfFoodItem, pdfSwaps, type PlanItem, type PlanMeal, planTotals, roundToPortion, scalePlan, stepFor } from '@/nutrition/my-plan'
+import { PDF_FOODS, type PdfFoodKey, pdfKey } from '@/nutrition/pdf-swaps'
 import type { DayType, Macros } from '@/nutrition/targets'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
@@ -26,11 +27,15 @@ export interface MyPlanMeal {
 
 const isJimKey = (food: string): food is JimFoodKey => Object.hasOwn(JIM_FOODS, food)
 
+/** Emri dhe burimi i një artikulli të shabllonit: i Jimit ose i zëvendësimeve të PDF-së. */
+function withName(item: PlanItem): MyPlanItem {
+  const pdf = pdfKey(item.food)
+  if (pdf) return { ...item, name: PDF_FOODS[pdf].name, sourceId: item.food }
+  return { ...item, name: isJimKey(item.food) ? JIM_FOODS[item.food].name : item.food, sourceId: isJimKey(item.food) ? `jim:${item.food}` : null }
+}
+
 function named(meals: PlanMeal[]): MyPlanMeal[] {
-  return meals.map((meal) => ({
-    meal: meal.meal,
-    items: meal.items.map((item) => ({ ...item, name: isJimKey(item.food) ? JIM_FOODS[item.food].name : item.food, sourceId: isJimKey(item.food) ? `jim:${item.food}` : null })),
-  }))
+  return meals.map((meal) => ({ meal: meal.meal, items: meal.items.map(withName) }))
 }
 
 const rowsFor = async (store: LocalStore, dayType: DayType) =>
@@ -100,7 +105,15 @@ export async function userFoodOptions(store: LocalStore, item: MyPlanItem | null
     .map((entry) => entry.option)
 }
 
-const withName = (item: PlanItem): MyPlanItem => ({ ...item, name: JIM_FOODS[item.food as JimFoodKey].name, sourceId: `jim:${item.food}` })
+/**
+ * Zëvendësimet e PDF-së për një artikull (V34, të parat); pa artikull ("Shto ushqim"), ushqimet e
+ * listave që përputhen me kërkimin, vetëm kur ka kërkim (janë 53).
+ */
+export function pdfFoodOptions(item: MyPlanItem | null, matches: (option: MyPlanItem) => boolean, searching: boolean): MyPlanItem[] {
+  if (item) return pdfSwaps(item).map(withName).filter(matches)
+  if (!searching) return []
+  return (Object.keys(PDF_FOODS) as PdfFoodKey[]).map((key) => withName(pdfFoodItem(key))).filter(matches)
+}
 
 /** Ndërrimet nga plani i Jimit për një artikull, ose (pa artikull) çdo ushqim i Jimit me një njësi. */
 export function jimFoodOptions(item: MyPlanItem | null): MyPlanItem[] {

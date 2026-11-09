@@ -1,6 +1,7 @@
 import type { Format } from './format'
 import type { T } from './index'
 import { JIM_FOODS, type JimFoodKey, type Portion } from '@/nutrition/jim'
+import { PDF_FOODS, pdfKey } from '@/nutrition/pdf-swaps'
 import type { MealKey } from '@/nutrition/meals'
 import { type DoseUnit, type Evidence, supplementByName } from '@/nutrition/supplements'
 import { MUSCLE_GROUPS } from '@/program/muscles'
@@ -71,6 +72,8 @@ export function foodName(t: T, food: { name: string | null; sourceId: string | n
   if (food.name === null) return t('food.unknownFood')
   const key = food.sourceId?.startsWith('jim:') ? food.sourceId.slice(4) : null
   if (key && key in JIM_FOODS && JIM_FOODS[key as JimFoodKey].name === food.name) return t(`food.jim.${key as JimFoodKey}`)
+  const pdf = food.sourceId ? pdfKey(food.sourceId) : null
+  if (pdf && PDF_FOODS[pdf].name === food.name) return t(`food.pdf.${pdf}`)
   return food.name
 }
 

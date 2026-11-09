@@ -1,6 +1,6 @@
 import { JIM_MEALS } from './jim'
 import type { MealKey } from './meals'
-import { jimPlan, roundToPortion, scalePlan, withinPlanTargets } from './my-plan'
+import { jimPlan, jimSwaps, pdfFoodItem, pdfSwaps, roundToPortion, scalePlan, withinPlanTargets } from './my-plan'
 
 // Plani im (V34, V2-E2-05): plani i Jimit i shkallëzuar te objektivat, në njësi reale.
 const TRAINING_MEALS: MealKey[] = ['breakfast_1', 'breakfast_2', 'snack_am', 'lunch', 'snack_pm', 'dinner', 'pre_workout', 'post_workout', 'bedtime']
@@ -76,5 +76,36 @@ describe('brenda objektivave (V34)', () => {
     expect(withinPlanTargets({ ...target, kcal: 2930 * 1.05, proteinG: 186 }, target)).toBe(true)
     expect(withinPlanTargets({ ...target, kcal: 2930 * 0.94 }, target)).toBe(false)
     expect(withinPlanTargets({ ...target, proteinG: 165 }, target)).toBe(false)
+  })
+})
+
+describe('zëvendësimet e PDF-së (V34)', () => {
+  const dinner = jimPlan(['dinner'])[0].items
+  const protein = (item: { per100: { proteinG: number }; grams: number }) => (item.per100.proteinG * item.grams) / 100
+
+  it('salmoni: mishrat e PDF-së me radhën e saj, porcioni mban proteinën', () => {
+    const salmon = dinner.find((item) => item.food === 'salmon')!
+    const swaps = pdfSwaps(salmon)
+    expect(swaps).toHaveLength(16)
+    expect(swaps.slice(0, 3).map((item) => item.food)).toEqual(['pdf:chicken_breast', 'pdf:chicken_thigh', 'pdf:turkey_breast'])
+    expect(swaps[0]).toMatchObject({ unit: 'gram', grams: 200 })
+    for (const swap of swaps) expect(Math.abs(protein(swap) - protein(salmon))).toBeLessThan(2.5)
+  })
+
+  it('brokoli: perimet, porcioni mban kaloritë; vaji nuk ka listë', () => {
+    const broccoli = dinner.find((item) => item.food === 'broccoli')!
+    const swaps = pdfSwaps(broccoli)
+    expect(swaps.map((item) => item.food)).toContain('pdf:asparagus')
+    expect(swaps).toHaveLength(9)
+    expect(pdfSwaps(dinner.find((item) => item.food === 'dressing')!)).toEqual([])
+  })
+
+  it('një artikull i PDF-së: të tjerët e listës së tij, dhe ushqimet e Jimit të llojit të tij', () => {
+    const banana = pdfFoodItem('banana')
+    expect(banana).toMatchObject({ food: 'pdf:banana', unit: 'gram', grams: 100 })
+    expect(pdfSwaps(banana).map((item) => item.food)).not.toContain('pdf:banana')
+    expect(pdfSwaps(banana)).toHaveLength(10)
+    expect(jimSwaps(banana).map((item) => item.food)).toEqual(expect.arrayContaining(['apple', 'cantaloupe', 'broccoli']))
+    expect(jimSwaps(banana).map((item) => item.food)).not.toContain('oatmeal')
   })
 })

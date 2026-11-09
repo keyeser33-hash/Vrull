@@ -92,6 +92,10 @@ describe('Plani im', () => {
     expect(within(swap).getByText(/^Porcioni përshtatet që proteina të mbetet e njëjtë/)).toBeInTheDocument()
     const confirm = within(swap).getByRole('button', { name: 'Ndërro' })
     expect(confirm).toBeDisabled()
+    // Zëvendësimet e PDF-së së pari: mishrat, me porcionin që mban proteinën.
+    const pdf = within(swap).getByRole('region', { name: 'Zëvendësimet e PDF-së' })
+    expect(within(pdf).getAllByRole('button')).toHaveLength(16)
+    expect(within(pdf).getAllByRole('button')[0]).toHaveAccessibleName(/^Gjoks pule · \d+\s?g/)
     await user.click(within(swap).getByRole('button', { name: /^Salmon · \d+\s?g/ }))
     await user.click(within(swap).getByRole('button', { name: 'Ndërro me salmon' }))
 
@@ -100,7 +104,10 @@ describe('Plani im', () => {
     await user.click(within(sheet).getByRole('button', { name: 'Shto ushqim' }))
     const add = screen.getByRole('dialog', { name: 'Shto ushqim' })
     await user.type(within(add).getByRole('searchbox', { name: 'Kërko ushqim tjetër' }), 'pule')
-    await user.click(await within(add).findByRole('button', { name: /^Gjoks pule · 100\s?g/ }))
+    const yours = within(add).getByRole('region', { name: 'Nga ushqimet e tua' })
+    await user.click(await within(yours).findByRole('button', { name: /^Gjoks pule · 100\s?g/ }))
+    // Kërkimi gjen edhe ushqimet e listave të PDF-së.
+    expect(within(within(add).getByRole('region', { name: 'Zëvendësimet e PDF-së' })).getByRole('button', { name: /^Kofshë pule pa lëkurë · 100\s?g/ })).toBeInTheDocument()
     await user.click(within(add).getByRole('button', { name: 'Shto gjoks pule' }))
 
     const updated = screen.getByRole('dialog', { name: 'Dreka' })
@@ -125,6 +132,11 @@ describe('Plani im', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'My plan' })).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'Training day' })).toBeChecked()
     expect(screen.getByText('Within your targets')).toBeInTheDocument()
-    expect(within(screen.getByRole('list', { name: 'Meals of the day' })).getByRole('button', { name: /Lunch/ })).toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.click(within(screen.getByRole('list', { name: 'Meals of the day' })).getByRole('button', { name: /Lunch/ }))
+    await user.click(screen.getByRole('button', { name: 'Swap' }))
+    const pdf = within(screen.getByRole('dialog', { name: /^Swap / })).getByRole('region', { name: 'Swaps from Jim’s PDF' })
+    expect(within(pdf).getAllByRole('button')[0]).toHaveAccessibleName(/^Chicken breast · /)
+    expect(within(pdf).getByRole('button', { name: /^Prawns · / })).toBeInTheDocument()
   })
 })

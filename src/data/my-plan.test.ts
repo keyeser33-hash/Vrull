@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { resetMyPlan, saveMyPlanMeal, userFoodItem } from './my-plan'
+import { pdfFoodOptions, resetMyPlan, saveMyPlanMeal, userFoodItem } from './my-plan'
 import { logTemplateMeal, nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
@@ -50,6 +50,24 @@ describe('Plani im', () => {
 
     await resetMyPlan(store, 'rest')
     expect((await lunch(store)).template[0].food).toBe('tuna')
+  })
+
+  it('një zëvendësim i PDF-së ruhet, regjistrohet me ushqimin e tij dhe sinkronizohet si artikull', async () => {
+    const store = await setup()
+    const day = await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '09:00'))
+    const current = day.meals.map((meal) => ({ meal: meal.meal, items: meal.template.map((line) => line.item) }))
+    const tuna = (await lunch(store)).template.find((line) => line.food === 'tuna')!.item
+    const [chicken] = pdfFoodOptions(tuna, () => true, false)
+    expect(chicken).toMatchObject({ food: 'pdf:chicken_breast', name: 'Gjoks pule', sourceId: 'pdf:chicken_breast' })
+    await saveMyPlanMeal(store, 'rest', current, 'lunch', [chicken])
+    expect((await lunch(store)).template).toMatchObject([{ food: 'pdf:chicken_breast', name: 'Gjoks pule', sourceId: 'pdf:chicken_breast' }])
+    await logTemplateMeal(store, WEDNESDAY, 'lunch')
+    const entries = (await nutritionDay(store, WEDNESDAY, at(WEDNESDAY, '09:00'))).meals.find((meal) => meal.meal === 'lunch')!.entries
+    expect(entries).toMatchObject([{ name: 'Gjoks pule', sourceId: 'pdf:chicken_breast', grams: chicken.grams }])
+    expect(await store.where('foods', '[source+source_id]', ['template', 'pdf:chicken_breast'])).toHaveLength(1)
+    // Pa artikull, listat dalin vetëm me kërkim.
+    expect(pdfFoodOptions(null, () => true, false)).toEqual([])
+    expect(pdfFoodOptions(null, (option) => option.name.includes('pule'), true).map((option) => option.food)).toEqual(['pdf:chicken_breast', 'pdf:chicken_thigh'])
   })
 
   it('"Regjistro" shkruan artikujt e planit, edhe ushqimin e përdoruesit', async () => {
