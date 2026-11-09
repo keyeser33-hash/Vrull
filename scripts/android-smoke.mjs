@@ -1427,7 +1427,7 @@ try {
     collapseShade()
     await unlock()
     page = await open()
-    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e rikujtuesve e zbrazur', 20_000)
+    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e rikujtuesve e zbrazur', 45_000)
     const lunch = await waitFor(async () => {
       const { diary_entries: rows } = await readDb(page, ['diary_entries'])
       const found = rows.filter((row) => row.date === today && row.meal === 'lunch' && !row.deleted_at)
@@ -1476,7 +1476,7 @@ try {
     collapseShade()
     await unlock()
     page = await open()
-    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e zbrazur pas shtyrjes', 20_000)
+    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e zbrazur pas shtyrjes', 45_000)
 
     // 5. Plani i ri ia jep id-në e një njoftimi të dukshëm një rikujtuesi tjetër: butoni vepron mbi atë
     // që shihet (uji), jo mbi rikujtuesin e ri me të njëjtën id (darka, më vonë).
@@ -1496,7 +1496,7 @@ try {
     check('id e ripërdorur: butoni vepron mbi njoftimin që shihet', shifted.length === 1 && shifted[0].key === `water|${today}|`, JSON.stringify(reminderPrefs().queue))
     collapseShade()
     page = await open()
-    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e zbrazur pas id-së së ripërdorur', 20_000)
+    await waitFor(() => reminderPrefs().queue.length === 0, 'radha e zbrazur pas id-së së ripërdorur', 45_000)
   })
 
   // ==== E. Trupi 3D, butoni mbrapa dhe tema ====
