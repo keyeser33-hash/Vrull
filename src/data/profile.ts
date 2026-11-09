@@ -86,18 +86,27 @@ export async function readProfile(store: LocalStore): Promise<Profile> {
   }
 }
 
-/** Ndryshon një ose më shumë vlera; ora e stërvitjes vlen për çdo ditë stërvitjeje. */
+/**
+ * Ndryshon një ose më shumë vlera. Një orë stërvitjeje e ndryshuar vlen për çdo ditë; përndryshe çdo
+ * ditë mban orën e saj (Oraret e vakteve, V35) dhe një ditë e re merr orën e ditës së parë.
+ */
 export async function updateProfile(store: LocalStore, patch: Partial<Profile>, now: () => Date = () => new Date()) {
   if (patch.weightKg !== undefined && patch.weightKg !== null) await saveTodayWeight(store, patch.weightKg, now)
   const settings = await settingsRow(store)
   if (!settings) return
   const current = await readProfile(store)
   const days = patch.trainingDays ?? current.trainingDays
-  const time = patch.trainingTime ?? current.trainingTime
+  const saved = (settings.training_times as Record<string, string> | undefined) ?? {}
+  const kept = (day: number) => (isTime(saved[String(day)] ?? '') ? saved[String(day)] : undefined)
+  const first = kept(days[0]) ?? current.trainingTime
+  const times =
+    patch.trainingTime !== undefined && patch.trainingTime !== current.trainingTime
+      ? timesFor(days, patch.trainingTime)
+      : Object.fromEntries(days.map((day) => [String(day), kept(day) ?? first]))
   await store.put('user_settings', {
     id: settings.id,
     training_days: days,
-    training_times: timesFor(days, time),
+    training_times: times,
     wake_time: patch.wakeTime ?? current.wakeTime,
     sleep_time: patch.sleepTime ?? current.sleepTime,
   })

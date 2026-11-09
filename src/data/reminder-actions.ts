@@ -1,7 +1,7 @@
 import type { MealKey } from '@/nutrition/meals'
 import type { ReminderActionId } from '@/reminders/plan'
 import { logTemplateMeal, setDayType } from './nutrition'
-import { setSupplementTaken } from './supplements'
+import { setSupplementTaken, supplementFoodIds } from './supplements'
 import type { LocalStore } from './store'
 import { addWater } from './water'
 
@@ -44,8 +44,21 @@ async function takeSupplements(store: LocalStore, date: string, meal: MealKey, i
   return created
 }
 
-/** Zbaton veprimet me radhë dhe kthen id-të që mund të hiqen nga radha native. */
-export async function applyReminderActions(store: LocalStore, actions: readonly QueuedReminderAction[], applied: AppliedLog): Promise<string[]> {
+/** Zbatimet që po vazhdojnë, sipas regjistrit: një zbatim i ri pret të mëparshmin. */
+const running = new WeakMap<AppliedLog, Promise<unknown>>()
+
+/**
+ * Zbaton veprimet me radhë dhe kthen id-të që mund të hiqen nga radha native. Dy thirrje njëkohësisht
+ * (dëgjuesi i prekjeve dhe plani) rreshtohen, që e dyta ta shohë të zbatuar çfarë bëri e para.
+ */
+export function applyReminderActions(store: LocalStore, actions: readonly QueuedReminderAction[], applied: AppliedLog): Promise<string[]> {
+  const previous = running.get(applied) ?? Promise.resolve()
+  const next = previous.catch(() => {}).then(() => applyInOrder(store, actions, applied))
+  running.set(applied, next)
+  return next
+}
+
+async function applyInOrder(store: LocalStore, actions: readonly QueuedReminderAction[], applied: AppliedLog): Promise<string[]> {
   const handled: string[] = []
   for (const entry of actions) {
     // Një veprim i zbatuar më parë (app-i u mbyll para se ta hiqte nga radha) nuk përsëritet.
@@ -65,12 +78,14 @@ export async function applyReminderActions(store: LocalStore, actions: readonly 
       }
     } else if (data) {
       if (entry.action === 'ate' && data.meal) {
-        // "Si në plan" nuk regjistron dy herë një vakt që u regjistrua ndërkohë te app-i.
-        const existing = (await store.where('diary_entries', 'date', data.date)).filter((row) => row.meal === data.meal)
-        if (existing.length === 0) record.diary = await logTemplateMeal(store, data.date, data.meal)
+        // "Si në plan" nuk regjistron dy herë një vakt që u regjistrua ndërkohë te app-i; proteina e
+        // shënuar "E mora" nuk është vakt. Suplementet para planit: proteina zë vendin e pluhurit të tij.
+        const supplementFoods = await supplementFoodIds(store)
+        const existing = (await store.where('diary_entries', 'date', data.date)).filter((row) => row.meal === data.meal && !supplementFoods.has(String(row.food_id)))
         const taken = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
         record.supplements = taken.logs
-        record.diary.push(...taken.diary)
+        record.diary = [...taken.diary]
+        if (existing.length === 0) record.diary.push(...(await logTemplateMeal(store, data.date, data.meal)))
       } else if (entry.action === 'took' && data.meal) {
         const taken = await takeSupplements(store, data.date, data.meal, data.supplementIds ?? [])
         record.supplements = taken.logs

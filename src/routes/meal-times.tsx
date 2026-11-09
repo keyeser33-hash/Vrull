@@ -170,7 +170,7 @@ function MealTimesEditor({ schedule, today }: { schedule: ScheduleSettings; toda
                     aria-label={t('food.schedule.mealTime', { meal: name })}
                     value={entry.time}
                     onChange={(event) => setMealTime(entry.meal, event.target.value)}
-                    className={cn(inputClass, 'w-[84px] px-2 text-center font-display text-[19px] font-extrabold', moved && 'border-2 border-ember-text')}
+                    className={cn(inputClass, 'w-[84px] px-2 text-center font-display text-[19px] font-extrabold tabular-nums', moved && 'border-2 border-ember-text')}
                   />
                 )}
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -178,7 +178,11 @@ function MealTimesEditor({ schedule, today }: { schedule: ScheduleSettings; toda
                   {linked ? (
                     <span className="text-[13px] text-data">{t(entry.meal === 'pre_workout' ? 'food.schedule.pre' : 'food.schedule.post')}</span>
                   ) : moved ? (
-                    <button type="button" onClick={() => setMealTime(entry.meal, original ?? '')} className="self-start text-left text-[13px] text-ember-text underline underline-offset-2">
+                    <button
+                      type="button"
+                      onClick={() => setMealTime(entry.meal, original ?? '')}
+                      className="-my-3 flex min-h-touch items-center self-start text-left text-[13px] text-ember-text underline underline-offset-2"
+                    >
                       {t('food.schedule.moved', { time: original ?? '' })} · {t('food.schedule.reset')}
                     </button>
                   ) : null}
@@ -239,7 +243,7 @@ function TimeRow({ label, detail, value, onChange, last }: { label: string; deta
         type="time"
         value={value}
         onChange={(event) => event.target.value && onChange(event.target.value)}
-        className={cn(inputClass, 'w-[96px] shrink-0 px-2 text-center font-display text-xl font-extrabold')}
+        className={cn(inputClass, 'w-[96px] shrink-0 px-2 text-center font-display text-xl font-extrabold tabular-nums')}
       />
     </div>
   )

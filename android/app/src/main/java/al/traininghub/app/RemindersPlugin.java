@@ -52,7 +52,13 @@ public class RemindersPlugin extends Plugin {
         Set<String> keys = new HashSet<>();
         for (int i = 0; cancelKeys != null && i < cancelKeys.length(); i++) keys.add(cancelKeys.optString(i));
         try {
-            ReminderNotifier.schedule(getContext(), new JSONArray(reminders.toString()), channel == null ? new JSONObject() : channel, keys);
+            ReminderNotifier.schedule(
+                getContext(),
+                new JSONArray(reminders.toString()),
+                channel == null ? new JSONObject() : channel,
+                keys,
+                call.getDouble("snoozeMinutes", 0.0)
+            );
         } catch (JSONException e) {
             call.reject("Lista e rikujtuesve nuk u lexua", "INVALID");
             return;

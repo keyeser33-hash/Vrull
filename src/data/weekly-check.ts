@@ -1,10 +1,11 @@
 import { localDate } from '@/lib/calendar'
-import type { Goal } from '@/nutrition/calculator'
+import { type Goal, withAdjustment } from '@/nutrition/calculator'
 import { type WeeklyCheck, weeklyCheck, trendWeight } from '@/nutrition/weekly-check'
 import { dayTargets, targetsWeight } from './nutrition'
 import { readProfile } from './profile'
 import type { LocalStore } from './store'
-import { adjustmentOn, isComplete, personalTargets, readTargetsProfile, refreshSavedTargets, withAdjustment } from './targets-profile'
+import { adjustmentOn, isComplete, personalTargets, readTargetsProfile, refreshSavedTargets } from './targets-profile'
+import { naturalId } from './natural-id'
 
 // Kontrolli javor (V33, V2-E2-04): çdo të hënë, nga java e 2-të e objektivave personale, java e
 // kaluar rishikohet (`nutrition/weekly-check.ts`). Vendimi ("Po" ose "Jo tani") ruhet te
@@ -101,16 +102,28 @@ export async function readWeeklyCheck(store: LocalStore, today: string): Promise
 export async function decideWeeklyCheck(store: LocalStore, view: WeeklyCheckView, status: WeeklyCheckStatus, today: string) {
   if (view.result.kind !== 'proposal') return
   const { result } = view
-  await store.put('weekly_checks', {
-    week_start: view.weekStart,
-    status,
-    kcal: result.kcal,
-    applies_from: today,
-    maintenance_kcal: result.maintenanceKcal,
-    trend_change_kg: result.changeKg,
-    logged_days: result.loggedDays,
-    average_kcal: result.averageKcal,
-  })
+  // Një rresht për javë, edhe kur dy telefona vendosin pa u sinkronizuar.
+  const existing = (await store.where('weekly_checks', 'week_start', view.weekStart))[0]
+  const userId = store.userId()
+  const id = existing?.id ?? (userId ? await naturalId(['weekly_checks', userId, view.weekStart]) : undefined)
+  // Vlerat e javës ruhen vetëm brenda kufijve të serverit (migrimi weekly_checks): një peshim me ujë
+  // ose një gabim shtypi nuk e bën rreshtin të refuzuar përgjithmonë; vendimi dhe korrigjimi mbeten.
+  const within = (value: number, min: number, max: number) => (Number.isFinite(value) && value >= min && value <= max ? value : null)
+  await store.put(
+    'weekly_checks',
+    {
+      id,
+      week_start: view.weekStart,
+      status,
+      kcal: result.kcal,
+      applies_from: today,
+      maintenance_kcal: within(result.maintenanceKcal, 500, 8000),
+      trend_change_kg: within(result.changeKg, -10, 10),
+      logged_days: result.loggedDays,
+      average_kcal: within(result.averageKcal, 0, 15000),
+    },
+    { revive: true },
+  )
   if (status === 'accepted' && result.kcal !== 0) await refreshSavedTargets(store, await readTargetsProfile(store), today)
 }
 

@@ -1,5 +1,5 @@
 import { i18nFor, NBSP } from '@/i18n'
-import { gramsText, kcalText, macrosLine, parseGrams, relativeTime } from './nutrition-format'
+import { gramsText, kcalText, macrosLine, parseAmount, parseGrams, relativeTime } from './nutrition-format'
 
 // Tekstet e ushqimit në të dyja gjuhët: mijëshet sipas gjuhës (2 900 / 2,900), gramët me hapësirë që
 // nuk thyhet, makrot dhe koha relative e vaktit nga katalogu.
@@ -42,6 +42,11 @@ describe('tekstet e ushqimit', () => {
   })
 
   it('gramët e shkruar: presje ose pikë dhjetore, mijëshet e të dyja gjuhëve', () => {
+    expect(parseAmount('0')).toBe(0)
+    expect(parseAmount('0,0')).toBe(0)
+    expect(parseAmount('1,5')).toBe(1.5)
+    expect(parseAmount('-1')).toBeNull()
+    expect(parseGrams('0')).toBeNull()
     expect(parseGrams('40')).toBe(40)
     expect(parseGrams('12,5')).toBe(12.5)
     expect(parseGrams('12.5')).toBe(12.5)

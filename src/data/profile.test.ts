@@ -140,6 +140,24 @@ describe('profili te cilësimet', () => {
     })
   })
 
+  it('orët e veçanta të çdo dite mbeten kur ruhet pesha, ditët ose zgjimi', async () => {
+    const { store, now } = setup()
+    await completeOnboarding(store, input, now)
+    const [row] = await store.all('user_settings')
+    await store.put('user_settings', { id: row.id, training_times: { 1: '18:00', 2: '21:00', 4: '20:30', 5: '18:00' } })
+
+    await updateProfile(store, { weightKg: 80 }, now)
+    await updateProfile(store, { wakeTime: '08:20', trainingTime: '18:00' }, now)
+    let [settings] = await store.all('user_settings')
+    expect(settings.training_times).toEqual({ 1: '18:00', 2: '21:00', 4: '20:30', 5: '18:00' })
+    expect(settings.wake_time).toBe('08:20')
+
+    // Dita e re merr orën e ditës së parë; ditët që mbeten mbajnë orën e tyre.
+    await updateProfile(store, { trainingDays: [2, 4, 6] }, now)
+    ;[settings] = await store.all('user_settings')
+    expect(settings.training_times).toEqual({ 2: '21:00', 4: '20:30', 6: '21:00' })
+  })
+
   it('pesha e ndryshuar te cilësimet shkon te matja e sotme', async () => {
     const { store, now } = setup()
     await completeOnboarding(store, input, now)

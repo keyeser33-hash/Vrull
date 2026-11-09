@@ -8,7 +8,7 @@ import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@
 import { readProfile } from './profile'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
 import { myPlan, type MyPlanItem } from './my-plan'
-import { supplementList } from './supplements'
+import { isSupplementSource, mealPowder, supplementList } from './supplements'
 import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
@@ -181,7 +181,8 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     return {
       meal,
       time,
-      status: list.length > 0 ? 'done' : 'todo',
+      // Proteina e shënuar "E mora" nuk e bën vaktin të ngrënë (V39).
+      status: list.some((entry) => !isSupplementSource(entry.sourceId)) ? 'done' : 'todo',
       entries: list,
       totals: sumMacros(list),
       template,
@@ -274,7 +275,9 @@ const round1 = (value: number) => Math.round(value * 10) / 10
 /** Vakti i Jimit në ditar me një prekje (Q18); artikujt pastaj ndryshohen një nga një. */
 export async function logTemplateMeal(store: LocalStore, date: string, meal: MealKey) {
   const day = await nutritionDay(store, date, store.now())
-  const items = day.meals.find((entry) => entry.meal === meal)?.template ?? []
+  // Proteina e përdoruesit e shënuar "E mora" zë vendin e pluhurit të planit (V39).
+  const { supplement: powderTaken } = await mealPowder(store, date, meal)
+  const items = (day.meals.find((entry) => entry.meal === meal)?.template ?? []).filter((item) => !(powderTaken && item.food === 'protein'))
   await saveTargets(store, date, day.dayType, false)
   const loggedAt = store.now().getTime()
   const rows = []

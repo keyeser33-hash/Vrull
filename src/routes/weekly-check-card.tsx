@@ -78,15 +78,15 @@ function WeeklyCheckProposal({ view, result, date, className }: { view: WeeklyCh
         </p>
       ) : null}
       {result.kcal === 0 ? (
-        <Button size="lg" disabled={busy} onClick={() => void decide('accepted')}>
+        <Button variant="secondary" ground="card" size="lg" disabled={busy} onClick={() => void decide('accepted')}>
           {t('today.weeklyCheck.ok')}
         </Button>
       ) : (
         <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-2">
-          <Button size="lg" className="px-3 text-xl" disabled={busy} onClick={() => void decide('accepted')}>
+          <Button variant="secondary" ground="card" size="lg" className="px-3" disabled={busy} onClick={() => void decide('accepted')}>
             {t(result.kcal > 0 ? 'today.weeklyCheck.accept' : 'today.weeklyCheck.acceptRemove', { kcal: fmt.number(Math.abs(result.kcal)) })}
           </Button>
-          <Button variant="outline" size="lg" className="px-3 text-lg" disabled={busy} onClick={() => void decide('dismissed')}>
+          <Button variant="outline" size="lg" className="px-3" disabled={busy} onClick={() => void decide('dismissed')}>
             {t('today.weeklyCheck.later')}
           </Button>
         </div>

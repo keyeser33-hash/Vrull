@@ -55,9 +55,15 @@ describe('leximi i etiketës', () => {
     expect(usage.live()).toEqual([])
   })
 
-  it('kërkesat paralele afër kufirit: rezervimet e njëra-tjetrës numërohen, kufiri kalohet të shumtën me një', async () => {
-    const usage = memoryUsage(AI_MONTHLY_LIMIT_EUR - AI_CALL_RESERVE_EUR / 2)
+  it('kërkesat paralele afër kufirit: rezervimet e njëra-tjetrës numërohen, kalon vetëm ajo që zë vend', async () => {
+    // Vend për një rezervim, jo për dy.
+    const usage = memoryUsage(AI_MONTHLY_LIMIT_EUR - AI_CALL_RESERVE_EUR * 1.5)
     const replies = await Promise.all([1, 2, 3].map(() => runLabel({ month: MONTH, request: {}, usage: usage.store, callClaude: async () => ok() })))
+    // Të shumtën një kalon; të tjerat refuzohen nga kufiri (429), jo nga një gabim tjetër. Rezervimet
+    // njëkohësisht mund t'i refuzojnë të treja: kufiri nuk kalohet kurrë.
     expect(replies.filter((reply) => reply.status === 200).length).toBeLessThanOrEqual(1)
+    expect(replies.every((reply) => reply.status === 200 || (reply.status === 429 && (reply.body as { error?: string }).error === 'limit'))).toBe(true)
+    // Vetëm, e njëjta kërkesë zë vend.
+    expect((await runLabel({ month: MONTH, request: {}, usage: memoryUsage(AI_MONTHLY_LIMIT_EUR - AI_CALL_RESERVE_EUR * 1.5).store, callClaude: async () => ok() })).status).toBe(200)
   })
 })

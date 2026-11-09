@@ -172,11 +172,14 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     .filter((row) => row.status === 'completed')
     .sort((a, b) => String(a.ended_at).localeCompare(String(b.ended_at)))
     .map((row) => ({ date: String(row.date), id: row.id }))
+  // Dita e humbur ndjek ditën e ushqimit (V46): dita e stërvitjes nuk ka mbaruar para ndërrimit të saj.
   const missedInput = await readMissedInput(store)
-  const week = calendarWeek(now, profile.trainingDays, completed, (date) => isMissed(missedInput, date, today))
-  const question = snapshot && !snapshot.completed && !snapshot.session ? missedYesterday(missedInput, today) : null
+  // Pa program me stërvitje (asnjë, ose i mbaruar) nuk ka ditë të humbura.
+  const programmeOpen = !!snapshot && !snapshot.completed
+  const week = calendarWeek(now, profile.trainingDays, completed, (date) => programmeOpen && isMissed(missedInput, date, eatingDate))
+  const question = programmeOpen && !snapshot.session ? missedYesterday(missedInput, eatingDate) : null
   const missed: TodayMissed | null = question
-    ? { ...question, time: trainingTimeOn(schedule, today), trainingKcal: (await dayTargets(store, today, 'training'))?.kcal ?? null }
+    ? { ...question, time: trainingTimeOn(schedule, eatingDate), trainingKcal: (await dayTargets(store, eatingDate, 'training'))?.kcal ?? null }
     : null
   const trainingToday = profile.trainingDays.includes(isoWeekday(now)) || missedInput.dayTypes[today] === 'training'
   const base = {

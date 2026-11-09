@@ -17,7 +17,7 @@ import { compressPhoto } from '@/lib/image'
 import type { MealKey } from '@/nutrition/meals'
 import type { DoseUnit, SupplementKind } from '@/nutrition/supplements'
 import { ChoiceChip, EditorFooter, Switch } from './builder-parts'
-import { parseGrams } from './nutrition-format'
+import { parseAmount, parseGrams } from './nutrition-format'
 
 // Ushqimi › Suplementet › Shto suplement (V39, V2-E2-10; bordet "Shto suplement" dhe "Nga etiketa"):
 // emri, lloji, doza, gramët e lugës, kur merret, makrot për lugë dhe "Numëroje te ushqimi". "Fotografo
@@ -135,7 +135,8 @@ function SupplementEditor({ id, initial }: { id: string | undefined; initial: Dr
   const protein = draft.kind === 'protein'
   const amount = parseGrams(draft.doseAmount)
   const scoop = parseGrams(draft.scoopG)
-  const macros = [draft.kcal, draft.protein, draft.carbs, draft.fat].map((value) => (value.trim() === '' ? 0 : parseGrams(value)))
+  // Kaloritë duhen më shumë se 0; proteina, karbohidratet dhe yndyra pranojnë 0 (etiketa e një izolati).
+  const macros = [draft.kcal, draft.protein, draft.carbs, draft.fat].map((value) => (value.trim() === '' ? 0 : parseAmount(value)))
   const macrosOk = macros.every((value) => value !== null) && parseGrams(draft.kcal) !== null
   const needsScoop = protein && draft.countsAsFood && scoop === null
   const valid = draft.name.trim().length > 0 && amount !== null && draft.timing.length > 0 && (!protein || !draft.countsAsFood || (scoop !== null && macrosOk))

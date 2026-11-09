@@ -78,7 +78,8 @@ export function jimPlan(meals: readonly MealKey[]): PlanMeal[] {
   }))
 }
 
-const macrosOf = (item: Pick<PlanItem, 'per100' | 'grams'>): Macros => ({
+/** Makrot e një artikulli me gramët e tij. */
+export const macrosOf = (item: Pick<PlanItem, 'per100' | 'grams'>): Macros => ({
   kcal: (item.per100.kcal * item.grams) / 100,
   proteinG: (item.per100.proteinG * item.grams) / 100,
   carbsG: (item.per100.carbsG * item.grams) / 100,
@@ -96,6 +97,10 @@ export function planTotals(meals: readonly PlanMeal[]): Macros {
   }
   return totals
 }
+
+/** Brenda objektivave (V34): kaloritë ±5% dhe proteina ±10 g. */
+export const withinPlanTargets = (totals: Macros, targets: Macros) =>
+  Math.abs(totals.kcal - targets.kcal) <= targets.kcal * 0.05 && Math.abs(totals.proteinG - targets.proteinG) <= 10
 
 /** Një ushqim "me proteinë" kur proteina jep të paktën 40% të kalorive të tij. */
 const PROTEIN_SHARE = 0.4

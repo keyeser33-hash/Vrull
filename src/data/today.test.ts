@@ -188,6 +188,22 @@ describe('pamja e Sot nga baza lokale', () => {
     expect(view.workout).toMatchObject({ theme: 'back', focus: { group: expect.objectContaining({ id: 'shpina' }) } })
   })
 
+  it('dita e humbur pyet pas ndërrimit të ditës së ushqimit (V46), jo në mesnatë', async () => {
+    const context = await boardWeek()
+    await train(context, at(8, 11, 17, 15), [{ weightKg: 62.5, reps: 12 }])
+    await train(context, at(9, 11, 17, 15), [{ weightKg: 40, reps: 10 }])
+    // E mërkura 02:30: zgjimi 07:00, dita e ushqimit ndërrohet në 04:00; e marta ende po vazhdon.
+    context.setClock(at(11, 11, 2, 30))
+    let view = await todayView(context.store)
+    expect(view.missed).toBeNull()
+    expect(view.week[1]).toMatchObject({ date: '2026-11-10' })
+    expect(view.week[1].state).not.toBe('missed')
+    context.setClock(at(11, 11, 4, 30))
+    view = await todayView(context.store)
+    expect(view.missed).toMatchObject({ date: '2026-11-10' })
+    expect(view.week[1].state).toBe('missed')
+  })
+
   it('para setit të parë: Java 0, pa peshë të sugjeruar', async () => {
     const context = setup()
     await completeOnboarding(context.store, PROFILE, () => SUNDAY)

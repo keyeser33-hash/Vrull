@@ -4,12 +4,12 @@ import { ignoredStreaks, MUTE_AFTER_DAYS, type ReminderLogEntry } from '@/remind
 import type { MutableKind, ReminderInput, ReminderToggles, SmartInput } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
 import { readMissedInput } from './missed-day'
-import { dayBasics, type NutritionDay, planDay, targetsWeight } from './nutrition'
+import { type NutritionDay, planDay, targetsWeight } from './nutrition'
 import { readProfile } from './profile'
 import { readSchedule } from './schedule-settings'
 import type { LocalStore } from './store'
 import { settingsRow } from './settings-row'
-import { supplementList } from './supplements'
+import { supplementFoodIds, supplementList } from './supplements'
 import { trainingSnapshot } from './training'
 
 // Cilësimet e rikujtuesve (SPEC §13) dhe të dhënat që u duhen për t'u planifikuar. Të gjitha
@@ -134,19 +134,20 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
   }
 }
 
-/** Rikujtuesit në ditë për vaktet, suplementet dhe ujin bashkë (V37). */
+/** Rikujtuesit në ditë për vaktet dhe suplementet bashkë (V37); uji ka të vetin, një në ditë. */
 export const MAX_DAILY_REMINDERS = 4
 
 async function smartInput(store: LocalStore, now: Date, settings: ReminderSettings, trainingDays: readonly number[], dayTypes: Record<string, DayType>): Promise<SmartInput> {
   // Nga dita e djeshme: vaktet pas mesnate i përkasin asaj.
   const dates = Array.from({ length: 8 }, (_, index) => localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + index - 1)))
-  const [diary, supplementLogs, water, weightKg, trainingDay, restDay] = await Promise.all([
+  const [diary, supplementLogs, water, weightKg, trainingDay, restDay, supplementFoods] = await Promise.all([
     Promise.all(dates.map((date) => store.where('diary_entries', 'date', date))),
     Promise.all(dates.map((date) => store.where('supplement_logs', 'date', date))),
     Promise.all(dates.map((date) => store.where('water_logs', 'date', date))),
     targetsWeight(store, localDate(now)),
     planDay(store, 'training', now),
     planDay(store, 'rest', now),
+    supplementFoodIds(store),
   ])
   const planOf = (day: NutritionDay) =>
     Object.fromEntries(
@@ -159,9 +160,21 @@ async function smartInput(store: LocalStore, now: Date, settings: ReminderSettin
   return {
     maxDaily: MAX_DAILY_REMINDERS,
     logged: {
-      meals: diary.flat().map((row) => `${String(row.date)}|${String(row.meal)}`),
+      // Proteina e shënuar "E mora" nuk e bën vaktin të regjistruar.
+      meals: diary
+        .flat()
+        .filter((row) => !supplementFoods.has(String(row.food_id)))
+        .map((row) => `${String(row.date)}|${String(row.meal)}`),
       supplements: supplementLogs.flat().map((row) => `${String(row.date)}|${String(row.timing)}|${String(row.supplement_id)}`),
-      waterMl: Object.fromEntries(dates.map((date, index) => [date, water[index].reduce((total, row) => total + Number(row.ml ?? 0), 0)])),
+      water: Object.fromEntries(
+        dates.map((date, index) => [
+          date,
+          water[index]
+            .map((row) => ({ ml: Number(row.ml ?? 0), at: Date.parse(String(row.logged_at)) }))
+            .filter((entry) => entry.ml > 0 && Number.isFinite(entry.at))
+            .sort((a, b) => a.at - b.at),
+        ]),
+      ),
     },
     quiet: settings.quiet,
     muted: Object.fromEntries(Object.keys(settings.muted).map((kind) => [kind, true])),
@@ -178,24 +191,23 @@ export async function muteIgnored(store: LocalStore, log: readonly ReminderLogEn
   if (log.length === 0) return []
   const settings = await reminderSettings(store)
   const dates = [...new Set(log.map((entry) => entry.date).filter(Boolean))]
+  const supplementFoods = await supplementFoodIds(store)
   const facts = new Map(
     await Promise.all(
       dates.map(async (date) => {
-        const [diary, supplements, water, basics] = await Promise.all([
+        const [diary, supplements, water] = await Promise.all([
           store.where('diary_entries', 'date', date),
           store.where('supplement_logs', 'date', date),
           store.where('water_logs', 'date', date),
-          dayBasics(store, date),
         ])
-        const total = water.reduce((sum, row) => sum + Number(row.ml ?? 0), 0)
-        const target = basics.weightKg === null ? null : waterTargetMl(basics.weightKg, basics.dayType)
         return [
           date,
           {
-            meals: new Set(diary.map((row) => String(row.meal))),
+            // Proteina e shënuar "E mora" nuk e bën vaktin të regjistruar.
+            meals: new Set(diary.filter((row) => !supplementFoods.has(String(row.food_id))).map((row) => String(row.meal))),
             supplements: new Set(supplements.map((row) => String(row.timing))),
-            // Uji nuk është injoruar kur dita mbaroi afër objektivit.
-            water: target !== null && total >= target * 0.75,
+            // SPEC §13: asnjë regjistrim atë ditë; një gotë e vetme mjafton.
+            water: water.some((row) => Number(row.ml ?? 0) > 0),
           },
         ] as const
       }),

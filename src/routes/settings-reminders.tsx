@@ -6,7 +6,7 @@ import { Sheet } from '@/components/layout/sheet'
 import { WEEK_DAYS } from '@/components/forms/week-days'
 import { planRemindersNow, store, useLocalQuery } from '@/data/app-data'
 import { readProfile } from '@/data/profile'
-import { reminderSettings, type ReminderSettings, setMeasurementDay, setQuietHours, setReminderToggle, unmuteReminders } from '@/data/reminders'
+import { MAX_DAILY_REMINDERS, reminderSettings, type ReminderSettings, setMeasurementDay, setQuietHours, setReminderToggle, unmuteReminders } from '@/data/reminders'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
 import { localDate } from '@/lib/calendar'
@@ -91,7 +91,7 @@ export function RemindersPage() {
             <Row label={t('reminders.measurementDay')} value={day} onClick={() => setParams({ ndrysho: 'matja' })} />
           </Group>
           <p className="px-1 text-[13px] leading-[1.4] text-muted-foreground">
-            {t('reminders.smartNote', { count: 4, sleep: profile?.sleepTime ?? '', wake: profile?.wakeTime ?? '' })}
+            {t('reminders.smartNote', { count: MAX_DAILY_REMINDERS, sleep: profile?.sleepTime ?? '', wake: profile?.wakeTime ?? '' })}
           </p>
         </>
       ) : (
@@ -157,7 +157,7 @@ function QuietSheet({ current, onClose }: { current: ReminderSettings['quiet']; 
               type="time"
               value={field.value}
               onChange={(event) => event.target.value && field.set(event.target.value)}
-              className={cn(inputClass, 'text-center font-display text-xl font-extrabold')}
+              className={cn(inputClass, 'text-center font-display text-xl font-extrabold tabular-nums')}
             />
           </label>
         ))}

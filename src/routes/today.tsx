@@ -217,7 +217,7 @@ function WorkoutModel({ primary, focus }: { primary: string[]; focus: string[] }
   )
 }
 
-/** Pllakat e bordit. Tani proteina e sotme; "Gati" dhe "Uji" zënë vendin e tyre me Etapën 3. */
+/** Pllakat e bordit: proteina e sotme; "Gati" vjen me Etapën 3. Uji ka kartën e vet (WaterCard, V36). */
 function Tiles({ view }: { view: TodayView }) {
   const { t, fmt } = useI18n()
   const navigate = useNavigate()

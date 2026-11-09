@@ -14,8 +14,9 @@ import { readProfile } from '@/data/profile'
 import { foodName, mealName, nameInSentence, portionText } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
-import { isProteinFood } from '@/nutrition/my-plan'
-import type { DayType, Macros } from '@/nutrition/targets'
+import { sumMacros } from '@/nutrition/jim'
+import { isProteinFood, macrosOf, withinPlanTargets } from '@/nutrition/my-plan'
+import type { DayType } from '@/nutrition/targets'
 import { Segmented, StepButton } from './builder-parts'
 import { kcalText } from './nutrition-format'
 
@@ -27,18 +28,6 @@ import { kcalText } from './nutrition-format'
 const REST = 'pushimi'
 const ADD = 'shto'
 
-/** Brenda objektivave: kaloritë ±5% dhe proteina ±10 g (V34). */
-const withinTargets = (totals: Macros, targets: Macros) => Math.abs(totals.kcal - targets.kcal) <= targets.kcal * 0.05 && Math.abs(totals.proteinG - targets.proteinG) <= 10
-
-const sumOf = (list: readonly Macros[]): Macros =>
-  list.reduce((sum, entry) => ({ kcal: sum.kcal + entry.kcal, proteinG: sum.proteinG + entry.proteinG, carbsG: sum.carbsG + entry.carbsG, fatG: sum.fatG + entry.fatG }), {
-    kcal: 0,
-    proteinG: 0,
-    carbsG: 0,
-    fatG: 0,
-  })
-
-const itemMacros = (item: MyPlanItem) => myPlanTotals([{ meal: 'lunch', items: [item] }])
 
 export function MyPlanPage() {
   const { t } = useI18n()
@@ -105,9 +94,9 @@ export function MyPlanPage() {
 function PlanTotals({ day }: { day: NutritionDay }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
-  const totals = sumOf(day.meals.map((meal) => meal.templateTotals))
+  const totals = sumMacros(day.meals.map((meal) => meal.templateTotals))
   const targets = day.targets
-  const within = targets ? withinTargets(totals, targets) : false
+  const within = targets ? withinPlanTargets(totals, targets) : false
   const rows = [
     { key: 'protein', label: t('food.protein'), value: totals.proteinG, target: targets?.proteinG },
     { key: 'carbs', label: t('food.carbs'), value: totals.carbsG, target: targets?.carbsG },
@@ -240,7 +229,7 @@ function MealSheet({
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
   const totals = myPlanTotals([{ meal: slot.meal, items }])
-  const dayTotals = sumOf([...day.meals.filter((meal) => meal.meal !== slot.meal).map((meal) => meal.templateTotals), totals])
+  const dayTotals = sumMacros([...day.meals.filter((meal) => meal.meal !== slot.meal).map((meal) => meal.templateTotals), totals])
   const name = mealName(t, slot.meal)
 
   if (swap !== null) {
@@ -348,7 +337,7 @@ function ItemRow({ item, expanded, onExpand, onSwap, onChange }: { item: MyPlanI
   const name = foodName(t, item)
   const inSentence = nameInSentence(name, lang)
   const portion = portionText(t, fmt, { count: item.count, unit: item.unit })
-  const macros = itemMacros(item)
+  const macros = macrosOf(item)
   const macroText = t('food.plan.itemMacros', { kcal: kcalText(i18n, macros.kcal), protein: Math.round(macros.proteinG) })
   const detail = item.unit === 'gram' ? macroText : `${fmt.unit(Math.round(item.grams), 'g')} · ${macroText}`
   const atMinimum = item.count - item.step < item.step - 1e-9
@@ -396,13 +385,13 @@ function SwapSheet({ item, onPick, onClose }: { item: MyPlanItem | null; onPick:
   const yours = useLocalQuery(() => userFoodOptions(store, item, query), [item, query])
   const fold = (text: string) => text.toLocaleLowerCase(lang).normalize('NFD').replace(/\p{M}/gu, '')
   const jim = jimFoodOptions(item).filter((option) => !query.trim() || fold(foodName(t, option)).includes(fold(query.trim())))
-  const base = item ? itemMacros(item) : null
+  const base = item ? macrosOf(item) : null
   const name = item ? nameInSentence(foodName(t, item), lang) : ''
   const hint = !item || !base ? t('food.plan.addHint') : isProteinFood(item) ? t('food.plan.swapHintProtein', { grams: Math.round(base.proteinG) }) : t('food.plan.swapHintKcal', { kcal: kcalText(i18n, base.kcal) })
   const chosen = selected ? nameInSentence(foodName(t, selected), lang) : ''
 
   const row = (option: MyPlanItem) => {
-    const macros = itemMacros(option)
+    const macros = macrosOf(option)
     const delta = base ? Math.round(macros.kcal - base.kcal) : null
     const isSelected = selected?.food === option.food
     return (

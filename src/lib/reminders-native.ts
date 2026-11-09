@@ -3,7 +3,7 @@ import { LocalNotifications } from '@capacitor/local-notifications'
 import { currentI18n, type Language } from '@/i18n'
 import type { QueuedReminderAction } from '@/data/reminder-actions'
 import type { ReminderLogEntry } from '@/reminders/ignored'
-import { type Reminder, REMINDER_IDS } from '@/reminders/plan'
+import { type Reminder, REMINDER_IDS, SNOOZE_MINUTES } from '@/reminders/plan'
 
 // Rikujtuesit në telefon (SPEC §13): njoftime lokale në kanalin e tyre. Çdo planifikim i ri heq
 // ata të mëparshëm (id 5000–5199) dhe vendos të rinjtë; timer-i i pushimit nuk preket. Emri i
@@ -53,7 +53,8 @@ export async function requestReminderPermission(): Promise<boolean> {
 
 /** Plugin-i native i rikujtuesve të zgjuar (RemindersPlugin.java, V2-E2-08). */
 interface RemindersPlugin {
-  schedule(options: { reminders: NativeReminder[]; channel: { name: string; description: string }; cancelKeys: string[] }): Promise<void>
+  /** `snoozeMinutes`: sa e shtyn "Shty"; telefoni e ruan me listën. */
+  schedule(options: { reminders: NativeReminder[]; channel: { name: string; description: string }; cancelKeys: string[]; snoozeMinutes: number }): Promise<void>
   pending(): Promise<{ actions: QueuedReminderAction[] }>
   ack(options: { ids: string[] }): Promise<void>
   log(): Promise<{ entries: ReminderLogEntry[] }>
@@ -102,6 +103,7 @@ export async function scheduleReminders(reminders: Reminder[], cancelKeys: strin
     })),
     channel: { name: t('reminders.notify.channel'), description: t('reminders.notify.channelText') },
     cancelKeys,
+    snoozeMinutes: SNOOZE_MINUTES,
   })
 }
 

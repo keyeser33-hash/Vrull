@@ -61,7 +61,10 @@ describe('rikujtuesit e zgjuar: të dhënat', () => {
     const { smart } = await reminderInput(store, new Date('2026-12-07T13:00:00'))
     expect(smart).toMatchObject({ maxDaily: 4, quiet: null, muted: {} })
     expect(smart!.logged.meals).toEqual(['2026-12-07|lunch'])
-    expect(smart!.logged.waterMl['2026-12-07']).toBe(500)
+    expect(smart!.logged.water['2026-12-07']).toEqual([
+      { ml: 250, at: Date.parse('2026-12-07T09:00:00.000Z') },
+      { ml: 250, at: Date.parse('2026-12-07T10:00:00.000Z') },
+    ])
     // 80 kg: 2 750 ml, +500 në ditët e stërvitjes (e hëna dhe e marta; e mërkura pushim).
     expect([smart!.waterTargets['2026-12-07'], smart!.waterTargets['2026-12-09']]).toEqual([3250, 2750])
     expect(Object.keys(smart!.plan.training ?? {})).toContain('pre_workout')

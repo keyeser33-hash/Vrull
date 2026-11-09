@@ -4,10 +4,11 @@ import { surfaceClass } from '@/components/ui/surface'
 import { store } from '@/data/app-data'
 import { answerMissedDay } from '@/data/missed-day'
 import type { TodayView } from '@/data/today'
-import { nameInSentence, programDayName } from '@/i18n/domain'
+import { missedNo, nameInSentence, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { kcalText } from './nutrition-format'
+import { capitalize } from './history-format'
 
 // Dita e humbur (V38, V2-E2-09, bordi "Sot · Dita e humbur"): dje ishte ditë stërvitjeje pa seancë
 // dhe sot është pushim. "Po" e bën sot ditë stërvitjeje me atë stërvitje; "Jo" e lë për ditën tjetër
@@ -39,7 +40,7 @@ export function MissedDayCard({ view, className }: { view: TodayView; className?
 
   return (
     <section aria-labelledby="missed-day" className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-xl p-4', className)}>
-      <span className="type-label text-data">{label.charAt(0).toLocaleUpperCase(lang) + label.slice(1)}</span>
+      <span className="type-label text-data">{capitalize(label, lang)}</span>
       <h2 id="missed-day" className="type-display-s">
         {t('today.missed.title')}
       </h2>
@@ -53,8 +54,8 @@ export function MissedDayCard({ view, className }: { view: TodayView; className?
         <Button variant="primary" size="lg" disabled={busy} onClick={() => void answer(true)}>
           {t('today.missed.yes', { time: missed.time })}
         </Button>
-        <Button variant="outline" size="lg" className="text-xl" disabled={busy} onClick={() => void answer(false)}>
-          {view.nextDate ? t(`today.missed.no.${weekdayOf(view.nextDate)}` as 'today.missed.no.1') : t('today.missed.no')}
+        <Button variant="outline" size="lg" disabled={busy} onClick={() => void answer(false)}>
+          {missedNo(t, view.nextDate ? weekdayOf(view.nextDate) : null)}
         </Button>
       </div>
       <p className="text-[13px] leading-[1.4] text-muted-foreground">

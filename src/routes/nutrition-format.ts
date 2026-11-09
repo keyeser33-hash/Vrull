@@ -43,3 +43,8 @@ export function parseGrams(text: string): number | null {
   const value = Number(normalized)
   return value > 0 ? value : null
 }
+
+/** Si `parseGrams`, por pranon edhe 0 (makrot e një etikete: "Yndyrë 0 g"). */
+export function parseAmount(text: string): number | null {
+  return /^0+([.,]0+)?$/.test(text.trim()) ? 0 : parseGrams(text)
+}

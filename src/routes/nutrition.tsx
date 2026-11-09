@@ -375,6 +375,20 @@ function MealSheet({ date, meal, onClose }: { date: string; meal: MealSlot; onCl
             })}
           </ul>
           <p className="text-sm leading-5 text-muted-foreground tabular-nums">{totalsLine(i18n, meal.totals)}</p>
+          {meal.status === 'done' ? null : (
+            // Vetëm proteina e shënuar "E mora": plani i vaktit mbetet për t'u regjistruar.
+            <Button
+              variant="secondary"
+              size="lg"
+              disabled={busy || meal.template.length === 0}
+              onClick={() => {
+                setBusy(true)
+                void logTemplateMeal(store, date, meal.meal).finally(() => setBusy(false))
+              }}
+            >
+              {t('food.logPlan')}
+            </Button>
+          )}
           <AddFoodLink meal={meal.meal} />
         </>
       ) : (

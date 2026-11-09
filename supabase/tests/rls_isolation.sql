@@ -23,7 +23,7 @@ declare
     'slot_prescriptions', 'program_state', 'workout_sessions', 'set_logs', 'one_rm_overrides',
     'body_measurements', 'progress_photos', 'foods', 'recipes', 'recipe_items', 'meal_templates',
     'diary_entries', 'nutrition_targets', 'supplements', 'supplement_logs', 'user_settings', 'week_weights',
-    'form_videos'
+    'form_videos', 'water_logs', 'weekly_checks'
   ];
   -- Bucket-et private me një dosje për përdorues (fotot e progresit, videot e formës).
   bucket text;
@@ -71,6 +71,9 @@ begin
     values (prog, blk, 1, slot, ex, 62.5, 'accepted');
   insert into public.form_videos (exercise_id, session_id, set_number, date, storage_path, mime_type, duration_s, bytes)
     values (ex, sess, 1, '2026-11-30', user_a || '/video.mp4', 'video/mp4', 24.2, 6000000);
+  insert into public.water_logs (date, ml) values ('2026-11-30', 250);
+  insert into public.weekly_checks (week_start, status, kcal, applies_from, maintenance_kcal, trend_change_kg, logged_days, average_kcal)
+    values ('2026-11-23', 'accepted', 90, '2026-11-30', 2900, 0.1, 6, 2800);
   insert into storage.objects (bucket_id, name) values ('progress-photos', user_a || '/front.jpg');
   insert into storage.objects (bucket_id, name) values ('form-videos', user_a || '/video.mp4');
 

@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { nutritionDay } from './nutrition'
+import { logTemplateMeal, nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
 import { ensureSupplements, removeSupplement, saveSupplement, setSupplementEnabled, supplementList, toggleSupplement } from './supplements'
@@ -84,6 +84,36 @@ describe('suplementet e mia (V39)', () => {
     breakfast = (await nutritionDay(store, WEDNESDAY, NOON)).meals.find((meal) => meal.meal === 'breakfast_1')!
     expect(breakfast.entries).toEqual([])
     expect(breakfast.supplements.find((item) => item.id === id)?.taken).toBe(false)
+  })
+
+  it('pluhuri numërohet një herë në vakt: "E mora" pas planit nuk shton, plani pas "E mora" e lë pluhurin e planit', async () => {
+    const store = await setup()
+    const id = await saveSupplement(store, WHEY)
+    const powders = (meal: Awaited<ReturnType<typeof nutritionDay>>['meals'][number]) => meal.entries.filter((entry) => /proteine|whey/i.test(entry.name ?? '')).map((entry) => entry.name)
+    // Plani i mëngjesit, pastaj "E mora": pluhuri i planit mbetet i vetmi.
+    await logTemplateMeal(store, WEDNESDAY, 'breakfast_1')
+    await toggleSupplement(store, { date: WEDNESDAY, supplementId: id, meal: 'breakfast_1' })
+    let day = await nutritionDay(store, WEDNESDAY, NOON)
+    const breakfast = day.meals.find((meal) => meal.meal === 'breakfast_1')!
+    expect(powders(breakfast)).toHaveLength(1)
+    expect(breakfast.supplements.find((item) => item.id === id)?.taken).toBe(true)
+    // "E mora" para gjumit, pastaj plani: pluhuri i planit nuk shtohet, mbetet proteina e përdoruesit.
+    await toggleSupplement(store, { date: WEDNESDAY, supplementId: id, meal: 'bedtime' })
+    await logTemplateMeal(store, WEDNESDAY, 'bedtime')
+    day = await nutritionDay(store, WEDNESDAY, NOON)
+    const bedtime = day.meals.find((meal) => meal.meal === 'bedtime')!
+    expect(powders(bedtime)).toEqual(['Gold Standard 100% Whey'])
+    expect(bedtime.entries).toHaveLength(bedtime.template.length)
+  })
+
+  it('një suplement i përdoruesit me emrin e një të listës del dhe ndryshohet', async () => {
+    const store = await setup()
+    const id = await saveSupplement(store, { ...WHEY, name: 'Pluhur proteine' })
+    const mine = (await supplementList(store)).filter((item) => item.name === 'Pluhur proteine')
+    expect(mine.map((item) => [item.id === id, item.custom, item.countsAsFood])).toEqual([
+      [false, false, false],
+      [true, true, true],
+    ])
   })
 
   it('pa "Numëroje te ushqimi": vetëm shenja; ndryshimi dhe heqja', async () => {

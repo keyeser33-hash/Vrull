@@ -1,11 +1,12 @@
 import type { I18n } from '@/i18n'
-import { foodName, mealName, nameInSentence, programDayName, programWeekLabel, supplementName } from '@/i18n/domain'
+import { foodName, mealName, missedNo, nameInSentence, programDayName, programWeekLabel, supplementName } from '@/i18n/domain'
 import { JIM_FOODS, JIM_MEALS } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
 import { type MealPlan, mealSchedule } from '@/nutrition/schedule'
 import type { SupplementDef } from '@/nutrition/supplements'
 import type { DayType } from '@/nutrition/targets'
 import { GLASS_ML } from '@/nutrition/water'
+import { type MissedInput, missedYesterday } from '@/program/missed-day'
 
 // Rikujtuesit (SPEC §13), pa UI: njoftimet e ditëve të ardhshme sipas orarit të vakteve, të
 // suplementeve, të stërvitjes dhe të matjes javore. Telefoni i planifikon dhe i rinovon sa herë
@@ -37,10 +38,10 @@ export type MutableKind = 'meal' | 'supplements' | 'water'
 
 /** Rikujtuesit e zgjuar (V37, SPEC §13). Pa to, plani mbetet si te 0.20 (çdo vakt, pa butona). */
 export interface SmartInput {
-  /** Njoftimet e vakteve, suplementeve dhe ujit në ditë; stërvitja dhe matja nuk numërohen. */
+  /** Njoftimet e vakteve dhe suplementeve në ditë; uji (një në ditë), stërvitja dhe matja nuk numërohen. */
   maxDaily: number
-  /** Çfarë është regjistruar: "data|vakti" për vaktet, "data|vakti|suplementi" për suplementet, ml uji sipas datës. */
-  logged: { meals: readonly string[]; supplements: readonly string[]; waterMl: Readonly<Record<string, number>> }
+  /** Çfarë është regjistruar: "data|vakti" për vaktet, "data|vakti|suplementi" për suplementet, uji sipas datës (ml dhe ora, ms). */
+  logged: { meals: readonly string[]; supplements: readonly string[]; water: Readonly<Record<string, readonly { ml: number; at: number }[]>> }
   /** Intervali i qetë që zgjedh përdoruesi ("12:30"–"14:00"); njoftimet bien në fund të tij. */
   quiet: { from: string; to: string } | null
   muted: Readonly<Partial<Record<MutableKind, true>>>
@@ -96,6 +97,8 @@ export interface Reminder {
 
 /** Id-të e rikujtuesve: 5000–5199 (timer-i i pushimit ka 4201). */
 export const REMINDER_IDS = { first: 5000, last: 5199 }
+/** "Shty" e sjell njoftimin sërish pas kaq minutash (telefoni e mban me listën). */
+export const SNOOZE_MINUTES = 30
 
 const pad = (value: number) => String(value).padStart(2, '0')
 const isoDate = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
@@ -131,6 +134,7 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
   let labelUsed = false
   const isTraining = (date: string, weekday: number) => (input.dayTypes[date] ?? (input.trainingDays.includes(weekday) ? 'training' : 'rest')) === 'training'
   const done = new Set(input.sessionDates ?? [])
+  const missedInput: MissedInput = { trainingDays: input.trainingDays, startedOn: input.startedOn ?? null, sessionDates: input.sessionDates ?? [], dayTypes: input.dayTypes }
   const loggedMeals = new Set(smart?.logged.meals ?? [])
   const loggedSupplements = new Set(smart?.logged.supplements ?? [])
   // Ditët e stërvitjes së planit pa seancë ende: pas tyre treguesi i programit nuk dihet.
@@ -151,20 +155,10 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     if (input.toggles.measurements && weekday === input.measurementDay && !late) {
       dayItems.push({ at: at(day, input.wakeTime), title: t('reminders.notify.measurement'), body: t('reminders.notify.measurementText'), kind: 'measurement' })
     }
-    // Dita e humbur (V38): dje ishte ditë stërvitjeje pa seancë dhe sot është pushim pa zgjedhje. Kur
-    // dje ka ende kohë (një ditë e planit), njoftimi ikën vetë me seancën, sepse plani rillogaritet.
-    const yesterday = new Date(day.getFullYear(), day.getMonth(), day.getDate() - 1)
-    const before = isoDate(yesterday)
-    const missed =
-      !late &&
-      input.toggles.training &&
-      !!input.startedOn &&
-      before >= input.startedOn &&
-      !training &&
-      input.dayTypes[date] === undefined &&
-      isTraining(before, yesterday.getDay() || 7) &&
-      !done.has(before)
-    if (missed) {
+    // Dita e humbur (V38): rregulli i Sot (`missedYesterday`), vetëm me një program që ka ende
+    // stërvitje. Kur dje ka ende kohë (një ditë e planit), njoftimi ikën vetë me seancën, sepse plani
+    // rillogaritet.
+    if (!late && input.toggles.training && input.nextWorkout && missedYesterday(missedInput, date)) {
       const known = input.nextWorkout && (offset === 0 ? 0 : pending - 1) === 0 ? input.nextWorkout : null
       if (smart) {
         const time = fmt.time(at(day, trainingTime))
@@ -183,7 +177,7 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
           data: { date },
           actions: [
             { id: 'yes', title: t('reminders.notify.yes') },
-            { id: 'no', title: next ? t(`today.missed.no.${next.getDay() || 7}` as 'today.missed.no.1') : t('today.missed.no') },
+            { id: 'no', title: missedNo(t, next ? next.getDay() || 7 : null) },
           ],
           done: {
             yes: { title: t('reminders.notify.missedYesDone'), body: t('reminders.notify.missedYesDoneText', { time }) },
@@ -238,7 +232,7 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
                 data,
                 actions: [
                   { id: 'ate' as const, title: t('reminders.notify.ate') },
-                  { id: 'snooze' as const, title: t('reminders.notify.snooze') },
+                  { id: 'snooze' as const, title: t('reminders.notify.snooze', { minutes: SNOOZE_MINUTES }) },
                 ],
                 done: {
                   ate: {
@@ -262,7 +256,7 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
                 data,
                 actions: [
                   { id: 'took' as const, title: t('reminders.notify.took') },
-                  { id: 'snooze' as const, title: t('reminders.notify.snooze') },
+                  { id: 'snooze' as const, title: t('reminders.notify.snooze', { minutes: SNOOZE_MINUTES }) },
                 ],
                 done: { took: { title: t('reminders.notify.supplementsDone'), body: supplements.join(', ') } },
               }
@@ -273,15 +267,23 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     const chosen = smart ? [...candidates].sort((a, b) => a.priority - b.priority || a.at.getTime() - b.at.getTime()).slice(0, smart.maxDaily) : candidates
     for (const { priority: _priority, ...item } of chosen) dayItems.push(item)
 
-    // Uji sipas ritmit (V37): vetëm kur je prapa, një herë në ditë, te pika e parë që vjen.
+    // Uji sipas ritmit (V37): vetëm kur je prapa, një herë në ditë. Një pikë që ka kaluar, ku ishe
+    // prapa, e mori rikujtuesin e ditës; pas saj nuk vjen tjetër.
     const waterTarget = smart?.waterTargets[date]
     if (smart && waterTarget && input.toggles.water !== false && !smart.muted.water && !late) {
-      const total = smart.logged.waterMl[date] ?? 0
+      const logs = smart.logged.water[date] ?? []
+      const drunkBy = (at: Date) => logs.reduce((sum, entry) => (entry.at <= at.getTime() ? sum + entry.ml : sum), 0)
+      const total = logs.reduce((sum, entry) => sum + entry.ml, 0)
       const wake = minutesOf(input.wakeTime)
       const span = (minutesOf(input.sleepTime) - wake + 1440) % 1440 || 1440
       for (const share of WATER_CHECKS) {
         const checkAt = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, wake + Math.round(span * share))
-        if (checkAt <= input.from || total >= waterTarget * share - GLASS_ML) continue
+        const behind = (ml: number) => ml < waterTarget * share - GLASS_ML
+        if (checkAt <= input.from) {
+          if (behind(drunkBy(checkAt))) break
+          continue
+        }
+        if (!behind(total)) continue
         dayItems.push({
           at: checkAt,
           title: t('reminders.notify.water', { total: litres(total), target: litres(waterTarget) }),
@@ -336,6 +338,6 @@ export function staleKeys(smart: SmartInput, reminders: readonly Reminder[]): st
   const keys = new Set<string>()
   for (const meal of smart.logged.meals) keys.add(`meal|${meal}`)
   for (const supplement of smart.logged.supplements) keys.add(`supplements|${supplement.split('|').slice(0, 2).join('|')}`)
-  for (const [date, ml] of Object.entries(smart.logged.waterMl)) if (ml > 0) keys.add(`water|${date}|`)
+  for (const [date, logs] of Object.entries(smart.logged.water)) if (logs.some((entry) => entry.ml > 0)) keys.add(`water|${date}|`)
   return [...keys].filter((key) => !planned.has(key))
 }

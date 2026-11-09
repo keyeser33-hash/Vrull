@@ -1,4 +1,4 @@
-import { type Activity, calculateTargets, type Goal, type Sex, type TargetsResult } from '@/nutrition/calculator'
+import { type Activity, calculateTargets, type Goal, type Sex, type TargetsResult, withAdjustment } from '@/nutrition/calculator'
 import { type DayType, type Macros, nutritionTargets } from '@/nutrition/targets'
 import { numberOrNull } from '@/lib/number'
 import { settingsRow } from './settings-row'
@@ -82,16 +82,6 @@ export async function readAdjustments(store: LocalStore): Promise<TargetAdjustme
 export const adjustmentOn = (adjustments: readonly TargetAdjustment[], date: string) =>
   adjustments.filter((adjustment) => adjustment.from <= date).reduce((sum, adjustment) => sum + adjustment.kcal, 0)
 
-/** Karbohidratet nuk bien nën këtë kur korrigjimi është negativ (si te kalkulatori). */
-const CARBS_FLOOR_G = 50
-
-/** Objektivat me korrigjimin: kaloritë dhe karbohidratet (kcal ÷ 4), me kufirin e karbohidrateve. */
-export function withAdjustment(macros: Macros, kcal: number): Macros {
-  if (kcal === 0) return macros
-  const carbs = macros.carbsG + kcal / 4
-  if (carbs >= CARBS_FLOOR_G) return { ...macros, kcal: macros.kcal + kcal, carbsG: Math.round(carbs) }
-  return { ...macros, kcal: macros.kcal + (CARBS_FLOOR_G - macros.carbsG) * 4, carbsG: CARBS_FLOOR_G }
-}
 
 export async function readTargetsProfile(store: LocalStore): Promise<TargetsProfile> {
   const [row, adjustments] = await Promise.all([settingsRow(store), readAdjustments(store)])

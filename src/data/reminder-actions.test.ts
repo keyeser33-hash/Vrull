@@ -3,7 +3,7 @@ import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
-import { ensureSupplements, supplementList } from './supplements'
+import { ensureSupplements, saveSupplement, supplementList } from './supplements'
 
 // Butonat te rikujtuesit (V37, V2-E2-08) të zbatuar nga radha: e mërkurë 9 dhjetor 2026.
 const USER = '11111111-1111-4111-8111-111111111111'
@@ -45,6 +45,45 @@ describe('veprimet nga njoftimi', () => {
     )
     expect((await store.where('water_logs', 'date', DATE)).map((row) => row.ml)).toEqual([250])
     expect((await nutritionDay(store, DATE, store.now())).dayType).toBe('training')
+  })
+
+  it('"Hëngra si në plan" me proteinën që numërohet te ushqimi: pluhuri një herë, me makrot e saj', async () => {
+    const store = await setup()
+    const id = await saveSupplement(store, {
+      name: 'Whey',
+      kind: 'protein',
+      doseAmount: 1,
+      doseUnit: 'scoop',
+      scoopG: 30,
+      timing: ['bedtime'],
+      macros: { kcal: 120, proteinG: 24, carbsG: 3, fatG: 1.5 },
+      countsAsFood: true,
+    })
+    const ate = { id: 'b1', action: 'ate' as const, key: `meal|${DATE}|bedtime`, data: { date: DATE, meal: 'bedtime' as const, supplementIds: [id] } }
+    await applyReminderActions(store, [ate], appliedLog())
+    const bedtime = (await nutritionDay(store, DATE, store.now())).meals.find((meal) => meal.meal === 'bedtime')!
+    expect(bedtime.entries.filter((entry) => /proteine|whey/i.test(entry.name ?? ''))).toEqual([expect.objectContaining({ name: 'Whey', proteinG: 24 })])
+    expect(bedtime.entries).toHaveLength(bedtime.template.length)
+  })
+
+  it('"E mora" te app-i nuk e bën vaktin të regjistruar: "Hëngra si në plan" regjistron pjesën tjetër', async () => {
+    const store = await setup()
+    const id = await saveSupplement(store, { name: 'Whey', kind: 'protein', doseAmount: 1, doseUnit: 'scoop', scoopG: 30, timing: ['bedtime'], macros: { kcal: 120, proteinG: 24, carbsG: 3, fatG: 1.5 }, countsAsFood: true })
+    const { toggleSupplement } = await import('./supplements')
+    await toggleSupplement(store, { date: DATE, supplementId: id, meal: 'bedtime' })
+    await applyReminderActions(store, [{ id: 'b2', action: 'ate', key: `meal|${DATE}|bedtime`, data: { date: DATE, meal: 'bedtime', supplementIds: [id] } }], appliedLog())
+    const bedtime = (await nutritionDay(store, DATE, store.now())).meals.find((meal) => meal.meal === 'bedtime')!
+    expect(bedtime.entries).toHaveLength(bedtime.template.length)
+    expect(bedtime.entries.filter((entry) => /proteine|whey/i.test(entry.name ?? ''))).toHaveLength(1)
+  })
+
+  it('dy zbatime njëkohësisht (dëgjuesi dhe plani) nuk e zbatojnë një prekje dy herë', async () => {
+    const store = await setup()
+    const applied = appliedLog()
+    const water = { id: 'w1', action: 'drank' as const, key: `water|${DATE}|`, data: { date: DATE, ml: 250 } }
+    const second = { ...water, id: 'w2' }
+    await Promise.all([applyReminderActions(store, [water], applied), applyReminderActions(store, [water, second], applied)])
+    expect((await store.where('water_logs', 'date', DATE)).map((row) => row.ml)).toEqual([250, 250])
   })
 
   it('vakti i regjistruar ndërkohë te app-i nuk regjistrohet dy herë', async () => {

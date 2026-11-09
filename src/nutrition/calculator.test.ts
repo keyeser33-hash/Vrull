@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calculateTargets, navyBodyFat, type ProfileInput } from './calculator'
+import { adjustedTargets, calculateTargets, MIN_CARBS_G, navyBodyFat, type ProfileInput, withAdjustment } from './calculator'
 
 // Kalkulatori i objektivave (SPEC Shtojca C, V32, V2-E2-02).
 const owner: ProfileInput = {
@@ -134,6 +134,28 @@ describe('calculateTargets', () => {
     const result = calculateTargets(owner)
     expect(result.averageKcal).toBeCloseTo((2630 * 3 + 2930 * 4) / 7, 5)
     expect(calculateTargets({ ...owner, sessionsPerWeek: 0 }).averageKcal).toBe(2630)
+  })
+})
+
+describe('korrigjimi javor (V33)', () => {
+  const day = { kcal: 2630, proteinG: 176, carbsG: 300, fatG: 79 }
+
+  it('kaloritë shkojnë te karbohidratet, kcal ÷ 4', () => {
+    expect(withAdjustment(day, 90)).toEqual({ kcal: 2720, proteinG: 176, carbsG: 323, fatG: 79 })
+    expect(withAdjustment(day, -150)).toEqual({ kcal: 2480, proteinG: 176, carbsG: 263, fatG: 79 })
+    expect(withAdjustment(day, 0)).toBe(day)
+  })
+
+  it('karbohidratet nuk bien nën 50 g: kaloritë ulen vetëm deri atje', () => {
+    const low = { ...day, kcal: 1800, carbsG: 70 }
+    expect(withAdjustment(low, -150)).toEqual({ kcal: 1720, proteinG: 176, carbsG: MIN_CARBS_G, fatG: 79 })
+  })
+
+  it('zbërthimi ndjek ditët e korrigjuara', () => {
+    const result = calculateTargets(owner)
+    const adjusted = adjustedTargets(result, 90)
+    expect([adjusted.rest.kcal, adjusted.training.kcal]).toEqual([result.rest.kcal + 90, result.training.kcal + 90])
+    expect([adjusted.breakdown.rest, adjusted.breakdown.training]).toEqual([result.breakdown.rest + 90, result.breakdown.training + 90])
   })
 })
 

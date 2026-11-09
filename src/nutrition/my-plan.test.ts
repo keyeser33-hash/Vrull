@@ -1,6 +1,6 @@
 import { JIM_MEALS } from './jim'
 import type { MealKey } from './meals'
-import { jimPlan, roundToPortion, scalePlan } from './my-plan'
+import { jimPlan, roundToPortion, scalePlan, withinPlanTargets } from './my-plan'
 
 // Plani im (V34, V2-E2-05): plani i Jimit i shkallëzuar te objektivat, në njësi reale.
 const TRAINING_MEALS: MealKey[] = ['breakfast_1', 'breakfast_2', 'snack_am', 'lunch', 'snack_pm', 'dinner', 'pre_workout', 'post_workout', 'bedtime']
@@ -67,5 +67,14 @@ describe('ndërrimi i ushqimit', () => {
     expect(options.map((option) => option.food)).toContain('oatmeal')
     const oatmeal = options.find((option) => option.food === 'oatmeal')!
     expect(Math.abs((oatmeal.per100.kcal * oatmeal.grams) / 100 - 161)).toBeLessThan(60)
+  })
+})
+
+describe('brenda objektivave (V34)', () => {
+  const target = { kcal: 2930, proteinG: 176, carbsG: 379, fatG: 79 }
+  it('kaloritë ±5% dhe proteina ±10 g', () => {
+    expect(withinPlanTargets({ ...target, kcal: 2930 * 1.05, proteinG: 186 }, target)).toBe(true)
+    expect(withinPlanTargets({ ...target, kcal: 2930 * 0.94 }, target)).toBe(false)
+    expect(withinPlanTargets({ ...target, proteinG: 165 }, target)).toBe(false)
   })
 })

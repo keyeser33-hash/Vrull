@@ -1,7 +1,7 @@
 import { localDate } from '@/lib/calendar'
 import type { MissedInput } from '@/program/missed-day'
 import { isMissed } from '@/program/missed-day'
-import { setDayType } from './nutrition'
+import { currentFoodDate, setDayType } from './nutrition'
 import { readProfile } from './profile'
 import { settingsRow } from './settings-row'
 import type { LocalStore } from './store'
@@ -39,7 +39,10 @@ export function firstMissedSinceLastSession(input: MissedInput, today: string): 
   return null
 }
 
-/** "Po": sot bëhet ditë stërvitjeje (objektivat, vaktet rreth stërvitjes); "Jo": mbetet pushim. */
+/**
+ * "Po": sot bëhet ditë stërvitjeje (objektivat, vaktet rreth stërvitjes); "Jo": mbetet pushim. "Sot"
+ * është dita e ushqimit (V46), si te pyetja.
+ */
 export async function answerMissedDay(store: LocalStore, train: boolean) {
-  await setDayType(store, localDate(store.now()), train ? 'training' : 'rest')
+  await setDayType(store, await currentFoodDate(store, store.now()), train ? 'training' : 'rest')
 }

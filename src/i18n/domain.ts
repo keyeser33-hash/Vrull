@@ -81,6 +81,22 @@ export function portionText(t: T, fmt: Format, portion: Portion): string {
 }
 
 /** Një emër brenda fjalisë ("me pluhur proteine, ZMA"): me shkronjë të vogël, përveç shkurtimeve (BCAA, ZMA). */
+const MISSED_NO = {
+  1: 'today.missed.no.1',
+  2: 'today.missed.no.2',
+  3: 'today.missed.no.3',
+  4: 'today.missed.no.4',
+  5: 'today.missed.no.5',
+  6: 'today.missed.no.6',
+  7: 'today.missed.no.7',
+} as const
+
+/** "Jo, të enjten" (dita ISO e stërvitjes së radhës), ose "Jo, më vonë" pa të (V38). */
+export function missedNo(t: T, weekday: number | null): string {
+  const key = weekday === null ? undefined : MISSED_NO[weekday as keyof typeof MISSED_NO]
+  return key ? t(key) : t('today.missed.no')
+}
+
 export function nameInSentence(name: string, lang: string): string {
   return /^[\p{Lu}\d-]{2,}$/u.test(name) ? name : name.toLocaleLowerCase(lang)
 }

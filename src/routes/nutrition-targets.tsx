@@ -7,14 +7,16 @@ import { Icon } from '@/components/ui/icons'
 import { inputClass } from '@/components/ui/field-styles'
 import { store, useLocalQuery } from '@/data/app-data'
 import { targetsPageData } from '@/data/nutrition'
-import { adjustmentOn, EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, type TargetsInput, withAdjustment } from '@/data/targets-profile'
+import { adjustmentOn, EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, type TargetsInput } from '@/data/targets-profile'
 import { useI18n } from '@/i18n/use-i18n'
 import { localDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
 import {
   ACTIVITY_FACTORS,
+  adjustedTargets,
   DEFAULT_AGE,
   FAT_LIMITS,
+  MIN_CARBS_G,
   navyBodyFat,
   PROTEIN_LIMITS,
   RATE_LIMITS,
@@ -69,19 +71,6 @@ function TargetsSkeleton() {
   )
 }
 
-/** Rezultati i kalkulatorit me korrigjimet e pranuara të kontrollit javor (V33). */
-function adjusted(result: TargetsResult, kcal: number): TargetsResult {
-  if (kcal === 0) return result
-  const rest = withAdjustment(result.rest, kcal)
-  const training = withAdjustment(result.training, kcal)
-  return {
-    ...result,
-    rest,
-    training,
-    breakdown: { ...result.breakdown, rest: result.breakdown.rest + rest.kcal - result.rest.kcal, training: result.breakdown.training + training.kcal - result.training.kcal },
-  }
-}
-
 function TargetsEditor({
   date,
   initial,
@@ -107,7 +96,7 @@ function TargetsEditor({
   const [failed, setFailed] = useState(false)
   const set = (patch: Partial<TargetsInput>) => setDraft((current) => ({ ...current, ...patch }))
   const calculated = weightKg === null ? null : personalTargets(draft, { weightKg, sessionsPerWeek, date })
-  const result = calculated && adjusted(calculated, adjustment)
+  const result = calculated && adjustedTargets(calculated, adjustment)
   const sheet = params.get('flete') as SheetName | null
   const goal = draft.goal ?? DEFAULT_GOAL
 
@@ -138,7 +127,7 @@ function TargetsEditor({
           </p>
           {result.limits.map((limit) => (
             <p key={limit} className="text-sm leading-[1.4] text-muted-foreground">
-              {limit === 'carbs_floor' ? t('food.targets.limit.carbs_floor', { grams: 50 }) : t('food.targets.limit.kcal_floor')}
+              {limit === 'carbs_floor' ? t('food.targets.limit.carbs_floor', { grams: MIN_CARBS_G }) : t('food.targets.limit.kcal_floor')}
             </p>
           ))}
         </TargetsCard>

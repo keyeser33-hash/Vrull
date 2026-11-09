@@ -36,6 +36,30 @@ export interface SupplementInput {
 
 const numberOr = (value: unknown) => (value === null || value === undefined || value === '' ? null : Number(value))
 const SUPPLEMENT_FOOD = 'supplement:'
+/** Ushqimi i pluhurit të proteinës te plani i Jimit (data/nutrition.ts › templateFood). */
+const PLAN_POWDER = 'jim:protein'
+
+/** Një regjistrim nga "E mora" i një proteine që numërohet te ushqimi, sipas `source_id` të ushqimit. */
+export const isSupplementSource = (sourceId: string | null | undefined) => !!sourceId && sourceId.startsWith(SUPPLEMENT_FOOD)
+
+/** Ushqimet që shtoi "E mora" i një proteine që numërohet te ushqimi (jo një vakt i ngrënë). */
+export async function supplementFoodIds(store: LocalStore): Promise<Set<string>> {
+  const foods = await store.all('foods')
+  return new Set(foods.filter((row) => row.source === 'custom' && isSupplementSource(row.source_id as string | null)).map((row) => row.id))
+}
+
+/**
+ * Pluhuri i proteinës numërohet një herë në vakt (V39): nëse vakti ka pluhurin e planit, "E mora" nuk
+ * shton rresht; nëse ka proteinën e përdoruesit, plani nuk shton pluhurin e tij.
+ */
+export async function mealPowder(store: LocalStore, date: string, meal: MealKey): Promise<{ plan: boolean; supplement: boolean }> {
+  const entries = (await store.where('diary_entries', 'date', date)).filter((row) => row.meal === meal)
+  const foods = await Promise.all(entries.map((row) => store.get('foods', String(row.food_id))))
+  return {
+    plan: foods.some((food) => food?.source === 'template' && food.source_id === PLAN_POWDER),
+    supplement: foods.some((food) => food?.source === 'custom' && isSupplementSource(food.source_id as string | null)),
+  }
+}
 
 /** Lista e §10, vetëm kur përdoruesi nuk ka asnjë suplement. */
 export async function ensureSupplements(store: LocalStore) {
@@ -55,7 +79,7 @@ export async function ensureSupplements(store: LocalStore) {
   )
 }
 
-/** Suplementet me radhë; i njëjti emër del një herë (p.sh. kur dy telefona e shtuan listën). */
+/** Suplementet me radhë; një emër i listës del një herë (p.sh. kur dy telefona e shtuan listën), ato të përdoruesit gjithnjë. */
 export async function supplementList(store: LocalStore): Promise<Supplement[]> {
   const rows = (await store.all('supplements')).sort(
     (a, b) => Number(a.position) - Number(b.position) || String(a.created_at).localeCompare(String(b.created_at)),
@@ -63,9 +87,11 @@ export async function supplementList(store: LocalStore): Promise<Supplement[]> {
   const seen = new Set<string>()
   return rows.flatMap((row) => {
     const name = String(row.name)
-    if (seen.has(name)) return []
-    seen.add(name)
-    const known = supplementByName(name)
+    // Suplementet e përdoruesit kanë llojin; një emër i listës nuk i bën të listës.
+    const custom = (row.kind !== null && row.kind !== undefined) || !supplementByName(name)
+    if (!custom && seen.has(name)) return []
+    if (!custom) seen.add(name)
+    const known = custom ? undefined : supplementByName(name)
     return [
       {
         id: row.id,
@@ -83,7 +109,7 @@ export async function supplementList(store: LocalStore): Promise<Supplement[]> {
             ? null
             : { kcal: Number(row.kcal), proteinG: Number(row.protein_g ?? 0), carbsG: Number(row.carbs_g ?? 0), fatG: Number(row.fat_g ?? 0) },
         countsAsFood: row.counts_as_food === true,
-        custom: !known,
+        custom,
       },
     ]
   })
@@ -149,7 +175,8 @@ export async function setSupplementEnabled(store: LocalStore, id: string, enable
 
 /**
  * Shënon suplementin të marrë (ose e heq shenjën). Një pluhur proteine që numërohet te ushqimi shton
- * te vakti një regjistrim me makrot e tij, një herë; heqja e shenjës e heq. Kthen rreshtat e krijuar.
+ * te vakti një regjistrim me makrot e tij, një herë dhe vetëm kur vakti nuk ka pluhurin e planit;
+ * heqja e shenjës e heq. Kthen rreshtat e krijuar.
  */
 export async function setSupplementTaken(
   store: LocalStore,
@@ -169,7 +196,7 @@ export async function setSupplementTaken(
   }
   const log = existing ? null : (await store.put('supplement_logs', { date: input.date, supplement_id: input.supplementId, timing: input.meal, taken_at: store.now().toISOString() })).id
   let diary: string | null = null
-  if (foodId && serving && supplement && entries.length === 0) {
+  if (foodId && serving && supplement && entries.length === 0 && !(await mealPowder(store, input.date, input.meal)).plan) {
     const round1 = (value: number) => Math.round(value * 10) / 10
     diary = (
       await store.put('diary_entries', {

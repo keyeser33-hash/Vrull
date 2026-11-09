@@ -61,7 +61,8 @@ export const TRAINING_KCAL_PER_KG = 3.4
 const KCAL_PER_KG_GAIN = 5600
 const KCAL_PER_KG_LOSS = 7700
 const KCAL_FLOOR: Record<Sex, number> = { male: 1500, female: 1200 }
-const MIN_CARBS_G = 50
+/** Karbohidratet nuk bien nën këtë: as te kalkulatori, as me një korrigjim javor negativ. */
+export const MIN_CARBS_G = 50
 const MIN_FAT_SHARE = 0.2
 
 export const RATE_LIMITS: Record<Exclude<Goal, 'maintain'>, { min: number; max: number; default: number }> = {
@@ -156,6 +157,27 @@ export function calculateTargets(input: ProfileInput): TargetsResult {
       training: training.kcal,
     },
     limits,
+  }
+}
+
+/** Objektivat me korrigjimin javor (V33): kaloritë dhe karbohidratet (kcal ÷ 4), me kufirin e karbohidrateve. */
+export function withAdjustment(macros: Macros, kcal: number): Macros {
+  if (kcal === 0) return macros
+  const carbs = macros.carbsG + kcal / 4
+  if (carbs >= MIN_CARBS_G) return { ...macros, kcal: macros.kcal + kcal, carbsG: Math.round(carbs) }
+  return { ...macros, kcal: macros.kcal + (MIN_CARBS_G - macros.carbsG) * 4, carbsG: MIN_CARBS_G }
+}
+
+/** Rezultati i kalkulatorit me korrigjimet e pranuara: ditët dhe zbërthimi i kalorive. */
+export function adjustedTargets(result: TargetsResult, kcal: number): TargetsResult {
+  if (kcal === 0) return result
+  const rest = withAdjustment(result.rest, kcal)
+  const training = withAdjustment(result.training, kcal)
+  return {
+    ...result,
+    rest,
+    training,
+    breakdown: { ...result.breakdown, rest: result.breakdown.rest + rest.kcal - result.rest.kcal, training: result.breakdown.training + training.kcal - result.training.kcal },
   }
 }
 

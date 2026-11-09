@@ -46,13 +46,16 @@ final class ReminderNotifier {
     static final String EXTRA_ACTION = "action";
     static final String EXTRA_TARGET = "target";
     static final String EXTRA_KEY = "vrull.key";
+    /** Njoftimi "u regjistrua": nuk e heq plani i ri, që "Kthe mbrapsht" të mbetet deri në skadim. */
+    static final String EXTRA_DONE = "vrull.done";
 
     /** Id-të e rikujtuesve (REMINDER_IDS te plan.ts) dhe të shtyrjeve. */
     static final int FIRST_ID = 5000;
     static final int LAST_ID = 5199;
     static final int FIRST_SNOOZE = 5200;
     static final int LAST_SNOOZE = 5299;
-    private static final long SNOOZE_MS = 30 * 60_000L;
+    /** Shtyrja kur JS-i nuk e jep (SNOOZE_MINUTES te plan.ts). */
+    private static final double DEFAULT_SNOOZE_MINUTES = 30;
     /** Njoftimi "u regjistrua" ikën vetë pas 10 minutash. */
     private static final long DONE_TIMEOUT_MS = 10 * 60_000L;
     private static final long LOG_DAYS_MS = 14 * 24 * 3_600_000L;
@@ -65,6 +68,12 @@ final class ReminderNotifier {
     private static final String KEY_QUEUE = "queue";
     private static final String KEY_LOG = "log";
     private static final String KEY_CHANNEL = "channel";
+    /**
+     * Rikujtuesi që tregon çdo njoftim i dukshëm, sipas id-së së njoftimit. Butonat lexojnë këtë, jo
+     * listën: plani i ri u jep id-të rikujtuesve të tjerë, dhe një shtyrje që ra hiqet nga lista e saj.
+     */
+    private static final String KEY_SHOWN = "shown";
+    private static final String KEY_SNOOZE_MINUTES = "snoozeMinutes";
     private static final String CHANNEL = "rikujtuesit";
 
     private static final Object LOCK = new Object();
@@ -77,7 +86,7 @@ final class ReminderNotifier {
      * Lista e re zëvendëson të vjetrën: alarmet e saj hiqen, të rejat vendosen. Njoftimet e dukshme dhe
      * shtyrjet për `cancelKeys` (vakte, suplemente, ujë të regjistruar ndërkohë) hiqen.
      */
-    static void schedule(Context context, JSONArray reminders, JSONObject channel, Set<String> cancelKeys) {
+    static void schedule(Context context, JSONArray reminders, JSONObject channel, Set<String> cancelKeys, double snoozeMinutes) {
         synchronized (LOCK) {
             SharedPreferences prefs = prefs(context);
             JSONArray old = array(prefs.getString(KEY_LIST, null));
@@ -99,6 +108,7 @@ final class ReminderNotifier {
                 .putString(KEY_LIST, reminders.toString())
                 .putString(KEY_SNOOZED, keptSnoozed.toString())
                 .putString(KEY_CHANNEL, channel.toString())
+                .putFloat(KEY_SNOOZE_MINUTES, (float) (snoozeMinutes > 0 ? snoozeMinutes : DEFAULT_SNOOZE_MINUTES))
                 .commit();
             long now = System.currentTimeMillis();
             for (int i = 0; i < reminders.length(); i++) {
@@ -137,12 +147,16 @@ final class ReminderNotifier {
         synchronized (LOCK) {
             item = find(context, id);
             if (item == null) return;
+            SharedPreferences prefs = prefs(context);
+            SharedPreferences.Editor edit = prefs.edit();
             if (id >= FIRST_SNOOZE) {
-                SharedPreferences prefs = prefs(context);
                 JSONObject snoozed = object(prefs.getString(KEY_SNOOZED, null));
                 snoozed.remove(String.valueOf(id));
-                prefs.edit().putString(KEY_SNOOZED, snoozed.toString()).commit();
+                edit.putString(KEY_SNOOZED, snoozed.toString());
             }
+            JSONObject shown = object(prefs.getString(KEY_SHOWN, null));
+            putQuietly(shown, String.valueOf(id), item);
+            edit.putString(KEY_SHOWN, shown.toString()).commit();
             appendLog(context, item, false);
         }
         ensureChannel(context);
@@ -154,16 +168,17 @@ final class ReminderNotifier {
         JSONObject item;
         String uid = UUID.randomUUID().toString();
         synchronized (LOCK) {
-            item = find(context, id);
+            item = shownItem(context, id);
             if (item == null) {
                 cancel(context, id);
                 return;
             }
             markActed(context, item.optString("key"));
             if ("snooze".equals(action)) {
-                int snoozeId = FIRST_SNOOZE + Math.floorMod(id, LAST_SNOOZE - FIRST_SNOOZE + 1);
-                long at = System.currentTimeMillis() + SNOOZE_MS;
                 SharedPreferences prefs = prefs(context);
+                int snoozeId = FIRST_SNOOZE + Math.floorMod(id, LAST_SNOOZE - FIRST_SNOOZE + 1);
+                long at = System.currentTimeMillis() + Math.round(prefs.getFloat(KEY_SNOOZE_MINUTES, (float) DEFAULT_SNOOZE_MINUTES) * 60_000.0);
+                forgetShown(context, id);
                 JSONObject snoozed = object(prefs.getString(KEY_SNOOZED, null));
                 JSONObject copy = copy(item);
                 putQuietly(copy, "id", snoozeId);
@@ -189,32 +204,30 @@ final class ReminderNotifier {
         }
     }
 
-    /** "Kthe mbrapsht": prekja që JS-i nuk e ka zbatuar ende hiqet nga radha; përndryshe JS-i e kthen. */
+    /**
+     * "Kthe mbrapsht": prekja hiqet nga radha dhe hyn një "undo". JS-i mund ta ketë lexuar prekjen pa e
+     * hequr ende nga radha; "undo" e kthen atëherë, dhe s'bën asgjë për një prekje që nuk u zbatua.
+     */
     static void onUndo(Context context, int id, String target) {
         synchronized (LOCK) {
             SharedPreferences prefs = prefs(context);
             JSONArray queue = array(prefs.getString(KEY_QUEUE, null));
             JSONArray kept = new JSONArray();
-            boolean removed = false;
             for (int i = 0; i < queue.length(); i++) {
                 JSONObject entry = queue.optJSONObject(i);
-                if (entry == null) continue;
-                if (target.equals(entry.optString("id"))) removed = true;
-                else kept.put(entry);
+                if (entry != null && !target.equals(entry.optString("id"))) kept.put(entry);
             }
-            if (removed) {
-                prefs.edit().putString(KEY_QUEUE, kept.toString()).commit();
-            } else {
-                JSONObject undo = new JSONObject();
-                putQuietly(undo, "id", UUID.randomUUID().toString());
-                putQuietly(undo, "action", "undo");
-                putQuietly(undo, "target", target);
-                JSONObject item = find(context, id);
-                putQuietly(undo, "key", item == null ? "" : item.optString("key"));
-                putQuietly(undo, "data", JSONObject.NULL);
-                putQuietly(undo, "at", System.currentTimeMillis());
-                enqueue(context, undo);
-            }
+            prefs.edit().putString(KEY_QUEUE, kept.toString()).commit();
+            JSONObject undo = new JSONObject();
+            putQuietly(undo, "id", UUID.randomUUID().toString());
+            putQuietly(undo, "action", "undo");
+            putQuietly(undo, "target", target);
+            JSONObject item = shownItem(context, id);
+            putQuietly(undo, "key", item == null ? "" : item.optString("key"));
+            putQuietly(undo, "data", JSONObject.NULL);
+            putQuietly(undo, "at", System.currentTimeMillis());
+            enqueue(context, undo);
+            forgetShown(context, id);
         }
         cancel(context, id);
         RemindersPlugin.emitAction();
@@ -247,6 +260,9 @@ final class ReminderNotifier {
             .setOnlyAlertOnce(true)
             .setSilent(true)
             .setTimeoutAfter(DONE_TIMEOUT_MS);
+        Bundle extras = new Bundle();
+        extras.putBoolean(EXTRA_DONE, true);
+        builder.addExtras(extras);
         // Vetëm regjistrimet kthehen mbrapsht; "Po"/"Jo" ndryshohen te app-i.
         if ("ate".equals(action) || "took".equals(action) || "drank".equals(action)) {
             builder.addAction(0, item.optString("undo"), undoIntent(context, id, uid));
@@ -343,6 +359,19 @@ final class ReminderNotifier {
 
     // ---- Ndihmës ----------------------------------------------------------------------------
 
+    /** Rikujtuesi i njoftimit të dukshëm me këtë id; për njoftimet e vjetra pa të, ai i listës. */
+    @Nullable
+    private static JSONObject shownItem(Context context, int id) {
+        JSONObject shown = object(prefs(context).getString(KEY_SHOWN, null)).optJSONObject(String.valueOf(id));
+        return shown != null ? shown : find(context, id);
+    }
+
+    private static void forgetShown(Context context, int id) {
+        SharedPreferences prefs = prefs(context);
+        JSONObject shown = object(prefs.getString(KEY_SHOWN, null));
+        if (shown.remove(String.valueOf(id)) != null) prefs.edit().putString(KEY_SHOWN, shown.toString()).commit();
+    }
+
     @Nullable
     private static JSONObject find(Context context, int id) {
         SharedPreferences prefs = prefs(context);
@@ -360,8 +389,12 @@ final class ReminderNotifier {
         if (manager == null) return;
         Set<Integer> ids = new HashSet<>();
         for (StatusBarNotification shown : manager.getActiveNotifications()) {
-            String key = shown.getNotification().extras.getString(EXTRA_KEY);
-            if (key != null && keys.contains(key)) ids.add(shown.getId());
+            Bundle extras = shown.getNotification().extras;
+            String key = extras.getString(EXTRA_KEY);
+            if (key != null && keys.contains(key) && !extras.getBoolean(EXTRA_DONE, false)) ids.add(shown.getId());
+        }
+        synchronized (LOCK) {
+            for (int id : ids) forgetShown(context, id);
         }
         for (int id : ids) manager.cancel(id);
     }

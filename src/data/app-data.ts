@@ -391,6 +391,14 @@ export function useReminderPlanner(ready: boolean) {
       if (REMINDER_TABLES.has(table)) plan()
     })
     const stopLanguage = language.subscribe(plan)
+    // Rreshtat që sjell sinkronizimi shkojnë drejt te baza, pa kaluar nga `store`: plani rinovohet kur
+    // mbaron një sinkronizim (SPEC §13: një regjistrim nga telefoni tjetër anulon rikujtuesin).
+    let syncing = scheduler.getStatus().syncing
+    const stopSync = scheduler.subscribe(() => {
+      const now = scheduler.getStatus().syncing
+      if (syncing && !now) plan()
+      syncing = now
+    })
     const resume = App.addListener('resume', plan)
     // Një prekje te njoftimi kur app-i jeton: zbatohet menjëherë, pastaj plani rinovohet.
     const stopActions = nativeReminderQueue.listen(() => void applyReminderQueue().catch(() => {}))
@@ -398,6 +406,7 @@ export function useReminderPlanner(ready: boolean) {
       clearTimeout(timer)
       stop()
       stopLanguage()
+      stopSync()
       stopActions()
       void resume.then((handle) => handle.remove())
     }

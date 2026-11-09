@@ -43,6 +43,19 @@ describe('kontrolli javor', () => {
     expect(await store.all('weekly_checks')).toMatchObject([{ week_start: '2026-11-09', status: 'accepted', kcal: 90, applies_from: '2026-11-16', logged_days: 6, average_kcal: 2800 }])
   })
 
+  it('vlerat jashtë kufijve të serverit ruhen bosh; vendimi i dytë ndryshon të njëjtin rresht', async () => {
+    const store = await setup()
+    // +3,4 kg në një javë (ujë, kreatina): mirëmbajtja del nën 500 kcal.
+    for (const day of [3, 4, 5, 6, 7, 8]) await store.put('body_measurements', { date: `2026-11-0${day}`, weight_kg: 84 })
+    const view = (await readWeeklyCheck(store, '2026-11-16'))!
+    expect(view.result).toMatchObject({ kind: 'proposal', kcal: -150 })
+    await decideWeeklyCheck(store, view, 'dismissed', '2026-11-16')
+    await decideWeeklyCheck(store, view, 'accepted', '2026-11-16')
+    const rows = await store.all('weekly_checks')
+    expect(rows).toHaveLength(1)
+    expect(rows[0]).toMatchObject({ status: 'accepted', kcal: -150, maintenance_kcal: null, trend_change_kg: 3.43, average_kcal: 2800 })
+  })
+
   it('"Jo tani" e lë deri të hënën tjetër dhe objektivat mbeten', async () => {
     const store = await setup()
     await decideWeeklyCheck(store, (await readWeeklyCheck(store, '2026-11-16'))!, 'dismissed', '2026-11-16')
