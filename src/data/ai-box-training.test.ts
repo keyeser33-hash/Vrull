@@ -73,7 +73,8 @@ describe('setet', () => {
     expect(rows.some((row) => row.slot_id == null)).toBe(false)
 
     expect(await logSets(store, [{ ...dips, extra: true }], refs)).toBe(3)
-    const extras = (await store.where('set_logs', 'session_id', sessionId)).filter((row) => row.slot_id == null)
+    // Radha e `where` nuk është garantuar (id të rastit): renditet sipas setit.
+    const extras = (await store.where('set_logs', 'session_id', sessionId)).filter((row) => row.slot_id == null).sort((a, b) => Number(a.set_number) - Number(b.set_number))
     expect(extras.map((row) => [Number(row.set_number), Number(row.reps), row.weight_kg ?? null])).toEqual([
       [1, 12, null],
       [2, 12, null],

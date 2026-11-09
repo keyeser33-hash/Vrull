@@ -31,6 +31,7 @@ import type { CoachAnswer, ParseRequest, ParseTurn } from '../../supabase/functi
 import type { I18n } from '@/i18n'
 import { mealName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
+import { euro } from './ai-format'
 import { boxText } from '@/lib/box-text'
 import { cn } from '@/lib/cn'
 import { useOnline } from '@/lib/use-online'
@@ -143,13 +144,8 @@ export function AiBoxPage() {
   )
 }
 
-function useEuro() {
-  const { fmt } = useI18n()
-  return (value: number) => fmt.unit(value, '€', { minDigits: 2, maxDigits: 2 })
-}
-
-function errorText(t: I18n['t'], euro: (value: number) => string, error: BoxError, month?: MonthSpend): string {
-  if (error === 'limit') return t('box.error.limit', { spent: euro(month?.spentEur ?? 0), limit: euro(month?.limitEur ?? 10) })
+function errorText({ t, fmt }: I18n, error: BoxError, month?: MonthSpend): string {
+  if (error === 'limit') return t('box.error.limit', { spent: euro(fmt, month?.spentEur ?? 0), limit: euro(fmt, month?.limitEur ?? 10) })
   if (error === 'too_long') return t('box.error.tooLong')
   if (error === 'unauthorized') return t('box.error.unauthorized')
   return t('box.error.failed')
@@ -172,8 +168,8 @@ function ComposeView({
   onChange: (text: string) => void
   onSend: () => void
 }) {
-  const { t } = useI18n()
-  const euro = useEuro()
+  const i18n = useI18n()
+  const { t } = i18n
   const id = useId()
   const field = useRef<HTMLTextAreaElement>(null)
   useEffect(() => {
@@ -200,7 +196,7 @@ function ComposeView({
         )}
         {error && !reading ? (
           <p role="alert" className={cn(surfaceClass, 'm-0 rounded-lg p-3.5 type-body')}>
-            {errorText(t, euro, error, month)}
+            {errorText(i18n, error, month)}
           </p>
         ) : null}
       </div>
@@ -511,7 +507,7 @@ function SummaryView({ review, said, onChange, onLog }: { review: Review; said: 
           {t('box.summary.log')}
         </Button>
         <span className="text-center type-caption text-muted-foreground tabular-nums">
-          {[extra ? t('box.sets.waiting', { exercise: extra.exerciseName }) : null, t('box.summary.cost', { cost: fmt.unit(cost, '€', { minDigits: 3, maxDigits: 3 }) })].filter(Boolean).join(' · ')}
+          {[extra ? t('box.sets.waiting', { exercise: extra.exerciseName }) : null, t('box.summary.cost', { cost: euro(fmt, cost, 3) })].filter(Boolean).join(' · ')}
         </span>
       </div>
       {edited ? (

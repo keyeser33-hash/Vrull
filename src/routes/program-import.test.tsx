@@ -89,7 +89,7 @@ describe('importi nga PDF', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Importo nga PDF' })).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/programet/importo')
     expect(screen.getByRole('heading', { level: 2, name: 'Programi nga një PDF' })).toBeInTheDocument()
-    expect(await screen.findByText(/Deri në 15 MB\. .* Këtë muaj: €1,24 nga €10/)).toBeInTheDocument()
+    expect(await screen.findByText(/Deri në 15 MB\. .* Këtë muaj: 1,24\s€ nga 10\s€/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Zgjidh PDF-në' })).toBeInTheDocument()
 
     await user.upload(screen.getByLabelText('PDF-ja e programit'), pdf())
@@ -105,9 +105,9 @@ describe('importi nga PDF', () => {
     // Karta e skedarit si te bordi: faqet, koha, kostoja dhe muaji.
     expect(await screen.findByText('18 faqe · 2,3 MB')).toBeInTheDocument()
     expect(screen.getByText(/AI e lexoi/).closest('span')).toHaveTextContent('AI e lexoi · 18 faqe në 41 s')
-    expect(screen.getByText('Kostoja: €0,28 nga kufiri')).toBeInTheDocument()
-    expect(screen.getByText('muaji: €1,52 nga €10')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Kufiri i AI-së: €1,52 nga €10' })).toBeInTheDocument()
+    expect(screen.getByText('Kostoja: 0,28 € nga kufiri')).toBeInTheDocument()
+    expect(screen.getByText('muaji: 1,52 € nga 10 €')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Kufiri i AI-së: 1,52\u00a0€ nga 10\u00a0€' })).toBeInTheDocument()
 
     // Ushtrimet e pasigurta: Po, alternativa, Tjetër; pa emër të njohur: Shto si të ri.
     expect(screen.getByRole('heading', { level: 2, name: 'Kontrollo 4 ushtrime' })).toBeInTheDocument()
@@ -181,7 +181,7 @@ describe('importi nga PDF', () => {
     const router = await renderAt('/programet|/programet/importo')
     const alert = await screen.findByRole('alert')
     expect(within(alert).getByRole('heading', { name: 'Kufiri i AI-së u arrit' })).toBeInTheDocument()
-    expect(alert).toHaveTextContent('Këtë muaj AI ka harxhuar €10,10 nga €10. Leximi i PDF-ve rinis më 1 dhjetor.')
+    expect(alert).toHaveTextContent('Këtë muaj AI ka harxhuar 10,10 € nga 10 €. Leximi i PDF-ve rinis më 1 dhjetor.')
     expect(screen.queryByRole('button', { name: 'Zgjidh PDF-në' })).not.toBeInTheDocument()
     await user.click(within(alert).getByRole('button', { name: 'Ndërto vetë' }))
     expect(router.state.location.pathname).toBe('/programet')
@@ -196,7 +196,7 @@ describe('importi nga PDF', () => {
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent('PDF-ja nuk u lexua')
     expect(alert).toHaveTextContent('AI nuk gjeti një program stërvitjeje në këtë PDF.')
-    expect(alert).toHaveTextContent('Leximi kushtoi €0,06.')
+    expect(alert).toHaveTextContent('Leximi kushtoi 0,06 €.')
     expect(screen.queryByRole('button', { name: 'Provo përsëri' })).not.toBeInTheDocument()
 
     data.read.mockResolvedValueOnce({ ok: false, error: 'offline' })
@@ -205,7 +205,7 @@ describe('importi nga PDF', () => {
     expect(await screen.findByText('Pa internet. Leximi me AI kërkon internet.')).toBeInTheDocument()
     data.read.mockResolvedValueOnce({ ok: false, error: 'limit', month: { ...MONTH, spentEur: 10.02 } })
     await user.click(screen.getByRole('button', { name: 'Provo përsëri' }))
-    expect(await screen.findByText('Këtë muaj AI ka harxhuar €10,02 nga €10. Leximi i PDF-ve rinis më 1 dhjetor.')).toBeInTheDocument()
+    expect(await screen.findByText('Këtë muaj AI ka harxhuar 10,02 € nga 10 €. Leximi i PDF-ve rinis më 1 dhjetor.')).toBeInTheDocument()
     expect(data.read).toHaveBeenCalledTimes(3)
   })
 

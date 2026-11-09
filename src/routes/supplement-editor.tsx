@@ -12,6 +12,7 @@ import { removeSupplement, saveSupplement, type Supplement, supplementList } fro
 import type { I18n } from '@/i18n'
 import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
+import { euro as euroText } from './ai-format'
 import { cn } from '@/lib/cn'
 import { compressPhoto } from '@/lib/image'
 import type { MealKey } from '@/nutrition/meals'
@@ -324,7 +325,7 @@ function LabelResultView({ result, onContinue, onAgain }: { result: Extract<Labe
   const { t, fmt } = i18n
   const month = useLocalQuery(() => aiMonth(store), [])
   const { fields } = result
-  const euro = (value: number) => fmt.unit(value, '€', { minDigits: 2, maxDigits: 2 })
+  const euro = (value: number) => euroText(fmt, value)
   const left = Math.max(0, (month?.limitEur ?? result.month.limitEur) - Math.max(month?.spentEur ?? 0, result.month.spentEur))
   const grams = (value: number | null) => (value === null ? null : fmt.unit(value, 'g', { maxDigits: 1 }))
   const rows: { label: string; value: string | null; hint?: string }[] = [

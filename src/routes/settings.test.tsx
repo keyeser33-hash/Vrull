@@ -93,7 +93,7 @@ describe('cilësimet', () => {
     await renderSettings()
     expect(screen.getByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
     // AI (V2-E1-11): përdorimi i muajit, që hap Cilësimet › AI.
-    expect(await screen.findByRole('link', { name: 'Përdorimi këtë muaj, €0,00 nga €10' })).toHaveAttribute('href', '/cilesimet/ai')
+    expect(await screen.findByRole('link', { name: 'Përdorimi këtë muaj, 0,00\u00a0€ nga 10\u00a0€' })).toHaveAttribute('href', '/cilesimet/ai')
     expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Njoftimet', 'AI', 'Sinkronizimi', 'Versioni'])
     expect(row(/^Pesha sot/)).toHaveTextContent('80,5 kg')
     expect(row(/^Ditët e stërvitjes/)).toHaveTextContent('Hën, Mar, Enj, Pre')

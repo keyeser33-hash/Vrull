@@ -7,6 +7,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { type AdminError, type AdminPerson, stepLimit } from '@/data/ai-admin'
 import { aiAdminRemote } from '@/data/app-data'
 import { useI18n } from '@/i18n/use-i18n'
+import { euro as euroText, euroLimit } from './ai-format'
 import { cn } from '@/lib/cn'
 import { useOnline } from '@/lib/use-online'
 
@@ -127,8 +128,8 @@ function PersonCard({
   const { t, fmt } = useI18n()
   const titleId = useId()
   const limitId = useId()
-  const euro = (value: number) => fmt.unit(value, '€', { minDigits: 2, maxDigits: 2 })
-  const whole = (value: number) => fmt.unit(value, '€', { maxDigits: 2 })
+  const euro = (value: number) => euroText(fmt, value)
+  const whole = (value: number) => euroLimit(fmt, value)
   const reached = person.spentEur >= person.limitEur
   const rows = [
     { label: t('admin.ai.box'), detail: t('admin.ai.boxCount', { count: person.byFeature.food_text.count }), eur: person.byFeature.food_text.eur },

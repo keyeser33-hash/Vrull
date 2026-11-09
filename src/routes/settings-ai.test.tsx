@@ -66,15 +66,15 @@ describe('Cilësimet › AI', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'AI' })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { level: 2, name: 'Nëntori' })).toBeInTheDocument()
     expect(screen.getByText('1,40')).toBeInTheDocument()
-    expect(screen.getByText('€ nga €10')).toBeInTheDocument()
-    expect(screen.getByText(/Mbeten €8,60/)).toHaveTextContent('Mbeten €8,60 deri më 1 dhjetor')
-    expect(screen.getByRole('meter', { name: 'Përdorimi i AI-së këtë muaj' })).toHaveAttribute('aria-valuetext', '€1,40 nga €10')
-    expect(screen.getByText('Leximi i PDF-ve').closest('li')).toHaveTextContent('Mbush ndërtuesin e programit€1,40')
+    expect(screen.getByText('€ nga 10 €')).toBeInTheDocument()
+    expect(screen.getByText(/Mbeten 8,60\s€/)).toHaveTextContent('Mbeten 8,60 € deri më 1 dhjetor')
+    expect(screen.getByRole('meter', { name: 'Përdorimi i AI-së këtë muaj' })).toHaveAttribute('aria-valuetext', '1,40\u00a0€ nga 10\u00a0€')
+    expect(screen.getByText('Leximi i PDF-ve').closest('li')).toHaveTextContent('Mbush ndërtuesin e programit1,40 €')
     // Ushqimi dhe shpjegimet vijnë me Etapat 2 dhe 3; kufiri ndryshohet nga faqja e Adminit (V31).
     expect(screen.queryByText(/Foto e pjatës|Ushqimi me fjalë|Pse\?/)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Ndrysho kufirin' })).not.toBeInTheDocument()
     expect(screen.getByText(/AI ndalet deri më 1 dhjetor\./)).toBeInTheDocument()
-    expect(screen.getByText('Admini, për çdo person veçmas. Yti është €10 në muaj.')).toBeInTheDocument()
+    expect(screen.getByText('Admini, për çdo person veçmas. Yti është 10 € në muaj.')).toBeInTheDocument()
   })
 
   it('te kufiri: AI rinis më 1 të muajit tjetër', async () => {
@@ -88,9 +88,9 @@ describe('Cilësimet › AI', () => {
   it('grupi "AI" te Cilësimet hap faqen', async () => {
     await spent('2026-11-01', 1.4)
     await renderAt('/cilesimet')
-    const row = await screen.findByRole('link', { name: 'Përdorimi këtë muaj, €1,40 nga €10' })
+    const row = await screen.findByRole('link', { name: 'Përdorimi këtë muaj, 1,40\u00a0€ nga 10\u00a0€' })
     expect(row).toHaveAttribute('href', '/cilesimet/ai')
-    expect(row).toHaveTextContent('Përdorimi këtë muaj€1,40nga €10')
+    expect(row).toHaveTextContent('Përdorimi këtë muaj1,40 €nga 10 €')
   })
 
   it('anglisht', async () => {
