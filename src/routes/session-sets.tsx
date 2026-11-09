@@ -10,8 +10,8 @@ import { editable, rangeText, setValue } from './session-format'
 // Setet e ushtrimit te seanca (0.23, SPEC §0.3c; bordet "Seanca" dhe "Pushimi · banderola e rekordit"):
 // çipat sipër setit (i ruajturi me vlerën, rekordi i dalluar, i tanishmi me vijë, të tjerët me synimin)
 // dhe rreshtat e seteve të ruajtura te pushimi me etiketën "rekord". Prekja e një seti të ruajtur hap
-// fletën "Ndrysho setin" (`set-edit-sheet.tsx`). Rekordi i çdo seti është ai i e1RM-së në kohën e vet
-// (`recordsAtTheTime`), si te historiku, te mbyllja dhe te fleta.
+// fletën "Ndrysho setin" (`set-edit-sheet.tsx`). Rekordi i çdo seti në kohën e vet vjen nga
+// `sessionSetRecords` (§6: e1RM-ja, ose pesha më e madhe për ato përsëritje).
 
 /** Vlera e shkurtër e çipit: "62,5 × 12", "62,5 × 12+4", "60 s". */
 function chipValue(set: SetRecord, fmt: Format) {

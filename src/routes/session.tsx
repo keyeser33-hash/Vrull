@@ -9,10 +9,9 @@ import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingH
 import { workoutWeights } from '@/data/week-weights'
 import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
-import { dropWeight, e1rmRecord, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
+import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
 import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
-import { recordsAtTheTime } from '@/progress/history'
-import { type RecordHint, recordHint } from '@/progress/records'
+import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
 import type { WeekWeightRow } from '@/progress/week-weights'
@@ -144,9 +143,9 @@ function ActiveSession({
   const now = useNow(1000)
   const { plan, exercises } = snapshot
   const progress = sessionProgress(plan, session.sets, selected)
-  // Rekordi i e1RM-së i çdo seti në kohën e vet (si historiku dhe fleta "Ndrysho setin"): çipat dhe
-  // rreshtat e pushimit; seti 1 mbetet rekord edhe kur seti 2 e kalon.
-  const records = useMemo(() => recordsAtTheTime(history.sets), [history.sets])
+  // Rekordi i çdo seti në kohën e vet (§6: e1RM-ja, ose pesha më e madhe për ato përsëritje): çipat,
+  // rreshtat e pushimit dhe fleta e ndryshimit; seti 1 mbetet rekord edhe kur seti 2 e kalon.
+  const records = useMemo(() => sessionSetRecords(history.sets, session.id), [history.sets, session.id])
   const elapsed = (now - Date.parse(session.startedAt)) / 1000
   const shown = awaiting ? session.sets.find((set) => set.id === awaiting.id) : undefined
   const waiting = awaiting !== null && !(shown && shown.segments.length >= awaiting.segments)
@@ -240,7 +239,8 @@ function ActiveSession({
       ) : null}
       {params.has('prek') && beat.session ? <TapSheet beat={beat} onClose={closeSheet} /> : null}
       {params.has('lidh-muziken') ? <MusicConnectScreen beat={beat} sessionId={session.id} onClose={closeSheet} /> : null}
-      {edited ? <EditSavedSet set={edited} snapshot={snapshot} history={history} record={records.has(edited.id)} onClose={closeSheet} /> : null}
+      {/* Fleta e historikut mban rregullin e vet (e1RM-ja): "nuk është më rekord" vlen për rekordin e e1RM-së. */}
+      {edited ? <EditSavedSet set={edited} snapshot={snapshot} history={history} record={records.get(edited.id)?.kind === 'e1rm'} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 
@@ -340,10 +340,11 @@ function ActiveSession({
         technique: technique.type,
       })
       setAwaiting({ id: saved.id, segments: 0 })
-      // Rekordi del në moment (`e1rmRecord`, SPEC §0.3c): banderola mbi pushimin dhe një dridhje e rëndë.
-      const record = e1rmRecord(asHistory(saved, plan, session.id), history.sets)
+      // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
+      // mbi pushimin dhe një dridhje e rëndë.
+      const record = setRecord(asHistory(saved, plan, session.id), history.sets)
       if (record) {
-        setBanner({ id: saved.id, exercise: exercise?.name ?? '', e1rmKg: record.e1rmKg, gainKg: record.gainKg })
+        setBanner({ id: saved.id, exercise: exercise?.name ?? '', record })
         void recordPulse()
       }
       if (technique.type === 'rest_pause' || technique.type === 'drop_set') {
@@ -749,8 +750,8 @@ function RestView({
   saved: SetRecord | null
   /** Setet e ruajtura të ushtrimit të setit të fundit. */
   sets: SetRecord[]
-  /** Setet që ishin rekord i e1RM-së në kohën e tyre (`recordsAtTheTime`). */
-  records: ReadonlyMap<string, unknown>
+  /** Setet që ishin rekord në kohën e tyre (`sessionSetRecords`). */
+  records: ReadonlyMap<string, SetRecordResult>
   next: { exercise: string | null; text: string } | null
   onEdit: (set: SetRecord) => void
 }) {

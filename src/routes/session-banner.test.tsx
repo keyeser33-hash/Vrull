@@ -6,7 +6,7 @@ import { type BannerRecord, RecordBanner } from './session-banner'
 // zbritja 250 ms dhe, me "lëvizje të reduktuar", vetëm zbehja 120 ms pa rrëshqitje. Web Animations
 // imitohen, sepse jsdom nuk i ka.
 
-const record: BannerRecord = { id: 'set-1', exercise: 'Bench Press', e1rmKg: 87.5, gainKg: 1.5 }
+const record: BannerRecord = { id: 'set-1', exercise: 'Bench Press', record: { kind: 'e1rm', e1rmKg: 87.5, previousBestKg: 86, gainKg: 1.5 } }
 
 type Call = { keyframes: Keyframe[]; options: KeyframeAnimationOptions; animation: { onfinish: (() => void) | null; oncancel: (() => void) | null } }
 let calls: Call[] = []
@@ -42,10 +42,14 @@ describe('banderola e rekordit', () => {
     expect(onDone).toHaveBeenCalledTimes(1)
   })
 
-  it('në anglisht', () => {
+  it('pesha më e madhe për ato përsëritje (pulpat pa e1RM), në shqip dhe në anglisht', () => {
+    const calves: BannerRecord = { id: 'set-2', exercise: 'Standing Calf Raise', record: { kind: 'weight', weightKg: 40, reps: 30 } }
+    const { unmount } = render(<RecordBanner banner={calves} onDone={vi.fn()} />)
+    expect(screen.getByRole('status')).toHaveTextContent('Rekord i riStanding Calf Raise · Pesha më e madhe për 30 përsëritje: 40 kg')
+    unmount()
     language.set('en')
-    render(<RecordBanner banner={{ ...record, e1rmKg: 89.6, gainKg: 2.1 }} onDone={vi.fn()} />)
-    expect(screen.getByRole('status')).toHaveTextContent('New personal bestBench Press · e1RM 89.6 kg +2.1 kg')
+    render(<RecordBanner banner={calves} onDone={vi.fn()} />)
+    expect(screen.getByRole('status')).toHaveTextContent('New personal bestStanding Calf Raise · Heaviest weight for 30 reps: 40 kg')
     expect(screen.getByRole('button', { name: 'Dismiss personal best' })).toBeInTheDocument()
   })
 

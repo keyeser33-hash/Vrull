@@ -80,6 +80,7 @@ export const sq = {
   // Banderola e rekordit mbi pushimin (0.23, E2-21).
   'session.banner.title': 'Rekord i ri',
   'session.banner.e1rm': 'e1RM {e1rm}',
+  'session.banner.weight': { one: 'Pesha më e madhe për {count} përsëritje: {weight}', other: 'Pesha më e madhe për {count} përsëritje: {weight}' },
   'session.banner.close': 'Mbyll njoftimin e rekordit',
   'session.notify.title': 'Pushimi mbaroi',
   'session.notify.body': 'Pushimi mbaroi. Koha për setin tjetër.',
@@ -212,6 +213,7 @@ export const en: TranslationOf<typeof sq> = {
 
   'session.banner.title': 'New personal best',
   'session.banner.e1rm': 'e1RM {e1rm}',
+  'session.banner.weight': { one: 'Heaviest weight for {count} rep: {weight}', other: 'Heaviest weight for {count} reps: {weight}' },
   'session.banner.close': 'Dismiss personal best',
   'session.notify.title': 'Rest is over',
   'session.notify.body': 'Rest is over. Time for the next set.',
