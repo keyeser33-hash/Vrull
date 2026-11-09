@@ -89,6 +89,8 @@ describe('Progresi', () => {
       ['Historiku', '/progresi/historiku', 'false'],
       ['Arritjet', '/progresi/arritjet', 'false'],
     ])
+    // Ndërrimi i tab-it: 250 ms ease-out (DESIGN.md › Lëvizja).
+    expect(within(tabs).getAllByRole('tab')[1]).toHaveClass('duration-250', 'ease-out')
     expect(await screen.findByText('Forca (e1RM) del këtu pas seteve të para me peshë.')).toBeInTheDocument()
   })
 

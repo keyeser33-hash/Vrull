@@ -3,10 +3,10 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { surfaceClass } from './surface'
 
-// Shiriti 6 px kundrejt objektivit, në kartë me vlerën dhe objektivin ("96/180"). Makrot dallohen
-// me ngjyra me lartësi drite të ndryshme: proteina `ember`, karbohidratet `data`, yndyrat `sand`.
-// Mbi 100% shiriti mbetet plot dhe karta e thotë me fjalë. Mbushet nga e majta në 320 ms, edhe kur
-// vlera ndryshon (E2-23).
+// Shiriti 6 px kundrejt objektivit, në kartë me vlerën dhe objektivin ("96/180"). Te Ushqimi (0.23,
+// DESIGN.md) të tri makrot janë gjurmë dhe mbushje `ember`; i dallon emri, jo ngjyra. `data` dhe `sand`
+// mbeten për shiritat e tjerë (kufiri i AI-së `data`). Mbi 100% shiriti mbetet plot dhe karta e thotë
+// me fjalë. Mbushet nga e majta në 320 ms, edhe kur vlera ndryshon (E2-23).
 
 export type ProgressTone = 'ember' | 'data' | 'sand'
 
