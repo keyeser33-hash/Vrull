@@ -28,6 +28,14 @@ vi.mock('@/data/app-data', async () => {
   }
 })
 
+// Dridhjet (SPEC §0.3c): e lehtë te çdo ruajtje, e rëndë në vend të saj kur seti jep rekord.
+const pulses = vi.hoisted(() => ({ save: vi.fn(() => Promise.resolve()), record: vi.fn(() => Promise.resolve()) }))
+vi.mock('./session-motion', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./session-motion')>()),
+  savePulse: pulses.save,
+  recordPulse: pulses.record,
+}))
+
 const fetchSpy = vi.spyOn(globalThis, 'fetch')
 
 async function reset() {
@@ -37,6 +45,8 @@ async function reset() {
   // në bazë, dhe çdo lexim i ekranit i kalonte të gjitha (provat ngadalësoheshin një nga një).
   await Promise.all(data.db.tables.map((table) => table.clear()))
   localStorage.clear()
+  pulses.save.mockClear()
+  pulses.record.mockClear()
   await completeOnboarding(data.store, { weightKg: 80, trainingDays: [1, 2, 4, 5], trainingTime: '18:00', wakeTime: '07:00', sleepTime: '23:00' })
 }
 
@@ -139,6 +149,9 @@ describe('seanca (V2-E1-07)', () => {
     // Rekordi del në moment: banderola mbi pushimin, me ushtrimin, e1RM-në dhe shtesën.
     expect(await screen.findByText('Seti 1 u ruajt: 62,5 × 12')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Rekord i riBench Press · e1RM 87,5 kg +1,5 kg')
+    // Dridhja e rëndë e rekordit, jo edhe e lehta e ruajtjes.
+    expect(pulses.record).toHaveBeenCalledTimes(1)
+    expect(pulses.save).not.toHaveBeenCalled()
     expect(screen.getByRole('timer')).toHaveAccessibleName(/^Pushimi: mbeten 1 minutë e (30|29|28) sekonda nga 1 minutë e 30 sekonda$/)
     expect(screen.getByText('Seti 2 nga 4 · 62,5 × 9–11')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Ruaj setin' })).not.toBeInTheDocument()
@@ -168,6 +181,20 @@ describe('seanca (V2-E1-07)', () => {
 
     const [saved] = await data.store.all('set_logs').then((rows) => rows.filter((row) => row.reps === 12 && row.weight_kg === 62.5))
     expect(saved).toMatchObject({ set_number: 1, technique: 'none', rir: null })
+  })
+
+  it('"Ruaj setin" pa rekord: dridhja e lehtë, pa banderolë', async () => {
+    await atPhaseOneWeekTwo()
+    const user = userEvent.setup()
+    await renderApp()
+    expect(await setGroup('Seti 1: 62,5 kg, 9 përsëritje')).toBeInTheDocument()
+    // 57,5 × 9: nën 60 kg të Javës 1 dhe nën e1RM-në e saj.
+    for (let step = 0; step < 2; step++) await user.click(screen.getByRole('button', { name: 'Ul peshën me 2,5 kg' }))
+    await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
+    expect(await screen.findByText('Seti 1 u ruajt: 57,5 × 9')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeEmptyDOMElement()
+    expect(pulses.save).toHaveBeenCalledTimes(1)
+    expect(pulses.record).not.toHaveBeenCalled()
   })
 
   it('pesha nga "Peshat e javës", tastiera numerike dhe pesha e fundit kur s\'ka e1RM', async () => {

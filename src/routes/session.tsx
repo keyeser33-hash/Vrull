@@ -25,7 +25,7 @@ import { type BeatContext, BodyBeatScreen, MusicButton, MusicConnectScreen, TapS
 import { useSessionBeat } from './music-beat'
 import { editable, elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
 import { type BannerRecord, RecordBanner } from './session-banner'
-import { recordPulse } from './session-motion'
+import { recordPulse, savePulse } from './session-motion'
 import { SavedSets, SetChips } from './session-sets'
 import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
 import { EditSetSheet } from './set-edit-sheet'
@@ -326,6 +326,7 @@ function ActiveSession({
           segments: [{ weightKg: tracking === 'weight_reps' ? weightKg : null, reps: values.reps ?? 0 }],
         })
         setAwaiting({ id: segment.set.id, segments: 1 })
+        void savePulse()
         startRest(segment.slot, false)
         return
       }
@@ -341,12 +342,12 @@ function ActiveSession({
       })
       setAwaiting({ id: saved.id, segments: 0 })
       // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
-      // mbi pushimin dhe një dridhje e rëndë.
+      // mbi pushimin dhe një dridhje e rëndë në vend të së lehtës së çdo ruajtjeje.
       const record = setRecord(asHistory(saved, plan, session.id), history.sets)
       if (record) {
         setBanner({ id: saved.id, exercise: exercise?.name ?? '', record })
         void recordPulse()
-      }
+      } else void savePulse()
       if (technique.type === 'rest_pause' || technique.type === 'drop_set') {
         setSelected(null)
         if (technique.type === 'rest_pause') rest.start(technique.restSeconds ?? 15)
