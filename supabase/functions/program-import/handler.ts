@@ -61,6 +61,7 @@ export async function runImport({
   request,
   usage,
   callClaude,
+  limitEur = AI_MONTHLY_LIMIT_EUR,
   timeoutMs = AI_TIMEOUT_MS,
   log = console.error,
 }: {
@@ -69,6 +70,8 @@ export async function runImport({
   request: unknown
   usage: UsageStore
   callClaude: (request: unknown, signal: AbortSignal) => Promise<Response>
+  /** Kufiri i personit (ai_limits, V42); pa të, 10 €. */
+  limitEur?: number
   timeoutMs?: number
   log?: (message: string) => void
 }): Promise<Reply> {
@@ -86,8 +89,8 @@ export async function runImport({
     await release()
     return { status: 502, body: { error: 'ai_failed' } }
   }
-  const monthInfo = (spent: number) => ({ month, spentEur: round2(spent), limitEur: AI_MONTHLY_LIMIT_EUR })
-  if (spentBefore >= AI_MONTHLY_LIMIT_EUR) {
+  const monthInfo = (spent: number) => ({ month, spentEur: round2(spent), limitEur })
+  if (spentBefore >= limitEur) {
     await release()
     return { status: 429, body: { error: 'limit', month: monthInfo(spentBefore) } }
   }

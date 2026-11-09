@@ -2,8 +2,9 @@ import { AI_MONTHLY_LIMIT_EUR } from '../../supabase/functions/program-import/sh
 import type { LocalStore } from './store'
 
 // Përdorimi i AI-së këtë muaj (V2-E1-11; SPEC V25, bordi "Cilësimet · AI"). Rreshtat e `ai_usage` i
-// shkruan vetëm funksioni program-import në server, pasi kontrollon kufirin; telefoni i merr me
-// sinkronizimin dhe i lexon këtu, pa rrjet. Kufiri dhe muaji vendosen në server: ky lexim vetëm i tregon.
+// shkruajnë vetëm funksionet me AI në server, pasi kontrollojnë kufirin; telefoni i merr me sinkronizimin
+// dhe i lexon këtu, pa rrjet. Kufiri i personit (ai_limits, V42) dhe muaji vendosen në server: ky lexim
+// vetëm i tregon.
 
 export { AI_MONTHLY_LIMIT_EUR }
 
@@ -31,9 +32,16 @@ export function monthKey(date: Date): string {
 
 const cents = (value: number) => Math.round(value * 100) / 100
 
+/** Kufiri i personit (V42): rreshti i gjallë te ai_limits që vendos admini; pa të, 10 €. */
+export async function aiLimit(store: LocalStore): Promise<number> {
+  const [row] = await store.all('ai_limits')
+  const value = row?.monthly_eur === null || row?.monthly_eur === undefined ? Number.NaN : Number(row.monthly_eur)
+  return Number.isFinite(value) ? value : AI_MONTHLY_LIMIT_EUR
+}
+
 export async function aiMonth(store: LocalStore, now = store.now()): Promise<AiMonth> {
   const month = monthKey(now)
-  const rows = await store.where('ai_usage', 'month', month)
+  const [rows, limit] = await Promise.all([store.where('ai_usage', 'month', month), aiLimit(store)])
   const byFeature: Partial<Record<AiFeature, number>> = {}
   let spent = 0
   for (const row of rows) {
@@ -49,9 +57,9 @@ export async function aiMonth(store: LocalStore, now = store.now()): Promise<AiM
   return {
     month,
     spentEur,
-    limitEur: AI_MONTHLY_LIMIT_EUR,
-    remainingEur: cents(Math.max(0, AI_MONTHLY_LIMIT_EUR - spent)),
-    reached: spent >= AI_MONTHLY_LIMIT_EUR,
+    limitEur: limit,
+    remainingEur: cents(Math.max(0, limit - spent)),
+    reached: spent >= limit,
     byFeature,
     resetsOn: new Date(now.getFullYear(), now.getMonth() + 1, 1),
   }

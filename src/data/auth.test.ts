@@ -3,7 +3,7 @@ import { createAuth, signInErrorMessage } from './auth'
 
 type Listener = (event: string, session: { user: { id: string; email?: string } } | null) => void
 
-function fakeClient(initial: { user: { id: string; email?: string } } | null = null) {
+function fakeClient(initial: { user: { id: string; email?: string; app_metadata?: Record<string, unknown> } } | null = null) {
   let listener: Listener = () => {}
   const client = {
     getSession: vi.fn(async () => ({ data: { session: initial } })),
@@ -32,13 +32,13 @@ describe('hyrja në llogari', () => {
     const auth = createAuth(fakeClient({ user: { id: 'user-1', email: 'une@example.com' } }))
     expect(auth.getState().status).toBe('loading')
     await auth.start()
-    expect(auth.getState()).toEqual({ status: 'signed_in', userId: 'user-1', email: 'une@example.com' })
+    expect(auth.getState()).toEqual({ status: 'signed_in', userId: 'user-1', email: 'une@example.com', admin: false })
   })
 
   it('pa sesion: jashtë llogarisë', async () => {
     const auth = createAuth(fakeClient())
     await auth.start()
-    expect(auth.getState()).toEqual({ status: 'signed_out', userId: null, email: null })
+    expect(auth.getState()).toEqual({ status: 'signed_out', userId: null, email: null, admin: false })
   })
 
   it('hyrja e suksesshme njofton dëgjuesit', async () => {
@@ -95,5 +95,11 @@ describe('mesazhet e gabimeve të hyrjes', () => {
   it('në anglisht', () => {
     expect(signInErrorMessage({ code: 'invalid_credentials', status: 400 }, i18nFor('en'))).toBe('The email or password is not correct.')
     expect(signInErrorMessage({ status: 0 }, i18nFor('en'))).toBe('Signing in needs the internet. Connect and try again.')
+  })
+
+  it('admini vjen nga app_metadata e sesionit (V42)', async () => {
+    const auth = createAuth(fakeClient({ user: { id: 'user-1', email: 'une@example.com', app_metadata: { vrull_admin: true } } }))
+    await auth.start()
+    expect(auth.getState()).toMatchObject({ status: 'signed_in', admin: true })
   })
 })

@@ -68,6 +68,22 @@ export function AiSettingsPage() {
             </h2>
             <ul className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
               <li className="flex min-h-[64px] items-center gap-3 px-4 py-2.5">
+                <Icon name="shkendija" size={22} className="text-muted-foreground" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="type-body-strong">{t('ai.settings.box')}</span>
+                  <span className="type-caption text-muted-foreground">{t('ai.settings.boxText')}</span>
+                </span>
+                <span className="shrink-0 font-display text-xl font-bold tabular-nums">{euro(fmt, month.byFeature.food_text ?? 0)}</span>
+              </li>
+              <li className="flex min-h-[64px] items-center gap-3 border-t border-border px-4 py-2.5">
+                <Icon name="kamera" size={22} className="text-muted-foreground" />
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="type-body-strong">{t('ai.settings.photo')}</span>
+                  <span className="type-caption text-muted-foreground">{t('ai.settings.photoText')}</span>
+                </span>
+                <span className="shrink-0 font-display text-xl font-bold tabular-nums">{euro(fmt, month.byFeature.food_photo ?? 0)}</span>
+              </li>
+              <li className="flex min-h-[64px] items-center gap-3 border-t border-border px-4 py-2.5">
                 <Icon name="skedari" size={22} className="text-muted-foreground" />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="type-body-strong">{t('ai.settings.pdf')}</span>

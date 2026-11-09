@@ -1,4 +1,4 @@
-import { AI_MONTHLY_LIMIT_EUR, costOf, monthStart, tokensOf, withBudget, type UsageStore } from './ai'
+import { AI_MONTHLY_LIMIT_EUR, costOf, limitFrom, monthStart, tokensOf, withBudget, type UsageStore } from './ai'
 
 // Kostoja dhe kufiri i përbashkët i AI-së (V42): tokenat me cache-in, rezervimi para punës, kërkesat paralele.
 const MONTH = '2026-11-01'
@@ -113,5 +113,15 @@ describe('kufiri', () => {
     expect(outcomes.filter((outcome) => outcome.kind === 'done').length).toBeLessThanOrEqual(1)
     expect(outcomes.every((outcome) => outcome.kind === 'done' || outcome.kind === 'limit')).toBe(true)
     expect(usage.live().reduce((sum, row) => sum + row.eur, 0)).toBeLessThanOrEqual(AI_MONTHLY_LIMIT_EUR)
+  })
+})
+
+describe('kufiri i personit', () => {
+  it('nga ai_limits; pa rresht 10 €', () => {
+    expect(limitFrom([{ monthly_eur: '40.00' }])).toBe(40)
+    expect(limitFrom([{ monthly_eur: 0 }])).toBe(0)
+    expect(limitFrom([])).toBe(10)
+    expect(limitFrom(null)).toBe(10)
+    expect(limitFrom([{ monthly_eur: null }])).toBe(10)
   })
 })

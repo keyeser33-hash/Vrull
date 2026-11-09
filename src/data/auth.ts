@@ -10,10 +10,12 @@ export interface AuthState {
   status: AuthStatus
   userId: string | null
   email: string | null
+  /** Admini (V42): app_metadata.vrull_admin, që e vendos vetëm serveri. Vetëm për të treguar faqen e Adminit. */
+  admin: boolean
 }
 
 interface SessionLike {
-  user: { id: string; email?: string | null }
+  user: { id: string; email?: string | null; app_metadata?: Record<string, unknown> }
 }
 
 interface AuthErrorLike {
@@ -47,15 +49,15 @@ export function signInErrorMessage(error: AuthErrorLike, { t }: I18n = currentI1
 
 const toState = (session: SessionLike | null): AuthState =>
   session
-    ? { status: 'signed_in', userId: session.user.id, email: session.user.email ?? null }
-    : { status: 'signed_out', userId: null, email: null }
+    ? { status: 'signed_in', userId: session.user.id, email: session.user.email ?? null, admin: session.user.app_metadata?.vrull_admin === true }
+    : { status: 'signed_out', userId: null, email: null, admin: false }
 
 export function createAuth(client: AuthClient) {
-  let state: AuthState = { status: 'loading', userId: null, email: null }
+  let state: AuthState = { status: 'loading', userId: null, email: null, admin: false }
   const listeners = new Set<() => void>()
 
   function setState(next: AuthState) {
-    if (next.status === state.status && next.userId === state.userId && next.email === state.email) return
+    if (next.status === state.status && next.userId === state.userId && next.email === state.email && next.admin === state.admin) return
     state = next
     listeners.forEach((listener) => listener())
   }

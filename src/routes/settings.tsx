@@ -15,6 +15,7 @@ import {
   updater,
   updatesSupported,
   useAppUpdate,
+  useAuth,
   useLocalQuery,
   usePendingChanges,
   useSyncStatus,
@@ -48,6 +49,7 @@ const REMINDER_ORDER: (keyof ReminderToggles)[] = ['training', 'meals', 'supplem
 
 export function SettingsPage() {
   const { t, fmt, lang } = useI18n()
+  const session = useAuth()
   const profile = useLocalQuery(() => readProfile(store), [])
   const reminders = useLocalQuery(() => reminderSettings(store), [])
   const [params, setParams] = useSearchParams()
@@ -102,6 +104,12 @@ export function SettingsPage() {
       </Group>
 
       <AiUsageGroup />
+
+      {session.admin ? (
+        <Group title={t('admin.group')}>
+          <LinkRow to="/cilesimet/admin" label={t('admin.row')} value={t('admin.rowDetail')} ariaLabel={`${t('admin.row')}, ${t('admin.rowDetail')}`} />
+        </Group>
+      ) : null}
 
       <SyncGroup />
 

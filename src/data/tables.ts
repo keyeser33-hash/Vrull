@@ -30,6 +30,8 @@ export const TABLES = [
   'water_logs',
   // Kontrolli javor (V33, V2-E2-04).
   'weekly_checks',
+  // Kufiri i AI-së për person (V42, V2-E2-17): e shkruan vetëm funksioni ai-admin; telefoni vetëm e merr.
+  'ai_limits',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -89,4 +91,5 @@ export const INDEXES: Record<TableName, string[]> = {
   week_weights: ['program_id'],
   form_videos: ['exercise_id', 'session_id'],
   ai_usage: ['month'],
+  ai_limits: [],
 }

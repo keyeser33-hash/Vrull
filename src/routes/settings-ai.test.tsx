@@ -74,7 +74,7 @@ describe('Cilësimet › AI', () => {
     expect(screen.queryByText(/Foto e pjatës|Ushqimi me fjalë|Pse\?/)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Ndrysho kufirin' })).not.toBeInTheDocument()
     expect(screen.getByText(/AI ndalet deri më 1 dhjetor\./)).toBeInTheDocument()
-    expect(screen.getByText('Admini, për çdo person veçmas. Tani është €10 në muaj për çdo person.')).toBeInTheDocument()
+    expect(screen.getByText('Admini, për çdo person veçmas. Yti është €10 në muaj.')).toBeInTheDocument()
   })
 
   it('te kufiri: AI rinis më 1 të muajit tjetër', async () => {

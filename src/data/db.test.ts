@@ -42,7 +42,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(7)
+    expect(db.verno).toBe(8)
     expect(await db.week_weights.get('w-1')).toMatchObject({ program_id: 'p' })
     expect(await db._photo_files.get('f-1')).toMatchObject({ storagePath: 'u/f-1.jpg' })
     await db.form_videos.put({ id: 'v-1', _dirty: 1, exercise_id: 'e', session_id: 's' } as never)
@@ -65,7 +65,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(7)
+    expect(db.verno).toBe(8)
     expect(await db.form_videos.get('v-1')).toMatchObject({ exercise_id: 'e' })
     await db.ai_usage.put({ id: 'a-1', _dirty: 0, month: '2026-11-01', cost_eur: 0.27 } as never)
     expect(await db.ai_usage.where('month').equals('2026-11-01').count()).toBe(1)
@@ -85,7 +85,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(7)
+    expect(db.verno).toBe(8)
     expect(await db.ai_usage.get('a-1')).toMatchObject({ month: '2026-11-01' })
     await db.water_logs.put({ id: 'w-1', _dirty: 1, date: '2026-12-07', ml: 250 } as never)
     expect(await db.water_logs.where('date').equals('2026-12-07').count()).toBe(1)
@@ -106,10 +106,33 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(7)
+    expect(db.verno).toBe(8)
     expect(await db.water_logs.get('w-1')).toMatchObject({ ml: 250 })
     await db.weekly_checks.put({ id: 'c-1', _dirty: 1, week_start: '2026-11-09', status: 'accepted', kcal: 90 } as never)
     expect(await db.weekly_checks.where('week_start').equals('2026-11-09').count()).toBe(1)
+    db.close()
+  })
+
+  it('një bazë e versionit 7 merr kufirin e AI-së (V42) pa humbur kontrollin javor', async () => {
+    const name = `db-${crypto.randomUUID()}`
+    const old = new Dexie(name)
+    old.version(1).stores({ _meta: 'key', ...Object.fromEntries(TABLES_V1.map((table) => [table, 'id, _dirty'])) })
+    old.version(2).stores({ _photo_files: 'id, uploaded' })
+    old.version(3).stores({ week_weights: 'id, _dirty, program_id' })
+    old.version(4).stores({ form_videos: 'id, _dirty, exercise_id, session_id', _video_files: 'id, uploaded, removed' })
+    old.version(5).stores({ ai_usage: 'id, _dirty, month' })
+    old.version(6).stores({ water_logs: 'id, _dirty, date' })
+    old.version(7).stores({ weekly_checks: 'id, _dirty, week_start' })
+    await old.open()
+    await old.table('weekly_checks').put({ id: 'c-1', _dirty: 0, week_start: '2026-11-09', status: 'accepted', kcal: 90 })
+    old.close()
+
+    const db = createDatabase(name)
+    await db.open()
+    expect(db.verno).toBe(8)
+    expect(await db.weekly_checks.get('c-1')).toMatchObject({ kcal: 90 })
+    await db.ai_limits.put({ id: 'l-1', _dirty: 0, monthly_eur: 40 } as never)
+    expect(await db.ai_limits.count()).toBe(1)
     db.close()
   })
 })

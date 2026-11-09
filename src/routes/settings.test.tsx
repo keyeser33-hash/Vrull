@@ -10,6 +10,7 @@ import type { Release, UpdateState } from '@/update/updater'
 // Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, Sinkronizimi, Versioni, "Dil".
 // Store i vërtetë me një përdorues; llogaria, sinkronizimi dhe përditësimi të imituara.
 const data = vi.hoisted(() => ({
+  admin: false,
   store: null as unknown as LocalStore,
   signOut: vi.fn(async () => undefined),
   syncNow: vi.fn(async () => undefined),
@@ -27,6 +28,7 @@ vi.mock('@/data/app-data', async () => {
   return {
     store,
     auth: { signOut: data.signOut },
+    useAuth: () => ({ status: 'signed_in', userId: '11111111-1111-4111-8111-111111111111', email: null, admin: data.admin }),
     scheduler: { syncNow: data.syncNow },
     useSyncStatus: () => data.sync,
     usePendingChanges: () => 0,
@@ -102,6 +104,16 @@ describe('cilësimet', () => {
     expect(within(appearance).getByRole('link', { name: 'Gjuha, Shqip' })).toHaveAttribute('href', '/cilesimet/pamja')
     expect(within(group('Njoftimet')).getByRole('link', { name: /^Rikujtuesit/ })).toHaveTextContent('Stërvitja, vaktet, suplementet, uji, matjet')
     for (const later of ['Admini', 'Ora dhe Health Connect']) expect(screen.queryByRole('region', { name: later })).toBeNull()
+  })
+
+  it('admini (V42) sheh "Kufiri i AI-së" te grupi Admini', async () => {
+    data.admin = true
+    try {
+      await renderSettings()
+      expect(within(group('Admini')).getByRole('link', { name: 'Kufiri i AI-së, Kostoja dhe kufiri për çdo person' })).toHaveAttribute('href', '/cilesimet/admin')
+    } finally {
+      data.admin = false
+    }
   })
 
   it('mbrapa kthehet aty nga erdhi përdoruesi', async () => {

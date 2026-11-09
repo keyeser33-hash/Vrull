@@ -12,6 +12,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import { type ImportRemote, readResultFrom } from './pdf-import'
 import { labelResultFrom, type LabelRemote } from './supplement-label'
 import { type BoxRemote, boxResultFrom } from './ai-box'
+import { type AdminRemote, adminResultFrom } from './ai-admin'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
 import { currentI18n, language } from '@/i18n'
@@ -242,6 +243,25 @@ export const boxRemote: BoxRemote = {
       result = boxResultFrom(response.status, await response.json().catch(() => null))
     } else result = boxResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
     if (result.ok || result.error === 'unreadable') void scheduler.syncNow()
+    return result
+  },
+}
+
+/** Kufiri i AI-së te Admini (V42), përmes funksionit `ai-admin`: vetëm me internet dhe vetëm për adminin. */
+async function invokeAdmin(body: Record<string, unknown>) {
+  if (!navigator.onLine) return adminResultFrom(null, null)
+  const { data, error } = await supabase.functions.invoke('ai-admin', { body })
+  if (!error) return adminResultFrom(200, data)
+  if (error instanceof FunctionsHttpError) return adminResultFrom((error.context as Response).status, null)
+  return adminResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
+}
+
+export const aiAdminRemote: AdminRemote = {
+  list: () => invokeAdmin({ action: 'list' }),
+  async setLimit(userId, limitEur) {
+    const result = await invokeAdmin({ action: 'set', userId, limitEur })
+    // Kufiri i ri i vetë adminit vjen te telefoni me sinkronizimin (ai_limits).
+    if (result.ok) void scheduler.syncNow()
     return result
   },
 }

@@ -68,3 +68,15 @@ describe('përdorimi i AI-së', () => {
     expect(await aiMonth(store)).toMatchObject({ spentEur: 0.27, byFeature: { program_pdf: 0.27 } })
   })
 })
+
+describe('kufiri i personit (V42)', () => {
+  it('nga ai_limits kur ka rresht; përndryshe 10 €', async () => {
+    const { createDatabase } = await import('./db')
+    const { createLocalStore } = await import('./store')
+    const { aiMonth } = await import('./ai-usage')
+    const store = createLocalStore(createDatabase(`ai-limit-${crypto.randomUUID()}`), { userId: () => '11111111-1111-4111-8111-111111111111', now: () => new Date('2026-11-18T10:00:00') })
+    expect((await aiMonth(store)).limitEur).toBe(10)
+    await store.put('ai_limits', { monthly_eur: 40 })
+    expect(await aiMonth(store)).toMatchObject({ limitEur: 40, remainingEur: 40, reached: false })
+  })
+})

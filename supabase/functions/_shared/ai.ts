@@ -10,6 +10,13 @@ export const LIMIT_TIME_ZONE = 'Europe/Tirane'
 /** Kufiri për person në muaj (V25), deri te kufiri i Adminit për çdo person (V42, E2-17). */
 export const AI_MONTHLY_LIMIT_EUR = 10
 
+/** Kufiri i personit nga rreshtat e ai_limits (V42); pa rresht ose me vlerë të gabuar, 10 €. */
+export function limitFrom(rows: readonly { monthly_eur: number | string | null }[] | null | undefined): number {
+  const raw = rows?.[0]?.monthly_eur
+  const value = raw === null || raw === undefined || raw === '' ? Number.NaN : Number(raw)
+  return Number.isFinite(value) && value >= 0 ? value : AI_MONTHLY_LIMIT_EUR
+}
+
 /** Dollarë për milion tokena. */
 export interface ModelPrice {
   input: number

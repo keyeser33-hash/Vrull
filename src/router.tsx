@@ -66,6 +66,7 @@ export const appRoutes: RouteObject[] = [
       { path: 'cilesimet', ...screen(() => import('@/routes/settings'), (m) => m.SettingsPage), ...tab(null) },
       { path: 'cilesimet/pamja', ...screen(() => import('@/routes/settings-appearance'), (m) => m.AppearancePage), ...tab(null) },
       { path: 'cilesimet/rikujtuesit', ...screen(() => import('@/routes/settings-reminders'), (m) => m.RemindersPage), ...tab(null) },
+      { path: 'cilesimet/admin', ...screen(() => import('@/routes/admin-ai'), (m) => m.AdminAiPage), ...tab(null) },
       { path: 'cilesimet/ai', ...screen(() => import('@/routes/settings-ai'), (m) => m.AiSettingsPage), ...tab(null) },
     ],
   },

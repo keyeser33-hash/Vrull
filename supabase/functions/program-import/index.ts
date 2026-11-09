@@ -15,6 +15,7 @@
 //   502 (ai_failed, unreadable, too_long, no_programme, timeout), 503 (not_configured).
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0'
 import { runImport, type UsageStore } from './handler.ts'
+import { limitFrom } from '../_shared/ai.ts'
 import { API_VERSION, buildRequest, isLanguage, isPdf, MAX_PDF_BYTES, MODEL, monthStart, parseKnown, toBase64, USD_PER_EUR } from './logic.ts'
 
 const corsHeaders = {
@@ -103,7 +104,10 @@ Deno.serve(async (req: Request) => {
       if (error) throw new Error(`heqja: ${error.code ?? 'pa kod'}`)
     },
   }
+  // Kufiri i personit (ai_limits, V42); pa rresht ose pa tabelë, 10 €.
+  const { data: limits } = await admin.from('ai_limits').select('monthly_eur').eq('user_id', userId).is('deleted_at', null).limit(1)
   const reply = await runImport({
+    limitEur: limitFrom(limits),
     month: monthStart(new Date()),
     request: buildRequest({ pdfBase64: toBase64(bytes), known, language }),
     usage,
