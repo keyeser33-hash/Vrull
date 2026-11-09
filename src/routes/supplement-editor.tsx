@@ -246,7 +246,7 @@ function SupplementEditor({ id, initial }: { id: string | undefined; initial: Dr
           />
           <div role="radiogroup" aria-label={t('food.supplement.dose')} className="flex flex-wrap gap-2">
             {UNITS.map((unit) => (
-              <ChoiceChip key={unit} selected={draft.doseUnit === unit} onClick={() => set({ doseUnit: unit })}>
+              <ChoiceChip key={unit} selected={draft.doseUnit === unit} onClick={() => set({ doseUnit: unit })} className="normal-case">
                 {t(`food.supplement.unit.${unit}`)}
               </ChoiceChip>
             ))}

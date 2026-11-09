@@ -11,11 +11,14 @@ import type { LocalStore } from './store'
 // ditës së sotme (`setDayType`), si ndërrimi me dorë te Ushqimi, që objektivat, vaktet dhe
 // rikujtuesit ta ndjekin vetë.
 
+const dayAfter = (date: Date) => localDate(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1))
+
 export async function readMissedInput(store: LocalStore): Promise<MissedInput> {
   const [profile, settings, sessions, targets] = await Promise.all([readProfile(store), settingsRow(store), store.all('workout_sessions'), store.all('nutrition_targets')])
   return {
     trainingDays: profile.trainingDays,
-    startedOn: typeof settings?.onboarded_at === 'string' ? localDate(new Date(settings.onboarded_at)) : null,
+    // Dita e hapave të para nuk numërohet: kush instalon në mbrëmje një ditë stërvitjeje nuk e ka humbur atë.
+    startedOn: typeof settings?.onboarded_at === 'string' ? dayAfter(new Date(settings.onboarded_at)) : null,
     sessionDates: sessions.map((row) => String(row.date).slice(0, 10)),
     dayTypes: Object.fromEntries(targets.filter((row) => row.is_manual).map((row) => [String(row.date).slice(0, 10), row.day_type === 'training' ? 'training' : 'rest'])),
   }

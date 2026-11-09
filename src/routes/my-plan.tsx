@@ -152,7 +152,14 @@ function PlanTotals({ day }: { day: NutritionDay }) {
 function useSummary() {
   const { t, fmt, lang } = useI18n()
   return (lines: readonly { name: string; sourceId: string | null; portion: MealSlot['template'][number]['portion'] }[]) =>
-    lines.map((line, index) => `${index === 0 ? foodName(t, line) : nameInSentence(foodName(t, line), lang)} ${portionText(t, fmt, line.portion)}`).join(', ')
+    lines
+      .map((line, index) => {
+        const name = index === 0 ? foodName(t, line) : nameInSentence(foodName(t, line), lang)
+        const portion = portionText(t, fmt, line.portion)
+        // "½ pjepër" e thotë vetë emrin: pa "Pjepër ½ pjepër".
+        return portion.toLocaleLowerCase(lang).includes(name.toLocaleLowerCase(lang)) ? portion : `${name} ${portion}`
+      })
+      .join(', ')
 }
 
 function MealList({ day, onOpen }: { day: NutritionDay; onOpen: (meal: MealSlot['meal']) => void }) {
@@ -434,7 +441,7 @@ function SwapSheet({ item, onPick, onClose }: { item: MyPlanItem | null; onPick:
         </Button>
       }
     >
-      <input type="search" aria-label={t('food.plan.search')} placeholder={t('food.plan.search')} value={query} onChange={(event) => setQuery(event.target.value)} className={inputClass} />
+      <input type="search" aria-label={t('food.plan.search')} placeholder={t('food.plan.search')} value={query} onChange={(event) => setQuery(event.target.value)} className={cn(inputClass, 'shrink-0')} />
       {jim.length > 0 ? (
         <section aria-labelledby="swap-jim" className="flex flex-col gap-2">
           <h3 id="swap-jim" className="type-label text-muted-foreground">
