@@ -52,7 +52,7 @@ Raporti: deri në 300 fjalë
 
 ## Lëshimi
 
-Një version i ri del vetëm në fund të etapës, me miratimin e përdoruesit. Para tij migrimet duhet të jenë në Supabase (SQL Editor) dhe të verifikuara me SELECT. Hapat: `docs/INSTALL.md`, pika 6. Push-i i një tag-u nga sesioni refuzohet (403). Lëshimi niset me versionin te `package.json` në `main`.
+Një version i ri del vetëm në fund të etapës, me miratimin e përdoruesit. Para tij migrimet duhet të jenë në Supabase (SQL Editor) dhe të verifikuara me SELECT. Hapat: `docs/INSTALL.md`, pika 6. Push-i i një tag-u nga sesioni refuzohet (403). Lëshimi niset me versionin te `package.json` në `main`. Release-i kontrollohet me `gh api repos/keyeser33-hash/Vrull/releases/tags/vX.Y.Z`, sepse `gh release view` përdor GraphQL, që sesioni e refuzon.
 
 ## Kostot
 
