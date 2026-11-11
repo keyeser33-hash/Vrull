@@ -98,6 +98,9 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Fshirja e përdoruesit të provës me `execute_sql` kërkon konfirmimin e përdoruesit; kur ai nuk ishte aty, përdoruesi mbeti → përdoruesi i përkohshëm krijohet vetëm kur përdoruesi është i pranishëm, dhe SQL-ja e fshirjes i jepet gati që ta zbatojë vetë nëse konfirmimi nuk vjen.
 - Rishikimi i 0.22 gjeti katër rreshta që baza lokale i pranonte dhe serveri do t'i refuzonte (ushqimi i dytë me të njëjtin `source_id`, uji 2 500 ml, ml me presje, RIR 2,5): Dexie nuk ka `check` dhe indekse unike të serverit, ndaj provat kalonin → çdo shkrim i ri te një tabelë sinkronizohet lexohet kundrejt migrimit (checks, `smallint`, indekset unike) dhe prova e pohon atë rregull (p.sh. "rreshtat që serveri pranon" te `ai-box.test.ts`).
 
+- Krijimi i një detyre të planifikuar të përsëritur që shkruan te baza e prodhimit (mentori, 11.11.2026) u ndal nga kontrolli i sigurisë i Claude, ndërsa prova një-herëshe kaloi → detyrat e përsëritura që shkruajnë krijohen vetëm pas miratimit të qartë të përdoruesit për atë detyrë, jo vetëm për planin.
+- Njoftimi i detyrës së planifikuar (`notifications: push`) nuk arriti në telefon në provën 3 → detyrat e mentorit e thërrasin vetë `PushNotification` kur shkruajnë një shënim; njoftimi provohet me nisjen e parë të vërtetë, dhe përdoruesi konfirmon nëse arriti.
+
 ## Rishikimi i kodit
 
 - Kufiri i kostos së AI-së kontrollohej para thirrjes dhe kostoja shkruhej pas saj (deri në 140 s): kërkesa paralele e kapërcenin pa fund → çdo kufi që mbron para rezervon para se të nisë punën (`program-import/handler.ts`); prova nis 50 kërkesa njëkohësisht dhe kontrollohet me mutacion (pa rezervim, prova duhet të bjerë).

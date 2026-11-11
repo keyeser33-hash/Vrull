@@ -83,4 +83,4 @@ values ('2eaea1d2-2963-40b2-85c8-acfddf3b5b21', 'komenti_seances', '<seanca.id>'
 on conflict (session_id) where kind = 'komenti_seances' and deleted_at is null do nothing
 returning id;
 
-HAPI 4. Përfundo me dy rreshta: titulli i komentit dhe "Lexoje te paneli, tabi Mentori."
+HAPI 4. Vetëm kur insert-i ktheu një id: dërgo një njoftim të vetëm në telefon me mjetin PushNotification (nëse nuk e sheh në listë, ngarkoje me ToolSearch: "select:PushNotification"), me mesazhin "Mentori: <titulli>". Pastaj përfundo me dy rreshta: titulli i komentit dhe "Lexoje te paneli, tabi Mentori."
