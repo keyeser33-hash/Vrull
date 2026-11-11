@@ -116,13 +116,19 @@ describe('Kutia e AI-së', () => {
     await import('@/data/app-data')
     const { completeOnboarding } = await import('@/data/profile')
     const { ensureSupplements } = await import('@/data/supplements')
-    await completeOnboarding(data.store, {
-      weightKg: 88,
-      trainingDays: [1, 2, 4, 5],
-      trainingTime: '21:00',
-      wakeTime: '08:20',
-      sleepTime: '01:00',
-    })
+    // Hapat e parë me datë të fiksuar, para orës së fiksuar të provës "dje dhe sot" (10 nëntor, mesditë):
+    // me datën e vërtetë, nga 11 nëntori profili binte pas "sot"-it të provës dhe përmbledhja nuk dilte.
+    await completeOnboarding(
+      data.store,
+      {
+        weightKg: 88,
+        trainingDays: [1, 2, 4, 5],
+        trainingTime: '21:00',
+        wakeTime: '08:20',
+        sleepTime: '01:00',
+      },
+      () => new Date('2026-11-08T08:00:00'),
+    )
     await ensureSupplements(data.store)
   })
   beforeEach(async () => {
