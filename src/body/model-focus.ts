@@ -1,4 +1,5 @@
 import { BACK, FRONT } from './figure-regions'
+import { focusLift } from './model-look'
 
 // Fokusi i modelit 3D (SPEC §11): nga cila anë shihen muskujt e zgjedhur, si theksohen, dhe ku
 // shkon kamera. Koordinatat në metra, Y lart, Z përpara; kamera shikon nga +Z.
@@ -31,17 +32,23 @@ export function facesBack(keys: string[]) {
   return sides.filter((side) => side === 'back').length > sides.filter((side) => side === 'front').length
 }
 
-/** Gjatë fokusit, i zgjedhuri ndriçohet (edhe kur s'ka ngjyrë) dhe të tjerët zbehen drejt panelit. */
-export function focusShade(focused: boolean | null) {
+/**
+ * Gjatë fokusit, i zgjedhuri ndriçohet (edhe kur s'ka ngjyrë) dhe të tjerët zbehen drejt panelit.
+ * Një muskul me `glow` (V53) ndriçon vetë, ndaj nuk zbardhet: prushi mbetet prush.
+ */
+export function focusShade(focused: boolean | null, glow = 0) {
   if (focused === null) return { dim: 0, lift: 0 }
-  return focused ? { dim: 0, lift: 0.35 } : { dim: 0.6, lift: 0 }
+  return focused ? { dim: 0, lift: focusLift(glow) } : { dim: 0.6, lift: 0 }
 }
 
-/** Kamera për një kuti: lartësia e qendrës dhe largësia që e nxë me pak hapësirë rreth saj. */
-export function focusView(box: { min: number[]; max: number[] }) {
+/**
+ * Kamera për një kuti: lartësia e qendrës dhe largësia që e nxë me hapësirë rreth saj (`margin`: sa
+ * herë më e madhe se kutia është pamja; karta e muskulit kërkon më shumë, sepse mbulon fundin e saj).
+ */
+export function focusView(box: { min: number[]; max: number[] }, margin = 1.6) {
   const height = (box.min[1] + box.max[1]) / 2
   const size = Math.max(box.max[1] - box.min[1], box.max[0] - box.min[0], box.max[2] - box.min[2])
-  const distance = (size * 1.6) / (2 * Math.tan(FIELD_OF_VIEW / 2))
+  const distance = (size * margin) / (2 * Math.tan(FIELD_OF_VIEW / 2))
   return { height, distance: Math.min(MAX_DISTANCE, Math.max(MIN_DISTANCE, distance)) }
 }
 

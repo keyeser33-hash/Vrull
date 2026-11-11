@@ -192,6 +192,27 @@ _Avoid_: trupi i personalizuar, avatari
 **Rikuperimi**:
 Gjendja e një grupi muskujsh sipas orëve nga seanca e fundit ku ishte kryesor: I lodhur (nën 48), Pothuajse gati (48–72), Gati (mbi 72).
 
+**Shkëlqimi**:
+Drita që lëshon një muskul te modeli 3D: nga brenda, te skajet dhe si **Aureolë**. Te Trupi ndriçojnë muskujt e lodhur dhe ata me shumë **Volum javor**; nuk e ndryshon ngjyrën e legjendës.
+_Avoid_: ndezja (i përket **Pulsit** të "Trupit në ritëm"), neoni
+
+**Aureola**:
+Brezi i butë i dritës rreth siluetës së një muskuli që ndriçon; dobësohet kur kamera afrohet.
+
+**Shina e këndeve**:
+Katër butonat mbi modelin 3D te Trupi (Para, 3/4, Anash, Mbrapa) që e kthejnë trupin te një kënd i caktuar.
+_Avoid_: "Shiko mbrapa" (mbetet te ekranet pa shinë)
+
+**Kamera e lirë**:
+Mënyra e modelit 3D te Trupi ku një gisht e kthen trupin dhe e anon kamerën, dhe dy gishta afrojnë dhe zhvendosin.
+
+**Pamja e plotë**:
+Trupi i plotë, përpara dhe i drejtë, në mes të kartës; edhe butoni që kthen tek ajo pas një afrimi ose animi.
+
+**Karta e muskulit**:
+Karta poshtë majtas mbi modelin 3D te Trupi kur prek një muskul: grupi, **Rikuperimi**, **Volumi javor** dhe ushtrimet e programit për të.
+_Avoid_: çipi (mbetet emri i shiritit sipër te Shtresat dhe te muskujt e ushtrimit)
+
 ## Ushqimi
 
 **Lloji i ditës**:

@@ -79,6 +79,21 @@ describe('shtresat dhe trupi sipas matjeve', () => {
     expect(after.find((entry) => entry.id === 'pectoralis_minor')!.load).toBe(1.5)
   })
 
+  it('karta e muskulit (V53): ushtrimet e javës së programit për grupin, kryesorët të parët, pa përsëritje', async () => {
+    const store = await started()
+    const groups = await bodyView(store, new Date('2026-10-25T16:00:00'))
+    const chest = groups.find((entry) => entry.group.id === 'gjoksi')!
+    // Java 0 · Stërvitja 1: Bench Press është kryesor te gjoksi, ndaj vjen i pari.
+    expect(chest.program[0]).toBe('Bench Press')
+    expect(chest.program).toContain('Cable Crossover')
+    expect(new Set(chest.program).size).toBe(chest.program.length)
+    // Si te Shtresat: i njëjti burim, e njëjta radhë (kryesor, pastaj vetëm ndihmës).
+    const calves = groups.find((entry) => entry.group.id === 'pulpat')!
+    expect(calves.program).toContain('Seated Calf Raise')
+    // Çdo grup e ka listën, edhe kur është bosh.
+    for (const entry of groups) expect(Array.isArray(entry.program), entry.group.id).toBe(true)
+  })
+
   it('sipas matjeve: Java 0 nga nisja e programit; matja e re ndryshon trupin', async () => {
     const store = await started()
     expect(await shapeView(store)).toMatchObject({ comparison: null, start: null, scales: {} })

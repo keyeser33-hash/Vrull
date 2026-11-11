@@ -33,5 +33,8 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 ## 5. Pjesa tjetër (1 min)
 
 - [ ] Trupi 3D vizatohet dhe rrotullohet (emulatori shpesh nuk ka WebGL).
+- [ ] Trupi 3D, drita dhe kamera (V53): te Rikuperimi dhe te Volumi javor muskujt ndriçojnë, dhe kthimi me gisht është i rrjedhshëm (pa ngecje) edhe kur shumë muskuj kanë aureolë.
+- [ ] Te trupi i plotë, rrëshqitja lart-poshtë mbi model e lëviz faqen; zvarritja anash e kthen trupin. Dy gishta afrojnë te vendi ku janë; pastaj një gisht e anon kamerën edhe lart-poshtë, dhe "Pamja e plotë" kthen te fillimi.
+- [ ] Shina e këndeve (Para, 3/4, Anash, Mbrapa) e kthen trupin butë; prekja e një muskuli hap kartën me vijën te muskuli, dhe "×" kthen te trupi i plotë.
 - [ ] Cilësimet › Gjuha › English: njoftimi i seancës kalon në anglisht.
 - [ ] Butoni mbrapa i Android-it kthen te faqja e mëparshme; te Sot e çon app-in në sfond.

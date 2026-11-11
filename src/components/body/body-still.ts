@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import type { ShapeMeasure, ShapeScales, Vec3 } from '@/body/body-shape'
+import { auraFade, auraScale } from '@/body/model-camera'
 import { FIELD_OF_VIEW_DEGREES, fitView } from '@/body/model-focus'
 import type { Tone } from '@/body/model-math'
-import { addLights, boxOf, disposeScene, loadBody, paintMuscles, regionPoints, shapeMuscles } from './body-scene'
+import { addLights, boxOf, disposeScene, loadBody, paintMuscles, regionPoints, setAuraView, shapeMuscles } from './body-scene'
 
 // Imazhe të palëvizshme të modelit 3D (V2-E1-14): trupi i plotë përpara (ose mbrapa), me ngjyrat dhe
 // formën e çdo kuadri, i renderuar një herë dhe i shfaqur si <img>. "Trupi sipas matjeve" krahason
@@ -49,7 +50,7 @@ export async function renderBodyStills(element: Element, frames: StillFrame[], s
     renderer.setSize(size.width, size.height, false)
     renderer.setClearColor(0, 0)
     const camera = new THREE.PerspectiveCamera(FIELD_OF_VIEW_DEGREES, size.width / size.height, 0.1, 20)
-    addLights(scene, camera, element)
+    addLights(scene, element)
     const body = await loadBody(element)
     scene.add(body.root)
     // Kamera e nxë gjithë trupin (lëkurën), me krahët, në formën e imazhit; ose muskujt e fokusit.
@@ -59,10 +60,11 @@ export async function renderBodyStills(element: Element, frames: StillFrame[], s
     camera.position.set(0, fit.height, fit.distance)
     camera.lookAt(0, fit.height, 0)
     camera.updateMatrixWorld()
+    setAuraView(body, auraFade(fit.distance), auraScale(fit.distance))
 
     const stills: Still[] = []
     for (const frame of frames) {
-      paintMuscles(element, body.muscles, frame.paint ?? (() => null), null)
+      paintMuscles(element, body, frame.paint ?? (() => null), null)
       shapeMuscles(body.muscles, frame.shape ?? {})
       body.root.rotation.y = frame.back ? Math.PI : 0
       body.root.updateMatrixWorld()

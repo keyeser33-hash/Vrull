@@ -9,12 +9,11 @@ import { language } from '@/i18n'
 interface ModelProps {
   paint: (key: string) => Tone | null
   onPick: (key: string | null) => void
-  back: boolean
-  onBackChange: (back: boolean) => void
+  controls?: boolean
   focus?: string[] | null
   focusRequest?: number
   overlay?: React.ReactNode
-  overlayAt?: 'top' | 'bottom'
+  overlayAt?: 'top' | 'bottom' | 'card'
   leader?: boolean
   label: string
 }
@@ -45,22 +44,19 @@ vi.mock('@/data/app-data', async () => {
 const gl = vi.hoisted(() => ({ available: true }))
 vi.mock('@/lib/webgl', () => ({ webglAvailable: () => gl.available }))
 vi.mock('@/components/body/body-model', () => ({
-  default: ({ paint, onPick, back, onBackChange, focus, focusRequest, overlay, overlayAt, leader, label }: ModelProps) => (
+  default: ({ paint, onPick, controls, focus, focusRequest, overlay, overlayAt, leader, label }: ModelProps) => (
     <div>
       <div role="img" aria-label={label}>
-        <p>{back ? 'modeli mbrapa' : 'modeli përpara'}</p>
+        <p>{controls ? 'kamera e lirë me shinë' : 'pa shinë'}</p>
         <p>{focus ? `fokusi ${focus.join(' ')} · kërkesa ${focusRequest}` : 'pa fokus'}</p>
-        <p>{`çipi ${overlayAt ?? 'poshtë'}${leader ? ' me vijë' : ''}`}</p>
+        <p>{`mbishtresa ${overlayAt ?? 'poshtë'}${leader ? ' me vijë' : ''}`}</p>
         {['pectoralis_major_sternocostal', 'gastrocnemius'].map((key) => (
           <button key={key} type="button" onClick={() => onPick(key)}>
-            {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}`}
+            {`${key} ${paint(key)?.token ?? 'pa'} ${paint(key)?.alpha ?? 0}${paint(key)?.glow ? ` ndriçon ${paint(key)?.glow}` : ''}`}
           </button>
         ))}
         <button type="button" onClick={() => onPick(null)}>
           prek jashtë trupit
-        </button>
-        <button type="button" onClick={() => onBackChange(!back)}>
-          zvarrit gjysmë rrotullimi
         </button>
       </div>
       {overlay}
@@ -158,37 +154,50 @@ describe('Trupi', () => {
     expect((await within(sheet).findAllByText(/Calf Raise/)).length).toBeGreaterThan(0)
   })
 
-  it('modeli 3D: ngjyrat e Vrullit, çipi sipër me vijën, "Më shumë" hap grupin', async () => {
+  it('modeli 3D: ngjyrat dhe shkëlqimi i Vrullit, karta poshtë me vijën, rreshti i ushtrimeve hap grupin', async () => {
     const user = userEvent.setup()
     await renderPage()
     const model = await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })
-    expect(within(model).getByText('pectoralis_major_sternocostal --ember 1')).toBeInTheDocument()
+    // I lodhur ndriçon plotësisht; gati mbetet i qetë (V53).
+    expect(within(model).getByText('pectoralis_major_sternocostal --ember 1 ndriçon 1')).toBeInTheDocument()
     expect(within(model).getByText('gastrocnemius --muted-foreground 0.35')).toBeInTheDocument()
-    expect(model).toHaveTextContent('çipi top me vijë')
+    expect(model).toHaveTextContent('mbishtresa card me vijë')
 
     await user.click(screen.getByRole('radio', { name: 'Volumi javor' }))
-    // 3 sete: nën 10, `volume-1`; pa sete: `subtle`.
-    expect(await within(model).findByText('pectoralis_major_sternocostal --volume-1 1')).toBeInTheDocument()
+    // 3 sete: nën 10, `volume-1` me pak dritë; pa sete: `subtle`, pa dritë.
+    expect(await within(model).findByText('pectoralis_major_sternocostal --volume-1 1 ndriçon 0.12')).toBeInTheDocument()
     expect(within(model).getByText('gastrocnemius --subtle 1')).toBeInTheDocument()
 
-    // Prekja e muskulit: fokusi te grupi, emri i pjesës me vlerën dhe shigjeta që hap fletën.
+    // Prekja e muskulit: fokusi te grupi dhe karta me rikuperimin dhe javën e tij.
     await user.click(within(model).getByText(/^gastrocnemius/))
     expect(model).toHaveTextContent('fokusi gastrocnemius soleus · kërkesa 1')
     // E njëjta prekje përsëri (p.sh. pas një rrotullimi) e afron sërish kamerën.
     await user.click(within(model).getByText(/^gastrocnemius/))
     expect(model).toHaveTextContent('fokusi gastrocnemius soleus · kërkesa 2')
-    const chip = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
-    expect(chip).toHaveTextContent('Gastroknemiusi · Pa sete')
-    await user.click(within(chip).getByRole('button', { name: /Më shumë për Pulpat$/ }))
-    expect(screen.getByRole('dialog', { name: 'Pulpat' })).toHaveTextContent('Gastrocnemius, soleus')
+    const card = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
+    expect(card).toHaveTextContent('Pulpat')
+    expect(card).toHaveTextContent('Gati · pa stërvitje')
+    expect(card).toHaveTextContent('Këtë javë pa sete · nën objektiv')
+    // Rreshti i fundit: ushtrimet e programit për pulpat këtë javë; hap fletën e grupit.
+    const more = within(card).getByRole('button', { name: /Më shumë për Pulpat$/ })
+    expect(more).toHaveTextContent(/Calf Raise/)
+    await user.click(more)
+    const sheet = screen.getByRole('dialog', { name: 'Pulpat' })
+    expect(sheet).toHaveTextContent('Gastrocnemius, soleus')
+    const program = within(sheet).getByRole('heading', { name: 'Te programi yt këtë javë' }).nextElementSibling as HTMLElement
+    expect(within(program).getAllByRole('listitem').some((item) => /Calf Raise/.test(item.textContent ?? ''))).toBe(true)
   })
 
-  it('modeli 3D: çipi i gjoksit tregon pjesën nga grupi; prekja jashtë trupit dhe "×" e heqin fokusin', async () => {
+  it('modeli 3D: karta e gjoksit thotë rikuperimin dhe javën bashkë; prekja jashtë trupit dhe "×" e heqin fokusin', async () => {
     const user = userEvent.setup()
     await renderPage('/progresi/trupi?pamja=volumi')
     const model = await screen.findByRole('img', { name: 'Volumi i javës sipas muskujve' })
     await user.click(within(model).getByText(/^pectoralis_major_sternocostal/))
-    expect(screen.getByRole('group', { name: 'Muskuli i zgjedhur' })).toHaveTextContent('Gjoksi i mesëm dhe i poshtëm · 3 nga 3 sete')
+    const card = screen.getByRole('group', { name: 'Muskuli i zgjedhur' })
+    expect(card).toHaveTextContent('Gjoksi')
+    expect(card).toHaveTextContent('I lodhur · para 1 ore')
+    expect(card).toHaveTextContent('Këtë javë 3 sete · nën objektiv')
+    expect(within(card).getByRole('button', { name: /^Bench Press dhe \d+ (tjetër|të tjera)\. Më shumë për Gjoksi$/ })).toBeInTheDocument()
     await user.click(within(model).getByRole('button', { name: 'prek jashtë trupit' }))
     expect(model).toHaveTextContent('pa fokus')
     expect(screen.queryByRole('group', { name: 'Muskuli i zgjedhur' })).not.toBeInTheDocument()
@@ -197,20 +206,15 @@ describe('Trupi', () => {
     expect(model).toHaveTextContent('pa fokus')
   })
 
-  it('"Shiko mbrapa" e kthen modelin; pas zvarritjes butoni ndjek anën që duket', async () => {
-    const user = userEvent.setup()
+  it('kamera e lirë: shina e këndeve e modelit zë vendin e "Shiko mbrapa"', async () => {
     await renderPage()
     const model = await screen.findByRole('img', { name: 'Rikuperimi sipas muskujve' })
-    expect(model).toHaveTextContent('modeli përpara')
-    await user.click(screen.getByRole('button', { name: 'Shiko mbrapa' }))
-    expect(model).toHaveTextContent('modeli mbrapa')
-    expect(screen.getByRole('button', { name: 'Shiko përpara' })).toBeInTheDocument()
-    await user.click(within(model).getByRole('button', { name: 'zvarrit gjysmë rrotullimi' }))
-    expect(model).toHaveTextContent('modeli përpara')
-    expect(screen.getByRole('button', { name: 'Shiko mbrapa' })).toBeInTheDocument()
+    expect(model).toHaveTextContent('kamera e lirë me shinë')
+    expect(screen.queryByRole('button', { name: 'Shiko mbrapa' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Shiko përpara' })).not.toBeInTheDocument()
   })
 
-  it('anglisht: titulli, pamjet, lista, çipi dhe shënimi', async () => {
+  it('anglisht: titulli, pamjet, lista, karta dhe shënimi', async () => {
     language.set('en')
     const user = userEvent.setup()
     await renderPage('/progresi/trupi?pamja=volumi')
@@ -223,11 +227,15 @@ describe('Trupi', () => {
     expect(screen.getByRole('list', { name: 'Legend' })).toHaveTextContent('10–20 · target')
     const model = screen.getByRole('img', { name: 'This week’s volume by muscle' })
     await user.click(within(model).getByText(/^pectoralis_major_sternocostal/))
-    const chip = screen.getByRole('group', { name: 'Selected muscle' })
-    expect(chip).toHaveTextContent('Middle and lower chest · 3 of 3 sets')
-    await user.click(within(chip).getByRole('button', { name: /More about Chest$/ }))
+    const card = screen.getByRole('group', { name: 'Selected muscle' })
+    expect(card).toHaveTextContent('Chest')
+    expect(card).toHaveTextContent('Fatigued · 1 hour ago')
+    expect(card).toHaveTextContent('This week 3 sets · below target')
+    const more = within(card).getByRole('button', { name: /^Bench Press and \d+ more\. More about Chest$/ })
+    await user.click(more)
     const sheet = screen.getByRole('dialog', { name: 'Chest' })
     expect(sheet).toHaveTextContent('Below target · 10–20')
     expect(sheet).toHaveTextContent('Parts this week')
+    expect(within(sheet).getByRole('heading', { name: 'In your programme this week' })).toBeInTheDocument()
   })
 })

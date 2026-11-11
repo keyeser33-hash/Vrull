@@ -25,14 +25,33 @@ export interface BodyGroup {
   parts: { key: string; load: number }[]
   /** Setet e grupit nga ushtrimet e bibliotekës, që dinë vetëm grupin: nuk ndahen sipas pjesëve. */
   unsplit: number
+  /** Ushtrimet e javës së tanishme të programit që e punojnë grupin: kryesorët, pastaj vetëm ndihmësit (karta e muskulit, V53). */
+  program: string[]
 }
 
 // Ushtrimet e Shortcut to Size kanë çelësat e saktë (Shtojca E); ato të shtuara nga biblioteka i
 // marrin nga grupi i free-exercise-db (Shtojca D), p.sh. "shoulders" jep të tria kokat e deltoidit.
 const PROGRAM_NAMES = new Set(SHORTCUT_TO_SIZE.exercises.map((exercise) => exercise.name.toLowerCase()))
 
+type ExerciseRow = Awaited<ReturnType<LocalStore['all']>>[number]
+const keysOf = (row: Record<string, unknown> | undefined, field: string) => (row?.[field] as string[] | undefined) ?? []
+
+/** Ushtrimet e javës së tanishme të programit aktiv, me radhën e ditëve dhe të sloteve; bosh pa program. */
+async function programWeek(store: LocalStore, exercises: ExerciseRow[]) {
+  const loaded = await activeProgram(store)
+  if (!loaded) return []
+  const byId = new Map(exercises.map((row) => [row.id, row]))
+  return [...loaded.engine.days]
+    .sort((a, b) => a.position - b.position)
+    .flatMap((day) => planSession(loaded.engine, { ...loaded.pointer, dayId: day.id, completed: false }).slots)
+    .map((slot) => byId.get(slot.exerciseId))
+    .filter((row) => row !== undefined)
+    .map((row) => ({ name: String(row.name), primary: keysOf(row, 'primary_muscles'), secondary: keysOf(row, 'secondary_muscles') }))
+}
+
 export async function bodyView(store: LocalStore, now: Date): Promise<BodyGroup[]> {
   const [history, exercises] = await Promise.all([trainingHistory(store), store.all('exercises')])
+  const week = await programWeek(store, exercises)
   const primary = Object.fromEntries(exercises.map((row) => [row.id, (row.primary_muscles as string[] | undefined) ?? []]))
   const secondary = Object.fromEntries(exercises.map((row) => [row.id, (row.secondary_muscles as string[] | undefined) ?? []]))
   const load = muscleLoad(history.sets, primary, secondary, MUSCLE_GROUPS, now)
@@ -49,6 +68,7 @@ export async function bodyView(store: LocalStore, now: Date): Promise<BodyGroup[
     hours: recovery.get(group.id)!.hours,
     parts: group.keys.map((key) => ({ key, load: byKey.get(key) ?? 0 })),
     unsplit: unsplit.get(group.id) ?? 0,
+    program: Object.values(programRoles(group.keys, week)).flat(),
   }))
 }
 
@@ -63,24 +83,14 @@ export interface LayerEntry {
 
 /** Shtresat (V2-E1-14, TH-19): për çdo muskul të thellë, setet e javës dhe ku punon te programi. */
 export async function layersView(store: LocalStore, now: Date): Promise<LayerEntry[]> {
-  const [history, exercises, loaded] = await Promise.all([trainingHistory(store), store.all('exercises'), activeProgram(store)])
-  const byId = new Map(exercises.map((row) => [row.id, row]))
-  const keysOf = (row: Record<string, unknown> | undefined, field: string) => (row?.[field] as string[] | undefined) ?? []
+  const [history, exercises] = await Promise.all([trainingHistory(store), store.all('exercises')])
   const primary = Object.fromEntries(exercises.map((row) => [row.id, keysOf(row, 'primary_muscles')]))
   const secondary = Object.fromEntries(exercises.map((row) => [row.id, keysOf(row, 'secondary_muscles')]))
   // Si te pjesët e grupit: vetëm ushtrimet që i dinë çelësat (jo ato të bibliotekës me grupin).
   const groupOnly = new Set(exercises.filter((row) => !PROGRAM_NAMES.has(String(row.name).toLowerCase())).map((row) => row.id))
   const sets = history.sets.filter((set) => !groupOnly.has(set.exerciseId))
   const load = muscleLoad(sets, primary, secondary, DEEP_ENTRIES.map((entry) => ({ id: entry.id, name: entry.id, keys: entry.keys })), now)
-  // Ushtrimet e javës së tanishme të programit, me radhën e ditëve dhe të sloteve.
-  const week = loaded
-    ? [...loaded.engine.days]
-        .sort((a, b) => a.position - b.position)
-        .flatMap((day) => planSession(loaded.engine, { ...loaded.pointer, dayId: day.id, completed: false }).slots)
-        .map((slot) => byId.get(slot.exerciseId))
-        .filter((row) => row !== undefined)
-        .map((row) => ({ name: String(row.name), primary: keysOf(row, 'primary_muscles'), secondary: keysOf(row, 'secondary_muscles') }))
-    : []
+  const week = await programWeek(store, exercises)
   return DEEP_ENTRIES.map((entry) => ({ id: entry.id, load: load.get(entry.id) ?? 0, roles: programRoles(entry.keys, week) }))
 }
 

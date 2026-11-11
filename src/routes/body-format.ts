@@ -9,6 +9,7 @@ import type { RecoveryStatus } from '@/program/recovery'
 // Tekstet dhe ngjyrat e Trupit (SPEC §11; bordet "Trupi", Natë, Ditë). Figura 2D përdor klasat
 // `fill-…`, legjenda `bg-…`, modeli 3D të njëjtin token me të njëjtin opacitet (`tone`), që të tria
 // të lexohen njësoj. Volumi me tokenat `volume-1…3` të temës; "Pa sete" me `subtle` (DESIGN.md).
+// `glow` (V53) është vetëm i modelit 3D: sa ndriçon muskuli, pa ndryshuar ngjyrën e legjendës.
 
 export interface ToneStyle {
   fill: string
@@ -17,8 +18,8 @@ export interface ToneStyle {
 }
 
 export const RECOVERY_STYLE: Record<RecoveryStatus, ToneStyle> = {
-  i_lodhur: { fill: 'fill-ember', swatch: 'bg-ember', tone: { token: '--ember', alpha: 1 } },
-  pothuajse_gati: { fill: 'fill-ember/45', swatch: 'bg-ember/45', tone: { token: '--ember', alpha: 0.45 } },
+  i_lodhur: { fill: 'fill-ember', swatch: 'bg-ember', tone: { token: '--ember', alpha: 1, glow: 1 } },
+  pothuajse_gati: { fill: 'fill-ember/45', swatch: 'bg-ember/45', tone: { token: '--ember', alpha: 0.45, glow: 0.4 } },
   // "Gati" mbetet i qetë, që të dallohen muskujt që duan pushim.
   gati: { fill: 'fill-muted-foreground/35', swatch: 'bg-muted-foreground/35', tone: { token: '--muted-foreground', alpha: 0.35 } },
 }
@@ -27,9 +28,9 @@ export const RECOVERY_ORDER: RecoveryStatus[] = ['i_lodhur', 'pothuajse_gati', '
 
 export const LEVEL_STYLE: ToneStyle[] = [
   { fill: 'fill-subtle', swatch: 'bg-subtle', tone: { token: '--subtle', alpha: 1 } },
-  { fill: 'fill-volume-1', swatch: 'bg-volume-1', tone: { token: '--volume-1', alpha: 1 } },
-  { fill: 'fill-volume-2', swatch: 'bg-volume-2', tone: { token: '--volume-2', alpha: 1 } },
-  { fill: 'fill-volume-3', swatch: 'bg-volume-3', tone: { token: '--volume-3', alpha: 1 } },
+  { fill: 'fill-volume-1', swatch: 'bg-volume-1', tone: { token: '--volume-1', alpha: 1, glow: 0.12 } },
+  { fill: 'fill-volume-2', swatch: 'bg-volume-2', tone: { token: '--volume-2', alpha: 1, glow: 0.45 } },
+  { fill: 'fill-volume-3', swatch: 'bg-volume-3', tone: { token: '--volume-3', alpha: 1, glow: 1 } },
 ]
 
 export type BodyMode = 'rikuperimi' | 'volumi'
@@ -83,16 +84,26 @@ export function modeStyle(i18n: I18n, mode: BodyMode, entry: ModeEntry): ToneSty
   return { ...RECOVERY_STYLE[entry.recovery], text: label, value: label, detail: agoText(i18n, entry.hours) }
 }
 
+/** Karta e muskulit (V53), rreshti i parë: "I lodhur · para 20 orësh". */
+export function cardRecovery(i18n: I18n, entry: Pick<BodyGroup, 'recovery' | 'hours'>) {
+  const { t, lang } = i18n
+  return t('bodyModel.card.recovery', { status: t(`bodyModel.recovery.${entry.recovery}`), ago: agoText(i18n, entry.hours).toLocaleLowerCase(lang) })
+}
+
+/** Karta e muskulit, rreshti i dytë: "Këtë javë 14,5 sete · në objektiv" (setet dhe objektivi janë të grupit). */
+export function cardWeek(i18n: I18n, entry: Pick<BodyGroup, 'load'>) {
+  const { t, lang } = i18n
+  return t('bodyModel.card.week', { sets: t('bodyModel.setsInline', { count: entry.load }), status: targetText(i18n, entry.load).toLocaleLowerCase(lang) })
+}
+
 /**
- * Teksti i çipit kur prekët një muskul në modelin 3D (pas emrit të pjesës). Te volumi, një grup me
- * disa pjesë tregon sa sete mori pjesa e prekur nga totali i grupit (objektivi është për grupin, te
- * lista). Kur grupi ka edhe sete nga biblioteka, që nuk ndahen sipas pjesëve, çipi tregon vlerën e grupit.
+ * Karta e muskulit, rreshti që hap fletën: ushtrimi i parë i programit për grupin dhe sa të tjerë ka
+ * ("Bench Press" + "dhe 3 të tjera"; veç, që një emër i gjatë të shkurtohet pa e humbur numrin).
+ * null kur programi nuk e punon grupin këtë javë.
  */
-export function focusDetail(i18n: I18n, mode: BodyMode, entry: ModeEntry & Pick<BodyGroup, 'parts' | 'unsplit'>, key: string) {
-  const part = entry.parts.find((item) => item.key === key)
-  const split = mode === 'volumi' && entry.load > 0 && entry.unsplit === 0 && entry.parts.length > 1
-  if (split && part) return i18n.t('bodyModel.partOf', { part: i18n.fmt.number(part.load), total: setsText(i18n, entry.load) })
-  return modeStyle(i18n, mode, entry).text
+export function programSummary({ t }: I18n, names: string[]) {
+  if (names.length === 0) return null
+  return { first: names[0], others: names.length > 1 ? t('bodyModel.card.others', { count: names.length - 1 }) : null }
 }
 
 /** "2–8 nëntor"; java mes dy muajve: "26 tetor – 1 nëntor". */

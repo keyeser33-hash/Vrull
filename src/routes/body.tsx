@@ -1,7 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
-import { FocusChip } from '@/components/body/focus-chip'
+import { MuscleCard } from '@/components/body/muscle-card'
 import { BackHeader } from '@/components/layout/page'
 import { ProgressTabs } from '@/components/layout/progress-tabs'
 import { Sheet } from '@/components/layout/sheet'
@@ -19,12 +19,14 @@ import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
 import {
   type BodyMode,
-  focusDetail,
+  cardRecovery,
+  cardWeek,
   groupRole,
   keyName,
   LEVEL_STYLE,
   levelLabel,
   modeStyle,
+  programSummary,
   RECOVERY_ORDER,
   RECOVERY_STYLE,
   setsText,
@@ -33,11 +35,12 @@ import {
   volumeNote,
 } from './body-format'
 
-// Trupi (SPEC §11, TH-19; bordet "Trupi", "Natë · Trupi", "Ditë · Trupi"). Modeli 3D tregon
-// rikuperimin ose volumin e javës me ngjyrat e Vrullit; pa WebGL, figura 2D përpara dhe mbrapa me të
-// njëjtat ngjyra. Prekja e një muskuli e fokuson: çipi sipër me vijën te muskuli, "Më shumë" hap
-// fletën e grupit (?muskuli=id). Legjenda është me fjalë dhe lista poshtë ka të njëjtat vlera. Sipër
-// djathtas: Shtresat dhe Trupi sipas matjeve.
+// Trupi (SPEC §11, TH-19, V53; bordet "Trupi", "Natë · Trupi", "Ditë · Trupi" dhe faqja "Trupi 3D ·
+// drita dhe kamera"). Modeli 3D tregon rikuperimin ose volumin e javës me ngjyrat dhe shkëlqimin e
+// Vrullit, me kamerën e lirë dhe shinën e këndeve; pa WebGL, figura 2D përpara dhe mbrapa me të njëjtat
+// ngjyra. Prekja e një muskuli e fokuson: karta poshtë majtas me vijën te muskuli thotë rikuperimin
+// dhe javën e grupit, dhe rreshti i saj i fundit hap fletën e grupit (?muskuli=id). Legjenda është me
+// fjalë dhe lista poshtë ka të njëjtat vlera. Sipër djathtas: Shtresat dhe Trupi sipas matjeve.
 
 const BodyModel = lazy(() => import('@/components/body/body-model'))
 
@@ -79,10 +82,9 @@ export function BodyPage() {
   const navigate = useNavigate()
   const mode: BodyMode = params.get('pamja') === 'volumi' ? 'volumi' : 'rikuperimi'
   const [three] = useState(webglAvailable)
-  const [back, setBack] = useState(false)
   // Muskuli i prekur te modeli 3D: grupi theksohet dhe kamera i afrohet.
   // `request` rritet me çdo prekje, që e njëjta zgjedhje pas një rrotullimi ta afrojë përsëri kamerën.
-  const [focus, setFocus] = useState<{ id: string; key: string; request: number } | null>(null)
+  const [focus, setFocus] = useState<{ id: string; request: number } | null>(null)
   const byId = useMemo(() => new Map((groups ?? []).map((entry) => [entry.group.id, entry])), [groups])
   const entryOf = useCallback((keys: string[]) => byId.get(groupOf(keys)?.id ?? ''), [byId])
   // Ngjyra e çdo çelësi te modeli 3D; funksion i ri vetëm kur ndryshojnë të dhënat, pamja ose gjuha.
@@ -103,6 +105,7 @@ export function BodyPage() {
   }
   const open = (id: string) => setParams((current) => (current.set('muskuli', id), current))
   const focused = focus ? byId.get(focus.id) : undefined
+  const program = focused ? programSummary(i18n, focused.program) : null
   const mapLabel = mode === 'volumi' ? t('bodyModel.map.volume') : t('bodyModel.map.recovery')
   const setMode = (next: BodyMode) => setParams((current) => (current.set('pamja', next), current), { replace: true })
   const opened = byId.get(params.get('muskuli') ?? '')
@@ -149,45 +152,36 @@ export function BodyPage() {
 
       <section aria-label={mapLabel} className={cn(surfaceClass, 'relative h-[372px] shrink-0 overflow-hidden rounded-xl')}>
         {three ? (
-          <>
-            <Suspense fallback={null}>
-              <BodyModel
-                className="h-full"
-                paint={paintKey}
-                onPick={(key) => {
-                  const group = key ? groupOf([key]) : undefined
-                  setFocus((current) => (key && group ? { id: group.id, key, request: (current?.request ?? 0) + 1 } : null))
-                }}
-                focus={focused?.group.keys ?? null}
-                focusRequest={focus?.request}
-                overlayAt="top"
-                leader
-                overlay={
-                  focused && focus ? (
-                    <FocusChip
-                      title={keyName(i18n, focus.key)}
-                      detail={focusDetail(i18n, mode, focused, focus.key)}
-                      swatch={modeStyle(i18n, mode, focused).swatch}
-                      onOpen={() => open(focused.group.id)}
-                      openLabel={t('bodyModel.chip.more', { name: muscleName(t, focused.group.id) })}
-                      onClear={() => setFocus(null)}
-                    />
-                  ) : null
-                }
-                back={back}
-                onBackChange={setBack}
-                label={mapLabel}
-              />
-            </Suspense>
-            <button
-              type="button"
-              onClick={() => setBack(!back)}
-              className="absolute right-2.5 bottom-2.5 flex h-11 items-center gap-1.5 rounded-pill border border-subtle bg-background px-3.5 font-display text-[17px] font-bold text-foreground uppercase outline-none focus-visible:outline-2 focus-visible:outline-foreground"
-            >
-              <Icon name="rrotullo" size={18} />
-              {back ? t('bodyModel.turn.front') : t('bodyModel.turn.back')}
-            </button>
-          </>
+          <Suspense fallback={null}>
+            <BodyModel
+              className="h-full"
+              paint={paintKey}
+              onPick={(key) => {
+                const group = key ? groupOf([key]) : undefined
+                setFocus((current) => (group ? { id: group.id, request: (current?.request ?? 0) + 1 } : null))
+              }}
+              controls
+              focus={focused?.group.keys ?? null}
+              focusRequest={focus?.request}
+              overlayAt="card"
+              leader
+              overlay={
+                focused ? (
+                  <MuscleCard
+                    title={muscleName(t, focused.group.id)}
+                    swatch={modeStyle(i18n, mode, focused).swatch}
+                    lines={[cardRecovery(i18n, focused), cardWeek(i18n, focused)]}
+                    more={program?.first ?? t('bodyModel.card.more')}
+                    others={program?.others}
+                    moreLabel={t('bodyModel.chip.more', { name: muscleName(t, focused.group.id) })}
+                    onOpen={() => open(focused.group.id)}
+                    onClear={() => setFocus(null)}
+                  />
+                ) : null
+              }
+              label={mapLabel}
+            />
+          </Suspense>
         ) : (
           <BodyFigure
             primary={[]}
@@ -314,6 +308,18 @@ function MuscleSheet({ entry, onClose }: { entry: BodyGroup; onClose: () => void
             {t('bodyModel.sheet.partsNote')}
             {entry.unsplit > 0 ? ` ${t('bodyModel.sheet.unsplitNote')}` : null}
           </p>
+        </>
+      ) : null}
+      {entry.program.length > 0 ? (
+        <>
+          <h3 className="type-label text-muted-foreground">{t('bodyModel.sheet.program')}</h3>
+          <ul className="flex flex-col">
+            {entry.program.map((name) => (
+              <li key={name} className={cn(row, 'min-h-11')}>
+                <span className="type-body">{name}</span>
+              </li>
+            ))}
+          </ul>
         </>
       ) : null}
       <h3 className="type-label text-muted-foreground">{t('bodyModel.sheet.library')}</h3>

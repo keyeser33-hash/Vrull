@@ -36,6 +36,19 @@ describe('fokusi i modelit 3D', () => {
     expect(legs.distance).toBeLessThanOrEqual(MAX_DISTANCE)
   })
 
+  it('me kartën e muskulit kamera rri më larg, që muskuli të duket i plotë mbi kartë', () => {
+    const chest = { min: [-0.18, 1.25, 0.02], max: [0.18, 1.45, 0.12] }
+    expect(focusView(chest, 2).distance).toBeGreaterThan(focusView(chest).distance)
+    expect(focusView(chest, 2).height).toBe(focusView(chest).height)
+    expect(focusView(chest, 50).distance).toBe(MAX_DISTANCE)
+  })
+
+  it('një muskul që ndriçon vetë nuk zbardhet në fokus; të tjerët zbehen njësoj', () => {
+    expect(focusShade(true, 1)).toEqual({ dim: 0, lift: 0 })
+    expect(focusShade(true, 0.4).lift).toBeLessThan(focusShade(true).lift)
+    expect(focusShade(false, 1)).toEqual(focusShade(false))
+  })
+
   it('zmadhimi me dy gishta mbetet brenda kufijve', () => {
     expect(zoomed(3, 2)).toBeCloseTo(1.5)
     expect(zoomed(1.5, 4)).toBe(MIN_DISTANCE)

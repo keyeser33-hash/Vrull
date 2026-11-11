@@ -6,6 +6,8 @@ export type Rgb = [number, number, number]
 export interface Tone {
   token: string
   alpha: number
+  /** Sa ndriçon muskuli te modeli 3D (0–1, V53): drita nga brenda, kontura dhe aureola. Pa të, asgjë. */
+  glow?: number
 }
 
 /** Vlera hex e një tokeni (6 ose 3 shifra) → sRGB 0–1; çdo formë tjetër → null. */

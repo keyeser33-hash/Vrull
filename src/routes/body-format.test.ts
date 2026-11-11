@@ -3,7 +3,7 @@ import { SHAPE_MEASURES } from '@/body/body-shape'
 import { i18nFor } from '@/i18n'
 import { sq as catalog } from '@/i18n/sq'
 import { MUSCLE_GROUPS } from '@/program/muscles'
-import { agoText, focusDetail, LEVEL_STYLE, levelLabel, modeStyle, RECOVERY_STYLE, setsText, sinceText, volumeNote } from './body-format'
+import { agoText, cardRecovery, cardWeek, LEVEL_STYLE, levelLabel, modeStyle, programSummary, RECOVERY_STYLE, setsText, sinceText, volumeNote } from './body-format'
 
 const sq = i18nFor('sq')
 const en = i18nFor('en')
@@ -18,14 +18,22 @@ function fromClass(fill: string) {
 describe('ngjyrat e Trupit', () => {
   it('rikuperimi: toni 3D i çdo gjendjeje përputhet me klasën e figurës 2D dhe të legjendës', () => {
     for (const [status, style] of Object.entries(RECOVERY_STYLE)) {
-      expect(style.tone, status).toEqual(fromClass(style.fill))
+      expect(style.tone, status).toMatchObject(fromClass(style.fill))
       expect(style.swatch, status).toBe(style.fill.replace('fill-', 'bg-'))
     }
-    expect(RECOVERY_STYLE.i_lodhur.tone).toEqual({ token: '--ember', alpha: 1 })
+    expect(RECOVERY_STYLE.i_lodhur.tone).toMatchObject({ token: '--ember', alpha: 1 })
+  })
+
+  it('shkëlqimi (V53): i lodhur ndriçon plotësisht, pothuajse gati pak, gati jo', () => {
+    expect(RECOVERY_STYLE.i_lodhur.tone.glow).toBe(1)
+    expect(RECOVERY_STYLE.pothuajse_gati.tone.glow).toBe(0.4)
+    expect(RECOVERY_STYLE.gati.tone.glow ?? 0).toBe(0)
+    // Volumi: sa më shumë sete, aq më shumë dritë; "Pa sete" nuk ndriçon.
+    expect(LEVEL_STYLE.map((style) => style.tone.glow ?? 0)).toEqual([0, 0.12, 0.45, 1])
   })
 
   it('volumi: "pa sete" me `subtle`, pastaj tokenat volume-1…3 të temës, të plotë', () => {
-    expect(LEVEL_STYLE.map((style) => style.tone)).toEqual(LEVEL_STYLE.map((style) => fromClass(style.fill)))
+    LEVEL_STYLE.forEach((style) => expect(style.tone).toMatchObject(fromClass(style.fill)))
     expect(LEVEL_STYLE.map((style) => style.tone.token)).toEqual(['--subtle', '--volume-1', '--volume-2', '--volume-3'])
     expect(LEVEL_STYLE.every((style) => style.tone.alpha === 1)).toBe(true)
   })
@@ -90,34 +98,28 @@ describe('tekstet e Trupit', () => {
     )
   })
 
-  it('çipi i fokusit: te volumi, pjesa e prekur kundrejt grupit; te rikuperimi, gjendja e grupit', () => {
-    const chest = {
-      recovery: 'i_lodhur' as const,
-      level: 1 as const,
-      load: 3,
-      hours: 20,
-      unsplit: 0,
-      // Bench Press: 3 sete te grupi, 3 te gjoksi i mesëm (kryesor), 1,5 te i sipërmi (ndihmës).
-      parts: [
-        { key: 'pectoralis_major_clavicular', load: 1.5 },
-        { key: 'pectoralis_major_sternocostal', load: 3 },
-        { key: 'pectoralis_minor', load: 0 },
-      ],
-    }
-    expect(focusDetail(sq, 'volumi', chest, 'pectoralis_major_clavicular')).toBe('1,5 nga 3 sete')
-    expect(focusDetail(en, 'volumi', chest, 'pectoralis_major_clavicular')).toBe('1.5 of 3 sets')
-    expect(focusDetail(sq, 'volumi', chest, 'pectoralis_minor')).toBe('0 nga 3 sete')
-    expect(focusDetail(sq, 'rikuperimi', chest, 'pectoralis_minor')).toBe('I lodhur')
-    const calves = { ...chest, level: 0 as const, load: 0, parts: [{ key: 'gastrocnemius', load: 0 }, { key: 'soleus', load: 0 }] }
-    expect(focusDetail(sq, 'volumi', calves, 'gastrocnemius')).toBe('Pa sete')
-    // Një grup me një pjesë: vlera e grupit, me objektivin.
-    const traps = { ...chest, level: 2 as const, load: 12, parts: [{ key: 'trapezius', load: 12 }] }
-    expect(focusDetail(sq, 'volumi', traps, 'trapezius')).toBe('12 sete · në objektiv')
-    // Me sete nga biblioteka (pa ndarje sipas pjesëve), çipi nuk e ndan grupin: vlera e grupit.
-    const mixed = { ...chest, load: 7, unsplit: 4 }
-    expect(focusDetail(sq, 'volumi', mixed, 'pectoralis_minor')).toBe('7 sete · nën objektiv')
+  it('karta e muskulit (V53): rikuperimi dhe java e grupit bashkë, në çdo pamje', () => {
+    const chest = { recovery: 'i_lodhur' as const, level: 2 as const, load: 14.5, hours: 20 }
+    expect(cardRecovery(sq, chest)).toBe('I lodhur · para 20 orësh')
+    expect(cardWeek(sq, chest)).toBe('Këtë javë 14,5 sete · në objektiv')
+    expect(cardRecovery(en, chest)).toBe('Fatigued · 20 hours ago')
+    expect(cardWeek(en, chest)).toBe('This week 14.5 sets · on target')
+    // Pa stërvitje dhe pa sete thuhet me fjalë, jo me zero.
+    const calves = { recovery: 'gati' as const, level: 0 as const, load: 0, hours: null }
+    expect(cardRecovery(sq, calves)).toBe('Gati · pa stërvitje')
+    expect(cardWeek(sq, calves)).toBe('Këtë javë pa sete · nën objektiv')
+    expect(cardWeek(en, calves)).toBe('This week no sets · below target')
   })
 
+  it('karta e muskulit: ushtrimet e programit, i pari me emër dhe të tjerët me numër', () => {
+    expect(programSummary(sq, ['Bench Press', 'Incline Bench Press', 'Incline Dumbbell Flye', 'Cable Crossover'])).toEqual({ first: 'Bench Press', others: 'dhe 3 të tjera' })
+    expect(programSummary(sq, ['Bench Press', 'Cable Crossover'])).toEqual({ first: 'Bench Press', others: 'dhe 1 tjetër' })
+    expect(programSummary(sq, ['Bench Press'])).toEqual({ first: 'Bench Press', others: null })
+    expect(programSummary(en, ['Bench Press', 'Incline Bench Press', 'Cable Crossover'])).toEqual({ first: 'Bench Press', others: 'and 2 more' })
+    expect(programSummary(en, ['Bench Press', 'Cable Crossover'])?.others).toBe('and 1 more')
+    // Pa program, ose grupi nuk punon këtë javë: karta thotë vetëm "Më shumë".
+    expect(programSummary(sq, [])).toBeNull()
+  })
 
   it('katalogu ka funksionin e çdo grupi (emri vjen nga @/i18n/domain), emrin e çdo çelësi, çdo muskul të thellë dhe çdo perimetër', () => {
     const keys = new Set(Object.keys(catalog))

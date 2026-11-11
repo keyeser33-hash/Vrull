@@ -2,9 +2,10 @@ import { Icon } from '@/components/ui/icons'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 
-// Emri i muskulit të fokusuar mbi modelin 3D (SPEC §11; bordi "Trupi"): një shirit 46 px me pikën
-// e ngjyrës së tij, "emri · vlera" në një rresht, shigjeta kur ka fletë për të ("Më shumë") dhe "×"
-// që heq fokusin. Sfondi i faqes me kufi `subtle`, që të lexohet mbi modelin në çdo temë.
+// Emri i muskulit të fokusuar mbi modelin 3D (SPEC §11), te Shtresat dhe te muskujt e ushtrimit: një
+// shirit 46 px me pikën e ngjyrës së tij, "emri · vlera" në një rresht, shigjeta kur ka fletë për të
+// ("Më shumë") dhe "×" që heq fokusin. Sfondi i faqes me kufi `subtle`, që të lexohet mbi modelin në
+// çdo temë. Te Trupi, nga V53, vendin e tij e zë karta e muskulit (muscle-card.tsx).
 
 export function FocusChip({
   title,

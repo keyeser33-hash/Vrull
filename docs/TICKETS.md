@@ -220,6 +220,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-06 | Sugjerimi, seanca më e lehtë, "Shtyje për nesër", "Më e lehtë" te historiku | E3-02, E3-03 |
 | V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
 | V2-E3-08 | Bordet e Mëso, Health Connect, ujit sipas motit, zakoneve dhe raportit PDF | E3-01 |
+| V2-E3-10 | Trupi 3D: drita, shkëlqimi dhe kamera e lirë (V53) | – |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-01 · Bordet e dizajnit 0.24
@@ -240,6 +241,18 @@ Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** për
 **Gjendja (10.11.2026, 00:40):** përdoruesi i miratoi të 9 vendimet pa ndryshime. Kodi i E3-02 … E3-07 është te `main`. Migrimet `daily_states` dhe `daily_states_v2` (me `daily_choices`) i jep përdoruesi; e para u aplikua dhe u kontrollua me SELECT, e dyta pret. Rishikimi në tri akse gjeti 1 P1 (seanca pa pamjen e lodhur) dhe 10 P2. U ndreqën të gjitha, secila me provë që bie para ndreqjes. Gjendja e provave: 1 617 kaluan, lint dhe build të pastër. Prova e Android-it nuk u nis, sepse vala nuk prek native-n dhe tekstet e saj i ruan `smoke-texts.test.ts`; niset me valën e Health Connect. Mbetet QA në telefon me APK-në e provës.
 
 **Gjendja e mëparshme (09.11.2026, 23:35):** 9 bordet janë te faqja "0.24 · Gatishmëria", me shënimin "Si ta komentosh" dhe 9 vendimet. I shkruan tre agjentë me Sonnet, sipas brief-it të përbashkët, dhe orkestruesi i njësoi. Presin komentet e përdoruesit.
+
+## V2-E3-10 · Trupi 3D: drita, shkëlqimi dhe kamera e lirë
+
+Jashtë planit të Etapës 3, me kërkesën e përdoruesit (11.11.2026): koncepti u vizatua te kanavaca (faqja "Trupi 3D · drita dhe kamera", 8 borde me pamje nga modeli i vërtetë), përdoruesi kërkoi të ndërtohet siç është vizatuar. Rregullat: SPEC §11, "Drita dhe shkëlqimi" dhe "Kamera e lirë te Trupi" (V53). Numri E3-09 i përket "Makinës së kohës" (dega `makina-e-kohes`).
+
+- Skena e përbashkët: tri drita, lëkura si xham, shkëlqimi i toneve me `glow` (drita nga brenda, kontura, aureola), dyshemeja; Ditë pa dritë të shtuar.
+- Trupi: kamera e lirë, shina e këndeve në vend të "Shiko mbrapa", "Pamja e plotë", ndihma e gjesteve, karta e muskulit me ushtrimet e programit në vend të çipit.
+- Logjika pa UI me prova përpara kodit: `body/model-camera.ts`, `body/model-look.ts`.
+
+**Pranimi:** Trupi në 390 px në tri temat dhe në anglisht përputhet me bordet; ekranet e tjera me modelin (Shtresat, Trupi sipas matjeve, muskujt e ushtrimit, Sot) vizatohen pa gabime me dritën e re; `npm test`, `npm run lint`, `npm run build` kalojnë; rrjedhshmëria provohet në telefon.
+
+**Gjendja (11.11.2026):** kodi është te dega `trupi-3d-drita-kamera`, jo te `main`; pret fjalën e përdoruesit për bashkimin. QA në Chrome headless (WebGL me CPU), 390 px: Trupi në OLED, Natë, Ditë dhe anglisht, shina, zvarritja, dy gishtat, "Pamja e plotë", karta dhe fleta, dhe katër ekranet e tjera me modelin; pa scroll anësor, prekjet 44 px, asnjë gabim në konsolë. Mbetet prova në telefon: rrjedhshmëria me aureolat, dhe kush e merr zvarritjen vertikale (faqja te trupi i plotë, modeli kur kamera është afruar), që shfletuesi i provës nuk e imiton.
 
 ## V2-E2-00 · Pastrimi i E1
 
