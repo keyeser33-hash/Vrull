@@ -252,7 +252,7 @@ Jashtë planit të Etapës 3, me kërkesën e përdoruesit (11.11.2026): koncept
 
 **Pranimi:** Trupi në 390 px në tri temat dhe në anglisht përputhet me bordet; ekranet e tjera me modelin (Shtresat, Trupi sipas matjeve, muskujt e ushtrimit, Sot) vizatohen pa gabime me dritën e re; `npm test`, `npm run lint`, `npm run build` kalojnë; rrjedhshmëria provohet në telefon.
 
-**Gjendja (11.11.2026):** kodi është te dega `trupi-3d-drita-kamera`, jo te `main`; pret fjalën e përdoruesit për bashkimin. QA në Chrome headless (WebGL me CPU), 390 px: Trupi në OLED, Natë, Ditë dhe anglisht, shina, zvarritja, dy gishtat, "Pamja e plotë", karta dhe fleta, dhe katër ekranet e tjera me modelin; pa scroll anësor, prekjet 44 px, asnjë gabim në konsolë. Mbetet prova në telefon: rrjedhshmëria me aureolat, dhe kush e merr zvarritjen vertikale (faqja te trupi i plotë, modeli kur kamera është afruar), që shfletuesi i provës nuk e imiton.
+**Gjendja (11.11.2026):** me fjalën e përdoruesit kodi u bashkua te `main`, pa version të ri (asgjë nuk del te telefonat). Në telefon provohet me APK-në e provës ("Run workflow", pa Release); publikimi vendoset veç, sepse një version i ri nga `main` nxjerr edhe gatishmërinë. QA në Chrome headless (WebGL me CPU), 390 px: Trupi në OLED, Natë, Ditë dhe anglisht, shina, zvarritja, dy gishtat, "Pamja e plotë", karta dhe fleta, dhe katër ekranet e tjera me modelin; pa scroll anësor, prekjet 44 px, asnjë gabim në konsolë. Mbetet prova në telefon: rrjedhshmëria me aureolat, dhe kush e merr zvarritjen vertikale (faqja te trupi i plotë, modeli kur kamera është afruar), që shfletuesi i provës nuk e imiton.
 
 ## V2-E2-00 · Pastrimi i E1
 
