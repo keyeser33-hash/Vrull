@@ -221,6 +221,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
 | V2-E3-08 | Bordet e Mëso, Health Connect, ujit sipas motit, zakoneve dhe raportit PDF | E3-01 |
 | V2-E3-10 | Trupi 3D: drita, shkëlqimi dhe kamera e lirë (V53) | – |
+| V2-E3-11 | Lëshimi 0.24.0: gatishmëria dhe Trupi 3D, më herët se 0.40.0 (V54) | E3-02 … E3-07, E3-10 |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-01 · Bordet e dizajnit 0.24
@@ -252,7 +253,13 @@ Jashtë planit të Etapës 3, me kërkesën e përdoruesit (11.11.2026): koncept
 
 **Pranimi:** Trupi në 390 px në tri temat dhe në anglisht përputhet me bordet; ekranet e tjera me modelin (Shtresat, Trupi sipas matjeve, muskujt e ushtrimit, Sot) vizatohen pa gabime me dritën e re; `npm test`, `npm run lint`, `npm run build` kalojnë; rrjedhshmëria provohet në telefon.
 
-**Gjendja (11.11.2026):** me fjalën e përdoruesit kodi u bashkua te `main`, pa version të ri (asgjë nuk del te telefonat). Në telefon provohet me APK-në e provës ("Run workflow", pa Release); publikimi vendoset veç, sepse një version i ri nga `main` nxjerr edhe gatishmërinë. QA në Chrome headless (WebGL me CPU), 390 px: Trupi në OLED, Natë, Ditë dhe anglisht, shina, zvarritja, dy gishtat, "Pamja e plotë", karta dhe fleta, dhe katër ekranet e tjera me modelin; pa scroll anësor, prekjet 44 px, asnjë gabim në konsolë. Mbetet prova në telefon: rrjedhshmëria me aureolat, dhe kush e merr zvarritjen vertikale (faqja te trupi i plotë, modeli kur kamera është afruar), që shfletuesi i provës nuk e imiton.
+**Gjendja (11.11.2026):** me fjalën e përdoruesit kodi u bashkua te `main` dhe publikohet me 0.24.0 (V2-E3-11), bashkë me gatishmërinë. QA në Chrome headless (WebGL me CPU), 390 px: Trupi në OLED, Natë, Ditë dhe anglisht, shina, zvarritja, dy gishtat, "Pamja e plotë", karta dhe fleta, dhe katër ekranet e tjera me modelin; pa scroll anësor, prekjet 44 px, asnjë gabim në konsolë. Mbetet prova në telefon: rrjedhshmëria me aureolat, dhe kush e merr zvarritjen vertikale (faqja te trupi i plotë, modeli kur kamera është afruar), që shfletuesi i provës nuk e imiton.
+
+## V2-E3-11 · Lëshimi 0.24.0
+
+Gatishmëria (E3-02 … E3-07) dhe Trupi 3D (E3-10) dalin më herët se 0.40.0, me kërkesën e përdoruesit (V54), që t'i provojë në telefon. Versioni te `package.json`, "Çfarë ka të re" te `docs/whats-new/0.24.0.txt`. Migrimet `daily_states` dhe `daily_states_v2` janë te Supabase (SELECT më 11.11.2026: `daily_choices` ekziston; `daily_states` ka `recovery` dhe `sore_trained`, pa `choice`).
+
+**Pranimi:** prova e Android-it kalon, Release-i `v0.24.0` del me APK-në dhe përditësimi brenda app-it e ofron; përdoruesi kalon listën e `docs/PROVA-NE-TELEFON.md`, me hapat e Trupit 3D.
 
 ## V2-E2-00 · Pastrimi i E1
 
