@@ -36,7 +36,7 @@ export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> 
 }
 
 // Tabelat e sinkronizuara që erdhën pas versionit 1, me versionin ku hynë.
-const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4, ai_usage: 5, water_logs: 6, weekly_checks: 7, ai_limits: 8, achievements: 9, daily_states: 10, daily_choices: 10 }
+const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4, ai_usage: 5, water_logs: 6, weekly_checks: 7, ai_limits: 8, achievements: 9, daily_states: 10, daily_choices: 10, mentor_notes: 11 }
 
 const tableSchema = (table: TableName) => ['id', '_dirty', ...INDEXES[table]].join(', ')
 
@@ -63,5 +63,7 @@ export function createDatabase(name = 'training-hub'): LocalDatabase {
   db.version(9).stores({ achievements: tableSchema('achievements') })
   // Versioni 10: gjendja e ditës dhe vendimi i sugjerimit (V50).
   db.version(10).stores({ daily_states: tableSchema('daily_states'), daily_choices: tableSchema('daily_choices') })
+  // Versioni 11: shënimet e mentorit (Paneli në Claude), vetëm për lexim: rreshtat vijnë nga serveri.
+  db.version(11).stores({ mentor_notes: tableSchema('mentor_notes') })
   return db
 }

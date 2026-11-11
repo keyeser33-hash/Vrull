@@ -38,6 +38,8 @@ export const TABLES = [
   'daily_states',
   // Vendimi i sugjerimit të gatishmërisë (V50): "lighter", "tomorrow" ose "normal", me stërvitjen dhe llojet e ditëve.
   'daily_choices',
+  // Shënimet e mentorit (Paneli në Claude, P8): i shkruan vetëm mentori në Claude; telefoni vetëm i merr.
+  'mentor_notes',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -101,4 +103,5 @@ export const INDEXES: Record<TableName, string[]> = {
   achievements: [],
   daily_states: ['date'],
   daily_choices: ['date'],
+  mentor_notes: ['kind', 'session_id'],
 }

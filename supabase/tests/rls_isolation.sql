@@ -39,6 +39,9 @@ begin
     values (user_a, '2026-11-01', 'program_pdf', 'claude-sonnet-5-5', 120000, 6000, 0.3, 0.268698);
   -- Kufiri i A-së, si e shkruan funksioni ai-admin (V42).
   insert into public.ai_limits (user_id, monthly_eur) values (user_a, 40);
+  -- Një shënim i mentorit për A, si e shkruan mentori në Claude (jo nga telefoni).
+  insert into public.mentor_notes (user_id, kind, period_start, period_end, title, body)
+    values (user_a, 'raport_javor', '2026-11-23', '2026-11-29', 'Raporti i javës', 'Tekst prove.');
   reset role;
 
   -- Përdoruesi A shkruan një rresht në çdo tabelë përmes rolit authenticated (si nga app-i).
@@ -108,6 +111,28 @@ begin
     results := results || 'A nuk fshin koston te ai_usage|true|refuzohet'::text;
   end;
 
+  -- Shënimet e mentorit: A i lexon, por nuk i shton, nuk i ndryshon dhe nuk i fshin (vetëm mentori).
+  select count(*) into n from public.mentor_notes;
+  results := results || format('A sheh shënimin e vet te mentor_notes|%s|%s', n = 1, n);
+  begin
+    insert into public.mentor_notes (kind, title, body) values ('pergjigje', 'x', 'x');
+    results := results || 'A nuk shton shënim te mentor_notes|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk shton shënim te mentor_notes|true|refuzohet'::text;
+  end;
+  begin
+    update public.mentor_notes set body = 'x';
+    results := results || 'A nuk ndryshon shënimin te mentor_notes|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk ndryshon shënimin te mentor_notes|true|refuzohet'::text;
+  end;
+  begin
+    delete from public.mentor_notes;
+    results := results || 'A nuk fshin shënimin te mentor_notes|false|u lejua'::text;
+  exception when insufficient_privilege then
+    results := results || 'A nuk fshin shënimin te mentor_notes|true|refuzohet'::text;
+  end;
+
   -- Kufiri i AI-së (V42): A e lexon, por nuk e shton, nuk e ndryshon dhe nuk e fshin (vetëm ai-admin).
   select count(*) into n from public.ai_limits;
   results := results || format('A sheh kufirin e vet te ai_limits|%s|%s', n = 1, n);
@@ -172,6 +197,8 @@ begin
   results := results || format('B nuk sheh koston e A te ai_usage|%s|%s', n = 0, n);
   select count(*) into n from public.ai_limits;
   results := results || format('B nuk sheh kufirin e A te ai_limits|%s|%s', n = 0, n);
+  select count(*) into n from public.mentor_notes;
+  results := results || format('B nuk sheh shënimet e A te mentor_notes|%s|%s', n = 0, n);
 
   foreach bucket in array buckets loop
     select count(*) into n from storage.objects where bucket_id = bucket;
@@ -202,6 +229,12 @@ begin
     results := results || format('anon pa qasje te ai_usage|false|lexoi %s', n);
   exception when insufficient_privilege then
     results := results || 'anon pa qasje te ai_usage|true|refuzohet'::text;
+  end;
+  begin
+    select count(*) into n from public.mentor_notes;
+    results := results || format('anon pa qasje te mentor_notes|false|lexoi %s', n);
+  exception when insufficient_privilege then
+    results := results || 'anon pa qasje te mentor_notes|true|refuzohet'::text;
   end;
   foreach bucket in array buckets loop
     select count(*) into n from storage.objects where bucket_id = bucket;
