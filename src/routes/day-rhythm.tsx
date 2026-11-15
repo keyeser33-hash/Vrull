@@ -94,6 +94,8 @@ export function DayRhythm({ view }: { view: TodayView }) {
 
   const down = (event: PointerEvent) => {
     if (event.button !== 0 && event.pointerType === 'mouse') return
+    // Butonat për lexuesin e ekranit kanë klikun e vet: pa gjest mbi to (nuk hapet vakti dy herë).
+    if ((event.target as Element).closest('button')) return
     end()
     const point = hit(event.clientX)
     const current: NonNullable<typeof gesture.current> = { id: event.pointerId, x: event.clientX, y: event.clientY, point, mode: 'pending' }
