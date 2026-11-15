@@ -105,17 +105,21 @@ describe('Progresi › Arritjet', () => {
     ])
     expect(screen.getByText('nga 10 të fituara').previousSibling).toHaveTextContent('3')
     expect(list.map((tile) => tile.textContent)).toEqual([
-      'R1E reRekordi i parëe1RM e re për herë të parë · 9 nëntor',
-      'JPE reJava e plotëTë tre qëllimet në një javë · 7 nëntor',
-      'S1Seanca e parëSeanca e parë e mbyllur · 2 nëntor',
-      '4JVargu 4 javë4 javë rresht me stërvitjen e plotë · edhe 3',
-      '1010 rekordeRekorde të e1RM-së gjithsej · 1 nga 10',
-      'F1Faza 1 e plotëTë 16 stërvitjet e fazës · 1 nga 16',
-      '2525 seancaSeanca të mbyllura · 5 nga 25',
-      'U7Ushqimi 7 nga 7Çdo ditë e javës e regjistruar · më e mira 5',
-      'L7Uji 7 nga 7Objektivi i ujit çdo ditë · më e mira 5',
-      '13Programi i plotë13 javët e Shortcut to Size · 1 nga 13',
+      'E reRekordi i parëe1RM e re për herë të parë · 9 nëntor',
+      'E reJava e plotëTë tre qëllimet në një javë · 7 nëntor',
+      'Seanca e parëSeanca e parë e mbyllur · 2 nëntor',
+      'Vargu 4 javë4 javë rresht me stërvitjen e plotë · edhe 3',
+      '10 rekordeRekorde të e1RM-së gjithsej · 1 nga 10',
+      'Faza 1 e plotëTë 16 stërvitjet e fazës · 1 nga 16',
+      '25 seancaSeanca të mbyllura · 5 nga 25',
+      'Ushqimi 7 nga 7Çdo ditë e javës e regjistruar · më e mira 5',
+      'Uji 7 nga 7Objektivi i ujit çdo ditë · më e mira 5',
+      'Programi i plotë13 javët e Shortcut to Size · 1 nga 13',
     ])
+    // Ikona në vend të shkurtimeve (V2-E3-30): çdo pllakë ka një ikonë dhe asnjë dy nuk e ndajnë.
+    const icons = list.map((tile) => tile.querySelector('svg')?.innerHTML ?? '')
+    expect(icons.every(Boolean)).toBe(true)
+    expect(new Set(icons).size).toBe(10)
     // Arritjet u ruajtën me hapjen e faqes.
     expect((await data.store.all('achievements')).map((row) => row.key).sort()).toEqual(['first_record', 'first_session', 'full_week'])
   })
@@ -161,16 +165,16 @@ describe('Progresi › Arritjet', () => {
     expect(screen.getByText('of 10 earned')).toBeInTheDocument()
     expect(screen.getByText('Each is earned once')).toBeInTheDocument()
     expect(list.map((tile) => tile.textContent)).toEqual([
-      'PBNewFirst personal bestA new e1RM for the first time · 9 November',
-      'FWNewFull weekAll three goals in one week · 7 November',
-      'S1First sessionFirst session finished · 2 November',
-      '4W4-week streak4 weeks in a row with every workout · 3 to go',
-      '1010 personal bestse1RM personal bests in total · 1 of 10',
-      'P1Phase 1 completeAll 16 workouts of the phase · 1 of 16',
-      '2525 sessionsSessions finished · 5 of 25',
-      'F7Food 7 of 7Every day of the week logged · best 5',
-      'W7Water 7 of 7Water target every day · best 5',
-      '13Programme completeAll 13 weeks of Shortcut to Size · 1 of 13',
+      'NewFirst personal bestA new e1RM for the first time · 9 November',
+      'NewFull weekAll three goals in one week · 7 November',
+      'First sessionFirst session finished · 2 November',
+      '4-week streak4 weeks in a row with every workout · 3 to go',
+      '10 personal bestse1RM personal bests in total · 1 of 10',
+      'Phase 1 completeAll 16 workouts of the phase · 1 of 16',
+      '25 sessionsSessions finished · 5 of 25',
+      'Food 7 of 7Every day of the week logged · best 5',
+      'Water 7 of 7Water target every day · best 5',
+      'Programme completeAll 13 weeks of Shortcut to Size · 1 of 13',
     ])
     await user.click(list[7])
     const sheet = screen.getByRole('dialog', { name: 'Food 7 of 7' })
