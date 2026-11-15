@@ -78,7 +78,7 @@ describe('Ushqimi', () => {
     expect(await hero(/^Sot: 0 nga 3\s037 kcal, mbeten 3\s037$/)).toHaveTextContent('3 037kcal mbeten0 nga 3 037')
     expect(screen.getByRole('group', { name: 'Proteina 0 nga 260 gramë' })).toHaveTextContent('Proteina0 / 260 g')
     const water = await screen.findByRole('button', { name: 'Uji: 0,0 nga 2,75 litra. Prek për të shtuar 250 ml' })
-    expect(water).toHaveTextContent('Uji 0,0 / 2,75 L+250')
+    expect(water).toHaveTextContent('Uji0,0 / 2,75 L+250')
     const fill = screen.getByRole('link', { name: 'Plotëso makrot: mbeten 260 gramë proteinë' })
     expect(fill).toHaveAttribute('href', '/ushqimi/plotesomakrot')
     expect(fill).toHaveTextContent('Plotëso makrotmbeten 260 g P')

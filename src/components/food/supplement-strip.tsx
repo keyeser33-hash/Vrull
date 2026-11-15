@@ -134,10 +134,15 @@ export function SupplementsSheet({ day, onClose }: { day: NutritionDay; onClose:
   const slots = day.meals.filter((meal) => meal.supplements.length > 0)
   const total = slots.reduce((count, meal) => count + meal.supplements.length, 0)
   const taken = slots.reduce((count, meal) => count + meal.supplements.filter((item) => item.taken).length, 0)
+  // Si te bordi: lidhje e vogël me prush djathtas, jo një titull i madh që duket si grup.
   const toggle = (
-    <Button variant="ghost" className="-ml-2 self-start px-2" onClick={() => setEditing((value) => !value)}>
+    <button
+      type="button"
+      className="-mt-3 flex min-h-touch items-center self-end px-1 text-sm leading-5 font-semibold text-ember-text underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      onClick={() => setEditing((value) => !value)}
+    >
       {t(editing ? 'foodday.supp.done' : 'food.editList')}
-    </Button>
+    </button>
   )
   return (
     <Sheet

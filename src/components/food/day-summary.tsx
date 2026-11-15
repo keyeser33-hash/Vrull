@@ -171,12 +171,13 @@ function WaterTile({ date, onToast }: { date: string; onToast: ShowToast }) {
       className={cn(surfaceClass, 'flex min-h-14 items-center gap-2.5 rounded-lg py-2 pr-2 pl-3 text-left')}
     >
       <Icon name="gota" size={20} className="shrink-0 text-muted-foreground" />
-      <span className="flex min-w-0 flex-1 flex-col gap-1.5">
-        <span className="text-sm leading-5 font-semibold whitespace-nowrap tabular-nums">
-          {t('today.water.title')} {total}
-          <span className="font-normal text-muted-foreground"> {target === null ? t('today.water.ofNoTarget') : t('today.water.of', { target })}</span>
+      {/* Si pllaka "Plotëso makrot": titulli lart dhe sasia poshtë, që "3,25 L" të mos fshihet pas "+250". */}
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="text-sm leading-5 font-semibold">{t('today.water.title')}</span>
+        <span className="text-[13px] leading-[1.35] whitespace-nowrap text-muted-foreground tabular-nums">
+          <span className="font-semibold text-foreground">{total}</span> {target === null ? t('today.water.ofNoTarget') : t('today.water.of', { target })}
         </span>
-        {water.targetMl ? <ProgressTrack ratio={water.totalMl / water.targetMl} ground="card" /> : null}
+        {water.targetMl ? <ProgressTrack ratio={water.totalMl / water.targetMl} ground="card" className="mt-1" /> : null}
       </span>
       <span aria-hidden className="flex h-8 shrink-0 items-center rounded-[10px] bg-surface-2 px-2 text-[13px] leading-none font-bold">
         {t('foodday.water.add', { ml: GLASS_ML })}
