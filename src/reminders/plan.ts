@@ -219,9 +219,11 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
       // Ora e stërvitjes me formatin e gjuhës (24 orë në të dyja).
       const trainingAt = fmt.time(at(day, trainingTime))
       const workoutAt = t('reminders.notify.workoutAt', { time: trainingAt })
-      // Dita pa check-in (V50): "Stërvitja 18:00. Si ndihesh?"; prekja hap Sot, ku pret karta.
-      const body = input.checkedIn && !input.checkedIn.includes(date) ? `${workoutAt}. ${t('checkin.reminder')}` : workoutAt
-      dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body, kind: 'training' })
+      // Dita pa check-in (V50): "Stërvitja 18:00. Si ndihesh?".
+      // Prekja e tij hap story-n e parë pa përgjigje të gjendjes së ditës (V57, `reminderRoute`), jo vetëm Sot.
+      const asks = !!input.checkedIn && !input.checkedIn.includes(date)
+      const body = asks ? `${workoutAt}. ${t('checkin.reminder')}` : workoutAt
+      dayItems.push({ at: at(day, addMinutes(input.wakeTime, 30)), title, body, kind: 'training', ...(asks ? { key: `checkin|${date}|` } : {}) })
     }
 
     // Vaktet dhe suplementet e tyre: një njoftim për vakt. Me rikujtuesit e zgjuar, pa vaktet dhe
@@ -355,10 +357,14 @@ function nextTrainingDay(day: Date, isTraining: (date: Date) => boolean): Date |
   return null
 }
 
-/** Rruga që hap një njoftim i prekur: "week|2026-11-16|" → përmbledhja e asaj jave; null për të tjerët. */
+/**
+ * Rruga që hap një njoftim i prekur: "week|2026-11-16|" → përmbledhja e asaj jave; "checkin|2026-11-16|" → Sot me story-n e
+ * parë pa përgjigje të gjendjes së ditës (V57; shikuesi zgjedh pyetjen); null për të tjerët.
+ */
 export function reminderRoute(key: string | null): string | null {
-  const match = key ? /^week\|(\d{4}-\d{2}-\d{2})\|$/.exec(key) : null
-  return match ? `/progresi/java/${match[1]}` : null
+  const week = key ? /^week\|(\d{4}-\d{2}-\d{2})\|$/.exec(key) : null
+  if (week) return `/progresi/java/${week[1]}`
+  return key && /^checkin\|\d{4}-\d{2}-\d{2}\|$/.test(key) ? '/?fleta=gjendja' : null
 }
 
 /**

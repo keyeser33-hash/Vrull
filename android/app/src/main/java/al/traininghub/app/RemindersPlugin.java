@@ -18,7 +18,7 @@ import org.json.JSONObject;
  * Ura e rikujtuesve të zgjuar me JS-in (V37, V2-E2-08; lib/reminders-native.ts). Planifikimi, alarmet,
  * butonat dhe radha jetojnë te ReminderNotifier, që punon edhe pa këtë plugin; plugin-i i përcjell dhe
  * i thotë JS-it kur ka një prekje të re ("action"). Prekja e "Java jote është gati" (V43) ruan çelësin
- * e njoftimit dhe i thotë JS-it ("open"), që hap përmbledhjen e javës (`consumeOpen`, një herë).
+ * e njoftimit dhe i thotë JS-it ("open"), që hap përmbledhjen e javës ose story-n e gjendjes së ditës (`consumeOpen`, një herë).
  */
 @CapacitorPlugin(name = "Reminders")
 public class RemindersPlugin extends Plugin {
@@ -121,7 +121,7 @@ public class RemindersPlugin extends Plugin {
         ReminderNotifier.markActed(getContext(), key);
         // Një rikrijim i aktivitetit (p.sh. rrotullimi) nuk e hap faqen përsëri.
         intent.setAction(Intent.ACTION_MAIN);
-        if (key != null && key.startsWith("week|")) {
+        if (key != null && (key.startsWith("week|") || key.startsWith("checkin|"))) {
             synchronized (this) {
                 openKey = key;
             }

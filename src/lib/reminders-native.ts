@@ -58,7 +58,7 @@ interface RemindersPlugin {
   pending(): Promise<{ actions: QueuedReminderAction[] }>
   ack(options: { ids: string[] }): Promise<void>
   log(): Promise<{ entries: ReminderLogEntry[] }>
-  /** Çelësi i njoftimit të prekur që hap një faqe ("week|2026-11-16|"), një herë. */
+  /** Çelësi i njoftimit të prekur që hap një faqe ("week|2026-11-16|", "checkin|2026-11-16|"), një herë. */
   consumeOpen(): Promise<{ key: string | null }>
   addListener(event: 'action' | 'open', listener: () => void): Promise<PluginListenerHandle>
 }

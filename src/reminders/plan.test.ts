@@ -45,6 +45,13 @@ describe('rikujtuesit (§13)', () => {
     ])
   })
 
+  it('rikujtuesi me "Si ndihesh?" ka çelës që hap story-n e gjendjes; pa pyetje s\'ka çelës (V57)', () => {
+    const monday = base({ from: new Date('2026-12-07T06:00:00'), days: 1, toggles: { ...base().toggles, training: true } })
+    const keyOf = (input: ReminderInput) => planReminders(input, sq).find((item) => item.kind === 'training')?.key
+    expect(keyOf({ ...monday, checkedIn: [] })).toBe('checkin|2026-12-07|')
+    expect(keyOf({ ...monday, checkedIn: ['2026-12-07'] })).toBeUndefined()
+  })
+
   it('rikujtuesi i stërvitjes shton "Si ndihesh?" vetëm kur dita s\'ka check-in (V50)', () => {
     const monday = base({ from: new Date('2026-12-07T06:00:00') })
     const workout = (input: ReminderInput, texts = sq) => lines(input, texts).filter((item) => item.startsWith('07:30'))
@@ -187,6 +194,7 @@ describe('rikujtuesit e zgjuar (V37)', () => {
     expect(kinds(planReminders(base({ from: new Date('2026-12-13T20:30:00'), days: 7 }), sq), 'week')).toEqual([])
     expect(kinds(planReminders(base({ from: MONDAY, days: 7 }), en), 'week')[0]).toMatchObject({ title: 'Your week is ready', body: 'Your goals, records and next week.' })
     expect(reminderRoute('week|2026-12-07|')).toBe('/progresi/java/2026-12-07')
+    expect(reminderRoute('checkin|2026-12-07|')).toBe('/?fleta=gjendja')
     expect(reminderRoute('meal|2026-12-07|lunch')).toBeNull()
     expect(reminderRoute(null)).toBeNull()
   })
