@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type FillFood, fillMacros } from './fill-macros'
+import { type FillFood, fillMacros, fillTarget } from './fill-macros'
 
 // Plotëso makrot (V2-E3-28c, SPEC §0.3h): propozime nga proteina dhe kaloritë që mbeten, pa AI dhe pa rrjet.
 
@@ -28,6 +28,19 @@ const chicken = food('chicken', 'own', 120, 22.5, null)
 const mains = (proposals: ReturnType<typeof fillMacros>['proposals']) => proposals.map((proposal) => proposal.items[0].food.foodId)
 
 describe('fillMacros', () => {
+  it('porcione të besueshme: një ushqim me porcion jo më shumë se 4 herë dhe jo mbi 500 g, jo "13 të bardha vezë"', () => {
+    // E bardhë veze: 33 g, 52 kcal dhe 10,9 g proteinë për 100 g (3,6 g për një); gota e qumështit 244 g.
+    const whites = food('whites', 'plan', 52, 10.9, 33)
+    const milk = food('milk', 'plan', 42, 3.4, 244)
+    const { proposals } = fillMacros({ proteinG: 60, kcal: 2000 }, [whites, milk])
+    const counts = proposals.flatMap((proposal) => proposal.items.map((item) => [item.food.foodId, item.count, item.grams] as const))
+    expect(counts.length).toBeGreaterThan(0)
+    for (const [, count, grams] of counts) {
+      expect(count).toBeLessThanOrEqual(4)
+      expect(grams).toBeLessThanOrEqual(500)
+    }
+  })
+
   it('një ushqim në porcione të plota: numri më i vogël që e mbush proteinën, pa kaluar kalorit', () => {
     const { status, proposals } = fillMacros({ proteinG: 46, kcal: 520 }, [powder])
     expect(status).toBe('ok')
@@ -154,5 +167,31 @@ describe('fillMacros', () => {
     const { proposals } = fillMacros({ proteinG: 90, kcal: 700 }, foods)
     expect(performance.now() - started).toBeLessThan(2000)
     expect(proposals.length).toBeGreaterThan(0)
+  })
+})
+
+describe('fillTarget', () => {
+  it('në mbrëmje, pa vakte përpara: gjithë sa mbetet', () => {
+    expect(fillTarget({ kcal: 520, proteinG: 46 }, { kcal: 0, proteinG: 0, meals: 0 })).toEqual({ kcal: 520, proteinG: 46, plan: null })
+  })
+
+  it('gjatë ditës: vetëm sa nuk e sjellin vaktet e planit që vijnë (një vakt i kaluar pa u regjistruar)', () => {
+    expect(fillTarget({ kcal: 2160, proteinG: 216 }, { kcal: 1700, proteinG: 170, meals: 4 })).toEqual({ kcal: 460, proteinG: 46, plan: null })
+  })
+
+  it('kur vaktet që vijnë e mbushin proteinën: plani e mbush, pa propozime', () => {
+    expect(fillTarget({ kcal: 2160, proteinG: 216 }, { kcal: 2300, proteinG: 214, meals: 5 }).plan).toBe('covers')
+  })
+
+  it('proteina e mbushur mbetet "u mbush", jo "plani e mbush"', () => {
+    expect(fillTarget({ kcal: 300, proteinG: 0 }, { kcal: 400, proteinG: 30, meals: 1 }).plan).toBeNull()
+  })
+
+  it('mungon proteinë, por vaktet që vijnë i marrin kalorit: pa propozime që do t\'i kalonin', () => {
+    expect(fillTarget({ kcal: 2160, proteinG: 216 }, { kcal: 2300, proteinG: 190, meals: 5 })).toEqual({ kcal: -140, proteinG: 26, plan: 'noRoom' })
+  })
+
+  it('pa asnjë kalori që mbetet: "Kaloritë e ditës mbaruan" ka përparësi mbi planin', () => {
+    expect(fillTarget({ kcal: -63, proteinG: 160 }, { kcal: 2000, proteinG: 190, meals: 5 }).plan).toBeNull()
   })
 })

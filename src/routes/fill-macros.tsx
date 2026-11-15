@@ -12,7 +12,7 @@ import { addItem, loadBasket, saveBasket } from '@/data/basket'
 import { fillView, proposalBasketItems } from '@/data/fill-foods'
 import { foodName, portionText, supplementName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
-import { type FillItem, type FillProposal, type FillStatus, fillMacros } from '@/nutrition/fill-macros'
+import { type FillItem, type FillProposal, type FillStatus, fillMacros, fillTarget } from '@/nutrition/fill-macros'
 import { gramsText, kcalText } from './nutrition-format'
 
 // Ushqimi › Plotëso makrot (V2-E3-28c, SPEC §0.3h, bordi "Ushqimi · Plotëso makrot"): deri në 3 propozime për proteinën që
@@ -35,7 +35,9 @@ export function FillMacrosPage() {
     const now = store.now()
     return { ...(await fillView(store, now)), now }
   }, [])
-  const result = view?.left ? fillMacros(view.left, view.foods) : null
+  // Gjatë ditës mbushet vetëm ajo që nuk e sjellin vaktet e planit që vijnë; në mbrëmje, gjithë sa mbetet.
+  const target = view?.left ? fillTarget(view.left, view.ahead) : null
+  const result = target && target.plan === null ? fillMacros(target, view!.foods) : null
   const header = (
     <header className="flex items-start gap-1">
       <BackButton label={t('foodday.fill.back')} fallback="/ushqimi" className="-ml-2" />
@@ -44,6 +46,11 @@ export function FillMacrosPage() {
         {view?.left ? (
           <p className="type-caption text-muted-foreground tabular-nums">
             {t('foodday.fill.remaining', { kcal: kcalText(i18n, Math.max(0, view.left.kcal)), protein: fmt.number(Math.max(0, Math.round(view.left.proteinG))), time: fmt.time(view.now) })}
+          </p>
+        ) : null}
+        {view && target && target.plan === null && view.ahead.meals > 0 && target.proteinG > 0 ? (
+          <p className="type-caption text-muted-foreground tabular-nums">
+            {t('foodday.fill.ahead', { protein: fmt.number(Math.round(view.ahead.proteinG)), gap: fmt.number(Math.round(target.proteinG)) })}
           </p>
         ) : null}
       </div>
@@ -92,7 +99,11 @@ export function FillMacrosPage() {
   return (
     <div className="flex flex-col gap-4">
       {header}
-      {!result ? (
+      {target?.plan === 'covers' ? (
+        empty(t('foodday.fill.emptyPlan'), t('foodday.fill.emptyPlanHint', { protein: fmt.number(Math.round(view.ahead.proteinG)) }))
+      ) : target?.plan === 'noRoom' ? (
+        empty(t('foodday.fill.emptyRoom'), t('foodday.fill.emptyRoomHint', { gap: fmt.number(Math.round(target.proteinG)) }), { to: '/ushqimi/plani', label: t('food.plan.title') })
+      ) : !result ? (
         empty(t('foodday.fill.emptyTargets'), t('foodday.fill.emptyTargetsHint'), { to: '/ushqimi/objektivat', label: t('food.targets.title') })
       ) : result.proposals.length === 0 ? (
         result.status === 'ok' ? (
@@ -103,7 +114,7 @@ export function FillMacrosPage() {
       ) : (
         <ul aria-label={t('foodday.fill.proposals')} className="flex flex-col gap-3">
           {result.proposals.map((proposal, index) => {
-            const total = Math.round(view.left!.proteinG)
+            const total = Math.round(target!.proteinG)
             const full = proposal.coverage >= 1 - 1e-9 || Math.round(proposal.proteinG) >= total
             const kcalLeft = kcalText(i18n, proposal.kcalLeft)
             const names = proposal.items.map(itemName).join(', ')

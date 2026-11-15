@@ -52,12 +52,41 @@ export interface FillResult {
   proposals: FillProposal[]
 }
 
+/** Sa sjellin vaktet e planit që vijnë sot (të paregjistruara dhe jo të kaluara). */
+export interface PlanAhead {
+  kcal: number
+  proteinG: number
+  meals: number
+}
+
+/** Nën këtë mungesë proteine, vaktet e planit që vijnë e mbushin vetë dhe nuk propozohet asgjë. */
+export const PLAN_COVERS_G = 5
+
+/**
+ * Sa mbush Plotëso makrot: atë që mbetet pa vaktet e planit që vijnë. Në mbrëmje (pa vakte përpara) është gjithë sa mbetet;
+ * gjatë ditës është ajo që mungon nga vaktet e kaluara pa u regjistruar, jo një ditë e tërë në një vakt.
+ * `plan`: 'covers' kur vaktet që vijnë e mbushin proteinën; 'noRoom' kur mungon proteinë, por vaktet që vijnë i marrin
+ * tashmë kalorit që mbeten (një shtesë do t'i kalonte).
+ */
+export function fillTarget(left: { kcal: number; proteinG: number }, ahead: PlanAhead): { kcal: number; proteinG: number; plan: 'covers' | 'noRoom' | null } {
+  const proteinG = left.proteinG - ahead.proteinG
+  const kcal = left.kcal - ahead.kcal
+  // Pa vakte përpara, me proteinën e mbushur ose pa kalori fare, flet `fillMacros` (u mbush, mbaruan).
+  if (ahead.meals === 0 || left.proteinG <= PLAN_COVERS_G || left.kcal <= 0) return { kcal, proteinG, plan: null }
+  if (proteinG <= PLAN_COVERS_G) return { kcal, proteinG, plan: 'covers' }
+  return { kcal, proteinG, plan: kcal <= 0 ? 'noRoom' : null }
+}
+
 export const MAX_PROPOSALS = 3
 /** Hapi i ushqimeve pa porcion. */
 export const STEP_GRAMS = 10
-/** Kufijtë e numrit të porcioneve (ushqimi kryesor, ushqimi i dytë), që kërkimi të mbetet i shpejtë. */
+/** Kufijtë e hapave 10 g (ushqimi kryesor, ushqimi i dytë): 300 g dhe 120 g. */
 const MAX_MAIN = 30
 const MAX_SECOND = 12
+/** Një ushqim me porcion propozohet jo më shumë se 4 herë (3 si i dyti) dhe jo mbi 500 g: jo "13 të bardha vezë". */
+const MAX_SERVINGS_MAIN = 4
+const MAX_SERVINGS_SECOND = 3
+export const MAX_ITEM_G = 500
 /** Sa mbi proteinën që mbetet lejohet një propozim (bordi: 2 kanoçe ton me 74 g nuk propozohen kur mbeten 46 g). */
 export const OVERSHOOT = 1.25
 const EPS = 1e-9
@@ -67,7 +96,13 @@ interface Option {
   unitG: number
   unitKcal: number
   unitProtein: number
+  /** true kur njësia është porcioni i ushqimit, jo hapi 10 g. */
+  serving: boolean
 }
+
+/** Sa porcione lejohen për këtë ushqim: hapat 10 g sipas `steps`, porcionet sipas `servings`, gjithmonë ≤ 500 g. */
+const capOf = (option: Option, steps: number, servings: number) =>
+  Math.max(1, Math.min(option.serving ? servings : steps, Math.floor(MAX_ITEM_G / option.unitG + EPS)))
 
 const finite = (value: number) => Number.isFinite(value)
 const round2 = (value: number) => Math.round(value * 100) / 100
@@ -75,8 +110,9 @@ const round2 = (value: number) => Math.round(value * 100) / 100
 function optionOf(food: FillFood): Option | null {
   const { kcal, proteinG } = food.per100
   if (!finite(kcal) || !finite(proteinG) || kcal < 0 || proteinG <= 0) return null
-  const unitG = food.servingG !== null && finite(food.servingG) && food.servingG > 0 ? food.servingG : STEP_GRAMS
-  return { food, unitG, unitKcal: (kcal * unitG) / 100, unitProtein: (proteinG * unitG) / 100 }
+  const serving = food.servingG !== null && finite(food.servingG) && food.servingG > 0
+  const unitG = serving && food.servingG !== null ? food.servingG : STEP_GRAMS
+  return { food, unitG, unitKcal: (kcal * unitG) / 100, unitProtein: (proteinG * unitG) / 100, serving }
 }
 
 const itemOf = (option: Option, count: number): FillItem => ({
@@ -138,7 +174,7 @@ export function fillMacros(left: { proteinG: number; kcal: number }, foods: read
   }
 
   for (const main of options) {
-    const mostMain = maxCount(main, left.kcal, proteinLeft, proteinLeft * OVERSHOOT, MAX_MAIN, true)
+    const mostMain = maxCount(main, left.kcal, proteinLeft, proteinLeft * OVERSHOOT, capOf(main, MAX_MAIN, MAX_SERVINGS_MAIN), true)
     if (mostMain < 1) continue
     // Vetëm: sa më shumë porcione që futen, por jo më shumë se sa e mbushin proteinën.
     const single = candidate([itemOf(main, mostMain)], proteinLeft)
@@ -153,7 +189,7 @@ export function fillMacros(left: { proteinG: number; kcal: number }, foods: read
       for (let k1 = 1; k1 <= mostMain; k1++) {
         const rest = left.kcal - main.unitKcal * k1
         const proteinRest = proteinLeft - main.unitProtein * k1
-        const mostSecond = maxCount(second, rest, Math.max(proteinRest, EPS), proteinLeft * OVERSHOOT - main.unitProtein * k1, MAX_SECOND, false)
+        const mostSecond = maxCount(second, rest, Math.max(proteinRest, EPS), proteinLeft * OVERSHOOT - main.unitProtein * k1, capOf(second, MAX_SECOND, MAX_SERVINGS_SECOND), false)
         for (let k2 = 1; k2 <= mostSecond; k2++) {
           const items = [itemOf(main, k1), itemOf(second, k2)]
           // Ushqimi kryesor është ai me më shumë proteinë në propozim.

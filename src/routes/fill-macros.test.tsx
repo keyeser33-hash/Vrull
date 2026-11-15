@@ -46,13 +46,16 @@ async function eaten(kcal = 2517, proteinG = 214) {
   await logQuickMacros(data.store, { date: TODAY, meal: 'breakfast_1', name: 'Mëngjesi jashtë', kcal, proteinG, carbsG: 0, fatG: 0, favorite: false })
 }
 
-/** Plani im bosh për ditën e pushimit, me një ushqim te dreka kur jepet. */
-async function plan(item?: { id: string; name: string; per100: { kcal: number; proteinG: number; carbsG: number; fatG: number } }) {
+/**
+ * Plani im bosh për ditën e pushimit, me një ushqim kur jepet: te snack-u i paradites (10:30, i kaluar pa u regjistruar,
+ * ndaj ushqimi i tij del si propozim) ose te dreka (13:00, vakti i radhës, që e mbush proteinën vetë).
+ */
+async function plan(item?: { id: string; name: string; per100: { kcal: number; proteinG: number; carbsG: number; fatG: number } }, slot: 'snack_am' | 'lunch' = 'snack_am') {
   const { myPlan, saveMyPlanMeal, userFoodItem } = await import('@/data/my-plan')
   const { nutritionDay } = await import('@/data/nutrition')
   const day = await nutritionDay(data.store, TODAY, data.store.now())
   const current = (await myPlan(data.store, 'rest', day.meals.map((entry) => entry.meal), null)).meals
-  for (const entry of current) await saveMyPlanMeal(data.store, 'rest', current, entry.meal, entry.meal === 'lunch' && item ? [userFoodItem({ ...item, sourceId: null }, 210)] : [])
+  for (const entry of current) await saveMyPlanMeal(data.store, 'rest', current, entry.meal, entry.meal === slot && item ? [userFoodItem({ ...item, sourceId: null }, 210)] : [])
 }
 
 async function seedPowder() {
@@ -126,6 +129,29 @@ describe('Plotëso makrot', () => {
     expect(window.localStorage.getItem('vrull.basket')).toBeNull()
   })
 
+  it('gjatë ditës: kur vaktet e planit që vijnë e mbushin proteinën, nuk propozohet një ditë e tërë në një vakt', async () => {
+    const { fillet } = await seedFoods()
+    await eaten()
+    // Dreka (vakti i radhës) sjell 47 g proteinë nga Plani im; mbeten 46 g.
+    await plan({ id: fillet, name: 'Fileto gjeli', per100: { kcal: 120, proteinG: 22.5, carbsG: 0, fatG: 2 } }, 'lunch')
+    await renderPage()
+    expect(await screen.findByRole('heading', { name: 'Plani i ditës e mbush proteinën' })).toBeInTheDocument()
+    expect(screen.getByText(/^Vaktet që vijnë sjellin 47 g\./)).toBeInTheDocument()
+    expect(screen.queryByRole('list', { name: 'Propozimet' })).toBeNull()
+  })
+
+  it('gjatë ditës: mungon proteinë, por dreka e planit i merr kalorit që mbeten; asnjë shtesë, lidhja te Plani im', async () => {
+    const { fillet } = await seedFoods()
+    // Mbeten 137 kcal dhe 110 g; dreka sjell 252 kcal dhe 47 g, pra mungojnë 63 g pa asnjë kalori të lirë.
+    await eaten(2900, 150)
+    await plan({ id: fillet, name: 'Fileto gjeli', per100: { kcal: 120, proteinG: 22.5, carbsG: 0, fatG: 2 } }, 'lunch')
+    await renderPage()
+    expect(await screen.findByRole('heading', { name: 'Vaktet që vijnë i marrin kalorit që mbeten' })).toBeInTheDocument()
+    expect(screen.getByText(/^Mungojnë 63 g proteinë/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Plani im' })).toHaveAttribute('href', '/ushqimi/plani')
+    expect(screen.queryByRole('list', { name: 'Propozimet' })).toBeNull()
+  })
+
   it('asnjë propozim nuk kalon kalorit që mbeten, as proteinën shumë mbi 46 g', async () => {
     await seedFoods()
     await eaten(2900, 214)
@@ -144,15 +170,15 @@ describe('Plotëso makrot', () => {
     await plan()
     const router = await renderPage()
     const list = await cards()
-    // Pa fileton: pluhuri (100 %, 240 kcal), kanoçja me katër feta bukë (100 %, 445 kcal), pastaj bukë e vetme (7 feta, 43 %).
-    expect(list.map((card) => head(card))).toEqual(['240 kcal · 48 g P', '445 kcal · 48 g P', '490 kcal · 20 g P'])
+    // Pa fileton: pluhuri (100 %, 240 kcal), kanoçja me tri feta bukë (98 %, 375 kcal), pastaj katër feta (kufiri i porcioneve).
+    expect(list.map((card) => head(card))).toEqual(['240 kcal · 48 g P', '375 kcal · 45 g P', '280 kcal · 11 g P'])
     await user.click(within(bySource(list, 'Ton albacore')).getByRole('button', { name: 'Shto në shportë: Ton albacore, Bukë integrale' }))
     await waitFor(() => expect(router.state.location.pathname).toBe('/ushqimi/shto/lunch'))
     expect(await screen.findByTestId('where')).toHaveTextContent('/ushqimi/shto/lunch?ndrysho=shporta')
     const saved = JSON.parse(window.localStorage.getItem('vrull.basket') ?? 'null') as { items: { foodId: string; grams: number; name: string }[] }
     expect(saved.items.map((item) => [item.foodId, item.grams, item.name])).toEqual([
       [tuna, 142, 'Ton albacore'],
-      [bread, 112, 'Bukë integrale'],
+      [bread, 84, 'Bukë integrale'],
     ])
     // Pluhuri nuk u shkrua te ditari: shporta është vetëm gati.
     expect(await data.store.where('diary_entries', 'date', TODAY)).toHaveLength(1)
@@ -177,17 +203,23 @@ describe('Plotëso makrot', () => {
   it('ushqimi i planit që s’është ruajtur ende ruhet vetëm kur shtohet në shportë', async () => {
     const user = userEvent.setup()
     await eaten()
-    // Plani i Jimit i paprekur: dreka ka ushqime të shabllonit, pa asnjë rresht në `foods`.
-    await renderPage()
-    const plan = (await cards()).find((card) => card.textContent?.includes('Plani im'))
-    expect(plan).toBeDefined()
-    expect((await data.store.all('foods')).filter((row) => row.source === 'template')).toHaveLength(0)
-    await user.click(within(plan!).getByRole('button', { name: /^Shto në shportë/ }))
-    await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('ndrysho=shporta'))
-    const saved = JSON.parse(window.localStorage.getItem('vrull.basket') ?? 'null') as { items: { foodId: string; source: string }[] }
-    expect(saved.items.length).toBeGreaterThan(0)
-    expect(saved.items.every((item) => item.source === 'template')).toBe(true)
-    expect((await data.store.all('foods')).filter((row) => row.source === 'template').length).toBeGreaterThan(0)
+    // Plani i Jimit i paprekur, në mbrëmje (të gjitha vaktet kaluan pa u regjistruar): ushqimet e shabllonit pa asnjë rresht
+    // në `foods` dalin si propozime.
+    vi.setSystemTime(new Date('2026-11-18T23:45:00'))
+    try {
+      await renderPage()
+      const plan = (await cards()).find((card) => card.textContent?.includes('Plani im'))
+      expect(plan).toBeDefined()
+      expect((await data.store.all('foods')).filter((row) => row.source === 'template')).toHaveLength(0)
+      await user.click(within(plan!).getByRole('button', { name: /^Shto në shportë/ }))
+      await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('ndrysho=shporta'))
+      const saved = JSON.parse(window.localStorage.getItem('vrull.basket') ?? 'null') as { items: { foodId: string; source: string }[] }
+      expect(saved.items.length).toBeGreaterThan(0)
+      expect(saved.items.every((item) => item.source === 'template')).toBe(true)
+      expect((await data.store.all('foods')).filter((row) => row.source === 'template').length).toBeGreaterThan(0)
+    } finally {
+      vi.setSystemTime(new Date('2026-11-18T12:30:00'))
+    }
   })
 
   it('pluhuri i proteinës numërohet një herë: plani i Jimit e ka të njëjtin pluhur, por propozohet vetëm ai i suplementit', async () => {

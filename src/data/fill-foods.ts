@@ -1,4 +1,4 @@
-import { type FillFood, type FillProposal } from '@/nutrition/fill-macros'
+import { type FillFood, type FillProposal, type PlanAhead } from '@/nutrition/fill-macros'
 import type { MealKey } from '@/nutrition/meals'
 import { type BasketItem, basketItemFromFood } from './basket'
 import { type Food, foodById, foodsById } from './foods'
@@ -18,6 +18,8 @@ export interface FillView {
   meal: MealKey
   /** Sa mbetet nga objektivat e ditës; null pa objektiva (pa peshë). */
   left: { kcal: number; proteinG: number } | null
+  /** Vaktet e planit që vijnë sot (i radhës dhe të mëvonshmet, pa të kaluarat): ato i mbush plani, jo Plotëso makrot. */
+  ahead: PlanAhead
   foods: FillFood[]
 }
 
@@ -82,7 +84,20 @@ export async function fillView(store: LocalStore, now: Date): Promise<FillView> 
 
   // Një ushqim del një herë: suplementi, pastaj plani, pastaj ushqimet e tua (`fillMacros` mban të parin).
   const left = day.targets ? { kcal: day.targets.kcal - day.totals.kcal, proteinG: day.targets.proteinG - day.totals.proteinG } : null
-  return { date, meal: meal.meal, left, foods: list }
+  // Si "Si në plan" (logTemplateMeal): pluhuri i planit nuk numërohet te një vakt ku proteina është shënuar "E mora".
+  const ahead: PlanAhead = { kcal: 0, proteinG: 0, meals: 0 }
+  for (const slot of day.meals) {
+    if (slot.status !== 'next' && slot.status !== 'todo') continue
+    const taken = (await mealPowder(store, date, slot.meal)).supplement
+    const lines = slot.template.filter((line) => !(taken && line.food === 'protein'))
+    if (lines.length === 0) continue
+    ahead.meals += 1
+    for (const line of lines) {
+      ahead.kcal += line.kcal
+      ahead.proteinG += line.proteinG
+    }
+  }
+  return { date, meal: meal.meal, left, ahead, foods: list }
 }
 
 /** Artikujt e një propozimi si artikuj të shportës; ushqimet e planit që s'janë ruajtur ende ruhen tani (veprim i përdoruesit). */
