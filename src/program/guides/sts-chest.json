@@ -1,0 +1,1963 @@
+{
+  "group": "sts-chest",
+  "guides": [
+    {
+      "exercise": "Bench Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu në stol të sheshtë, me shpinën fort te jastëku dhe këmbët të sheshta në dysheme, pak më gjerë se shpatullat.",
+            "en": "Lie on a flat bench with your back firmly against the pad and your feet flat on the floor, slightly wider than your shoulders."
+          },
+          {
+            "sq": "Kap shufrën pak më gjerë se shpatullat.",
+            "en": "Grip the bar slightly wider than shoulder width."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat pas dhe mbaje shpinën neutrale.",
+            "en": "Brace your core, draw your shoulder blades back and keep a neutral spine."
+          },
+          {
+            "sq": "Koka, shpina e sipërme dhe vithet mbeten në stol gjatë gjithë setit.",
+            "en": "Keep your head, upper back and glutes on the bench for the whole set."
+          },
+          {
+            "sq": "Kur e heq shufrën nga rafti, shtyj këmbët në dysheme dhe ijët në stol.",
+            "en": "As you lift the bar off the rack, press your feet into the floor and your hips into the bench."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "ace",
+          "stoppani",
+          "hk"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shufrën ngadalë drejt gjoksit, me krahët rreth 45° nga trupi.",
+            "en": "Lower the bar slowly towards your chest, with your upper arms at about 45° to your torso."
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks, që gjoksi të mbetet nën tension.",
+            "en": "Stop just above your chest so the muscle stays under tension."
+          },
+          {
+            "sq": "Shtyj shufrën drejt lart, duke shtyrë dyshemenë me këmbë.",
+            "en": "Press the bar straight up, driving your feet into the floor."
+          },
+          {
+            "sq": "Në krye ndalo pa i bllokuar bërrylat.",
+            "en": "At the top, stop without locking your elbows."
+          }
+        ],
+        "sources": [
+          "ace",
+          "nasm",
+          "stoppani",
+          "hk"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and pressing is up to you."
+          },
+          {
+            "sq": "Merr frymë duke zgjeruar barkun kur e ul shufrën, nxirre kur e shtyn.",
+            "en": "Breathe in, expanding your belly, as you lower the bar; breathe out as you press."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "page"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Këmbët në dysheme, shtyj tokën",
+            "en": "Drive your feet into the floor"
+          },
+          {
+            "sq": "Tërhiq shpatullat pas",
+            "en": "Draw your shoulder blades back"
+          },
+          {
+            "sq": "Bërrylat rreth 45° nga trupi",
+            "en": "Elbows about 45° from your body"
+          },
+          {
+            "sq": "Ule shufrën ngadalë te gjoksi",
+            "en": "Lower slowly to your chest"
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks",
+            "en": "Stop just above your chest"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          }
+        ],
+        "sources": [
+          "ace",
+          "nasm",
+          "stoppani",
+          "hk"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërrylat shumë larg ose shumë afër trupit: prishet puna e shpatullës dhe gjoksi punon më pak.",
+            "en": "Elbows too wide or too close: shoulder mechanics suffer and the chest works less."
+          },
+          {
+            "sq": "Harkim i tepërt i belit për të ngritur më shumë.",
+            "en": "Arching the lower back too much to lift more."
+          },
+          {
+            "sq": "Ulje shumë e shpejtë e shufrës.",
+            "en": "Lowering the bar too quickly."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa prish formën.",
+            "en": "A load so heavy that your form breaks down."
+          },
+          {
+            "sq": "Bllokimi i plotë i bërrylave në krye: gjoksi humb tensionin.",
+            "en": "Locking the elbows fully at the top: the chest loses tension."
+          },
+          {
+            "sq": "Kërcimi i shufrës nga gjoksi ose ngritja e vitheve nga stoli.",
+            "en": "Bouncing the bar off your chest or lifting your hips off the bench."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "hk"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Bench Press Master Class)",
+          "text": {
+            "sq": "Mbaj pesë pikat e kontaktit gjatë gjithë setit: këmbët, vithet, shpina e sipërme me shpatullat, koka dhe duart. Shufrën uleje drejt pjesës së poshtme të gjoksit dhe ngrije me një hark të lehtë mbrapa.",
+            "en": "Keep five points of contact for the whole set: feet, glutes, upper back and shoulders, head and hands. Lower the bar towards your lower chest and press it back up in a slight backward arc."
+          },
+          "sources": [
+            "stoppani"
+          ]
+        },
+        {
+          "who": "ACSM, Position Stand 2026 (Currier dhe kolegët) · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Forca rritet më shumë me pesha nga 80% e 1RM-së e lart, me lëvizje të plotë dhe 2–3 sete. Koha nën tension nuk i ndryshon rezultatet në mënyrë të qëndrueshme: mos u merr me sekonda më shumë se me peshën dhe lëvizjen.",
+            "en": "Strength grows most with loads of 80% of 1RM and above, a full range of motion and 2–3 sets. Time under tension does not change results consistently: don't chase seconds over load and range."
+          },
+          "sources": [
+            "acsm"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e zgjat muskulin: ule shufrën deri pak mbi gjoks, mos e shkurto.",
+            "en": "For muscle growth, favour the range that lengthens the muscle: lower the bar to just above your chest, don't cut it short."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        },
+        {
+          "who": "Green dhe Comfort, 2007 · Strength and Conditioning Journal",
+          "text": {
+            "sq": "Kapja më e gjerë se 1,5 herë gjerësia e shpatullave mund ta rrisë rrezikun e dëmtimit të shpatullës. Kapja deri në 1,5 herë e ul rrezikun, nuk i ndryshon muskujt që punojnë dhe e ndryshon 1RM-në vetëm rreth 5%.",
+            "en": "A grip wider than 1.5 times shoulder width may raise the risk of shoulder injury. A grip up to 1.5 times lowers the risk, does not change which muscles work and shifts your 1RM by only about 5%."
+          },
+          "sources": [
+            "green"
+          ]
+        },
+        {
+          "who": "Calatayud dhe kolegët, 2016 · European Journal of Applied Physiology",
+          "text": {
+            "sq": "Kur mendon gjoksin gjatë shtytjes, aktiviteti i tij rritet me pesha deri në 60% të 1RM-së, por jo në 80%. Përdore te setet më të lehta.",
+            "en": "Focusing on your chest while pressing raises its activity at loads up to 60% of 1RM, but not at 80%. Use it on lighter sets."
+          },
+          "sources": [
+            "calatayud"
+          ]
+        },
+        {
+          "who": "Rodríguez-Ridao dhe kolegët, 2020; Lauver dhe kolegët, 2016",
+          "text": {
+            "sq": "Në stol të sheshtë punon i gjithë gjoksi. Për gjoksin e sipërm, stoli në 30°; mbi 45° punon më shumë shpatulla.",
+            "en": "On a flat bench the whole chest works. For the upper chest, set the bench to 30°; above 45° the front shoulder takes more of the work."
+          },
+          "sources": [
+            "rodriguez",
+            "lauver"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Me pesha të rënda, kërko një rojë dhe përdor raftin me mbajtëse sigurie: NSCA kërkon rojë të vëmendshme, bashkë me pajisje si rafti, kur pesha mbahet mbi trup ose lëviz mbi fytyrë.",
+            "en": "With heavy loads, ask for a spotter and use a rack with safety catches: the NSCA requires attentive spotting, together with equipment such as power racks, whenever a weight is held over the trunk or moves over the face."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, tregon një problem me peshën ose formën: ndalo para se të dëmtohet muskuli ose nyja. Dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, signals a problem with the load or your form: stop before the muscle or joint is damaged. Sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Mësoje lëvizjen me shufër bosh ose me peshë të lehtë; roja qëndron pas kokës tënde.",
+            "en": "Learn the lift with an empty bar or a light weight; the spotter stands behind your head."
+          },
+          {
+            "sq": "Shpina neutrale, ulja e kontrolluar dhe shpatullat e qëndrueshme e ulin rrezikun e dëmtimit; kapja jo më e gjerë se 1,5 herë gjerësia e shpatullave e ul rrezikun për shpatullën.",
+            "en": "A neutral spine, a controlled descent and stable shoulders lower the risk of injury; a grip no wider than 1.5 times shoulder width lowers the risk to your shoulder."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "nasmred",
+          "nasm",
+          "green",
+          "hk"
+        ]
+      },
+      "history": {
+        "text": {
+          "sq": "Një nga fotot e hershme të një stoli me mbajtëse për shufrën është e Floyd Page, që shtyn 350 paund, e botuar te revista Muscle Power në gusht 1948.",
+          "en": "One of the early photos of a bench with uprights for the bar shows Floyd Page pressing 350 pounds, published in Muscle Power in August 1948."
+        },
+        "sources": [
+          "history"
+        ]
+      },
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bench Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bench-press",
+          "checked": "2026-11-15"
+        },
+        "ace": {
+          "label": "ACE, Chest Press",
+          "url": "https://acefitness.org/resources/everyone/exercise-library/5/chest-press",
+          "checked": "2026-11-15"
+        },
+        "stoppani": {
+          "label": "Jim Stoppani, PhD, Bench Press Master Class",
+          "url": "https://jimstoppani.com/training/bench-press-master-class",
+          "checked": "2026-11-15"
+        },
+        "hk": {
+          "label": "Faigenbaum dhe Westcott, Youth Strength Training (Human Kinetics)",
+          "url": "https://us.humankinetics.com/blogs/excerpt/a-step-by-step-guide-for-a-proper-bench-press",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "page": {
+          "label": "Page dhe Ellenbecker, 2020, Strength Band Training (Human Kinetics)",
+          "url": "https://us.humankinetics.com/blogs/excerpt/proper-posture-and-breathing-for-your-workout",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "green": {
+          "label": "Green dhe Comfort, 2007, Strength and Conditioning Journal",
+          "url": "https://salford-repository.worktribe.com/output/1804489/the-affect-of-grip-width-on-bench-press-performance-and-risk-of-injury",
+          "checked": "2026-11-15"
+        },
+        "acsm": {
+          "label": "ACSM, Position Stand 2026 (Currier dhe kolegët), Medicine & Science in Sports & Exercise",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/",
+          "checked": "2026-11-15"
+        },
+        "calatayud": {
+          "label": "Calatayud dhe kolegët, 2016, European Journal of Applied Physiology",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26700744/",
+          "checked": "2026-11-15"
+        },
+        "rodriguez": {
+          "label": "Rodríguez-Ridao dhe kolegët, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7579505/",
+          "checked": "2026-11-15"
+        },
+        "lauver": {
+          "label": "Lauver dhe kolegët, 2016, European Journal of Sport Science",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/25799093/",
+          "checked": "2026-11-15"
+        },
+        "history": {
+          "label": "Roark, The Roark Report: The Value of Accuracy, Iron Game History, vol. 1 nr. 1, 1990",
+          "url": "https://starkcenter.org/wp-content/uploads/2020/01/IGH1990_02_v01n01Complete.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Incline Bench Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Sipas NASM, vendose stolin në 45°.",
+            "en": "According to NASM, set the bench to 45°."
+          },
+          {
+            "sq": "Ulu me shpinën fort te jastëku dhe këmbët të sheshta në dysheme, pak më gjerë se shpatullat.",
+            "en": "Sit with your back firmly against the pad and your feet flat on the floor, slightly wider than your shoulders."
+          },
+          {
+            "sq": "Kap shufrën pak më gjerë se shpatullat.",
+            "en": "Grip the bar slightly wider than shoulder width."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat pas dhe mbaje shpinën neutrale.",
+            "en": "Brace your core, draw your shoulder blades back and keep a neutral spine."
+          }
+        ],
+        "sources": [
+          "nasminc"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shufrën me kontroll drejt gjoksit të sipërm, pa e rënë.",
+            "en": "Lower the bar with control towards your upper chest, without dropping it."
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks, që gjoksi të mbetet nën tension.",
+            "en": "Stop just above your chest so the muscle stays under tension."
+          },
+          {
+            "sq": "Shtyj shufrën lart dhe pak përpara, me kontroll.",
+            "en": "Press the bar up and slightly forward, under control."
+          },
+          {
+            "sq": "Në krye ndalo pa i bllokuar bërrylat.",
+            "en": "At the top, stop without locking your elbows."
+          }
+        ],
+        "sources": [
+          "nasminc"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and pressing is up to you."
+          },
+          {
+            "sq": "Merr frymë duke zgjeruar barkun kur e ul shufrën, nxirre kur e shtyn.",
+            "en": "Breathe in, expanding your belly, as you lower the bar; breathe out as you press."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "page"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina fort te jastëku",
+            "en": "Back firmly on the pad"
+          },
+          {
+            "sq": "Tërhiq shpatullat pas",
+            "en": "Draw your shoulder blades back"
+          },
+          {
+            "sq": "Ule shufrën drejt gjoksit të sipërm",
+            "en": "Lower to your upper chest"
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks",
+            "en": "Stop just above your chest"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          },
+          {
+            "sq": "Stoli jo mbi 45°",
+            "en": "Bench no steeper than 45°"
+          }
+        ],
+        "sources": [
+          "nasminc",
+          "rodriguez"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Stol shumë i pjerrët, mbi 45°: puna kalon te shpatulla e përparme.",
+            "en": "A bench that is too steep, above 45°: the work shifts to the front shoulder."
+          },
+          {
+            "sq": "Bërrylat shumë larg ose shumë afër trupit: prishet puna e shpatullës.",
+            "en": "Elbows too wide or too close: shoulder mechanics suffer."
+          },
+          {
+            "sq": "Ulje shumë e shpejtë e shufrës: tensioni zvogëlohet.",
+            "en": "Lowering the bar too quickly: the tension drops."
+          },
+          {
+            "sq": "Harkim i tepërt i belit për të ngritur më shumë: dobësohet qëndrueshmëria e bykut.",
+            "en": "Arching the lower back too much to lift more: your core stability suffers."
+          },
+          {
+            "sq": "Bllokimi i bërrylave në krye: gjoksi humb tensionin.",
+            "en": "Locking the elbows at the top: the chest loses tension."
+          }
+        ],
+        "sources": [
+          "nasminc"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Presat e pjerrëta janë mënyra e zakonshme për të punuar gjoksin e sipërm. Mbaji presat e pjerrëta me shufër për masën e përgjithshme të gjoksit të sipërm; për pjesën e brendshme provo shtanga.",
+            "en": "Incline presses are the usual way to work the upper chest. Keep incline barbell presses for overall mass up top; for the inner part try dumbbells."
+          },
+          "sources": [
+            "stochest"
+          ]
+        },
+        {
+          "who": "Rodríguez-Ridao dhe kolegët, 2020",
+          "text": {
+            "sq": "Në 30° gjoksi i sipërm aktivizohet më shumë (EMG me 60% të 1RM-së, 30 persona të stërvitur). Mbi 45° aktivizohet më shumë shpatulla e përparme dhe gjoksi punon më keq.",
+            "en": "At 30° the upper chest is most active (EMG at 60% of 1RM, 30 trained adults). Above 45° the front shoulder is more active and the chest performs worse."
+          },
+          "sources": [
+            "rodriguez"
+          ]
+        },
+        {
+          "who": "Lauver dhe kolegët, 2016",
+          "text": {
+            "sq": "Në 30° ose 45°, gjoksi i sipërm aktivizohet më shumë se në stol të sheshtë gjatë 26–50% të fazës koncentrike. Gjatë gjithë fazës koncentrike dallimi nuk del.",
+            "en": "At 30° or 45° the upper chest is more active than on a flat bench during 26–50% of the concentric phase. Across the whole concentric phase there is no difference."
+          },
+          "sources": [
+            "lauver"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Aktivizimi i muskulit nuk është domosdoshmërisht parashikues i mirë i rritjes së tij.",
+            "en": "Muscle activation is not necessarily a good predictor of muscle growth."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        },
+        {
+          "who": "NASM, ACE, Stoppani dhe Rodríguez-Ridao",
+          "text": {
+            "sq": "Burimet nuk bien dakord për këndin e stolit. NASM: 45° dhe mbi 45° është gabim. ACE (presa me shtanga): 45–60°. Stoppani (presa me kapje të kundërt me shtanga): 30–45°. Rodríguez-Ridao (presa me shufër): 30° për gjoksin e sipërm, mbi 45° më shumë shpatull.",
+            "en": "Sources disagree on the bench angle. NASM: 45°, and above 45° is a mistake. ACE (dumbbell press): 45–60°. Stoppani (reverse-grip dumbbell press): 30–45°. Rodríguez-Ridao (barbell press): 30° for the upper chest, above 45° more front shoulder."
+          },
+          "sources": [
+            "nasminc",
+            "aceinc",
+            "stochest",
+            "rodriguez"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Me pesha të rënda, kërko një rojë dhe përdor raftin me mbajtëse sigurie: NSCA kërkon rojë të vëmendshme, bashkë me pajisje si rafti, kur pesha mbahet mbi trup ose lëviz mbi fytyrë.",
+            "en": "With heavy loads, ask for a spotter and use a rack with safety catches: the NSCA requires attentive spotting, together with equipment such as power racks, whenever a weight is held over the trunk or moves over the face."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          },
+          {
+            "sq": "Mësoje lëvizjen me shufër bosh ose me peshë të lehtë; roja qëndron pas kokës tënde.",
+            "en": "Learn the lift with an empty bar or a light weight; the spotter stands behind your head."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "nasmred",
+          "hk"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasminc": {
+          "label": "NASM, Incline Barbell Bench Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/incline-barbell-bench-press",
+          "checked": "2026-11-15"
+        },
+        "rodriguez": {
+          "label": "Rodríguez-Ridao dhe kolegët, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7579505/",
+          "checked": "2026-11-15"
+        },
+        "lauver": {
+          "label": "Lauver dhe kolegët, 2016, European Journal of Sport Science",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/25799093/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "page": {
+          "label": "Page dhe Ellenbecker, 2020, Strength Band Training (Human Kinetics)",
+          "url": "https://us.humankinetics.com/blogs/excerpt/proper-posture-and-breathing-for-your-workout",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "hk": {
+          "label": "Faigenbaum dhe Westcott, Youth Strength Training (Human Kinetics)",
+          "url": "https://us.humankinetics.com/blogs/excerpt/a-step-by-step-guide-for-a-proper-bench-press",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        },
+        "aceinc": {
+          "label": "ACE, Incline Chest Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/25/incline-chest-press/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Incline Dumbbell Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Sipas NASM, vendose stolin në 45°.",
+            "en": "According to NASM, set the bench to 45°."
+          },
+          {
+            "sq": "Ulu me shpinën fort te jastëku dhe këmbët të sheshta në dysheme.",
+            "en": "Sit with your back firmly against the pad and your feet flat on the floor."
+          },
+          {
+            "sq": "Mbaji shtangat në nivelin e gjoksit, me bërrylat rreth 45° nga trupi.",
+            "en": "Hold the dumbbells at chest level, with your elbows at about 45° to your body."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë; koka, shpatullat, vithet dhe këmbët mbeten në kontakt.",
+            "en": "Draw your shoulders back and down; your head, shoulders, glutes and feet stay in contact."
+          },
+          {
+            "sq": "Kur ke rojë, kërkoji t'i japë shtangat dhe t'i marrë prapë në fund të setit.",
+            "en": "When you have a spotter, ask them to hand you the dumbbells and take them again at the end of the set."
+          }
+        ],
+        "sources": [
+          "nasmdb",
+          "aceinc"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtyj shtangat lart dhe pak përpara me kontroll, deri në shtrirjen e krahëve, pa i bllokuar bërrylat.",
+            "en": "Press the dumbbells up and slightly forward, under control, until your arms are extended, without locking your elbows."
+          },
+          {
+            "sq": "Ule shtangat ngadalë drejt gjoksit të sipërm, pak më gjerë drejt sqetullave.",
+            "en": "Lower the dumbbells slowly towards your upper chest, moving slightly wider towards your armpits."
+          },
+          {
+            "sq": "Ndalo në nivelin e gjoksit, pa i kërcyer shtangat.",
+            "en": "Stop at chest level, without bouncing the dumbbells."
+          }
+        ],
+        "sources": [
+          "nasmdb",
+          "aceinc"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Thith ajrin kur i ul shtangat ngadalë, nxirre kur i shtyn lart.",
+            "en": "Breathe in as you lower the dumbbells slowly, breathe out as you press up."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "aceinc"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Bërrylat rreth 45° nga trupi",
+            "en": "Elbows about 45° from your body"
+          },
+          {
+            "sq": "Bërrylat nën kyçet e duarve",
+            "en": "Elbows under your wrists"
+          },
+          {
+            "sq": "Ule shtangat me kontroll",
+            "en": "Lower the dumbbells with control"
+          },
+          {
+            "sq": "Pa kërcim në fund",
+            "en": "No bouncing at the bottom"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          }
+        ],
+        "sources": [
+          "nasmdb",
+          "aceinc"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Stol shumë i pjerrët, mbi 45°: puna kalon te shpatulla e përparme.",
+            "en": "A bench that is too steep, above 45°: the work shifts to the front shoulder."
+          },
+          {
+            "sq": "Bërrylat shumë larg ose shumë afër trupit: prishet puna e shpatullës dhe e gjoksit.",
+            "en": "Elbows too wide or too close: shoulder mechanics and chest work suffer."
+          },
+          {
+            "sq": "Ulje shumë e shpejtë ose kërcim në fund: tensioni zvogëlohet dhe rreziku rritet.",
+            "en": "Lowering too quickly or bouncing at the bottom: the tension drops and the risk rises."
+          },
+          {
+            "sq": "Harkim i tepërt i belit për të ngritur më shumë: dobësohet qëndrueshmëria e bykut dhe ngarkohet beli.",
+            "en": "Arching the lower back too much to lift more: core stability goes and the lower back is strained."
+          },
+          {
+            "sq": "Bllokimi i bërrylave në krye: gjoksi humb tensionin.",
+            "en": "Locking the elbows at the top: the chest loses tension."
+          }
+        ],
+        "sources": [
+          "nasmdb"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Presa e pjerrët me shtanga është një nga ndërtuesit më të mirë të masës së gjoksit, sidomos pjesës së sipërme. Shtangat të lejojnë të bësh një hark ndërsa i shtyn lart dhe bashkë, që punon më shumë fibrat e sipërme dhe të brendshme se shufra.",
+            "en": "The incline dumbbell press is one of the best mass-builders for the chest, particularly the upper part. Dumbbells let you form an arc as you press up and together, which works more of the upper and inner fibres than a bar."
+          },
+          "sources": [
+            "stochest"
+          ]
+        },
+        {
+          "who": "ACE, Incline Chest Press",
+          "text": {
+            "sq": "Bërrylat afër anëve e ngarkojnë më shumë triceps-in; bërrylat larg trupit e ngarkojnë më shumë gjoksin. Mbaji gjithmonë bërrylat nën kyçet.",
+            "en": "Elbows close to your sides emphasise the triceps; elbows flared away from your body emphasise the chest. Always keep your elbows under your wrists."
+          },
+          "sources": [
+            "aceinc"
+          ]
+        },
+        {
+          "who": "Rodríguez-Ridao dhe kolegët, 2020",
+          "text": {
+            "sq": "Në 30° gjoksi i sipërm aktivizohet më shumë (EMG me shufër dhe 60% të 1RM-së). Mbi 45° aktivizohet më shumë shpatulla e përparme.",
+            "en": "At 30° the upper chest is most active (EMG with a bar at 60% of 1RM). Above 45° the front shoulder is more active."
+          },
+          "sources": [
+            "rodriguez"
+          ]
+        },
+        {
+          "who": "NASM, ACE, Stoppani dhe Rodríguez-Ridao",
+          "text": {
+            "sq": "Burimet nuk bien dakord për këndin e stolit. NASM: 45° dhe mbi 45° është gabim. ACE (presa me shtanga): 45–60°. Stoppani (presa me kapje të kundërt me shtanga): 30–45°. Rodríguez-Ridao (presa me shufër): 30° për gjoksin e sipërm, mbi 45° më shumë shpatull.",
+            "en": "Sources disagree on the bench angle. NASM: 45°, and above 45° is a mistake. ACE (dumbbell press): 45–60°. Stoppani (reverse-grip dumbbell press): 30–45°. Rodríguez-Ridao (barbell press): 30° for the upper chest, above 45° more front shoulder."
+          },
+          "sources": [
+            "nasmdb",
+            "aceinc",
+            "stochest",
+            "rodriguez"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Kur ke rojë, ai qëndron në pozicion të ndarë, me duart afër kyçeve të tua, pa i prekur përveç kur duhet.",
+            "en": "With a spotter, they stand in a split stance with their hands close to your wrists, without touching them unless needed."
+          },
+          {
+            "sq": "Kërko rojë të vëmendshme kur shtangat mbahen mbi trup ose lëvizin mbi fytyrë.",
+            "en": "Ask for attentive spotting whenever the weights are held over your trunk or move over your face."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "aceinc",
+          "nsca",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasmdb": {
+          "label": "NASM, Two-Arm Incline Dumbbell Chest Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/two-arm-incline-dumbbell-chest-press",
+          "checked": "2026-11-15"
+        },
+        "aceinc": {
+          "label": "ACE, Incline Chest Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/25/incline-chest-press/",
+          "checked": "2026-11-15"
+        },
+        "rodriguez": {
+          "label": "Rodríguez-Ridao dhe kolegët, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7579505/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Reverse-Grip Incline Dumbbell Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Sipas Stoppanit, vendose stolin në rreth 30° deri 45°.",
+            "en": "According to Stoppani, set the bench to about 30° to 45°."
+          },
+          {
+            "sq": "Ulu me shpinën te stoli dhe këmbët të sheshta në dysheme; koka, shpatullat, vithet dhe këmbët mbeten në kontakt.",
+            "en": "Sit with your back on the bench and your feet flat on the floor; your head, shoulders, glutes and feet stay in contact."
+          },
+          {
+            "sq": "Mbaji shtangat me kapje të kundërt, pëllëmbët nga ti, me krahët e shtrirë mbi gjoks.",
+            "en": "Hold the dumbbells with a reverse grip, palms towards you, with your arms extended above your chest."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë që të bëjnë kontakt me stolin.",
+            "en": "Draw your shoulders back and down so they stay in contact with the bench."
+          }
+        ],
+        "sources": [
+          "stochest",
+          "aceinc"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shtangat ngadalë, duke mbajtur kapjen e kundërt, drejt pjesës së poshtme të gjoksit.",
+            "en": "Lower the dumbbells slowly, keeping the reverse grip, towards your lower chest."
+          },
+          {
+            "sq": "Mbaji bërrylat nën kyçet e duarve dhe kyçet neutrale.",
+            "en": "Keep your elbows under your wrists and your wrists neutral."
+          },
+          {
+            "sq": "Shtyj shtangat lart me të njëjtën rrugë, pa i bllokuar bërrylat.",
+            "en": "Press the dumbbells back up the same path, without locking your elbows."
+          }
+        ],
+        "sources": [
+          "stochest",
+          "aceinc",
+          "nasmdb"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Thith ajrin kur i ul shtangat ngadalë, nxirre kur i shtyn lart.",
+            "en": "Breathe in as you lower the dumbbells slowly, breathe out as you press up."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "aceinc"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Pëllëmbët nga ti gjatë gjithë setit",
+            "en": "Palms towards you throughout"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Ule ngadalë drejt gjoksit të poshtëm",
+            "en": "Lower slowly to your lower chest"
+          },
+          {
+            "sq": "Bërrylat nën kyçet e duarve",
+            "en": "Elbows under your wrists"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          }
+        ],
+        "sources": [
+          "stochest",
+          "aceinc",
+          "nasmdb"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Harkim i tepërt i belit për të ngritur më shumë: dobësohet qëndrueshmëria e bykut.",
+            "en": "Arching the lower back too much to lift more: core stability goes."
+          },
+          {
+            "sq": "Ulje shumë e shpejtë ose kërcim në fund: tensioni zvogëlohet dhe rreziku rritet.",
+            "en": "Lowering too quickly or bouncing at the bottom: the tension drops and the risk rises."
+          },
+          {
+            "sq": "Stol shumë i pjerrët, mbi 45°: puna kalon te shpatulla e përparme.",
+            "en": "A bench that is too steep, above 45°: the work shifts to the front shoulder."
+          },
+          {
+            "sq": "Bllokimi i bërrylave në krye: gjoksi humb tensionin.",
+            "en": "Locking the elbows at the top: the chest loses tension."
+          }
+        ],
+        "sources": [
+          "nasmdb",
+          "aceinc"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Shtangat japin lëvizje më të lirë se shufra dhe e detyrojnë çdo krah të punojë më vete. Stoppani e mbyll setin me një set të zgjatur: kur dështon me kapjen e kundërt, i kthen kyçet në kapje të zakonshme dhe vazhdon me presa të zakonshme të pjerrëta.",
+            "en": "Dumbbells allow a freer range of motion than a bar and force each arm to work on its own. Stoppani finishes with an extended set: at failure with the reverse grip he turns his wrists to an overhand grip and continues with standard incline presses."
+          },
+          "sources": [
+            "stochest"
+          ]
+        },
+        {
+          "who": "Roy, Arseneault dhe Sercia, 2021 · International Journal of Strength and Conditioning",
+          "text": {
+            "sq": "Me shufër në 30°, kapja e kundërt aktivizoi kokën e sipërme të gjoksit më shumë se kapja e gjerë e zakonshme në stol të sheshtë, por triceps-i u aktivizua më pak se me kapje të ngushtë të zakonshme. Studimi është me 13 burra dhe me shufër, jo me shtanga.",
+            "en": "With a bar at 30°, the reverse grip activated the upper chest head more than a wide overhand grip on a flat bench, but the triceps were less active than with a close overhand grip. The study used 13 men and a bar, not dumbbells."
+          },
+          "sources": [
+            "roy"
+          ]
+        },
+        {
+          "who": "NASM, ACE, Stoppani dhe Rodríguez-Ridao",
+          "text": {
+            "sq": "Burimet nuk bien dakord për këndin e stolit. NASM: 45° dhe mbi 45° është gabim. ACE (presa me shtanga): 45–60°. Stoppani (presa me kapje të kundërt me shtanga): 30–45°. Rodríguez-Ridao (presa me shufër): 30° për gjoksin e sipërm, mbi 45° më shumë shpatull.",
+            "en": "Sources disagree on the bench angle. NASM: 45°, and above 45° is a mistake. ACE (dumbbell press): 45–60°. Stoppani (reverse-grip dumbbell press): 30–45°. Rodríguez-Ridao (barbell press): 30° for the upper chest, above 45° more front shoulder."
+          },
+          "sources": [
+            "nasmdb",
+            "aceinc",
+            "stochest",
+            "rodriguez"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Kërko rojë të vëmendshme kur shtangat mbahen mbi trup ose lëvizin mbi fytyrë. Stoppani këshillon peshë të lehtë derisa të mësohesh me ushtrimin; këshilla e tij është për variantin me shufër.",
+            "en": "Ask for attentive spotting whenever the weights are held over your trunk or move over your face. Stoppani advises light weight until you get used to the exercise; his advice is for the barbell version."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "stochest",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        },
+        "aceinc": {
+          "label": "ACE, Incline Chest Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/25/incline-chest-press/",
+          "checked": "2026-11-15"
+        },
+        "nasmdb": {
+          "label": "NASM, Two-Arm Incline Dumbbell Chest Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/two-arm-incline-dumbbell-chest-press",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "roy": {
+          "label": "Roy, Arseneault dhe Sercia, 2021, International Journal of Strength and Conditioning",
+          "url": "https://journal.iusca.org/index.php/Journal/article/view/39",
+          "checked": "2026-11-15"
+        },
+        "rodriguez": {
+          "label": "Rodríguez-Ridao dhe kolegët, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7579505/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Incline Dumbbell Flye",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në stol me shpinën te jastëku dhe këmbët të sheshta në dysheme.",
+            "en": "Sit on the bench with your back against the pad and your feet flat on the floor."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë; koka, shpatullat, vithet dhe këmbët mbeten në kontakt.",
+            "en": "Draw your shoulders back and down; your head, shoulders, glutes and feet stay in contact."
+          },
+          {
+            "sq": "Mbaji shtangat me pëllëmbët nga njëra-tjetra, me krahët e shtrirë mbi gjoks dhe bërrylat pak të përkulur.",
+            "en": "Hold the dumbbells with your palms facing each other, arms extended above your chest and elbows slightly bent."
+          },
+          {
+            "sq": "Mbaji kyçet e duarve neutrale, pa i përkulur.",
+            "en": "Keep your wrists neutral, without bending them."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shtangat njëkohësisht në një hark të gjerë, deri sa të jenë në nivelin e shpatullave ose të gjoksit.",
+            "en": "Lower the dumbbells together in a wide arc until they are level with your shoulders or chest."
+          },
+          {
+            "sq": "Mbaji shtangat paralele dhe bërrylat pak të përkulur gjatë gjithë lëvizjes.",
+            "en": "Keep the dumbbells parallel and your elbows slightly bent throughout."
+          },
+          {
+            "sq": "Ngri shtangat në të njëjtin hark deri te pozicioni fillestar.",
+            "en": "Raise the dumbbells in the same arc back to the start."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Thith ajrin kur i ul shtangat ngadalë, nxirre kur i ngre.",
+            "en": "Breathe in as you lower the dumbbells slowly, breathe out as you raise them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "acefly"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat pak të përkulur",
+            "en": "Elbows slightly bent"
+          },
+          {
+            "sq": "Shtangat paralele",
+            "en": "Dumbbells parallel"
+          },
+          {
+            "sq": "Hark i gjerë dhe i ngadaltë",
+            "en": "Wide, slow arc"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Kyçet e duarve neutrale",
+            "en": "Wrists neutral"
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Kyçet e duarve të përkulur në vend që të mbahen neutralë.",
+            "en": "Bending your wrists instead of keeping them neutral."
+          },
+          {
+            "sq": "Ngritja e kokës, shpatullave ose vitheve nga stoli gjatë setit.",
+            "en": "Lifting your head, shoulders or glutes off the bench during the set."
+          },
+          {
+            "sq": "Shtangat që nuk mbahen paralele gjatë lëvizjes.",
+            "en": "Dumbbells that don't stay parallel during the movement."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Flyes të pjerrëta me shtanga e izolojnë gjoksin e sipërm, por në krye, kur duart takohen, tensioni humbet, sepse pjesa e fundit e lëvizjes është pothuajse horizontale. Kabllot e mbajnë tensionin e vazhdueshëm në atë pikë.",
+            "en": "Incline dumbbell flyes isolate the upper chest, but at the top, where your hands meet, the tension drops because the last part of the movement is almost horizontal. Cables keep the tension constant there."
+          },
+          "sources": [
+            "stochest"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Roja qëndron në pozicion të ndarë ose gjysmë gjunjëzim, me duart afër kyçeve të tua, pa i prekur përveç kur duhet.",
+            "en": "The spotter stands in a split or half-kneeling stance with their hands close to your wrists, without touching them unless needed."
+          },
+          {
+            "sq": "Kërko rojë të vëmendshme kur shtangat mbahen mbi trup ose lëvizin mbi fytyrë.",
+            "en": "Ask for attentive spotting whenever the weights are held over your trunk or move over your face."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "acefly",
+          "nsca",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "acefly": {
+          "label": "ACE, Lying Chest Fly",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/21/lying-chest-fly/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Incline Cable Flye",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendosi dorezat e kabllove në nivelin midis gjunjëve dhe ijëve dhe kapi fort.",
+            "en": "Set the cable handles level with the area between your knees and hips and grip them firmly."
+          },
+          {
+            "sq": "Forco barkun për ta mbajtur shpinën dhe mos e harko belin.",
+            "en": "Brace your abdominals to stabilise your spine and avoid arching your lower back."
+          },
+          {
+            "sq": "Qëndro në pozicion të ndarë, me një këmbë përpara, dhe mbaje trupin vertikal.",
+            "en": "Stand in a staggered stance, one foot forward, and keep your trunk vertical."
+          }
+        ],
+        "sources": [
+          "acecable"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Hapi krahët ngadalë poshtë dhe anash, me bërryla pak të përkulur, pa i çuar duart përtej nivelit të sqetullës.",
+            "en": "Open your arms slowly down and out to the sides, with your elbows slightly bent, without letting your hands go past armpit level."
+          },
+          {
+            "sq": "Nxirre frymën dhe shtrëngo gjoksin për t'i tërhequr krahët përpara, deri sa duart të takohen në nivelin e fytyrës ose më lart.",
+            "en": "Breathe out and squeeze your chest to pull your arms forward until your hands meet at face level or above."
+          },
+          {
+            "sq": "Ndalo një çast, pastaj ktheji krahët ngadalë dhe me kontroll.",
+            "en": "Pause briefly, then return your arms slowly and under control."
+          }
+        ],
+        "sources": [
+          "acecable"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Nxirre frymën kur e shtrëngon gjoksin dhe i tërheq krahët përpara.",
+            "en": "Breathe out as you squeeze your chest and pull your arms forward."
+          },
+          {
+            "sq": "Kthimi i dorezave 2 s (faza ekscentrike), tërheqja përpara 1 s (faza koncentrike): ngadalë kur muskuli zgjatet, më shpejt kur shkurtohet duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Return of the handles 2 s (eccentric phase), pull forward 1 s (concentric phase): slower while the muscle lengthens and faster while it shortens looks like the best combination for muscle growth."
+          }
+        ],
+        "sources": [
+          "acecable",
+          "wilk"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat pak të përkulur",
+            "en": "Elbows slightly bent"
+          },
+          {
+            "sq": "Trupi vertikal, mos u përkul",
+            "en": "Trunk vertical, don't lean forward"
+          },
+          {
+            "sq": "Duart jo përtej sqetullës",
+            "en": "Hands no lower than armpit level"
+          },
+          {
+            "sq": "Shtrëngo gjoksin, jo krahët",
+            "en": "Squeeze your chest, not your arms"
+          },
+          {
+            "sq": "Kyçet e duarve neutrale",
+            "en": "Wrists neutral"
+          }
+        ],
+        "sources": [
+          "acecable"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Pjerrja përpara me trupin, që ngarkon shpatullën dhe ndodh zakonisht kur pesha është shumë e rëndë.",
+            "en": "Leaning forward, which loads the shoulder and usually happens when the weight is too heavy."
+          },
+          {
+            "sq": "Harkim i belit gjatë ushtrimit.",
+            "en": "Arching your lower back during the exercise."
+          },
+          {
+            "sq": "Duart që shkojnë përtej nivelit të sqetullës gjatë hapjes së krahëve.",
+            "en": "Hands that go past armpit level as you open your arms."
+          }
+        ],
+        "sources": [
+          "acecable"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Kabllot e mbajnë tensionin e vazhdueshëm në krye, kur duart takohen, dhe punojnë fibrat e brendshme të gjoksit. Flyes të pjerrëta me kabllo janë zëvendësimi i drejtpërdrejtë i flyes me shtanga.",
+            "en": "Cables keep constant tension at the top, where your hands meet, and work the inner chest fibres. Incline cable flyes are the direct replacement for dumbbell flyes."
+          },
+          "sources": [
+            "stochest"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Për të mbrojtur shpatullat, ule peshën, mbaje trupin vertikal dhe ndiq udhëzimet; pjerrja përpara e rrit ngarkesën te shpatulla.",
+            "en": "To protect your shoulders, lower the weight, keep your trunk vertical and follow the instructions; leaning forward raises the load on the shoulder."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "acecable",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "acecable": {
+          "label": "ACE, Standing Incline Cable Flyes",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/163/standing-incline-cable-flyes/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Flye",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu në stol të sheshtë me shpinën te jastëku dhe këmbët të sheshta në dysheme.",
+            "en": "Lie on a flat bench with your back against the pad and your feet flat on the floor."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë; koka, shpatullat, vithet dhe këmbët mbeten në kontakt.",
+            "en": "Draw your shoulders back and down; your head, shoulders, glutes and feet stay in contact."
+          },
+          {
+            "sq": "Kur ke rojë, kërkoji t'i japë shtangat dhe t'i marrë prapë në fund të setit.",
+            "en": "When you have a spotter, ask them to hand you the dumbbells and take them again at the end of the set."
+          },
+          {
+            "sq": "Mbaji shtangat me pëllëmbët nga njëra-tjetra, krahët e shtrirë mbi gjoks dhe bërrylat pak të përkulur.",
+            "en": "Hold the dumbbells with your palms facing each other, arms extended above your chest and elbows slightly bent."
+          },
+          {
+            "sq": "Mbaji kyçet e duarve neutrale, pa i përkulur.",
+            "en": "Keep your wrists neutral, without bending them."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shtangat njëkohësisht në një hark të gjerë, deri sa të jenë në nivelin e shpatullave ose të gjoksit.",
+            "en": "Lower the dumbbells together in a wide arc until they are level with your shoulders or chest."
+          },
+          {
+            "sq": "Mbaji shtangat paralele dhe bërrylat pak të përkulur gjatë gjithë lëvizjes.",
+            "en": "Keep the dumbbells parallel and your elbows slightly bent throughout."
+          },
+          {
+            "sq": "Ngri shtangat në të njëjtin hark deri te pozicioni fillestar.",
+            "en": "Raise the dumbbells in the same arc back to the start."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Thith ajrin kur i ul shtangat ngadalë, nxirre kur i ngre.",
+            "en": "Breathe in as you lower the dumbbells slowly, breathe out as you raise them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "acefly"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat pak të përkulur",
+            "en": "Elbows slightly bent"
+          },
+          {
+            "sq": "Shtangat paralele",
+            "en": "Dumbbells parallel"
+          },
+          {
+            "sq": "Hark i gjerë dhe i ngadaltë",
+            "en": "Wide, slow arc"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Kyçet e duarve neutrale",
+            "en": "Wrists neutral"
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Kyçet e duarve të përkulur në vend që të mbahen neutralë.",
+            "en": "Bending your wrists instead of keeping them neutral."
+          },
+          {
+            "sq": "Ngritja e kokës, shpatullave ose vitheve nga stoli gjatë setit.",
+            "en": "Lifting your head, shoulders or glutes off the bench during the set."
+          },
+          {
+            "sq": "Shtangat që nuk mbahen paralele gjatë lëvizjes.",
+            "en": "Dumbbells that don't stay parallel during the movement."
+          }
+        ],
+        "sources": [
+          "acefly"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Flyes me shtanga në stol të sheshtë e izolojnë gjoksin dhe punojnë pjesët e jashtme të tij. Stoppani i përdor si pre-exhaust, para shtytjes me shufër.",
+            "en": "Dumbbell flyes on a flat bench isolate the chest and work its outer areas. Stoppani uses them as a pre-exhaust before the bench press."
+          },
+          "sources": [
+            "stochest"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Roja qëndron në pozicion të ndarë ose gjysmë gjunjëzim, me duart afër kyçeve të tua, pa i prekur përveç kur duhet.",
+            "en": "The spotter stands in a split or half-kneeling stance with their hands close to your wrists, without touching them unless needed."
+          },
+          {
+            "sq": "Kërko rojë të vëmendshme kur shtangat mbahen mbi trup ose lëvizin mbi fytyrë.",
+            "en": "Ask for attentive spotting whenever the weights are held over your trunk or move over your face."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "acefly",
+          "nsca",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "acefly": {
+          "label": "ACE, Lying Chest Fly",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/21/lying-chest-fly/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Cable Crossover",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendosi makarat e kabllove afërsisht në lartësinë e shpatullave.",
+            "en": "Set the cable pulleys at about shoulder height."
+          },
+          {
+            "sq": "Qëndro në mes të makinës, midis dy makarave, me këmbët sa gjerësia e ijëve dhe gjunjët pak të përkulur.",
+            "en": "Stand in the centre of the machine, midway between the two pulleys, with your feet hip-width apart and your knees slightly bent."
+          },
+          {
+            "sq": "Kap dorezat me pëllëmbët nga njëra-tjetra.",
+            "en": "Hold the handles with your palms facing each other."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë, forco barkun dhe mbaje gjoksin përpara me një pjerrje të lehtë.",
+            "en": "Draw your shoulders back and down, brace your core and keep your chest proud with a slight forward lean."
+          }
+        ],
+        "sources": [
+          "nasmcross",
+          "stochest"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Tërhiq të dyja dorezat përpara në një hark të madh dhe kryqëzoji para gjoksit.",
+            "en": "Pull both handles forward in a large arc and cross them in front of your chest."
+          },
+          {
+            "sq": "Drejtoji me bërryla dhe shtrëngo gjoksin në pikën e fundit.",
+            "en": "Lead with your elbows and squeeze your chest at the end."
+          },
+          {
+            "sq": "Ktheji dorezat ngadalë dhe me kontroll, me gjoksin nën tension.",
+            "en": "Return the handles slowly and under control, keeping tension in your chest."
+          },
+          {
+            "sq": "Mos e lër pesën e kabllos t'i tërheqë krahët mbrapa shumë shpejt.",
+            "en": "Don't let the weight stack pull your arms back too quickly."
+          }
+        ],
+        "sources": [
+          "nasmcross"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Kthimi i dorezave 2 s (faza ekscentrike), tërheqja përpara 1 s (faza koncentrike): ngadalë kur muskuli zgjatet, më shpejt kur shkurtohet duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Return of the handles 2 s (eccentric phase), pull forward 1 s (concentric phase): slower while the muscle lengthens and faster while it shortens looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and pressing is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Gjoksi përpara, shpatullat pas",
+            "en": "Chest proud, shoulders back"
+          },
+          {
+            "sq": "Drejto me bërryla",
+            "en": "Lead with your elbows"
+          },
+          {
+            "sq": "Hark i madh para gjoksit",
+            "en": "Large arc in front of your chest"
+          },
+          {
+            "sq": "Shtrëngo gjoksin në fund",
+            "en": "Squeeze your chest at the end"
+          },
+          {
+            "sq": "Kthim i ngadaltë",
+            "en": "Slow return"
+          }
+        ],
+        "sources": [
+          "nasmcross"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Peshë shumë e rëndë dhe vrull në vend të tensionit të kontrolluar.",
+            "en": "Too much weight, with momentum instead of controlled tension."
+          },
+          {
+            "sq": "Makarat shumë poshtë: ndryshon këndi dhe gjoksi aktivizohet më pak.",
+            "en": "Pulleys set too low: the angle changes and the chest is less active."
+          },
+          {
+            "sq": "Pa shtrirje të plotë në fillim, nga frika e humbjes së ekuilibrit.",
+            "en": "No full stretch at the start, out of fear of losing your balance."
+          },
+          {
+            "sq": "Shpatullat të rrotulluara përpara ose humbja e qëndrimit të trupit.",
+            "en": "Rounding your shoulders forward or losing your posture."
+          },
+          {
+            "sq": "Duart shumë afër njëra-tjetrës në pikën e fundit: mund ta ngarkojnë nyjen e shpatullës.",
+            "en": "Bringing your hands too close together at the end: it can strain the shoulder joint."
+          }
+        ],
+        "sources": [
+          "nasmcross"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Me makarat në mes të kolonës, ushtrimi godet më shumë pjesën e mesme të gjoksit. Me makarat poshtë dhe dorezat që ngrihen lart, godet gjoksin e sipërm. Duke ndërruar krahët, krahu kalon vijën e mesit drejt shpatullës së kundërt dhe punon më shumë fibrat e brendshme.",
+            "en": "With the pulleys midway up the column, the exercise hits more of the middle chest. With the pulleys low and the handles pulled upward, it hits the upper chest. Alternating arms lets your arm cross the midline towards the opposite shoulder and works the inner fibres more."
+          },
+          "sources": [
+            "stochest"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mos i afro duart shumë në pikën e fundit: mund ta ngarkojnë nyjen e shpatullës.",
+            "en": "Don't bring your hands too close together at the end: it can strain the shoulder joint."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "nasmcross",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasmcross": {
+          "label": "NASM, Cable Crossover",
+          "url": "https://www.nasm.org/resource-center/exercise-library/cable-crossover",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Close-Grip Bench Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu në stol të sheshtë me shpinën fort te jastëku dhe këmbët të sheshta në dysheme.",
+            "en": "Lie on a flat bench with your back firmly against the pad and your feet flat on the floor."
+          },
+          {
+            "sq": "Kap shufrën rreth gjerësisë së shpatullave ose pak më ngushtë, me duart më afër se te presa e zakonshme.",
+            "en": "Grip the bar about shoulder width or slightly narrower, with your hands closer together than for a standard bench press."
+          },
+          {
+            "sq": "Mbaji bërrylat të drejtuar nga këmbët.",
+            "en": "Point your elbows towards your feet."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat pas dhe mbaje shpinën neutrale.",
+            "en": "Brace your core, draw your shoulder blades back and keep a neutral spine."
+          }
+        ],
+        "sources": [
+          "nasmclose",
+          "aceclose"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule shufrën me kontroll drejt gjoksit, me bërrylat afër brinjëve.",
+            "en": "Lower the bar with control towards your chest, keeping your elbows close to your ribs."
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks, që muskujt të mbeten nën tension.",
+            "en": "Stop just above your chest so the muscles stay under tension."
+          },
+          {
+            "sq": "Shtyj shufrën lart, duke shtyrë këmbët në dysheme dhe ijët në stol.",
+            "en": "Press the bar up, pushing your feet into the floor and your hips into the bench."
+          },
+          {
+            "sq": "Shtrij krahët pa i bllokuar bërrylat dhe përqendrohu te triceps-i.",
+            "en": "Extend your arms without locking your elbows and focus on your triceps."
+          }
+        ],
+        "sources": [
+          "nasmclose",
+          "aceclose"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster press looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Merr frymë duke zgjeruar barkun kur e ul shufrën, nxirre kur e shtyn.",
+            "en": "Breathe in, expanding your belly, as you lower the bar; breathe out as you press."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "page"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Duart rreth gjerësisë së shpatullave",
+            "en": "Hands about shoulder width"
+          },
+          {
+            "sq": "Bërrylat afër brinjëve",
+            "en": "Elbows close to your ribs"
+          },
+          {
+            "sq": "Shtyj këmbët në dysheme",
+            "en": "Drive your feet into the floor"
+          },
+          {
+            "sq": "Ndalo pak mbi gjoks",
+            "en": "Stop just above your chest"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          }
+        ],
+        "sources": [
+          "nasmclose",
+          "aceclose"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Kapje shumë e ngushtë: ngarkon shpatullën dhe kyçet e duarve.",
+            "en": "A grip that is too narrow: it strains your shoulders and wrists."
+          },
+          {
+            "sq": "Bërrylat që hapen larg trupit në vend që të mbahen afër brinjëve.",
+            "en": "Elbows that flare away from your body instead of staying close to your ribs."
+          },
+          {
+            "sq": "Ulje shumë e shpejtë e shufrës.",
+            "en": "Lowering the bar too quickly."
+          },
+          {
+            "sq": "Harkim i tepërt i belit për të ngritur më shumë.",
+            "en": "Arching the lower back too much to lift more."
+          },
+          {
+            "sq": "Bllokimi i plotë i bërrylave në krye: muskujt humbin tensionin.",
+            "en": "Locking the elbows fully at the top: the muscles lose tension."
+          }
+        ],
+        "sources": [
+          "nasmclose",
+          "aceclose",
+          "nasm"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size",
+          "text": {
+            "sq": "Kapja më e ngushtë e shtytjes e çon më shumë punën te pjesa e brendshme e gjoksit. Kur synon vetëm triceps-in, kjo është një ushtrim i mirë për krahët.",
+            "en": "A closer grip on pressing movements shifts more work to the inner chest. If you are targeting only the triceps, it is also a good arm exercise."
+          },
+          "sources": [
+            "stochest"
+          ]
+        },
+        {
+          "who": "NASM, Close Grip Bench Press",
+          "text": {
+            "sq": "NASM e përshkruan këtë variant si ushtrim për triceps-in dhe forcën e shtytjes që \"reduces chest involvement\" (e ul pjesëmarrjen e gjoksit). Stoppani thotë se kapja më e ngushtë e çon më shumë punë te pjesa e brendshme e gjoksit.",
+            "en": "NASM describes this variant as a triceps and pressing-strength exercise that \"reduces chest involvement\". Stoppani says a closer grip shifts more work to the inner chest."
+          },
+          "sources": [
+            "nasmclose"
+          ]
+        },
+        {
+          "who": "Saeterbakken dhe kolegët, 2021 · International Journal of Environmental Research and Public Health",
+          "text": {
+            "sq": "Me kapje të gjerë triceps-i aktivizohet më pak se me kapje të mesme ose të ngushtë. Me kapje të ngushtë ngre më pak peshë në 6 përsëritje maksimale se me kapjet e tjera, te burrat e stërvitur dhe të papërvojë.",
+            "en": "With a wide grip the triceps are less active than with a medium or narrow grip. With a narrow grip you lift less in a six-rep max than with the other grips, in both trained and novice men."
+          },
+          "sources": [
+            "saeter"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Me pesha të rënda, kërko një rojë dhe përdor raftin me mbajtëse sigurie: NSCA kërkon rojë të vëmendshme, bashkë me pajisje si rafti, kur pesha mbahet mbi trup ose lëviz mbi fytyrë.",
+            "en": "With heavy loads, ask for a spotter and use a rack with safety catches: the NSCA requires attentive spotting, together with equipment such as power racks, whenever a weight is held over the trunk or moves over the face."
+          },
+          {
+            "sq": "Mos e ngushto kapjen tepër: kapja shumë e ngushtë e rrit rrezikun për shpatullën dhe ngarkon kyçet e duarve.",
+            "en": "Don't narrow your grip too much: a very narrow grip raises the risk to your shoulders and strains your wrists."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë ushtrimit: ndalo ushtrimin dhe vendos nëse vazhdon stërvitja.",
+            "en": "Sharp or sudden pain during the exercise: stop the exercise and decide whether to continue training."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "nasmclose",
+          "nasmred"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasmclose": {
+          "label": "NASM, Close Grip Bench Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/close-grip-bench-press",
+          "checked": "2026-11-15"
+        },
+        "aceclose": {
+          "label": "ACE, Close-grip Bench Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/311/close-grip-bench-press/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "page": {
+          "label": "Page dhe Ellenbecker, 2020, Strength Band Training (Human Kinetics)",
+          "url": "https://us.humankinetics.com/blogs/excerpt/proper-posture-and-breathing-for-your-workout",
+          "checked": "2026-11-15"
+        },
+        "nasm": {
+          "label": "NASM, Barbell Bench Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bench-press",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasmred": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stochest": {
+          "label": "Jim Stoppani, PhD, Master Chest Workouts",
+          "url": "https://www.jimstoppani.com/training/chest-workouts",
+          "checked": "2026-11-15"
+        },
+        "saeter": {
+          "label": "Saeterbakken dhe kolegët, 2021, International Journal of Environmental Research and Public Health",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8296276/",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}

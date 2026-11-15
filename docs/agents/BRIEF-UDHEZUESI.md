@@ -58,6 +58,10 @@ Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-gui
 - PMC dhe PubMed shpesh kthejnë reCAPTCHA. Abstrakti dhe shpesh teksti i plotë dalin nga Europe PMC: `curl -s "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:<doi>&resultType=core&format=json"` (abstrakti) dhe `.../rest/<PMCID>/fullTextXML` (teksti i plotë, kur është i hapur).
 - WebFetch kthen përmbledhje, jo tekst fjalë për fjalë: fjalia që shkruan te skedari i provave duhet të jetë nga teksti i burimit (Europe PMC, PDF), ose të shënohet si përmbledhje.
 
+## Skedarët e përkohshëm
+
+Skriptet dhe kopjet e faqeve shkojnë te `/tmp/<grupi>/` (p.sh. `/tmp/sts-legs/`), jo te një dosje e përbashkët: agjentët paralelë mbishkruajnë njëri-tjetrin.
+
 ## Kur ngec
 
 - Burimi nuk hapet: provo një herë me WebSearch për të njëjtin dokument; pastaj shkruaje te raporti dhe vazhdo pa të.
