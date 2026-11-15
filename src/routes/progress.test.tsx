@@ -112,6 +112,10 @@ describe('Progresi', () => {
     const user = userEvent.setup()
     await renderAt('/progresi/fotot')
     const section = await screen.findByRole('region', { name: 'Fotot e progresit' })
+    // F8: titulli del një herë, te kreu; seksioni nuk e përsërit si titull.
+    expect(screen.getAllByText('Fotot e progresit')).toHaveLength(1)
+    expect(screen.getByRole('heading', { level: 1, name: 'Fotot e progresit' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: 'Fotot e progresit' })).not.toBeInTheDocument()
     const input = within(section).getByText('Para').closest('label')!.querySelector('input')!
     await user.upload(input, new File(['x'], 'foto.jpg', { type: 'image/jpeg' }))
     const photo = await within(section).findByRole('button', { name: /^Para, / })

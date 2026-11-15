@@ -96,12 +96,7 @@ function PhotoSection() {
   if (!timeline) return null
   const latest = Object.fromEntries(POSES.map((pose) => [pose, timeline.find((day) => day.photos[pose])?.photos[pose]])) as Partial<Record<Pose, PhotoRef>>
   return (
-    <section aria-labelledby="photos-title" className="flex flex-col gap-2">
-      <div className="flex min-h-11 items-center justify-between gap-3">
-        <h2 id="photos-title" className="type-label text-muted-foreground">
-          {t('photos.title')}
-        </h2>
-      </div>
+    <section aria-label={t('photos.title')} className="flex flex-col gap-2">
       <div className="grid grid-cols-3 gap-2">
         {POSES.map((pose) => {
           const photo = latest[pose]
