@@ -18,7 +18,7 @@ Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-gui
 
 | Fusha | Çfarë ka | Sa |
 |---|---|---|
-| `tempo` | Sekondat poshtë dhe lart. Pa burim të posaçëm për ushtrimin: 2 poshtë, 1 lart (Wilk, Zając dhe Tufano 2021; Korakakis, Schoenfeld dhe kolegët 2023, si te modeli). Mbajtjet (plank): `null` | – |
+| `tempo` | `downS` = faza ekscentrike (ulja e kontrolluar e peshës, muskuli zgjatet), `upS` = faza koncentrike, pavarësisht drejtimit të shufrës. Pa burim të posaçëm: 2 dhe 1. Burimet: Wilk, Zając dhe Tufano 2021, "Key Points" te teksti i plotë (https://europepmc.org/articles/PMC8310485: kombinimi i uljes më të ngadaltë me ngritjen më të shpejtë duket më i miri për muskulin; abstrakti nuk e thotë), dhe Korakakis, Schoenfeld dhe kolegët 2023 (2–8 s për përsëritje). Mbajtjet (plank): `null`. `breathing` e thotë drejtimin me fjalë ("Tërhiqe për 1 s, lëshoje për 2 s") | – |
 | `setup` | Pajisja, pozicioni, kapja | 2–6 |
 | `steps` | Lëvizja hap pas hapi | 2–6 |
 | `breathing` | Tempo me fjalë dhe fryma | 1–4 |
@@ -46,6 +46,15 @@ Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-gui
 - Anglisht: anglishte britanike (favour, programme), përkthim besnik i shqipes, jo tekst tjetër.
 - Shkruaj me fjalët e tua; mos kopjo fjali nga burimi. Citatet shkojnë vetëm te skedari i provave.
 - Rreshti nuk e kalon 280 shenja; sinjali 40.
+
+## Mjetet
+
+- Jim Stoppani: artikujt e tij te jimstoppani.com ("Written By Jim Stoppani, PhD") hapen dhe janë burimi i tij i parë; titulli vërtetohet te Human Kinetics (Encyclopedia of Muscle & Strength). Kur një video e tij duhet, shkruaje te raporti: orkestruesi e lexon përshkrimin me shfletues.
+- Emrat e autorëve si te burimi: "Androulakis Korakakis dhe kolegët, 2023" (autori i parë), jo "Korakakis, Schoenfeld".
+- Mayo Clinic pranohet si organizatë mjekësore.
+- YouTube nuk hapet me WebFetch. Videot janë te `src/program/exercise-videos.ts`, të kontrolluara me shfletues; mos u mbështet te përmbajtja e një videoje që nuk e ke lexuar.
+- PMC dhe PubMed shpesh kthejnë reCAPTCHA. Abstrakti dhe shpesh teksti i plotë dalin nga Europe PMC: `curl -s "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:<doi>&resultType=core&format=json"` (abstrakti) dhe `.../rest/<PMCID>/fullTextXML` (teksti i plotë, kur është i hapur).
+- WebFetch kthen përmbledhje, jo tekst fjalë për fjalë: fjalia që shkruan te skedari i provave duhet të jetë nga teksti i burimit (Europe PMC, PDF), ose të shënohet si përmbledhje.
 
 ## Kur ngec
 

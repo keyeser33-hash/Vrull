@@ -1,0 +1,1288 @@
+{
+  "group": "sts-triceps",
+  "guides": [
+    {
+      "exercise": "Triceps Pressdown",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Stai përballë kabllos me tek lart, mbi nivelin e kokës, dhe kap shufrën ose litarin me kapje të plotë.",
+            "en": "Stand facing the cable with the attachment above head height and take the bar or rope with a full grip."
+          },
+          {
+            "sq": "Këmbët sa gjerësia e ijëve ose njëra pak përpara; gjunjët pak të përkulur.",
+            "en": "Feet hip-width apart or one slightly forward; knees slightly bent."
+          },
+          {
+            "sq": "Forco barkun dhe mbaje trupin vertikal, me harkun natyral të belit.",
+            "en": "Brace your abs and keep your torso upright, with the natural arch of your lower back."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë, ngrije kraharorin dhe mbaji kështu gjatë gjithë setit.",
+            "en": "Draw your shoulders back and down, lift your chest and hold that position for the whole set."
+          },
+          {
+            "sq": "Nis me bërrylat në mes të trupit, krahët e sipërm ngjitur anash dhe kyçet në vijë me parakrahët.",
+            "en": "Start with your elbows at mid-torso, upper arms against your sides and wrists in line with your forearms."
+          }
+        ],
+        "sources": [
+          "ace_pushdown",
+          "stoppani_rope"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe shtyj ngadalë dorezën drejt dyshemesë duke e shtrirë bërrylin; trupi, shpatullat dhe krahët e sipërm mbeten në vend.",
+            "en": "Breathe out and slowly press the handle towards the floor by extending your elbows; your torso, shoulders and upper arms stay still."
+          },
+          {
+            "sq": "Shtrije krahun plotësisht pa i bllokuar bërrylat dhe ndalo pak.",
+            "en": "Extend fully without locking your elbows and pause briefly."
+          },
+          {
+            "sq": "Me litar, ndaji skajet në fund për kontraktim më të fortë dhe shtrëngo tricepsin.",
+            "en": "With a rope, spread the ends apart at the bottom for a stronger contraction and squeeze your triceps."
+          },
+          {
+            "sq": "Lëre bërrylin të përkulet ngadalë dhe ngrije dorezën derisa bërrylat të fillojnë të shkojnë përpara mesit të trupit, rreth gjoksit të sipërm; pastaj përsërit.",
+            "en": "Let your elbows bend slowly and bring the handle up until they begin to drift forward of your mid-line, around upper-chest height; then repeat."
+          }
+        ],
+        "sources": [
+          "ace_pushdown",
+          "stoppani_rope"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Shtyj poshtë për rreth 1 s dhe ktheje lart për rreth 2 s, pa e lëshuar peshën.",
+            "en": "Press down for about 1 s and return up for about 2 s, without dropping the weight."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ndërsa shtyn poshtë dhe merre ndërsa e kthen lart.",
+            "en": "Breathe out as you press down and breathe in as you return up."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_pushdown"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat ngjitur anash",
+            "en": "Elbows tight to your sides"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Shtrije plotësisht, mos blloko",
+            "en": "Extend fully, don't lock out"
+          },
+          {
+            "sq": "Vetëm parakrahët lëvizin",
+            "en": "Only your forearms move"
+          },
+          {
+            "sq": "Ktheje ngadalë lart",
+            "en": "Return slowly"
+          }
+        ],
+        "sources": [
+          "ace_pushdown",
+          "stoppani_rope"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërrylat shkojnë përpara: hyn në punë shpina e gjerë (lats) dhe tricepsi punon më pak.",
+            "en": "Elbows drift forward: the lats take over and the triceps work less."
+          },
+          {
+            "sq": "Trupi lëkundet për të ndihmuar peshën: te pressdown-et vrulli përdoret lehtë dhe ul punën e tricepsit.",
+            "en": "Swinging your body to help the weight: momentum is easy to use on pressdowns and it lowers the work of the triceps."
+          },
+          {
+            "sq": "Shpatullat dhe krahët e sipërm lëvizin bashkë me dorezën: lëvizja duhet të vijë vetëm nga bërrylat.",
+            "en": "Shoulders and upper arms move with the handle: the movement should come from the elbows alone."
+          },
+          {
+            "sq": "Kyçet përkulen: mbaji në vijë me parakrahët.",
+            "en": "Wrists bend: keep them in line with your forearms."
+          },
+          {
+            "sq": "Shtrirje e papërfunduar, ose bllokim i fortë i bërrylave në fund: shtrije plotësisht pa i bllokuar.",
+            "en": "Stopping short, or locking your elbows hard at the bottom: extend fully without locking out."
+          }
+        ],
+        "sources": [
+          "ace_pushdown",
+          "ace_emg"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Encyclopedia of Muscle & Strength)",
+          "text": {
+            "sq": "Me litar, në fund rrotullo parakrahët që pëllëmbët të shohin prapa dhe shtyj poshtë me gishtat e mëdhenj: kjo e zhvendos theksin drejt kokës anësore të tricepsit, krahasuar me parakrahët neutralë.",
+            "en": "With a rope, rotate your forearms at the bottom so your palms face back and press down with your thumbs: this shifts the emphasis towards the lateral head of the triceps, compared with neutral forearms."
+          },
+          "sources": [
+            "stoppani_rope"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët)",
+          "text": {
+            "sq": "Në një studim me 15 gra, pressdown-i me litar dha aktivitet të tricepsit 74% të triangle push-up-it, kundrejt 67% me shufër. Autorët e lidhën rezultatin e pushdown-eve pjesërisht me lehtësinë për të përdorur vrullin.",
+            "en": "In a study of 15 women, the rope pressdown gave triceps activity of 74% of the triangle push-up, versus 67% with a bar. The authors linked the pushdown results partly to how easy it is to use momentum."
+          },
+          "sources": [
+            "ace_emg"
+          ]
+        },
+        {
+          "who": "Kholinne dhe kolegët, 2018 · Acta Orthopaedica et Traumatologica Turcica",
+          "text": {
+            "sq": "Me krahun pranë trupit (shpatulla në 0°), koka e gjatë e tricepsit jep forcën dhe aktivizimin më të lartë; kur krahu ngrihet në 90°, 135° ose 180°, forcën më të lartë e jep koka mediale (10 të rritur, model OpenSim dhe EMG).",
+            "en": "With your arm by your side (shoulder at 0°) the long head of the triceps gives the highest force and activation; with the arm raised to 90°, 135° or 180° the medial head gives the highest force (10 adults, OpenSim model and EMG)."
+          },
+          "sources": [
+            "kholinne"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton në krah ose dorë, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or pain radiating into your arm or hand, stop and seek a medical assessment."
+          },
+          {
+            "sq": "Nëse bërrylat nuk qëndrojnë në vend, ule peshën: forma e pastër vlen më shumë se pesha.",
+            "en": "If your elbows won't stay in place, lower the weight: clean form matters more than load."
+          }
+        ],
+        "sources": [
+          "nasm_red",
+          "acsm_road",
+          "ace_pushdown"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_pushdown": {
+          "label": "ACE, Triceps Pushdowns",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/185/triceps-pushdowns/",
+          "checked": "2026-11-15"
+        },
+        "ace_emg": {
+          "label": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët), Best Triceps Exercises",
+          "url": "https://www.acefitness.org/certifiednewsarticle/3008/ace-study-identifies-best-triceps-exercises/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_rope": {
+          "label": "Jim Stoppani, PhD, Encyclopedia of Muscle & Strength (Human Kinetics), Rope Triceps Pressdown",
+          "url": "https://us.humankinetics.com/blogs/excerpt/rope-triceps-pressdown-exercise",
+          "checked": "2026-11-15"
+        },
+        "kholinne": {
+          "label": "Kholinne dhe kolegët, 2018, Acta Orthopaedica et Traumatologica Turcica",
+          "url": "https://europepmc.org/article/MED/29503079",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Lying Triceps Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Merr një shufër EZ: kapja pak e pronuar e lehtëson kyçin dhe e zhvendos theksin drejt kokës anësore.",
+            "en": "Take an EZ bar: the slightly pronated grip eases the wrist and shifts the emphasis towards the lateral head."
+          },
+          {
+            "sq": "Shtrihu në një stol të sheshtë me këmbët fort në dysheme.",
+            "en": "Lie on a flat bench with your feet firmly on the floor."
+          },
+          {
+            "sq": "Shtyj shufrën nga gjoksi derisa bërrylat të shtrihen dhe shufra të jetë drejt mbi fytyrë; kyçet neutrale.",
+            "en": "Press the bar off your chest until your elbows are extended and the bar is directly above your face; wrists neutral."
+          },
+          {
+            "sq": "Krahët e sipërm vertikalë dhe bërrylat afërsisht sa gjerësia e shpatullave.",
+            "en": "Upper arms vertical and elbows about shoulder-width apart."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "stoppani_lying"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Merr frymë dhe përkul ngadalë bërrylat, duke e ulur shufrën drejt ballit ose pak pas kokës; krahët e sipërm mbeten vertikalë.",
+            "en": "Breathe in and slowly bend your elbows, lowering the bar towards your forehead or slightly behind your head; your upper arms stay vertical."
+          },
+          {
+            "sq": "Ndalo kur shufra është pak mbi ballë, ose kur krahët e sipërm fillojnë të shkojnë mbrapa.",
+            "en": "Stop when the bar is just above your forehead, or when your upper arms begin to drift backward."
+          },
+          {
+            "sq": "Nxirre ajrin dhe shtrije bërrylat ngadalë deri te pozicioni fillestar.",
+            "en": "Breathe out and slowly extend your elbows back to the start."
+          }
+        ],
+        "sources": [
+          "ace_lying"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen bëje ngadalë dhe shtyj lart pak më shpejt.",
+            "en": "Down 2 s, up 1 s: lower slowly and press up a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Merr frymë kur e ul shufrën dhe nxirre kur e shtrin lart.",
+            "en": "Breathe in as you lower the bar and out as you extend."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lying"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm vertikalë",
+            "en": "Upper arms vertical"
+          },
+          {
+            "sq": "Bërrylat sa shpatullat",
+            "en": "Elbows shoulder-width apart"
+          },
+          {
+            "sq": "Ule ngadalë drejt ballit",
+            "en": "Lower slowly towards your forehead"
+          },
+          {
+            "sq": "Kyçet neutrale",
+            "en": "Wrists neutral"
+          },
+          {
+            "sq": "Shtrije plotësisht lart",
+            "en": "Extend fully at the top"
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "stoppani_lying"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm shkojnë mbrapa kur ul shufrën: lëvizja nuk mbetet më vetëm te bërrylat; ndalo uljen kur ndodh.",
+            "en": "Upper arms drift back as you lower the bar: the movement no longer comes from the elbows alone; stop the descent when this happens."
+          },
+          {
+            "sq": "Kyçet përkulen: ngarkesa kalon te kyçi; mbaji neutrale.",
+            "en": "Wrists bend: the load moves to the wrist; keep them neutral."
+          },
+          {
+            "sq": "Bërrylat hapen shumë nga njëri-tjetri: mbaji afërsisht sa gjerësia e shpatullave.",
+            "en": "Elbows flare wide: keep them about shoulder-width apart."
+          },
+          {
+            "sq": "Ulje ose ngritje e shpejtë, me vrull: lëvizja bëhet ngadalë dhe me kontroll në të dyja drejtimet.",
+            "en": "Fast or jerky lowering and lifting: move slowly and with control in both directions."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "stoppani_lying"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (kanali Jim Stoppani, PhD)",
+          "text": {
+            "sq": "Për të theksuar kokën e gjatë, shtrije krahët pak më mbrapa që shufra të lëvizë mbi kokë: kështu tensioni mbetet më i njëtrajtshëm gjatë lëvizjes dhe koka e gjatë zgjatet më shumë.",
+            "en": "To emphasise the long head, extend your arms a little further back so the bar travels above your head: tension stays more even through the range and the long head is stretched more."
+          },
+          "sources": [
+            "stoppani_lying"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët)",
+          "text": {
+            "sq": "Në një studim me 15 gra, lying extension me shufër dha aktivitet të tricepsit 62% të triangle push-up-it, kundrejt 76% për extension mbi kokë dhe 74% për pressdown me litar.",
+            "en": "In a study of 15 women, the lying barbell extension gave triceps activity of 62% of the triangle push-up, versus 76% for the overhead extension and 74% for the rope pressdown."
+          },
+          "sources": [
+            "ace_emg"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e mban muskulin në gjatësi të madhe dhe një tempo 2–8 s për përsëritje. Këtu: zbrit deri sa tricepsi të zgjatet mirë, brenda kufirit që e mban formën të pastër.",
+            "en": "For muscle growth, favour a range that keeps the muscle at long lengths and a rep tempo of 2–8 s. Here: lower until the triceps is well stretched, within the limit that keeps your form clean."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Shufra lëviz mbi fytyrë: me pesha të rënda kërko rojë; NSCA kërkon rojë të vëmendshme kur pesha lëviz mbi kokë ose fytyrë.",
+            "en": "The bar moves over your face: with heavy loads ask for a spotter; the NSCA requires attentive spotting whenever a weight moves over the head or face."
+          },
+          {
+            "sq": "Mos e lër uljen të vazhdojë kur krahët e sipërm fillojnë të shkojnë mbrapa.",
+            "en": "Do not let the descent continue once your upper arms start drifting back."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "ace_lying",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_lying": {
+          "label": "ACE, Lying Barbell Triceps Extensions",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/36/lying-barbell-triceps-extensions/",
+          "checked": "2026-11-15"
+        },
+        "ace_emg": {
+          "label": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët), Best Triceps Exercises",
+          "url": "https://www.acefitness.org/certifiednewsarticle/3008/ace-study-identifies-best-triceps-exercises/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_lying": {
+          "label": "Jim Stoppani, PhD, How To Do The Lying Triceps Extension Exercise (kanali Jim Stoppani, PhD)",
+          "url": "https://www.youtube.com/watch?v=_b0IsrjMUDQ",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Cable Lying Triceps Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu në një stol të sheshtë me këmbët fort në dysheme dhe kap shufrën ose litarin me kapje të plotë.",
+            "en": "Lie on a flat bench with your feet firmly on the floor and take the bar or rope with a full grip."
+          },
+          {
+            "sq": "Nis me bërrylat të shtrirë dhe dorezën mbi fytyrë; kyçet neutrale.",
+            "en": "Start with your elbows extended and the handle above your face; wrists neutral."
+          },
+          {
+            "sq": "Krahët e sipërm vertikalë dhe bërrylat afërsisht sa gjerësia e shpatullave.",
+            "en": "Upper arms vertical and elbows about shoulder-width apart."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "ace_kovar"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Merr frymë dhe përkul ngadalë bërrylat, duke e ulur dorezën drejt ballit; krahët e sipërm mbeten vertikalë.",
+            "en": "Breathe in and slowly bend your elbows, lowering the handle towards your forehead; your upper arms stay vertical."
+          },
+          {
+            "sq": "Ndalo kur dorezja është pak mbi ballë, ose kur krahët e sipërm fillojnë të shkojnë mbrapa.",
+            "en": "Stop when the handle is just above your forehead, or when your upper arms begin to drift backward."
+          },
+          {
+            "sq": "Nxirre ajrin dhe shtrije bërrylat ngadalë deri te pozicioni fillestar, pa e lëshuar tensionin e kabllos.",
+            "en": "Breathe out and slowly extend your elbows back to the start, without letting the cable's tension go."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "ace_kovar"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen bëje ngadalë dhe shtyj lart pak më shpejt.",
+            "en": "Down 2 s, up 1 s: lower slowly and press up a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Merr frymë kur e ul dorezën dhe nxirre kur e shtrin lart.",
+            "en": "Breathe in as you lower the handle and out as you extend."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lying"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm vertikalë",
+            "en": "Upper arms vertical"
+          },
+          {
+            "sq": "Mbaje kabllon të tendosur",
+            "en": "Keep the cable taut"
+          },
+          {
+            "sq": "Ule ngadalë drejt ballit",
+            "en": "Lower slowly towards your forehead"
+          },
+          {
+            "sq": "Kyçet neutrale",
+            "en": "Wrists neutral"
+          },
+          {
+            "sq": "Shtrije plotësisht lart",
+            "en": "Extend fully at the top"
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "ace_kovar"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm shkojnë mbrapa kur ul dorezën: lëvizja nuk mbetet më vetëm te bërrylat; ndalo uljen kur ndodh.",
+            "en": "Upper arms drift back as you lower the handle: the movement no longer comes from the elbows alone; stop the descent when this happens."
+          },
+          {
+            "sq": "Kyçet përkulen: ngarkesa kalon te kyçi; mbaji neutrale.",
+            "en": "Wrists bend: the load moves to the wrist; keep them neutral."
+          },
+          {
+            "sq": "Tensioni i kabllos humbet gjatë kthimit: mbaje kabllon të tendosur gjatë gjithë përsëritjes.",
+            "en": "The cable loses tension on the return: keep it taut through the whole rep."
+          },
+          {
+            "sq": "Ulje ose ngritje e shpejtë, me vrull: lëvizja bëhet ngadalë dhe me kontroll në të dyja drejtimet.",
+            "en": "Fast or jerky lowering and lifting: move slowly and with control in both directions."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "ace_kovar"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (kanali Jim Stoppani, PhD)",
+          "text": {
+            "sq": "Në lying extension, për të theksuar kokën e gjatë shtrije krahët pak më mbrapa që pesha të lëvizë mbi kokë: tensioni mbetet më i njëtrajtshëm dhe koka e gjatë zgjatet më shumë. Videoja e tij tregon variantin me shufër EZ.",
+            "en": "In the lying extension, to emphasise the long head extend your arms a little further back so the weight travels above your head: tension stays more even and the long head is stretched more. His video shows the EZ-bar version."
+          },
+          "sources": [
+            "stoppani_lying"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e mban muskulin në gjatësi të madhe dhe një tempo 2–8 s për përsëritje. Këtu: zbrit deri sa tricepsi të zgjatet mirë, brenda kufirit që e mban formën të pastër.",
+            "en": "For muscle growth, favour a range that keeps the muscle at long lengths and a rep tempo of 2–8 s. Here: lower until the triceps is well stretched, within the limit that keeps your form clean."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mos e lër uljen të vazhdojë kur krahët e sipërm fillojnë të shkojnë mbrapa.",
+            "en": "Do not let the descent continue once your upper arms start drifting back."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          }
+        ],
+        "sources": [
+          "ace_lying",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_lying": {
+          "label": "ACE, Lying Barbell Triceps Extensions",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/36/lying-barbell-triceps-extensions/",
+          "checked": "2026-11-15"
+        },
+        "ace_kovar": {
+          "label": "ACE, 6 Exercises for Stronger Triceps (Elizabeth Kovar, MA)",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/6112/6-exercises-for-stronger-triceps/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_lying": {
+          "label": "Jim Stoppani, PhD, How To Do The Lying Triceps Extension Exercise (kanali Jim Stoppani, PhD)",
+          "url": "https://www.youtube.com/watch?v=_b0IsrjMUDQ",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Cable Overhead Triceps Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos lartësinë e kabllos dhe peshën para se të nisësh, dhe përdor një litar.",
+            "en": "Set the cable height and the weight before you start, and use a rope."
+          },
+          {
+            "sq": "Qëndro në qëndrim të ndarë (një këmbë përpara) dhe anohu pak nga ijët, që shpina të mbetet neutrale.",
+            "en": "Stand in a split stance (one foot forward) and hinge slightly at the hips so your spine stays neutral."
+          },
+          {
+            "sq": "Sill litarin mbi kokë me bërrylat të përkulur.",
+            "en": "Bring the rope overhead with your elbows bent."
+          }
+        ],
+        "sources": [
+          "ace_kovar"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtrije bërrylat dhe ndaji litarin në dy anët kur arrin shtrirjen e plotë.",
+            "en": "Extend your elbows and split the rope apart at full extension."
+          },
+          {
+            "sq": "Kthe litarin mbi kokë ngadalë, me bërrylat të përkulur, pa e lëshuar tensionin e kabllos.",
+            "en": "Return the rope overhead slowly, elbows bent, without letting the cable's tension go."
+          },
+          {
+            "sq": "Lëvize bërrylin nga rreth 90° deri në shtrirje të plotë, me krahun e sipërm të palëvizshëm mbi kokë.",
+            "en": "Move your elbow from about 90° to full extension, with your upper arm still overhead."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: kthimin mbi kokë bëje ngadalë dhe shtrije pak më shpejt.",
+            "en": "Down 2 s, up 1 s: return overhead slowly and extend a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ndërsa shtrin bërrylat dhe merre ndërsa e kthen litarin mbi kokë.",
+            "en": "Breathe out as you extend your elbows and in as you return the rope overhead."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_pushdown"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm të palëvizshëm",
+            "en": "Upper arms still"
+          },
+          {
+            "sq": "Shpina neutrale",
+            "en": "Neutral spine"
+          },
+          {
+            "sq": "Ndaji litarin në fund",
+            "en": "Split the rope at the end"
+          },
+          {
+            "sq": "Ktheje ngadalë mbi kokë",
+            "en": "Return slowly overhead"
+          },
+          {
+            "sq": "Mos lësho tensionin",
+            "en": "Keep the tension on"
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Shpina harkohet ose trupi lëkundet për të shtyrë peshën: anohu pak nga ijët dhe mbaje shpinën neutrale.",
+            "en": "Your back arches or your body swings to move the weight: hinge slightly at the hips and keep a neutral spine."
+          },
+          {
+            "sq": "Krahët e sipërm lëvizin: lëvizja duhet të vijë vetëm nga bërrylat.",
+            "en": "Your upper arms move: the movement should come from the elbows alone."
+          },
+          {
+            "sq": "Tensioni humbet kur litari kthehet mbi kokë: mbaje kabllon të tendosur gjatë gjithë kthimit.",
+            "en": "Tension is lost as the rope returns overhead: keep the cable taut through the whole return."
+          },
+          {
+            "sq": "Lëvizje e shkurtuar mbi kokë: pjesa ku tricepsi është më i zgjatur është arsyeja pse bëhet ky ushtrim.",
+            "en": "A shortened range overhead: the part where the triceps is most stretched is the reason for doing this exercise."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo",
+          "korakakis"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Maeo dhe kolegët, 2023 · European Journal of Sport Science",
+          "text": {
+            "sq": "Në një studim 12-javor me 21 të rritur, zgjatja e bërrylit me krahun mbi kokë e rriti më shumë tricepsin (19,9%) se me krahun në pozicion neutral (13,9%); koka e gjatë 28,5% kundrejt 19,6%. Pesha ishte 34–39% më e ulët, ndaj mos u shqetëso nëse mbi kokë ngre më pak.",
+            "en": "In a 12-week study of 21 adults, elbow extension with the arm overhead grew the triceps more (19.9%) than with the arm in a neutral position (13.9%); the long head grew 28.5% versus 19.6%. The loads were 34–39% lower, so don't worry if you lift less overhead."
+          },
+          "sources": [
+            "maeo"
+          ]
+        },
+        {
+          "who": "Kholinne dhe kolegët, 2018 · Acta Orthopaedica et Traumatologica Turcica",
+          "text": {
+            "sq": "Me krahun pranë trupit (shpatulla në 0°), koka e gjatë e tricepsit jep forcën dhe aktivizimin më të lartë; kur krahu ngrihet në 90°, 135° ose 180°, forcën më të lartë e jep koka mediale (10 të rritur, model OpenSim dhe EMG).",
+            "en": "With your arm by your side (shoulder at 0°) the long head of the triceps gives the highest force and activation; with the arm raised to 90°, 135° or 180° the medial head gives the highest force (10 adults, OpenSim model and EMG)."
+          },
+          "sources": [
+            "kholinne"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët)",
+          "text": {
+            "sq": "Në një studim me 15 gra, extension mbi kokë dha aktivitet të tricepsit 76% të triangle push-up-it, më shumë se pressdown me litar (74%), pressdown me shufër (67%) dhe lying extension me shufër (62%).",
+            "en": "In a study of 15 women, the overhead extension gave triceps activity of 76% of the triangle push-up, more than the rope pressdown (74%), the bar pressdown (67%) and the lying barbell extension (62%)."
+          },
+          "sources": [
+            "ace_emg"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën neutrale; nëse harkohet, ule peshën.",
+            "en": "Keep your spine neutral; if it arches, lower the weight."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton në krah ose dorë, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or pain radiating into your arm or hand, stop and seek a medical assessment."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_pushdown": {
+          "label": "ACE, Triceps Pushdowns",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/185/triceps-pushdowns/",
+          "checked": "2026-11-15"
+        },
+        "ace_kovar": {
+          "label": "ACE, 6 Exercises for Stronger Triceps (Elizabeth Kovar, MA)",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/6112/6-exercises-for-stronger-triceps/",
+          "checked": "2026-11-15"
+        },
+        "ace_emg": {
+          "label": "ACE, studimi i Universitetit të Wisconsin–La Crosse (Boehler, Porcari dhe kolegët), Best Triceps Exercises",
+          "url": "https://www.acefitness.org/certifiednewsarticle/3008/ace-study-identifies-best-triceps-exercises/",
+          "checked": "2026-11-15"
+        },
+        "maeo": {
+          "label": "Maeo dhe kolegët, 2023, European Journal of Sport Science",
+          "url": "https://europepmc.org/article/MED/35819335",
+          "checked": "2026-11-15"
+        },
+        "kholinne": {
+          "label": "Kholinne dhe kolegët, 2018, Acta Orthopaedica et Traumatologica Turcica",
+          "url": "https://europepmc.org/article/MED/29503079",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Overhead Triceps Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro në qëndrim të ndarë dhe mbaj një dumbbell me të dyja duart rreth dorezës.",
+            "en": "Stand in a split stance and hold one dumbbell with both hands around the handle."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat pas dhe poshtë dhe mbaji kështu; koka dhe qafa në vijë me shpinën.",
+            "en": "Brace your core, draw your shoulder blades back and down and hold that; keep your head and neck in line with your spine."
+          },
+          {
+            "sq": "Shtyj dumbbell-in mbi kokë deri sa krahët e sipërm të jenë vertikalë; bërrylat tregojnë përpara dhe nuk bllokohen plotësisht.",
+            "en": "Press the dumbbell overhead until your upper arms are vertical; elbows point forward and are not fully locked."
+          }
+        ],
+        "sources": [
+          "ace_db"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe shtyj ngadalë dumbbell-in mbi kokë duke shtrirë bërrylat, derisa të jetë drejt mbi kokë.",
+            "en": "Breathe out and slowly press the dumbbell overhead by extending your elbows, until it is directly over your head."
+          },
+          {
+            "sq": "Merr frymë dhe lëre peshën t'i përkulë bërrylat ngadalë, duke e ulur dumbbell-in pas kokës pa i lëvizur krahët e sipërm.",
+            "en": "Breathe in and let the weight slowly bend your elbows, lowering the dumbbell behind your head without moving your upper arms."
+          },
+          {
+            "sq": "Ndalo kur bërrylat arrijnë rreth 90° ose kur krahët e sipërm fillojnë të shkojnë mbrapa.",
+            "en": "Stop when your elbows reach about 90° or when your upper arms begin to drift back."
+          }
+        ],
+        "sources": [
+          "ace_db"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen pas kokës bëje ngadalë dhe shtyj lart pak më shpejt.",
+            "en": "Down 2 s, up 1 s: lower behind your head slowly and press up a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Merr frymë kur e ul dumbbell-in dhe nxirre kur e shtyn lart.",
+            "en": "Breathe in as you lower the dumbbell and out as you press up."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm vertikalë",
+            "en": "Upper arms vertical"
+          },
+          {
+            "sq": "Bërrylat sa shpatullat",
+            "en": "Elbows shoulder-width apart"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Ule ngadalë pas kokës",
+            "en": "Lower slowly behind your head"
+          },
+          {
+            "sq": "Dumbbell-i nuk prek kokën",
+            "en": "Don't touch your head"
+          }
+        ],
+        "sources": [
+          "ace_db"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Dumbbell-i prek pjesën e pasme të kokës: ule vetëm deri ku mbetet pak hapësirë.",
+            "en": "The dumbbell touches the back of your head: lower only as far as leaves a little clearance."
+          },
+          {
+            "sq": "Krahët e sipërm shkojnë mbrapa gjatë uljes: ndalo uljen kur ndodh.",
+            "en": "Upper arms drift back during the descent: stop lowering when this happens."
+          },
+          {
+            "sq": "Koka, trupi, kyçet ose këmbët lëvizin: mbaji të palëvizshme dhe mos e ndrysho ekuilibrin.",
+            "en": "Your head, torso, wrists or feet move: keep them still and do not shift your balance."
+          },
+          {
+            "sq": "Bërrylat hapen shumë nga njëri-tjetri: mbaji afërsisht sa gjerësia e shpatullave.",
+            "en": "Elbows flare wide: keep them about shoulder-width apart."
+          },
+          {
+            "sq": "Bllokim i plotë i bërrylave lart: shtrije pa i bllokuar plotësisht.",
+            "en": "Fully locking your elbows at the top: extend without locking them completely."
+          }
+        ],
+        "sources": [
+          "ace_db"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Maeo dhe kolegët, 2023 · European Journal of Sport Science",
+          "text": {
+            "sq": "Në një studim 12-javor me 21 të rritur, zgjatja e bërrylit me krahun mbi kokë e rriti më shumë tricepsin (19,9%) se me krahun në pozicion neutral (13,9%); koka e gjatë 28,5% kundrejt 19,6%. Pesha ishte 34–39% më e ulët, ndaj mos u shqetëso nëse mbi kokë ngre më pak.",
+            "en": "In a 12-week study of 21 adults, elbow extension with the arm overhead grew the triceps more (19.9%) than with the arm in a neutral position (13.9%); the long head grew 28.5% versus 19.6%. The loads were 34–39% lower, so don't worry if you lift less overhead."
+          },
+          "sources": [
+            "maeo"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e mban muskulin në gjatësi të madhe dhe një tempo 2–8 s për përsëritje. Këtu: zbrit deri sa tricepsi të zgjatet mirë, brenda kufirit që e mban formën të pastër.",
+            "en": "For muscle growth, favour a range that keeps the muscle at long lengths and a rep tempo of 2–8 s. Here: lower until the triceps is well stretched, within the limit that keeps your form clean."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        },
+        {
+          "who": "Kholinne dhe kolegët, 2018 · Acta Orthopaedica et Traumatologica Turcica",
+          "text": {
+            "sq": "Me krahun pranë trupit (shpatulla në 0°), koka e gjatë e tricepsit jep forcën dhe aktivizimin më të lartë; kur krahu ngrihet në 90°, 135° ose 180°, forcën më të lartë e jep koka mediale (10 të rritur, model OpenSim dhe EMG).",
+            "en": "With your arm by your side (shoulder at 0°) the long head of the triceps gives the highest force and activation; with the arm raised to 90°, 135° or 180° the medial head gives the highest force (10 adults, OpenSim model and EMG)."
+          },
+          "sources": [
+            "kholinne"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Dumbbell-i lëviz mbi dhe pas kokës: me pesha të rënda kërko rojë; NSCA kërkon rojë të vëmendshme kur pesha lëviz mbi kokë ose fytyrë.",
+            "en": "The dumbbell moves over and behind your head: with heavy loads ask for a spotter; the NSCA requires attentive spotting whenever a weight moves over the head or face."
+          },
+          {
+            "sq": "Mos lër dumbbell-in të prekë pjesën e pasme të kokës.",
+            "en": "Do not let the dumbbell touch the back of your head."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "ace_db",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_db": {
+          "label": "ACE, Triceps Extension (dumbbell)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/74/triceps-extension/",
+          "checked": "2026-11-15"
+        },
+        "maeo": {
+          "label": "Maeo dhe kolegët, 2023, European Journal of Sport Science",
+          "url": "https://europepmc.org/article/MED/35819335",
+          "checked": "2026-11-15"
+        },
+        "kholinne": {
+          "label": "Kholinne dhe kolegët, 2018, Acta Orthopaedica et Traumatologica Turcica",
+          "url": "https://europepmc.org/article/MED/29503079",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Arm Overhead Cable Triceps Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos lartësinë e kabllos dhe peshën para se të nisësh, dhe kap dorezën me një dorë.",
+            "en": "Set the cable height and the weight before you start, and take the handle in one hand."
+          },
+          {
+            "sq": "Qëndro në qëndrim të ndarë dhe anohu pak nga ijët, që shpina të mbetet neutrale.",
+            "en": "Stand in a split stance and hinge slightly at the hips so your spine stays neutral."
+          },
+          {
+            "sq": "Sill dorezën mbi kokë me bërrylin të përkulur.",
+            "en": "Bring the handle overhead with your elbow bent."
+          }
+        ],
+        "sources": [
+          "ace_kovar"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtrije bërrylin derisa krahu të shtrihet plotësisht mbi kokë.",
+            "en": "Extend your elbow until your arm is fully extended overhead."
+          },
+          {
+            "sq": "Kthe dorezën mbi kokë ngadalë, me bërrylin të përkulur, pa e lëshuar tensionin e kabllos.",
+            "en": "Return the handle overhead slowly, elbow bent, without letting the cable's tension go."
+          },
+          {
+            "sq": "Lëvize bërrylin nga rreth 90° deri në shtrirje të plotë, me krahun e sipërm të palëvizshëm mbi kokë.",
+            "en": "Move your elbow from about 90° to full extension, with your upper arm still overhead."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: kthimin mbi kokë bëje ngadalë dhe shtrije pak më shpejt.",
+            "en": "Down 2 s, up 1 s: return overhead slowly and extend a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ndërsa shtrin bërrylin dhe merre ndërsa e kthen dorezën mbi kokë.",
+            "en": "Breathe out as you extend your elbow and in as you return the handle overhead."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_pushdown"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahu i sipërm i palëvizshëm",
+            "en": "Upper arm still"
+          },
+          {
+            "sq": "Shpina neutrale",
+            "en": "Neutral spine"
+          },
+          {
+            "sq": "Shtrije plotësisht lart",
+            "en": "Extend fully at the top"
+          },
+          {
+            "sq": "Ktheje ngadalë mbi kokë",
+            "en": "Return slowly overhead"
+          },
+          {
+            "sq": "Mos lësho tensionin",
+            "en": "Keep the tension on"
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Shpina harkohet për të shtyrë peshën: anohu pak nga ijët dhe mbaje shpinën neutrale.",
+            "en": "Your back arches to move the weight: hinge slightly at the hips and keep a neutral spine."
+          },
+          {
+            "sq": "Krahu i sipërm lëviz: lëvizja duhet të vijë vetëm nga bërryli.",
+            "en": "Your upper arm moves: the movement should come from the elbow alone."
+          },
+          {
+            "sq": "Tensioni humbet kur dora kthehet mbi kokë: mbaje kabllon të tendosur gjatë gjithë kthimit.",
+            "en": "Tension is lost as the hand returns overhead: keep the cable taut through the whole return."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "maeo"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Maeo dhe kolegët, 2023 · European Journal of Sport Science",
+          "text": {
+            "sq": "Në një studim 12-javor me 21 të rritur, zgjatja e bërrylit me krahun mbi kokë e rriti më shumë tricepsin (19,9%) se me krahun në pozicion neutral (13,9%); koka e gjatë 28,5% kundrejt 19,6%. Pesha ishte 34–39% më e ulët, ndaj mos u shqetëso nëse mbi kokë ngre më pak.",
+            "en": "In a 12-week study of 21 adults, elbow extension with the arm overhead grew the triceps more (19.9%) than with the arm in a neutral position (13.9%); the long head grew 28.5% versus 19.6%. The loads were 34–39% lower, so don't worry if you lift less overhead."
+          },
+          "sources": [
+            "maeo"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e mban muskulin në gjatësi të madhe dhe një tempo 2–8 s për përsëritje. Këtu: zbrit deri sa tricepsi të zgjatet mirë, brenda kufirit që e mban formën të pastër.",
+            "en": "For muscle growth, favour a range that keeps the muscle at long lengths and a rep tempo of 2–8 s. Here: lower until the triceps is well stretched, within the limit that keeps your form clean."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën neutrale; nëse harkohet, ule peshën.",
+            "en": "Keep your spine neutral; if it arches, lower the weight."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton në krah ose dorë, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or pain radiating into your arm or hand, stop and seek a medical assessment."
+          }
+        ],
+        "sources": [
+          "ace_kovar",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_pushdown": {
+          "label": "ACE, Triceps Pushdowns",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/185/triceps-pushdowns/",
+          "checked": "2026-11-15"
+        },
+        "ace_kovar": {
+          "label": "ACE, 6 Exercises for Stronger Triceps (Elizabeth Kovar, MA)",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/6112/6-exercises-for-stronger-triceps/",
+          "checked": "2026-11-15"
+        },
+        "maeo": {
+          "label": "Maeo dhe kolegët, 2023, European Journal of Sport Science",
+          "url": "https://europepmc.org/article/MED/35819335",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}
