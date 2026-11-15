@@ -369,6 +369,41 @@ describe('Kutia e AI-së', () => {
     expect((await screen.findByText('Sot pas regjistrimit')).parentElement).toHaveTextContent(new RegExp(`${Math.round(today.totals.kcal + 200)}\\s/`))
   })
 
+  it('kutia bosh (V2-E3-30): titulli, çfarë kupton, katër shembuj që e mbushin fushën dhe kostoja me shumën e muajit', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Shkruaj si i thua një shoku' })).toBeInTheDocument()
+    expect(screen.getByText('Ushqimi, uji, suplementet, setet ose një pyetje për ditën tënde. Asgjë nuk ruhet pa e parë ti.')).toBeInTheDocument()
+    const examples = screen.getByRole('list', { name: 'Shembuj, prekja i mbush fushën' })
+    expect(within(examples).getAllByRole('button').map((button) => button.textContent)).toEqual([
+      '2 vezë dhe një fetë bukë në mëngjes',
+      'Piva 500 ml ujë',
+      'Bench 60 kg × 10, tri sete',
+      'Sa proteinë më mbetet sot?',
+    ])
+    expect(await screen.findByText(/^Rreth 0,001 € për mesazh · 0,00 € nga \d+ € këtë muaj$/)).toBeInTheDocument()
+    await user.click(within(examples).getByRole('button', { name: 'Piva 500 ml ujë' }))
+    expect(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre')).toHaveValue('Piva 500 ml ujë')
+    expect(data.requests).toHaveLength(0)
+    // Me tekst në fushë, shembujt zhduken; teksti i shpjegimit mbetet.
+    expect(screen.queryByRole('list', { name: 'Shembuj, prekja i mbush fushën' })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Shkruaj si i thua një shoku' })).toBeInTheDocument()
+  })
+
+  it('kutia bosh në anglisht', async () => {
+    language.set('en')
+    await renderPage().catch(() => null)
+    expect(await screen.findByRole('heading', { level: 2, name: 'Write it like you would tell a friend' })).toBeInTheDocument()
+    const examples = screen.getByRole('list', { name: 'Examples, tap to fill the field' })
+    expect(within(examples).getAllByRole('button').map((button) => button.textContent)).toEqual([
+      '2 eggs and a slice of bread for breakfast',
+      'I drank 500 ml of water',
+      'Bench 60 kg × 10, three sets',
+      'How much protein do I have left today?',
+    ])
+    expect(await screen.findByText(/^About €0\.001 a message · €0\.00 of €\d+ this month$/)).toBeInTheDocument()
+  })
+
   it('pa internet: teksti mbetet, "Dërgo" pret rrjetin dhe karta e thotë', async () => {
     vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
     boxText.set('Në drekë 200 g pulë me oriz')

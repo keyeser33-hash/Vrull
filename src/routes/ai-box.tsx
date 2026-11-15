@@ -26,7 +26,7 @@ import {
   setGrams,
   setMeal,
 } from '@/data/ai-box'
-import { AI_MONTHLY_LIMIT_EUR } from '@/data/ai-usage'
+import { AI_MONTHLY_LIMIT_EUR, aiMonth } from '@/data/ai-usage'
 import { boxRemote, store, useLocalQuery } from '@/data/app-data'
 import { nutritionDay } from '@/data/nutrition'
 import type { MonthSpend } from '@/data/pdf-import'
@@ -35,7 +35,7 @@ import type { I18n } from '@/i18n'
 import { mealName, nameInSentence } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { shiftDate } from '@/lib/calendar'
-import { euro } from './ai-format'
+import { euro, euroLimit } from './ai-format'
 import { boxText } from '@/lib/box-text'
 import { cn } from '@/lib/cn'
 import { useOnline } from '@/lib/use-online'
@@ -173,6 +173,47 @@ function errorText({ t, fmt }: I18n, error: BoxError, month?: MonthSpend): strin
   return t('box.error.failed')
 }
 
+/** Typical cost of one box message with Haiku (docs/MESIMET.md › AI-ja: 0,001 € the first message, less after). */
+const MESSAGE_COST_EUR = 0.001
+const EXAMPLES = ['box.example.1', 'box.example.2', 'box.example.3', 'box.example.4'] as const
+
+/**
+ * Kutia bosh (V2-E3-30; bordi "Kutia e AI-së · bosh"): "Shkruaj si i thua një shoku", një rresht se çfarë
+ * kupton, katër shembuj që preken dhe e mbushin fushën, dhe kostoja e mesazhit me shumën e muajit.
+ */
+function EmptyIntro({ showExamples, onPick }: { showExamples: boolean; onPick: (example: string) => void }) {
+  const { t, fmt } = useI18n()
+  const month = useLocalQuery(() => aiMonth(store), [])
+  return (
+    <>
+      <div className="flex flex-col gap-2">
+        <h2 className="m-0 type-display-m">{t('box.empty.title')}</h2>
+        <p className="m-0 type-body text-muted-foreground">{t('box.empty.text')}</p>
+      </div>
+      {showExamples ? (
+        <ul aria-label={t('box.examples')} className="m-0 flex list-none flex-col gap-2 p-0">
+          {EXAMPLES.map((key) => (
+            <li key={key}>
+              <button
+                type="button"
+                onClick={() => onPick(t(key))}
+                className={cn(surfaceClass, 'flex min-h-touch w-full items-center rounded-lg px-3.5 py-2.5 text-left type-body focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
+              >
+                {t(key)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {month ? (
+        <p className="m-0 type-caption text-muted-foreground tabular-nums">
+          {t('box.empty.cost', { cost: euro(fmt, MESSAGE_COST_EUR, 3), spent: euro(fmt, month.spentEur), limit: euroLimit(fmt, month.limitEur) })}
+        </p>
+      ) : null}
+    </>
+  )
+}
+
 function ComposeView({
   text,
   online,
@@ -197,6 +238,11 @@ function ComposeView({
   useEffect(() => {
     field.current?.focus()
   }, [])
+  /** Shembulli që preket e mbush fushën (pa e dërguar) dhe e fokuson, që përdoruesi ta ndryshojë ose ta dërgojë. */
+  const pick = (example: string) => {
+    onChange(example)
+    field.current?.focus()
+  }
   const canSend = online && !reading && text.trim().length > 0
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -214,7 +260,7 @@ function ComposeView({
             </p>
           </>
         ) : (
-          <p className="m-0 type-body text-muted-foreground">{t('box.example')}</p>
+          <EmptyIntro showExamples={text.trim() === ''} onPick={pick} />
         )}
         {error && !reading ? (
           <p role="alert" className={cn(surfaceClass, 'm-0 rounded-lg p-3.5 type-body')}>
