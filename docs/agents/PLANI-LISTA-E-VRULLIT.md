@@ -32,6 +32,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Vala 1 (15.11.2026, b484f74):** `tools/food-catalog/` me shkarkimin (URL, versioni, sha256 te `sources.json`), leximin e USDA-së, rojën dhe 31 prova. Ndërtimi i vërtetë [V]: Foundation 2026-04-30 377 rreshta (91 pa kcal, 1 pa makro), SR Legacy 2018-04 7 793, FNDDS 2024-10-31 5 431; gjithsej 13 601; roja 0 gabime dhe 834 shënime `kcal_flag`; `catalog.jsonl` 5,2 MB, 0,5 MB me gzip. Energjia: Foundation 2048 → 2047 → 1008, SR Legacy 1008, FNDDS lënda 208 (dokumentimi i FDC-së, "Energy"). Foundation 2026-10-29 te faqja zyrtare vjen pa `food.csv`, `food_nutrient.csv` dhe `food_portion.csv`, ndaj përdoret 2026-04-30 deri sa USDA ta ndreqë. Karbohidratet deri në −1 g bëhen 0 dhe numërohen; më poshtë rreshti hiqet. Migrimi lejon deri në 950 kcal (USDA ka yndyra me 902).
 
+- **Vala 2 (15.11.2026, 9a7411f, de3a8be, 5beea77):** Ciqual 2025 (2025-11-03) 3 323 rreshta, CoFID 2021 2 820, Livsmedelsverket (2026-06-29) 2 605. Ndërtimi i plotë [V, `summary.json`]: 22 349 rreshta, roja 0 gabime dhe 1 447 `kcal_flag`, 7,9 MB, 0,8 MB me gzip. Frida 5.5 nuk u bë: shkarkimi zyrtar ridrejtohet te `s3q.ait.dtu.dk:9000`, që rrjeti i kësaj sesioni nuk e arrin; skedari (XLSX, 12,3 MB, DOI 10.11583/DTU.29500682) mund ta japë pronari. Për valën 3: karbohidratet e USDA ("by difference") përfshijnë fibrat, ato të Ciqual, CoFID dhe Livsmedelsverket jo; fibra e CoFID mungon te rreth gjysma e rreshtave; alkooli i CoFID (për 100 ml) u la jashtë.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
