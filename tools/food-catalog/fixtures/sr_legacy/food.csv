@@ -1,0 +1,5 @@
+"fdc_id","data_type","description","food_category_id","publication_date"
+"2001","sr_legacy_food","Butter, salted","1","2019-04-01"
+"2002","sr_legacy_food","Alcoholic beverage, distilled, vodka, 80 proof","14","2019-04-01"
+"2003","sr_legacy_food","Candies, hard (no carbohydrate value)","19","2019-04-01"
+"2004","branded_food","Some branded thing","1","2019-04-01"

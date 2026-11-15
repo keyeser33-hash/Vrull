@@ -1,0 +1,5 @@
+"fdc_id","data_type","description","food_category_id","publication_date"
+"3001","survey_fndds_food","Milk, whole","1002","2022-10-28"
+"3002","survey_fndds_food","Tea, hot, brewed","7202","2022-10-28"
+"3003","survey_fndds_food","Mystery dish (energy under the SR id, not the FNDDS number)","9999","2022-10-28"
+"3004","survey_fndds_food","Egg, boiled","2002","2022-10-28"

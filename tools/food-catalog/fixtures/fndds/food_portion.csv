@@ -1,0 +1,5 @@
+"id","fdc_id","seq_num","amount","measure_unit_id","portion_description","modifier","gram_weight","data_points","footnote","min_year_acquired"
+"1","3001","1","","9999","1 cup","10205","246.0","","",""
+"2","3001","2","","9999","Quantity not specified","90000","244.0","","",""
+"3","3001","3","","9999","1 fl oz","30000","0.0","","",""
+"4","3004","1","","9999","1 egg","60001","50.0","","",""

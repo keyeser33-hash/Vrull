@@ -1,0 +1,65 @@
+// Ndërton Listën e Vrullit nga shkarkimet e burimeve (tani vetëm USDA FoodData Central).
+//
+// Përdorimi: node tools/food-catalog/build.mjs <dosja e burimeve> <dosja e daljes> [--list-version N]
+//   <dosja e burimeve>: ajo e tools/food-catalog/download.mjs (p.sh. /tmp/food-src)
+//   <dosja e daljes>:   shkruhen catalog.jsonl dhe summary.json (asgjë nuk shkruhet te src/ në këtë valë)
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { gzipSync } from 'node:zlib'
+import { checkCatalog } from './check.mjs'
+import { readDataset } from './usda.mjs'
+
+const SOURCES = fileURLToPath(new URL('./sources.json', import.meta.url))
+
+/** Bashkon daljen e burimeve (në radhën e sources.json) dhe e kalon nga roja. Funksion i pastër, i provueshëm. */
+export function assemble(parts) {
+  const rows = parts.flatMap((part) => part.rows)
+  const { errors, notes } = checkCatalog(rows)
+  const jsonl = rows.map((row) => JSON.stringify(row)).join('\n') + '\n'
+  const bySource = {}
+  for (const part of parts) bySource[part.source] = { rows: part.rows.length, dropped: part.dropped, adjusted: part.adjusted, version: part.version }
+  const noteCounts = {}
+  for (const note of notes) noteCounts[note.rule] = (noteCounts[note.rule] ?? 0) + 1
+  const summary = {
+    listVersion: parts[0]?.rows[0]?.list_version ?? null,
+    total: rows.length,
+    bySource,
+    check: {
+      errors: errors.length,
+      notes: noteCounts,
+      firstErrors: errors.slice(0, 20),
+      firstNotes: notes.slice(0, 10),
+    },
+    bytes: Buffer.byteLength(jsonl),
+    gzipBytes: gzipSync(jsonl, { level: 9 }).length,
+  }
+  return { jsonl, summary, errors }
+}
+
+function main() {
+  const args = process.argv.slice(2)
+  const versionAt = args.indexOf('--list-version')
+  const listVersion = versionAt >= 0 ? Number(args.splice(versionAt, 2)[1]) : 1
+  const [sourceDir, outDir] = args
+  if (!sourceDir || !outDir || !Number.isInteger(listVersion) || listVersion < 1) {
+    console.error('Përdorimi: node tools/food-catalog/build.mjs <dosja e burimeve> <dosja e daljes> [--list-version N]')
+    process.exit(1)
+  }
+  const config = JSON.parse(readFileSync(SOURCES, 'utf8'))
+  const parts = config.files.map((file) => {
+    const { rows, dropped, adjusted } = readDataset(file.id, join(sourceDir, file.id), listVersion)
+    return { source: file.id, version: file.version, rows, dropped, adjusted }
+  })
+  const { jsonl, summary, errors } = assemble(parts)
+  mkdirSync(outDir, { recursive: true })
+  writeFileSync(join(outDir, 'catalog.jsonl'), jsonl)
+  writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)
+  console.log(JSON.stringify(summary, null, 2))
+  if (errors.length) {
+    console.error(`${errors.length} gabime nga roja; shih summary.json`)
+    process.exit(1)
+  }
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) main()
