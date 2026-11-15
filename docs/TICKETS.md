@@ -237,8 +237,11 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-24 | Udhëzuesi i plotë i bibliotekës (689 ushtrime të tjera) në valë sipas grupit të muskujve, me videot, secila me version të ri (PLANI-UDHEZUESIT.md) | E3-21 |
 | V2-E3-25 | Lëshimi 0.40.0 dhe 0.41.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 | V2-E3-26 | Bordet e Ushqimit të ri (V59, SPEC §0.3h) | – |
-| V2-E3-27 | Lista e Vrullit: kontrolli i licencave, ndërtimi i listës nga burimet (me provat), tabelat `food_catalog` dhe `food_products` (migrimi SQL te përdoruesi), kopja në telefon me versionin dhe kërkimi pa internet | E3-26 |
+| V2-E3-27 | Lista e Vrullit (me V14 dhe faqet e Adminit të V31 për pjatat vendase): kontrolli i licencave, ndërtimi i listës nga burimet (me provat), tabelat `food_catalog` dhe `food_products` (migrimi SQL te përdoruesi), kopja në telefon me versionin dhe kërkimi pa internet | E3-26 |
 | V2-E3-28 | Ushqimi i ri: rripi i suplementeve, vaktet si kartela, fusha "Çfarë hëngre?", kërkimi, sasia dhe shporta, etiketa e produktit, Plotëso makrot (provat përpara; 0.42.0) | E3-26, E3-27 |
+| V2-E3-29 | Rregullimet e auditimit të 0.24.0: ora me 24 orë, faqja 404 dhe gabimi, uji 2,75 L, shembujt që duken si vlera, 0 kg te seanca, paketa e nisjes nën 800 kB, tekstet dhe "Kjo javë" (V60) | – |
+| V2-E3-30 | Bordet e vendimeve të auditimit: kreu i nën-faqeve, tab-et e Progresit, arritjet me ikona, fillimi i stërvitjes dhe leja e njoftimeve, "Fillo" te dita e programit, Sipas matjeve bosh, Kutia bosh | – |
+| V2-E3-31 | Ikonat dhe fotot e ushqimeve dhe të pjatave (V30), pas Listës së Vrullit | E3-27 |
 
 ## V2-E3-12 · Bordet e Mëso
 
@@ -263,6 +266,14 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 **Gjendja (15.11.2026, 02:30):** me kërkesën e përdoruesit kuizi u ribë si story (Instagram): hyrja, pyetja para përgjigjes, pyetja pas përgjigjes, rezultati (4 borde, 7 ekrane në rrjedhë). Bordet e kuizit u panë me built-in browser dhe u ndreqën pas pamjes; vendimi 4 te shënimi e përshkruan story-n.
 
 **Gjendja (15.11.2026, 02:40):** me pyetjen e përdoruesit u shtua rreshti i katërt "Sot me story" (6 borde): rrathët e story-ve në krye të Sot-it ("Si ndihesh?", "A e dije?", mentori; të dielën "Java jote" dhe kuizi), gjendja e ditës si 5 story (4 pyetjet dhe gatishmëria me shembullin 54% të §0.3d) dhe "A e dije?" si story. Vendimi 8 te shënimi; ndryshon kartën e V50 dhe vendin e "A e dije?" te Sot (V56), ndaj pret miratimin. Bordet u panë me built-in browser dhe u ndreqën (vijat e shpejtësisë, shiriti i lëvizjes i fshehur, 6 orë si te shembulli).
+
+## V2-E3-29 · Rregullimet e auditimit të 0.24.0
+
+**Gjendja (15.11.2026, 11:00):** pas auditimit live (`docs/research/auditimi-live-2026-11-15.md`) dhe zgjedhjes së përdoruesit ("Rregullimet + bordet", "Kjo javë · 9–15 nëntor"), një `vrull-builder` bëri F1–F10 te dega `fix/auditimi`, e bashkuar te `main`: `TimeField` me 24 orë dhe pa prerje (Oraret, Rikujtuesit), rruga `*` dhe `errorElement`, uji me 2 dhjetore, "–" dhe "p.sh. 1996" në vend të shembujve në gri, "Ruaj setin" i çaktivizuar me 0 kg dhe "Shkruaj peshën", paketa e nisjes 843 → 689 kB, "Pesë pyetje", fotot pa titull të dyfishtë, fjalori, "Kjo javë". `npm run lint`, `npm test` (1 670 prova), `npm run build` të gjelbra; kontrolluar live me Supabase-n e imituar në 390 px. Pa ndryshim versioni: del me lëshimin e radhës, me miratimin e përdoruesit.
+
+## V2-E3-30 · Bordet e vendimeve të auditimit
+
+Faqja "Auditimi · vendimet e dizajnit" te kanavaca: 9 borde (kreu i nën-faqeve, Progresi me të njëjtin kre për 4 tab-et, arritjet me ikona, fillimi i stërvitjes me "Po fillon" dhe leja e njoftimeve, "Fillo" te dita e programit, Sipas matjeve bosh, Kutia bosh). **Pranimi:** përdoruesi i miraton ose i komenton.
 
 ## V2-E3-26 · Bordet e Ushqimit të ri
 
