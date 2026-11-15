@@ -104,8 +104,9 @@ describe('zbatimi i të zakonshmeve', () => {
 
   it('assemble: numri te summary, rreshtat e hequr dalin nga skedari, roja kalon', () => {
     const parts = [{ source: 'mix', version: 't', rows: rows(), dropped: {}, adjusted: {} }]
-    const { jsonl, summary, errors } = assemble(parts, [entry()])
+    const { jsonl, allJsonl, summary, errors } = assemble(parts, [entry()])
     expect(errors).toEqual([])
+    expect(allJsonl.trim().split('\n')).toHaveLength(6)
     expect(summary.sourceTotal).toBe(6)
     expect(summary.total).toBe(4)
     expect(summary.common).toEqual({ count: 1, removedAsDuplicates: 2, errors: 0, notes: [] })

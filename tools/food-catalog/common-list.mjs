@@ -6,7 +6,8 @@
 //   reason     kur preferred nuk është i pari sipas radhës së burimeve (p.sh. "USDA ka vetëm të gatuarin")
 // Emri i skedarit është `common-list.mjs`, sepse `common.mjs` ekziston tashmë (ndihmësit e burimeve).
 //
-// Përdorimi (vetëm vërtetimi): node tools/food-catalog/common-list.mjs <catalog.jsonl> [<dosja e të zakonshmeve>]
+// Përdorimi (vetëm vërtetimi): node tools/food-catalog/common-list.mjs <catalog-all.jsonl> [<dosja e të zakonshmeve>]
+//   (jo catalog.jsonl: ai nuk i ka më rreshtat `also` që u hoqën)
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -111,7 +112,7 @@ export function applyCommon(rows, list) {
 function main() {
   const [catalog, dir] = process.argv.slice(2)
   if (!catalog) {
-    console.error('Përdorimi: node tools/food-catalog/common-list.mjs <catalog.jsonl> [<dosja e të zakonshmeve>]')
+    console.error('Përdorimi: node tools/food-catalog/common-list.mjs <catalog-all.jsonl> [<dosja e të zakonshmeve>]')
     process.exit(1)
   }
   const rows = readFileSync(catalog, 'utf8').split('\n').filter(Boolean).map((line) => JSON.parse(line))

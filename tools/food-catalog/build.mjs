@@ -2,7 +2,7 @@
 //
 // Përdorimi: node tools/food-catalog/build.mjs <dosja e burimeve> <dosja e daljes> [--list-version N]
 //   <dosja e burimeve>: ajo e tools/food-catalog/download.mjs (p.sh. /tmp/food-src)
-//   <dosja e daljes>:   shkruhen catalog.jsonl dhe summary.json (asgjë nuk shkruhet te src/ në këtë valë)
+//   <dosja e daljes>:   shkruhen catalog.jsonl (me të zakonshmet e zbatuara), catalog-all.jsonl (para tyre) dhe summary.json (asgjë nuk shkruhet te src/ në këtë valë)
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -39,6 +39,7 @@ export function assemble(parts, common = []) {
   const { errors: checkErrors, notes } = checkCatalog(rows)
   const errors = [...checkErrors, ...validation.errors.map((error) => ({ id: error.key, rule: `common_${error.rule}`, message: error.message }))]
   const jsonl = rows.map((row) => JSON.stringify(row)).join('\n') + '\n'
+  const allJsonl = sourceRows.map((row) => JSON.stringify(row)).join('\n') + '\n'
   const bySource = {}
   for (const part of parts) bySource[part.source] = { rows: part.rows.length, dropped: part.dropped, adjusted: part.adjusted, version: part.version }
   const noteCounts = {}
@@ -63,7 +64,7 @@ export function assemble(parts, common = []) {
     bytes: Buffer.byteLength(jsonl),
     gzipBytes: gzipSync(jsonl, { level: 9 }).length,
   }
-  return { jsonl, summary, errors }
+  return { jsonl, allJsonl, summary, errors }
 }
 
 function main() {
@@ -82,9 +83,11 @@ function main() {
     const { rows, dropped, adjusted } = read(join(sourceDir, file.id), listVersion)
     return { source: file.id, version: file.version, rows, dropped, adjusted }
   })
-  const { jsonl, summary, errors } = assemble(parts, readCommonDir(COMMON_DIR))
+  const { jsonl, allJsonl, summary, errors } = assemble(parts, readCommonDir(COMMON_DIR))
   mkdirSync(outDir, { recursive: true })
   writeFileSync(join(outDir, 'catalog.jsonl'), jsonl)
+  // Të gjitha rreshtat e burimeve, para të zakonshmeve: kandidatët e rinj dhe vërtetimi i `common/*.json` lexojnë këtë.
+  writeFileSync(join(outDir, 'catalog-all.jsonl'), allJsonl)
   writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)
   console.log(JSON.stringify(summary, null, 2))
   if (errors.length) {

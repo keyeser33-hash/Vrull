@@ -1,7 +1,7 @@
 // Kandidatët për një ushqim te catalog.jsonl: për të zgjedhur rreshtin e preferuar të një "të zakonshmi" (common/*.json).
 //
 // Përdorimi: node tools/food-catalog/candidates.mjs "<emri anglisht>" [--source <s>] [--limit N] [--catalog <skedari>]
-//   --catalog: parazgjedhja /tmp/food-out/catalog.jsonl; --source: një nga burimet (usda_foundation, ciqual…); --limit: 15.
+//   --catalog: parazgjedhja /tmp/food-out/catalog.jsonl (pa rreshtat e hequr si dyfishime; për të gjithë: catalog-all.jsonl); --source: një nga burimet (usda_foundation, ciqual…); --limit: 15.
 //   Kërkimi bëhet sipas fjalëve të emrit (pa dallim shkronjash, pa theksa): çdo fjalë duhet të jetë fillim fjale te emri.
 //   Fjala me "-" përpara ("-canned") përjashton. Radha: burimi sipas radhës së preferencës, pastaj emri më i shkurtër.
 import { readFileSync } from 'node:fs'

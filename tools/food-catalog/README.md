@@ -10,6 +10,8 @@ Shkarkimet nuk hyjnë në repo; `sources.json` mban URL-në, versionin dhe sha25
 NODE_USE_ENV_PROXY=1 node tools/food-catalog/download.mjs /tmp/food-src [id ...]
 node tools/food-catalog/build.mjs /tmp/food-src /tmp/food-out [--list-version N]
 node tools/food-catalog/check.mjs /tmp/food-out/catalog.jsonl
+node tools/food-catalog/candidates.mjs "egg whole raw" [--source usda_foundation] [--limit 15] [--catalog /tmp/food-out/catalog-all.jsonl]
+node tools/food-catalog/common-list.mjs /tmp/food-out/catalog-all.jsonl
 npx vitest run tools/food-catalog
 ```
 
@@ -17,12 +19,24 @@ npx vitest run tools/food-catalog
 - `usda.mjs`: leximi i tre datasets dhe rregulli i energjisë (te komenti i skedarit).
 - `ciqual.mjs`, `cofid.mjs`: leximi i Ciqual (XML) dhe i CoFID (Excel) me rregullat e energjisë dhe të vlerave të veçanta (te komenti i skedarit). `livsmedelsverket.mjs`: shkarkimi nga API zyrtare (paketa JSON, rreth 5 200 kërkesa, 4 njëkohësisht) dhe leximi i saj. `xlsx.mjs`: lexuesi minimal i XLSX me `unzip -p`, pa varësi të reja. `common.mjs`: ndihmësit e përbashkët të burimeve të reja.
 - `check.mjs`: roja (ID unike, burim, licencë, version; kcal brenda 15 % të 4P+4K+9Y ose `kcal_flag`; asnjë vlerë negative ose mbi 100 g; porcionet me gram > 0).
-- `build.mjs`: `catalog.jsonl` dhe `summary.json` (numri për burim, të hequrit, rregulluarit, shënimet e rojës, madhësia dhe madhësia e ngjeshur me gzip). Del me kod 1 kur roja ka gabime. Asgjë nuk shkruhet te `src/`.
+- `candidates.mjs`: kandidatët për një ushqim sipas fjalëve të emrit anglisht (çdo fjalë është fillim fjale; `-fjalë` përjashton), me id, burimin, emrin dhe kcal/P/K/Y për 100 g. Parazgjedhja lexon `catalog.jsonl`, që nuk i ka më rreshtat e hequr si dyfishime; për të gjitha rreshtat, `--catalog catalog-all.jsonl`.
+- `common-list.mjs` dhe `common/*.json`: të zakonshmet (V61), shih më poshtë.
+- `build.mjs`: `catalog.jsonl` (me të zakonshmet e zbatuara), `catalog-all.jsonl` (para tyre) dhe `summary.json` (numri për burim, të hequrit, rregulluarit, shënimet e rojës, madhësia dhe madhësia e ngjeshur me gzip). Del me kod 1 kur roja ka gabime. Asgjë nuk shkruhet te `src/`.
+
+## Të zakonshmet (V61)
+
+Rreth 1 000 ushqimet më të zakonshme mbahen një herë, nga burimi i preferuar. Skedarët `common/001.json`, `002.json`… janë lista me `{ key, rank, name_sq, name_en, group, preferred, also, reason? }`: `preferred` dhe `also` janë ID të `catalog.jsonl` (e njëjta ushqim në të njëjtën gjendje, i papërpunuar ose i gatuar), `rank` është unik (1 = më i zakonshmi). `name_en` dhe `group` janë për njeriun që e lexon; `name_en` i rreshtit mbetet ai i burimit.
+
+- Hapat: `candidates.mjs` për secilin ushqim, zgjedhja e rreshtit të të njëjtit ushqim në gjendjen e njëjtë, emri shqip, pastaj `common-list.mjs` kundrejt `catalog-all.jsonl`.
+- Vërtetimi (`validateCommon`): çelësat, rank-et dhe ID-të unike (një ID hyn te një ushqim i vetëm); ID-të ekzistojnë; `name_sq`, `name_en`, `group` jo bosh; `preferred` është i pari sipas radhës USDA Foundation, SR Legacy, FNDDS, Ciqual, CoFID, Livsmedelsverket mes anëtarëve, ose ka `reason` ("USDA ka vetëm të gatuarin"). Shënim (jo gabim) kur kcal e një `also` ndryshon mbi 25 % nga i preferuari: ia vlen ta shohë njeriu, sepse mund të jetë një produkt tjetër.
+- Zbatimi (`applyCommon`, te `build.mjs`): `preferred` merr `name_sq`, `name_sq_checked: false`, `also_in` dhe `common_rank`; rreshtat `also` dalin nga `catalog.jsonl`. Vlerat nuk përzihen. `summary.json` ka `common`: numri, të hequrit si dyfishime dhe shënimet.
+- Skedari quhet `common-list.mjs`, sepse `common.mjs` mban ndihmësit e burimeve.
 
 ## Rregullat që duhen ditur
 
 - Energjia: Foundation 2048, pastaj 2047, pastaj 1008; SR Legacy 1008; FNDDS 208 (te FNDDS kolona `nutrient_id` mban numrin e lëndës, jo ID-në).
 - Karbohidratet janë "by difference"; një rresht pa to hiqet (nuk zëvendësohet me "by summation"). Deri në -1 g rrumbullakohen në 0 (e numëruar te `adjusted`).
+- Karbohidratet e USDA tregohen pa fibrat, si te etiketat në BE (V61): kur fibra njihet zbritet (`carbs_note: 'computed'`, me minimum 0), pa fibra të njohura vlera mbetet dhe `carbs_note: 'includes_fiber'`. Ciqual, CoFID dhe Livsmedelsverket mbeten pa ndryshim dhe pa `carbs_note`. Roja numëron fibrën e zbritur me 4 kcal kur krahason kcal me 4P+4K+9Y (`atwater`).
 - Vlerat nuk përzihen mes burimeve: një rresht vjen nga një dataset.
 - Ciqual: kcal nga konstanta 328 (Rregullorja EU 1169/2011), proteina 25003 (kur mungon, 25000), karbohidratet 31000 (pa fibrat, ndryshe nga USDA), yndyra 40000, fibrat 34100. "traces" dhe "< x" bëhen 0, "-" është i munguar (fibrat null; një makro ose energji që mungon e heq rreshtin). `name_en` = `alim_nom_eng`, `name_source` = `alim_nom_fr` kur ndryshon.
 - CoFID: kcal = KCALS (protein 4, yndyrë 9, karbohidrat të disponueshëm 3,75, alkool 7), karbohidratet CHO (monosaharid, pa fibrat; 100–106 g bëhen 100, e numëruar), fibra vetëm AOAC (pa të, null; NSP nuk e zëvendëson). "Tr" = 0, "N" = i munguar. Pijet alkoolike (grupi Q, për 100 ml) dhe dy ushqimet me kodin e dyfishtë 13-669 hiqen.
