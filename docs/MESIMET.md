@@ -86,6 +86,10 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Nëntori mbeti me ~70 nga ~2 000 minuta pas tri ditësh (7–9.11): prova e Android-it mori ~1 030 (98 nisje), dhe ~630 prej tyre ishin nisje që ranë; vlerësimi në bisedë kishte dhënë ~200, sepse nuk rrumbullakonte çdo job → para çdo emulatori dhe lëshimi `actions-usage.mjs --month --check <min>`; pas dy rënieve të së njëjtës pjesë, e treta nuk niset pa shkakun nga artifact-i; numrat e minutave jepen vetëm nga skripti.
 - `gh api --paginate` ra te proxy-ja e sesionit mbi 100 nisje (403, "Numeric-ID repository paths … not supported") → faqet merren me `page=` (`scripts/actions-usage.mjs`).
 
+- Brief-i i bordeve të Mëso-s dha radhën e fakteve të para pa datat e tyre, ndërsa java e bordeve kishte ditë të caktuara, dhe agjenti vendosi data që nuk përputheshin me Sot, pushimin dhe ushqimin → kur brief-i ndërton një javë (ditët, stërvitjet, vaktet), çdo element që lidhet me një datë merr datën dhe vendin në brief, jo vetëm radhën.
+- I njëjti brief nuk dha numrat e ditës së ushqimit, dhe agjenti mbushi bordin me vende-mbajtëse → brief-i jep numrat që tregon çdo bord, nga të dhënat e app-it (`src/nutrition/jim.ts`, objektivat e bordit më të ri), ose emrin e bordit nga i merr.
+- Agjentët e bordeve humbën thirrje te `mcp__claude-artifacts__read_file`: kanavaca pranon një `path` për thirrje, me parashtesën `project/` (`paths` refuzohet) → brief-i i jep shtigjet e plota `project/<emri>.dc.html` dhe e thotë rregullin.
+
 ## Logjika
 
 - Dy shkrime në të njëjtin milisekondë humbnin gjatë sinkronizimit → `updated_at` rritet gjithmonë (`nextTimestamp`); çdo defekt sinkronizimi fillon me provën që dështon.
@@ -117,6 +121,10 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Një fletë që ndryshon një vlerë (ora e stërvitjes te Cilësimet) rishkruante gjithë fushën (`training_times` për çdo ditë) dhe fshinte orët e veçanta që ruante një ekran tjetër (Oraret e vakteve) → një ruajtje shkruan vetëm atë që përdoruesi ndryshoi; kur dy ekrane shkruajnë të njëjtën fushë, prova ruan nga njëri dhe lexon nga tjetri.
 - Proteina me "Numëroje te ushqimi" dhe pluhuri i planit numëroheshin dy herë → një sasi që mund të vijë nga dy rrugë (plani, suplementi) ka një rregull të vetëm që vendos kush e numëron (`mealPowder`), me provë për të dy radhët.
 - Vlerat që llogarit telefoni (mirëmbajtja e kontrollit javor) mund të dalin jashtë `check`-ut të serverit dhe rreshti refuzohej përgjithmonë → çdo vlerë e llogaritur që shkon te një kolonë me kufij kontrollohet para shkrimit (bosh kur del jashtë), me provë me të dhëna ekstreme.
+
+## Mëso (faktet me burim)
+
+- PubMed e refuzon WebFetch-in me reCAPTCHA, dhe një URL e ndërtuar me dorë (API-ja e Europe PMC) kërkon miratimin e përdoruesit, që natën nuk vjen → abstrakti kontrollohet te rezultati i kërkimit (copëza e PubMed-it), te PMC ose te faqja e botuesit që del në kërkim; një fakt që nuk kontrollohet kështu pret ditën, nuk hyn në paketë.
 
 ## AI-ja
 

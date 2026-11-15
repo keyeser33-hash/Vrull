@@ -249,6 +249,8 @@ Faqja "0.40 · Mëso" te kanavaca, në 390 px dhe në tri temat. Bordet:
 
 Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
 
+**Gjendja (15.11.2026, 02:20):** 12 bordet janë te faqja "0.40 · Mëso", me shënimin "Si ta komentosh" dhe 7 vendimet; presin komentet. I shkruan tre agjentë me Sonnet sipas brief-it të përbashkët me 8 faktet e kontrolluara (Stastny 2017, NASM, Iron Game History 1990, Schoenfeld 2016, Morton 2018, Lamon 2021, EFSA 2010, AramcoWorld 2024). Vendimi 6 (burimet e historisë dhe të prejardhjes) ndryshon §0.3e kur miratohet. Numrat e tavës së kosit janë vende-mbajtëse deri te lista vendase.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
