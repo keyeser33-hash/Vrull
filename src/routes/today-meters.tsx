@@ -123,6 +123,18 @@ export function TodayMeters({ view }: { view: TodayView }) {
 
 const litres = (fmt: { number: (value: number, options?: { minDigits?: number; maxDigits?: number }) => string }, ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 2 })
 
+/** Një shtim ose zhbërje që leximi i bazës nuk e ka sjellë ende: nga `base` te `base + ml`. */
+interface PendingWater {
+  base: number
+  ml: number
+}
+
+/** Leximi ende pa shtimin: totali është mes bazës dhe totalit të pritur (pa e arritur). */
+function waiting(total: number, pending: PendingWater): boolean {
+  const expected = pending.base + pending.ml
+  return pending.ml >= 0 ? total >= pending.base && total < expected : total <= pending.base && total > expected
+}
+
 function WaterTile({ date }: { date: string }) {
   const { t, fmt } = useI18n()
   const day = useLocalQuery(() => waterDay(store, date), [date])
@@ -130,6 +142,12 @@ function WaterTile({ date }: { date: string }) {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const [added, setAdded] = useState<{ id: string; ml: number } | null>(null)
+  // Prekja shfaqet menjëherë (V57: numri rrotullohet me prekjen). Te Sot leximi i ujit mund të vonojë disa sekonda
+  // pas një shkrimi, sepse çdo shkrim rinis të gjitha leximet e ekranit; totali i pritur mbetet deri sa leximi ta arrijë.
+  const [pending, setPending] = useState<PendingWater | null>(null)
+  useEffect(() => {
+    if (pending && day && !waiting(day.totalMl, pending)) setPending(null)
+  }, [day, pending])
   const press = useRef<{ x: number; y: number; timer: ReturnType<typeof setTimeout> } | null>(null)
   const fired = useRef(false)
   useEffect(() => {
@@ -139,8 +157,17 @@ function WaterTile({ date }: { date: string }) {
   }, [added])
   useEffect(() => () => clearTimeout(press.current?.timer), [])
 
+  const bump = (ml: number) => {
+    if (!day) return
+    setPending((current) => (current && waiting(day.totalMl, current) ? { base: current.base, ml: current.ml + ml } : { base: day.totalMl, ml }))
+  }
   async function add(ml: number) {
-    setAdded({ id: await addWater(store, date, store.now(), ml), ml })
+    bump(ml)
+    try {
+      setAdded({ id: await addWater(store, date, store.now(), ml), ml })
+    } catch {
+      setPending(null)
+    }
   }
   const cancel = () => {
     if (press.current) clearTimeout(press.current.timer)
@@ -164,7 +191,8 @@ function WaterTile({ date }: { date: string }) {
   }
   if (!day) return <div aria-hidden className={cn(tileClass, 'min-h-[104px]')} />
 
-  const total = litres(fmt, day.totalMl)
+  const shownMl = pending && waiting(day.totalMl, pending) ? pending.base + pending.ml : day.totalMl
+  const total = litres(fmt, shownMl)
   const target = day.targetMl === null ? null : litres(fmt, day.targetMl)
   const sheet = params.get(SHEET)
   const close = () => navigate(-1)
@@ -197,9 +225,9 @@ function WaterTile({ date }: { date: string }) {
         className={cn(tileClass, 'relative touch-manipulation select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
       >
         <Title icon="pika-uji">{t('sot.water.title')}</Title>
-        {day.targetMl ? <Glass ratio={day.totalMl / day.targetMl} /> : <Glass ratio={0} />}
+        {day.targetMl ? <Glass ratio={shownMl / day.targetMl} /> : <Glass ratio={0} />}
         <span className={cn(numberClass, 'mt-0.5')}>
-          <RollingNumber value={day.totalMl / 1000} format={() => total} />
+          <RollingNumber value={shownMl / 1000} format={() => total} />
           <span className="font-text text-sm font-normal text-muted-foreground"> L</span>
           <span className="font-text text-xs font-normal text-muted-foreground"> {target === null ? '' : t('sot.water.of', { target })}</span>
         </span>
@@ -214,8 +242,9 @@ function WaterTile({ date }: { date: string }) {
             variant="ghost"
             className="text-background underline underline-offset-[3px]"
             onClick={async () => {
-              await undoWater(store, added.id)
+              bump(-added.ml)
               setAdded(null)
+              await undoWater(store, added.id)
             }}
           >
             {t('sot.water.undo')}

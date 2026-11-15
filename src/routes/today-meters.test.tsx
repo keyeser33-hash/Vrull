@@ -99,6 +99,22 @@ describe('matësit e drejtpërdrejtë te Sot', () => {
     await waitFor(() => expect(button).toHaveTextContent(/^Uji0,0 L/))
   })
 
+  it('uji: prekja shfaqet menjëherë, edhe kur shkrimi në bazë vonon; një prekje e dytë mbledh mbi të', async () => {
+    const user = userEvent.setup()
+    const store = await setup()
+    await renderMeters()
+    const button = await waterButton()
+    // Shkrimi i ujit nuk mbaron (si kur të gjitha leximet e Sot rinisen pas një shkrimi).
+    const put = store.put.bind(store)
+    store.put = ((table, values) => (table === 'water_logs' ? new Promise(() => {}) : put(table, values))) as LocalStore['put']
+    await user.click(button)
+    expect(button).toHaveTextContent(/^Uji0,25 L/)
+    expect(button).toHaveAccessibleName(/^0,25 nga /)
+    await user.click(button)
+    expect(button).toHaveTextContent(/^Uji0,5 L/)
+    expect(await waterMl()).toBe(0)
+  })
+
   it('uji: shtypja e gjatë hap 250, 330, 500 ml dhe "Sasi tjetër"; 330 ml shtohet dhe fleta mbyllet', async () => {
     const user = userEvent.setup()
     await setup()

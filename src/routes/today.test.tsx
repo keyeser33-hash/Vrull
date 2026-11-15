@@ -295,6 +295,8 @@ describe('Sot', () => {
     expect(next).toHaveTextContent('9 ushtrime · ~65 min')
     await user.click(next)
     const sheet = await screen.findByRole('dialog', { name: 'E diel, 8 nëntor' })
+    // Pa "Pa program të hapur" sa kohë leximi i stërvitjes s'ka mbaruar.
+    expect(within(sheet).queryByText('Pa program të hapur')).not.toBeInTheDocument()
     expect(await within(sheet).findByText('Stërvitja e planifikuar')).toBeInTheDocument()
     expect(within(sheet).getByText('Gjoks, triceps, pulpa')).toBeInTheDocument()
     expect(within(sheet).getByText('Vetëm për ta parë. Peshat dalin kur nis stërvitja.')).toBeInTheDocument()

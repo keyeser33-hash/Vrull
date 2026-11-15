@@ -54,6 +54,9 @@ function Future({ view, date, planned }: { view: TodayView; date: string; planne
             ))}
           </ul>
         </section>
+      ) : planned && workout === undefined ? (
+        // Leximi i stërvitjes ende s'ka mbaruar: vend bosh, jo "Pa program të hapur".
+        <div aria-hidden className="h-28" />
       ) : planned ? (
         <section className={sectionClass}>
           <p className="type-body text-muted-foreground">{t('sot.day.noProgramme')}</p>
