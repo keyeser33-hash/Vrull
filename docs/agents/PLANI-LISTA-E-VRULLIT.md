@@ -36,6 +36,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Vala 3, pjesa e parë (15.11.2026, 6babf8c, af56f60; V61):** karbohidratet e USDA pa fibrat (12 847 `computed`, 754 `includes_fiber`), `candidates.mjs`, formati `common/*.json` me vërtetimin (`common-list.mjs`) dhe prova e parë `common/001.json` me 94 të zakonshme (18 ushqime të Jimit dhe bazat shqiptare): 195 dyfishime të hequra, 22 154 rreshta, 0 gabime, 6 shënime `kcal_differs`. Pa përputhje: Clif Bar (markë), karamelet gummy; pluhuri i proteinës është "whey based" i USDA (352 kcal, plani i Jimit 400). Emrat shqip janë të pakontrolluar (`name_sq_checked: false`). Karbohidratet e `jim.ts` i përfshijnë fibrat: kur Lista lidhet me planin, kjo duhet njësuar.
 
+- **Vala 3, pjesa e dytë (15.11.2026, 0e86312):** `common/002.json` (rank 95–194) dhe `003.json` (195–298): 204 të zakonshme të tjera, 242 dyfishime të hequra; gjithsej 298 të zakonshme, 21 912 rreshta, 0 gabime. Pa përputhje: pluhur kazeine, hallvë, marmelatë portokalli, puding qumështi, spec i pjekur, tërshërë e çastit e gatuar, bagetë. Perimet, bishtajoret dhe drithërat e gatuara "pa kripë" kur ekziston; markat e USDA jashtë.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
