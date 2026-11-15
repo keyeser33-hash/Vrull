@@ -58,6 +58,8 @@ function Dots({ dots }: { dots: DayDots }) {
 
 export function WeekStrip({ days, className }: { days: WeekDay[]; className?: string }) {
   const { t } = useI18n()
+  // Me pikat nën datë rreshti është 64 px (bordi "Sot"); pa to 56 px.
+  const rowHeight = days.some((day) => day.dots) ? 'min-h-16' : 'min-h-row'
   const strip = (
     <ol aria-label={t('ui.week.label')} className={cn('m-0 grid list-none grid-cols-7 gap-1 p-0', className)}>
       {days.map((day) => {
@@ -86,13 +88,13 @@ export function WeekStrip({ days, className }: { days: WeekDay[]; className?: st
           </>
         )
         return (
-          <li key={day.key} className={cn('flex', days.some((other) => other.dots) ? 'min-h-16' : 'min-h-row')}>
+          <li key={day.key} className="flex">
             {day.onSelect ? (
-              <button type="button" aria-label={label} onClick={day.onSelect} className="flex flex-1 flex-col items-center justify-center gap-1 rounded-md">
+              <button type="button" aria-label={label} onClick={day.onSelect} className={cn('flex flex-1 flex-col items-center justify-center gap-1 rounded-md', rowHeight)}>
                 {content}
               </button>
             ) : (
-              <div className="flex flex-1 flex-col items-center justify-center gap-1">{content}</div>
+              <div className={cn('flex flex-1 flex-col items-center justify-center gap-1', rowHeight)}>{content}</div>
             )}
           </li>
         )

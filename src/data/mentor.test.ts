@@ -4,7 +4,8 @@ import { createLocalStore } from './store'
 
 // Shënimi i mentorit te Sot (V55, V57): rrethi del vetëm kur ka një shënim të kësaj jave ose të një seance të kësaj jave.
 const USER = '11111111-1111-4111-8111-111111111111'
-const store = () => createLocalStore(createDatabase(`mentor-${crypto.randomUUID()}`), { userId: () => USER, now: () => new Date(2026, 10, 11, 10, 0) })
+let clock = new Date(2026, 10, 11, 10, 0)
+const store = () => createLocalStore(createDatabase(`mentor-${crypto.randomUUID()}`), { userId: () => USER, now: () => clock })
 
 const note = (over: Record<string, unknown>) => ({ kind: 'raport_javor', title: 'Java 3', body: 'Bench Press po ecën.', steps: [], sources: [], language: 'sq', ...over })
 
@@ -43,8 +44,10 @@ describe('shënimet e mentorit', () => {
 
   it('kur janë disa, i fundit sipas krijimit; hapat dhe burimet vijnë të pastruara', async () => {
     const s = store()
-    await s.put('mentor_notes', note({ period_start: '2026-11-09', title: 'Raporti', steps: ['Shto 2,5 kg', 7, 'Fli 8 orë'], created_at: '2026-11-09T07:00:00.000Z' }))
-    await s.put('mentor_notes', note({ kind: 'plani_javes', period_start: '2026-11-09', title: 'Plani', created_at: '2026-11-15T19:00:00.000Z', sources: [{ label: 'ACSM', url: 'https://acsm.org' }, { label: 5 }] }))
+    clock = new Date(2026, 10, 9, 7, 0)
+    await s.put('mentor_notes', note({ period_start: '2026-11-09', title: 'Raporti', steps: ['Shto 2,5 kg', 7, 'Fli 8 orë'] }))
+    clock = new Date(2026, 10, 15, 19, 0)
+    await s.put('mentor_notes', note({ kind: 'plani_javes', period_start: '2026-11-09', title: 'Plani', sources: [{ label: 'ACSM', url: 'https://acsm.org' }, { label: 5 }] }))
     const latest = await mentorNoteFor(s, '2026-11-09')
     expect(latest).toMatchObject({ kind: 'plani_javes', title: 'Plani', sources: [{ label: 'ACSM', url: 'https://acsm.org' }] })
     const all = await mentorNotes(s, '2026-11-09')
