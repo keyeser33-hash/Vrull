@@ -238,6 +238,7 @@ Përdoruesi i zgjodhi vendimet me pyetjet Q1–Q8 (V58), pas analizës së seanc
   - Siguria (kur ndalon, alternativa kur dhemb);
   - Muskujt (figura dhe 3D, si sot) dhe "Pak histori" (§0.3e).
   "Shpjegoje më shumë" me AI mbetet (§0.3e).
+- **Thellësia dhe të dhënat (vendimi i përdoruesit, 15.11.2026):** udhëzuesi i plotë vlen për të gjitha ushtrimet (66 të Shortcut to Size dhe 689 të bibliotekës), në valë sipas `docs/agents/PLANI-UDHEZUESIT.md`. Të dhënat janë te `src/program/guides/` (një skedar për grup), me formën dhe rojën `guideProblems` te `src/program/exercise-guides.ts`; provat e çdo pohimi (lidhja dhe fjalia e burimit) mbeten te `docs/research/guides/` dhe nuk hyjnë në app.
 - **Burimet e udhëzuesit:** ato të §0.3e, plus ekspertët që botojnë me emër dhe titull të verifikueshëm (doktoraturë në shkencat e stërvitjes ose të ushqyerit, CSCS ose certifikim i ngjashëm), p.sh. Jim Stoppani ose Brad Schoenfeld: libri, artikulli ose kanali i tyre zyrtar. Pranohen edhe mjekët (MD) dhe fizioterapeutët (DPT) me titull të verifikueshëm, p.sh. Jordan Feigenbaum, MD ose Aaron Horschig, DPT, CSCS (vendimi i përdoruesit, 15.11.2026). Jo trajnerë pa titull, blogje, forume ose Wikipedia. Kontrolli si te §0.3e: orkestruesi dhe `vrull-reviewer`, me lidhjen dhe pjesën e burimit.
 - **Mbulimi:** 66 ushtrimet e Shortcut to Size me 0.40.0; pastaj e gjithë biblioteka (876 ushtrime të free-exercise-db) në valë sipas grupit të muskujve, secila me version të ri (rregulli i §0.3e). Deri te vala e tij, një ushtrim i bibliotekës ka lëvizjen, muskujt dhe "Shpjegoje më shumë".
 

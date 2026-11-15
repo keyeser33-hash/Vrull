@@ -234,7 +234,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-21 | Udhëzuesi i 66 ushtrimeve të Shortcut to Size: burimet, tempo, sinjalet, kontrolli, shqip dhe anglisht (me paketën e fakteve, E3-13; del me 0.40.0) | E3-20 |
 | V2-E3-22 | Seanca e re: tabela e seteve me rreshtin aktiv, ndryshimi i çdo seti, "Zhbëj", "Kontrollo setet" te mbyllja (provat përpara; 0.41.0) | E3-20 |
 | V2-E3-23 | Lëvizja e ushtrimit nga dy fotot me tempon, fotot e dyta në app, videot YouTube të zgjedhura, "Filmo veten" (0.41.0) | E3-20, E3-21 |
-| V2-E3-24 | Udhëzuesi i bibliotekës (876 ushtrime) në valë sipas grupit të muskujve, secila me version të ri | E3-21 |
+| V2-E3-24 | Udhëzuesi i plotë i bibliotekës (689 ushtrime të tjera) në valë sipas grupit të muskujve, me videot, secila me version të ri (PLANI-UDHEZUESIT.md) | E3-21 |
 | V2-E3-25 | Lëshimi 0.40.0 dhe 0.41.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-12 · Bordet e Mëso
