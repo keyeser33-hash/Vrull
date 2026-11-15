@@ -104,3 +104,24 @@ export async function saveSchedule(
     meal_plan: plan,
   })
 }
+
+/**
+ * Lëvizja e vakteve që vijnë nga ritmi i ditës te Sot (V57, V35): orët e reja vlejnë nga data e dhënë (dita e
+ * ushqimit e sotme, V46), sepse vaktet që lëvizin nuk kanë ardhur ende; ditët para saj mbeten me planin e
+ * mëparshëm. Pjesa e planit që pret nga nesër (Oraret e vakteve) hyn bashkë me të. Zgjimi, gjumi dhe oraret e
+ * stërvitjes nuk preken; vaktet e hequra mbeten të hequra.
+ */
+export async function moveMealTimes(store: LocalStore, times: Partial<Record<MealKey, string>>, date: string) {
+  const row = await settingsRow(store)
+  if (!row) return
+  const current = await readSchedule(store)
+  const base = mealPlanOn(current.plan, nextDate(date))
+  const wanted: MealPlan = { removed: [...base.removed], times: { ...base.times } }
+  for (const [meal, time] of Object.entries(times)) if (TIME.test(time)) wanted.times[meal as MealKey] = time
+  if (JSON.stringify(mealPlanOn(current.plan, date)) === JSON.stringify(wanted)) return
+  const yesterday = new Date(`${date}T12:00:00`)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const before = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+  const plan: StoredMealPlan = { ...wanted, from: date, previous: mealPlanOn(current.plan, before) }
+  await store.put('user_settings', { id: row.id, meal_plan: plan })
+}

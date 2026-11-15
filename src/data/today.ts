@@ -9,6 +9,7 @@ import type { MealKey } from '@/nutrition/meals'
 import { weekCardMonday } from '@/progress/weekly-goals'
 import { readDailyChoice } from './daily-state'
 import { readMissedInput } from './missed-day'
+import { minutesInFoodDay } from '@/nutrition/food-day'
 import { currentFoodDate, dayTargets, nutritionDay } from './nutrition'
 import { readProfile } from './profile'
 import { readSchedule, trainingTimeOn } from './schedule-settings'
@@ -152,6 +153,12 @@ export interface TodayView {
   protein: { eatenG: number; targetG: number | null }
   /** Ushqimi i ditës së ushqimit (V46): kaloritë dhe proteina kundrejt objektivave, dhe vakti i radhës. */
   food: TodayFood
+  /** Vaktet e orarit të ditës së ushqimit (V35), me çfarë u ngrënë, dhe orët e zgjimit e të gjumit (ritmi i ditës, V57). */
+  meals: TodayMeal[]
+  wakeTime: string
+  sleepTime: string
+  /** Çasti i tanishëm në minuta nga mesnata e ditës së ushqimit (V46). */
+  nowMinutes: number
   /** Ora e stërvitjes së sotme (V35) dhe e ditës së radhës: "Sot · 17:15 · Stërvitja 1". */
   trainingTime: string
   nextTime: string | null
@@ -175,6 +182,18 @@ export interface TodayView {
    * `nextDate` nesër) deri në "Ktheje për sot". Nuk vlen pasi seanca ka nisur.
    */
   postponed: boolean
+}
+
+/** Një vakt i orarit të ditës së ushqimit, për ritmin e ditës dhe segmentet e proteinës. */
+export interface TodayMeal {
+  meal: MealKey
+  time: string
+  /** Minutat nga mesnata e ditës së ushqimit (pas mesnate mbi 1440). */
+  minutes: number
+  /** Ka regjistrim ushqimi (proteina e shënuar "E mora" nuk e bën vaktin të ngrënë, V39). */
+  eaten: boolean
+  kcal: number
+  proteinG: number
 }
 
 export interface TodayFood {
@@ -255,6 +274,10 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
       targetProteinG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null,
       next: nutrition.next ? { meal: nutrition.next.meal, time: nutrition.next.time } : null,
     },
+    meals: nutrition.meals.map((slot) => ({ meal: slot.meal, time: slot.time, minutes: slot.minutes, eaten: slot.status === 'done', kcal: Math.round(slot.totals.kcal), proteinG: Math.round(slot.totals.proteinG) })),
+    wakeTime: profile.wakeTime,
+    sleepTime: profile.sleepTime,
+    nowMinutes: minutesInFoodDay(now, eatingDate),
     trainingTime: trainingTimeOn(schedule, today),
     nextTime: nextDate ? trainingTimeOn(schedule, nextDate) : null,
     weekCard: weekCardMonday(now),

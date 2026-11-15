@@ -1,4 +1,4 @@
-import { markStorySeen, readSeenStories, storyRing, subscribeSeenStories } from './stories'
+import { markStorySeen, readSeenStories, storyRing } from './stories'
 
 // Rrathët e story-ve te Sot (V57, SPEC §0.3f): "Si ndihesh?" i pari deri sa gjendja e ditës të plotësohet, pastaj të
 // pashikuarat, pastaj të shikuarat, dhe "Gati N%" i fundit pas plotësimit. Mentori vetëm kur ka shënim (V55).
@@ -43,33 +43,40 @@ describe('storyRing', () => {
 })
 
 describe('story-t e shikuara në telefon', () => {
-  beforeEach(() => localStorage.clear())
+  const USER = '11111111-1111-4111-8111-111111111111'
+  const freshStore = async () => {
+    const { createDatabase } = await import('@/data/db')
+    const { createLocalStore } = await import('@/data/store')
+    return createLocalStore(createDatabase(`stories-${crypto.randomUUID()}`), { userId: () => USER, now: () => new Date(2026, 10, 9, 10, 0) })
+  }
 
-  it('ruhen për ditën; një ditë tjetër fillon bosh', () => {
-    expect([...readSeenStories('2026-11-09')]).toEqual([])
-    markStorySeen('2026-11-09', 'ready')
-    markStorySeen('2026-11-09', 'mentor:n1')
-    expect([...readSeenStories('2026-11-09')].sort()).toEqual(['mentor:n1', 'ready'])
-    expect([...readSeenStories('2026-11-10')]).toEqual([])
-    markStorySeen('2026-11-10', 'ready')
-    expect([...readSeenStories('2026-11-09')]).toEqual([])
-    expect([...readSeenStories('2026-11-10')]).toEqual(['ready'])
+  it('ruhen për ditën; një ditë tjetër fillon bosh', async () => {
+    const store = await freshStore()
+    expect([...(await readSeenStories(store, '2026-11-09'))]).toEqual([])
+    await markStorySeen(store, '2026-11-09', 'ready')
+    await markStorySeen(store, '2026-11-09', 'mentor:n1')
+    expect([...(await readSeenStories(store, '2026-11-09'))].sort()).toEqual(['mentor:n1', 'ready'])
+    expect([...(await readSeenStories(store, '2026-11-10'))]).toEqual([])
+    await markStorySeen(store, '2026-11-10', 'ready')
+    expect([...(await readSeenStories(store, '2026-11-09'))]).toEqual([])
+    expect([...(await readSeenStories(store, '2026-11-10'))]).toEqual(['ready'])
   })
 
-  it('njofton ndërruesit kur shënohet një story', () => {
+  it('njofton dëgjuesit e store-it vetëm kur ndryshon diçka', async () => {
+    const store = await freshStore()
     const calls: string[] = []
-    const stop = subscribeSeenStories(() => calls.push('ndryshoi'))
-    markStorySeen('2026-11-09', 'ready')
-    markStorySeen('2026-11-09', 'ready')
+    const stop = store.subscribe((table) => calls.push(table))
+    await markStorySeen(store, '2026-11-09', 'ready')
+    await markStorySeen(store, '2026-11-09', 'ready')
     stop()
-    markStorySeen('2026-11-09', 'mentor:n1')
-    expect(calls).toEqual(['ndryshoi'])
+    expect(calls).toEqual(['_meta'])
   })
 
-  it('një vlerë e prishur te telefoni lexohet si bosh', () => {
-    localStorage.setItem('vrull.stories.seen', '{nuk është json')
-    expect([...readSeenStories('2026-11-09')]).toEqual([])
-    localStorage.setItem('vrull.stories.seen', JSON.stringify({ date: 5, ids: 'x' }))
-    expect([...readSeenStories('2026-11-09')]).toEqual([])
+  it('një vlerë e prishur te telefoni lexohet si bosh', async () => {
+    const store = await freshStore()
+    await store.writeDevice('stories-seen', { date: 5, ids: 'x' })
+    expect([...(await readSeenStories(store, '2026-11-09'))]).toEqual([])
+    await store.writeDevice('stories-seen', { date: '2026-11-09', ids: ['ready', 7, null] })
+    expect([...(await readSeenStories(store, '2026-11-09'))]).toEqual(['ready'])
   })
 })

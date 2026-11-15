@@ -158,6 +158,31 @@ describe('pamja e Sot nga baza lokale', () => {
     expect(view.protein.targetG).toBeGreaterThan(0)
   })
 
+  it('ritmi i ditës: vaktet e orarit me orët, të ngrënat me kcal dhe proteinë, zgjimi, gjumi dhe çasti i tanishëm', async () => {
+    const { store } = await boardWeek()
+    await store.put('diary_entries', { date: '2026-11-08', meal: 'breakfast_1', food_id: null, grams: 100, kcal: 300, protein_g: 20, carbs_g: 30, fat_g: 10, logged_at: SUNDAY.toISOString() })
+    await store.put('diary_entries', { date: '2026-11-08', meal: 'breakfast_1', food_id: null, grams: 100, kcal: 100, protein_g: 8, carbs_g: 10, fat_g: 5, logged_at: SUNDAY.toISOString() })
+    const view = await todayView(store)
+    expect(view.wakeTime).toBe('07:00')
+    expect(view.sleepTime).toBe('23:00')
+    // 10:00 nga mesnata e ditës së ushqimit.
+    expect(view.nowMinutes).toBe(600)
+    // Ditë stërvitjeje 17:15: vakti para 15 min më parë, pas stërvitjes 15 min pas mbarimit, darka 1 orë pas tij (V62).
+    expect(view.meals.map((meal) => `${meal.time} ${meal.meal}`)).toEqual([
+      '07:00 breakfast_1',
+      '07:45 breakfast_2',
+      '10:30 snack_am',
+      '13:00 lunch',
+      '15:30 snack_pm',
+      '17:00 pre_workout',
+      '18:35 post_workout',
+      '19:35 dinner',
+      '22:30 bedtime',
+    ])
+    expect(view.meals[0]).toEqual({ meal: 'breakfast_1', time: '07:00', minutes: 420, eaten: true, kcal: 400, proteinG: 28 })
+    expect(view.meals.filter((meal) => meal.eaten)).toHaveLength(1)
+  })
+
   it('pesha e javës e zgjedhur nga përdoruesi vlen para propozimit', async () => {
     const { store } = await boardWeek()
     const { changeWeekWeight } = await import('./week-weights')

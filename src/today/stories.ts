@@ -1,4 +1,4 @@
-import { safeStorage } from '@/lib/safe-storage'
+import type { LocalStore } from '@/data/store'
 
 // Rrathët e story-ve te Sot (V57, SPEC §0.3f), pa UI: radha dhe gjendja "e shikuar". Radha: "Si ndihesh?" (deri sa
 // gjendja e ditës të plotësohet), pastaj të pashikuarat, pastaj të shikuarat; "Gati N%" e fundit pas plotësimit.
@@ -46,37 +46,24 @@ export function storyRing(input: StoryInput): Story[] {
 
 // --- Të shikuarat në telefon ---
 
-const KEY = 'vrull.stories.seen'
-const listeners = new Set<() => void>()
+const SEEN_KEY = 'stories-seen'
 
 interface Stored {
   date: string
   ids: string[]
 }
 
-function read(): Stored | null {
-  try {
-    const value = JSON.parse(safeStorage.getItem(KEY) ?? 'null') as Partial<Stored> | null
-    return value && typeof value.date === 'string' && Array.isArray(value.ids) ? { date: value.date, ids: value.ids.filter((id): id is string => typeof id === 'string') } : null
-  } catch {
-    return null
-  }
+/** Çelësat e story-ve të shikuara në datën e dhënë (dita e ushqimit); një ditë tjetër fillon bosh. */
+export async function readSeenStories(store: LocalStore, date: string): Promise<Set<string>> {
+  const value = (await store.readDevice(SEEN_KEY)) as Partial<Stored> | undefined
+  const valid = !!value && value.date === date && Array.isArray(value.ids)
+  return new Set(valid ? (value.ids as unknown[]).filter((id): id is string => typeof id === 'string') : [])
 }
 
-export function readSeenStories(date: string): Set<string> {
-  const stored = read()
-  return new Set(stored?.date === date ? stored.ids : [])
-}
-
-export function markStorySeen(date: string, key: string): void {
-  const seen = readSeenStories(date)
+/** Shënon një story si të shikuar për ditën; dëgjuesit e store-it e marrin (`DEVICE_TABLE`). */
+export async function markStorySeen(store: LocalStore, date: string, key: string): Promise<void> {
+  const seen = await readSeenStories(store, date)
   if (seen.has(key)) return
   seen.add(key)
-  safeStorage.setItem(KEY, JSON.stringify({ date, ids: [...seen] }))
-  for (const listener of [...listeners]) listener()
-}
-
-export function subscribeSeenStories(listener: () => void): () => void {
-  listeners.add(listener)
-  return () => void listeners.delete(listener)
+  await store.writeDevice(SEEN_KEY, { date, ids: [...seen] } satisfies Stored)
 }

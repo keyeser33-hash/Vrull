@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
-import { mealPlanOn, readSchedule, saveSchedule, trainingTimeOn } from './schedule-settings'
+import { mealPlanOn, moveMealTimes, readSchedule, saveSchedule, trainingTimeOn } from './schedule-settings'
 import { createLocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06).
@@ -52,5 +52,46 @@ describe('oraret e përdoruesit', () => {
     const first = await readSchedule(store)
     await saveSchedule(store, { ...first, wakeTime: '08:00' }, '2026-12-09')
     expect((await readSchedule(store)).plan.from).toBe('2026-12-08')
+  })
+})
+
+describe('lëvizja e vakteve nga ritmi i ditës (V57)', () => {
+  it('ora e re vlen nga sot; dita e djeshme mbetet me planin e mëparshëm', async () => {
+    const store = await setup()
+    await moveMealTimes(store, { dinner: '19:15' }, '2026-12-07')
+    const saved = await readSchedule(store)
+    expect(saved.plan).toMatchObject({ from: '2026-12-07', times: { dinner: '19:15' }, previous: { removed: [], times: {} } })
+    expect(mealPlanOn(saved.plan, '2026-12-06').times).toEqual({})
+    const today = await nutritionDay(store, '2026-12-07', at('2026-12-07', '09:00'))
+    expect(today.meals.find((meal) => meal.meal === 'dinner')?.time).toBe('19:15')
+    const yesterday = await nutritionDay(store, '2026-12-06', at('2026-12-07', '09:00'))
+    expect(yesterday.meals.find((meal) => meal.meal === 'dinner')?.time).not.toBe('19:15')
+  })
+
+  it('vaktet e lëvizura bashkë ruhen me orët e tyre; një lëvizje e re i shton te ato ekzistuese', async () => {
+    const store = await setup()
+    await moveMealTimes(store, { snack_pm: '17:00', dinner: '19:30' }, '2026-12-07')
+    await moveMealTimes(store, { lunch: '13:30' }, '2026-12-07')
+    expect((await readSchedule(store)).plan.times).toEqual({ snack_pm: '17:00', dinner: '19:30', lunch: '13:30' })
+  })
+
+  it('pa ndryshim real nuk shkruan; një orë e pavlefshme anashkalohet', async () => {
+    const store = await setup()
+    await moveMealTimes(store, { dinner: '25:99' }, '2026-12-07')
+    expect((await readSchedule(store)).plan.from).toBeNull()
+    await moveMealTimes(store, { dinner: '19:15' }, '2026-12-07')
+    const first = (await readSchedule(store)).plan
+    await moveMealTimes(store, { dinner: '19:15' }, '2026-12-07')
+    expect((await readSchedule(store)).plan).toEqual(first)
+  })
+
+  it('vaktet e hequra dhe plani që pret nga nesër mbahen; ditët para sot mbeten me planin e vjetër', async () => {
+    const store = await setup()
+    const schedule = await readSchedule(store)
+    await saveSchedule(store, { ...schedule, plan: { removed: ['snack_am'], times: { lunch: '14:00' } } }, '2026-12-07')
+    await moveMealTimes(store, { dinner: '19:15' }, '2026-12-07')
+    const saved = await readSchedule(store)
+    expect(mealPlanOn(saved.plan, '2026-12-07')).toEqual({ removed: ['snack_am'], times: { lunch: '14:00', dinner: '19:15' } })
+    expect(mealPlanOn(saved.plan, '2026-12-06')).toEqual({ removed: [], times: {} })
   })
 })

@@ -59,6 +59,8 @@ export interface MealSupplement {
 export interface MealSlot {
   meal: MealKey
   time: string
+  /** Minutat nga mesnata e ditës së ushqimit (pas mesnate mbi 1440), si te `mealSchedule`. */
+  minutes: number
   status: MealStatus
   entries: DiaryEntry[]
   totals: Macros
@@ -166,7 +168,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const today = date === current
   const nowMinutes = minutesInFoodDay(now, date)
   const minutesByMeal = new Map(planned.map((entry) => [entry.meal, entry.minutes]))
-  const meals: MealSlot[] = planned.map(({ meal, time }) => {
+  const meals: MealSlot[] = planned.map(({ meal, time, minutes }) => {
     const rows = entries.filter((row) => row.meal === meal).sort(byLoggedAt)
     const list = rows.map((row) => {
       const food = foodsById.get(String(row.food_id))
@@ -190,6 +192,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     return {
       meal,
       time,
+      minutes,
       // Proteina e shënuar "E mora" nuk e bën vaktin të ngrënë (V39).
       status: list.some((entry) => !isSupplementSource(entry.sourceId)) ? 'done' : 'todo',
       entries: list,
