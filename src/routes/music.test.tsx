@@ -263,6 +263,8 @@ describe('ekrani "Trupi në ritëm"', () => {
   it('gjatë pushimit pulsi bie në gjysmën e tempos dhe muzika nuk ndërrohet', async () => {
     const user = userEvent.setup()
     await renderSession()
+    // Seti i parë nis me 0 kg dhe "Ruaj setin" pret peshën (F5).
+    await user.click(screen.getByRole('button', { name: /^Rrit peshën me/ }))
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
     await screen.findByRole('button', { name: 'Kapërce' })
     await user.click(await music(SONG))

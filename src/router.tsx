@@ -5,7 +5,7 @@ import { DayModeRoot } from '@/components/layout/day-mode-root'
 import type { ShellHandle, TabId } from '@/components/layout/nav-places'
 import { AppGate } from '@/routes/gate'
 import { Moved } from '@/routes/moved'
-import { CrashPage, NotFoundPage } from '@/routes/not-found'
+import { CrashPage, NotFoundPage } from '@/components/layout/not-found'
 
 /** Tab-i aktiv i një rruge te korniza; `null` pa tab-bar (cilësimet, editorët, shtimi). */
 const tab = (id: TabId | null): { handle: ShellHandle } => ({ handle: { tab: id } })
