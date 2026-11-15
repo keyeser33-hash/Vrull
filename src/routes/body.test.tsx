@@ -90,7 +90,15 @@ describe('Trupi', () => {
 
   it('kreu: Shtresat dhe Trupi sipas matjeve; rikuperimi: gjoksi i lodhur i pari, me fjalë', async () => {
     await renderPage()
-    expect(await screen.findByRole('heading', { level: 1, name: 'Trupi' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Progresi' })).toBeInTheDocument()
+    // Kreu i Progresit, pa shigjetë mbrapa (V2-E3-30); tab-i Trupi i zgjedhur, pas Përmbledhjes.
+    expect(screen.queryByRole('button', { name: /^Mbrapa/ })).not.toBeInTheDocument()
+    expect(screen.getAllByRole('tab').map((tab) => [tab.textContent, tab.getAttribute('aria-selected')])).toEqual([
+      ['Përmbledhja', 'false'],
+      ['Trupi', 'true'],
+      ['Historiku', 'false'],
+      ['Arritjet', 'false'],
+    ])
     expect(screen.getByRole('link', { name: 'Shtresat' })).toHaveAttribute('href', '/progresi/trupi/shtresat')
     expect(screen.getByRole('link', { name: 'Trupi sipas matjeve' })).toHaveAttribute('href', '/progresi/trupi/matjet')
     expect(await screen.findByRole('radio', { name: 'Rikuperimi' })).toHaveAttribute('aria-checked', 'true')
@@ -218,7 +226,7 @@ describe('Trupi', () => {
     language.set('en')
     const user = userEvent.setup()
     await renderPage('/progresi/trupi?pamja=volumi')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Body' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Progress' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Layers' })).toBeInTheDocument()
     expect(await screen.findByRole('radio', { name: 'Weekly volume' })).toHaveAttribute('aria-checked', 'true')
     const list = screen.getByRole('region', { name: 'Muscles' })

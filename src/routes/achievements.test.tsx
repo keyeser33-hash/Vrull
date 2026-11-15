@@ -98,8 +98,8 @@ describe('Progresi › Arritjet', () => {
     await waitFor(() => expect(title.nextElementSibling).toHaveTextContent(/^E enjte, 12 nëntor · Faza 1 · Java 1$/))
     const tabs = screen.getByRole('tablist', { name: 'Pamjet e Progresit' })
     expect(within(tabs).getAllByRole('tab').map((tab) => [tab.textContent, tab.getAttribute('href'), tab.getAttribute('aria-selected')])).toEqual([
-      ['Trupi', '/progresi/trupi', 'false'],
       ['Përmbledhja', '/progresi', 'false'],
+      ['Trupi', '/progresi/trupi', 'false'],
       ['Historiku', '/progresi/historiku', 'false'],
       ['Arritjet', '/progresi/arritjet', 'true'],
     ])

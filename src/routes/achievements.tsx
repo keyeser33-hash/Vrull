@@ -6,8 +6,6 @@ import { ProgressTrack } from '@/components/ui/progress-bar'
 import { surfaceClass } from '@/components/ui/surface'
 import { type Achievement, achievementsView, type AchievementsView } from '@/data/achievements'
 import { store, useLocalQuery } from '@/data/app-data'
-import { trainingSnapshot } from '@/data/training'
-import { programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { nearestAchievement } from '@/progress/achievements'
@@ -24,15 +22,13 @@ const SHEET_PARAM = 'arritja'
 export function AchievementsPage() {
   const { t } = useI18n()
   const view = useLocalQuery(() => achievementsView(store), [])
-  const snapshot = useLocalQuery(() => trainingSnapshot(store), [])
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const openKey = params.get(SHEET_PARAM)
   const open = view?.achievements.find((entry) => entry.key === openKey)
-  const label = snapshot && !snapshot.completed ? programWeekLabel(t, snapshot.plan) : undefined
   return (
     <div className="flex flex-col gap-3.5">
-      <ProgressHeader active="achievements" label={label} />
+      <ProgressHeader active="achievements" />
       {view ? (
         <>
           <div className="flex items-baseline justify-between gap-2">

@@ -131,7 +131,7 @@ describe('Historiku', () => {
   it('pa seanca: gjendja bosh', async () => {
     await renderAt('/progresi/historiku')
     expect(await screen.findByRole('heading', { level: 2, name: 'Ende pa seanca' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: 'Historiku' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Progresi' })).toBeInTheDocument()
   })
 
   it('seancat sipas javës së programit, kalendari i muajit dhe seanca e hapur', async () => {
@@ -255,7 +255,7 @@ describe('Historiku', () => {
     const user = userEvent.setup()
     await renderAt('/progresi/historiku')
     expect(await screen.findByText('Shortcut to Size · 6 sessions since 25 October')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: 'History' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Progress' })).toBeInTheDocument()
     const month = screen.getByRole('region', { name: 'November 2026' })
     expect(month).toHaveTextContent('2 sessions · 2 records')
     expect(month).toHaveTextContent('Weeks start on Sunday')
@@ -284,7 +284,7 @@ describe('Historiku', () => {
     const tabs = await screen.findByRole('tablist', { name: 'Pamjet e Progresit' })
     expect(within(tabs).getByRole('tab', { name: 'Përmbledhja' })).toHaveAttribute('aria-selected', 'true')
     await user.click(within(tabs).getByRole('tab', { name: 'Historiku' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Historiku' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Progresi' })).toBeInTheDocument()
     expect(within(screen.getByRole('tablist', { name: 'Pamjet e Progresit' })).getByRole('tab', { name: 'Historiku' })).toHaveAttribute('aria-selected', 'true')
   })
   it('seanca e një dite "Më e lehtë" (V50) ka shënimin te lista dhe te seanca, në të dyja gjuhët', async () => {

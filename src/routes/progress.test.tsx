@@ -84,8 +84,8 @@ describe('Progresi', () => {
     // Tab-et (0.23): Progresi hapet te Përmbledhja; Trupi, Historiku dhe Arritjet janë rrugët e tyre.
     const tabs = screen.getByRole('tablist', { name: 'Pamjet e Progresit' })
     expect(within(tabs).getAllByRole('tab').map((tab) => [tab.textContent, tab.getAttribute('href'), tab.getAttribute('aria-selected')])).toEqual([
-      ['Trupi', '/progresi/trupi', 'false'],
       ['Përmbledhja', '/progresi', 'true'],
+      ['Trupi', '/progresi/trupi', 'false'],
       ['Historiku', '/progresi/historiku', 'false'],
       ['Arritjet', '/progresi/arritjet', 'false'],
     ])
@@ -143,7 +143,7 @@ describe('Progresi', () => {
     expect(within(weight).getByRole('link', { name: 'Add measurement' })).toHaveAttribute('href', '/progresi/matja')
     expect(within(weight).getByRole('link', { name: 'History' })).toHaveAttribute('href', '/progresi/weight_kg')
     expect(within(weight).getByRole('link', { name: /^Waist/ })).toHaveTextContent('84 cm')
-    expect(within(screen.getByRole('tablist', { name: 'Progress views' })).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Body', 'Summary', 'History', 'Achievements'])
+    expect(within(screen.getByRole('tablist', { name: 'Progress views' })).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Summary', 'Body', 'History', 'Achievements'])
     expect(await screen.findByText('Strength (e1RM) shows up here after your first weighted sets.')).toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/[ëç]/)
 

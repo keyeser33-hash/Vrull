@@ -68,7 +68,7 @@ export function ProgressPage() {
   if (!start || !view) {
     return (
       <div className="flex flex-col gap-5">
-        <ProgressHeader active="summary" label={label} />
+        <ProgressHeader active="summary" />
         <div aria-hidden className="h-80 rounded-xl bg-surface" />
       </div>
     )
@@ -76,7 +76,7 @@ export function ProgressPage() {
   if (start.empty) return <ProgressEmpty weightKg={start.weightKg} snapshot={snapshot} label={label} />
   return (
     <div className="flex flex-col gap-3.5">
-      <ProgressHeader active="summary" label={label} />
+      <ProgressHeader active="summary" />
       <WeekLink />
       <TrainingSections />
       <WeightSection view={view} />
@@ -218,7 +218,7 @@ function ProgressEmpty({ weightKg, snapshot, label }: { weightKg: number | null;
 
   return (
     <div className="flex min-h-[calc(100dvh-var(--spacing-tab-bar)-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-[18px]">
-      <ProgressHeader active="summary" label={label} />
+      <ProgressHeader active="summary" />
       <EmptyState
         title={t('progress.emptyTitle')}
         intro={t('progress.emptyIntro')}

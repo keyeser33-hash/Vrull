@@ -2,8 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { BodyFigure } from '@/components/body/body-figure'
 import { MuscleCard } from '@/components/body/muscle-card'
-import { BackHeader } from '@/components/layout/page'
-import { ProgressTabs } from '@/components/layout/progress-tabs'
+import { ProgressHeader } from '@/components/layout/progress-tabs'
 import { Sheet } from '@/components/layout/sheet'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -40,7 +39,7 @@ import {
 // Vrullit, me kamerën e lirë dhe shinën e këndeve; pa WebGL, figura 2D përpara dhe mbrapa me të njëjtat
 // ngjyra. Prekja e një muskuli e fokuson: karta poshtë majtas me vijën te muskuli thotë rikuperimin
 // dhe javën e grupit, dhe rreshti i saj i fundit hap fletën e grupit (?muskuli=id). Legjenda është me
-// fjalë dhe lista poshtë ka të njëjtat vlera. Sipër djathtas: Shtresat dhe Trupi sipas matjeve.
+// fjalë dhe lista poshtë ka të njëjtat vlera. Kreu është ai i Progresit (V2-E3-30); veprimet para profilit: Shtresat dhe Trupi sipas matjeve.
 
 const BodyModel = lazy(() => import('@/components/body/body-model'))
 
@@ -52,24 +51,19 @@ const headerAction = buttonVariants({ variant: 'secondary', ground: 'page', size
 function BodyHeader() {
   const { t } = useI18n()
   return (
-    <>
-      <BackHeader
-        title={t('tab.body')}
-        back={t('body.backToProgress')}
-        fallback="/progresi"
-        actions={
-          <>
-            <Link to="/progresi/trupi/shtresat" aria-label={t('bodyModel.layers')} className={headerAction}>
-              <Icon name="shtresat" size={20} />
-            </Link>
-            <Link to="/progresi/trupi/matjet" aria-label={t('bodyModel.byMeasurements')} className={headerAction}>
-              <Icon name="matja" size={20} />
-            </Link>
-          </>
-        }
-      />
-      <ProgressTabs active="body" />
-    </>
+    <ProgressHeader
+      active="body"
+      actions={
+        <>
+          <Link to="/progresi/trupi/shtresat" aria-label={t('bodyModel.layers')} className={headerAction}>
+            <Icon name="shtresat" size={20} />
+          </Link>
+          <Link to="/progresi/trupi/matjet" aria-label={t('bodyModel.byMeasurements')} className={headerAction}>
+            <Icon name="matja" size={20} />
+          </Link>
+        </>
+      }
+    />
   )
 }
 

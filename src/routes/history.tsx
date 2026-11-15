@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
-import { ProgressTabs } from '@/components/layout/progress-tabs'
+import { ProgressHeader } from '@/components/layout/progress-tabs'
 import { Button } from '@/components/ui/button'
 import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
@@ -65,13 +65,7 @@ export function HistoryPage() {
   const { t, fmt } = useI18n()
   const overview = useLocalQuery(() => historyOverview(store), [])
   const [today] = useState(() => localDate(new Date()))
-  const back = <BackHeader title={t('history.title')} back={t('body.backToProgress')} fallback="/progresi" />
-  const header = (
-    <>
-      {back}
-      <ProgressTabs active="history" />
-    </>
-  )
+  const header = <ProgressHeader active="history" />
   if (!overview) {
     return (
       <div className="flex flex-col gap-3.5">
@@ -97,11 +91,8 @@ export function HistoryPage() {
     : t('history.subtitleNoProgramme', { count: overview.total, date: since })
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="flex flex-col">
-        {back}
-        <span className="-mt-1 type-caption text-muted-foreground tabular-nums">{subtitle}</span>
-      </div>
-      <ProgressTabs active="history" />
+      <ProgressHeader active="history" />
+      <span className="type-caption text-muted-foreground tabular-nums">{subtitle}</span>
       <MonthCard overview={overview} today={today} />
       {overview.weeks.map((week) => (
         <WeekSection key={week.key} week={week} today={today} activeProgram={overview.programName} />
