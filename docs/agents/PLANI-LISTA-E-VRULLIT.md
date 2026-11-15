@@ -44,6 +44,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Të zakonshmet 502–700 (15.11.2026, 3169060, 36bfc2e):** `common/006.json` dhe `007.json`; rishikimi i pavarur gjeti 61 probleme te 199 hyrje (`docs/research/rishikimi-te-zakonshmet-006-007.md`), u zbatuan të gjitha (portokalli navel u bashkua te #71). Byreku mbetet recetë (V31), megjithëse Livsmedelsverket ka një byrek (livsmedelsverket-6948). Gjithsej 698 të zakonshme, 0 gabime, 14 shënime të shqyrtuara; roja 21 367 rreshta, 0 gabime.
 
+- **Të zakonshmet 702–1000 dhe mbyllja e valës 3 (15.11.2026, 35f7e83, 3a0a23c):** `common/008–010.json`; rishikimi i pavarur gjeti 97 probleme te 299 hyrje (`docs/research/rishikimi-te-zakonshmet-008-010.md`), me 16 rreshta për ushqime të rralla ose variante që u hoqën (84 hyrje gjithsej). Rezultati: **913 të zakonshme**, 0 gabime, 15 shënime të shqyrtuara; roja 21 268 rreshta, 0 gabime. Katër rishikimet gjetën 82, 98, 61 dhe 97 probleme (28–49 % e hyrjeve); asnjë grup nuk hyri te `main` pa rishikim. Mbeten: emrat shqip i kontrollon Admini (`name_sq_checked`), pjatat shqiptare si receta (vala 4), kopja në telefon dhe migrimi (vala 5).
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
