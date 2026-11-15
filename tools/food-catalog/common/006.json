@@ -457,17 +457,6 @@
     ]
   },
   {
-    "key": "orange-navel",
-    "rank": 544,
-    "name_sq": "Portokall navel",
-    "name_en": "Oranges, navel, raw",
-    "group": "Fruta",
-    "preferred": "usda-fdc-327501",
-    "also": [
-      "usda-fdc-169917"
-    ]
-  },
-  {
     "key": "guava-raw",
     "rank": 545,
     "name_sq": "Guava",
