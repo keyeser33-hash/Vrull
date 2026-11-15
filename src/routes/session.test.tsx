@@ -96,6 +96,10 @@ async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
         const skip = screen.queryByRole('button', { name: /^(Kapërce|Skip)$/ })
         if (skip) return { button: skip, save: false }
         const button = screen.getByRole('button', { name: saveName })
+        // Një ushtrim pa peshë të mëparshme nis me 0 kg dhe "Ruaj setin" pret peshën (F5): shtohet një hap.
+        if ((button as HTMLButtonElement).disabled && screen.queryByText(/^(Shkruaj peshën|Enter the weight)$/)) {
+          return { button: screen.getByRole('button', { name: /^(Rrit peshën me|Increase weight by)/ }), save: false }
+        }
         expect(button).toBeEnabled()
         return { button, save: true }
       },
@@ -321,11 +325,15 @@ describe('seanca (V2-E1-07)', () => {
     const rir = screen.getByRole('group', { name: 'Sa të kishin mbetur (RIR)' })
     expect(within(rir).getByRole('button', { name: '2', pressed: true })).toBeInTheDocument()
     await user.click(within(rir).getByRole('button', { name: '3' }))
+    // F5: me 0 kg "Ruaj setin" është i çaktivizuar dhe tregon pse.
+    expect(screen.getByRole('button', { name: 'Ruaj setin' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Ruaj setin' })).toHaveAccessibleDescription('Shkruaj peshën')
     await user.click(screen.getByRole('button', { name: 'Shkruaj peshën, 0 kg' }))
     const input = within(screen.getByRole('dialog', { name: 'Pesha, kg' })).getByRole('textbox', { name: 'Pesha, kg' })
     await user.clear(input)
     await user.type(input, '47,5')
     await user.click(within(screen.getByRole('dialog', { name: 'Pesha, kg' })).getByRole('button', { name: 'Ruaj' }))
+    expect(screen.queryByText('Shkruaj peshën')).not.toBeInTheDocument()
     await user.click(await screen.findByRole('button', { name: 'Ruaj setin' }))
     // Seti i parë i ushtrimit nuk është rekord: pa banderolë, pa etiketë.
     expect(await screen.findByText('Seti 1 u ruajt: 47,5 × 12')).toBeInTheDocument()

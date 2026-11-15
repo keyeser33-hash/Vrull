@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useId, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
@@ -546,6 +546,9 @@ function SetView({
   const [seconds, setSeconds] = useState(defaults.seconds ?? 0)
   const [rir, setRir] = useState(defaults.rir)
   const timed = tracking === 'timed'
+  // Një slot me peshë (jo pesha e trupit, jo me kohë) nuk ruhet me 0 kg: pesha shkruhet fillimisht.
+  const needsWeight = tracking === 'weight_reps' && weightKg <= 0
+  const weightNeededId = useId()
   const editing = params.get('shkruaj')
   const edit = (field: 'pesha' | 'perseritjet' | 'sekondat') => setParams({ shkruaj: field })
   const clamp = (value: number, max = 999) => Math.min(max, Math.max(0, Math.round(value * 100) / 100))
@@ -613,11 +616,17 @@ function SetView({
         <Button
           variant="primary"
           size="xl"
-          disabled={busy || (!timed && reps < 1) || (timed && seconds < 1)}
+          disabled={busy || (!timed && reps < 1) || (timed && seconds < 1) || needsWeight}
+          aria-describedby={needsWeight ? weightNeededId : undefined}
           onClick={() => onSave({ weightKg, reps: timed ? null : reps, seconds: timed ? seconds : null, rir })}
         >
           {t(segment ? 'session.saveSegment' : 'session.save')}
         </Button>
+        {needsWeight ? (
+          <p id={weightNeededId} className="text-center type-caption text-muted-foreground">
+            {t('session.weightNeeded')}
+          </p>
+        ) : null}
         {onSkipSegment ? (
           <Button variant="ghost" disabled={busy} onClick={onSkipSegment}>
             {t('session.skipSegment')}
