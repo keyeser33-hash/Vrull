@@ -256,6 +256,12 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 
 **Gjendja (15.11.2026, 02:40):** me pyetjen e përdoruesit u shtua rreshti i katërt "Sot me story" (6 borde): rrathët e story-ve në krye të Sot-it ("Si ndihesh?", "A e dije?", mentori; të dielën "Java jote" dhe kuizi), gjendja e ditës si 5 story (4 pyetjet dhe gatishmëria me shembullin 54% të §0.3d) dhe "A e dije?" si story. Vendimi 8 te shënimi; ndryshon kartën e V50 dhe vendin e "A e dije?" te Sot (V56), ndaj pret miratimin. Bordet u panë me built-in browser dhe u ndreqën (vijat e shpejtësisë, shiriti i lëvizjes i fshehur, 6 orë si te shembulli).
 
+## V2-E3-19 · Sot i ri
+
+Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, dita e pushimit, fleta e një dite të kaluar dhe e një të ardhshme, plus story-t e gjendjes së ditës dhe "A e dije?". Rregullat: SPEC §0.3f (V57). **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit dhe del me 0.40.0.
+
+**Gjendja (15.11.2026, 02:55):** 5 bordet e Sot-it të ri u bënë pas pyetjeve Q1–Q6, u panë me built-in browser dhe u ndreqën (pikat e së dielës sipas numrave të ushqimit dhe ujit). Presin komentet.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
