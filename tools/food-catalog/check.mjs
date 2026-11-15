@@ -12,6 +12,7 @@ export const SOURCE_LICENSES = {
   usda_fndds: 'CC0-1.0',
   ciqual: 'etalab-2.0',
   cofid: 'OGL-3.0',
+  livsmedelsverket: 'CC-BY-4.0',
 }
 
 export const KCAL_TOLERANCE = 0.15

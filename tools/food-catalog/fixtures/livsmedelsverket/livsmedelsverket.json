@@ -1,0 +1,410 @@
+{
+ "source": "https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel",
+ "count": 8,
+ "foods": [
+  {
+   "nummer": 1,
+   "version": "2026-06-29T00:18:24.893",
+   "typ": "Analysed",
+   "name_en": "Beef tallow",
+   "name_sv": "Nöt talg",
+   "group": "FAT OR OIL",
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 3700,
+     "enhet": "kJ",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 902,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "LZ"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "LZ"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 100,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  },
+  {
+   "nummer": 120,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Analysed",
+   "name_en": "Fermented milk 0.5% fat e.g. lättfil",
+   "name_sv": "Fil 0,5% fett",
+   "group": "FERMENTED MILK PRODUCT",
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 164,
+     "enhet": "kJ",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 39,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 3.5,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 5.0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 0.5,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FIBT",
+     "namn": "FIBT",
+     "varde": 0.0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "LZ"
+    }
+   ]
+  },
+  {
+   "nummer": 130,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Calculated",
+   "name_en": "Only kilojoules",
+   "name_sv": "Bara kJ",
+   "group": null,
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 500,
+     "enhet": "kJ",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  },
+  {
+   "nummer": 131,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Calculated",
+   "name_en": "No carbohydrates",
+   "name_sv": "Inga kolhydrater",
+   "group": null,
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 100,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  },
+  {
+   "nummer": 132,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Calculated",
+   "name_en": "Protein not per 100 g edible",
+   "name_sv": "Protein per portion",
+   "group": null,
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 100,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 5,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "T",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 1,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  },
+  {
+   "nummer": 133,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Analysed",
+   "name_en": "Cooking oil",
+   "name_sv": "Matolja",
+   "group": "FAT OR OIL",
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 902,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 102,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "MN"
+    }
+   ]
+  },
+  {
+   "nummer": 134,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Analysed",
+   "name_en": "Impossible",
+   "name_sv": "Omöjlig",
+   "group": null,
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 902,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 0,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 120,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  },
+  {
+   "nummer": 200,
+   "version": "2026-06-29T00:21:55.5",
+   "typ": "Analysed",
+   "name_en": "Muesli",
+   "name_sv": "Muesli",
+   "group": "CEREAL PRODUCT",
+   "nutrients": [
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 1600,
+     "enhet": "kJ",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "ENERC",
+     "namn": "ENERC",
+     "varde": 380,
+     "enhet": "kcal",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "PROT",
+     "namn": "PROT",
+     "varde": 10,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "CHO",
+     "namn": "CHO",
+     "varde": 70,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FAT",
+     "namn": "FAT",
+     "varde": 5,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    },
+    {
+     "euroFIRkod": "FIBT",
+     "namn": "FIBT",
+     "varde": 8.2,
+     "enhet": "g",
+     "viktGram": 100,
+     "matrisenhetkod": "W",
+     "vardetypkod": "BE"
+    }
+   ]
+  }
+ ]
+}

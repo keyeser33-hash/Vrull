@@ -3,7 +3,7 @@
 // parë (sha256 bosh te sources.json) e shkruan sha256 aty; më pas një ndryshim është gabim.
 //
 // Llojet (`kind` te sources.json): `zip` (parazgjedhja: një zip, shpaketohet), `file` (një skedar te <dosja>/<id>/<name>),
-// `parts` (disa skedarë me `name`, `url`, `sha256` secili).
+// `parts` (disa skedarë me `name`, `url`, `sha256` secili), `api` (Livsmedelsverket: paketa JSON e ndërtuar nga API zyrtare).
 // Shkarkimet vetëm nga URL-të e faqeve zyrtare që janë te sources.json; asnjë ridrejtim jashtë tyre nuk anashkalohet.
 //
 // Përdorimi: node tools/food-catalog/download.mjs <dosja> [id ...]   (p.sh. /tmp/food-src; me id, vetëm ato burime)
@@ -13,6 +13,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { fetchLivsmedelsverketBundle } from './livsmedelsverket.mjs'
 
 const SOURCES = fileURLToPath(new URL('./sources.json', import.meta.url))
 
@@ -60,7 +62,7 @@ async function main() {
         console.log(`${label}: ekziston, sha256 i njëjtë, kapërcehet`)
       } else {
         console.log(`${label}: po shkarkohet ${item.url}`)
-        bytes = await fetchBytes(item.url)
+        bytes = kind === 'api' ? await fetchLivsmedelsverketBundle(file.url) : await fetchBytes(item.url)
         writeFileSync(path, bytes)
       }
       const actual = sha256Of(bytes)

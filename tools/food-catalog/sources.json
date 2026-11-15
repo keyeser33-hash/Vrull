@@ -88,6 +88,21 @@
       "url": "https://assets.publishing.service.gov.uk/media/60538b91e90e07527df82ae4/McCance_Widdowsons_Composition_of_Foods_Integrated_Dataset_2021..xlsx",
       "sha256": "436e9445ef2adb2a75f3d7edd51302de3adad25385f9795fc94ba58bd030e97d",
       "bytes": 4629542
+    },
+    {
+      "id": "livsmedelsverket",
+      "name": "Livsmedelsdatabasen (API, paketa JSON)",
+      "version": "2026-06-29",
+      "page": "https://www.livsmedelsverket.se/en/about-us/open-data/food-composition-data/",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "The Swedish Food Agency (Livsmedelsverket), Livsmedelsdatabasen (Swedish Food Composition Database), https://dataportal.livsmedelsverket.se/livsmedel/",
+      "attributionNote": "Faqja zyrtare: \"The data is published under the Creative Commons Attribution 4.0 license. This means that you have permission to use and distribute our open data and create processing. The Swedish Food Agency must be stated as the source.\"",
+      "kind": "api",
+      "filename": "livsmedelsverket.json",
+      "url": "https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel",
+      "sha256": "5204d69a079e0a58231f7e08a96d0b4be000698641792ddc3924b9153f8b4baf",
+      "bytes": 2414048
     }
   ]
 }
