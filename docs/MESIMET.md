@@ -23,6 +23,7 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 | `tsc -p supabase/functions/tsconfig.json` (te `npm run lint`) | Gabim tipesh te Edge Functions |
 | `src/data/v1-upgrade.test.ts` | Të dhënat e v1 që nuk hapen në v2 |
 | Krahasimi i nënshkrimeve te `android-smoke.yml` | APK-të v1, v2, v3 me çelësa të ndryshëm, në minutën e 3-të |
+| `node scripts/actions-usage.mjs --month --check <min>` (para emulatorit dhe lëshimit) | Një nisje që nuk i ka minutat e muajit, ose që do të hante rezervën e lëshimit |
 
 ## Prova e Android-it (emulatori te GitHub Actions)
 
@@ -82,6 +83,8 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Bash-i i worktree-ve të agjentëve refuzon komandat e përbëra me heredoc (`cd … && cat <<EOF`) → brief-i u thotë të shkruajnë me Write/Edit dhe komanda të thjeshta.
 - Prova e Sot "java e plotë" binte 1 herë në 5 para valës dhe 3 në 5 pas saj: lexonte animacionin menjëherë pas `waitFor` të elementit, ndërsa animacioni niset në një efekt pas vizatimit, dhe leximet e reja asinkrone (pamja e ditës) e shtynë → pritet vetë gjendja që kontrollohet (`waitFor` mbi animacionin), jo diçka që e paraprin.
 - Push-e njëra pas tjetrës te `main` anuluan 21 nisje të CI-së, dhe minutat deri te anulimi paguhen → një push në fund të valës, pasi provat lokale kanë kaluar; dokumentet nuk e nisin CI-në (`paths-ignore`).
+- Nëntori mbeti me ~70 nga ~2 000 minuta pas tri ditësh (7–9.11): prova e Android-it mori ~1 030 (98 nisje), dhe ~630 prej tyre ishin nisje që ranë; vlerësimi në bisedë kishte dhënë ~200, sepse nuk rrumbullakonte çdo job → para çdo emulatori dhe lëshimi `actions-usage.mjs --month --check <min>`; pas dy rënieve të së njëjtës pjesë, e treta nuk niset pa shkakun nga artifact-i; numrat e minutave jepen vetëm nga skripti.
+- `gh api --paginate` ra te proxy-ja e sesionit mbi 100 nisje (403, "Numeric-ID repository paths … not supported") → faqet merren me `page=` (`scripts/actions-usage.mjs`).
 
 ## Logjika
 

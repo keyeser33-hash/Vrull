@@ -34,7 +34,8 @@ Një fork përdoret për një detyrë anësore që i duhet biseda e tanishme. Nj
 7. **Push-i.** Një push te `main` në fund të valës, pasi hapi 5 ka kaluar lokalisht. Dokumentet nuk e nisin CI-në.
 8. **Prova e Android-it.** CI-ja kontrollon tekstet e skriptit (`src/test/smoke-texts.test.ts`). Emulatori niset vetëm kur vala prek native-n ose një ekran që prova e prek, dhe vetëm për pjesët e prekura:
    `gh workflow run android-smoke.yml -R keyeser33-hash/Vrull -f skip=<pjesët e paprekura>`
-   Orkestruesi pret me `gh run watch <id> --exit-status` në sfond. Kur prova bie, niset `vrull-ci-reader` dhe përsëritet vetëm pjesa që ra. Prova e plotë niset vetëm para lëshimit.
+   Para nisjes: `node scripts/actions-usage.mjs --month --check <minutat e pjesëve, 20 për provën e plotë>`. Kur del me kodin 1, prova nuk niset: orkestruesi i tregon përdoruesit minutat që mbeten (Kostot).
+   Orkestruesi pret me `gh run watch <id> --exit-status` në sfond. Kur prova bie, niset `vrull-ci-reader` dhe përsëritet vetëm pjesa që ra. Pas dy rënieve të së njëjtës pjesë, e treta nuk niset pa shkakun nga artifact-i (pamja e ekranit, logcat-i, `report.json`). Prova e plotë niset vetëm para lëshimit, dhe atë e nis vetë lëshimi; një provë e plotë me dorë menjëherë para tij paguhet dy herë.
 9. **Retro.** Mblidh dështimet e valës:
    - nisjet e kuqe (`gh run list -R keyeser33-hash/Vrull --created ">=<data>" --status failure`);
    - gjetjet P0–P2 të rishikimit;
@@ -76,9 +77,10 @@ Krahaso rreshtat e `docs/agents/KOSTOT.md` me etapën e kaluar. Kur një kosto r
 
 ## Lëshimi
 
-Një version i ri del vetëm në fund të etapës, me miratimin e përdoruesit. Para tij migrimet duhet të jenë në Supabase (SQL Editor) dhe të verifikuara me SELECT. Hapat: `docs/INSTALL.md`, pika 6. Push-i i një tag-u nga sesioni refuzohet (403). Lëshimi niset me versionin te `package.json` në `main`. Release-i kontrollohet me `gh api repos/keyeser33-hash/Vrull/releases/tags/vX.Y.Z`, sepse `gh release view` përdor GraphQL, që sesioni e refuzon.
+Një version i ri del vetëm në fund të etapës, me miratimin e përdoruesit. Para tij migrimet duhet të jenë në Supabase (SQL Editor) dhe të verifikuara me SELECT. Hapat: `docs/INSTALL.md`, pika 6. Push-i i një tag-u nga sesioni refuzohet (403). Lëshimi niset me versionin te `package.json` në `main`, pasi `node scripts/actions-usage.mjs --month --check 30 --release` del me kodin 0 (lëshimi përdor rezervën prej 60 minutash që kontrollet e tjera nuk e prekin). Release-i kontrollohet me `gh api repos/keyeser33-hash/Vrull/releases/tags/vX.Y.Z`, sepse `gh release view` përdor GraphQL, që sesioni e refuzon.
 
 ## Kostot
 
-- Actions: plani Free jep $12 në muaj (~2 000 minuta Linux), me rinisje më 1 të muajit. Një provë e plotë kushton 16–19 min, dhe një lëshim rreth 24.
+- Actions: plani Free jep $12 në muaj (~2 000 minuta Linux), me rinisje më 1 të muajit. Pa një mënyrë pagese, kur mbarojnë Actions ndalet deri në muajin tjetër. Një provë e plotë kushton 16–19 min, një lëshim 24–30, dhe një nisje e CI-së 3–4.
+- Gjendja e muajit: `node scripts/actions-usage.mjs --month` (vlerësim; fatura është te Settings › Billing › Usage). Kur minutat mbeten pak, një push që nuk prek app-in (skriptet, mjetet), i kontrolluar lokalisht me `npm run lint`, merr `[skip ci]` te mesazhi i commit-it. Kur nuk mjaftojnë as për lëshimin, vendimi i takon përdoruesit: pritet muaji tjetër, ose shtohet një mënyrë pagese me kufi.
 - Tokenat: agjenti nis bosh dhe paguan kontekstin e vet, ndaj brief-i jep §-të, jo SPEC-un e plotë (142 KB). Cache-i i agjentit skadon pas 5 minutash, ndaj pritjet e gjata i mban orkestruesi.
