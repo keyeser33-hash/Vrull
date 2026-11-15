@@ -20,6 +20,7 @@ import { type BasketItem, basketItemFromFood, basketItemFromPortion, itemMacros,
 import { type Food, foodById, foodsById, saveExternalFood, searchFoods } from '@/data/foods'
 import { currentFoodDate, nutritionDay, planFoodId, type TemplateLine } from '@/data/nutrition'
 import { favoriteFoods, type Portion, recentPortions, yesterdayMeal } from '@/data/quick-food'
+import { mealPowder } from '@/data/supplements'
 import { foodName, mealName, portionText } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
@@ -123,8 +124,14 @@ export function AddFoodPage() {
     const date = await currentFoodDate(store, now)
     const day = await nutritionDay(store, date, now)
     const meal = (day.meals.find((entry) => entry.meal === pickedMeal) ?? day.next ?? day.meals[0]).meal
-    const [yesterday, favorites, recent, foods] = await Promise.all([yesterdayMeal(store, date, meal), favoriteFoods(store), recentPortions(store, 8), foodsById(store)])
-    return { date, day, meal, yesterday, favorites, recent, foods }
+    const [yesterday, favorites, recent, foods, powder] = await Promise.all([
+      yesterdayMeal(store, date, meal),
+      favoriteFoods(store),
+      recentPortions(store, 8),
+      foodsById(store),
+      mealPowder(store, date, meal),
+    ])
+    return { date, day, meal, yesterday, favorites, recent, foods, powderTaken: powder.supplement }
   }, [pickedMeal])
   const meal = view?.meal ?? pickedMeal
   const slot = view?.day.meals.find((entry) => entry.meal === meal)
@@ -151,6 +158,9 @@ export function AddFoodPage() {
     ? { kcal: view.day.targets.kcal - view.day.totals.kcal, proteinG: view.day.targets.proteinG - view.day.totals.proteinG }
     : null
 
+  // Plani im si "Si në plan" (logTemplateMeal): pluhuri i proteinës i shënuar te suplementet nuk numërohet dy herë.
+  const plan = slot && slot.status !== 'done' ? slot.template.filter((line) => !(view?.powderTaken && line.food === 'protein')) : []
+
   async function addPortions(portions: Portion[]) {
     for (const portion of portions) {
       const item = await basketItemFromPortion(store, portion)
@@ -159,7 +169,7 @@ export function AddFoodPage() {
   }
 
   async function addPlan() {
-    for (const line of slot?.template ?? []) {
+    for (const line of plan) {
       const item = await planItem(line)
       if (item) basket.add(item)
     }
@@ -251,7 +261,6 @@ export function AddFoodPage() {
     { key: 'macros', icon: 'laps', text: t('foodsearch.tool.macros'), disabled: !slot, onClick: () => open('makrot') },
     { key: 'new', icon: 'shto', text: t('foodsearch.tool.newFood'), onClick: () => open('i-ri') },
   ]
-  const plan = slot && slot.status !== 'done' ? slot.template : []
 
   return (
     <div className={cn('flex flex-col gap-3.5', basket.items.length > 0 && 'pb-36')}>

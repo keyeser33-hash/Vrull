@@ -177,6 +177,33 @@ describe('Shto ushqim', () => {
     expect(within(basket).getByRole('button', { name: /^Shto te Dreka/ })).toHaveTextContent('4 ushqime')
   })
 
+  it('Plani im si "Si në plan": pluhuri i proteinës i shënuar te suplementet nuk del dhe nuk shtohet dy herë', async () => {
+    const { saveSupplement, toggleSupplement } = await import('@/data/supplements')
+    const id = await saveSupplement(data.store, {
+      name: 'Gold Standard 100% Whey',
+      kind: 'protein',
+      doseAmount: 1,
+      doseUnit: 'scoop',
+      scoopG: 30.4,
+      timing: ['breakfast_1'],
+      macros: { kcal: 120, proteinG: 24, carbsG: 3, fatG: 1.5 },
+      countsAsFood: true,
+    })
+    await toggleSupplement(data.store, { date: TODAY, supplementId: id, meal: 'breakfast_1' })
+    try {
+      const user = userEvent.setup()
+      await renderPage('/ushqimi/shto/breakfast_1')
+      const plan = await screen.findByRole('region', { name: 'Plani im · Mëngjesi 1' })
+      expect(plan).not.toHaveTextContent('Pluhur proteine')
+      await user.click(screen.getByRole('button', { name: 'Shto të gjitha në shportë: Plani im · Mëngjesi 1' }))
+      const basket = await basketRegion()
+      expect(basket).not.toHaveTextContent('Pluhur proteine')
+    } finally {
+      await data.db.supplement_logs.clear()
+      await data.db.supplements.clear()
+    }
+  })
+
   it('sasia: njësitë, çipat ½ · 1 · 2 · 3 · 4, ± , makrot, "Nga sa mbetet sot", ylli dhe shtimi në shportë', async () => {
     const user = userEvent.setup()
     const { yogurt } = await seed()

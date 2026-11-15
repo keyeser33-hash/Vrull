@@ -67,10 +67,8 @@ export function BasketSheet({
         </div>
       }
     >
-      <div className="flex shrink-0 items-center gap-2">
-        <span className="text-sm text-muted-foreground">{t('foodsearch.review.to')}</span>
-        <MealChip meal={meal} time={time} onClick={onChangeMeal} />
-      </div>
+      {/* Çipi thotë vetë "Te <vakti> · <ora>". */}
+      <MealChip meal={meal} time={time} onClick={onChangeMeal} className="self-start" />
       <ul className="flex shrink-0 flex-col border-b border-border">
         {items.map((item) => {
           const name = foodName(t, item)
