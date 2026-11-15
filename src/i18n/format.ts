@@ -19,6 +19,8 @@ export interface DateOptions {
   weekday?: boolean
   /** Viti pas muajit: "8 nëntor 2026". */
   year?: boolean
+  /** Muaji i shkurtër, vetëm në anglisht ("8 Nov"); shqipja e shkruan të plotë. */
+  short?: boolean
 }
 
 export interface Format {
@@ -113,9 +115,10 @@ export function createFormat(lang: Language, options: FormatOptions = {}): Forma
     unit: (value, unit, numberOptions) => `${number(value, numberOptions)}${NBSP}${unit}`,
     // Emrat vijnë nga Intl-i, renditja është e app-it: e njëjtë në çdo version të ICU-së
     // (versionet e reja e heqin presjen pas ditës së javës te en-GB).
-    date(date, { weekday = true, year = false } = {}) {
+    date(date, { weekday = true, year = false, short = false } = {}) {
       const parts = names(date)
-      const dayMonth = `${date.getDate()} ${parts.month}${year ? ` ${date.getFullYear()}` : ''}`
+      const month = short && lang === 'en' ? parts.month.slice(0, 3) : parts.month
+      const dayMonth = `${date.getDate()} ${month}${year ? ` ${date.getFullYear()}` : ''}`
       return weekday ? `${parts.weekday}, ${dayMonth}` : dayMonth
     },
     // Data me numra dhe ora kanë modele të fiksuara: 24 orë në të dyja gjuhët.

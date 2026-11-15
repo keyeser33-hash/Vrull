@@ -113,7 +113,7 @@ describe('Sot', () => {
     expect(banner()).toHaveTextContent('E diel, 8 nëntor · Faza 1 · Java 2')
     expect(within(banner()).getByRole('link', { name: 'Profili dhe cilësimet' })).toHaveAttribute('href', '/cilesimet')
 
-    const week = screen.getByRole('region', { name: 'Java 2' })
+    const week = screen.getByRole('region', { name: 'Kjo javë · 2–8 nëntor' })
     expect(within(week).getByRole('link', { name: 'Qëllimet' })).toHaveAttribute('href', '/sot/java')
     expect(weekLabels('Java')).toEqual([
       'E hënë 2, e bërë',
@@ -153,7 +153,7 @@ describe('Sot', () => {
       'Saturday 7, rest day',
       'Today, Sunday 8, next workout',
     ])
-    expect(within(screen.getByRole('region', { name: 'Week 2' })).getByRole('link', { name: 'Goals' })).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: 'This week · 2–8 Nov' })).getByRole('link', { name: 'Goals' })).toBeInTheDocument()
     expect(goalsLink()).toHaveAccessibleName('Weekly goals: workouts 3 of 4, food 0 of 5 days, water 0 of 5 days')
     const english = screen.getByRole('region', { name: "Today's workout" })
     expect(within(english).getByText('Today · 17:15 · Workout 1')).toBeInTheDocument()
@@ -382,7 +382,7 @@ describe('Sot', () => {
     expect(within(card).getByRole('list')).toHaveTextContent('Vargu2 javë')
     expect(within(card).getByRole('link', { name: 'Shiko javën' })).toHaveAttribute('href', '/progresi/java/2026-11-02')
     // Pa javën me rripin, pa "Kapërce": karta e javës është e vetmja kartë kryesore.
-    expect(screen.queryByRole('region', { name: 'Java 2' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Kjo javë · 2–8 nëntor' })).not.toBeInTheDocument()
     expect(screen.queryByRole('region', { name: 'Stërvitja e radhës' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Kapërce këtë stërvitje' })).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^Nesër · 17:15 · Faza 1 · Java 2 · Stërvitja 2Shpinë, biceps, bark/ })).toHaveAttribute('href', '/programi')
@@ -406,7 +406,7 @@ describe('Sot', () => {
     expect(banner()).toHaveTextContent('E hënë, 9 nëntor · Faza 1 · Java 3')
     expect(within(card).getByText('Gjoksi: i lodhur')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Shiko javën 2–8 nëntor' })).toHaveTextContent('Java 2 u mbyllJava 2 · 2–8 nëntorShiko')
-    expect(screen.getByRole('region', { name: 'Java 3' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Kjo javë · 9–15 nëntor' })).toBeInTheDocument()
     expect(emberButtons().map((button) => button.textContent)).toEqual(['Fillo stërvitjen'])
     act(() => language.set('en'))
     expect(screen.getByText('Chest: tired')).toBeInTheDocument()

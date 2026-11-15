@@ -48,7 +48,8 @@ describe('Qëllimet e javës', () => {
   it('ditët e çdo qëllimi, rregulli, dita rezervë dhe vargu; edhe në anglisht', async () => {
     await trainedWeeks(await freshStore())
     await renderGoals()
-    expect(await screen.findByText('Java 2 · 2–8 nëntor · Faza 1')).toBeInTheDocument()
+    expect(await screen.findByText('Kjo javë · 2–8 nëntor · Faza 1')).toBeInTheDocument()
+    expect(document.body).not.toHaveTextContent(/Java [0-9]/)
     expect(screen.getByRole('heading', { level: 1, name: 'Qëllimet e javës' })).toBeInTheDocument()
 
     const training = region('Stërvitja')
@@ -61,8 +62,8 @@ describe('Qëllimet e javës', () => {
     expect(food).toHaveTextContent('0 nga 5 ditë')
     expect(within(food).getByRole('img', { name: /^E hënë nën kufi, 0%, .*, e diel sot, \d+% deri tani$/ })).toHaveTextContent('5 ditë nga 7')
     expect(within(food).getByText(/^Dita numërohet kur regjistron të paktën 60% të kalorive të saj\. Sot: \d+%\.$/)).toBeInTheDocument()
-    // Uji: objektivi i peshës 80 kg, 3,3 L në ditë stërvitjeje dhe 2,8 L në pushim.
-    expect(within(region('Uji')).getByText(/^Dita numërohet kur arrin objektivin e saj: 3,3 L në ditë stërvitjeje, 2,8 L në pushim\. Sot: 0%\.$/)).toBeInTheDocument()
+    // Uji: objektivi i peshës 80 kg, 3,25 L në ditë stërvitjeje dhe 2,75 L në pushim.
+    expect(within(region('Uji')).getByText(/^Dita numërohet kur arrin objektivin e saj: 3,25 L në ditë stërvitjeje, 2,75 L në pushim\. Sot: 0%\.$/)).toBeInTheDocument()
 
     const spare = screen.getByRole('complementary', { name: 'Dita rezervë · e lirë' })
     expect(spare).toHaveTextContent(/^Dita rezervë · e lirëPo të mbyllej java sot, ajo do ta plotësonte qëllimin e stërvitjes\./)
@@ -70,11 +71,13 @@ describe('Qëllimet e javës', () => {
 
     act(() => language.set('en'))
     expect(screen.getByRole('heading', { level: 1, name: 'Weekly goals' })).toBeInTheDocument()
-    expect(screen.getByText('Week 2 · 2–8 November · Phase 1')).toBeInTheDocument()
+    expect(screen.getByText('This week · 2–8 Nov · Phase 1')).toBeInTheDocument()
     expect(within(region('Workouts')).getByRole('img', { name: 'Monday done, Tuesday done, Wednesday rest day, Thursday done, Friday rest day, Saturday rest day, Sunday today' })).toHaveTextContent(
       '4 programme workouts',
     )
     expect(region('Food')).toHaveTextContent('0 of 5 days')
+    expect(within(region('Food')).queryByText(/3\.25 L/)).toBeNull()
+    expect(screen.getByText(/3\.25 L on training days, 2\.75 L on rest days/)).toBeInTheDocument()
     expect(screen.getByRole('complementary', { name: 'Spare day · free' })).toHaveTextContent('If the week ended today, it would complete your training goal.')
     expect(screen.getByRole('complementary', { name: 'Streak: 1 week' })).toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/[ëç]/)

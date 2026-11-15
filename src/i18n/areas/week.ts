@@ -63,6 +63,7 @@ export const sq = {
   'week.streak.text': 'Javë rresht me qëllimin e stërvitjes. Java e plotë kërkon të tre qëllimet; të dielën vjen përmbledhja.',
 
   // Përmbledhja e javës (/progresi/java/:e-hëna) dhe karta "Java jote" te Sot.
+  'week.thisWeek': 'Kjo javë · {range}',
   'week.yours': 'Java jote',
   'week.summary.complete': 'Java e plotë',
   'week.summary.closed': 'Java {week} u mbyll',
@@ -177,6 +178,7 @@ export const en: TranslationOf<typeof sq> = {
   'week.streak.title': { one: 'Streak: {count} week', other: 'Streak: {count} weeks' },
   'week.streak.text': 'Weeks in a row with your training goal. A complete week needs all three goals; your summary comes on Sunday.',
 
+  'week.thisWeek': 'This week · {range}',
   'week.yours': 'Your week',
   'week.summary.complete': 'Complete week',
   'week.summary.closed': 'Week {week} is done',

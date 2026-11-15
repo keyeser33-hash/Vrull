@@ -67,6 +67,11 @@ describe('datat dhe orët', () => {
     expect(en.date(SUNDAY, { weekday: false, year: true })).toBe('8 November 2026')
   })
 
+  it('muaji i shkurtër (F10): "Nov" në anglisht; shqipja mbetet e plotë', () => {
+    expect(en.date(SUNDAY, { weekday: false, short: true })).toBe('8 Nov')
+    expect(sq.date(SUNDAY, { weekday: false, short: true })).toBe('8 nëntor')
+  })
+
   it('data me numra për fushat dhe rreshtat e ngushtë', () => {
     expect(sq.numericDate(SUNDAY)).toBe('08.11.2026')
     expect(en.numericDate(SUNDAY)).toBe('08/11/2026')

@@ -10,7 +10,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { GOAL_DAYS } from '@/progress/weekly-goals'
 import { waterTargetMl } from '@/nutrition/water'
-import { atNoon, capitalize, type GoalCell, goalCells, weekRangeText } from './week-format'
+import { atNoon, capitalize, type GoalCell, goalCells, weekHeading, weekRangeText } from './week-format'
 import { BackLink, GoalValue } from './week-parts'
 
 // Qëllimet e javës (V43, SPEC §0.3c, bordi "Qëllimet"; /sot/java): për çdo qëllim, shtatë ditët e javës
@@ -41,7 +41,7 @@ export function WeekGoalsPage() {
   }
   const { goals, plan, weightKg } = page
   const cells = goalCells(i18n, goals)
-  const caption = [plan ? t('plan.week', { week: plan.week }) : null, weekRangeText(i18n, goals.monday), plan?.blockName ? programBlockName(t, plan.blockName) : null]
+  const caption = [weekHeading(i18n, goals.monday, goals.today), plan?.blockName ? programBlockName(t, plan.blockName) : null]
     .filter(Boolean)
     .join(' · ')
   const todayIndex = goals.training.days.findIndex((day) => day.today)
@@ -98,7 +98,7 @@ export function WeekGoalsPage() {
   )
 }
 
-const litres = ({ fmt }: Pick<I18n, 'fmt'>, ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 1 })
+const litres = ({ fmt }: Pick<I18n, 'fmt'>, ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 2 })
 const dayName = ({ fmt }: Pick<I18n, 'fmt'>, date: string) => fmt.weekday(atNoon(date))
 
 function GoalSection({ id, cell, children }: { id: string; cell: GoalCell; children: ReactNode }) {

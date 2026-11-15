@@ -36,7 +36,7 @@ import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
 import { achievementName } from './achievement-format'
 import { repsText, targetLine } from './today-format'
-import { atNoon, capitalize, goalCells, goalsSpoken, summaryTitle, weekRangeText } from './week-format'
+import { atNoon, capitalize, goalCells, goalsSpoken, summaryTitle, weekHeading, weekRangeText } from './week-format'
 import { useGoalCelebration, WEEK_COMPLETE } from './goal-motion'
 import { GoalMeters, GoalMetersShort, WeekSpark } from './week-parts'
 
@@ -151,11 +151,10 @@ function weekDays(view: TodayView, { t, fmt }: I18n, open: (sessionId: string) =
 function WeekSection({ view, goals, days, fresh = false }: { view: TodayView; goals: WeekGoalsView; days?: WeekDay[]; fresh?: boolean }) {
   const i18n = useI18n()
   const { t } = i18n
-  const plan = view.snapshot!.plan
   const cells = goalCells(i18n, goals)
   const met = cells.filter((cell) => cell.met).map((cell): string => cell.key)
   const celebrate = useGoalCelebration(goals.monday, goals.complete ? [...met, WEEK_COMPLETE] : met)
-  const title = fresh ? t('today.week.fresh') : t('plan.week', { week: plan.week })
+  const title = fresh ? t('today.week.fresh') : weekHeading(i18n, goals.monday, goals.today)
   const spare = goals.spare
   return (
     <section aria-labelledby="today-week" className="flex flex-col gap-2.5">

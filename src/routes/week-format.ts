@@ -1,6 +1,7 @@
 import type { IntakeGoal, TrainingGoal, WeekSummary } from '@/data/weekly-goals'
 import type { I18n } from '@/i18n'
 import { programWeekLabel } from '@/i18n/domain'
+import { mondayOf } from '@/progress/weekly-goals'
 import { shiftDate } from '@/lib/calendar'
 
 // Tekstet e javës (V43, SPEC §0.3c): data e javës, vlerat e qëllimeve dhe titulli i përmbledhjes, të
@@ -9,12 +10,22 @@ import { shiftDate } from '@/lib/calendar'
 export const atNoon = (date: string) => new Date(`${date}T12:00:00`)
 
 /** "16–22 nëntor" / "16–22 November"; kur ndërron muaji "30 nëntor – 6 dhjetor"; `year` shton vitin. */
-export function weekRangeText({ fmt }: Pick<I18n, 'fmt'>, monday: string, { year = false }: { year?: boolean } = {}): string {
+export function weekRangeText({ fmt }: Pick<I18n, 'fmt'>, monday: string, { year = false, short = false }: { year?: boolean; short?: boolean } = {}): string {
   const sunday = shiftDate(monday, 6)
-  const end = fmt.date(atNoon(sunday), { weekday: false, year })
+  const end = fmt.date(atNoon(sunday), { weekday: false, year, short })
   if (monday.slice(0, 7) === sunday.slice(0, 7)) return `${Number(monday.slice(8, 10))}–${end}`
-  const start = fmt.date(atNoon(monday), { weekday: false, year: year && monday.slice(0, 4) !== sunday.slice(0, 4) })
+  const start = fmt.date(atNoon(monday), { weekday: false, year: year && monday.slice(0, 4) !== sunday.slice(0, 4), short })
   return `${start} – ${end}`
+}
+
+/**
+ * Titulli i javës së qëllimeve (rripi te Sot, kreu i Qëllimeve të javës): java që nga fillimi nuk numërohet më.
+ * Java e sotme: "Kjo javë · 9–15 nëntor" / "This week · 9–15 Nov"; një javë tjetër: vetëm datat. "Java N" është
+ * vetëm e programit (`plan.week`).
+ */
+export function weekHeading(i18n: Pick<I18n, 'fmt' | 't'>, monday: string, today: string): string {
+  const range = weekRangeText(i18n, monday, { short: true })
+  return mondayOf(today) === monday ? i18n.t('week.thisWeek', { range }) : range
 }
 
 /** Shkronja e parë e madhe, si në fillim të fjalisë ("e hënë" → "E hënë"). */
