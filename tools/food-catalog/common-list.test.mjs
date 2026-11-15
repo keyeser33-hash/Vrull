@@ -86,6 +86,39 @@ describe('vërtetimi i të zakonshmeve', () => {
   })
 })
 
+describe('shënimi includes_fiber_preferred', () => {
+  const fiberRows = (extra = {}) => [
+    row('usda-fdc-10', 'usda_foundation', 'Berries, raw', 50, { carbs_note: 'includes_fiber', fiber_g: null }),
+    row('usda-fdc-11', 'usda_sr_legacy', 'Berries, raw', 50, { carbs_note: 'computed', fiber_g: 6.5, ...extra }),
+    row('ciqual-12', 'ciqual', 'Framboises', 50, { fiber_g: 6.4 }),
+  ]
+  const berries = (also) => entry({ key: 'berries', preferred: 'usda-fdc-10', also, reason: undefined })
+  const fiberRules = (list, data) => validateCommon(list, data).notes.map((n) => n.rule)
+
+  it('shënon kur preferred ka karbohidrate me fibra dhe një also ka fibra të njohura (2 g ose më shumë)', () => {
+    expect(fiberRules([berries(['usda-fdc-11'])], fiberRows())).toEqual(['includes_fiber_preferred'])
+    expect(fiberRules([berries(['ciqual-12'])], fiberRows())).toEqual(['includes_fiber_preferred'])
+  })
+
+  it('shënon edhe kur rreshti i USDA-së me të njëjtin emër nuk është te also', () => {
+    expect(fiberRules([berries([])], fiberRows())).toEqual(['includes_fiber_preferred'])
+    const otherName = fiberRows({ name_en: 'Raspberries, raw' })
+    expect(fiberRules([berries([])], otherName)).toEqual([])
+  })
+
+  it('nuk shënon pa fibra të njohura, me fibra nën 2 g, ose kur preferred është i llogaritur', () => {
+    expect(fiberRules([berries(['usda-fdc-11'])], fiberRows({ fiber_g: null }))).toEqual([])
+    expect(fiberRules([berries(['usda-fdc-11'])], fiberRows({ fiber_g: 0.5 }))).toEqual([])
+    const computed = fiberRows()
+    computed[0] = { ...computed[0], carbs_note: 'computed', fiber_g: 6.5 }
+    expect(fiberRules([berries(['usda-fdc-11'])], computed)).toEqual([])
+  })
+
+  it('është shënim, jo gabim', () => {
+    expect(validateCommon([berries(['usda-fdc-11'])], fiberRows()).errors).toEqual([])
+  })
+})
+
 describe('zbatimi i të zakonshmeve', () => {
   it('preferred merr name_sq (i pakontrolluar), also_in dhe common_rank; also hiqen; të tjerat mbeten njësoj', () => {
     const { rows: out, common, removed } = applyCommon(rows(), [entry()])

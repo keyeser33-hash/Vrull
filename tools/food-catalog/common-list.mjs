@@ -16,6 +16,8 @@ import { SOURCE_ORDER } from './candidates.mjs'
 export const COMMON_DIR = fileURLToPath(new URL('./common/', import.meta.url))
 /** Kur kcal e një `also` ndryshon më shumë se kaq nga i preferuari, vërtetimi shënon (nuk e ndalon). */
 export const KCAL_DIFF_NOTE = 0.25
+/** Fibrat (g/100 g) nga të cilat një rresht me fibra të njohura shënohet kundrejt një preferred me karbohidrate që i përfshijnë ato. */
+export const FIBER_NOTE_MIN = 2
 
 const sourceRank = (source) => {
   const at = SOURCE_ORDER.indexOf(source)
@@ -36,6 +38,8 @@ export function readCommonDir(dir = COMMON_DIR) {
  * Vërteton të zakonshmet kundrejt rreshtave të katalogut. Kthen { errors, notes }, secili { key, rule, message }.
  * Gabim: çelës ose ID e dyfishtë, ID që nuk ekziston, name_sq bosh, preferred jo sipas radhës pa reason.
  * Shënim: kcal e një `also` ndryshon mbi 25 % nga i preferuari (ose i preferuari pa reason ka kcal të flamurosur).
+ * Shënim `includes_fiber_preferred`: preferred ka `carbs_note: 'includes_fiber'` (karbohidrate me fibra, kundër V61) dhe një `also`,
+ * ose një rresht i USDA-së me të njëjtin emër, ka fibra të njohura prej të paktën 2 g/100 g (FIBER_NOTE_MIN): zgjidh rreshtin me fibra.
  */
 export function validateCommon(list, rows) {
   const errors = []
@@ -84,6 +88,12 @@ export function validateCommon(list, rows) {
       const other = byId.get(id)
       if (preferred.kcal > 0 ? Math.abs(other.kcal - preferred.kcal) / preferred.kcal > KCAL_DIFF_NOTE : other.kcal > 0)
         note(entry, 'kcal_differs', `${id} ka ${other.kcal} kcal, preferred ${preferred.kcal} (mbi 25 %)`)
+    }
+    if (preferred.carbs_note === 'includes_fiber') {
+      const sameName = rows.filter((row) => row.source.startsWith('usda') && row.name_en === preferred.name_en && row.id !== preferred.id)
+      const withFiber = [...entry.also.map((id) => byId.get(id)), ...sameName].find((row) => row.fiber_g >= FIBER_NOTE_MIN)
+      if (withFiber)
+        note(entry, 'includes_fiber_preferred', `preferred ${entry.preferred} ka karbohidrate me fibra; ${withFiber.id} ka fibra ${withFiber.fiber_g} g`)
     }
   }
   return { errors, notes }

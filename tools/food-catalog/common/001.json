@@ -57,7 +57,7 @@
   {
     "key": "american-cheese-low-fat",
     "rank": 5,
-    "name_sq": "Djathë amerikan me pak yndyrë",
+    "name_sq": "Djathë i shkrirë amerikan, me pak yndyrë",
     "name_en": "American cheese, low fat",
     "group": "Qumësht dhe bulmet",
     "preferred": "usda-fdc-169080",
@@ -83,7 +83,6 @@
     "preferred": "usda-fdc-328841",
     "also": [
       "usda-fdc-172182",
-      "usda-fdc-173417",
       "usda-fdc-2705756",
       "cofid-12-550"
     ]
@@ -130,7 +129,7 @@
     "rank": 11,
     "name_sq": "Majonezë light",
     "name_en": "Mayonnaise, light",
-    "group": "Të tjera",
+    "group": "Yndyrna dhe vajra",
     "preferred": "usda-fdc-173594",
     "also": [
       "usda-fdc-2710220"
@@ -175,7 +174,7 @@
   {
     "key": "salmon-atlantic-wild-raw",
     "rank": 15,
-    "name_sq": "Salmon i egër, i papërpunuar",
+    "name_sq": "Salmon i egër, i pagatuar",
     "name_en": "Salmon, Atlantic, wild, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-173686",
@@ -212,7 +211,7 @@
   {
     "key": "dressing-oil-vinegar",
     "rank": 18,
-    "name_sq": "Salcë me vaj ulliri dhe uthull",
+    "name_sq": "Salcë sallate me vaj dhe uthull",
     "name_en": "Salad dressing, oil and vinegar",
     "group": "Të tjera",
     "preferred": "usda-fdc-171417",
@@ -286,13 +285,14 @@
     "name_sq": "Djathë i bardhë (feta)",
     "name_en": "Cheese, feta",
     "group": "Qumësht dhe bulmet",
-    "preferred": "usda-fdc-2259796",
+    "preferred": "usda-fdc-173420",
     "also": [
-      "usda-fdc-173420",
       "usda-fdc-2705714",
       "ciqual-12066",
-      "cofid-12-525"
-    ]
+      "cofid-12-525",
+      "usda-fdc-2259796"
+    ],
+    "reason": "Foundation jep proteinë 19,7 g, kurse SR, Ciqual dhe CoFID 14–16 g"
   },
   {
     "key": "cottage-cheese-full-fat",
@@ -325,17 +325,18 @@
     "name_sq": "Gjalpë",
     "name_en": "Butter, salted",
     "group": "Yndyrna dhe vajra",
-    "preferred": "usda-fdc-173410",
+    "preferred": "usda-fdc-173430",
     "also": [
       "usda-fdc-2710154",
       "cofid-17-685",
-      "livsmedelsverket-29"
+      "livsmedelsverket-29",
+      "usda-fdc-173410"
     ]
   },
   {
     "key": "chicken-breast-raw",
     "rank": 28,
-    "name_sq": "Pulë, gjoks pa lëkurë, i papërpunuar",
+    "name_sq": "Gjoks pule pa lëkurë, i pagatuar",
     "name_en": "Chicken, breast, skinless, boneless, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2646170",
@@ -348,7 +349,7 @@
   {
     "key": "chicken-breast-roasted",
     "rank": 29,
-    "name_sq": "Pulë, gjoks pa lëkurë, i pjekur",
+    "name_sq": "Gjoks pule pa lëkurë, i pjekur",
     "name_en": "Chicken, breast, meat only, roasted",
     "group": "Mish",
     "preferred": "usda-fdc-171477",
@@ -357,7 +358,7 @@
   {
     "key": "turkey-breast-raw",
     "rank": 30,
-    "name_sq": "Gjeldeti, gjoks, i papërpunuar",
+    "name_sq": "Gjoks gjeldeti, i pagatuar",
     "name_en": "Turkey, breast, meat only, raw",
     "group": "Mish",
     "preferred": "usda-fdc-171098",
@@ -366,7 +367,7 @@
   {
     "key": "beef-ground-90-raw",
     "rank": 31,
-    "name_sq": "Mish gjedhi i grirë (90% pa yndyrë), i papërpunuar",
+    "name_sq": "Mish gjedhi i grirë (90% pa yndyrë), i pagatuar",
     "name_en": "Beef, ground, 90% lean, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2514743",
@@ -375,7 +376,7 @@
   {
     "key": "veal-ground-raw",
     "rank": 32,
-    "name_sq": "Mish viçi i grirë, i papërpunuar",
+    "name_sq": "Mish viçi i grirë, i pagatuar",
     "name_en": "Veal, ground, raw",
     "group": "Mish",
     "preferred": "usda-fdc-175290",
@@ -386,7 +387,7 @@
   {
     "key": "lamb-leg-raw",
     "rank": 33,
-    "name_sq": "Mish qengji, kofshë pa yndyrë, i papërpunuar",
+    "name_sq": "Kofshë qengji pa dhjamë, e pagatuar",
     "name_en": "Lamb, leg, lean only, raw",
     "group": "Mish",
     "preferred": "usda-fdc-172486",
@@ -397,7 +398,7 @@
   {
     "key": "salmon-atlantic-farmed-raw",
     "rank": 34,
-    "name_sq": "Salmon i fermës, i papërpunuar",
+    "name_sq": "Salmon i fermës, i pagatuar",
     "name_en": "Salmon, Atlantic, farmed, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-2684441",
@@ -420,7 +421,7 @@
   {
     "key": "trout-rainbow-farmed-raw",
     "rank": 36,
-    "name_sq": "Troftë, e papërpunuar",
+    "name_sq": "Troftë, e pagatuar",
     "name_en": "Trout, rainbow, farmed, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-173717",
@@ -432,7 +433,7 @@
   {
     "key": "cod-raw",
     "rank": 37,
-    "name_sq": "Merluc (cod), i papërpunuar",
+    "name_sq": "Merluc atlantiku, i pagatuar",
     "name_en": "Cod, Atlantic, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-2684444",
@@ -446,7 +447,7 @@
   {
     "key": "sea-bass-raw",
     "rank": 38,
-    "name_sq": "Levrek, i papërpunuar",
+    "name_sq": "Levrek, i pagatuar",
     "name_en": "Sea bass, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-175142",
@@ -455,16 +456,18 @@
   {
     "key": "sea-bream-raw",
     "rank": 39,
-    "name_sq": "Koce (dorada), e papërpunuar",
+    "name_sq": "Koce (dorada), e pagatuar",
     "name_en": "Sea bream, raw",
     "group": "Peshk dhe fruta deti",
-    "preferred": "cofid-16-006",
-    "also": []
+    "preferred": "ciqual-26088",
+    "also": [
+      "livsmedelsverket-4612"
+    ]
   },
   {
     "key": "sardine-raw",
     "rank": 40,
-    "name_sq": "Sardele, e papërpunuar",
+    "name_sq": "Sardele, e pagatuar",
     "name_en": "Sardine, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "ciqual-26065",
@@ -475,7 +478,7 @@
   {
     "key": "mackerel-atlantic-raw",
     "rank": 41,
-    "name_sq": "Skumbri, i papërpunuar",
+    "name_sq": "Skumbri, i pagatuar",
     "name_en": "Mackerel, Atlantic, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-175119",
@@ -487,7 +490,7 @@
   {
     "key": "shrimp-raw",
     "rank": 42,
-    "name_sq": "Karkalec, i papërpunuar",
+    "name_sq": "Karkalec deti, i pagatuar",
     "name_en": "Shrimp, raw",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-2684443",
@@ -511,7 +514,7 @@
   {
     "key": "cornbread",
     "rank": 44,
-    "name_sq": "Bukë misri",
+    "name_sq": "Bukë misri amerikane (cornbread)",
     "name_en": "Cornbread, prepared from recipe",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-174910",
@@ -532,7 +535,7 @@
   {
     "key": "rice-white-raw",
     "rank": 46,
-    "name_sq": "Oriz i bardhë, i papërpunuar",
+    "name_sq": "Oriz i bardhë, i pagatuar",
     "name_en": "Rice, white, long grain, raw",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2512381",
@@ -582,18 +585,21 @@
   {
     "key": "oats-rolled-dry",
     "rank": 50,
-    "name_sq": "Tërshërë, thërrime, e thatë",
+    "name_sq": "Tërshërë flokë, e thatë",
     "name_en": "Oats, rolled, dry",
     "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2346396",
+    "preferred": "usda-fdc-173904",
     "also": [
-      "livsmedelsverket-702"
-    ]
+      "livsmedelsverket-702",
+      "usda-fdc-2346396",
+      "ciqual-32140"
+    ],
+    "reason": "Foundation nuk ka fibra të njohura (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "corn-sweet-raw",
     "rank": 51,
-    "name_sq": "Misër i ëmbël, i papërpunuar",
+    "name_sq": "Misër i ëmbël, i pagatuar",
     "name_en": "Corn, sweet, yellow, raw",
     "group": "Perime",
     "preferred": "usda-fdc-169998",
@@ -602,7 +608,7 @@
   {
     "key": "potato-raw",
     "rank": 52,
-    "name_sq": "Patate, e papërpunuar",
+    "name_sq": "Patate, e pagatuar",
     "name_en": "Potato, raw",
     "group": "Perime",
     "preferred": "usda-fdc-170026",
@@ -627,7 +633,7 @@
   {
     "key": "white-beans-cooked",
     "rank": 54,
-    "name_sq": "Fasule e bardhë, e zier",
+    "name_sq": "Fasule të bardha, të ziera",
     "name_en": "White beans, cooked",
     "group": "Bishtajore",
     "preferred": "usda-fdc-175203",
@@ -638,7 +644,7 @@
   {
     "key": "lentils-cooked",
     "rank": 55,
-    "name_sq": "Thjerrëza, të zjera",
+    "name_sq": "Thjerrëza, të ziera",
     "name_en": "Lentils, cooked",
     "group": "Bishtajore",
     "preferred": "usda-fdc-172421",
@@ -649,7 +655,7 @@
   {
     "key": "chickpeas-cooked",
     "rank": 56,
-    "name_sq": "Qiqra, të zjera",
+    "name_sq": "Qiqra, të ziera",
     "name_en": "Chickpeas, cooked",
     "group": "Bishtajore",
     "preferred": "usda-fdc-173757",
@@ -749,16 +755,18 @@
   {
     "key": "cabbage-green-raw",
     "rank": 64,
-    "name_sq": "Lakër jeshile",
+    "name_sq": "Lakër e bardhë",
     "name_en": "Cabbage, green, raw",
     "group": "Perime",
-    "preferred": "usda-fdc-2346407",
+    "preferred": "usda-fdc-169975",
     "also": [
-      "usda-fdc-169975",
       "usda-fdc-2709773",
-      "ciqual-20069",
-      "cofid-13-509"
-    ]
+      "cofid-13-509",
+      "ciqual-20116",
+      "livsmedelsverket-370",
+      "usda-fdc-2346407"
+    ],
+    "reason": "Foundation nuk ka fibra të njohura (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "garlic-raw",
@@ -799,7 +807,7 @@
   {
     "key": "green-beans-raw",
     "rank": 68,
-    "name_sq": "Fasule jeshile",
+    "name_sq": "Bishtaja",
     "name_en": "Green beans, raw",
     "group": "Perime",
     "preferred": "usda-fdc-2346400",
@@ -913,13 +921,14 @@
     "name_sq": "Luleshtrydhe",
     "name_en": "Strawberries, raw",
     "group": "Fruta",
-    "preferred": "usda-fdc-2263887",
+    "preferred": "usda-fdc-167762",
     "also": [
       "usda-fdc-2346409",
-      "usda-fdc-167762",
       "usda-fdc-2709283",
-      "cofid-14-324"
-    ]
+      "cofid-14-324",
+      "usda-fdc-2263887"
+    ],
+    "reason": "Foundation nuk ka fibra të njohura (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "fig-raw",
@@ -959,10 +968,11 @@
     "name_sq": "Qershi",
     "name_en": "Cherries, sweet, raw",
     "group": "Fruta",
-    "preferred": "usda-fdc-2346399",
+    "preferred": "usda-fdc-171719",
     "also": [
-      "usda-fdc-171719"
-    ]
+      "usda-fdc-2346399"
+    ],
+    "reason": "Foundation nuk ka fibra të njohura (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "lemon-raw",
@@ -1048,7 +1058,7 @@
   {
     "key": "peanuts-raw",
     "rank": 89,
-    "name_sq": "Kikirikë, të papërpunuar",
+    "name_sq": "Kikirikë, të papjekur",
     "name_en": "Peanuts, raw",
     "group": "Arra dhe fara",
     "preferred": "usda-fdc-2515376",
@@ -1113,7 +1123,7 @@
     "rank": 94,
     "name_sq": "Lëng portokalli",
     "name_en": "Orange juice",
-    "group": "Të tjera",
+    "group": "Pije",
     "preferred": "usda-fdc-2003597",
     "also": [
       "usda-fdc-2709186",
