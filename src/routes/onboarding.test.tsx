@@ -204,7 +204,9 @@ describe('hapat e parë', () => {
     const user = userEvent.setup()
     const weight = screen.getByLabelText('Pesha sot')
     expect(weight).toHaveValue('')
-    expect(weight).toHaveAttribute('placeholder', '80,0')
+    // F4: pa peshë numri duket bosh ("–"), jo "80,0" në gri që duket si vlerë.
+    expect(weight).toHaveAttribute('placeholder', '–')
+    expect(screen.getByText('kg · prek për ta shkruar')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Vazhdo' }))
     expect(weight).toHaveAttribute('aria-invalid', 'true')
     await user.click(screen.getByRole('button', { name: 'Rrit peshën me 0,5 kg' }))

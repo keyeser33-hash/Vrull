@@ -416,7 +416,7 @@ function BirthYearRow({ value, year, onChange }: { value: number | null; year: n
         id={id}
         inputMode="numeric"
         maxLength={4}
-        placeholder={String(year - DEFAULT_AGE)}
+        placeholder={t('food.targets.birthYearExample', { year: String(year - DEFAULT_AGE) })}
         value={text}
         onChange={(event) => {
           const next = event.target.value.replace(/\D/g, '')
@@ -425,7 +425,7 @@ function BirthYearRow({ value, year, onChange }: { value: number | null; year: n
           if (next === '') onChange(null)
           else if (next.length === 4 && parsed >= year - 100 && parsed <= year - 14) onChange(parsed)
         }}
-        className={cn(inputClass, 'w-24 text-center font-display text-xl font-extrabold')}
+        className={cn(inputClass, 'w-28 px-2 text-center font-display text-xl font-extrabold placeholder:font-sans placeholder:text-sm placeholder:font-normal')}
       />
     </div>
   )

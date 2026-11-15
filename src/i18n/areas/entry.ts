@@ -36,6 +36,7 @@ export const sq = {
   // Hapi 1: gjuha ndryshon menjëherë tekstet e hapave.
   'entry.language.title': 'Gjuha dhe pesha',
   'entry.weight.hint': 'kg · prek numrin për ta shkruar',
+  'entry.weight.hintEmpty': 'kg · prek për ta shkruar',
   'entry.weight.note': 'Nga pesha dalin objektivat e ushqimit. Gjuhën dhe peshën i ndryshon kur të duash te Cilësimet.',
 
   // Hapat 2 dhe 3: ditët (shkronja e parë e çdo dite; emri i plotë për lexuesin e ekranit) dhe oraret.
@@ -115,6 +116,7 @@ export const en: TranslationOf<typeof sq> = {
 
   'entry.language.title': 'Language and weight',
   'entry.weight.hint': 'kg · tap the number to type it',
+  'entry.weight.hintEmpty': 'kg · tap to type it',
   'entry.weight.note': 'Your food targets come from your weight. You can change the language and weight any time in Settings.',
 
   'entry.days.title': 'Days and times',

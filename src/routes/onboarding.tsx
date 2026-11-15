@@ -292,7 +292,7 @@ function LanguageAndWeight({ weight, invalid, onWeight }: { weight: number | nul
             inputMode="decimal"
             autoComplete="off"
             enterKeyHint="done"
-            placeholder={fmt.number(WEIGHT_START, { minDigits: 1 })}
+            placeholder="–"
             value={shown}
             aria-invalid={invalid ? true : undefined}
             aria-describedby={invalid ? `${errorId} ${hintId}` : hintId}
@@ -311,7 +311,7 @@ function LanguageAndWeight({ weight, invalid, onWeight }: { weight: number | nul
             className={cn('h-[100px] w-full min-w-0 rounded-md bg-transparent text-center type-display-hero', invalid && 'text-danger')}
           />
           <span id={hintId} className="type-body text-muted-foreground">
-            {t('entry.weight.hint')}
+            {weight === null ? t('entry.weight.hintEmpty') : t('entry.weight.hint')}
           </span>
           {invalid ? (
             <span id={errorId} className="text-center type-caption text-danger">

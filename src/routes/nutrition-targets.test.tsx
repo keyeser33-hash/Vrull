@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
@@ -108,5 +108,13 @@ describe('Objektivat', () => {
     expect(screen.getByText('Muscle gain · +0.25% a week')).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: /^Sitting/ })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByRole('button', { name: 'Save targets' })).toBeEnabled()
+  })
+
+  it('viti i lindjes: vendmbajtësja lexohet si shembull, jo si vlerë (F4)', async () => {
+    await renderPage()
+    expect(await screen.findByLabelText(/^Viti i lindjes/)).toHaveAttribute('placeholder', 'p.sh. 1996')
+    expect(screen.getByLabelText(/^Viti i lindjes/)).toHaveValue('')
+    act(() => language.set('en'))
+    expect(screen.getByLabelText(/^Year of birth/)).toHaveAttribute('placeholder', 'e.g. 1996')
   })
 })
