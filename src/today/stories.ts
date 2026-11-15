@@ -22,7 +22,7 @@ export interface Story {
 export interface StoryInput {
   /** Gjendja e ditës është plotësuar. */
   checkedIn: boolean
-  /** "Jo sot": unaza e "Si ndihesh?" del e shikuar, por rrethi mbetet. */
+  /** "Jo sot": unaza e "Si ndihesh?" del e shikuar, por rrethi mbetet (njësoj kur story mbyllet pa u plotësuar). */
   skipped: boolean
   percent: number | null
   /** Shënimi i mentorit i kësaj jave ose seance (V55); null kur nuk ka. */
@@ -38,7 +38,7 @@ export function storyRing(input: StoryInput): Story[] {
   if (input.mentor) middle.push({ kind: 'mentor', key: `mentor:${input.mentor.id}`, seen: input.seen.has(`mentor:${input.mentor.id}`), noteId: input.mentor.id })
   const ordered = [...middle.filter((story) => !story.seen), ...middle.filter((story) => story.seen)]
   const ring: Story[] = []
-  if (!input.checkedIn) ring.push({ kind: 'checkin', key: 'checkin', seen: input.skipped })
+  if (!input.checkedIn) ring.push({ kind: 'checkin', key: 'checkin', seen: input.skipped || input.seen.has('checkin') })
   ring.push(...ordered)
   if (input.checkedIn && input.percent !== null) ring.push({ kind: 'ready', key: 'ready', seen: input.seen.has('ready'), percent: input.percent })
   return ring

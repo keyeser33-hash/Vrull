@@ -49,10 +49,11 @@ export function TodayStories({ view }: { view: TodayView }) {
       icon: story.kind === 'checkin' ? 'zemra' : story.kind === 'ready' ? 'pulsi' : story.kind === 'week' ? 'kalendari' : 'biseda',
       seen: story.seen,
       onSelect: () => {
+        // "Si ndihesh?" dhe "Gati N%" hapin shikuesin; shënohen të shikuara kur ai mbyllet (readiness-sheets.tsx).
         if (story.kind === 'checkin') return open('gjendja')
+        if (story.kind === 'ready') return open('gati')
         seen(story)
-        if (story.kind === 'ready') open('gati')
-        else if (story.kind === 'week') navigate(`/progresi/java/${story.monday}`)
+        if (story.kind === 'week') navigate(`/progresi/java/${story.monday}`)
         else open('mentori')
       },
     }
