@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { baselineKind, SHAPE_MEASURES, type ShapeChange, type ShapeComparison, type ShapeScales } from '@/body/body-shape'
 import type { Tone } from '@/body/model-math'
+import { BodyFigure } from '@/components/body/body-figure'
 import type { Still } from '@/components/body/body-still'
 import { BackHeader } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
@@ -28,6 +29,10 @@ const LABEL_GAP = 24
 
 type MeasureKey = Extract<Parameters<I18n['t']>[0], `bodyModel.measure.${string}`>
 const measureName = ({ t }: I18n, id: string) => t(`bodyModel.measure.${id}` as MeasureKey)
+type WhereKey = Extract<Parameters<I18n['t']>[0], `bodyModel.shape.where.${string}`>
+/** Katër perimetrat e matjes së parë, me radhën e formës "Shto matjen". */
+const FIRST_MEASURES = ['arm', 'chest', 'waist', 'thigh'] as const
+const BodyModel = lazy(() => import('@/components/body/body-model'))
 const dayText = ({ fmt }: I18n, date: string) => fmt.date(new Date(`${date}T12:00:00`), { weekday: false })
 
 export function BodyShapePage() {
@@ -35,14 +40,9 @@ export function BodyShapePage() {
   const { t } = i18n
   const view = useLocalQuery(() => shapeView(store), [])
   const [three] = useState(webglAvailable)
-  const header = (
-    <div className="flex flex-col">
-      <BackHeader title={t('bodyModel.shape.title')} back={t('bodyModel.layers.back')} fallback="/progresi/trupi" />
-      <p className="type-caption text-muted-foreground">{t('bodyModel.shape.intro')}</p>
-    </div>
-  )
+  const header = <BackHeader title={t('bodyModel.shape.title')} subtitle={t('bodyModel.shape.intro')} back={t('bodyModel.layers.back')} fallback="/progresi/trupi" />
   const add = (
-    <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'w-full')}>
+    <Link to="/progresi/matja" className={cn(buttonVariants({ variant: 'primary', size: 'xl' }), 'w-full')}>
       {t('bodyModel.shape.add')}
     </Link>
   )
@@ -57,9 +57,23 @@ export function BodyShapePage() {
   const { comparison } = view
   if (!comparison) {
     return (
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3.5">
         {header}
-        <p className={cn(surfaceClass, 'rounded-xl p-4 type-body-l')}>{t('bodyModel.shape.empty')}</p>
+        <BaseModel weightKg={view.weightKg} measured={view.hasCircumference} three={three} />
+        <section aria-labelledby="shape-first" className="flex flex-col">
+          <h2 id="shape-first" className="mb-0.5 type-label text-muted-foreground">
+            {t('bodyModel.shape.firstTitle', { count: FIRST_MEASURES.length })}
+          </h2>
+          <ul className="flex flex-col">
+            {FIRST_MEASURES.map((id) => (
+              <li key={id} className="flex min-h-[50px] flex-col justify-center border-b border-border py-1">
+                <span className="type-body-strong">{measureName(i18n, id)}</span>
+                <span className="type-caption text-muted-foreground">{t(`bodyModel.shape.where.${id}` as WhereKey)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <p className="type-caption text-muted-foreground">{t('bodyModel.shape.empty')}</p>
         {add}
       </div>
     )
@@ -111,6 +125,31 @@ export function BodyShapePage() {
 
       {add}
     </div>
+  )
+}
+
+/** Gjendja bosh: modeli bazë (muskujt gri, pa ngjyra) me peshën, në kartë, dhe nën të sa matje ka. */
+function BaseModel({ weightKg, measured, three }: { weightKg: number | null; measured: boolean; three: boolean }) {
+  const { t, fmt } = useI18n()
+  const label = t('bodyModel.shape.baseAlt')
+  return (
+    <section aria-label={label} className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-xl')}>
+      <div className="relative h-[300px]">
+        {three ? (
+          <Suspense fallback={null}>
+            <BodyModel className="h-full" paint={() => NEUTRAL} onPick={() => {}} label={label} />
+          </Suspense>
+        ) : (
+          <BodyFigure primary={[]} scale={2} className="h-full justify-center" label={label} paint={() => null} />
+        )}
+      </div>
+      <div className="flex items-baseline justify-between gap-2 border-t border-border px-3.5 py-2.5">
+        <span className="type-body-strong tabular-nums">
+          {weightKg === null ? t('bodyModel.shape.baseNoWeight') : t('bodyModel.shape.base', { weight: fmt.unit(weightKg, 'kg', { minDigits: 1, maxDigits: 1 }) })}
+        </span>
+        <span className="type-caption text-muted-foreground">{measured ? t('bodyModel.shape.oneCm') : t('bodyModel.shape.noCm')}</span>
+      </div>
+    </section>
   )
 }
 

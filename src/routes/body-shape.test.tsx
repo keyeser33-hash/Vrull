@@ -29,6 +29,9 @@ vi.mock('@/components/body/body-still', () => ({
   },
 }))
 
+// Modeli bazë i gjendjes bosh: shikuesi i trupit (three.js) nuk ngarkohet në jsdom.
+vi.mock('@/components/body/body-model', () => ({ default: ({ label }: { label: string }) => <div role="img" aria-label={label} /> }))
+
 describe('Trupi sipas matjeve', () => {
   afterEach(() => language.set('sq'))
 
@@ -37,11 +40,36 @@ describe('Trupi sipas matjeve', () => {
     render(<RouterProvider router={createMemoryRouter([{ path: '/progresi/trupi/matjet', element: <BodyShapePage /> }], { initialEntries: ['/progresi/trupi/matjet'] })} />)
   }
 
-  it('pa dy matje: fjalia e gjendjes bosh dhe "Shto matjen e sotme"', async () => {
+  it('pa matje (V2-E3-30): modeli bazë, lista e katër perimetrave të matjes së parë dhe "Shto matjen e sotme"', async () => {
     await import('@/data/app-data')
     await renderPage()
-    expect(await screen.findByText(/Matja e dytë me centimetër/)).toBeInTheDocument()
+    expect(await screen.findByText('Me matjen e dytë modeli tregon ndryshimin nga Java 0, me ngjyrë te çdo pjesë.')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Sipas matjeve' })).toBeInTheDocument()
+    expect(screen.getByText('Modeli ndjek perimetrat e tua.')).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: 'Modeli bazë i trupit' })).toBeInTheDocument()
+    expect(screen.getByText('Modeli bazë')).toBeInTheDocument()
+    expect(screen.getByText('Pa centimetër ende')).toBeInTheDocument()
+    const first = screen.getByRole('region', { name: 'Matja e parë · 4 perimetra' })
+    expect(within(first).getAllByRole('listitem').map((row) => row.textContent)).toEqual([
+      'Krahute pjesa më e gjerë',
+      'Gjoksinën sqetull',
+      'Belipasi nxjerr frymën',
+      'Kofshate pjesa më e gjerë',
+    ])
     expect(screen.getByRole('link', { name: 'Shto matjen e sotme' })).toHaveAttribute('href', '/progresi/matja')
+  })
+
+  it('pa matje me peshë: "Modeli bazë · 80,0 kg"; anglisht', async () => {
+    language.set('en')
+    const { saveMeasurement } = await import('@/data/progress')
+    await import('@/data/app-data')
+    await saveMeasurement(data.store, '2026-10-25', { weight_kg: 80 })
+    await renderPage()
+    expect(await screen.findByText('Base model · 80.0 kg')).toBeInTheDocument()
+    expect(screen.getByText('No tape measurements yet')).toBeInTheDocument()
+    const first = screen.getByRole('region', { name: 'First measurement · 4 measures' })
+    expect(within(first).getAllByRole('listitem').map((row) => row.textContent)).toEqual(['Armat the widest part', 'Chestunder the armpit', 'Waistafter breathing out', 'Thighat the widest part'])
+    expect(screen.getByText('With the second measurement the model shows the change since Week 0, coloured on each part.')).toBeInTheDocument()
   })
 
   it('Java 0 dhe matja e fundit: perimetrat, pamjet dhe forma; matja e re ndryshon trupin', async () => {

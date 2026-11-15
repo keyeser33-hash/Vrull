@@ -102,6 +102,10 @@ export interface ShapeView {
   startLabel: string | null
   /** Shkalla e modelit "Sot" për çdo zonë. */
   scales: ShapeScales
+  /** Pesha e fundit e matur (kg), për modelin bazë të gjendjes bosh; null pa peshë. */
+  weightKg: number | null
+  /** A ka të paktën një perimetër të matur (pa peshën). */
+  hasCircumference: boolean
 }
 
 /** Trupi sipas matjeve (V12, V2-E1-14): perimetrat nga Java 0 te matja e fundit. */
@@ -111,7 +115,9 @@ export async function shapeView(store: LocalStore): Promise<ShapeView> {
   const start = startedAt ? localDay(startedAt) : null
   const first = loaded ? [...loaded.engine.blocks].sort((a, b) => a.position - b.position)[0] : undefined
   const comparison = shapeComparison(measurements, start)
-  return { comparison, start, startLabel: first?.name ?? null, scales: shapeScales(comparison) }
+  const weights = measurements.filter((row) => row.values.weight_kg !== null && row.values.weight_kg !== undefined).sort((a, b) => a.date.localeCompare(b.date))
+  const hasCircumference = measurements.some((row) => METRICS.some((metric) => metric.key !== 'weight_kg' && row.values[metric.key] !== null && row.values[metric.key] !== undefined))
+  return { comparison, start, startLabel: first?.name ?? null, scales: shapeScales(comparison), weightKg: weights.at(-1)?.values.weight_kg ?? null, hasCircumference }
 }
 
 /** Të gjitha matjet, një rresht për datë, me vlerat si numra (null kur mungojnë). */
