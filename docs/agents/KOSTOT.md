@@ -19,3 +19,4 @@ Matjet:
 | Kuizi si story dhe Sot me story (E3-12) | 15.11.2026, 02:21–02:40 | Rreth 306 mijë, dy agjentë me Sonnet | 0 | – | – | Bordet shihen me built-in browser pas publikimit (ORKESTRIMI › Bordet e dizajnit) |
 | Sot i ri (E3-19, bordet) | 15.11.2026, 02:41–02:55 | Rreth 201 mijë, një agjent me Sonnet | 0 | – | – | Numrat e bordeve nga një tabelë e vetme te brief-i (ORKESTRIMI › Bordet e dizajnit) |
 | Sot unik, variantet A dhe B (E3-19) | 15.11.2026, 02:58–03:05 | Rreth 139 mijë, një agjent me Sonnet | 0 | – | – | Numrat e ditës nga logjika e app-it (`mealSchedule`) te tabela e brief-it |
+| Rishikimi kritik dhe dizajni final 0.40 (E3-12, E3-19) | 15.11.2026, 03:35–03:50 | Dy agjentë me Sonnet (gjashtë borde të Sot-it me B, vargu i Mëso-s dhe muskujt EN); tokenat e tyre nuk u ruajtën | 0 | – | – | 2 mësime (përsëritjet e javës te brief-i, menuja ▷) |

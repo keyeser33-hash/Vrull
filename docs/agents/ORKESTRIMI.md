@@ -78,9 +78,9 @@ Krahaso rreshtat e `docs/agents/KOSTOT.md` me etapën e kaluar. Kur një kosto r
 ## Bordet e dizajnit
 
 - Agjentët shkruajnë skedarët `.dc.html` te një dosje lokale; orkestruesi i publikon me një thirrje `publish_files`, bashkë me `project/canvas.json` kur ndryshon faqja.
-- Pas publikimit, orkestruesi i sheh bordet me sy vetëm me built-in browser (kërkesa e përdoruesit, 15.11.2026): kanavaca › ▷ › emri i bordit (pamja "Fit"). Klikimi i dyfishtë mbi një bord hap redaktimin e tekstit, ndaj nuk përdoret. Një mënyrë tjetër (Chrome headless, Playwright, screenshot jashtë app-it) përdoret vetëm pasi t'i thuhet përdoruesit.
+- Pas publikimit, orkestruesi i sheh bordet me sy vetëm me built-in browser (kërkesa e përdoruesit, 15.11.2026): kanavaca › ▷ › emri i bordit (miu kalon mbi emër para klikimit; "Fit" për gjithë bordin, "Fill" për ta lexuar). Klikimi i dyfishtë mbi një bord hap redaktimin e tekstit, ndaj nuk përdoret. Një mënyrë tjetër (Chrome headless, Playwright, screenshot jashtë app-it) përdoret vetëm pasi t'i thuhet përdoruesit.
 - Ndreqjet pas pamjes bëhen te skedari lokal dhe publikohen vetëm skedarët e ndryshuar; përdoruesi i sheh bordet pasi orkestruesi i ka parë.
-- Brief-i i bordeve ka një tabelë të vetme për javën e bordeve: për çdo datë stërvitja, numrat e ushqimit dhe të ujit, gjendja, dhe çfarë del prej tyre sipas rregullave të SPEC-ut (pikat, "u arrit", gatishmëria). Agjentët i marrin vetëm prej saj; asnjë numër në dy vende.
+- Brief-i i bordeve ka një tabelë të vetme për javën e bordeve: për çdo datë stërvitja, numrat e ushqimit dhe të ujit, gjendja, dhe çfarë del prej tyre sipas rregullave të SPEC-ut (pikat, "u arrit", gatishmëria); për stërvitjen, intervali i përsëritjeve i javës nga `LADDERS` te `src/program/shortcut-to-size.ts` (java 1 → 4 e fazës: 12–15, 9–11, 6–8, 3–5). Agjentët i marrin vetëm prej saj; asnjë numër në dy vende.
 
 ## Lëshimi
 
