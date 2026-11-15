@@ -265,6 +265,7 @@ function CustomAmount({ onClose, onAdd }: { onClose: () => void; onAdd: (ml: num
           autoFocus
           value={text}
           onChange={(event) => setText(event.target.value)}
+          aria-label={t('sot.water.customLabel')}
           aria-describedby="sot-water-range"
           className="min-h-button rounded-md border border-subtle bg-surface-2 px-3 text-[19px] tabular-nums text-foreground"
         />

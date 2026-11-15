@@ -5,8 +5,8 @@ import type { CheckInAnswers } from '@/data/daily-state'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n/language'
 
-// Karta "Si ndihesh sot?", pllaka "Gati" dhe fletat e tyre (V50, V2-E3-04/05; bordet "Sot · Si ndihesh sot?", "Gjendja e
-// ditës", "Fleta Gati"): me app-in e vërtetë mbi një bazë lokale prove. Sot është e diela 8 nëntor 2026 (ditë stërvitjeje),
+// Rrathët "Si ndihesh?" dhe "Gati N%" dhe fletat e tyre (V50, V57, V2-E3-04/05; bordet "Sot", "Gjendja e ditës", "Fleta Gati"):
+// me app-in e vërtetë mbi një bazë lokale prove. Sot është e diela 8 nëntor 2026 (ditë stërvitjeje),
 // ose e mërkura 11 nëntor (pushim).
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, clock: new Date(2026, 10, 8, 10, 0) }))
 
@@ -40,10 +40,16 @@ async function setup(clock = at(8, 11)) {
 async function renderCard() {
   const { useLocalQuery, store } = await import('@/data/app-data')
   const { todayView } = await import('@/data/today')
-  const { ReadinessCard } = await import('./readiness-card')
+  const { TodayStories } = await import('./today-stories')
+  const { ReadinessSheets } = await import('./readiness-sheets')
   function Host() {
     const view = useLocalQuery(() => todayView(store), [])
-    return view ? <ReadinessCard view={view} /> : null
+    return view ? (
+      <>
+        <TodayStories view={view} />
+        <ReadinessSheets view={view} />
+      </>
+    ) : null
   }
   const router = createMemoryRouter([{ path: '/', element: <Host /> }], { initialEntries: ['/'] })
   render(<RouterProvider router={router} />)
@@ -55,55 +61,42 @@ async function stored(date = '2026-11-08') {
   return readDailyState(data.store, date)
 }
 
-describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
+describe('rrathët "Si ndihesh?" dhe "Gati" dhe fletat e tyre', () => {
   afterEach(async () => {
     cleanup()
     await act(() => language.set('sq'))
   })
 
-  it('pa gjendje: karta me "Plotëso" dhe "Jo sot", pa pllakë', async () => {
+  it('pa gjendje: rrethi "Si ndihesh?" i ri, pa "Gati"', async () => {
     await setup()
     await renderCard()
-    expect(await screen.findByRole('heading', { name: 'Si ndihesh sot?' })).toBeInTheDocument()
-    expect(screen.getByText('Pesë pyetje, 10 sekonda. Vrull e përshtat seancën sipas teje.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Plotëso' })).toBeInTheDocument()
-    expect(screen.queryByText('Gati')).not.toBeInTheDocument()
+    const story = await screen.findByRole('button', { name: 'Si ndihesh?, e re' })
+    expect(story).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Gati/ })).not.toBeInTheDocument()
   })
 
-  it('"Jo sot" e fsheh kartën për atë ditë dhe nuk ruan gjendje', async () => {
+  it('"Jo sot" te fleta e bën rrethin gri dhe nuk ruan gjendje; rrethi mbetet dhe e hap fletën përsëri', async () => {
     const store = await setup()
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Jo sot' }))
-    await waitFor(() => expect(screen.queryByRole('heading', { name: 'Si ndihesh sot?' })).not.toBeInTheDocument())
+    await userEvent.click(await screen.findByRole('button', { name: 'Si ndihesh?, e re' }))
+    const sheet = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
+    await userEvent.click(within(sheet).getByRole('button', { name: 'Jo sot' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     const { checkInSkipped } = await import('@/data/daily-state')
     expect(await checkInSkipped(store, '2026-11-08')).toBe(true)
     expect(await stored()).toBeNull()
-    expect(screen.queryByRole('button', { name: /Gatishmëria/ })).not.toBeInTheDocument()
-  })
-
-  it('pas "Jo sot" mbetet pllaka e vogël "Gati · Plotëso" që e hap fletën; dita plotësohet më vonë', async () => {
-    await setup()
-    await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Jo sot' }))
-    const tile = await screen.findByRole('button', { name: 'Gati · Plotëso' })
-    await userEvent.click(tile)
-    const sheet = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
-    await userEvent.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
+    // Pas "Jo sot" unaza është gri (e shikuar): pa "e re" te emri.
+    const story = await screen.findByRole('button', { name: 'Si ndihesh?' })
+    await userEvent.click(story)
+    const again = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
+    await userEvent.click(within(again).getByRole('button', { name: 'Ruaj' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     expect(await stored()).not.toBeNull()
-    expect(await screen.findByRole('button', { name: /Gatishmëria/ })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Gati · Plotëso' })).not.toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: /^Gati \d+%/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Si ndihesh\?/ })).not.toBeInTheDocument()
   })
 
-  it('pllaka "Gati · Plotëso" edhe në anglisht', async () => {
-    await setup()
-    await act(() => language.set('en'))
-    await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Not today' }))
-    expect(await screen.findByRole('button', { name: 'Ready · Fill in' })).toBeInTheDocument()
-  })
-
-  it('me gjendje: pllaka e ka përqindjen nga rreshti (rikuperimi i çastit të check-in-it)', async () => {
+  it('me gjendje: rrethi "Gati" e ka përqindjen nga rreshti (rikuperimi i çastit të check-in-it) dhe zhduket "Si ndihesh?"', async () => {
     const store = await setup()
     const { readinessOfState, saveDailyState } = await import('@/data/daily-state')
     const { checkInContext } = await import('@/data/readiness-view')
@@ -112,17 +105,20 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     const expected = readinessOfState((await stored())!)
     expect((await stored())?.readiness).toBe(expected.percent)
     await renderCard()
-    const tile = await screen.findByRole('button', { name: /Gatishmëria/ })
-    expect(tile).toHaveAccessibleName(new RegExp(`${expected.percent} për qind`))
-    expect(within(tile).getByText(`${expected.percent}%`)).toBeInTheDocument()
-    expect(within(tile).getByText(expected.level === 'low' ? 'E ulët' : expected.level === 'high' ? 'E lartë' : 'Normale')).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Si ndihesh sot?' })).not.toBeInTheDocument()
+    const story = await screen.findByRole('button', { name: `Gati ${expected.percent}%, e re` })
+    expect(within(story).getByText(`Gati ${expected.percent}%`)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Si ndihesh\?/ })).not.toBeInTheDocument()
+    // Prekja e shënon të shikuar për ditën (ruhet vetëm në telefon).
+    await userEvent.click(story)
+    expect(await screen.findByRole('dialog', { name: 'Gatishmëria' })).toBeInTheDocument()
+    expect(await store.readDevice('stories-seen')).toEqual({ date: '2026-11-08', ids: ['ready'] })
+    expect(await screen.findByRole('button', { name: `Gati ${expected.percent}%` })).toBeInTheDocument()
   })
 
   it('fleta e check-in-it: vlera e gjumit nga profili, çipat, ruajtja me gatishmërinë', async () => {
     const store = await setup()
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Plotëso' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Si ndihesh?, e re' }))
     const sheet = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
     expect(within(sheet).getByText('Nga ora e gjumit · 01:10–07:10')).toBeInTheDocument()
     expect(within(sheet).getByText('6 orë')).toBeInTheDocument()
@@ -139,7 +135,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(within(sheet).getByRole('img', { name: /të zgjedhur: Krahët/ })).toBeInTheDocument()
     await userEvent.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
 
-    const tile = await screen.findByRole('button', { name: /Gatishmëria/ })
+    const tile = await screen.findByRole('button', { name: /^Gati \d+%/ })
     const state = await stored()
     expect(state).toMatchObject({ mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 2, soreGroups: ['bicepsi', 'tricepsi', 'parakrahet'] })
     const { readinessOfState } = await import('@/data/daily-state')
@@ -148,20 +144,8 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(state).toMatchObject({ recovery: (await todayView(store)).workout?.recovery, soreTrained: true })
     const percent = readinessOfState(state!).percent
     expect(state?.readiness).toBe(percent)
-    expect(within(tile).getByText(`${percent}%`)).toBeInTheDocument()
+    expect(within(tile).getByText(`Gati ${percent}%`)).toBeInTheDocument()
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-  })
-
-  it('"Jo sot" te fleta e mbyll si "Jo sot" te karta', async () => {
-    const store = await setup()
-    await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'Plotëso' }))
-    const sheet = await screen.findByRole('dialog', { name: 'Gjendja e ditës' })
-    await userEvent.click(within(sheet).getByRole('button', { name: 'Jo sot' }))
-    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
-    const { checkInSkipped } = await import('@/data/daily-state')
-    expect(await checkInSkipped(store, '2026-11-08')).toBe(true)
-    expect(await stored()).toBeNull()
   })
 
   it('fleta "Gati" ditë stërvitjeje: përqindja, pesë pjesët, fjalia e nivelit të ulët; "Ndrysho gjendjen" e hap të mbushur dhe ruan ndryshimin', async () => {
@@ -174,7 +158,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     await saveDailyState(store, '2026-11-08', ANSWERS, checkInContext(view, ANSWERS))
     const before = readinessOfState((await stored())!)
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: /Gatishmëria/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /^Gati \d+%/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Gatishmëria' })
     expect(within(sheet).getByRole('region', { name: new RegExp(`${before.percent} për qind`) })).toBeInTheDocument()
     const parts = within(within(sheet).getByRole('region', { name: 'Nga çfarë del' })).getAllByRole('listitem')
@@ -203,7 +187,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     const after = readinessOfState(state!).percent
     expect(after).toBeGreaterThan(before.percent)
     expect(state?.readiness).toBe(after)
-    expect(await screen.findByText(`${after}%`)).toBeInTheDocument()
+    expect(await screen.findByText(`Gati ${after}%`)).toBeInTheDocument()
   })
 
   it('fleta "Gati" në ditë pushimi ka 4 rreshta, pa rikuperim', async () => {
@@ -211,7 +195,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     const { saveDailyState } = await import('@/data/daily-state')
     await saveDailyState(store, '2026-11-11', { ...ANSWERS, soreness: 0, soreGroups: [] })
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: /Gatishmëria/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /^Gati \d+%/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Gatishmëria' })
     const parts = within(within(sheet).getByRole('region', { name: 'Nga çfarë del' })).getAllByRole('listitem')
     expect(parts).toHaveLength(4)
@@ -227,7 +211,7 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     const now = (await saveDailyState(store, '2026-11-08', ANSWERS)).readiness!
     expect(new Set([day7, day5, now]).size).toBe(3)
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: /Gatishmëria/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /^Gati \d+%/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Gatishmëria' })
     const days = within(within(sheet).getByRole('region', { name: '14 ditët e fundit' })).getAllByRole('listitem')
     await waitFor(() => expect(days.filter((day) => /pa gjendjen e ditës/.test(day.getAttribute('aria-label') ?? ''))).toHaveLength(11))
@@ -239,20 +223,18 @@ describe('karta "Si ndihesh sot?" dhe pllaka "Gati"', () => {
     expect(within(sheet).getByText(`mesatarja ${Math.round((day7 + day5 + now) / 3)}%`)).toBeInTheDocument()
   })
 
-  it('anglishtja: karta, fleta e check-in-it dhe fleta "Gati"', async () => {
+  it('anglishtja: rrathët, fleta e check-in-it dhe fleta "Gati"', async () => {
     await setup()
     await act(() => language.set('en'))
     await renderCard()
-    expect(await screen.findByRole('heading', { name: 'How are you feeling today?' })).toBeInTheDocument()
-    expect(screen.getByText('Five questions, 10 seconds. Vrull adapts the session to you.')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Fill in' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'How do you feel?, new' }))
     const form = await screen.findByRole('dialog', { name: 'Daily check-in' })
     expect(within(form).getByText('From your bedtime · 01:10–07:10')).toBeInTheDocument()
     expect(within(form).getByText('6 hours')).toBeInTheDocument()
     await userEvent.click(within(form).getByRole('button', { name: 'Slight' }))
     expect(within(form).getByRole('button', { name: 'Legs' })).toBeInTheDocument()
     await userEvent.click(within(form).getByRole('button', { name: 'Save' }))
-    await userEvent.click(await screen.findByRole('button', { name: /Readiness \d+ per cent/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /^Ready \d+%/ }))
     const sheet = await screen.findByRole('dialog', { name: 'Readiness' })
     expect(within(sheet).getByText('What it is made of')).toBeInTheDocument()
     expect(within(sheet).getByText('Last 14 days')).toBeInTheDocument()
