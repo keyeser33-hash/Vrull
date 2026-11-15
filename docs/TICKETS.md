@@ -229,6 +229,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-16 | "A e dije?" te Sot, pushimi mes seteve dhe ushqimi, dhe cilësimi | E3-15 |
 | V2-E3-17 | Faqja e ushtrimit dhe e pjatës, "Shpjegoje më shumë" | E3-13 |
 | V2-E3-18 | Kuizi i së dielës dhe faqja Mëso te Progresi | E3-15 |
+| V2-E3-19 | Sot i ri: bordet, pastaj kodi (V57, SPEC §0.3f): story-t, matësit e ditës, java me pika, fleta e ditës | E3-12 |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-12 · Bordet e Mëso

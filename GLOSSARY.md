@@ -423,6 +423,15 @@ Javët njëra pas tjetrës me **Kuizin javor** të mbyllur.
 **Paketa e fakteve**:
 Të gjithë **Faktet** që vijnë me app-in, secili me burimin e vet; ndryshon vetëm me një version të ri.
 
+**Story**:
+Një ekran i plotë me një ide, me shiritat e vargut lart, që nuk kalon vetë me kohë: gjendja e ditës, "A e dije?" te Sot, kuizi javor, "Java jote".
+
+**Rrethi i story-t**:
+Një rreth në krye të Sot-it që hap një **Story**; unaza tregon nëse është parë.
+
+**Fleta e ditës**:
+Fleta që hapet nga një datë e rripit të javës: çfarë u bë atë ditë, ose stërvitja e planifikuar.
+
 **Faqja Mëso**:
 Faqja te Progresi me **Faktet** që përdoruesi ka parë dhe **Kuizet javore** të kaluara.
 
