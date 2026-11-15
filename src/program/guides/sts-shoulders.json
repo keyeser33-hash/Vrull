@@ -1,0 +1,2448 @@
+{
+  "group": "sts-shoulders",
+  "guides": [
+    {
+      "exercise": "Dumbbell Shoulder Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në stol me mbështetëse, me kokën, shpatullat dhe vithet në stol dhe këmbët të sheshta në dysheme. Në stol të rregullueshëm vendose në 90°.",
+            "en": "Sit on a bench with a back rest, with your head, shoulders and glutes against the bench and your feet flat on the floor. On an adjustable bench, set it to 90°."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaji kështu gjatë gjithë setit.",
+            "en": "Brace your core, pull your shoulder blades down and back and hold that position for the whole set."
+          },
+          {
+            "sq": "Ngri hallterat te shpatullat, pëllëmbët përpara, në gjerësinë e shpatullave ose pak më gjerë, me kyçet drejt.",
+            "en": "Bring the dumbbells to shoulder level, palms facing forward, at shoulder width or slightly wider, with your wrists straight."
+          },
+          {
+            "sq": "Mbaji bërrylat pak përpara trupit, jo drejt në vijën e shpatullave.",
+            "en": "Keep your elbows slightly in front of your torso, not in line with your shoulders."
+          }
+        ],
+        "sources": [
+          "ace_press",
+          "st_press"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe shtyj të dyja hallterat lart mbi kokë njëkohësisht, pa harkuar belin.",
+            "en": "Breathe out and press both dumbbells overhead together, without arching your lower back."
+          },
+          {
+            "sq": "Në krye ndalo kur bërrylat janë pothuajse drejt, pa i bllokuar.",
+            "en": "At the top, stop when your elbows are almost straight, without locking them."
+          },
+          {
+            "sq": "Ule hallterat ngadalë duke përkulur bërrylat, deri poshtë nivelit të mjekrës.",
+            "en": "Lower the dumbbells slowly by bending your elbows, to below chin level."
+          },
+          {
+            "sq": "Mos e lër peshën të bjerë vetë: tërhiqe poshtë me kontroll, duke përdorur shpinën e gjerë.",
+            "en": "Don't let the weight simply drop: pull it down under control, using your lats."
+          }
+        ],
+        "sources": [
+          "ace_press",
+          "st_press"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur shtyn hallterat lart, merr frymë kur i ul.",
+            "en": "Breathe out as you press the dumbbells up, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_press"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina në stol, pa harkuar belin",
+            "en": "Back on the bench, don't arch"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Bërrylat pak përpara trupit",
+            "en": "Elbows slightly in front"
+          },
+          {
+            "sq": "Ule poshtë nivelit të mjekrës",
+            "en": "Lower to below chin level"
+          },
+          {
+            "sq": "Mos i blloko bërrylat lart",
+            "en": "Don't lock your elbows out"
+          }
+        ],
+        "sources": [
+          "ace_press",
+          "st_press"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Harkimi i belit për ta shtyrë peshën lart: shpina ndahet nga stoli dhe ngarkesa shkon te beli.",
+            "en": "Arching your lower back to push the weight up: your back leaves the bench and the load shifts to your lower back."
+          },
+          {
+            "sq": "Bllokimi i plotë i bërrylave në krye: Stoppani e quan të pasigurt për nyjet.",
+            "en": "Locking the elbows fully at the top: Stoppani calls it unsafe for your joints."
+          },
+          {
+            "sq": "Kyçet e përkulur përpara ose prapa gjatë shtytjes.",
+            "en": "Bending your wrists forwards or backwards during the press."
+          },
+          {
+            "sq": "Bërrylat drejt anash, jo pak përpara: ACE i këshillon përpara për më shumë rehati gjatë gjithë lëvizjes.",
+            "en": "Elbows straight out to the sides rather than slightly forward: ACE advises forward for more comfort through the whole range."
+          },
+          {
+            "sq": "Ulja si lëshim i peshës nga graviteti, pa kontroll.",
+            "en": "Lowering as if letting gravity take the weight, with no control."
+          }
+        ],
+        "sources": [
+          "ace_press",
+          "st_press"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (How To Do A Shoulder Press)",
+          "text": {
+            "sq": "Kap hallterat me kapje të hapur, me gishtin e madh në të njëjtën anë me gishtat: dorezat ulen më poshtë në pëllëmbë, larg nyjeve të gishtave. Nëse të frikëson rrëshqitja, përdor rripa për kyçin.",
+            "en": "Use an open grip, with your thumb on the same side as your fingers: the handles sit lower in your palm, away from your knuckles. If you worry about them slipping, use wrist straps."
+          },
+          "sources": [
+            "st_press"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (How To Do A Shoulder Press)",
+          "text": {
+            "sq": "Kur bërrylat dalin anash, punon më shumë deltoidi i mesit; kur krahët e sipërm janë përpara trupit, deltoidi i përparmë. Për deltoidin e mesit mbaje busin vertikal.",
+            "en": "When your elbows flare out, the middle delt works more; when your upper arms are in front of your body, the front delt does. For the middle delt, keep your torso vertical."
+          },
+          "sources": [
+            "st_press"
+          ]
+        },
+        {
+          "who": "ACE, Dynamite Delts · Sweeney, Porcari dhe kolegët, UW-La Crosse",
+          "text": {
+            "sq": "Në studimin e ACE me University of Wisconsin–La Crosse, shtytja me halltera dha aktivizimin më të lartë të deltoidit të përparmë nga të gjitha ushtrimet e testuara.",
+            "en": "In ACE's study with the University of Wisconsin–La Crosse, the dumbbell shoulder press produced the highest front delt activation of all the exercises tested."
+          },
+          "sources": [
+            "ace_delts"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e shtrin muskulin plotësisht.",
+            "en": "The review recommends a range of motion that fully stretches the muscle."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Me pesha të rënda kërko një ndihmës: ACE thotë që roja është e rëndësishme dhe qëndron pas teje.",
+            "en": "With heavy loads ask for a spotter: ACE says spotting is important, and the spotter stands behind you."
+          },
+          {
+            "sq": "Shmang pozicionin e skajshëm 'high-five' në fund të lëvizjes dhe zgjidh shtytjen para trupit, jo prapa kokës.",
+            "en": "Avoid the end-range 'high-five' position and choose pressing in front of your body, not behind your head."
+          },
+          {
+            "sq": "Mann San Gil, trajner i çertifikuar nga ACE, thotë se me probleme aktuale të shpatullës mund të duhet të shmangen shtytjet mbi kokë; si alternativë sugjeron ngritje anash ose përpara.",
+            "en": "Mann San Gil, an ACE Certified Personal Trainer, says people with current shoulder problems may want to avoid overhead presses; he suggests lateral or front raises as alternatives."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_press",
+          "kolber2010",
+          "ace_smart",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_press": {
+          "label": "ACE, Seated Overhead Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/45/seated-overhead-press/",
+          "checked": "2026-11-15"
+        },
+        "ace_delts": {
+          "label": "ACE, Dynamite Delts (Sweeney, Porcari dhe kolegët, UW-La Crosse)",
+          "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+          "checked": "2026-11-15"
+        },
+        "ace_smart": {
+          "label": "ACE, Smart Shoulder Solutions",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/9074/smart-shoulder-solutions-an-evidence-based-approach-to-training-the-deltoids/",
+          "checked": "2026-11-15"
+        },
+        "st_press": {
+          "label": "Jim Stoppani, PhD, How To Do A Shoulder Press",
+          "url": "https://www.jimstoppani.com/training/shoulder-press",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "kolber2010": {
+          "label": "Kolber, Beekhuizen, Cheng dhe Hellman, 2010, Journal of Strength and Conditioning Research",
+          "url": "https://doi.org/10.1519/JSC.0b013e3181dc4330",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Lateral Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro drejt, me këmbët pak më gjerë se ijët ose në pozicion të ndarë, me hallterat anash kofshëve dhe pëllëmbët nga trupi.",
+            "en": "Stand tall with your feet slightly wider than your hips or in a split stance, with the dumbbells alongside your thighs and your palms facing your body."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaje kokën në vijë me shpinën.",
+            "en": "Brace your core, pull your shoulder blades down and back and keep your head in line with your spine."
+          },
+          {
+            "sq": "Mbaji bërrylat drejt ose me përkulje të lehtë gjatë gjithë setit.",
+            "en": "Keep your elbows straight or slightly bent for the whole set."
+          }
+        ],
+        "sources": [
+          "ace_lat"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe ngri hallterat lart e anash, me bërrylat dhe krahët e sipërm që prijnë pak para parakrahëve.",
+            "en": "Breathe out and raise the dumbbells up and out to your sides, with your elbows and upper arms leading slightly ahead of your forearms."
+          },
+          {
+            "sq": "Ngri deri sa krahët të jenë afërsisht paralel me dyshemenë dhe mos kalo 90°.",
+            "en": "Raise until your arms are roughly parallel to the floor and don't go beyond 90°."
+          },
+          {
+            "sq": "Ule hallterat ngadalë, me bërrylat pak të përkulur.",
+            "en": "Lower the dumbbells slowly, with your elbows slightly bent."
+          },
+          {
+            "sq": "Mbaje busin drejt dhe kyçet neutrale gjatë gjithë lëvizjes.",
+            "en": "Keep your torso upright and your wrists neutral throughout."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "st_shoulders",
+          "kolber2014"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur i ngre hallterat anash, merr frymë kur i ul.",
+            "en": "Breathe out as you raise the dumbbells to the sides, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ngri deri paralel me dyshemenë",
+            "en": "Raise to parallel with the floor"
+          },
+          {
+            "sq": "Bërrylat prijnë, jo duart",
+            "en": "Elbows lead, not your hands"
+          },
+          {
+            "sq": "Trupi drejt, pa lëkundje",
+            "en": "Torso upright, no swinging"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "st_shoulders",
+          "ace_lat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Lëkundja e trupit për ta ngritur peshën: puna del nga muskuli dhe shkon te impulsi.",
+            "en": "Swinging your torso to get the weight up: the work leaves the muscle and goes to momentum."
+          },
+          {
+            "sq": "Harkimi i belit gjatë ngritjes.",
+            "en": "Arching your lower back during the raise."
+          },
+          {
+            "sq": "Ngritja mbi 90°, mbi nivelin e shpatullave: lidhet me shenja goditjeje të shpatullës.",
+            "en": "Raising beyond 90°, above shoulder height: it is linked to shoulder impingement signs."
+          },
+          {
+            "sq": "Kyçet të përkulur lart ose poshtë.",
+            "en": "Bending your wrists up or down."
+          },
+          {
+            "sq": "Ulja e shpejtë e hallterave.",
+            "en": "Lowering the dumbbells quickly."
+          }
+        ],
+        "sources": [
+          "korakakis",
+          "ace_lat",
+          "kolber2014"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Ngritja me anim: mbaju me një dorë te rafti, anohu 30–45° larg tij dhe ngri hallterën tjetër deri paralel me dyshemenë. Sipas tij kjo e kufizon punën e supraspinatusit, që mban pjesën më të madhe të ngarkesës në 30° e parë.",
+            "en": "Leaning raise: hold a rack with one hand, lean 30-45° away and raise the other dumbbell to parallel with the floor. He says this limits the supraspinatus, which takes most of the load in the first 30°."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "ACE, Lateral Raise",
+          "text": {
+            "sq": "Kur krahët kalojnë rreth 60–70°, rrotulloji pak hallterat që pjesa e përparme të shikojë lart, si në ngritje ashtu edhe në ulje: ACE thotë se kjo mund ta ulë rrezikun e goditjes në shpatull.",
+            "en": "As your arms pass about 60-70°, rotate the dumbbells slightly so the front edge points up, on the way up and down: ACE says this may reduce the risk of impingement in the shoulder."
+          },
+          "sources": [
+            "ace_lat"
+          ]
+        },
+        {
+          "who": "Coratella dhe kolegët, 2020 · International Journal of Environmental Research and Public Health",
+          "text": {
+            "sq": "Te 10 bodybuilderë, deltoidi i mesit kishte sEMG më të lartë te ngritja anash me rrotullim neutral se me rrotullim të jashtëm të humerusit.",
+            "en": "In 10 bodybuilders, the middle deltoid showed higher sEMG in the neutral lateral raise than in the externally rotated one."
+          },
+          "sources": [
+            "coratella"
+          ]
+        },
+        {
+          "who": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025 · Frontiers in Physiology",
+          "text": {
+            "sq": "Pas 8 javësh, ngritjet anash me halltera dhe me kabllo e rritën njësoj trashësinë e deltoidit anësor (3,3–4,6 %).",
+            "en": "After 8 weeks, dumbbell and cable lateral raises grew the lateral deltoid similarly (3.3-4.6%)."
+          },
+          "sources": [
+            "larsen"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Te një studim përshoqërimi me 46 burra që stërvitën me pesha, ngritjet anash dhe rreshtat vertikalë mbi 90° u lidhën me shenja goditjeje të shpatullës; autorët thonë se shmangia e tyre mund të ndihmojë ta ulë rrezikun.",
+            "en": "In a case-control study of 46 men who trained with weights, lateral raises and upright rows above 90° were linked to shoulder impingement signs; the authors say avoiding them may help reduce the risk."
+          },
+          {
+            "sq": "Nëse ndjen shtrëngim ose pickim në shpatull, provo pesha më të lehta, sipas ACE.",
+            "en": "If you feel tightness or pinching in your shoulder, try lighter weights, as ACE suggests."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "ace_tnt",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_lat": {
+          "label": "ACE, Lateral Raise",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/26/lateral-raise/",
+          "checked": "2026-11-15"
+        },
+        "ace_tnt": {
+          "label": "ACE, Train This, Not That: The Upper-body Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5277/train-this-not-that-the-upper-body-edition/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "kolber2014": {
+          "label": "Kolber, Cheatham, Salamh dhe Hanney, 2014, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24077379/",
+          "checked": "2026-11-15"
+        },
+        "coratella": {
+          "label": "Coratella, Tornatore, Longo, Esposito dhe Cè, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://www.mdpi.com/1660-4601/17/17/6015",
+          "checked": "2026-11-15"
+        },
+        "larsen": {
+          "label": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025, Frontiers in Physiology",
+          "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1611468/full",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Arm Cable Lateral Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro sa më afër stacionit të kabllit, që vija e tërheqjes të jetë sa më vertikale.",
+            "en": "Stand as close to the cable station as you can, so the line of pull is as vertical as possible."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaje busin drejt.",
+            "en": "Brace your core, pull your shoulder blades down and back and keep your torso upright."
+          },
+          {
+            "sq": "Në variantin pa duar, vendose rripin e kyçit mbi bërryl dhe kordonin poshtë lartësisë së ijeve.",
+            "en": "In the hands-free version, put the ankle strap just above your elbow and set the pulley just below hip height."
+          }
+        ],
+        "sources": [
+          "st_vid_cable",
+          "ace_lat",
+          "st_shoulders"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Me deltoidin ngri krahun e sipërm anash deri në paralel me dyshemenë.",
+            "en": "Use your deltoid to raise your upper arm out to the side, to parallel with the floor."
+          },
+          {
+            "sq": "Ule dorën ngadalë: kablli të mban tension gjatë gjithë lëvizjes.",
+            "en": "Lower your arm slowly: the cable keeps tension on the muscle throughout."
+          },
+          {
+            "sq": "Mbaje busin të qetë, që të punojë vetëm krahu.",
+            "en": "Keep your torso still so only your arm does the work."
+          },
+          {
+            "sq": "Bëj përsëritjet e një krahu, pastaj ndërro; ose ndërro krahët pa pushim derisa t'i mbarosh setet.",
+            "en": "Do the reps for one arm, then switch; or alternate arms with no break until you finish the sets."
+          }
+        ],
+        "sources": [
+          "st_shoulders",
+          "kolber2014",
+          "st_vid_cable",
+          "ace_lat"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur ngre krahun anash, merr frymë kur e ul.",
+            "en": "Breathe out as you raise your arm to the side, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Qëndro afër kabllit",
+            "en": "Stand close to the cable"
+          },
+          {
+            "sq": "Ngri krahun, jo dorën",
+            "en": "Lift your arm, not your hand"
+          },
+          {
+            "sq": "Ngri deri paralel me dyshemenë",
+            "en": "Raise to parallel with the floor"
+          },
+          {
+            "sq": "Ule ngadalë, mbaj tensionin",
+            "en": "Lower slowly, keep tension"
+          },
+          {
+            "sq": "Busi i qetë, pa lëkundje",
+            "en": "Torso still, no swinging"
+          }
+        ],
+        "sources": [
+          "st_vid_cable",
+          "st_shoulders",
+          "kolber2014",
+          "ace_lat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Qëndrimi larg stacionit: vija e kabllit nuk është vertikale dhe tensioni në majë ulet.",
+            "en": "Standing far from the station: the cable's line of pull isn't vertical and the tension at the top drops."
+          },
+          {
+            "sq": "Ngritja mbi 90°: lidhet me shenja goditjeje të shpatullës.",
+            "en": "Raising beyond 90°: it is linked to shoulder impingement signs."
+          },
+          {
+            "sq": "Lëkundja e trupit për ta nisur lëvizjen.",
+            "en": "Swinging your torso to start the movement."
+          },
+          {
+            "sq": "Harkimi i belit ose animi anash gjatë ngritjes.",
+            "en": "Arching your lower back or leaning sideways during the raise."
+          }
+        ],
+        "sources": [
+          "st_vid_cable",
+          "kolber2014",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Jim's 15-Second Tip: Lateral Cable Raise)",
+          "text": {
+            "sq": "Bëj 3–4 sete për çdo krah pa pushim: një krah pushon ndërsa tjetri ngre; kur përsëritjet bien, bie edhe pushimi, dhe djegia shtohet. Ai ngre pak mbi paralelen; shih paralajmërimin te Siguria.",
+            "en": "Do 3-4 sets per arm with no break: one arm rests while the other lifts; as reps drop, so does the rest, and the burn increases. He goes slightly above parallel; see the warning under Safety."
+          },
+          "sources": [
+            "st_vid_cable"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Varianti pa duar: rripi i kyçit mbi bërryl heq kyçin e dorës nga lëvizja. Bëj 2–3 sete të tillë, pastaj 2–3 të zakonshëm, ose zëvendësoje kur kyçi, bërryli ose bicepsi dhembin.",
+            "en": "Hands-free version: a strap above the elbow takes your wrist out of the movement. Do 2-3 of these sets, then 2-3 standard ones, or use it instead when your wrist, elbow or biceps hurts."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025 · Frontiers in Physiology",
+          "text": {
+            "sq": "Në 8 javë, kablli dhe hallterat e rritën njësoj deltoidin anësor te të stërvitur.",
+            "en": "Over 8 weeks, cable and dumbbell raises grew the lateral deltoid similarly in trained people."
+          },
+          "sources": [
+            "larsen"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Stoppani ngre pak mbi paralelen, ndërsa Kolber lidh ngritjet mbi 90° me shenja goditjeje: nëse ndjen shtrëngim në shpatull, ndalo në paralele.",
+            "en": "Stoppani goes slightly above parallel, while Kolber links raises above 90° to impingement signs: if you feel pinching in your shoulder, stop at parallel."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "st_vid_cable",
+          "kolber2014",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_lat": {
+          "label": "ACE, Lateral Raise",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/26/lateral-raise/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "st_vid_cable": {
+          "label": "Jim Stoppani, PhD (YouTube), Jim's 15-Second Tip: Lateral Cable Raise",
+          "url": "https://www.youtube.com/watch?v=QmEUaFk7gK0",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "kolber2014": {
+          "label": "Kolber, Cheatham, Salamh dhe Hanney, 2014, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24077379/",
+          "checked": "2026-11-15"
+        },
+        "larsen": {
+          "label": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025, Frontiers in Physiology",
+          "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1611468/full",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Arm Cable Front Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro në pozicion të ndarë ose me këmbët pak më gjerë se ijët, me krahun drejt ose me përkulje të lehtë.",
+            "en": "Stand in a split stance or with your feet slightly wider than your hips, with your arm straight or slightly bent."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaje kokën në vijë me shpinën.",
+            "en": "Brace your core, pull your shoulders down and back and keep your head in line with your spine."
+          },
+          {
+            "sq": "Kap dorezën me kapje të mbyllur nga sipër, me pëllëmbët drejt kofshëve, dhe mbaji kyçet drejt.",
+            "en": "Grip the handle with a closed, overhand grip, palms facing your thighs, and keep your wrist straight."
+          }
+        ],
+        "sources": [
+          "ace_front"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe ngri krahun përpara deri sa të jetë në nivelin e shpatullës.",
+            "en": "Breathe out and raise your arm in front of you until it is level with your shoulder."
+          },
+          {
+            "sq": "Ule dorën ngadalë drejt pozicionit të nisjes, me bërrylin pak të përkulur.",
+            "en": "Lower your arm slowly back to the start, with your elbow slightly bent."
+          },
+          {
+            "sq": "Mbaje busin drejt, pa harkuar belin.",
+            "en": "Keep your torso upright, without arching your lower back."
+          }
+        ],
+        "sources": [
+          "ace_front"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur ngre krahun përpara, merr frymë kur e ul.",
+            "en": "Breathe out as you raise your arm forwards, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_front"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ngri deri në nivelin e shpatullës",
+            "en": "Raise to shoulder level"
+          },
+          {
+            "sq": "Busi drejt, pa harkuar belin",
+            "en": "Torso upright, don't arch"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Kyçi i drejtë",
+            "en": "Keep your wrist straight"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "ace_front"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Harkimi i belit për ta ngritur peshën.",
+            "en": "Arching your lower back to lift the weight."
+          },
+          {
+            "sq": "Kyçi i dorës i përkulur lart ose poshtë.",
+            "en": "Bending your wrist up or down."
+          },
+          {
+            "sq": "Lëkundja e trupit për ta nisur ngritjen.",
+            "en": "Swinging your body to start the lift."
+          },
+          {
+            "sq": "Ulja e shpejtë, pa kontroll.",
+            "en": "Lowering quickly, without control."
+          }
+        ],
+        "sources": [
+          "ace_front",
+          "korakakis"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Ngritjet anash synojnë deltoidin e mesit, ndërsa ngritjet përpara atë të përparmë; te stërvitjet e shpatullave ai përfshin ushtrime për të tria kokat e deltoidit.",
+            "en": "Lateral raises target the middle delts and front raises target the front delts; in his shoulder workouts he includes exercises for all three heads of the deltoid."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Coratella dhe kolegët, 2020 · International Journal of Environmental Research and Public Health",
+          "text": {
+            "sq": "Te 10 bodybuilderë, deltoidi i përparmë kishte sEMG më të lartë te ngritja përpara se te variantet e ngritjes anash.",
+            "en": "In 10 bodybuilders, the front delt showed higher sEMG in the front raise than in the lateral raise variations."
+          },
+          "sources": [
+            "coratella"
+          ]
+        },
+        {
+          "who": "ACE, Dynamite Delts · Sweeney, Porcari dhe kolegët, UW-La Crosse",
+          "text": {
+            "sq": "Shtytja me halltera dha aktivizimin më të lartë të deltoidit të përparmë te studimi i ACE; mbaje parasysh kur numëron sa e ngarkon këtë kokë gjatë javës.",
+            "en": "The dumbbell shoulder press gave the highest front delt activation in ACE's study; keep that in mind when counting how much you load this head across the week."
+          },
+          "sources": [
+            "ace_delts"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mann San Gil, trajner i çertifikuar nga ACE, thotë se me probleme aktuale të shpatullës mund të duhet të shmangen shtytjet mbi kokë; si alternativë sugjeron ngritje anash ose përpara.",
+            "en": "Mann San Gil, an ACE Certified Personal Trainer, says people with current shoulder problems may want to avoid overhead presses; he suggests lateral or front raises as alternatives."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_smart",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_front": {
+          "label": "ACE, Front Raise",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/54/front-raise/",
+          "checked": "2026-11-15"
+        },
+        "ace_delts": {
+          "label": "ACE, Dynamite Delts (Sweeney, Porcari dhe kolegët, UW-La Crosse)",
+          "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+          "checked": "2026-11-15"
+        },
+        "ace_smart": {
+          "label": "ACE, Smart Shoulder Solutions",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/9074/smart-shoulder-solutions-an-evidence-based-approach-to-training-the-deltoids/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "coratella": {
+          "label": "Coratella, Tornatore, Longo, Esposito dhe Cè, 2020, International Journal of Environmental Research and Public Health",
+          "url": "https://www.mdpi.com/1660-4601/17/17/6015",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "High Cable Rear Delt Fly",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Kap dorezat me kapje të mbyllur dhe neutrale, pëllëmbët përballë njëra-tjetrës, me bërrylat drejt.",
+            "en": "Grip the handles with a closed, neutral grip, palms facing each other, with your elbows straight."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaji kështu gjatë gjithë setit.",
+            "en": "Brace your core, pull your shoulders down and back and hold that position throughout the set."
+          }
+        ],
+        "sources": [
+          "ace_kneel",
+          "schoenfeld13"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe tërhiq krahët prapa me bërrylat drejt, pa harkuar belin.",
+            "en": "Breathe out and pull your arms back with your elbows straight, without arching your lower back."
+          },
+          {
+            "sq": "Në fund shtrëngo shpatullat pas.",
+            "en": "At the end, squeeze your shoulder blades together."
+          },
+          {
+            "sq": "Kthe krahët ngadalë në nisje, me bërrylat drejt dhe busin vertikal.",
+            "en": "Return your arms slowly to the start, with your elbows straight and your torso vertical."
+          }
+        ],
+        "sources": [
+          "ace_kneel",
+          "ace_incline"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur i tërheq krahët prapa, merr frymë kur i kthen.",
+            "en": "Breathe out as you pull your arms back, breathe in as you return them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_kneel"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kapje neutrale, bërrylat drejt",
+            "en": "Neutral grip, elbows straight"
+          },
+          {
+            "sq": "Shtrëngo shpatullat pas",
+            "en": "Squeeze your shoulder blades"
+          },
+          {
+            "sq": "Busi vertikal, pa harkuar belin",
+            "en": "Torso upright, don't arch"
+          },
+          {
+            "sq": "Ktheji krahët ngadalë",
+            "en": "Return your arms slowly"
+          },
+          {
+            "sq": "Pa lëkundje",
+            "en": "No swinging"
+          }
+        ],
+        "sources": [
+          "schoenfeld13",
+          "ace_incline",
+          "ace_kneel",
+          "korakakis"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Harkimi i belit ose animi i busit teksa tërheq.",
+            "en": "Arching your lower back or leaning your torso as you pull."
+          },
+          {
+            "sq": "Shpatullat që ngrihen ose rrotullohen para, në vend që të mbahen poshtë e pas.",
+            "en": "Shoulders that rise or roll forwards instead of staying down and back."
+          },
+          {
+            "sq": "Lëkundja e trupit për të ndihmuar tërheqjen.",
+            "en": "Swinging your body to help the pull."
+          },
+          {
+            "sq": "Kapja pronate pa arsye: jep më pak aktivizim të deltoidit të pasmë se ajo neutrale.",
+            "en": "A pronated grip for no reason: it gives less rear delt activity than a neutral one."
+          }
+        ],
+        "sources": [
+          "ace_kneel",
+          "korakakis",
+          "schoenfeld13"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Fly me kabllo me një krah, si ushtrim përfundimtar: sill krahun larg pas trupit, ndërro krahët pa pushim; ai shënon rreth 3 sete për krah në më pak se 3 minuta (kohë, jo objektiv).",
+            "en": "One-arm cable fly as a finisher: take your arm far behind your body and alternate arms with no rest; he notes about 3 sets per arm in under 3 minutes (a time, not a target)."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Përdor kapjen neutrale shumicën e kohës për deltoidin e pasmë dhe infraspinatusin; kapjen pronate dhe face pulls i përzien herë pas here.",
+            "en": "Use a neutral grip most of the time for the rear delts and infraspinatus; mix in a pronated grip and face pulls now and then."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Schoenfeld, Tiryaki Sonmez, Kolber dhe kolegët, 2013 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Te 19 burra të stërvitur, kapja neutrale dha më shumë aktivizim të deltoidit të pasmë dhe të infraspinatusit se kapja pronate, te një ushtrim me shtrirje horizontale të krahëve.",
+            "en": "In 19 trained men, a neutral grip gave more activity of the rear delt and infraspinatus than a pronated grip on a horizontal-abduction exercise."
+          },
+          "sources": [
+            "schoenfeld13"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje busin vertikal dhe mos e harko belin gjatë tërheqjes.",
+            "en": "Keep your torso vertical and don't arch your lower back during the pull."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_kneel",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_incline": {
+          "label": "ACE, Incline Reverse Fly",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/34/incline-reverse-fly/",
+          "checked": "2026-11-15"
+        },
+        "ace_kneel": {
+          "label": "ACE, Kneeling Reverse Fly",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/128/kneeling-reverse-fly/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "schoenfeld13": {
+          "label": "Schoenfeld, Tiryaki Sonmez, Kolber dhe kolegët, 2013, Journal of Strength and Conditioning Research",
+          "url": "https://scholars.nova.edu/en/publications/effect-of-hand-position-on-emg-activity-of-the-posterior-shoulder/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Bent-Over Lateral Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Përkulu përpara nga ijët me shpinën të drejtë dhe gjunjët pak të përkulur; hallterat varen poshtë shpatullave.",
+            "en": "Hinge forwards at the hips with a straight back and slightly bent knees; the dumbbells hang below your shoulders."
+          },
+          {
+            "sq": "Lëri krahët të varen drejt dyshemesë, me bërryla pak të përkulur dhe pëllëmbët përballë njëra-tjetrës.",
+            "en": "Let your arms hang towards the floor, with slightly bent elbows and palms facing each other."
+          },
+          {
+            "sq": "Forco barkun për të mbrojtur shpinën.",
+            "en": "Brace your core to protect your spine."
+          }
+        ],
+        "sources": [
+          "ace_row",
+          "ace_incline"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe ngri hallterat lart e anash, krahët së bashku, deri sa të jenë afër nivelit të shpatullave.",
+            "en": "Breathe out and raise the dumbbells up and out to the sides, arms together, until they are near shoulder level."
+          },
+          {
+            "sq": "Në majë shtrëngo shpatullat pas; hallterat të jenë në vijë me veshët ose pak para tyre.",
+            "en": "At the top squeeze your shoulder blades together; the dumbbells should be in line with your ears or slightly in front."
+          },
+          {
+            "sq": "Ule hallterat së bashku, ngadalë, në pozicionin e nisjes.",
+            "en": "Lower the dumbbells together, slowly, back to the start."
+          }
+        ],
+        "sources": [
+          "ace_incline"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur i ngre hallterat, merr frymë kur i ul.",
+            "en": "Breathe out as you raise the dumbbells, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_incline"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina e drejtë, ijët pas",
+            "en": "Straight back, hips back"
+          },
+          {
+            "sq": "Bërrylat pak të përkulur",
+            "en": "Elbows slightly bent"
+          },
+          {
+            "sq": "Shtrëngo shpatullat në majë",
+            "en": "Squeeze shoulders at the top"
+          },
+          {
+            "sq": "Ngri deri te veshët",
+            "en": "Raise to line with your ears"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "ace_row",
+          "ace_incline"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Hallterat ngrihen pas vijës së veshëve: ngarkesa kalon nga shpatullat te shpina e gjerë.",
+            "en": "Raising the dumbbells behind the line of your ears: the work shifts from the shoulders to the lats."
+          },
+          {
+            "sq": "Shpina e rrumbullakosur ose e harkuar në vend që të mbahet e drejtë.",
+            "en": "A rounded or arched back instead of a straight one."
+          },
+          {
+            "sq": "Lëkundja e trupit për të ngritur peshën.",
+            "en": "Swinging your body to lift the weight."
+          }
+        ],
+        "sources": [
+          "ace_incline",
+          "ace_row",
+          "korakakis"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Ai e radhit ngritjen anash me përkulje mes ushtrimeve për deltoidin e pasmë dhe e quan ushtrim me një nyje.",
+            "en": "He lists the bent-over lateral raise among his rear delt exercises and calls it a single-joint exercise."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Përdor kapjen neutrale shumicën e kohës për deltoidin e pasmë dhe infraspinatusin.",
+            "en": "Use a neutral grip most of the time for the rear delts and infraspinatus."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "ACE, Dynamite Delts · Sweeney, Porcari dhe kolegët, UW-La Crosse",
+          "text": {
+            "sq": "Te studimi i ACE, ngritja e pasme e ulur (seated rear lateral raise, jo versioni me përkulje) dhe rreshti në stol 45° dhanë aktivizimin më të lartë të deltoidit të pasmë.",
+            "en": "In ACE's study, the seated rear lateral raise (not the bent-over version) and the 45° incline row gave the highest rear delt activation."
+          },
+          "sources": [
+            "ace_delts"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën të drejtë gjatë gjithë setit.",
+            "en": "Keep your back straight throughout the set."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_row",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_incline": {
+          "label": "ACE, Incline Reverse Fly",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/34/incline-reverse-fly/",
+          "checked": "2026-11-15"
+        },
+        "ace_row": {
+          "label": "ACE, Bent-over Row",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/12/bent-over-row/",
+          "checked": "2026-11-15"
+        },
+        "ace_delts": {
+          "label": "ACE, Dynamite Delts (Sweeney, Porcari dhe kolegët, UW-La Crosse)",
+          "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Smith Machine Upright Row",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendose shufrën rreth mesit të kofshës dhe kape me kapje mbi shufër, pak jashtë gjerësisë së shpatullave.",
+            "en": "Set the bar at about mid-thigh height and grip it overhand, just outside shoulder width."
+          },
+          {
+            "sq": "Qëndro drejt, me gjunjët pak të përkulur dhe shpinën të gjatë.",
+            "en": "Stand tall, with slightly bent knees and a long back."
+          }
+        ],
+        "sources": [
+          "st_shoulders",
+          "mcallister",
+          "ace_shrug_bb"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Zhbllokoje shufrën dhe tërhiqe lart afër trupit deri në lartësinë e gjoksit, me bërrylat që prijnë dhe dalin anash.",
+            "en": "Unrack the bar and pull it up close to your body to chest height, with your elbows leading and flaring out to the sides."
+          },
+          {
+            "sq": "Mos i ngri bërrylat mbi lartësinë e shpatullave (90°).",
+            "en": "Don't raise your elbows above shoulder height (90°)."
+          },
+          {
+            "sq": "Ule shufrën ngadalë, me kontroll, deri te kofshët.",
+            "en": "Lower the bar slowly and under control back to your thighs."
+          }
+        ],
+        "sources": [
+          "st_shoulders",
+          "kolber2014",
+          "ace_shrug_bb"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur tërheq shufrën lart, merr frymë kur e ul.",
+            "en": "Breathe out as you pull the bar up, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat prijnë, jo duart",
+            "en": "Elbows lead, not your hands"
+          },
+          {
+            "sq": "Tërhiq deri në lartësinë e gjoksit",
+            "en": "Pull to chest height"
+          },
+          {
+            "sq": "Bërrylat jo mbi shpatulla",
+            "en": "Elbows no higher than shoulders"
+          },
+          {
+            "sq": "Kapje jashtë shpatullave",
+            "en": "Grip outside shoulder width"
+          },
+          {
+            "sq": "Ule me kontroll",
+            "en": "Lower with control"
+          }
+        ],
+        "sources": [
+          "st_shoulders",
+          "kolber2014",
+          "ace_shrug_bb"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërrylat mbi lartësinë e shpatullave: ngritjet mbi 90° lidhen me shenja goditjeje të shpatullës.",
+            "en": "Elbows above shoulder height: raises above 90° are linked to shoulder impingement signs."
+          },
+          {
+            "sq": "Të vazhdosh me kapje të gjerë që ndihet e çuditshme ose dhimbëse në shpatull; Stoppani kalon atëherë te varianti me një krah.",
+            "en": "Persisting with a wide grip that feels awkward or painful in the shoulder; Stoppani then switches to the one-arm version."
+          },
+          {
+            "sq": "Lëkundja e trupit për ta ngritur shufrën.",
+            "en": "Swinging your body to lift the bar."
+          },
+          {
+            "sq": "Pesha aq e rëndë sa nuk e kontrollon ulen e shufrës.",
+            "en": "A weight so heavy that you can't control the lowering of the bar."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "st_vid_row",
+          "korakakis",
+          "ace_shrug_bb"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Smith Machine Upright Rows for Bigger Delts)",
+          "text": {
+            "sq": "Varianti i tij me një krah: shufra në mes të kofshës, kapje mbi shufër disa centimetra jashtë kofshës, tërhiq deri në gjoks me bërrylin jashtë, pastaj ndërro krahun pa pushim.",
+            "en": "His one-arm version: bar at mid-thigh, overhand grip a few inches outside your thigh, pull to chest height with your elbow flared, then switch arms with no rest."
+          },
+          "sources": [
+            "st_vid_row"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Jim's Ultimate Smith Machine Exercise Guide)",
+          "text": {
+            "sq": "Sipas tij, rruga e fiksuar e shufrës është e përkryer për rreshtin vertikal dhe e heq ngarkesën nga nyja, duke e përqendruar punën te deltoidi.",
+            "en": "He says the fixed bar path is perfect for the upright row and removes the load from the joint, focusing the work on the delt."
+          },
+          "sources": [
+            "st_smith"
+          ]
+        },
+        {
+          "who": "McAllister, Schilling, Hammond, Weiss dhe Farney, 2013 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Te 16 burra, kapja me 200 % të gjerësisë së shpatullave e rriti aktivizimin e deltoidit dhe trapezit, ndërsa biceps u aktivizua më pak me kapje më të gjerë.",
+            "en": "In 16 men, a grip at 200% of shoulder width increased deltoid and trapezius activity, while biceps activity was lower with wider grips."
+          },
+          "sources": [
+            "mcallister"
+          ]
+        },
+        {
+          "who": "ACE, Dynamite Delts · Sweeney, Porcari dhe kolegët, UW-La Crosse",
+          "text": {
+            "sq": "Te studimi i ACE, rreshti vertikal me shufër doli i dobët në të gjitha kokat e deltoidit; studimi nuk testoi variantin me halltera ose Smith machine.",
+            "en": "In ACE's study, the barbell upright row ranked low for all deltoid heads; the study did not test the dumbbell or Smith machine versions."
+          },
+          "sources": [
+            "ace_delts"
+          ]
+        },
+        {
+          "who": "NASM · Rick Richey, NASM Master Instructor (Upright Row: Yes or No?)",
+          "text": {
+            "sq": "NASM e përshkruan rreshtin vertikal si të dobishëm për disa klientë, në moderim, por jo për të gjithë.",
+            "en": "NASM describes the upright row as useful for some clients, in moderation, but not for all."
+          },
+          "sources": [
+            "nasm_row"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Te një studim përshoqërimi me 46 burra që stërvitën me pesha, ngritjet anash dhe rreshtat vertikalë mbi 90° u lidhën me shenja goditjeje të shpatullës; autorët thonë se shmangia e tyre mund të ndihmojë ta ulë rrezikun.",
+            "en": "In a case-control study of 46 men who trained with weights, lateral raises and upright rows above 90° were linked to shoulder impingement signs; the authors say avoiding them may help reduce the risk."
+          },
+          {
+            "sq": "NASM e përshkruan rreshtin vertikal si të dobishëm për disa klientë, në moderim, por jo për të gjithë.",
+            "en": "NASM describes the upright row as useful for some clients, in moderation, but not for all."
+          },
+          {
+            "sq": "ACE, te 'Train This, Not That', e zëvendëson rreshtin vertikal me ngritje anash me halltera.",
+            "en": "ACE, in 'Train This, Not That', replaces the upright row with dumbbell lateral raises."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "nasm_row",
+          "ace_tnt",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_shrug_db": {
+          "label": "ACE, Standing Shrug",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/75/standing-shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_shrug_bb": {
+          "label": "ACE, Shrug (barbell)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/72/shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_delts": {
+          "label": "ACE, Dynamite Delts (Sweeney, Porcari dhe kolegët, UW-La Crosse)",
+          "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+          "checked": "2026-11-15"
+        },
+        "ace_tnt": {
+          "label": "ACE, Train This, Not That: The Upper-body Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5277/train-this-not-that-the-upper-body-edition/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "st_smith": {
+          "label": "Jim Stoppani, PhD, Jim's Ultimate Smith Machine Exercise Guide",
+          "url": "https://jimstoppani.com/home/articles/ultimate-smith-machine-exercise-guide",
+          "checked": "2026-11-15"
+        },
+        "st_vid_row": {
+          "label": "Jim Stoppani, PhD (YouTube), Smith Machine Upright Rows for Bigger Delts",
+          "url": "https://www.youtube.com/watch?v=uj1IhDv99fY",
+          "checked": "2026-11-15"
+        },
+        "nasm_row": {
+          "label": "NASM, Upright Row: Yes or No? (NASM-CPT Podcast)",
+          "url": "https://www.youtube.com/watch?v=CAJHqvpcx4E",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "kolber2014": {
+          "label": "Kolber, Cheatham, Salamh dhe Hanney, 2014, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24077379/",
+          "checked": "2026-11-15"
+        },
+        "mcallister": {
+          "label": "McAllister, Schilling, Hammond, Weiss dhe Farney, 2013, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/22362088/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Upright Row",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro drejt, me hallterat në duar përpara kofshëve, gjunjët pak të përkulur dhe shpinën të gjatë.",
+            "en": "Stand tall with the dumbbells in front of your thighs, slightly bent knees and a long back."
+          },
+          {
+            "sq": "Forco barkun, tërhiq shpatullat poshtë dhe pas dhe mbaje kokën në vijë me shpinën.",
+            "en": "Brace your core, pull your shoulders down and back and keep your head in line with your spine."
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "ace_shrug_db"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ngri hallterat lart afër trupit, por mos i ço bërrylat mbi lartësinë e shpatullave (90°).",
+            "en": "Raise the dumbbells up close to your body, but don't take your elbows above shoulder height (90°)."
+          },
+          {
+            "sq": "Mbaji shpatullat poshtë dhe pas gjatë gjithë lëvizjes.",
+            "en": "Keep your shoulders down and back throughout the movement."
+          },
+          {
+            "sq": "Ule hallterat ngadalë deri te kofshët, me kontroll.",
+            "en": "Lower the dumbbells slowly back to your thighs, under control."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "ace_shrug_db"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur tërheq hallterat lart, merr frymë kur i ul.",
+            "en": "Breathe out as you pull the dumbbells up, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat jo mbi shpatulla",
+            "en": "Elbows no higher than shoulders"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Ule me kontroll",
+            "en": "Lower with control"
+          },
+          {
+            "sq": "Koka në vijë me shpinën",
+            "en": "Head in line with your spine"
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "ace_shrug_db"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërrylat mbi lartësinë e shpatullave: ngritjet mbi 90° lidhen me shenja goditjeje të shpatullës.",
+            "en": "Elbows above shoulder height: raises above 90° are linked to shoulder impingement signs."
+          },
+          {
+            "sq": "Lëkundja e trupit për ta ngritur peshën.",
+            "en": "Swinging your body to lift the weight."
+          },
+          {
+            "sq": "Koka e shtyrë përpara, jashtë vijës me shpinën.",
+            "en": "Head pushed forward, out of line with your spine."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Në stërvitjen e tij me rreshta vertikalë alternues me halltera, 5 përsëritjet e para i bën shpejt dhe pastaj kalon te përsëritje më të ngadalta.",
+            "en": "In his alternating dumbbell upright row workout, he does the first 5 reps fast, then moves to slower reps."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Kapja e ngushtë e fokuson ushtrimin te deltoidi i përparmë dhe trapezi i sipërm; kapja më e gjerë se shpatullat te deltoidi i mesit dhe i pasmë.",
+            "en": "A close grip focuses the exercise on the front delts and upper traps; a grip wider than your shoulders on the middle and rear delts."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "McAllister, Schilling, Hammond, Weiss dhe Farney, 2013 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Te rreshti vertikal, kapja më e gjerë (deri në 200 % të gjerësisë së shpatullave) e rriti përfshirjen e deltoidit dhe trapezit.",
+            "en": "In the upright row, a wider grip (up to 200% of shoulder width) increased deltoid and trapezius involvement."
+          },
+          "sources": [
+            "mcallister"
+          ]
+        },
+        {
+          "who": "NASM · Rick Richey, NASM Master Instructor (Upright Row: Yes or No?)",
+          "text": {
+            "sq": "NASM e përshkruan rreshtin vertikal si të dobishëm për disa klientë, në moderim, por jo për të gjithë.",
+            "en": "NASM describes the upright row as useful for some clients, in moderation, but not for all."
+          },
+          "sources": [
+            "nasm_row"
+          ]
+        },
+        {
+          "who": "ACE, Dynamite Delts · Sweeney, Porcari dhe kolegët, UW-La Crosse",
+          "text": {
+            "sq": "Te studimi i ACE, rreshti vertikal me shufër doli i dobët në të gjitha kokat e deltoidit; studimi nuk testoi variantin me halltera ose Smith machine.",
+            "en": "In ACE's study, the barbell upright row ranked low for all deltoid heads; the study did not test the dumbbell or Smith machine versions."
+          },
+          "sources": [
+            "ace_delts"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Te një studim përshoqërimi me 46 burra që stërvitën me pesha, ngritjet anash dhe rreshtat vertikalë mbi 90° u lidhën me shenja goditjeje të shpatullës; autorët thonë se shmangia e tyre mund të ndihmojë ta ulë rrezikun.",
+            "en": "In a case-control study of 46 men who trained with weights, lateral raises and upright rows above 90° were linked to shoulder impingement signs; the authors say avoiding them may help reduce the risk."
+          },
+          {
+            "sq": "NASM e përshkruan rreshtin vertikal si të dobishëm për disa klientë, në moderim, por jo për të gjithë.",
+            "en": "NASM describes the upright row as useful for some clients, in moderation, but not for all."
+          },
+          {
+            "sq": "ACE, te 'Train This, Not That', e zëvendëson rreshtin vertikal me ngritje anash me halltera.",
+            "en": "ACE, in 'Train This, Not That', replaces the upright row with dumbbell lateral raises."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "kolber2014",
+          "nasm_row",
+          "ace_tnt",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_shrug_db": {
+          "label": "ACE, Standing Shrug",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/75/standing-shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_shrug_bb": {
+          "label": "ACE, Shrug (barbell)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/72/shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_delts": {
+          "label": "ACE, Dynamite Delts (Sweeney, Porcari dhe kolegët, UW-La Crosse)",
+          "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+          "checked": "2026-11-15"
+        },
+        "ace_tnt": {
+          "label": "ACE, Train This, Not That: The Upper-body Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5277/train-this-not-that-the-upper-body-edition/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "nasm_row": {
+          "label": "NASM, Upright Row: Yes or No? (NASM-CPT Podcast)",
+          "url": "https://www.youtube.com/watch?v=CAJHqvpcx4E",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "kolber2014": {
+          "label": "Kolber, Cheatham, Salamh dhe Hanney, 2014, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24077379/",
+          "checked": "2026-11-15"
+        },
+        "mcallister": {
+          "label": "McAllister, Schilling, Hammond, Weiss dhe Farney, 2013, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/22362088/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Shrug",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro drejt, me hallterat anash kofshëve, pëllëmbët nga trupi dhe bërrylat plotësisht të drejtë.",
+            "en": "Stand tall with the dumbbells alongside your thighs, palms facing your body and elbows fully straight."
+          },
+          {
+            "sq": "Merr një pozicion të ndarë, forco barkun dhe tërhiq shpatullat poshtë dhe pas.",
+            "en": "Take a split stance, brace your core and pull your shoulders down and back."
+          },
+          {
+            "sq": "Koka dhe qafa në vijë me shpinën.",
+            "en": "Your head and neck in line with your spine."
+          }
+        ],
+        "sources": [
+          "ace_shrug_db"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe ngri shpatullat ngadalë lart, pa i rrotulluar dhe pa përkulur bërrylat.",
+            "en": "Breathe out and raise your shoulders slowly, without rolling them or bending your elbows."
+          },
+          {
+            "sq": "Mbaje majën shkurt, pastaj ule me kontroll.",
+            "en": "Hold the top briefly, then lower with control."
+          },
+          {
+            "sq": "Ule hallterat ngadalë, me bërrylat të drejtë.",
+            "en": "Lower the dumbbells slowly, keeping your elbows straight."
+          }
+        ],
+        "sources": [
+          "ace_shrug_db",
+          "st_shrugs"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur ngre shpatullat, merr frymë kur i ul.",
+            "en": "Breathe out as you raise your shoulders, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ngri shpatullat drejt lart",
+            "en": "Shrug straight up"
+          },
+          {
+            "sq": "Mos i rrotullo shpatullat",
+            "en": "Don't roll your shoulders"
+          },
+          {
+            "sq": "Bërrylat të drejtë",
+            "en": "Keep your elbows straight"
+          },
+          {
+            "sq": "Mbaje majën shkurt",
+            "en": "Hold the top briefly"
+          },
+          {
+            "sq": "Ule me kontroll",
+            "en": "Lower with control"
+          }
+        ],
+        "sources": [
+          "ace_shrug_db",
+          "ace_shrug_bb",
+          "st_shrugs"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Rrotullimi i shpatullave në vend që t'i ngresh drejt lart.",
+            "en": "Rolling your shoulders instead of lifting them straight up."
+          },
+          {
+            "sq": "Bërrylat të përkulur: puna kalon te krahët.",
+            "en": "Bending your elbows: the work shifts to your arms."
+          },
+          {
+            "sq": "Harkimi i belit gjatë ngritjes.",
+            "en": "Arching your lower back during the lift."
+          },
+          {
+            "sq": "Kyçet e përkulur lart ose poshtë.",
+            "en": "Bending your wrists up or down."
+          },
+          {
+            "sq": "Koka e shtyrë përpara jashtë vijës me shpinën.",
+            "en": "Pushing your head forwards, out of line with your spine."
+          }
+        ],
+        "sources": [
+          "ace_shrug_db",
+          "ace_shrug_bb"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (The Best Shrug Variations for Building Bigger Traps)",
+          "text": {
+            "sq": "Mos i rrotullo shpatullat: lëvizja duhet të jetë drejt lart e poshtë. Mbaje majën shkurt dhe ule me kontroll. Këshillat e tij janë për shrug me shufër, por vlejnë edhe për halltera.",
+            "en": "Don't roll your shoulders: move straight up and down. Hold the top briefly and lower with control. His advice is for the barbell shrug, but it applies to dumbbells too."
+          },
+          "sources": [
+            "st_shrugs"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Pas face pull-it, ai zakonisht ndjek me shrugs, me halltera ose shufër.",
+            "en": "After face pulls, he usually follows with shrugs, with dumbbells or a barbell."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e shtrin muskulin plotësisht.",
+            "en": "The review recommends a range of motion that fully stretches the muscle."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën të drejtë, pa e harkuar belin, dhe kapjen neutrale.",
+            "en": "Keep your back upright without arching your lower back, and a neutral grip."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_shrug_db",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_shrug_db": {
+          "label": "ACE, Standing Shrug",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/75/standing-shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_shrug_bb": {
+          "label": "ACE, Shrug (barbell)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/72/shrug/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "st_shrugs": {
+          "label": "Jim Stoppani, PhD, The Best Shrug Variations for Building Bigger Traps",
+          "url": "https://www.jimstoppani.com/training/how-to-do-shrugs-for-bigger-traps",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Barbell Shrug",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Kap shufrën me kapje mbi shufër, me duart afërsisht sa gjerësia e shpatullave.",
+            "en": "Grip the bar overhand with your hands about shoulder width apart."
+          },
+          {
+            "sq": "Mbaji gjunjët pak të përkulur, ijët drejt dhe shpinën të gjatë.",
+            "en": "Keep your knees slightly bent, your hips straight and your back tall."
+          },
+          {
+            "sq": "Mendo sikur po i ndan duart nga njëra-tjetra teksa e kap shufrën.",
+            "en": "As you grip the bar, think about pulling your hands apart."
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "st_shrugs"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ngri shpatullat drejt e lart drejt veshëve, sa më lart që mundesh.",
+            "en": "Raise your shoulders straight up towards your ears, as high as you can."
+          },
+          {
+            "sq": "Mbaje majën shkurt.",
+            "en": "Hold the top briefly."
+          },
+          {
+            "sq": "Ule shpatullat ngadalë në nisje, pa i rrotulluar.",
+            "en": "Lower your shoulders slowly to the start, without rolling them."
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "st_shrugs"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur ngre shpatullat, merr frymë kur i ul.",
+            "en": "Breathe out as you raise your shoulders, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ngri shpatullat drejt veshëve",
+            "en": "Shrug towards your ears"
+          },
+          {
+            "sq": "Mos i rrotullo shpatullat",
+            "en": "Don't roll your shoulders"
+          },
+          {
+            "sq": "Mbaje majën shkurt",
+            "en": "Hold the top briefly"
+          },
+          {
+            "sq": "Shpina e gjatë",
+            "en": "Keep your back tall"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "st_shrugs"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Rrotullimi i shpatullave: ACE thotë qartë të mos rrotullohen.",
+            "en": "Rolling your shoulders: ACE says clearly not to roll them."
+          },
+          {
+            "sq": "Ngritja me përkulje të bërrylave, në vend që të punojnë vetëm shpatullat.",
+            "en": "Lifting by bending your elbows instead of letting only your shoulders work."
+          },
+          {
+            "sq": "Shpina e harkuar ose e përkulur kur ngrihet pesha e rëndë.",
+            "en": "An arched or rounded back when the weight is heavy."
+          },
+          {
+            "sq": "Ulja e shpejtë e shufrës në vend që të kontrollohet.",
+            "en": "Dropping the bar quickly instead of controlling it."
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "st_shrugs",
+          "ace_shrug_db"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (The Best Shrug Variations for Building Bigger Traps)",
+          "text": {
+            "sq": "Mos i rrotullo shpatullat: lëvizja është drejt lart e poshtë. Stoppani përmend uljen e mjekrës në majë, që e shtrin trapezin nga skaji i sipërm dhe mund të ndihmojë rritjen; mbaje majën shkurt dhe ule me kontroll.",
+            "en": "Don't roll your shoulders: move straight up and down. Stoppani mentions dropping your chin at the top, which stretches the traps from the upper end and may help increase growth; hold the top briefly and lower with control."
+          },
+          "sources": [
+            "st_shrugs"
+          ]
+        },
+        {
+          "who": "ACE, Shrug (barbell)",
+          "text": {
+            "sq": "Mendo sikur po i tërheq duart larg njëra-tjetrës kur e kap shufrën.",
+            "en": "Think about pulling your hands apart as you grip the bar."
+          },
+          "sources": [
+            "ace_shrug_bb"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Pas face pull-it, ai zakonisht ndjek me shrugs, me halltera ose shufër.",
+            "en": "After face pulls, he usually follows with shrugs, with dumbbells or a barbell."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën të gjatë dhe gjunjët pak të përkulur kur ngarkon shufrën.",
+            "en": "Keep your back tall and your knees slightly bent when you load the bar."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "ace_shrug_bb",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_shrug_db": {
+          "label": "ACE, Standing Shrug",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/75/standing-shrug/",
+          "checked": "2026-11-15"
+        },
+        "ace_shrug_bb": {
+          "label": "ACE, Shrug (barbell)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/72/shrug/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "st_shrugs": {
+          "label": "Jim Stoppani, PhD, The Best Shrug Variations for Building Bigger Traps",
+          "url": "https://www.jimstoppani.com/training/how-to-do-shrugs-for-bigger-traps",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Arm Smith Machine Shrug",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ngarko shufrën dhe qëndro në mes të makinës, me anën e djathtë nga shufra.",
+            "en": "Load the bar and stand in the middle of the machine, with your right side facing the bar."
+          },
+          {
+            "sq": "Kap shufrën në mes me dorën e djathtë, me kapje të hapur: gishti i madh nuk e rrethon shufrën.",
+            "en": "Grab the bar in the middle with your right hand and an open grip: your thumb doesn't wrap around the bar."
+          },
+          {
+            "sq": "Mbaje krahun sa më drejt që mundesh.",
+            "en": "Keep your arm as straight as you can."
+          }
+        ],
+        "sources": [
+          "st_smith"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ngri shpatullën lart sa më shumë që mundesh, me krahun sa më të drejtë.",
+            "en": "Shrug your shoulder up as high as you can, with your arm as straight as possible."
+          },
+          {
+            "sq": "Ule krahun poshtë deri sa të ndjesh shtrirje të plotë.",
+            "en": "Lower your arm until you feel a full stretch."
+          },
+          {
+            "sq": "Bëj të gjitha përsëritjet e një krahu dhe pastaj ndërro anën.",
+            "en": "Do all the reps for one arm, then switch sides."
+          }
+        ],
+        "sources": [
+          "st_smith"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: Wilk dhe kolegët e quajnë më të favorshme uljen më të ngadaltë (ekscentrike) me ngritje më të shpejtë (koncentrike); Androulakis Korakakis dhe kolegët thonë se nuk është e qartë cila fazë e zgjatur jep më shumë rritje.",
+            "en": "Down 2 s, up 1 s: Wilk and colleagues find a slower lowering (eccentric) with a faster lift (concentric) most favourable; Androulakis Korakakis and colleagues say it is unclear which lengthened phase gives more growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes uljes dhe ngritjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between lowering and lifting is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin kur ngre shpatullën, merr frymë kur e ul.",
+            "en": "Breathe out as you raise your shoulder, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_shrug_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kapje e hapur, gishti i madh jashtë",
+            "en": "Open grip, thumb off the bar"
+          },
+          {
+            "sq": "Ngri shpatullën sa më lart",
+            "en": "Shrug as high as you can"
+          },
+          {
+            "sq": "Krahu sa më i drejtë",
+            "en": "Keep your arm straight"
+          },
+          {
+            "sq": "Ule për shtrirje të plotë",
+            "en": "Lower for a full stretch"
+          },
+          {
+            "sq": "Shufra afër trupit",
+            "en": "Keep the bar close"
+          }
+        ],
+        "sources": [
+          "st_smith"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Gishti i madh që e rrethon shufrën: shufra largohet nga trupi dhe lëvizja shkurtohet.",
+            "en": "A thumb wrapped around the bar: the bar drifts from your body and the range gets shorter."
+          },
+          {
+            "sq": "Krahu që përkulet për ta ndihmuar ngritjen.",
+            "en": "Bending your arm to help the lift."
+          },
+          {
+            "sq": "Ngritja e shkurtër dhe ulja pa shtrirje të plotë.",
+            "en": "A short shrug and a lowering without a full stretch."
+          }
+        ],
+        "sources": [
+          "st_smith"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Jim's Ultimate Smith Machine Exercise Guide)",
+          "text": {
+            "sq": "Kapja e hapur e mban shufrën më afër trupit gjatë ngritjes dhe e ndihmon lëvizjen të jetë sa më e plotë.",
+            "en": "The open grip keeps the bar closer to your body as you shrug and helps you get the fullest range."
+          },
+          "sources": [
+            "st_smith"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Jim's Ultimate Smith Machine Exercise Guide)",
+          "text": {
+            "sq": "Rruga e fiksuar e shufrës e heq ngarkesën nga stabilizuesit e vegjël, ndaj muskuli kryesor shkon më afër dështimit.",
+            "en": "The fixed bar path takes load off the small stabilisers, so the target muscle can go closer to failure."
+          },
+          "sources": [
+            "st_smith"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (12 Best Exercise Tips & Workouts for Bigger, Better Shoulders)",
+          "text": {
+            "sq": "Pas face pull-it, ai rekomandon shrugs, mes tyre me një krah ose pa duar në Smith machine.",
+            "en": "After face pulls, he recommends shrugs, including one-arm and hands-free Smith machine versions."
+          },
+          "sources": [
+            "st_shoulders"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Lëvizja kryhet në rrugë të fiksuar; mbaje krahun sa më drejt.",
+            "en": "The movement follows a fixed path; keep your arm as straight as you can."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin; kur vazhdon ose shtohet, flit me një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise; if it persists or gets worse, see a professional."
+          }
+        ],
+        "sources": [
+          "st_smith",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_shrug_db": {
+          "label": "ACE, Standing Shrug",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/75/standing-shrug/",
+          "checked": "2026-11-15"
+        },
+        "st_shoulders": {
+          "label": "Jim Stoppani, PhD, 12 Best Exercise Tips & Workouts for Bigger, Better Shoulders",
+          "url": "https://www.jimstoppani.com/training/best-workouts-for-bigger-shoulders",
+          "checked": "2026-11-15"
+        },
+        "st_smith": {
+          "label": "Jim Stoppani, PhD, Jim's Ultimate Smith Machine Exercise Guide",
+          "url": "https://jimstoppani.com/home/articles/ultimate-smith-machine-exercise-guide",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}
