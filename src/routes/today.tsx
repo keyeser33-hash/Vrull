@@ -92,7 +92,7 @@ export function TodayPage() {
       <ReadinessSuggestion view={view} />
       <UpdateNotice />
       {weekRow ? <WeekRow summary={weekRow} /> : null}
-      {programme && goals && !back && !weekCard ? <WeekSection view={view} goals={goals} days={weekDays(view, i18n, openDay)} /> : null}
+      {programme && goals && !back && !weekCard ? <WeekSection goals={goals} days={weekDays(view, i18n, openDay)} /> : null}
       {back ? null : <MissedDayCard view={view} />}
       <WeeklyCheckCard date={view.date} />
       {view.mode === 'none' ? (
@@ -113,7 +113,7 @@ export function TodayPage() {
           {view.mode === 'session' || view.postponed ? null : <SkipWorkout />}
         </>
       )}
-      {back && goals ? <WeekSection view={view} goals={goals} fresh /> : null}
+      {back && goals ? <WeekSection goals={goals} fresh /> : null}
       <FoodSection view={view} />
       <WaterCard date={view.date} training={view.trainingDay} />
       {/* Vendi i kutisë së AI-së mbi tab-bar-in, që pjesa e fundit të mos mbetet poshtë saj. */}
@@ -148,7 +148,7 @@ function weekDays(view: TodayView, { t, fmt }: I18n, open: (sessionId: string) =
  * Java (bordi "Sot"): "Java N" me lidhjen "Qëllimet", rripi i ditëve dhe tre matësit që hapin Qëllimet
  * e javës. Pas pushimit (bordi "Kthimi") vjen pas kartës si "Java e re", pa rripin, me ditën rezervë.
  */
-function WeekSection({ view, goals, days, fresh = false }: { view: TodayView; goals: WeekGoalsView; days?: WeekDay[]; fresh?: boolean }) {
+function WeekSection({ goals, days, fresh = false }: { goals: WeekGoalsView; days?: WeekDay[]; fresh?: boolean }) {
   const i18n = useI18n()
   const { t } = i18n
   const cells = goalCells(i18n, goals)

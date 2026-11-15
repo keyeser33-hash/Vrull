@@ -9,9 +9,10 @@ import { createSyncScheduler } from './scheduler'
 import { createLocalStore, DEVICE_TABLE } from './store'
 import { supabase } from './supabase'
 import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
-import { type ImportRemote, readResultFrom } from './pdf-import'
-import { labelResultFrom, type LabelRemote } from './supplement-label'
-import { type BoxRemote, boxResultFrom } from './ai-box'
+// Pjesët e AI-së ngarkohen kur përdoren (F6): analizuesit e përgjigjeve nuk i duhen nisjes së app-it.
+import type { ImportRemote } from './pdf-import'
+import type { LabelRemote } from './supplement-label'
+import type { BoxRemote } from './ai-box'
 import { type AdminRemote, adminResultFrom } from './ai-admin'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
@@ -26,7 +27,6 @@ import { adoptSavedBackground } from './background'
 import { addPhoto, type Pose, photoData, type PhotoRef, type PhotoRemote, photoTimeline, removePhoto, uploadPendingPhotos } from './photos'
 import { addFormVideo, type FormVideoRef, formVideoData, type NewFormVideo, removeFormVideo, syncFormVideoFiles, type VideoRemote } from './form-videos'
 import { ensureSupplements } from './supplements'
-import { awardAchievements } from './achievements'
 import { usdaFromJson } from '@/nutrition/usda'
 import type { ExternalFood } from '@/nutrition/off'
 import { upgradeShortcutToSize } from './training'
@@ -191,6 +191,7 @@ export async function searchUsda(query: string): Promise<ExternalFood[]> {
  */
 export const programImportRemote: ImportRemote = {
   async read({ file, fileName, known, language }) {
+    const { readResultFrom } = await import('./pdf-import')
     if (!navigator.onLine) return readResultFrom(null, null)
     const form = new FormData()
     form.append('file', file, fileName)
@@ -218,6 +219,7 @@ export const programImportRemote: ImportRemote = {
  */
 export const supplementLabelRemote: LabelRemote = {
   async read(image) {
+    const { labelResultFrom } = await import('./supplement-label')
     if (!navigator.onLine) return labelResultFrom(null, null)
     const form = new FormData()
     form.append('file', image, 'etiketa.jpg')
@@ -239,6 +241,7 @@ export const supplementLabelRemote: LabelRemote = {
  */
 export const boxRemote: BoxRemote = {
   async parse(request) {
+    const { boxResultFrom } = await import('./ai-box')
     if (!navigator.onLine) return boxResultFrom(null, null)
     const { data, error } = await supabase.functions.invoke('log-parse', { body: request })
     let result
@@ -508,6 +511,7 @@ export function useDataUpgrades(ready: boolean) {
         .then(async (pulled) => {
           if (!pulled || awarded) return
           awarded = true
+          const { awardAchievements } = await import('./achievements')
           await awardAchievements(store)
         })
         .catch(() => {})
