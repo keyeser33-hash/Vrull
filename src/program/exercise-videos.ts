@@ -48,13 +48,17 @@ const squatU = source('Squat University', 'Dr. Aaron Horschig, DPT, CSCS')
 const barbellMedicine = source('Barbell Medicine', 'Jordan Feigenbaum, MD')
 // Te RP pranohet vetëm videoja ku përshkrimi e emëron Dr. Mike Israetel si prezantues.
 const israetel = source('Renaissance Periodization', 'Dr. Mike Israetel, PhD')
+// Klinikë fizioterapie, e themeluar nga Mike Reinold, PT, DPT, SCS, ATC, CSCS dhe Lenny Macrina, PT.
+const champion = source('Champion Physical Therapy and Performance', 'Champion PT and Performance')
+// J2FIT: themeluesi Michael Dewar, M.Ed. në fiziologjinë e ushtrimit (Columbia), CSCS.
+const j2fit = source('Mike | J2FIT Strength & Conditioning', 'Michael Dewar, M.Ed., CSCS')
+const healthspanMd = source('Robert Todd Hurst, MD, FACC, FASE - HealthspanMD', 'Robert Todd Hurst, MD')
 
 /**
- * Ushtrimet pa video nga një burim i pranuar (kërkimi në YouTube, 15.11.2026): NASM, Jim Stoppani,
- * ATHLEAN-X, Squat University, Barbell Medicine dhe RP me Dr. Mike Israetel. Linku i përdoruesit
- * (§12) vlen edhe për to.
+ * Ushtrimet pa video nga një burim i pranuar (kërkimi në YouTube, 15.11.2026): u gjet vetëm videoja
+ * e prodhuesit të makinës, që nuk është burim i pranuar. Linku i përdoruesit (§12) vlen edhe për to.
  */
-export const WITHOUT_VIDEO = ['Incline Cable Flye', 'Machine Crunch', 'Oblique Crunch', 'Cable Woodchopper']
+export const WITHOUT_VIDEO = ['Machine Crunch']
 
 export const EXERCISE_VIDEOS: Record<string, ExerciseVideos> = {
   'Bench Press': {
@@ -87,6 +91,13 @@ export const EXERCISE_VIDEOS: Record<string, ExerciseVideos> = {
     main: stoppani('OOguOwo7rvI', 'Incline Dumbbell Flyes Tip.', 180),
     more: [
       athleanX('6rr5p1jCZC4', 'Stop Doing Chest Flys - I\'m Begging You!!', 437),
+    ],
+  },
+  // videoja kryesore: shtrirë në stol me kabllot poshtë; Champion e bën në këmbë
+  'Incline Cable Flye': {
+    main: j2fit('qqHFf5zI3us', 'Lying Low Cable Chest Fly | TARGET THE UPPER PECS', 45),
+    more: [
+      champion('2QTyEBM7zoI', 'Incline Cable Pec Fly', 24),
     ],
   },
   'Dumbbell Flye': {
@@ -423,9 +434,19 @@ export const EXERCISE_VIDEOS: Record<string, ExerciseVideos> = {
       athleanX('ZyWEXjdAGCQ', 'The TRUTH About Planks (IT’S UGLY!)', 534),
     ],
   },
+  'Oblique Crunch': {
+    main: healthspanMd('AcvfBd9C2kA', 'Oblique Crunch, How to do the Oblique Crunch exercise || HealthspanMD', 51),
+    more: [],
+  },
   'Cable Oblique Crunch': {
     main: stoppani('e2-B7iwZm2A', 'Modified Cable Oblique Crunch by Jim Stoppani', 171),
     more: [],
+  },
+  'Cable Woodchopper': {
+    main: champion('0JUSiPgo--A', 'Staggered Stance Cable Chop', 23),
+    more: [
+      champion('Pt0xzLJMpuw', 'Dynamic Cable Chop', 21),
+    ],
   },
   'Band Roundhouse Elbow': {
     main: stoppani('DPnGfvTdbCM', 'Band Roundhouse Elbow by Jim Stoppani', 444),
