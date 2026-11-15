@@ -273,7 +273,7 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 
 **Gjendja (15.11.2026), V2-E3-30:** shtatë vendimet e auditimit te `main` (c1f228a…c2745ec, një commit për pikë): kreu me një shigjetë dhe titull të madh (`BackHeader` me nëntitull; editori "Struktura" me datat e blloqeve), Progresi me një kre për katër tab-et, arritjet me ikona, fillimi i stërvitjes me "Po fillon" dhe fletën "Njoftimi i pushimit" (`?njoftimi=1`), "Fillo stërvitjen" vetëm te dita e radhës, "Sipas matjeve" bosh me modelin bazë dhe Kutia bosh me shembujt. Parë live në 390 px (OLED, shqip): pa scroll anësor, prekjet ≥ 44 px. Prova e Android-it: Trupi njihet nga adresa. Mbetet në telefon: leja e vërtetë e njoftimeve dhe kostoja për mesazh (konstante 0,001 €, e pamatur).
 
-**Gjendja (15.11.2026), lëshimi 0.25.0:** përdoruesi tha "Po, nxirre tani" (V61). Versioni 0.25.0 me `docs/whats-new/0.25.0.txt` dhe pjesën 6 te `docs/PROVA-NE-TELEFON.md`. Pa migrime të reja te app-i (tabelat e Listës së Vrullit nuk përdoren ende nga app-i).
+**Gjendja (15.11.2026), lëshimi 0.25.0:** përdoruesi tha "Po, nxirre tani" (V61). Versioni 0.25.0 me `docs/whats-new/0.25.0.txt` dhe pjesën 6 te `docs/PROVA-NE-TELEFON.md`. Pa migrime të reja te app-i (tabelat e Listës së Vrullit nuk përdoren ende nga app-i). Nisja 43714459487: prova e Android-it kaloi; puna `apk` nuk u nis nga faturimi i GitHub-it (annotation: "recent account payments have failed or your spending limit needs to be increased"). Pa tag dhe pa Release: telefonat nuk marrin asgjë. Pas rregullimit te GitHub › Billing & plans (ose pas rinisjes së minutave më 1 dhjetor), rinisen vetëm punët që ranë (`gh run rerun 43714459487 --failed`), pa përsëritur provën.
 
 ## V2-E3-29 · Rregullimet e auditimit të 0.24.0
 
