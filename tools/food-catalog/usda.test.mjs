@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { fileURLToPath } from 'node:url'
-import { csvObjects, readDataset } from './usda.mjs'
+import { carbsWithoutFiber, csvObjects, readDataset } from './usda.mjs'
 
 const fixture = (name) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url))
 const byId = (rows) => Object.fromEntries(rows.map((row) => [row.source_id, row]))
@@ -34,7 +34,8 @@ describe('Foundation Foods', () => {
       food_group: 'Nut and Seed Products',
       kcal: 579,
       protein_g: 21.2,
-      carbs_g: 21.6,
+      carbs_g: 9.1,
+      carbs_note: 'computed',
       fat_g: 49.9,
       fiber_g: 12.5,
       portions: [
@@ -53,6 +54,26 @@ describe('Foundation Foods', () => {
 
   it('fibra që mungon është null, jo 0', () => {
     expect(food['1002'].fiber_g).toBeNull()
+  })
+
+  it('karbohidratet pa fibrat: zbriten kur fibra njihet (computed), mbeten pa fibra të njohura (includes_fiber)', () => {
+    expect(food['1001']).toMatchObject({ carbs_g: 9.1, carbs_note: 'computed', fiber_g: 12.5 })
+    expect(food['1003']).toMatchObject({ carbs_g: 11.4, carbs_note: 'computed' })
+    expect(food['1002']).toMatchObject({ carbs_g: 67.7, carbs_note: 'includes_fiber' })
+  })
+
+  it('roja e kcal numëron fibrën e zbritur: rreshti computed nuk shënohet kot', () => {
+    expect(food['1001'].kcal_flag).toBeUndefined()
+    expect(food['1003'].kcal_flag).toBeUndefined()
+  })
+
+  it('carbsWithoutFiber: fibra më e madhe se karbohidratet jep 0, pa fibra vlera mbetet, pa negativ', () => {
+    expect(carbsWithoutFiber(3, 4)).toEqual({ carbs_g: 0, carbs_note: 'computed' })
+    expect(carbsWithoutFiber(10, 0)).toEqual({ carbs_g: 10, carbs_note: 'computed' })
+    expect(carbsWithoutFiber(10.3, 2.1)).toEqual({ carbs_g: 8.2, carbs_note: 'computed' })
+    expect(carbsWithoutFiber(7.9, null)).toEqual({ carbs_g: 7.9, carbs_note: 'includes_fiber' })
+    expect(carbsWithoutFiber(-0.4, null)).toEqual({ carbs_g: 0, carbs_note: 'includes_fiber' })
+    expect(carbsWithoutFiber(-0.4, 1)).toEqual({ carbs_g: 0, carbs_note: 'computed' })
   })
 
   it('një rresht pa karbohidrate "by difference" hiqet, edhe kur ka "by summation"', () => {

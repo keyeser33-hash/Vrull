@@ -11,6 +11,7 @@ import { checkCatalog } from './check.mjs'
 import { readCiqual } from './ciqual.mjs'
 import { readCofid } from './cofid.mjs'
 import { readLivsmedelsverket } from './livsmedelsverket.mjs'
+import { applyCommon, COMMON_DIR, readCommonDir, validateCommon } from './common-list.mjs'
 import { readDataset } from './usda.mjs'
 
 const SOURCES = fileURLToPath(new URL('./sources.json', import.meta.url))
@@ -25,10 +26,18 @@ export const READERS = {
   livsmedelsverket: (dir, listVersion) => readLivsmedelsverket(readFileSync(join(dir, 'livsmedelsverket.json'), 'utf8'), listVersion),
 }
 
-/** Bashkon daljen e burimeve (në radhën e sources.json) dhe e kalon nga roja. Funksion i pastër, i provueshëm. */
-export function assemble(parts) {
-  const rows = parts.flatMap((part) => part.rows)
-  const { errors, notes } = checkCatalog(rows)
+/**
+ * Bashkon daljen e burimeve (në radhën e sources.json), zbaton të zakonshmet (V61) dhe e kalon nga roja.
+ * `common`: lista e bashkuar e `common/*.json`; vërtetohet para zbatimit, dhe gabimet e saj hyjnë te `errors`.
+ * Funksion i pastër, i provueshëm.
+ */
+export function assemble(parts, common = []) {
+  const sourceRows = parts.flatMap((part) => part.rows)
+  const validation = validateCommon(common, sourceRows)
+  const applied = applyCommon(sourceRows, common)
+  const rows = applied.rows
+  const { errors: checkErrors, notes } = checkCatalog(rows)
+  const errors = [...checkErrors, ...validation.errors.map((error) => ({ id: error.key, rule: `common_${error.rule}`, message: error.message }))]
   const jsonl = rows.map((row) => JSON.stringify(row)).join('\n') + '\n'
   const bySource = {}
   for (const part of parts) bySource[part.source] = { rows: part.rows.length, dropped: part.dropped, adjusted: part.adjusted, version: part.version }
@@ -37,12 +46,19 @@ export function assemble(parts) {
   const summary = {
     listVersion: parts[0]?.rows[0]?.list_version ?? null,
     total: rows.length,
+    sourceTotal: sourceRows.length,
     bySource,
     check: {
       errors: errors.length,
       notes: noteCounts,
       firstErrors: errors.slice(0, 20),
       firstNotes: notes.slice(0, 10),
+    },
+    common: {
+      count: applied.common,
+      removedAsDuplicates: applied.removed,
+      errors: validation.errors.length,
+      notes: validation.notes,
     },
     bytes: Buffer.byteLength(jsonl),
     gzipBytes: gzipSync(jsonl, { level: 9 }).length,
@@ -66,7 +82,7 @@ function main() {
     const { rows, dropped, adjusted } = read(join(sourceDir, file.id), listVersion)
     return { source: file.id, version: file.version, rows, dropped, adjusted }
   })
-  const { jsonl, summary, errors } = assemble(parts)
+  const { jsonl, summary, errors } = assemble(parts, readCommonDir(COMMON_DIR))
   mkdirSync(outDir, { recursive: true })
   writeFileSync(join(outDir, 'catalog.jsonl'), jsonl)
   writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)

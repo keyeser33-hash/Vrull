@@ -22,9 +22,12 @@ export const KCAL_MAX = 950
 const ID_FORMAT = /^[a-z0-9][a-z0-9-]{2,79}$/
 const MACROS = ['protein_g', 'carbs_g', 'fat_g', 'fiber_g']
 
-/** Kcal e pritur nga makrot: 4·P + 4·K + 9·Y. */
+export const CARBS_NOTES = ['computed', 'includes_fiber']
+
+/** Kcal e pritur nga makrot: 4·P + 4·K + 9·Y. Kur karbohidratet janë pa fibrat (`computed`), fibra numërohet me 4 si më parë. */
 export function atwater(row) {
-  return 4 * row.protein_g + 4 * row.carbs_g + 9 * row.fat_g
+  const fiber = row.carbs_note === 'computed' && typeof row.fiber_g === 'number' ? row.fiber_g : 0
+  return 4 * row.protein_g + 4 * (row.carbs_g + fiber) + 9 * row.fat_g
 }
 
 /** True kur kcal është brenda 15 % të 4·P + 4·K + 9·Y. Kur e pritura është 0, kcal duhet të jetë 0. */
@@ -66,7 +69,16 @@ export function checkCatalog(rows) {
     }
     if (typeof row.name_en !== 'string' || row.name_en.length < 1 || row.name_en.length > 200)
       fail(row, 'name_en', 'emri anglisht mungon ose është mbi 200 shenja')
+    if (row.name_sq != null && (typeof row.name_sq !== 'string' || row.name_sq.trim() === '' || row.name_sq.length > 200))
+      fail(row, 'name_sq', 'emri shqip bosh ose mbi 200 shenja')
+    if (row.name_sq != null && row.name_sq_checked !== false) fail(row, 'name_sq_checked', 'emri shqip i ndërtimit duhet të jetë i pakontrolluar (false)')
+    if (row.common_rank != null && (!Number.isInteger(row.common_rank) || row.common_rank < 1)) fail(row, 'common_rank', `common_rank i pavlefshëm: ${row.common_rank}`)
+    if (row.also_in != null && (!Array.isArray(row.also_in) || row.also_in.some((id) => typeof id !== 'string' || !ID_FORMAT.test(id))))
+      fail(row, 'also_in', 'also_in duhet të jetë listë ID-sh')
     if (row.food_group != null && String(row.food_group).length > 80) fail(row, 'food_group', 'grupi mbi 80 shenja')
+
+    if (row.carbs_note != null && !CARBS_NOTES.includes(row.carbs_note)) fail(row, 'carbs_note', `carbs_note i panjohur: ${row.carbs_note}`)
+    else if (row.carbs_note === 'computed' && !isNumber(row.fiber_g)) fail(row, 'carbs_note', 'carbs_note computed pa fibra')
 
     if (!isNumber(row.kcal) || row.kcal < 0 || row.kcal > KCAL_MAX) fail(row, 'kcal_range', `kcal jashtë 0–${KCAL_MAX}: ${row.kcal}`)
     for (const key of MACROS) {

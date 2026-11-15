@@ -11,6 +11,7 @@
 //    291), jo ID-të e `nutrient.csv`; kcal = 208.
 // Proteina 1003 (203), yndyra 1004 (204), karbohidratet "by difference" 1005 (205), fibra 1079 (291). Karbohidratet
 // "by summation" (1050) nuk zëvendësojnë 1005: një rresht pa 1005 hiqet, që dy mënyra llogaritjeje të mos përzihen.
+// Karbohidratet e daljes janë pa fibrat (V61): `carbsWithoutFiber`, me `carbs_note` 'computed' ose 'includes_fiber'.
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { kcalWithinTolerance } from './check.mjs'
@@ -110,6 +111,16 @@ export function resolveDir(dir) {
 
 const read = (dir, name) => readFileSync(join(dir, name), 'utf8')
 const round1 = (value) => Math.round(value * 10) / 10
+
+/**
+ * Karbohidratet pa fibrat, si te etiketat në BE (V61). USDA jep karbohidratet "by difference", që i përfshijnë fibrat:
+ * kur fibra njihet, zbritet (`computed`; fibra më e madhe se karbohidratet jep 0); pa fibra të njohura vlera mbetet
+ * siç është dhe shënohet `includes_fiber`. Kthen { carbs_g, carbs_note }.
+ */
+export function carbsWithoutFiber(carbs, fiber) {
+  if (fiber === null || fiber === undefined) return { carbs_g: round1(Math.max(carbs, 0)), carbs_note: 'includes_fiber' }
+  return { carbs_g: Math.max(round1(carbs - fiber), 0), carbs_note: 'computed' }
+}
 
 function numberOrNull(text) {
   if (text === '' || text == null) return null
@@ -220,7 +231,7 @@ export function readDataset(source, dir, listVersion = 1) {
       food_group: groups.get(food.food_category_id) ?? null,
       kcal: round1(kcal),
       protein_g: round1(protein),
-      carbs_g: round1(Math.max(carbs, 0)),
+      ...carbsWithoutFiber(carbs, fiber),
       fat_g: round1(fat),
       fiber_g: fiber === null ? null : round1(fiber),
       portions: portions.get(fdcId) ?? [],
