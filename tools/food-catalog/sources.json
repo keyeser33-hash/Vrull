@@ -1,13 +1,13 @@
 {
-  "page": "https://fdc.nal.usda.gov/download-datasets",
-  "license": "CC0-1.0",
-  "licenseUrl": "https://fdc.nal.usda.gov/api-guide",
-  "citation": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, 2019. fdc.nal.usda.gov.",
   "files": [
     {
       "id": "usda_foundation",
       "name": "Foundation Foods (CSV)",
       "version": "2026-04-30",
+      "page": "https://fdc.nal.usda.gov/download-datasets",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://fdc.nal.usda.gov/api-guide",
+      "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, 2019. fdc.nal.usda.gov.",
       "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_csv_2026-04-30.zip",
       "bytes": 3825741,
       "sha256": "70457ee9d9342f43bda2010318c85f04210c689fdeb9cd2da4c513b0e8dbc655",
@@ -17,6 +17,10 @@
       "id": "usda_sr_legacy",
       "name": "SR Legacy (CSV)",
       "version": "2018-04",
+      "page": "https://fdc.nal.usda.gov/download-datasets",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://fdc.nal.usda.gov/api-guide",
+      "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, 2019. fdc.nal.usda.gov.",
       "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
       "bytes": 6074592,
       "sha256": "b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0"
@@ -25,9 +29,50 @@
       "id": "usda_fndds",
       "name": "FNDDS 2021-2023, Survey Foods (CSV)",
       "version": "2024-10-31",
+      "page": "https://fdc.nal.usda.gov/download-datasets",
+      "license": "CC0-1.0",
+      "licenseUrl": "https://fdc.nal.usda.gov/api-guide",
+      "attribution": "U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, 2019. fdc.nal.usda.gov.",
       "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_survey_food_csv_2024-10-31.zip",
       "bytes": 3325692,
       "sha256": "5ccc25ec2777a8982fbb61378a42f415316173eb11e48c9a8ba4cb19f5a4f29c"
+    },
+    {
+      "id": "ciqual",
+      "name": "Table Ciqual 2025 (XML)",
+      "version": "2025-11-03",
+      "page": "https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/RDMHWY",
+      "license": "etalab-2.0",
+      "licenseUrl": "https://spdx.org/licenses/etalab-2.0.html",
+      "attribution": "Anses (Du Chaffaut, L.; Oseredczuk, M.; Gauvreau-Béziat, J.), Table de composition nutritionnelle des aliments Ciqual 2025, https://doi.org/10.57745/RDMHWY, Recherche Data Gouv, V1, publikuar 2025-11-19.",
+      "kind": "parts",
+      "parts": [
+        {
+          "name": "alim_2025_11_03.xml",
+          "url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/666252",
+          "bytes": 1581031,
+          "sha256": "e0b1de25b3039028205e9d54a96892e403e1b313c2efeb41180fabe132627478"
+        },
+        {
+          "name": "alim_grp_2025_11_03.xml",
+          "url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/666250",
+          "bytes": 80421,
+          "sha256": "e216928be1001aed15ba1b120405b70a98145da2a1a76026d6e33542bd5e39dc"
+        },
+        {
+          "name": "compo_2025_11_03.xml",
+          "url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/666249",
+          "bytes": 69243149,
+          "sha256": "8c46a9032ece4eab4ffccc9dfcb0c490ec2f416aa664cc1ee013b241c6bdd4af"
+        },
+        {
+          "name": "const_2025_11_03.xml",
+          "url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/666246",
+          "bytes": 17955,
+          "sha256": "3a231ea3e9836e4ac0b6ff94511e010210b2523d1b8b486c6b29e211066ba3f3"
+        }
+      ],
+      "attributionNote": "Etalab 2.0 kërkon përmendjen e burimit (të paktën emrin e Concédant) dhe datën e përditësimit të fundit; përmendja nuk jep karakter zyrtar dhe nuk sugjeron miratim nga Anses."
     }
   ]
 }

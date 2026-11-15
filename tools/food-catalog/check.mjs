@@ -5,11 +5,12 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-/** Burimet e lejuara dhe licenca e secilit (vetëm USDA në valën 1). */
+/** Burimet e lejuara dhe licenca e secilit. */
 export const SOURCE_LICENSES = {
   usda_foundation: 'CC0-1.0',
   usda_sr_legacy: 'CC0-1.0',
   usda_fndds: 'CC0-1.0',
+  ciqual: 'etalab-2.0',
 }
 
 export const KCAL_TOLERANCE = 0.15

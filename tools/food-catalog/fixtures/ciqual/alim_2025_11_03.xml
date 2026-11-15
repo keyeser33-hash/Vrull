@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TABLE>
+   <ALIM>
+      <alim_code> 100 </alim_code>
+      <alim_nom_fr> Amande, sèche </alim_nom_fr>
+      <alim_nom_eng> Almond, dried </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 12 </alim_grp_code>
+      <alim_ssgrp_code> 1201 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 120101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 101 </alim_code>
+      <alim_nom_fr> Concombre, cru </alim_nom_fr>
+      <alim_nom_eng> Cucumber, raw </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 20 </alim_grp_code>
+      <alim_ssgrp_code> 2001 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 200101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 102 </alim_code>
+      <alim_nom_fr> Eau minérale </alim_nom_fr>
+      <alim_nom_eng> Mineral water </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 08 </alim_grp_code>
+      <alim_ssgrp_code> 0801 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 080101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 103 </alim_code>
+      <alim_nom_fr> Bouillon cube </alim_nom_fr>
+      <alim_nom_eng> Stock cube </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 11 </alim_grp_code>
+      <alim_ssgrp_code> 1101 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 110101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 104 </alim_code>
+      <alim_nom_fr> Sauce tomate </alim_nom_fr>
+      <alim_nom_eng> Tomato sauce &amp; basil </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 11 </alim_grp_code>
+      <alim_ssgrp_code> 1101 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 110101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 105 </alim_code>
+      <alim_nom_fr> Fromage </alim_nom_fr>
+      <alim_nom_eng> Cheese </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 05 </alim_grp_code>
+      <alim_ssgrp_code> 0501 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 050101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+   <ALIM>
+      <alim_code> 106 </alim_code>
+      <alim_nom_fr> Gin </alim_nom_fr>
+      <alim_nom_eng> Gin </alim_nom_eng>
+      <alim_nom_sci missing=" " />
+      <alim_grp_code> 06 </alim_grp_code>
+      <alim_ssgrp_code> 0601 </alim_ssgrp_code>
+      <alim_ssssgrp_code> 060101 </alim_ssssgrp_code>
+      <facteur_Jones> 6.25 </facteur_Jones>
+   </ALIM>
+</TABLE>

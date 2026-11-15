@@ -1,4 +1,4 @@
-// Ndërton Listën e Vrullit nga shkarkimet e burimeve (tani vetëm USDA FoodData Central).
+// Ndërton Listën e Vrullit nga shkarkimet e burimeve (USDA FoodData Central dhe burimet e tjera te sources.json).
 //
 // Përdorimi: node tools/food-catalog/build.mjs <dosja e burimeve> <dosja e daljes> [--list-version N]
 //   <dosja e burimeve>: ajo e tools/food-catalog/download.mjs (p.sh. /tmp/food-src)
@@ -8,9 +8,18 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { checkCatalog } from './check.mjs'
+import { readCiqual } from './ciqual.mjs'
 import { readDataset } from './usda.mjs'
 
 const SOURCES = fileURLToPath(new URL('./sources.json', import.meta.url))
+
+/** Lexuesi i secilit burim: (dosja e shpaketuar, version i listës) → { rows, dropped, adjusted }. */
+export const READERS = {
+  usda_foundation: (dir, listVersion) => readDataset('usda_foundation', dir, listVersion),
+  usda_sr_legacy: (dir, listVersion) => readDataset('usda_sr_legacy', dir, listVersion),
+  usda_fndds: (dir, listVersion) => readDataset('usda_fndds', dir, listVersion),
+  ciqual: readCiqual,
+}
 
 /** Bashkon daljen e burimeve (në radhën e sources.json) dhe e kalon nga roja. Funksion i pastër, i provueshëm. */
 export function assemble(parts) {
@@ -48,7 +57,9 @@ function main() {
   }
   const config = JSON.parse(readFileSync(SOURCES, 'utf8'))
   const parts = config.files.map((file) => {
-    const { rows, dropped, adjusted } = readDataset(file.id, join(sourceDir, file.id), listVersion)
+    const read = READERS[file.id]
+    if (!read) throw new Error(`Nuk ka lexues për burimin ${file.id}`)
+    const { rows, dropped, adjusted } = read(join(sourceDir, file.id), listVersion)
     return { source: file.id, version: file.version, rows, dropped, adjusted }
   })
   const { jsonl, summary, errors } = assemble(parts)

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TABLE>
+   <ALIM_GRP>
+      <alim_grp_code> 05 </alim_grp_code>
+      <alim_grp_nom_fr> laits et produits laitiers </alim_grp_nom_fr>
+      <alim_grp_nom_eng> milk and milk products </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0501 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 05 </alim_grp_code>
+      <alim_grp_nom_fr> laits et produits laitiers </alim_grp_nom_fr>
+      <alim_grp_nom_eng> milk and milk products </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 06 </alim_grp_code>
+      <alim_grp_nom_fr> boissons alcoolisées </alim_grp_nom_fr>
+      <alim_grp_nom_eng> alcoholic beverages </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0601 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 06 </alim_grp_code>
+      <alim_grp_nom_fr> boissons alcoolisées </alim_grp_nom_fr>
+      <alim_grp_nom_eng> alcoholic beverages </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 08 </alim_grp_code>
+      <alim_grp_nom_fr> eaux </alim_grp_nom_fr>
+      <alim_grp_nom_eng> water </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0801 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 08 </alim_grp_code>
+      <alim_grp_nom_fr> eaux </alim_grp_nom_fr>
+      <alim_grp_nom_eng> water </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 11 </alim_grp_code>
+      <alim_grp_nom_fr> aides culinaires </alim_grp_nom_fr>
+      <alim_grp_nom_eng> culinary aids </alim_grp_nom_eng>
+      <alim_ssgrp_code> 1101 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 11 </alim_grp_code>
+      <alim_grp_nom_fr> aides culinaires </alim_grp_nom_fr>
+      <alim_grp_nom_eng> culinary aids </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 12 </alim_grp_code>
+      <alim_grp_nom_fr> fruits, légumes, légumineuses et oléagineux </alim_grp_nom_fr>
+      <alim_grp_nom_eng> fruits, vegetables, pulses and nuts </alim_grp_nom_eng>
+      <alim_ssgrp_code> 1201 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 12 </alim_grp_code>
+      <alim_grp_nom_fr> fruits, légumes, légumineuses et oléagineux </alim_grp_nom_fr>
+      <alim_grp_nom_eng> fruits, vegetables, pulses and nuts </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 20 </alim_grp_code>
+      <alim_grp_nom_fr> fruits, légumes </alim_grp_nom_fr>
+      <alim_grp_nom_eng> fruits and vegetables </alim_grp_nom_eng>
+      <alim_ssgrp_code> 2001 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+   <ALIM_GRP>
+      <alim_grp_code> 20 </alim_grp_code>
+      <alim_grp_nom_fr> fruits, légumes </alim_grp_nom_fr>
+      <alim_grp_nom_eng> fruits and vegetables </alim_grp_nom_eng>
+      <alim_ssgrp_code> 0000 </alim_ssgrp_code>
+      <alim_ssgrp_nom_fr> - </alim_ssgrp_nom_fr>
+      <alim_ssgrp_nom_eng> - </alim_ssgrp_nom_eng>
+      <alim_ssssgrp_code> 000000 </alim_ssssgrp_code>
+      <alim_ssssgrp_nom_fr> - </alim_ssssgrp_nom_fr>
+      <alim_ssssgrp_nom_eng> - </alim_ssssgrp_nom_eng>
+   </ALIM_GRP>
+</TABLE>
