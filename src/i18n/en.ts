@@ -20,6 +20,7 @@ import * as daymode from './areas/daymode'
 import * as admin from './areas/admin'
 import * as session from './areas/session'
 import * as today from './areas/today'
+import * as sot from './areas/sot'
 import * as videos from './areas/videos'
 import * as week from './areas/week'
 import * as foodday from './areas/foodday'
@@ -260,6 +261,7 @@ const base: TranslationOf<typeof sqBase> = {
 export const en: Translation = {
   ...base,
   ...today.en,
+  ...sot.en,
   ...session.en,
   ...programme.en,
   ...body.en,

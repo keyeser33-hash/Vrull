@@ -20,6 +20,7 @@ import * as daymode from './areas/daymode'
 import * as admin from './areas/admin'
 import * as session from './areas/session'
 import * as today from './areas/today'
+import * as sot from './areas/sot'
 import * as videos from './areas/videos'
 import * as week from './areas/week'
 import * as foodday from './areas/foodday'
@@ -276,11 +277,12 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements, week, checkin, readiness, lighter, daymode, foodday, foodsearch }
+export const AREAS = { today, sot, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements, week, checkin, readiness, lighter, daymode, foodday, foodsearch }
 
 export const sq = {
   ...base,
   ...today.sq,
+  ...sot.sq,
   ...session.sq,
   ...programme.sq,
   ...body.sq,
