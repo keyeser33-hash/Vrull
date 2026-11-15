@@ -28,6 +28,10 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 | 4 | Recetat e pjatave shqiptare me burimet e tyre | agjentë kërkimi + rishikues |
 | 5 | Migrimi, kopja në telefon, kërkimi, faqja "Burimet" | `vrull-builder` |
 
+## Gjendja
+
+- **Vala 1 (15.11.2026, b484f74):** `tools/food-catalog/` me shkarkimin (URL, versioni, sha256 te `sources.json`), leximin e USDA-së, rojën dhe 31 prova. Ndërtimi i vërtetë [V]: Foundation 2026-04-30 377 rreshta (91 pa kcal, 1 pa makro), SR Legacy 2018-04 7 793, FNDDS 2024-10-31 5 431; gjithsej 13 601; roja 0 gabime dhe 834 shënime `kcal_flag`; `catalog.jsonl` 5,2 MB, 0,5 MB me gzip. Energjia: Foundation 2048 → 2047 → 1008, SR Legacy 1008, FNDDS lënda 208 (dokumentimi i FDC-së, "Energy"). Foundation 2026-10-29 te faqja zyrtare vjen pa `food.csv`, `food_nutrient.csv` dhe `food_portion.csv`, ndaj përdoret 2026-04-30 deri sa USDA ta ndreqë. Karbohidratet deri në −1 g bëhen 0 dhe numërohen; më poshtë rreshti hiqet. Migrimi lejon deri në 950 kcal (USDA ka yndyra me 902).
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.

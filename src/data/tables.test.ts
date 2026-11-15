@@ -20,6 +20,8 @@ describe('tabelat e sinkronizuara', () => {
 
   it('çdo prind vjen para fëmijës (çelësat e huaj)', () => {
     for (const [, child, body] of sql.matchAll(/create table public\.(\w+) \(([\s\S]*?)\n\);/g)) {
+      // Tabelat e përbashkëta (Lista e Vrullit, produktet) nuk sinkronizohen me rreshtat e përdoruesit.
+      if (!TABLES.includes(child as never)) continue
       for (const [, parent] of body.matchAll(/references public\.(\w+)/g)) {
         expect(TABLES.indexOf(parent as never), `${parent} para ${child}`).toBeLessThan(
           TABLES.indexOf(child as never),
