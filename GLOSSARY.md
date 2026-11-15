@@ -284,8 +284,20 @@ Vaktet dhe artikujt e përdoruesit për ditën e stërvitjes dhe të pushimit, m
 _Avoid_: dieta, menyja
 
 **Ushqimi**:
-Një artikull me vlerat për 100 g: nga Open Food Facts, nga USDA ose i krijuar nga përdoruesi.
+Një artikull me vlerat për 100 g: nga **Lista e Vrullit**, një **Produkt** ose i krijuar nga përdoruesi.
 _Avoid_: produkt, kur nuk ka barkod
+
+**Lista e Vrullit**:
+Ushqimet e gatshme të app-it, nga tabelat e ushqimeve me licencë të hapur dhe **Ushqimet vendase**, me emrat shqip dhe anglisht, makrot për 100 g, porcionet dhe burimin; e njëjta për të gjithë përdoruesit dhe e kërkueshme pa internet.
+_Avoid_: databaza, katalogu (në tekstin e UI-së)
+
+**Produkti**:
+Një ushqim i paketuar me barkod, nga Open Food Facts ose nga etiketa e lexuar me foto; kur e skanon një përdorues, ruhet për të gjithë grupin.
+_Avoid_: artikulli (për ushqimet pa barkod)
+
+**Shporta**:
+Ushqimet e zgjedhura, secili me porcionin e vet, që shtohen njëherësh te një vakt pas rishikimit.
+_Avoid_: karroca, lista
 
 **Gatimi**:
 Ushqim i përbërë nga përdoruesi: përbërës me gramë, pesha totale dhe porcionet.
@@ -311,7 +323,7 @@ Shuma mujore që AI mund të harxhojë për një përdorues (pronari 40 €, çd
 Sa kushtoi një thirrje te AI-ja, nga tokenat që kthen ofruesi, në euro; ruhet në server për përdoruesin dhe muajin dhe numërohet te **Kufiri i AI-së**, edhe kur leximi dështon.
 
 **Kutia e AI-së**:
-Fusha te Sot ku përdoruesi shkruan ose thotë çfarë hëngri, piu, mori ose bëri, ose pyet për ditën e vet; AI-ja e kthen në rreshta që kontrollohen te **Përmbledhja e kutisë** para se të regjistrohen.
+Fusha te Sot dhe te Ushqimi ("Çfarë hëngre?") ku përdoruesi shkruan ose thotë çfarë hëngri, piu, mori ose bëri, ose pyet për ditën e vet; AI-ja e kthen në rreshta që kontrollohen te **Përmbledhja e kutisë** para se të regjistrohen.
 _Avoid_: chat, asistenti
 
 **Përmbledhja e kutisë**:
@@ -331,7 +343,7 @@ Ushqimet e shënuara me yll, secili me porcionin e vet, që regjistrohen me një
 Një vakt pa ushqime, vetëm me emrin, kaloritë dhe makrot (p.sh. një drekë jashtë); regjistrohet si një porcion.
 
 **Versioni i listës**:
-Një publikim i ndryshimeve të **Adminit** te lista vendase e ushqimeve; përdoruesit e marrin në sinkronizimin e radhës.
+Një publikim i ndryshimeve te **Lista e Vrullit** (nga **Admini** ose nga ndërtimi i listës); përdoruesit e marrin në sinkronizimin e radhës.
 
 ## Suplementet, rikujtuesit, matjet
 
