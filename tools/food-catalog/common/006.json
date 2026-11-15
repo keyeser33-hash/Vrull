@@ -2,13 +2,12 @@
   {
     "key": "soup-chicken",
     "rank": 502,
-    "name_sq": "Supë pule (lëng pule shtëpie)",
+    "name_sq": "Supë pule (lëng pule i shtëpisë)",
     "name_en": "Soup, stock, chicken, home-prepared",
     "group": "Të tjera",
     "preferred": "usda-fdc-172884",
     "also": [
-      "usda-fdc-2707134",
-      "ciqual-25901"
+      "usda-fdc-2707134"
     ]
   },
   {
@@ -17,10 +16,8 @@
     "name_sq": "Supë pule me petë",
     "name_en": "Soup, chicken noodle",
     "group": "Të tjera",
-    "preferred": "usda-fdc-171543",
-    "also": [
-      "usda-fdc-2709149"
-    ]
+    "preferred": "usda-fdc-172909",
+    "also": []
   },
   {
     "key": "soup-vegetable",
@@ -42,7 +39,7 @@
     "group": "Të tjera",
     "preferred": "usda-fdc-2707453",
     "also": [],
-    "reason": "SR ka vetëm supat e konservuara të koncentruara"
+    "reason": "SR ka vetëm supa fasulesh të zeza ose me mish"
   },
   {
     "key": "soup-tomato",
@@ -50,12 +47,12 @@
     "name_sq": "Supë domateje",
     "name_en": "Soup, tomato, canned",
     "group": "Të tjera",
-    "preferred": "usda-fdc-2709759",
+    "preferred": "usda-fdc-171176",
     "also": [
+      "usda-fdc-2709759",
       "ciqual-25914",
       "cofid-17-636"
-    ],
-    "reason": "SR ka vetëm supën e koncentruar që hollohet"
+    ]
   },
   {
     "key": "soup-lentil",
@@ -75,7 +72,7 @@
     "name_sq": "Supë kërpudhash me krem",
     "name_en": "Soup, cream of mushroom",
     "group": "Të tjera",
-    "preferred": "usda-fdc-171155",
+    "preferred": "usda-fdc-174540",
     "also": [
       "usda-fdc-2710107",
       "livsmedelsverket-494"
@@ -109,7 +106,7 @@
   {
     "key": "rice-pilaf",
     "rank": 511,
-    "name_sq": "Pilaf me oriz",
+    "name_sq": "Pilaf orizi",
     "name_en": "Rice pilaf",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2709077",
@@ -162,17 +159,19 @@
   {
     "key": "beef-stew-potatoes",
     "rank": 516,
-    "name_sq": "Gjellë me mish viçi dhe patate",
+    "name_sq": "Gjellë me mish gjedhi dhe patate",
     "name_en": "Beef stew with potatoes",
     "group": "Mish",
-    "preferred": "livsmedelsverket-2092",
-    "also": [],
-    "reason": "USDA ka vetëm gjellën portorikane"
+    "preferred": "usda-fdc-2706592",
+    "also": [
+      "cofid-19-473"
+    ],
+    "reason": "SR ka vetëm gjellën e konservuar"
   },
   {
     "key": "beef-rice",
     "rank": 517,
-    "name_sq": "Mish viçi me oriz",
+    "name_sq": "Mish gjedhi me oriz",
     "name_en": "Beef and rice",
     "group": "Mish",
     "preferred": "usda-fdc-2706489",
@@ -195,9 +194,8 @@
     "name_sq": "Speca të mbushur me mish dhe oriz",
     "name_en": "Peppers, stuffed with beef and rice",
     "group": "Të tjera",
-    "preferred": "cofid-19-632",
-    "also": [],
-    "reason": "USDA nuk ka speca të mbushur"
+    "preferred": "usda-fdc-2709073",
+    "also": []
   },
   {
     "key": "cabbage-rolls",
@@ -206,15 +204,13 @@
     "name_en": "Stuffed cabbage rolls with beef and rice",
     "group": "Të tjera",
     "preferred": "usda-fdc-2706620",
-    "also": [
-      "cofid-19-631"
-    ],
+    "also": [],
     "reason": "SR nuk ka lakër të mbushur"
   },
   {
     "key": "ratatouille",
     "rank": 521,
-    "name_sq": "Ratatuj (tavë me perime)",
+    "name_sq": "Ratatuj (gjellë frënge me perime)",
     "name_en": "Ratatouille",
     "group": "Të tjera",
     "preferred": "usda-fdc-2710028",
@@ -227,13 +223,11 @@
   {
     "key": "vegetable-stew",
     "rank": 522,
-    "name_sq": "Tavë me perime",
+    "name_sq": "Gjellë me perime",
     "name_en": "Stew, vegetable",
     "group": "Të tjera",
     "preferred": "usda-fdc-2710063",
-    "also": [
-      "livsmedelsverket-6934"
-    ],
+    "also": [],
     "reason": "SR nuk e ka"
   },
   {
@@ -385,14 +379,14 @@
   {
     "key": "potato-pan-fried",
     "rank": 537,
-    "name_sq": "Patate të skuqura në tigan (feta)",
+    "name_sq": "Patate të skuqura në tigan, në feta",
     "name_en": "Potato, sautéed or pan-fried",
     "group": "Perime",
-    "preferred": "ciqual-4015",
+    "preferred": "usda-fdc-2709474",
     "also": [
+      "ciqual-4015",
       "livsmedelsverket-241"
-    ],
-    "reason": "USDA ka vetëm patatet e skuqura të ngrira dhe hash brown"
+    ]
   },
   {
     "key": "pizza-vegetable",
@@ -400,14 +394,16 @@
     "name_sq": "Pica me perime",
     "name_en": "Pizza, vegetables, prepacked",
     "group": "Të tjera",
-    "preferred": "ciqual-25472",
-    "also": [],
+    "preferred": "usda-fdc-2708627",
+    "also": [
+      "ciqual-25472"
+    ],
     "reason": "SR ka vetëm picën me mish dhe perime"
   },
   {
     "key": "olives-green-stuffed",
     "rank": 539,
-    "name_sq": "Ullinj jeshilë të mbushur me spec",
+    "name_sq": "Ullinj të gjelbër të mbushur me spec",
     "name_en": "Olives, green, stuffed with pimiento",
     "group": "Perime",
     "preferred": "usda-fdc-332791",
@@ -514,18 +510,17 @@
   {
     "key": "cranberry-juice",
     "rank": 549,
-    "name_sq": "Lëng boronice",
+    "name_sq": "Lëng boronicash të kuqe (cranberry)",
     "name_en": "Cranberry juice, unsweetened",
     "group": "Pije",
     "preferred": "usda-fdc-168117",
-    "also": [
-      "usda-fdc-2709317"
-    ]
+    "also": [],
+    "reason": "Foundation nga koncentrati, 31 kcal, larg SR"
   },
   {
     "key": "yogurt-vanilla-low-fat",
     "rank": 550,
-    "name_sq": "Kos me vaniljë, me pak yndyrë",
+    "name_sq": "Kos me vanilje, me pak yndyrë",
     "name_en": "Yogurt, vanilla, low fat",
     "group": "Qumësht dhe bulmet",
     "preferred": "usda-fdc-170888",
@@ -562,7 +557,7 @@
     "preferred": "usda-fdc-168782",
     "also": [
       "usda-fdc-2705685",
-      "livsmedelsverket-655"
+      "ciqual-39212"
     ]
   },
   {
@@ -588,7 +583,7 @@
   {
     "key": "beef-kidney-cooked",
     "rank": 556,
-    "name_sq": "Veshka viçi, të gatuara",
+    "name_sq": "Veshka gjedhi, të gatuara",
     "name_en": "Beef, kidneys, cooked, simmered",
     "group": "Mish",
     "preferred": "usda-fdc-169450",
@@ -597,7 +592,7 @@
   {
     "key": "beef-heart-cooked",
     "rank": 557,
-    "name_sq": "Zemër viçi, e gatuar",
+    "name_sq": "Zemër gjedhi, e gatuar",
     "name_en": "Beef, heart, cooked, simmered",
     "group": "Mish",
     "preferred": "usda-fdc-169448",
@@ -606,7 +601,7 @@
   {
     "key": "beef-tripe-cooked",
     "rank": 558,
-    "name_sq": "Ishkembe (tripa viçi), e gatuar",
+    "name_sq": "Shkembë gjedhi, e zier",
     "name_en": "Beef, tripe, cooked, simmered",
     "group": "Mish",
     "preferred": "usda-fdc-174769",
@@ -615,7 +610,7 @@
   {
     "key": "veal-chop-grilled",
     "rank": 559,
-    "name_sq": "Kotelet vici, i pjekur në skarë",
+    "name_sq": "Bërxollë viçi, e pjekur në skarë",
     "name_en": "Veal, loin chop, cooked, grilled",
     "group": "Mish",
     "preferred": "usda-fdc-172644",
@@ -626,7 +621,7 @@
   {
     "key": "veal-liver-cooked",
     "rank": 560,
-    "name_sq": "Mëlçi vici, e gatuar",
+    "name_sq": "Mëlçi viçi, e gatuar",
     "name_en": "Veal, liver, cooked, braised",
     "group": "Mish",
     "preferred": "usda-fdc-172535",
@@ -653,7 +648,7 @@
   {
     "key": "chicken-ground-raw",
     "rank": 563,
-    "name_sq": "Mish i grirë pule, i pagatuar",
+    "name_sq": "Mish pule i grirë, i pagatuar",
     "name_en": "Chicken, ground, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2514746",
@@ -664,7 +659,7 @@
   {
     "key": "beef-tbone-grilled",
     "rank": 564,
-    "name_sq": "Biftek viçi (t-bone), i pjekur në skarë",
+    "name_sq": "Biftek gjedhi (t-bone), i pjekur në skarë",
     "name_en": "Beef, t-bone steak, lean, cooked, grilled",
     "group": "Mish",
     "preferred": "usda-fdc-335061",
@@ -684,14 +679,15 @@
   {
     "key": "chicken-drumstick-raw",
     "rank": 566,
-    "name_sq": "Kofshë e poshtme pule me lëkurë, e pagatuar",
+    "name_sq": "Këmbë pule me lëkurë, e pagatuar",
     "name_en": "Chicken, drumstick, meat and skin, raw",
     "group": "Mish",
-    "preferred": "usda-fdc-2727566",
+    "preferred": "usda-fdc-172373",
     "also": [
-      "usda-fdc-172373",
+      "usda-fdc-2727566",
       "ciqual-36022"
-    ]
+    ],
+    "reason": "Foundation Y 5,9, larg SR dhe Ciqual"
   },
   {
     "key": "chicken-breast-grilled",
@@ -707,7 +703,7 @@
   {
     "key": "turkey-ground-93-raw",
     "rank": 568,
-    "name_sq": "Mish i grirë gjeldeti 93 % pa yndyrë, i pagatuar",
+    "name_sq": "Mish gjeldeti i grirë (93% pa yndyrë), i pagatuar",
     "name_en": "Turkey, ground, 93% lean, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2514747",
@@ -730,7 +726,7 @@
   {
     "key": "beef-tenderloin-raw",
     "rank": 570,
-    "name_sq": "Fileto viçi (bonfile), e pagatuar",
+    "name_sq": "Fileto gjedhi (bonfile), e pagatuar",
     "name_en": "Beef, tenderloin steak, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2727573",
@@ -841,12 +837,12 @@
   {
     "key": "cod-salted-boiled",
     "rank": 580,
-    "name_sq": "Bakall i kripur, i zier",
+    "name_sq": "Bakalla (merluc i kripur), e zier",
     "name_en": "Cod, dried and salted, boiled",
     "group": "Peshk dhe fruta deti",
     "preferred": "cofid-16-490",
     "also": [],
-    "reason": "USDA ka vetëm bakallin e thatë, para zhytjes në ujë"
+    "reason": "USDA ka vetëm bakallën e thatë, para zhytjes në ujë"
   },
   {
     "key": "mackerel-cooked",
@@ -860,7 +856,7 @@
   {
     "key": "shrimp-breaded-fried",
     "rank": 582,
-    "name_sq": "Karkalec i panuar dhe i skuqur",
+    "name_sq": "Karkalec deti i panuar dhe i skuqur",
     "name_en": "Shrimp, breaded and fried",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-172037",
@@ -899,7 +895,7 @@
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-173681",
     "also": [
-      "ciqual-26192"
+      "cofid-16-436"
     ]
   },
   {
@@ -929,12 +925,11 @@
     "name_sq": "Oriz basmati, i pagatuar",
     "name_en": "Rice, basmati, raw",
     "group": "Drithëra dhe bukë",
-    "preferred": "ciqual-9119",
+    "preferred": "cofid-11-857",
     "also": [
-      "cofid-11-857",
       "livsmedelsverket-2475"
     ],
-    "reason": "USDA nuk ka basmati të pagatuar"
+    "reason": "USDA nuk ka basmati; Ciqual e bashkon me orizin tailandez"
   },
   {
     "key": "rice-brown-raw",
@@ -962,11 +957,11 @@
     "name_sq": "Polentë (griz misri), e thatë",
     "name_en": "Polenta, dry",
     "group": "Drithëra dhe bukë",
-    "preferred": "ciqual-9614",
+    "preferred": "usda-fdc-168867",
     "also": [
+      "ciqual-9614",
       "livsmedelsverket-6872"
-    ],
-    "reason": "USDA nuk ka polentë të thatë"
+    ]
   },
   {
     "key": "buckwheat-cooked",
@@ -1064,7 +1059,7 @@
     "name_sq": "Muffin anglez (English muffin)",
     "name_en": "Muffins, English, wheat",
     "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-172761",
+    "preferred": "usda-fdc-174994",
     "also": [
       "usda-fdc-2707698",
       "ciqual-7257",
