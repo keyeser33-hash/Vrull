@@ -1,0 +1,1299 @@
+{
+  "group": "sts-back",
+  "guides": [
+    {
+      "exercise": "Dumbbell Bent-Over Row",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Merr një shtangë dore në secilën dorë dhe qëndro me këmbët afërsisht në gjerësinë e shpatullave.",
+            "en": "Hold a dumbbell in each hand and stand with your feet about shoulder-width apart."
+          },
+          {
+            "sq": "Forco barkun, përkulu nga ijët me gjunjët pak të përkulur dhe mbaje shpinën të sheshtë dhe neutrale.",
+            "en": "Brace your core, hinge forward at the hips with your knees slightly bent and keep your back flat and neutral."
+          },
+          {
+            "sq": "Lër krahët të varen drejt poshtë shpatullave.",
+            "en": "Let your arms hang straight down from your shoulders."
+          },
+          {
+            "sq": "Tërhiq shpatullat poshtë dhe pas, pa harkuar belin, dhe mbaji kështu gjatë gjithë setit.",
+            "en": "Draw your shoulders down and back without arching your lower back, and hold that position for the whole set."
+          }
+        ],
+        "sources": [
+          "mayo_row",
+          "ace_single"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Tërhiq shtangat lart drejt ijëve, me bërrylat pranë trupit.",
+            "en": "Pull the dumbbells up towards your hips, keeping your elbows close to your body."
+          },
+          {
+            "sq": "Ngri bërrylat sa më lart mbi shpinë, deri sa nuk mund të ngresh më pa rrotulluar trupin.",
+            "en": "Raise your elbows as high above your back as you can, until you cannot lift further without rotating your torso."
+          },
+          {
+            "sq": "Ule shtangat ngadalë deri sa krahët të shtrihen, pa ndryshuar pozicionin e shpinës.",
+            "en": "Lower the dumbbells slowly until your arms are straight, without changing the position of your back."
+          }
+        ],
+        "sources": [
+          "stoppani_back",
+          "ace_single",
+          "mayo_row"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ulja e shtangave 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Lowering the dumbbells 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          },
+          {
+            "sq": "Nxirre frymën kur i tërheq shtangat lart, merre kur i ul.",
+            "en": "Breathe out as you pull the dumbbells up, breathe in as you lower them."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_single"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina e sheshtë",
+            "en": "Flat back"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Bërrylat lart, pranë trupit",
+            "en": "Elbows up, close to your body"
+          },
+          {
+            "sq": "Mos e rrotullo trupin",
+            "en": "Don't twist your torso"
+          }
+        ],
+        "sources": [
+          "ace_single",
+          "mayo_row",
+          "stoppani_back"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Rrotullimi i trupit për të ngritur shtangën më lart.",
+            "en": "Twisting your torso to lift the dumbbell higher."
+          },
+          {
+            "sq": "Shpatulla që rrotullohet përpara ose që bie drejt dyshemesë.",
+            "en": "Letting your shoulder roll forward or drop towards the floor."
+          },
+          {
+            "sq": "Tërheqje me krahët në vend të shpinës: shumë njerëz e kanë të vështirë të ulin përfshirjen e bicepsit te rreshtat.",
+            "en": "Pulling with your arms instead of your back: many people find it hard to keep the biceps out of rows."
+          }
+        ],
+        "sources": [
+          "ace_single",
+          "mayo_row",
+          "stoppani_back"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Back-Building Workout Breakdown, jimstoppani.com)",
+          "text": {
+            "sq": "Me shtanga dore bërryli ngrihet më lart se me shufër, sepse pesha nuk ndalon te barku. Sipas tij kjo mund të aktivizojë më shumë fibra të lats, sidomos të poshtmet. Ai e bën me kraharorin të mbështetur në një stol të pjerrët.",
+            "en": "With dumbbells your elbow rises higher than with a barbell, because the weight does not stop at your stomach. He says this can recruit more lat fibres, especially the lower ones. He does it with his chest supported on an incline bench."
+          },
+          "sources": [
+            "stoppani_back"
+          ]
+        },
+        {
+          "who": "Fenwick, Brown dhe McGill, 2009 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në një provë me 7 burra, rreshti në këmbë dha aktivizim të madh të shpinës dhe ngarkesën më të madhe te shtylla e belit; rreshti i përmbysur (inverted row) dha më të voglën. Rezultat paraprak.",
+            "en": "In a trial of 7 men, the standing bent-over row gave large back activation and the highest load on the lumbar spine; the inverted row gave the lowest. A preliminary result."
+          },
+          "sources": [
+            "fenwick"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Për rritjen e muskulit, zgjidh lëvizjen që e zgjat muskulin.",
+            "en": "For muscle growth, favour the range that lengthens the muscle."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën të sheshtë gjatë gjithë setit.",
+            "en": "Keep your back flat for the whole set."
+          },
+          {
+            "sq": "Nëse beli të vështirëson, mbështet kraharorin te një stol i pjerrët me pjesën e sipërme pak nën nivelin e ijëve: kjo i heq belit një pjesë të ngarkesës.",
+            "en": "If your lower back is a problem, rest your chest on an incline bench with its top just below hip height: this takes some of the load off your lower back."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "ace_single",
+          "fenwick",
+          "stoppani_back",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "mayo_row": {
+          "label": "Mayo Clinic, Bent-over row with dumbbell",
+          "url": "https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/bent-over-row/vid-20084680",
+          "checked": "2026-11-15"
+        },
+        "ace_single": {
+          "label": "ACE, Single Arm Row",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/126/single-arm-row/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_back": {
+          "label": "Jim Stoppani, PhD, Back-Building Workout Breakdown (jimstoppani.com)",
+          "url": "https://www.jimstoppani.com/training/back-building-workout-breakdown",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "fenwick": {
+          "label": "Fenwick, Brown dhe McGill, 2009, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/19620925/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Seated Cable Row",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ul në makinën me kabllo, me këmbët në dysheme dhe gjunjët të përkulur.",
+            "en": "Sit at the cable machine with your feet on the floor and your knees bent."
+          },
+          {
+            "sq": "Kap dorezën e ngushtë dhe mbaje shpinën e drejtë.",
+            "en": "Take the narrow handle and keep your back straight."
+          },
+          {
+            "sq": "Mbaje shpinën, qafën dhe shpatullat në pozicion neutral dhe forco barkun.",
+            "en": "Keep your spine, neck and shoulders neutral and brace your abs."
+          }
+        ],
+        "sources": [
+          "ace_row_cable",
+          "nasm_row_video"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ngri kraharorin dhe tërhiq bërrylat prapa, afër brinjëve, derisa doreza të prekë pjesën e përparme të barkut.",
+            "en": "Lift your chest and pull your elbows back, close to your ribs, until the handle touches the front of your stomach."
+          },
+          {
+            "sq": "Tërhiq dorezën drejt trupit duke tërhequr edhe shpatullat prapa.",
+            "en": "Pull the handle into your torso while also drawing your shoulder blades back."
+          },
+          {
+            "sq": "Ndalo një sekondë.",
+            "en": "Pause for one second."
+          },
+          {
+            "sq": "Shtrij krahët ngadalë deri te pozicioni i fillimit, nën kontroll.",
+            "en": "Straighten your arms slowly back to the start, under control."
+          }
+        ],
+        "sources": [
+          "ace_row_cable",
+          "nasm_row_video"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Kthimi i dorezës 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Returning the handle 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kraharori lart, shpina e drejtë",
+            "en": "Chest up, back straight"
+          },
+          {
+            "sq": "Bërrylat prapa, pranë brinjëve",
+            "en": "Elbows back, close to your ribs"
+          },
+          {
+            "sq": "Shpatullat prapa",
+            "en": "Shoulders back"
+          },
+          {
+            "sq": "Ndalo një sekondë",
+            "en": "Pause for one second"
+          },
+          {
+            "sq": "Kthe nën kontroll",
+            "en": "Return under control"
+          }
+        ],
+        "sources": [
+          "ace_row_cable",
+          "nasm_row_video"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Tërheqje me krahët: shumë njerëz e kanë të vështirë të ulin përfshirjen e bicepsit te rreshtat.",
+            "en": "Pulling with your arms: many people find it hard to keep the biceps out of rows."
+          },
+          {
+            "sq": "Shpina që nuk mbahet e drejtë gjatë tërheqjes.",
+            "en": "Not keeping your back straight during the pull."
+          },
+          {
+            "sq": "Kthimi i peshës pa kontroll.",
+            "en": "Returning the weight without control."
+          }
+        ],
+        "sources": [
+          "stoppani_back",
+          "ace_row_cable",
+          "nasm_row_video"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Back-Building Workout Breakdown, jimstoppani.com)",
+          "text": {
+            "sq": "Rreshtat e ulur në kabllo mund të bëhen me kapje të gjerë ose të ngushtë; ai këshillon t'i ndërrosh nga stërvitja në stërvitje. Një version me një krah e ndihmon zhvillimin e barabartë nga të dyja anët. Rripat e kyçit ia lënë shpinës punën kur kapja lodhet.",
+            "en": "Seated cable rows can be done with a wide or a narrow grip; he recommends switching between them from workout to workout. A one-arm version helps balanced development from side to side. Wrist straps leave the work to your back when your grip tires."
+          },
+          "sources": [
+            "stoppani_back"
+          ]
+        },
+        {
+          "who": "Lehman dhe kolegët, 2004 · Dynamic Medicine",
+          "text": {
+            "sq": "Në një provë me tension të mbajtur 10 s, aktiviteti i trapezit të mesëm dhe romboidëve ishte më i larti te rreshti i ulur. Tërheqja e qëllimshme e shpatullave pas nuk e ndryshoi aktivitetin e tyre.",
+            "en": "In a trial with 10 s isometric holds, middle trapezius and rhomboid activity was highest in the seated row. Deliberately retracting the shoulder blades did not change it."
+          },
+          "sources": [
+            "lehman"
+          ]
+        },
+        {
+          "who": "Di Fonza dhe kolegët, 2026 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi gjen se një kapje më e ngushtë dhe një kënd më i vogël i largimit të krahut nga trupi lidhen, në prova të ndara, me më shumë aktivitet të lats. Është aktivitet i matur një herë, jo rezultat i stërvitjes në kohë.",
+            "en": "The review finds that a narrower grip and a smaller angle of the arm away from the body were each linked, in separate studies, with more lat activity. It is activity measured once, not a training result over time."
+          },
+          "sources": [
+            "difonza"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje shpinën e drejtë gjatë gjithë setit.",
+            "en": "Keep your back straight for the whole set."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "ace_row_cable",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_row_cable": {
+          "label": "ACE, Seated Row (kabllo)",
+          "url": "https://www.acefitness.org/exerciselibrary/48/seated-row",
+          "checked": "2026-11-15"
+        },
+        "nasm_row_video": {
+          "label": "NASM, How to Do a Seated Machine Row: Close Grip (përshkrimi i videos, lexuar nga orkestruesi)",
+          "url": "https://www.youtube.com/watch?v=k0cTJCfxa0Y",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_back": {
+          "label": "Jim Stoppani, PhD, Back-Building Workout Breakdown (jimstoppani.com)",
+          "url": "https://www.jimstoppani.com/training/back-building-workout-breakdown",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "lehman": {
+          "label": "Lehman dhe kolegët, 2004, Dynamic Medicine",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC449729/",
+          "checked": "2026-11-15"
+        },
+        "difonza": {
+          "label": "Di Fonza dhe kolegët, 2026, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13510307/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Wide-Grip Pulldown",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ul në ndenjëse me vithet mjaft prapa dhe siguro kofshët poshtë jastëkut.",
+            "en": "Sit with your hips well back on the seat and your thighs secured under the pad."
+          },
+          {
+            "sq": "Kap shufrën nga sipër, më gjerë se shpatullat.",
+            "en": "Grip the bar overhand, wider than your shoulders."
+          },
+          {
+            "sq": "Fillo me krahët të shtrirë sipër dhe trupin sa më vertikal; një prapambetje e lehtë (ACE: deri në 30°) pranohet.",
+            "en": "Start with your arms extended overhead and your torso as upright as possible; a slight lean back (ACE: up to 30°) is acceptable."
+          },
+          {
+            "sq": "Para tërheqjes, tërhiq shpatullat poshtë dhe pas dhe ngri kraharorin.",
+            "en": "Before you pull, draw your shoulder blades down and back and lift your chest."
+          }
+        ],
+        "sources": [
+          "nasm_lat",
+          "stoppani_lat",
+          "ace_lat"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nis tërheqjen me bërrylat: drejtoji poshtë, drejt brinjëve.",
+            "en": "Start the pull with your elbows: drive them down, towards your ribs."
+          },
+          {
+            "sq": "Tërhiq shufrën drejt pjesës së sipërme të kraharorit.",
+            "en": "Pull the bar towards your upper chest."
+          },
+          {
+            "sq": "Ndalo kur bërrylat nisin të shkojnë prapa në vend që të ulen.",
+            "en": "Stop when your elbows start moving back instead of down."
+          },
+          {
+            "sq": "Pusho një çast, pastaj ngri shufrën ngadalë deri sa krahët të shtrihen.",
+            "en": "Pause briefly, then let the bar rise slowly until your arms are straight."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_lat",
+          "stoppani_lat"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ngritja e shufrës 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Raising the bar 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          },
+          {
+            "sq": "Nxirre frymën ngadalë kur nis tërheqjen.",
+            "en": "Breathe out slowly as you start the pull."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Bërrylat poshtë, drejt brinjëve",
+            "en": "Elbows down towards your ribs"
+          },
+          {
+            "sq": "Trupi sa më vertikal",
+            "en": "Keep your torso upright"
+          },
+          {
+            "sq": "Shufra te kraharori i sipërm",
+            "en": "Bar to your upper chest"
+          },
+          {
+            "sq": "Kthe ngadalë",
+            "en": "Return slowly"
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_lat",
+          "stoppani_lat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Ulesh shumë përpara dhe prapaviesh që shufra të mos godasë kokën: pulldown-i bëhet rresht.",
+            "en": "Sitting too far forward and leaning back so the bar misses your head: the pulldown turns into a row."
+          },
+          {
+            "sq": "Tërheqje kryesisht me krahët në vend të bërryleve.",
+            "en": "Pulling mainly with your arms instead of your elbows."
+          },
+          {
+            "sq": "Shpatulla të ngritura drejt veshëve gjatë tërheqjes.",
+            "en": "Shoulders shrugged towards your ears during the pull."
+          },
+          {
+            "sq": "Lëkundje ose prapaviesje e tepërt për të ngritur më shumë peshë.",
+            "en": "Excessive swinging or leaning back to move more weight."
+          },
+          {
+            "sq": "Koka që del përpara kur lodhesh.",
+            "en": "Your head drifting forward as you tire."
+          },
+          {
+            "sq": "Tërheqje e vazhduar pasi bërrylat shkojnë prapa: i shton stres nyjës së shpatullës.",
+            "en": "Continuing to pull once your elbows move back: it adds stress to the shoulder joint."
+          }
+        ],
+        "sources": [
+          "stoppani_lat",
+          "nasm_lat",
+          "ace_lat"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Lat Pulldown, jimstoppani.com)",
+          "text": {
+            "sq": "Kapja e gjerë i hap bërrylat anash dhe, sipas tij, e drejton punën te lats e sipërme. Tërhiqe shufrën drejt klavikulave dhe përdor kapje të hapur (gishti i madh në anën e gishtave): ajo ul shtrëngimin e duarve. Rripat e kyçit ndihmojnë që lats të ngarkohen më shumë.",
+            "en": "A wide grip flares your elbows and, he says, directs the work to the upper lats. Pull the bar towards your collarbones and use an open grip (thumb on the same side as your fingers): it reduces the squeeze from your hands. Wrist straps help you overload the lats more."
+          },
+          "sources": [
+            "stoppani_lat"
+          ]
+        },
+        {
+          "who": "Andersen dhe kolegët, 2014 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 15 burra, kapja në 1, 1,5 dhe 2 herë distancën mes shpatullave dha aktivizim të ngjashëm të lats. Me kapjen më të gjerë u ngrit pak më pak peshë; në fazën ekscentrike kapja e gjerë dha aktivizim më të madh të lats se e ngushta.",
+            "en": "In 15 men, grips at 1, 1.5 and 2 times shoulder-to-shoulder distance gave similar lat activation. The widest grip let them lift slightly less weight; in the eccentric phase the wide grip gave greater lat activation than the narrow one."
+          },
+          "sources": [
+            "andersen"
+          ]
+        },
+        {
+          "who": "Lusk, Hale dhe Russell, 2010 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 12 burra, kapja nga sipër dha më shumë aktivitet të lats se kapja nga poshtë, pavarësisht gjerësisë. Trapezi i mesëm dhe bicepsi nuk ndryshuan.",
+            "en": "In 12 men, an overhand grip gave more lat activity than an underhand grip, whatever the width. The middle trapezius and biceps did not change."
+          },
+          "sources": [
+            "lusk"
+          ]
+        },
+        {
+          "who": "NASM · Brian Sutton, NASM-CPT (The Biomechanics of the Lat Pulldown)",
+          "text": {
+            "sq": "Kapja e gjerë nga sipër shpesh duket më e vështirë, sidomos për fillestarët. Kapja nga sipër me gjerësinë e shpatullave është zgjedhja e ekuilibruar për shumicën.",
+            "en": "A wide overhand grip often feels harder, especially for beginners. An overhand grip at shoulder width is the balanced choice for most people."
+          },
+          "sources": [
+            "nasm_lat"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mos e vazhdo tërheqjen pasi bërrylat shkojnë prapa: i shton stres nyjës së shpatullës.",
+            "en": "Don't keep pulling once your elbows move back: it adds stress to the shoulder joint."
+          },
+          {
+            "sq": "Tërhiqe shufrën përpara kokës, jo pas qafës; NASM e quan variantin pas qafës zakonisht më mirë të shmangshëm.",
+            "en": "Pull the bar down in front of your head, not behind your neck; NASM calls the behind-the-neck version generally best avoided."
+          },
+          {
+            "sq": "Forco barkun dhe mos e harko belin; mos u mbështet prapa më shumë se aq sa të lejon trupi të mbetet i qëndrueshëm.",
+            "en": "Brace your core and don't arch your lower back; don't lean back more than your torso can hold steady."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_lat",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_lat": {
+          "label": "NASM, The Biomechanics of the Lat Pulldown",
+          "url": "https://www.nasm.org/resource-center/blog/training/the-biomechanics-of-the-lat-pulldown-muscles-grip-and-form",
+          "checked": "2026-11-15"
+        },
+        "stoppani_lat": {
+          "label": "Jim Stoppani, PhD, Lat Pulldown (jimstoppani.com)",
+          "url": "https://www.jimstoppani.com/training/lat-pulldown",
+          "checked": "2026-11-15"
+        },
+        "ace_lat": {
+          "label": "ACE, Seated Lat Pulldown",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "andersen": {
+          "label": "Andersen dhe kolegët, 2014, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/24662157/",
+          "checked": "2026-11-15"
+        },
+        "lusk": {
+          "label": "Lusk, Hale dhe Russell, 2010, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20543740/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Behind-Neck Pulldown",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ky është varianti më i diskutuar i pulldown-it: NASM e quan zakonisht më mirë të shmangshëm, ndërsa Jim Stoppani e pranon vetëm me teknikën më poshtë.",
+            "en": "This is the most debated pulldown variation: NASM calls it generally best avoided, while Jim Stoppani accepts it only with the technique below."
+          },
+          {
+            "sq": "Kthehu me shpinë nga makina, që shufra të nisë pas kokës dhe të mos duhet ta ulësh kokën për ta kaluar pas qafës.",
+            "en": "Face away from the machine, so the bar starts behind your head and you don't have to drop your head to get it behind your neck."
+          },
+          {
+            "sq": "Nëse shufra mbetet përpara, vër një stol para ndenjëses që të kesh vend të lëvizësh përpara.",
+            "en": "If the bar is still in front of you, put a bench in front of the seat to give yourself room to move forward."
+          },
+          {
+            "sq": "Kap shufrën nga sipër, shumë gjerë, me kraharorin lart dhe shpatullat poshtë e pas.",
+            "en": "Grip the bar overhand, very wide, with your chest up and your shoulders down and back."
+          }
+        ],
+        "sources": [
+          "nasm_lat",
+          "stoppani_lat"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nis tërheqjen me bërrylat, duke i drejtuar poshtë.",
+            "en": "Start the pull with your elbows, driving them down."
+          },
+          {
+            "sq": "Ndalo kur shufra arrin afërsisht në nivelin e syve, pas kokës; mos shko më poshtë.",
+            "en": "Stop when the bar reaches about eye level, behind your head; do not go lower."
+          }
+        ],
+        "sources": [
+          "stoppani_lat"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ngritja e shufrës 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Raising the bar 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          },
+          {
+            "sq": "Nxirre frymën ngadalë kur nis tërheqjen.",
+            "en": "Breathe out slowly as you start the pull."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kthehu me shpinë nga makina",
+            "en": "Face away from the machine"
+          },
+          {
+            "sq": "Mos e ul nofullën",
+            "en": "Don't drop your chin"
+          },
+          {
+            "sq": "Ndalo në nivelin e syve",
+            "en": "Stop at eye level"
+          },
+          {
+            "sq": "Bërrylat drejtojnë tërheqjen",
+            "en": "Elbows lead the pull"
+          },
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          }
+        ],
+        "sources": [
+          "stoppani_lat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Ulja e shufrës shumë poshtë, drejt qafës: sa më poshtë të shkosh, aq më shumë rrotullohen shpatullat nga jashtë, dhe aty ushtrimi bëhet më i rrezikshëm për to.",
+            "en": "Lowering the bar too far, towards your neck: the lower you go, the more your shoulders rotate externally, and that is where it becomes riskier for them."
+          },
+          {
+            "sq": "Ulja e nofullës për ta kaluar shufrën pas kokës: fleksion i tepërt i qafës, i dëmshëm për shtyllën kurrizore të qafës.",
+            "en": "Dropping your chin to get the bar behind your head: excessive neck flexion, which is bad for the cervical spine."
+          },
+          {
+            "sq": "Të ulesh me fytyrë nga makina me shufrën përpara: atëherë duhet ta ulësh kokën për ta çuar pas.",
+            "en": "Sitting facing the machine with the bar in front of you: then you have to drop your head to take it behind."
+          },
+          {
+            "sq": "Ta zgjedhësh këtë variant për të punuar më shumë lats: te 24 burra aktiviteti i lats nuk ndryshoi nga varianti përpara.",
+            "en": "Choosing this variation to work the lats harder: in 24 men lat activity did not differ from the front version."
+          }
+        ],
+        "sources": [
+          "stoppani_lat",
+          "sperandei"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Lat Pulldown, jimstoppani.com)",
+          "text": {
+            "sq": "Sipas tij, shumë bodybuilder-a e përdorin për gjerësinë e lats dhe nuk është i rrezikshëm nëse bëhet saktë: me shpinë nga makina, kapje shumë të gjerë dhe ndalim në nivelin e syve.",
+            "en": "He says many bodybuilders use it for lat width and that it is not dangerous if done correctly: facing away from the machine, with a very wide grip, stopping at eye level."
+          },
+          "sources": [
+            "stoppani_lat"
+          ]
+        },
+        {
+          "who": "Sperandei dhe kolegët, 2009 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Te 24 burra të stërvitur, lats punuan njësoj me variantin pas qafës dhe përpara; ndryshuan gjoksi, deltoidi i pasmë dhe bicepsi. Autorët e quajtën variantin pas qafës jo të mirë dhe të shmangshëm.",
+            "en": "In 24 trained men, the lats worked the same with the behind-the-neck and front versions; the chest, rear deltoid and biceps differed. The authors called the behind-the-neck version not a good technique and one to avoid."
+          },
+          "sources": [
+            "sperandei"
+          ]
+        },
+        {
+          "who": "NASM · Brian Sutton, NASM-CPT (The Biomechanics of the Lat Pulldown)",
+          "text": {
+            "sq": "Pulldown-i përpara i stërvit të njëjtët muskuj me më pak stres për shpatullat dhe qafën; për shumicën e klientëve NASM e këshillon variantin përpara.",
+            "en": "The front pulldown trains the same muscles with less stress on the shoulders and neck; for most clients NASM recommends the front version."
+          },
+          "sources": [
+            "nasm_lat"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Burimet nuk bien dakord: NASM dhe Sperandei e shmangin, Jim Stoppani e lejon me teknikën e mësipërme. NASM: pulldown-i përpara punon të njëjtët muskuj me më pak stres për shpatullat dhe qafën.",
+            "en": "The sources disagree: NASM and Sperandei avoid it, Jim Stoppani allows it with the technique above. NASM: the front pulldown trains the same muscles with less stress on the shoulders and neck."
+          },
+          {
+            "sq": "Rishikimi i vitit 2026 e quan rrezikun një kujdes biomekanik, jo një ndryshim të provuar sigurie, sepse të dhëna dëmtimi për këtë variant mungojnë.",
+            "en": "A 2026 review calls the risk a biomechanical caution rather than a demonstrated safety difference, because there is no direct injury data for this version."
+          },
+          {
+            "sq": "Mpirje ose gudulisje në krah: ndalo stërvitjen dhe kërko vlerësim mjekësor.",
+            "en": "Numbness or tingling in your arm: stop training and seek medical evaluation."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "nasm_lat",
+          "sperandei",
+          "difonza",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_lat": {
+          "label": "NASM, The Biomechanics of the Lat Pulldown",
+          "url": "https://www.nasm.org/resource-center/blog/training/the-biomechanics-of-the-lat-pulldown-muscles-grip-and-form",
+          "checked": "2026-11-15"
+        },
+        "stoppani_lat": {
+          "label": "Jim Stoppani, PhD, Lat Pulldown (jimstoppani.com)",
+          "url": "https://www.jimstoppani.com/training/lat-pulldown",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "ace_lat": {
+          "label": "ACE, Seated Lat Pulldown",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/",
+          "checked": "2026-11-15"
+        },
+        "sperandei": {
+          "label": "Sperandei dhe kolegët, 2009, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/19855327/",
+          "checked": "2026-11-15"
+        },
+        "difonza": {
+          "label": "Di Fonza dhe kolegët, 2026, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13510307/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Reverse-Grip Pulldown",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ul në ndenjëse me vithet mjaft prapa dhe siguro kofshët poshtë jastëkut.",
+            "en": "Sit with your hips well back on the seat and your thighs secured under the pad."
+          },
+          {
+            "sq": "Kap shufrën nga poshtë, me pëllëmbët nga ti.",
+            "en": "Grip the bar underhand, with your palms facing you."
+          },
+          {
+            "sq": "Fillo me krahët të shtrirë sipër dhe trupin sa më vertikal; një prapambetje e lehtë (ACE: deri në 30°) pranohet.",
+            "en": "Start with your arms extended overhead and your torso as upright as possible; a slight lean back (ACE: up to 30°) is acceptable."
+          },
+          {
+            "sq": "Para tërheqjes, tërhiq shpatullat poshtë dhe pas dhe ngri kraharorin.",
+            "en": "Before you pull, draw your shoulder blades down and back and lift your chest."
+          }
+        ],
+        "sources": [
+          "nasm_lat",
+          "stoppani_lat",
+          "ace_lat"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nis tërheqjen me bërrylat: ato lëvizin përpara trupit, nga përpara prapa.",
+            "en": "Start the pull with your elbows: they travel in front of your body, from front to back."
+          },
+          {
+            "sq": "Tërhiq shufrën drejt pjesës së sipërme të kraharorit.",
+            "en": "Pull the bar towards your upper chest."
+          },
+          {
+            "sq": "Ndalo kur bërrylat nisin të shkojnë prapa në vend që të ulen.",
+            "en": "Stop when your elbows start moving back instead of down."
+          },
+          {
+            "sq": "Pusho një çast, pastaj ngri shufrën ngadalë deri sa krahët të shtrihen.",
+            "en": "Pause briefly, then let the bar rise slowly until your arms are straight."
+          }
+        ],
+        "sources": [
+          "stoppani_lat",
+          "ace_lat"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ngritja e shufrës 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Raising the bar 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          },
+          {
+            "sq": "Nxirre frymën ngadalë kur nis tërheqjen.",
+            "en": "Breathe out slowly as you start the pull."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpatullat poshtë dhe pas",
+            "en": "Shoulders down and back"
+          },
+          {
+            "sq": "Nis me bërrylat",
+            "en": "Start with your elbows"
+          },
+          {
+            "sq": "Mos u përkul prapa",
+            "en": "Don't lean back"
+          },
+          {
+            "sq": "Shufra te kraharori i sipërm",
+            "en": "Bar to your upper chest"
+          },
+          {
+            "sq": "Kthe ngadalë",
+            "en": "Return slowly"
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_lat",
+          "stoppani_lat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Tërheqje kryesisht me bicepsin: kapja nga poshtë ia rrit rolin.",
+            "en": "Pulling mainly with your biceps: the underhand grip increases their role."
+          },
+          {
+            "sq": "Prapaviesje ose lëkundje e tepërt për të ngritur më shumë peshë; me këtë kapje peshat janë më të mëdha dhe tundimi më i madh.",
+            "en": "Excessive leaning back or swinging to move more weight; with this grip the loads are heavier and the temptation greater."
+          },
+          {
+            "sq": "Shpatulla të ngritura drejt veshëve gjatë tërheqjes.",
+            "en": "Shoulders shrugged towards your ears during the pull."
+          },
+          {
+            "sq": "Tërheqje e vazhduar pasi bërrylat shkojnë prapa: i shton stres nyjës së shpatullës.",
+            "en": "Continuing to pull once your elbows move back: it adds stress to the shoulder joint."
+          }
+        ],
+        "sources": [
+          "nasm_lat",
+          "stoppani_lat",
+          "ace_lat"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Lat Pulldown, jimstoppani.com)",
+          "text": {
+            "sq": "Me kapje të kundërt, të ngushtë ose neutrale bërrylat qëndrojnë përpara trupit dhe puna shkon më shumë te lats e poshtme. Pulldown-i është pak më i fortë, sepse bicepsi ndihmon më shumë dhe mund të përdorësh më shumë peshë. Ai këshillon të ndërrosh kapjet: të gjera, të ngushta dhe të kundërta.",
+            "en": "With a reverse, narrow or neutral grip your elbows stay in front of your body and the work goes more to the lower lats. The pulldown is a bit stronger because the biceps help more and you can use more weight. He recommends varying your grips: wide, narrow and reverse."
+          },
+          "sources": [
+            "stoppani_lat"
+          ]
+        },
+        {
+          "who": "Lusk, Hale dhe Russell, 2010 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 12 burra, kapja nga sipër dha më shumë aktivitet të lats se kapja nga poshtë, pavarësisht gjerësisë. Trapezi i mesëm dhe bicepsi nuk ndryshuan.",
+            "en": "In 12 men, an overhand grip gave more lat activity than an underhand grip, whatever the width. The middle trapezius and biceps did not change."
+          },
+          "sources": [
+            "lusk"
+          ]
+        },
+        {
+          "who": "Lehman dhe kolegët, 2004 · Dynamic Medicine",
+          "text": {
+            "sq": "Në një provë me tension të mbajtur 10 s, raporti i aktivitetit lats ndaj bicepsit ishte më i ulët me kapjen e kundërt se me kapjen e gjerë nga sipër.",
+            "en": "In a trial with 10 s isometric holds, the lat-to-biceps activity ratio was lower with the reverse grip than with the wide overhand grip."
+          },
+          "sources": [
+            "lehman"
+          ]
+        },
+        {
+          "who": "NASM · Brian Sutton, NASM-CPT (The Biomechanics of the Lat Pulldown)",
+          "text": {
+            "sq": "Kapja nga poshtë rrit përfshirjen e bicepsit dhe zakonisht lejon më shumë peshë; është e dobishme kur synon chin-up.",
+            "en": "An underhand grip increases biceps involvement and typically lets you lift more weight; it is useful when you are working towards chin-ups."
+          },
+          "sources": [
+            "nasm_lat"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mos e vazhdo tërheqjen pasi bërrylat shkojnë prapa: i shton stres nyjës së shpatullës.",
+            "en": "Don't keep pulling once your elbows move back: it adds stress to the shoulder joint."
+          },
+          {
+            "sq": "Forco barkun dhe mos e harko belin; mos u mbështet prapa më shumë se aq sa të lejon trupi të mbetet i qëndrueshëm.",
+            "en": "Brace your core and don't arch your lower back; don't lean back more than your torso can hold steady."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_lat",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_lat": {
+          "label": "NASM, The Biomechanics of the Lat Pulldown",
+          "url": "https://www.nasm.org/resource-center/blog/training/the-biomechanics-of-the-lat-pulldown-muscles-grip-and-form",
+          "checked": "2026-11-15"
+        },
+        "stoppani_lat": {
+          "label": "Jim Stoppani, PhD, Lat Pulldown (jimstoppani.com)",
+          "url": "https://www.jimstoppani.com/training/lat-pulldown",
+          "checked": "2026-11-15"
+        },
+        "ace_lat": {
+          "label": "ACE, Seated Lat Pulldown",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "lusk": {
+          "label": "Lusk, Hale dhe Russell, 2010, Journal of Strength and Conditioning Research",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20543740/",
+          "checked": "2026-11-15"
+        },
+        "lehman": {
+          "label": "Lehman dhe kolegët, 2004, Dynamic Medicine",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC449729/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Standing Pulldown",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro para makinës me këmbët në pozicion ecjeje (njëra përpara, tjetra prapa) dhe gjunjët pak të përkulur.",
+            "en": "Stand at the machine in a staggered, walking stance with your knees slightly bent."
+          },
+          {
+            "sq": "Zhvendos peshën mbi këmbën e pasme për të krijuar prapambetjen e lehtë.",
+            "en": "Shift your weight onto your rear leg to create a slight lean back."
+          },
+          {
+            "sq": "Kap shufrën me kapje të gjerë.",
+            "en": "Take the bar with a wide grip."
+          },
+          {
+            "sq": "Mos u përkul përpara nga ijët gjatë tërheqjes.",
+            "en": "Don't flex forward at the hips during the pull."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "stoppani_standing"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Tërhiq shufrën poshtë para vetes deri në nivelin e kraharorit, duke përkulur bërrylat dhe duke rrotulluar shpatullat.",
+            "en": "Pull the bar down in front of you to chest level, bending your elbows and rotating your shoulders."
+          },
+          {
+            "sq": "Mbaje një ose dy sekonda.",
+            "en": "Hold it there for a second or two."
+          },
+          {
+            "sq": "Kontrollo shufrën ngadalë teksa kthehet në fillim.",
+            "en": "Control the bar slowly as it returns to the start."
+          }
+        ],
+        "sources": [
+          "stoppani_standing"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Kthimi i shufrës 2 s, tërheqja 1 s: kthimi më i ngadaltë dhe tërheqja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Returning the bar 2 s, pull 1 s: a slower return with a faster pull looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes kthimit dhe tërheqjes është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the return and the pull is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kapje e gjerë",
+            "en": "Wide grip"
+          },
+          {
+            "sq": "Shufra te kraharori",
+            "en": "Bar to chest level"
+          },
+          {
+            "sq": "Pesha mbi këmbën e pasme",
+            "en": "Weight on your rear leg"
+          },
+          {
+            "sq": "Mos u përkul nga ijët",
+            "en": "Don't fold at the hips"
+          },
+          {
+            "sq": "Kontrollo kthimin",
+            "en": "Control the return"
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "stoppani_standing"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Përkulje përpara nga ijët gjatë tërheqjes.",
+            "en": "Folding forward at the hips during the pull."
+          },
+          {
+            "sq": "Kthimi i shufrës pa kontroll.",
+            "en": "Letting the bar return without control."
+          },
+          {
+            "sq": "Kapje e ngushtë në vend të gjerës.",
+            "en": "Using a narrow grip instead of a wide one."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "stoppani_standing"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Standing Pulldown, përshkrimi i videos)",
+          "text": {
+            "sq": "Ai e quan një ushtrim hibrid mes pulldown-it me kapje të gjerë dhe rreshtit të ulur: i përbërë, me lëvizje te shpatullat dhe bërrylat, dhe, sipas tij, e fokuson më shumë rezistencën te lats.",
+            "en": "He calls it a hybrid between the wide-grip lat pulldown and the seated row: a compound exercise with motion at the shoulders and elbows and, he says, it focuses more of the resistance on your lats."
+          },
+          "sources": [
+            "stoppani_standing"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Bëje ushtrimin pa e rrezikuar shpatullën ose belin: forco barkun dhe mos e harko belin.",
+            "en": "Do the exercise without compromising your shoulder or lower back: brace your core and don't arch your lower back."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur: ndalo ushtrimin dhe vendos nëse vazhdon. Dhimbje që përkeqësohet nga seanca në seancë ose të ndryshon lëvizjen: ndryshoje ushtrimin ose pyet një specialist.",
+            "en": "Sharp or sudden pain: stop the exercise and decide whether to continue. Pain that worsens from session to session or changes how you move: change the exercise or ask a professional."
+          }
+        ],
+        "sources": [
+          "ace_lat",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_lat": {
+          "label": "ACE, Seated Lat Pulldown",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/158/seated-lat-pulldown/",
+          "checked": "2026-11-15"
+        },
+        "stoppani_standing": {
+          "label": "Jim Stoppani, PhD, Standing Pulldown: A Great Hybrid Exercise (përshkrimi i videos, lexuar nga orkestruesi)",
+          "url": "https://www.youtube.com/watch?v=HynaSdVSKMw",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}
