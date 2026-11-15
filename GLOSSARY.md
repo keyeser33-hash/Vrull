@@ -247,7 +247,7 @@ Ditët e javës kalendarike kur përdoruesi planifikon të stërvitet, me orën 
 _Avoid_: ditët e programit
 
 **Objektivat**:
-Kaloritë, proteina, karbohidratet dhe yndyrat e një date, nga **Mirëmbajtja** e përdoruesit, qëllimi dhe ritmi, sipas **Llojit të ditës**.
+Kaloritë, proteina, karbohidratet dhe yndyrat e një date, sipas **Llojit të ditës**, nga një prej dy burimeve që përdoruesi zgjedh: **Plani i Jimit** (totalet e PDF-së, faqja 13, pa shkallëzim, pa korrigjime javore) ose **Të miat** (nga **Mirëmbajtja** e përdoruesit, qëllimi dhe ritmi). Të dhënat personale mbeten të ruajtura kur zgjidhet Plani i Jimit.
 _Avoid_: makrot e synuara, buxheti
 
 **Mirëmbajtja**:
@@ -268,6 +268,10 @@ Objektivat e një date të ngrira me regjistrimin e parë ose me ndryshimin e ll
 Një vend me orë në orarin e ditës (Mëngjesi 1, Dreka, Para stërvitjes…), me artikujt e shabllonit të Jimit.
 _Avoid_: ushqim (për vendin në orar)
 
+**Vakti pas stërvitjes**:
+Vakti që vjen 15 min pas mbarimit të vlerësuar të stërvitjes (fillimi + kohëzgjatja e vlerësuar, 60 min pa vlerësim), brenda 30 min pas saj; vakti tjetër vjen 1 orë pas tij.
+_Avoid_: vakti 90 min pas fillimit
+
 **Dita e ushqimit**:
 Dita së cilës i përkasin ushqimi, uji dhe suplementet; nuk ndërrohet në mesnatë, por pak orë para zgjimit, që vakti para gjumit pas mesnate t'i përkasë ditës që po mbaron.
 _Avoid_: dita kalendarike (për ushqimin)
@@ -280,7 +284,7 @@ Artikujt e ditës shembull të PDF-së për çdo vakt, me zëvendësimet e lejua
 _Avoid_: menyja
 
 **Plani im**:
-Vaktet dhe artikujt e përdoruesit për ditën e stërvitjes dhe të pushimit, me porcionet sipas **Objektivave**; nis nga **Shablloni i Jimit** dhe ndryshohet lirisht. "Hëngra si në plan" regjistron artikujt e tij për një vakt.
+Vaktet dhe artikujt e përdoruesit për ditën e stërvitjes dhe të pushimit, me porcionet sipas **Objektivave** (me burimin Plani i Jimit nuk shkallëzohen, si te PDF-ja); nis nga **Shablloni i Jimit** dhe ndryshohet lirisht. "Hëngra si në plan" regjistron artikujt e tij për një vakt.
 _Avoid_: dieta, menyja
 
 **Ushqimi**:
