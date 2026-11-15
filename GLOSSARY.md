@@ -123,6 +123,30 @@ _Avoid_: RPE, kur synohet RIR
 Video e shkurtër (deri në 60 s) e një **Seti**, e regjistruar nga **Seanca** për ta krahasuar teknikën me herën e kaluar; private, në telefon dhe në cloud. Një set ka një video.
 _Avoid_: videoja e ushtrimit (është lidhja e YouTube)
 
+**Tabela e seteve**:
+Rreshtat e seteve të një ushtrimi te **Seanca**: seti, herën e kaluar, pesha, përsëritjet, ✓; rreshti aktiv është i madh, setet e ruajtura preken dhe ndryshohen.
+_Avoid_: lista e seteve, çipat (pamja e 0.23)
+
+**Zhbëj**:
+Heqja e setit të sapo ruajtur, brenda 6 sekondave pas "Ruaj setin".
+_Avoid_: fshi setin
+
+**Lëvizja e ushtrimit**:
+Dy fotot e ushtrimit, fillimi dhe fundi, që ndërrohen me tempon e tij, si një video e shkurtër pa internet.
+_Avoid_: GIF, animacioni
+
+**Videoja e ushtrimit**:
+Video YouTube që tregon si bëhet ushtrimi: e zgjedhur nga Vrull nga burimet e **Udhëzuesit**, ose lidhja që shtoi përdoruesi.
+_Avoid_: **Video e formës** (është e përdoruesit)
+
+**Udhëzuesi i ushtrimit**:
+Udhëzimet me burim te faqja e ushtrimit: përgatitja, lëvizja hap pas hapi, tempo dhe fryma, sinjalet e formës, gabimet, këshillat e avancuara, siguria.
+_Avoid_: përshkrimi, instruksionet
+
+**Sinjali i formës**:
+Një fjali e shkurtër që përdoruesi e mban mend gjatë setit ("Bërrylat rreth 45° nga trupi"); tre të parët dalin te **Seanca**.
+_Avoid_: këshillë, tip
+
 ## Forca
 
 **e1RM**:

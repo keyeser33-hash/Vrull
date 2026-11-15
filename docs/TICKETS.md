@@ -230,6 +230,11 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-17 | Faqja e ushtrimit dhe e pjatës, "Shpjegoje më shumë" | E3-13 |
 | V2-E3-18 | Kuizi i së dielës dhe faqja Mëso te Progresi | E3-15 |
 | V2-E3-19 | Sot i ri: bordet, pastaj kodi (V57, SPEC §0.3f): story-t, matësit e ditës, java me pika, fleta e ditës | E3-12 |
+| V2-E3-20 | Bordet e seancës së re dhe të udhëzuesit të ushtrimit (V58, SPEC §0.3g) | – |
+| V2-E3-21 | Udhëzuesi i 66 ushtrimeve të Shortcut to Size: burimet, tempo, sinjalet, kontrolli, shqip dhe anglisht (me paketën e fakteve, E3-13; del me 0.40.0) | E3-20 |
+| V2-E3-22 | Seanca e re: tabela e seteve me rreshtin aktiv, ndryshimi i çdo seti, "Zhbëj", "Kontrollo setet" te mbyllja (provat përpara; 0.41.0) | E3-20 |
+| V2-E3-23 | Lëvizja e ushtrimit nga dy fotot me tempon, fotot e dyta në app, videot YouTube të zgjedhura, "Filmo veten" (0.41.0) | E3-20, E3-21 |
+| V2-E3-24 | Udhëzuesi i bibliotekës (876 ushtrime) në valë sipas grupit të muskujve, secila me version të ri | E3-21 |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-12 · Bordet e Mëso
@@ -255,6 +260,12 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 **Gjendja (15.11.2026, 02:30):** me kërkesën e përdoruesit kuizi u ribë si story (Instagram): hyrja, pyetja para përgjigjes, pyetja pas përgjigjes, rezultati (4 borde, 7 ekrane në rrjedhë). Bordet e kuizit u panë me built-in browser dhe u ndreqën pas pamjes; vendimi 4 te shënimi e përshkruan story-n.
 
 **Gjendja (15.11.2026, 02:40):** me pyetjen e përdoruesit u shtua rreshti i katërt "Sot me story" (6 borde): rrathët e story-ve në krye të Sot-it ("Si ndihesh?", "A e dije?", mentori; të dielën "Java jote" dhe kuizi), gjendja e ditës si 5 story (4 pyetjet dhe gatishmëria me shembullin 54% të §0.3d) dhe "A e dije?" si story. Vendimi 8 te shënimi; ndryshon kartën e V50 dhe vendin e "A e dije?" te Sot (V56), ndaj pret miratimin. Bordet u panë me built-in browser dhe u ndreqën (vijat e shpejtësisë, shiriti i lëvizjes i fshehur, 6 orë si te shembulli).
+
+## V2-E3-20 · Bordet e seancës së re
+
+Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglisht. Rregullat: SPEC §0.3g (V58). Bordet: fleta e ushtrimit me tabelën (seti i parë, mes setesh, me rekord), tastiera e peshës, "Zhbëj", ndryshimi i një seti të një ushtrimi të kaluar, pushimi me tabelën dhe me ushtrimin e ri, mbyllja me "Kontrollo setet", lëvizja (e palosur, e hapur, me "lëvizje të reduktuar"), videoja, faqja e ushtrimit me udhëzuesin. **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit (0.41.0).
+
+**Gjendja (15.11.2026, 04:20):** pas analizës (setet një nga një, ndryshimi i fshehur, seanca pa foto) përdoruesi zgjodhi me pyetjet Q1–Q8: tabelën me rreshtin aktiv, lëvizjen nga fotot me videon, "Zhbëj" dhe ndryshimin kudo, 3 sinjale te seti dhe udhëzuesin e plotë te faqja, ekspertët me titull, tempon te lëvizja, dhe gjithë bibliotekën në valë. Versionet: udhëzuesi i 66 ushtrimeve me 0.40.0, seanca me 0.41.0. Shkruar te SPEC V58 dhe §0.3g.
 
 ## V2-E3-19 · Sot i ri
 
