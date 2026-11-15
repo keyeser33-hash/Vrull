@@ -272,6 +272,8 @@ Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, 
 
 **Gjendja (15.11.2026, 03:50):** rishikimi kritik i të gjitha bordeve të 0.40 gjeti 6 kundërshti dhe i ndreqi: mëngjesi, dita e pushimit dhe e diela pa elementet e B-së; fletët e ditës mbi Sot të vjetër; vargu i Mëso-s me prush; faqja EN pa muskujt; njoftimi i ujit me një vlerë tjetër nga pllaka; përsëritjet e Javës 3 (9–11 në vend të 6–8 nga `LADDERS`, edhe te pushimi). Faqja e kanavacës u bë "0.40 · Final: Sot dhe Mëso" me katër rreshta (Sot, story-t, kuizi dhe Mëso, Mëso në kontekst) dhe shënimin përmbledhës; bordet e zëvendësuara nga V57 (Sot me "A e dije?", Sot i së dielës me kuizin, varianti A) kaluan te faqja "0.40 · Arkiva". Të gjitha u panë me built-in browser. Pret miratimin "Final" të përdoruesit.
 
+**Gjendja (15.11.2026, 04:00):** përdoruesi miratoi vendimin 6: për "Pak histori" dhe "Prejardhja" pranohen edhe revistat me redaksi dhe institucionet kulturore (SPEC §0.3e). Vendimet e tjera dhe "Final" presin.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
