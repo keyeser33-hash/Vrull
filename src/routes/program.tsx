@@ -8,7 +8,11 @@ import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type ProgrammeBlock, type ProgrammeDay, type ActiveProgramHome, activeProgramHome } from '@/data/programme'
+import { readSchedule, trainingTimeOn, type ScheduleSettings } from '@/data/schedule-settings'
 import { programView } from '@/data/training'
+import type { DayStatus } from '@/program/overview'
+import { localDate, shiftDate } from '@/lib/calendar'
+import { EditorFooter } from './builder-parts'
 import { programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
@@ -269,6 +273,11 @@ export function WorkoutPage() {
   const { t, fmt } = useI18n()
   const { blockId = '', week = '1', dayId = '' } = useParams()
   const view = useLocalQuery(() => programView(store), [])
+  const upcoming = useLocalQuery(async () => {
+    const [home, schedule] = await Promise.all([activeProgramHome(store, store.now()), readSchedule(store)])
+    return { home, schedule }
+  }, [])
+  const starter = useStartWorkout()
   if (view === undefined) return <h1 className="sr-only">{t('term.workout')}</h1>
   const entry = view?.overview.weeks.find((candidate) => candidate.blockId === blockId && candidate.week === Number(week))
   const day = entry?.days.find((candidate) => candidate.dayId === dayId)
@@ -281,11 +290,17 @@ export function WorkoutPage() {
     )
   }
   const plan = view.plan(blockId, Number(week), dayId)
+  const home = upcoming?.home
+  const turn = upcoming ? <WorkoutTurn dayStatus={day.status} home={home ?? null} schedule={upcoming.schedule} starter={starter} /> : null
   const blockWeeks = view.overview.weeks.filter((candidate) => candidate.blockId === blockId).length
   return (
     <div className="flex flex-col gap-3">
-      <BackHeader title={t('programme.workout', { number: day.dayNumber })} back={t('programme.backToProgramme')} fallback="/programi" />
-      <p className="-mt-2 type-body text-muted-foreground">{dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), programDayName(t, day.name)])}</p>
+      <BackHeader
+        title={t('programme.workout', { number: day.dayNumber })}
+        subtitle={dotted([weekLabel(t, { blockName: entry.blockName, blockWeeks, week: entry.week }), programDayName(t, day.name)])}
+        back={t('programme.backToProgramme')}
+        fallback="/programi"
+      />
       <ol className={cn(surfaceClass, 'flex flex-col rounded-lg px-3.5')}>
         {plan.slots.map((slot, index) => {
           const exercise = view.exercises[slot.exerciseId]
@@ -307,6 +322,38 @@ export function WorkoutPage() {
           )
         })}
       </ol>
+      {turn}
     </div>
   )
+}
+
+/**
+ * "Fillo stërvitjen" vetëm te stërvitja e radhës sipas programit (V2-E3-30; bordi "Programi · Stërvitja 1"):
+ * prush në fund të ekranit, me kur vjen. Te të tjerat që s'janë bërë një rresht "Vjen pas Stërvitjes N",
+ * pa buton, që radha e programit të mos prishet nga një prekje e gabuar; ato të bëra nuk kanë asgjë.
+ */
+function WorkoutTurn({ dayStatus, home, schedule, starter }: { dayStatus: DayStatus; home: ActiveProgramHome | null; schedule: ScheduleSettings; starter: ReturnType<typeof useStartWorkout> }) {
+  const { t, fmt } = useI18n()
+  const next = home?.next
+  if (!home || !next) return null
+  if (dayStatus === 'next') {
+    const day = home.days.find((candidate) => candidate.dayId === next.dayId)
+    const date = day?.date
+    const today = localDate(store.now())
+    const iso = date ? localDate(date) : null
+    const when = !date || !iso ? null : iso === today ? t('programme.next.today') : iso === shiftDate(today, 1) ? t('programme.next.tomorrow') : fmt.date(date)
+    return (
+      <EditorFooter>
+        {when && iso ? <p className="type-caption text-muted-foreground tabular-nums">{t('programme.next.when', { when: `${when}, ${trainingTimeOn(schedule, iso)}` })}</p> : null}
+        <Button variant="primary" size="xl" className="w-full" {...starter.buttonProps}>
+          {starter.label(next.inProgress ? t('programme.resume') : t('programme.start'))}
+        </Button>
+        {starter.sheet}
+      </EditorFooter>
+    )
+  }
+  if (dayStatus !== 'upcoming') return null
+  const after = home.days.find((candidate) => candidate.dayId === next.dayId)
+  if (!after) return null
+  return <p className="type-body text-muted-foreground">{t('programme.after', { number: after.dayNumber })}</p>
 }

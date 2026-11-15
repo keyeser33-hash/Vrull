@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
@@ -104,6 +104,47 @@ describe('Programi', () => {
     expect(screen.getByRole('button', { name: 'Start workout' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Week weights/ })).toHaveTextContent('Phase 1 · Week 2 · waiting for you')
     expect(screen.getByRole('link', { name: 'See all programmes' })).toBeInTheDocument()
+  })
+
+  it('dita e programit: "Fillo stërvitjen" vetëm te stërvitja e radhës, me kur vjen; te të tjerat "Vjen pas Stërvitjes 1" pa buton (V2-E3-30)', async () => {
+    const { programView } = await import('@/data/training')
+    const view = (await programView(data.store))!
+    const current = view.overview.weeks[2]
+    await renderAt(`/programi/${current.blockId}/${current.week}/${current.days[0].dayId}`)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Stërvitja 1' })).toBeInTheDocument()
+    expect(await screen.findByText('E radhës në program: sot, 17:15.')).toBeInTheDocument()
+    expect(screen.queryByText(/^Vjen pas/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Fillo stërvitjen' })).toBeEnabled()
+  })
+
+  it('dita e programit që nuk është e radhës: rreshti "Vjen pas Stërvitjes 1", pa buton; e bërë: asgjë', async () => {
+    const { programView } = await import('@/data/training')
+    const view = (await programView(data.store))!
+    const current = view.overview.weeks[2]
+    await renderAt(`/programi/${current.blockId}/${current.week}/${current.days[1].dayId}`)
+    expect(await screen.findByText('Vjen pas Stërvitjes 1')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /stërvitjen/ })).not.toBeInTheDocument()
+    expect(screen.queryByText(/^E radhës/)).not.toBeInTheDocument()
+    cleanup()
+    const done = view.overview.weeks[1]
+    await renderAt(`/programi/${done.blockId}/1/${done.days[0].dayId}`)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Stërvitja 1' })).toBeInTheDocument()
+    await screen.findAllByRole('listitem')
+    expect(screen.queryByText(/^Vjen pas/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /stërvitjen/ })).not.toBeInTheDocument()
+  })
+
+  it('dita e programit në anglisht', async () => {
+    act(() => language.set('en'))
+    const { programView } = await import('@/data/training')
+    const view = (await programView(data.store))!
+    const current = view.overview.weeks[2]
+    await renderAt(`/programi/${current.blockId}/${current.week}/${current.days[0].dayId}`)
+    expect(await screen.findByText('Next in the programme: today, 17:15.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start workout' })).toBeInTheDocument()
+    cleanup()
+    await renderAt(`/programi/${current.blockId}/${current.week}/${current.days[2].dayId}`)
+    expect(await screen.findByText('Comes after Workout 1')).toBeInTheDocument()
   })
 
   it('"Fillo stërvitjen" nis seancën e radhës', async () => {
