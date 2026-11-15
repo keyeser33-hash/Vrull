@@ -429,6 +429,9 @@ Një ekran i plotë me një ide, me shiritat e vargut lart, që nuk kalon vetë 
 **Rrethi i story-t**:
 Një rreth në krye të Sot-it që hap një **Story**; unaza tregon nëse është parë.
 
+**Ritmi i ditës**:
+Vija e Sot-it nga zgjimi te gjumi me vaktet, stërvitjen dhe "Tani"; prekja hap, rrëshqitja tregon çastin, shtypja e gjatë lëviz një vakt.
+
 **Fleta e ditës**:
 Fleta që hapet nga një datë e rripit të javës: çfarë u bë atë ditë, ose stërvitja e planifikuar.
 

@@ -268,6 +268,8 @@ Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, 
 
 **Gjendja (15.11.2026, 03:30):** përdoruesi e gjeti harkun shumë të gjatë: Ritmi u kthye në vijë të ngjeshur, me ndërveprimin mbi vijë: prekja e pikës hap vaktin, rrëshqitja tregon një flluskë me çastin (bordi "B · Rrëshqitja mbi vijë"), shtypja e gjatë mbi një vakt që vjen e lëviz në orë tjetër dhe vaktet pas tij lëvizin bashkë, sipas V35 (bordi "B · Lëvize vaktin"). U pa me built-in browser.
 
+**Gjendja (15.11.2026, 03:32):** përdoruesi zgjodhi B me rekomandimin; u shkrua te SPEC V57 dhe §0.3f (matësit e gjallë, Ritmi i ditës me tri prekje). Bordet A dhe harku mbeten vetëm si histori e kanavacës.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
