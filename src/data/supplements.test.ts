@@ -52,6 +52,39 @@ describe('suplementet e ditës', () => {
   })
 })
 
+describe('pluhuri i proteinës sipas vaktit (V62, PDF faqet 13–14)', () => {
+  const doses = (day: Awaited<ReturnType<typeof nutritionDay>>) =>
+    day.meals.flatMap((slot) => slot.supplements.filter((item) => item.name === 'Pluhur proteine').map((item) => `${slot.meal} ${item.doseText} ${item.doseAmount}`))
+
+  it('1 scoop te mëngjesi 1, snack-u pasdite dhe para gjumit; 2 scoop te shake-u para stërvitjes', async () => {
+    const store = await setup()
+    expect(doses(await nutritionDay(store, WEDNESDAY, NOON))).toEqual(['breakfast_1 1 scoop 1', 'snack_pm 1 scoop 1', 'bedtime 1 scoop 1'])
+    expect(doses(await nutritionDay(store, '2026-12-07', NOON))).toEqual(['breakfast_1 1 scoop 1', 'snack_pm 1 scoop 1', 'pre_workout 2 scoop 2', 'bedtime 1 scoop 1'])
+  })
+
+  it('rreshtat e vjetër me "1–2 scoop" tregojnë dozën sipas vaktit', async () => {
+    const store = await setup()
+    const row = (await store.all('supplements')).find((item) => item.name === 'Pluhur proteine')!
+    await store.put('supplements', { id: row.id, notes: '1–2 scoop' })
+    expect(doses(await nutritionDay(store, '2026-12-07', NOON))).toContain('pre_workout 2 scoop 2')
+    expect(doses(await nutritionDay(store, WEDNESDAY, NOON))).toEqual(['breakfast_1 1 scoop 1', 'snack_pm 1 scoop 1', 'bedtime 1 scoop 1'])
+  })
+
+  it('një dozë e ndryshuar nga përdoruesi mbetet e tij në çdo vakt', async () => {
+    const store = await setup()
+    const row = (await store.all('supplements')).find((item) => item.name === 'Pluhur proteine')!
+    await store.put('supplements', { id: row.id, notes: '3 scoop', dose_amount: 3 })
+    expect(doses(await nutritionDay(store, '2026-12-07', NOON))).toEqual(['breakfast_1 3 scoop 3', 'snack_pm 3 scoop 3', 'pre_workout 3 scoop 3', 'bedtime 3 scoop 3'])
+  })
+
+  it('suplementi i shtuar nga përdoruesi nuk ndryshon', async () => {
+    const store = await setup()
+    await saveSupplement(store, { name: 'Whey', kind: 'protein', doseAmount: 1, doseUnit: 'scoop', scoopG: 30, timing: ['pre_workout'], macros: { kcal: 120, proteinG: 24, carbsG: 3, fatG: 1.5 }, countsAsFood: true })
+    const pre = (await nutritionDay(store, '2026-12-07', NOON)).meals.find((slot) => slot.meal === 'pre_workout')!
+    expect(pre.supplements.find((item) => item.name === 'Whey')).toMatchObject({ doseAmount: 1 })
+  })
+})
+
 describe('suplementet e mia (V39)', () => {
   const WHEY = {
     name: 'Gold Standard 100% Whey',

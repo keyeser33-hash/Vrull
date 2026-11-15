@@ -117,6 +117,10 @@ export function supplementName(t: T, name: string): string {
 export function supplementDose(t: T, name: string, doseText: string, dose?: { amount: number; unit: DoseUnit; fmt: Format }): string {
   const known = supplementByName(name)
   if (known && known.doseText === doseText) return t(`food.supplementDose.${known.key}`)
+  // Pluhuri i planit: "1–2 scoop" i vjetër = përmbledhja; "2 scoop" te një vakt = sasia me shumës.
+  if (known?.key === 'protein' && doseText === '1–2 scoop') return t('food.supplementDose.protein')
+  const scoops = known?.key === 'protein' ? /^(\d+) scoop$/.exec(doseText) : null
+  if (scoops) return t('food.portion.scoop', { count: Number(scoops[1]) })
   if (doseText || !dose) return doseText
   return t('food.supplement.doseText', { amount: dose.fmt.number(dose.amount, { maxDigits: 2 }), unit: t(`food.supplement.unit.${dose.unit}`) })
 }

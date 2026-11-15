@@ -4,7 +4,7 @@ import type { MealKey } from '@/nutrition/meals'
 import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
 import { PDF_FOODS, PDF_PREFIX, pdfKey } from '@/nutrition/pdf-swaps'
 import { mealSchedule } from '@/nutrition/schedule'
-import type { DoseUnit, Evidence } from '@/nutrition/supplements'
+import { type DoseUnit, doseForMeal, type Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, JIM_WEIGHT_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
@@ -199,8 +199,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
         .map((supplement) => ({
           id: supplement.id,
           name: supplement.name,
-          doseText: supplement.doseText,
-          doseAmount: supplement.doseAmount,
+          ...doseForMeal(supplement, meal),
           doseUnit: supplement.doseUnit,
           evidence: supplement.evidence,
           taken: supplementLogs.some((row) => row.supplement_id === supplement.id && row.timing === meal),
