@@ -244,7 +244,7 @@ Përdoruesi i zgjodhi vendimet me pyetjet Q1–Q8 (V58), pas analizës së seanc
 - **Burimet e udhëzuesit:** ato të §0.3e, plus ekspertët që botojnë me emër dhe titull të verifikueshëm (doktoraturë në shkencat e stërvitjes ose të ushqyerit, CSCS ose certifikim i ngjashëm), p.sh. Jim Stoppani ose Brad Schoenfeld: libri, artikulli ose kanali i tyre zyrtar. Pranohen edhe mjekët (MD) dhe fizioterapeutët (DPT) me titull të verifikueshëm, p.sh. Jordan Feigenbaum, MD ose Aaron Horschig, DPT, CSCS (vendimi i përdoruesit, 15.11.2026). Jo trajnerë pa titull, blogje, forume ose Wikipedia. Kontrolli si te §0.3e: orkestruesi dhe `vrull-reviewer`, me lidhjen dhe pjesën e burimit.
 - **Mbulimi:** 66 ushtrimet e Shortcut to Size me 0.40.0; pastaj e gjithë biblioteka (739 ushtrime te `library.json`, nga 876 të free-exercise-db; 689 pa ato të Shortcut to Size) në valë sipas grupit të muskujve, secila me version të ri (rregulli i §0.3e). Deri te vala e tij, një ushtrim i bibliotekës ka lëvizjen, muskujt dhe "Shpjegoje më shumë".
 
-### 0.3h Ushqimi i ri (V59; vendimet e 15.11.2026, bordet presin miratimin)
+### 0.3h Ushqimi i ri (V59; vendimet e 15.11.2026, bordet u miratuan më 15.11.2026)
 
 Përdoruesi i zgjodhi vendimet me pyetjet Q1–Q5 (V59), pas analizës së Ushqimit: shtimi i një ushqimi kërkonte 5 hapa dhe bëhej një nga një; kërkimi gjente menjëherë vetëm ushqimet e përdorura më parë dhe pjesën tjetër e merrte nga interneti (Open Food Facts lejon 10 kërkime në minutë për përdorues); lista vendase (V14, V31) nuk ishte ndërtuar; suplementet ishin seksioni i fundit; AI-ja ishte vetëm te Sot dhe te fotoja e vaktit. Del me 0.42.0. Bordet: faqja "0.42 · Ushqimi i ri" (V2-E3-26).
 
