@@ -264,6 +264,8 @@ Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, 
 
 **Gjendja (15.11.2026, 03:05):** përdoruesi kërkoi ikona dhe ndërveprim te kalorit, proteina dhe uji, ose një ide më unike. Rreshti 6 ka dy variante: A (matësit e gjallë: flaka me harkun e kalorive që mbeten, kofsha me 9 segmentet e vakteve, gota që mbushet; prekja e ujit shton 250 ml me "Zhbëj", shtypja e gjatë jep gotë, kanaçe, shishe) dhe B (A + "Ritmi i ditës" 07:00 → 23:30 me vaktet e orarit të app-it, stërvitjen dhe "Tani"). Pas pamjes: ikonat u bënë të dallueshme dhe vala e ujit u bë gotë anash, që të mos presë numrin. Pret zgjedhjen A ose B.
 
+**Gjendja (15.11.2026, 03:25):** me komentin e përdoruesit te bordi B ("më interaktive dhe unike"), Ritmi i ditës u bë hark dielli 07:00 → 23:30 me "Tani" si diell prushi, pikat e vakteve dhe stërvitjen; çdo pikë preket, rrëshqitja e gishtit tregon momentin në qendër (bordi "B, rrëshqitja mbi hark") me "Kthehu te tani". U pa me built-in browser.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:
