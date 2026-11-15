@@ -259,4 +259,7 @@ function build(): Program {
   }
 }
 
+/** Emrat që u ndryshuan për të ndjekur PDF-në, [i vjetri, i ri] (V62; data/training.ts › renameShortcutExercises). */
+export const SHORTCUT_RENAMES: readonly (readonly [string, string])[] = [['One-Arm Overhead Cable Triceps Extension', 'Cable Triceps Extension']]
+
 export const SHORTCUT_TO_SIZE = { name: 'Shortcut to Size', program: build(), exercises: EXERCISES }

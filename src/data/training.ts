@@ -7,7 +7,7 @@ import type { HistorySet } from '@/program/loads'
 import type { WorkedSession } from '@/program/recovery'
 import { sessionVolume } from '@/progress/history'
 import { sessionBests } from '@/progress/records'
-import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import { SHORTCUT_RENAMES, SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import { workoutMinutes } from '@/program/week-plan'
 import type {
   Block,
@@ -184,7 +184,33 @@ export async function ensureShortcutToSize(store: LocalStore): Promise<LocalRow>
 /** Përditësimi nga 0.2.0: Shortcut to Size që ekziston merr slotet; asnjë program i ri nuk krijohet. */
 export async function upgradeShortcutToSize(store: LocalStore) {
   const existing = (await store.all('programs')).find((program) => program.source === 'shortcut_to_size')
-  if (existing) await ensureShortcutToSize(store)
+  if (existing) {
+    await ensureShortcutToSize(store)
+    await renameShortcutExercises(store, existing.id)
+  }
+}
+
+/**
+ * Emrat e ushtrimeve të Shortcut to Size që ndryshuan për të ndjekur PDF-në (V62): programet e krijuara
+ * më parë mbajnë emrin e vjetër. Ushtrimi i programit rimërohet në vend (id-ja mbetet, kështu slotet,
+ * videot dhe rregullat nuk lëvizin), vetëm kur nuk ka asnjë set të regjistruar, që historiku të mos
+ * ndryshojë; një ushtrim i përdoruesit jashtë programit nuk preket, dhe një emër që ekziston nuk dyfishohet.
+ */
+async function renameShortcutExercises(store: LocalStore, programId: string) {
+  const [slots, overrides, exercises] = await Promise.all([
+    store.where('program_slots', 'program_id', programId),
+    store.where('slot_prescriptions', 'program_id', programId),
+    store.all('exercises'),
+  ])
+  const used = new Set([...slots.map((row) => row.exercise_id), ...overrides.map((row) => row.exercise_id)])
+  const names = new Set(exercises.map((row) => String(row.name).toLowerCase()))
+  for (const [from, to] of SHORTCUT_RENAMES) {
+    if (names.has(to.toLowerCase())) continue
+    const row = exercises.find((exercise) => String(exercise.name).toLowerCase() === from.toLowerCase() && used.has(exercise.id))
+    if (!row || (await store.where('set_logs', 'exercise_id', row.id)).length > 0) continue
+    await store.put('exercises', { id: row.id, name: to })
+    names.add(to.toLowerCase())
+  }
 }
 
 /** Ushtrimet e programit, të krijuara një herë; një ushtrim me të njëjtin emër ripërdoret. */
