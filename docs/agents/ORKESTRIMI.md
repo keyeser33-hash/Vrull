@@ -75,6 +75,12 @@ Para versionit të fundit të etapës lexo `docs/MESIMET.md` të tërë:
 - hiq ato që nuk vlejnë më.
 Krahaso rreshtat e `docs/agents/KOSTOT.md` me etapën e kaluar. Kur një kosto rritet, shkaku shkruhet si mësim.
 
+## Bordet e dizajnit
+
+- Agjentët shkruajnë skedarët `.dc.html` te një dosje lokale; orkestruesi i publikon me një thirrje `publish_files`, bashkë me `project/canvas.json` kur ndryshon faqja.
+- Pas publikimit, orkestruesi i sheh bordet me sy vetëm me built-in browser (kërkesa e përdoruesit, 15.11.2026): kanavaca › ▷ › emri i bordit (pamja "Fit"). Klikimi i dyfishtë mbi një bord hap redaktimin e tekstit, ndaj nuk përdoret. Një mënyrë tjetër (Chrome headless, Playwright, screenshot jashtë app-it) përdoret vetëm pasi t'i thuhet përdoruesit.
+- Ndreqjet pas pamjes bëhen te skedari lokal dhe publikohen vetëm skedarët e ndryshuar; përdoruesi i sheh bordet pasi orkestruesi i ka parë.
+
 ## Lëshimi
 
 Një version i ri del vetëm në fund të etapës, me miratimin e përdoruesit. Para tij migrimet duhet të jenë në Supabase (SQL Editor) dhe të verifikuara me SELECT. Hapat: `docs/INSTALL.md`, pika 6. Push-i i një tag-u nga sesioni refuzohet (403). Lëshimi niset me versionin te `package.json` në `main`, pasi `node scripts/actions-usage.mjs --month --check 30 --release` del me kodin 0 (lëshimi përdor rezervën prej 60 minutash që kontrollet e tjera nuk e prekin). Release-i kontrollohet me `gh api repos/keyeser33-hash/Vrull/releases/tags/vX.Y.Z`, sepse `gh release view` përdor GraphQL, që sesioni e refuzon.

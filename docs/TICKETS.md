@@ -251,6 +251,8 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 
 **Gjendja (15.11.2026, 02:20):** 12 bordet janë te faqja "0.40 · Mëso", me shënimin "Si ta komentosh" dhe 7 vendimet; presin komentet. I shkruan tre agjentë me Sonnet sipas brief-it të përbashkët me 8 faktet e kontrolluara (Stastny 2017, NASM, Iron Game History 1990, Schoenfeld 2016, Morton 2018, Lamon 2021, EFSA 2010, AramcoWorld 2024). Vendimi 6 (burimet e historisë dhe të prejardhjes) ndryshon §0.3e kur miratohet. Numrat e tavës së kosit janë vende-mbajtëse deri te lista vendase.
 
+**Gjendja (15.11.2026, 02:30):** me kërkesën e përdoruesit kuizi u ribë si story (Instagram): hyrja, pyetja para përgjigjes, pyetja pas përgjigjes, rezultati (4 borde, 7 ekrane në rrjedhë). Bordet e kuizit u panë me built-in browser dhe u ndreqën pas pamjes; vendimi 4 te shënimi e përshkruan story-n.
+
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
 Faqja "0.24 · Gatishmëria" te kanavaca, në 390 px dhe në tri temat. Bordet:

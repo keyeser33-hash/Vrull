@@ -90,6 +90,8 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - I njëjti brief nuk dha numrat e ditës së ushqimit, dhe agjenti mbushi bordin me vende-mbajtëse → brief-i jep numrat që tregon çdo bord, nga të dhënat e app-it (`src/nutrition/jim.ts`, objektivat e bordit më të ri), ose emrin e bordit nga i merr.
 - Agjentët e bordeve humbën thirrje te `mcp__claude-artifacts__read_file`: kanavaca pranon një `path` për thirrje, me parashtesën `project/` (`paths` refuzohet) → brief-i i jep shtigjet e plota `project/<emri>.dc.html` dhe e thotë rregullin.
 
+- Bordet e para të Mëso-s u publikuan pa u parë me sy: kuizi dukej si formular, një përgjigje thyhej në dy rreshta, figura e muskujve priste me skaj të fortë dhe e tregonte përgjigjen, dhe një numër dekorativ dilte copa-copa pas përgjigjeve → pas publikimit, orkestruesi i sheh bordet me built-in browser dhe i ndreq para se t'ia tregojë përdoruesit (`docs/agents/ORKESTRIMI.md` › Bordet e dizajnit); një figurë në një pyetje kuizi nuk e theksonte përgjigjen.
+
 ## Logjika
 
 - Dy shkrime në të njëjtin milisekondë humbnin gjatë sinkronizimit → `updated_at` rritet gjithmonë (`nextTimestamp`); çdo defekt sinkronizimi fillon me provën që dështon.
