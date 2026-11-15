@@ -1109,8 +1109,8 @@ try {
   if (foodDayIsYesterday) {
     info('v2: Ushqimi', 'para ndërrimit të ditës së ushqimit (V46): vakti i v1 i përket ditës që vjen; kontrollohet vetëm te baza')
   } else {
-    // 0.23: vaktet e regjistruara mblidhen në një rresht ("1 vakt i regjistruar").
-    await waitFor(() => page.evaluate(`/\\d+ vakte? (?:i|të) regjistruar/.test(${PAGE_TEXT})`), 'rreshti "vakt i regjistruar"')
+    // 0.42 (V59): vija e kohës "Dita" ka vaktin e regjistruar si rresht të ngjeshur ("Dreka, 13:00, 495 kcal, 42 g proteinë").
+    await waitFor(() => page.evaluate(`!!document.querySelector('ol button[aria-label$=" g proteinë"]')`), 'rreshti i vaktit të regjistruar te vija e kohës')
     check('v2: Ushqimi tregon vaktin e regjistruar te v1', true)
   }
   screenshot('v2-ushqimi')

@@ -96,8 +96,6 @@ export const sq = {
   'food.evidence.deficiency_only': 'Vetëm për mungesa',
 
   // Ekrani i ditës: kreu, lloji i ditës, kaloritë.
-  'food.dayType.training': 'ditë stërvitjeje',
-  'food.dayType.rest': 'ditë pushimi',
   'food.dayType.toRest': 'Lloji i ditës: stërvitje. Ndrysho në ditë pushimi',
   'food.dayType.toTraining': 'Lloji i ditës: pushim. Ndrysho në ditë stërvitjeje',
   // Kaloritë që mbeten (0.23): numri i madh, "nga" objektivi dhe fjalia e plotë për lexuesin e ekranit.
@@ -117,20 +115,14 @@ export const sq = {
   'food.time.minutes': '{minutes} min',
   'food.time.hours': { one: '{count} orë', other: '{count} orë' },
   'food.time.hoursMinutes': { one: '{count} orë {minutes} min', other: '{count} orë {minutes} min' },
-  'food.about': 'Rreth {kcal} kcal',
   'food.macros': 'P {protein} · K {carbs} · Y {fat} g',
   'food.totals': '{kcal} kcal · {macros}',
   'food.noTemplate': 'Ky vakt nuk ka artikuj në plan.',
   'food.edit': 'Ndrysho',
-  'food.dayDone': 'Vaktet e ditës u regjistruan',
   // Dita (0.23): vaktet e regjistruara në një rresht që hapet, të tjerat me orën; i radhës me shenjë.
   'food.day': 'Dita',
-  'food.status.done': 'Regjistruar · {kcal} kcal',
   'food.status.next': 'I radhës',
-  'food.status.todo': 'Në pritje',
   'food.status.missed': 'Pa regjistruar',
-  'food.loggedMeals': { one: '{count} vakt i regjistruar', other: '{count} vakte të regjistruara' },
-  'food.supplementCount': { one: '{count} suplement', other: '{count} suplemente' },
   // Makrot e ditës.
   'food.noTargets': 'Shkruaj peshën te Cilësimet që të dalin objektivat.',
   'food.protein': 'Proteina',
@@ -142,7 +134,6 @@ export const sq = {
   'food.unknownFood': 'Ushqim',
   'food.remove': 'Hiq {food}',
   'food.quick.plan': 'Si në plan',
-  'food.quick.planDetail': { one: 'Plani im · {count} ushqim · {protein} g proteinë', other: 'Plani im · {count} ushqime · {protein} g proteinë' },
   'food.quick.yesterday': 'Si dje',
   'food.quick.photo': 'Foto',
   'food.quick.macros': 'Makrot',
@@ -179,7 +170,6 @@ export const sq = {
   'food.supplementsHint': 'Ato të çaktivizuara nuk dalin te dita. Evidenca tregon sa e mbështesin studimet.',
   // Suplementet sipas orës (0.23): të marrat në një rresht, pastaj një rresht për çdo vakt me një buton
   // për gjithë grupin.
-  'food.supplementsDone': 'Marrë',
   'food.takeGroup': { one: 'E mora', other: 'Të {count}' },
   'food.takeGroupLabel': { one: 'E mora: {name}, {meal}', other: 'Të {count} të marra: {meal}' },
 
@@ -597,8 +587,6 @@ export const en: TranslationOf<typeof sq> = {
   'food.evidence.food': 'Food',
   'food.evidence.deficiency_only': 'Only for deficiencies',
 
-  'food.dayType.training': 'training day',
-  'food.dayType.rest': 'rest day',
   'food.dayType.toRest': 'Day type: training. Change to a rest day',
   'food.dayType.toTraining': 'Day type: rest. Change to a training day',
   'food.left': 'kcal left',
@@ -616,19 +604,13 @@ export const en: TranslationOf<typeof sq> = {
   'food.time.minutes': '{minutes} min',
   'food.time.hours': { one: '{count} hr', other: '{count} hr' },
   'food.time.hoursMinutes': { one: '{count} hr {minutes} min', other: '{count} hr {minutes} min' },
-  'food.about': 'About {kcal} kcal',
   'food.macros': 'P {protein} · C {carbs} · F {fat} g',
   'food.totals': '{kcal} kcal · {macros}',
   'food.noTemplate': 'This meal has nothing in the plan.',
   'food.edit': 'Edit',
-  'food.dayDone': 'Today’s meals are all logged',
   'food.day': 'Day',
-  'food.status.done': 'Logged · {kcal} kcal',
   'food.status.next': 'Next',
-  'food.status.todo': 'Coming up',
   'food.status.missed': 'Not logged',
-  'food.loggedMeals': { one: '{count} meal logged', other: '{count} meals logged' },
-  'food.supplementCount': { one: '{count} supplement', other: '{count} supplements' },
   'food.noTargets': 'Add your weight in Settings to see your targets.',
   'food.protein': 'Protein',
   'food.carbs': 'Carbs',
@@ -638,7 +620,6 @@ export const en: TranslationOf<typeof sq> = {
   'food.unknownFood': 'Food',
   'food.remove': 'Remove {food}',
   'food.quick.plan': 'As planned',
-  'food.quick.planDetail': { one: 'My plan · {count} food · {protein} g protein', other: 'My plan · {count} foods · {protein} g protein' },
   'food.quick.yesterday': 'Like yesterday',
   'food.quick.photo': 'Photo',
   'food.quick.macros': 'Macros',
@@ -672,7 +653,6 @@ export const en: TranslationOf<typeof sq> = {
   'food.editList': 'Edit list',
   'food.noSupplements': 'No active supplements today.',
   'food.supplementsHint': 'Switched-off supplements don’t appear in your day. The evidence shows how well studies support them.',
-  'food.supplementsDone': 'Taken',
   'food.takeGroup': { one: 'Took it', other: 'All {count}' },
   'food.takeGroupLabel': { one: 'Took it: {name}, {meal}', other: 'All {count} taken: {meal}' },
 

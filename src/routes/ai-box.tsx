@@ -73,7 +73,11 @@ export function AiBoxPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const online = useOnline()
-  const [text, setText] = useState(() => boxText.get())
+  // Teksti nga fusha "Çfarë hëngre?" te Ushqimi (`state.text` pa foto) e mbush fushën; përndryshe teksti i ruajtur.
+  const [text, setText] = useState(() => {
+    const state = location.state as { photo?: BoxPhoto; text?: string } | null
+    return state?.text && !state.photo ? state.text : boxText.get()
+  })
   const [phase, setPhase] = useState<Phase>({ kind: 'compose', error: null })
   const close = () => (location.key === 'default' ? navigate('/', { replace: true }) : navigate(-1))
 
@@ -81,6 +85,11 @@ export function AiBoxPage() {
   const photoSent = useRef(false)
   useEffect(() => {
     const state = location.state as { photo?: BoxPhoto; text?: string; target?: PhotoTarget } | null
+    if (state?.text && !state.photo) {
+      boxText.set(state.text)
+      navigate(location.pathname, { replace: true, state: null })
+      return
+    }
     if (!state?.photo || photoSent.current) return
     photoSent.current = true
     navigate(location.pathname, { replace: true, state: null })

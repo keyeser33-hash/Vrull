@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { type Draft, NO_FOOD_IN_PHOTO, type ParseRequest } from '../../supabase/functions/log-parse/shared'
@@ -142,7 +142,7 @@ describe('Kutia e AI-së', () => {
     vi.restoreAllMocks()
   })
 
-  async function renderPage(state?: { photo: NonNullable<ParseRequest['image']>; text: string; target?: { date: string; meal: string } }) {
+  async function renderPage(state?: { photo?: NonNullable<ParseRequest['image']>; text: string; target?: { date: string; meal: string } }) {
     const { AiBoxPage } = await import('./ai-box')
     const router = createMemoryRouter(
       [
@@ -191,6 +191,14 @@ describe('Kutia e AI-së', () => {
     expect(await data.store.all('supplement_logs')).toHaveLength(1)
     expect((await data.store.all('water_logs')).map((row) => Number(row.ml))).toEqual([500])
     expect(boxText.get()).toBe('')
+  })
+
+  it('teksti nga fusha "Çfarë hëngre?" te Ushqimi mbush fushën pa e dërguar (V59)', async () => {
+    data.reply = example
+    await renderPage({ text: 'dy vezë dhe një mollë' })
+    await waitFor(() => expect(screen.getByLabelText('Shkruaj ose thuaj çfarë bëre')).toHaveValue('dy vezë dhe një mollë'))
+    expect(boxText.get()).toBe('dy vezë dhe një mollë')
+    expect(data.requests).toHaveLength(0)
   })
 
   it('përgjigja e lirë dërgohet me bisedën dhe plotëson rreshtin', async () => {

@@ -4,8 +4,8 @@ import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n'
 
-// Vakti me ≤ 2 prekje (V2-E2-16; bordet V22-Vakti-Shpejt, V22-Makrot): "Si në plan", "Si dje", të fundit dhe
-// të preferuarat, makrot e shpejta. E mërkura 9 dhjetor, 12:40; dje (e marta) dreka kishte pulë me oriz.
+// Fleta e vaktit (V2-E2-16, V59; bordet V22-Makrot, V42-Ushqimi-Vakti): "Si në plan", "Si dje" me "Zhbëj", makrot e
+// shpejta, Foto. Të fundit dhe të preferuarat kalojnë te faqja e kërkimit (V2-E3-28b). E mërkura 9 dhjetor, 12:40; dje (e marta) dreka kishte pulë me oriz.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore }))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
@@ -51,31 +51,21 @@ describe('Vakti i shpejtë', () => {
     return screen.findByRole('dialog', { name: /^(Dreka|Lunch) · / })
   }
 
-  it('"Si në plan" është veprimi kryesor; "Si dje" e kopjon vaktin e djeshëm me një prekje', async () => {
+  it('"Si në plan" është veprimi kryesor; "Si dje" e kopjon vaktin e djeshëm me një prekje dhe "Zhbëj" e heq', async () => {
     const user = userEvent.setup()
     const sheet = await openLunch()
     const plan = within(sheet).getByRole('button', { name: /^Si në plan/ })
     expect(plan.className).toContain('bg-ember')
     expect(within(sheet).getAllByRole('button').filter((button) => button.className.includes('bg-ember'))).toHaveLength(1)
-    const yesterday = await within(sheet).findByRole('button', { name: /^Si dje/ })
-    expect(yesterday).toHaveTextContent(/Gjoks pule 200\sg/)
-    expect(yesterday).toHaveTextContent(/Oriz kaf 250\sg/)
-    expect(yesterday).toHaveTextContent(/548\skcal/)
+    const yesterday = within(sheet).getByRole('button', { name: 'Si dje' })
+    await waitFor(() => expect(yesterday).toBeEnabled())
     await user.click(yesterday)
     await waitFor(async () => expect((await lunchEntries()).map((row) => Number(row.grams)).sort()).toEqual([200, 250]))
-  })
-
-  it('të fundit me porcionin e fundit, ylli i bën të preferuar, + regjistron me një prekje', async () => {
-    const user = userEvent.setup()
-    const sheet = await openLunch()
-    const recent = await within(sheet).findByRole('region', { name: 'Të fundit' })
-    await user.click(within(recent).getByRole('button', { name: 'Ruaje Gjoks pule te të preferuarat' }))
-    const favorites = await within(sheet).findByRole('region', { name: 'Të preferuarat' })
-    expect(favorites).toHaveTextContent(/Gjoks pule.*200\sg · 240 kcal · 45 g proteinë/)
-    await user.click(within(favorites).getByRole('button', { name: /^Shto Gjoks pule, 200\sg$/ }))
-    await waitFor(async () => expect((await lunchEntries()).map((row) => Number(row.kcal))).toEqual([240]))
-    await user.click(within(favorites).getByRole('button', { name: 'Hiqe Gjoks pule nga të preferuarat' }))
-    await waitFor(() => expect(within(sheet).queryByRole('region', { name: 'Të preferuarat' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    const toast = await screen.findByRole('status')
+    expect(toast).toHaveTextContent('U shtua te Dreka · 548 kcalZhbëj')
+    await user.click(within(toast).getByRole('button', { name: 'Zhbëj' }))
+    await waitFor(async () => expect(await lunchEntries()).toHaveLength(0))
   })
 
   it('makrot e shpejta: kaloritë e shkruara ruhen dhe rreshti e thotë diferencën', async () => {
@@ -115,7 +105,7 @@ describe('Vakti i shpejtë', () => {
     language.set('en')
     const sheet = await openLunch()
     expect(within(sheet).getByRole('button', { name: /^As planned/ })).toBeInTheDocument()
-    expect(await within(sheet).findByRole('button', { name: /^Like yesterday/ })).toBeInTheDocument()
-    expect(within(sheet).getByRole('link', { name: 'Search for a food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
+    expect(within(sheet).getByRole('button', { name: 'Like yesterday' })).toBeInTheDocument()
+    expect(within(sheet).getByRole('link', { name: 'Add food' })).toHaveAttribute('href', '/ushqimi/shto/lunch')
   })
 })

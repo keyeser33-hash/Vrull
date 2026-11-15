@@ -51,6 +51,8 @@ export interface MealSupplement {
   doseUnit: DoseUnit
   evidence: Evidence
   taken: boolean
+  /** Pluhur proteine që numërohet te ushqimi (V39): "E mora" shton regjistrim te vakti. */
+  powder: boolean
 }
 
 export interface MealSlot {
@@ -198,6 +200,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
           doseUnit: supplement.doseUnit,
           evidence: supplement.evidence,
           taken: supplementLogs.some((row) => row.supplement_id === supplement.id && row.timing === meal),
+          powder: supplement.countsAsFood && supplement.macros !== null,
         })),
     }
   })
