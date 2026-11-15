@@ -38,6 +38,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Vala 3, pjesa e dytë (15.11.2026, 0e86312):** `common/002.json` (rank 95–194) dhe `003.json` (195–298): 204 të zakonshme të tjera, 242 dyfishime të hequra; gjithsej 298 të zakonshme, 21 912 rreshta, 0 gabime. Pa përputhje: pluhur kazeine, hallvë, marmelatë portokalli, puding qumështi, spec i pjekur, tërshërë e çastit e gatuar, bagetë. Perimet, bishtajoret dhe drithërat e gatuara "pa kripë" kur ekziston; markat e USDA jashtë.
 
+- **Rishikimi i pavarur i 001–003 (15.11.2026, 8318e0e):** një agjent që nuk i ndërtoi gjeti 82 probleme te 298 hyrje (35 të sigurta, 47 të mundshme: përputhje, emra shqip, vlera, një dyfishim); `docs/research/rishikimi-te-zakonshmet-001-003.md`. U zbatuan të gjitha përveç emrave të gjizës (mbeten si te plani i Jimit); gjalpi me dhe pa kripë u bashkua (297 të zakonshme). Rregull i ri te vërtetimi: `includes_fiber_preferred` (Foundation pa fibra nuk preferohet kur një rresht tjetër i ka, pragu 2 g/100 g). Ndërtimi: 21 905 rreshta, 0 gabime, 11 `kcal_differs` të shqyrtuara. Çdo grup i ri i të zakonshmeve kalon të njëjtin rishikim para se të hyjë te `main`.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
