@@ -314,7 +314,7 @@ Një ushqim ose pjatë shqiptare a ballkanike nga lista e gatshme e app-it (p.sh
 Regjistrimet që përdoruesi bën më shpesh në një vakt; "Hëngra si zakonisht" i regjistron me një prekje.
 
 **Plotëso makrot**:
-Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kalorinë që mbeten nga **Objektivat** e ditës.
+Kombinime nga ushqimet e shpeshta të përdoruesit që mbyllin proteinat dhe kalorinë që mbeten nga **Objektivat** e ditës, pa atë që sjellin vaktet e **Planit tim** që vijnë sot.
 
 **Kufiri i AI-së**:
 Shuma mujore që AI mund të harxhojë për një përdorues (pronari 40 €, çdo mik 10 €; e ndryshon **Admini**); kur arrihet, AI ndalet deri në muajin tjetër.
