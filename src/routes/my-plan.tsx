@@ -69,7 +69,7 @@ export function MyPlanPage() {
       ) : null}
       <PlanTotals day={day} />
       <p className="text-sm leading-[1.4] text-muted-foreground">
-        {t(day.targetsSource === 'jim' ? 'food.plan.noteJim' : day.planCustom ? 'food.plan.noteCustom' : 'food.plan.note')}
+        {t(day.jimChosen ? 'food.plan.noteJimChosen' : day.targetsSource === 'jim' ? 'food.plan.noteJim' : day.planCustom ? 'food.plan.noteCustom' : 'food.plan.note')}
       </p>
       <MealList day={day} onOpen={(meal) => open({ vakti: meal })} />
       <Link to="/ushqimi/oraret" className={cn(buttonVariants({ variant: 'secondary', ground: 'page', size: 'lg' }), 'gap-2')}>

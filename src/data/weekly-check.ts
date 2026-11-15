@@ -51,7 +51,8 @@ export const nextWeeklyCheckDate = (weekStart: string) => addDays(weekStart, 14)
 
 export async function readWeeklyCheck(store: LocalStore, today: string): Promise<WeeklyCheckView | null> {
   const [profile, targets] = await Promise.all([readProfile(store), readTargetsProfile(store)])
-  if (targets.from === null || !isComplete(targets)) return null
+  // Me "Plani i Jimit" (V62) objektivat nuk korrigjohen.
+  if (targets.choice === 'jim' || targets.from === null || !isComplete(targets)) return null
   const weekStart = addDays(mondayOf(today), -7)
   const week = Math.floor(daysBetween(mondayOf(targets.from), weekStart) / 7) + 1
   if (week < 2) return null

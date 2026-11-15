@@ -7,9 +7,10 @@ import { Icon } from '@/components/ui/icons'
 import { inputClass } from '@/components/ui/field-styles'
 import { store, useLocalQuery } from '@/data/app-data'
 import { targetsPageData } from '@/data/nutrition'
-import { adjustmentOn, EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, type TargetsInput } from '@/data/targets-profile'
+import { adjustmentOn, EMPTY_TARGETS_PROFILE, personalTargets, saveTargetsProfile, setTargetsChoice, type TargetsChoice, type TargetsInput } from '@/data/targets-profile'
 import { useI18n } from '@/i18n/use-i18n'
 import { localDate } from '@/lib/calendar'
+import { JIM_TOTALS } from '@/nutrition/targets'
 import { cn } from '@/lib/cn'
 import {
   ACTIVITY_FACTORS,
@@ -54,6 +55,7 @@ export function TargetsPage() {
       date={date}
       initial={data.targets}
       from={data.targets.from}
+      choice={data.targets.choice}
       adjustment={adjustmentOn(data.targets.adjustments, date)}
       weightKg={data.weightKg}
       sessionsPerWeek={data.sessionsPerWeek}
@@ -75,6 +77,7 @@ function TargetsEditor({
   date,
   initial,
   from,
+  choice,
   adjustment,
   weightKg,
   sessionsPerWeek,
@@ -82,6 +85,8 @@ function TargetsEditor({
   date: string
   initial: TargetsInput
   from: string | null
+  /** Zgjedhja e ruajtur (V62): 'jim' = Plani i Jimit, null = Të miat. */
+  choice: TargetsChoice | null
   /** Shuma e korrigjimeve javore që vlejnë sot. */
   adjustment: number
   weightKg: number | null
@@ -94,6 +99,7 @@ function TargetsEditor({
   const [draft, setDraft] = useState<TargetsInput>(() => ({ ...EMPTY_TARGETS_PROFILE, ...initial, goal: initial.goal ?? DEFAULT_GOAL }))
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
+  const [source, setSource] = useState<'jim' | 'personal'>(choice === 'jim' ? 'jim' : 'personal')
   const set = (patch: Partial<TargetsInput>) => setDraft((current) => ({ ...current, ...patch }))
   const calculated = weightKg === null ? null : personalTargets(draft, { weightKg, sessionsPerWeek, date })
   const result = calculated && adjustedTargets(calculated, adjustment)
@@ -112,12 +118,59 @@ function TargetsEditor({
     }
   }
 
+  // Zgjedhja ruhet menjëherë; pa profil të ruajtur "Të miat" hap vetëm formën, dhe "Ruaj" e ruan.
+  async function choose(next: 'jim' | 'personal') {
+    if (next === source) return
+    setFailed(false)
+    try {
+      if (next === 'jim' || from !== null) await setTargetsChoice(store, next, date)
+      setSource(next)
+    } catch {
+      setFailed(true)
+    }
+  }
+
+  const sourcePicker = (
+    <section aria-labelledby="targets-source" className="flex flex-col gap-2">
+      <h2 id="targets-source" className="sr-only">
+        {t('food.targets.source')}
+      </h2>
+      <Segmented<'jim' | 'personal'>
+        label={t('food.targets.source')}
+        value={source}
+        onChange={choose}
+        options={[
+          { value: 'jim', label: t('food.targets.source.jim') },
+          { value: 'personal', label: t('food.targets.source.personal') },
+        ]}
+      />
+      <p className="text-[13px] leading-[1.4] text-muted-foreground">{t(`food.targets.sourceNote.${source}`)}</p>
+      {failed ? (
+        <p role="alert" className="text-sm text-danger">
+          {t('food.targets.saveFailed')}
+        </p>
+      ) : null}
+    </section>
+  )
+
+  if (source === 'jim') {
+    return (
+      <div className="flex flex-col gap-5">
+        <BackHeader title={t('food.targets.title')} back={t('tab.food')} fallback="/ushqimi" />
+        {sourcePicker}
+        <TargetsCard result={{ training: JIM_TOTALS.training, rest: JIM_TOTALS.rest }} />
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-1">
         <BackHeader title={t('food.targets.title')} back={t('tab.food')} fallback="/ushqimi" />
         {result ? <p className="text-[15px] text-muted-foreground">{goalSummary(i18n, goal, result.ratePctPerWeek)}</p> : null}
       </div>
+
+      {sourcePicker}
 
       {result ? (
         <TargetsCard result={result}>

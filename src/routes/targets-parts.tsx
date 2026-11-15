@@ -53,7 +53,7 @@ export function ActivityPicker({
 }
 
 /** Kcal e dy llojeve të ditës dhe makrot e tyre (bordi "Objektivat", karta e parë). */
-export function TargetsCard({ result, children }: { result: TargetsResult; children?: ReactNode }) {
+export function TargetsCard({ result, children }: { result: Pick<TargetsResult, 'training' | 'rest'>; children?: ReactNode }) {
   const { t, fmt } = useI18n()
   const days = [
     { key: 'training', label: t('food.targets.training'), macros: result.training },

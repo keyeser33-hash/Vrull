@@ -5,7 +5,7 @@ import { foodDate, minutesInFoodDay } from '@/nutrition/food-day'
 import { PDF_FOODS, PDF_PREFIX, pdfKey } from '@/nutrition/pdf-swaps'
 import { mealSchedule } from '@/nutrition/schedule'
 import type { DoseUnit, Evidence } from '@/nutrition/supplements'
-import { bodyweightForTargets, type DayType, JIM_RANGE_KG, type Macros } from '@/nutrition/targets'
+import { bodyweightForTargets, type DayType, JIM_RANGE_KG, JIM_WEIGHT_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
 import { myPlan, type MyPlanItem } from './my-plan'
@@ -79,6 +79,8 @@ export interface NutritionDay {
   targets: Macros | null
   /** Nga kalkulatori (V32) ose nga totalet e Jimit (Q15). */
   targetsSource: TargetsSource
+  /** Përdoruesi zgjodhi "Plani i Jimit" te Objektivat (V62): pa ftesën për kalkulatorin. */
+  jimChosen: boolean
   /** Plani im i ndryshuar nga përdoruesi për këtë lloj dite (V34); përndryshe ai i Jimit. */
   planCustom: boolean
   totals: Macros
@@ -147,7 +149,9 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))
   // Pesha e objektivave të ruajtura, që shënimet e ditës të përputhen me to.
   const weightKg = saved?.bodyweight_kg !== null && saved?.bodyweight_kg !== undefined ? Number(saved.bodyweight_kg) : measuredKg
-  const computed = weightKg === null ? null : targetsFor(targetsProfile, { weightKg, dayType, date, sessionsPerWeek: profile.trainingDays.length })
+  // Me "Plani i Jimit" (V62) objektivat nuk varen nga pesha.
+  const jimChosen = targetsProfile.choice === 'jim'
+  const computed = weightKg === null && !jimChosen ? null : targetsFor(targetsProfile, { weightKg: weightKg ?? JIM_WEIGHT_KG, dayType, date, sessionsPerWeek: profile.trainingDays.length })
   const targetsSource = computed?.source ?? (targetsProfile.from !== null && date >= targetsProfile.from ? 'personal' : 'jim')
   const targets = saved ? savedMacros(saved) : (computed?.macros ?? null)
   // Artikujt e çdo vakti vijnë nga Plani im (V34): plani i Jimit i shkallëzuar ose ai i përdoruesit.
@@ -224,6 +228,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     outsideJimRange: targetsSource === 'jim' && weightKg !== null && (weightKg < JIM_RANGE_KG.min || weightKg > JIM_RANGE_KG.max),
     targets,
     targetsSource,
+    jimChosen,
     planCustom: plan.custom,
     totals: sumMacros(meals.flatMap((meal) => meal.entries)),
     meals,

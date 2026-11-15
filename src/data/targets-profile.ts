@@ -1,5 +1,5 @@
 import { type Activity, calculateTargets, type Goal, type Sex, type TargetsResult, withAdjustment } from '@/nutrition/calculator'
-import { type DayType, type Macros, nutritionTargets } from '@/nutrition/targets'
+import { type DayType, JIM_TOTALS, type Macros, nutritionTargets } from '@/nutrition/targets'
 import { numberOrNull } from '@/lib/number'
 import { settingsRow } from './settings-row'
 import type { LocalStore } from './store'
@@ -28,7 +28,15 @@ export interface TargetsProfile {
   from: string | null
   /** Korrigjimet e pranuara të kontrollit javor, sipas datës. */
   adjustments: readonly TargetAdjustment[]
+  /**
+   * Zgjedhja e burimit (V62): 'jim' = totalet e planit të Jimit, pa shkallëzim; null = si më parë
+   * (objektivat personale kur ka profil nga `from`, përndryshe të Jimit të shkallëzuara sipas peshës).
+   * Të dhënat personale mbeten të ruajtura.
+   */
+  choice: TargetsChoice | null
 }
+
+export type TargetsChoice = 'jim'
 
 /** Një korrigjim i pranuar (V33): kcal në ditë nga data, te karbohidratet. */
 export interface TargetAdjustment {
@@ -37,7 +45,7 @@ export interface TargetAdjustment {
   kcal: number
 }
 
-export type TargetsInput = Omit<TargetsProfile, 'from' | 'adjustments'>
+export type TargetsInput = Omit<TargetsProfile, 'from' | 'adjustments' | 'choice'>
 
 export const EMPTY_TARGETS_PROFILE: TargetsProfile = {
   sex: null,
@@ -52,6 +60,7 @@ export const EMPTY_TARGETS_PROFILE: TargetsProfile = {
   maintenanceKcal: null,
   from: null,
   adjustments: [],
+  choice: null,
 }
 
 const SEXES: readonly Sex[] = ['male', 'female']
@@ -83,10 +92,37 @@ export const adjustmentOn = (adjustments: readonly TargetAdjustment[], date: str
   adjustments.filter((adjustment) => adjustment.from <= date).reduce((sum, adjustment) => sum + adjustment.kcal, 0)
 
 
+// Zgjedhja jeton te `user_settings.reminders` (jsonb, çelësi `targets_source`), si cilësimet e tjera
+// pa kolonë: sinkronizohet pa migrim dhe ruajtja e rikujtuesve e ruan (`reminders.ts`).
+const CHOICE_KEY = 'targets_source'
+
+const choiceOf = (row: { reminders?: unknown } | undefined): TargetsChoice | null => {
+  const raw = row?.reminders
+  return raw && typeof raw === 'object' && (raw as Record<string, unknown>)[CHOICE_KEY] === 'jim' ? 'jim' : null
+}
+
+function withoutChoice(reminders: unknown): Record<string, unknown> {
+  const { [CHOICE_KEY]: _previous, ...rest } = (reminders && typeof reminders === 'object' ? reminders : {}) as Record<string, unknown>
+  return rest
+}
+
+/**
+ * Zgjedh burimin e objektivave (V62). 'personal' heq zgjedhjen e Jimit dhe rikthen objektivat
+ * personale kur profili është i plotë; ato të ruajtura nga sot rillogariten, të kaluarat mbeten.
+ */
+export async function setTargetsChoice(store: LocalStore, choice: 'jim' | 'personal', today: string) {
+  const row = await settingsRow(store)
+  if (!row) return
+  const rest = withoutChoice(row.reminders)
+  await store.put('user_settings', { id: row.id, reminders: choice === 'jim' ? { ...rest, [CHOICE_KEY]: 'jim' } : rest })
+  await refreshSavedTargets(store, await readTargetsProfile(store), today)
+}
+
 export async function readTargetsProfile(store: LocalStore): Promise<TargetsProfile> {
   const [row, adjustments] = await Promise.all([settingsRow(store), readAdjustments(store)])
   if (!row) return { ...EMPTY_TARGETS_PROFILE, adjustments }
   return {
+    choice: choiceOf(row),
     sex: oneOf(SEXES, row.sex),
     birthYear: numberOrNull(row.birth_year),
     heightCm: numberOrNull(row.height_cm),
@@ -129,6 +165,8 @@ export function targetsFor(
   profile: TargetsProfile,
   input: { weightKg: number; dayType: DayType; date: string; sessionsPerWeek: number },
 ): { macros: Macros; source: TargetsSource } {
+  // "Plani i Jimit" (V62): totalet e PDF-së (faqja 13), pa peshë dhe pa shkallëzim.
+  if (profile.choice === 'jim') return { macros: { ...JIM_TOTALS[input.dayType] }, source: 'jim' }
   const personal = profile.from !== null && input.date >= profile.from ? personalTargets(profile, input) : null
   if (personal) return { macros: withAdjustment(personal[input.dayType], adjustmentOn(profile.adjustments, input.date)), source: 'personal' }
   return { macros: nutritionTargets(input.weightKg, input.dayType), source: 'jim' }
@@ -157,8 +195,10 @@ export async function saveTargetsProfile(store: LocalStore, input: TargetsInput,
     body_fat_pct: input.bodyFatPct,
     maintenance_kcal: input.maintenanceKcal,
     targets_from: from,
+    // Ruajtja e të dhënave personale është zgjedhja e "Të miat" (V62).
+    reminders: withoutChoice(row.reminders),
   })
-  await refreshSavedTargets(store, { ...input, from, adjustments: current.adjustments }, today)
+  await refreshSavedTargets(store, { ...input, from, adjustments: current.adjustments, choice: null }, today)
 }
 
 /**

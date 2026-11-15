@@ -101,7 +101,7 @@ function PlanLinks({ day }: { day: NutritionDay }) {
     'flex h-12 min-w-0 items-center justify-center rounded-md border border-border px-2 text-center text-sm leading-5 font-semibold transition-transform duration-100 ease-out hover:bg-surface motion-safe:active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
   return (
     <div className="flex flex-col gap-3">
-      {day.targetsSource === 'jim' ? (
+      {day.targetsSource === 'jim' && !day.jimChosen ? (
         <InsightCard
           icon={null}
           actions={
