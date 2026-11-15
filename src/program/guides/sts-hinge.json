@@ -1,0 +1,638 @@
+{
+  "group": "sts-hinge",
+  "guides": [
+    {
+      "exercise": "Romanian Deadlift",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro me këmbët sa gjerësia e ijëve dhe shufrën para kofshëve, me gjunjët pak të përkulur.",
+            "en": "Stand with your feet hip-width apart and the bar in front of your thighs, knees slightly bent."
+          },
+          {
+            "sq": "Kap shufrën jashtë kofshëve me kapje të sipërme, rreth gjerësisë së shpatullave ose pak më të gjerë.",
+            "en": "Take the bar outside your thighs with an overhand grip, about shoulder-width or slightly wider."
+          },
+          {
+            "sq": "Ngrije kraharorin, tërhiq shpatullat poshtë, forco barkun dhe mbaje shpinën neutrale.",
+            "en": "Lift your chest, draw your shoulder blades down, brace your core and keep your spine neutral."
+          },
+          {
+            "sq": "Mbaje mjekrën të tërhequr dhe shiko drejt dyshemesë, jo te pasqyra.",
+            "en": "Keep your chin tucked and look towards the floor, not at the mirror."
+          },
+          {
+            "sq": "Nëse nis nga rafti, vendose shufrën midis kofshës dhe belit, që të mos e ngresh nga dyshemeja.",
+            "en": "If you start from a rack, set the bar between thigh and waist height so you don't lift it from the floor."
+          }
+        ],
+        "sources": [
+          "nasm_rdl",
+          "ace_rdl",
+          "ace_tech"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtyj ijët mbrapa dhe ule shufrën ngadalë përgjatë kofshëve, me gjunjët pak të përkulur.",
+            "en": "Push your hips back and lower the bar slowly along your thighs, knees slightly bent."
+          },
+          {
+            "sq": "Mbaje shufrën shumë afër trupit dhe shpinën të gjatë, pa e rrumbullakosur.",
+            "en": "Keep the bar very close to your body and your spine long, without rounding it."
+          },
+          {
+            "sq": "Ndalo kur ndjen tension të fortë mbrapa kofshëve: rreth lartësisë së gjurit, ose rreth mesit të kërcirit nëse je më fleksibël.",
+            "en": "Stop when you feel strong tension in the back of your thighs: around knee height, or about mid-shin if you are more flexible."
+          },
+          {
+            "sq": "Shtyj thembrat në dysheme, çoji ijët përpara dhe ngrihu duke e mbajtur shpinën të gjatë.",
+            "en": "Press your heels into the floor, drive your hips forward and stand up, keeping your spine long."
+          },
+          {
+            "sq": "Në krye ndalo pak para shtrirjes së plotë të ijëve, që tensioni të mbetet.",
+            "en": "At the top, stop just short of full hip extension so the tension stays on."
+          }
+        ],
+        "sources": [
+          "nasm_rdl",
+          "ace_rdl",
+          "ace_tech"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ule shufrën ngadalë dhe ngrihu pak më shpejt.",
+            "en": "Down 2 s, up 1 s: lower the bar slowly and stand up a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ijët mbrapa",
+            "en": "Hips back"
+          },
+          {
+            "sq": "Shufra ngjitur me kofshët",
+            "en": "Bar close to your thighs"
+          },
+          {
+            "sq": "Shpina e gjatë, neutrale",
+            "en": "Long, neutral spine"
+          },
+          {
+            "sq": "Gjunjët pak të përkulur",
+            "en": "Knees slightly bent"
+          },
+          {
+            "sq": "Shtyj thembrat në dysheme",
+            "en": "Press your heels down"
+          }
+        ],
+        "sources": [
+          "nasm_rdl",
+          "ace_rdl",
+          "ace_tech"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Shpina rrumbullakoset: humbet qëndrueshmëria e shtyllës dhe rritet rreziku i dëmtimit; ndalo uljen para se të ndodhë.",
+            "en": "Your back rounds: the spine loses stability and injury risk rises; stop the descent before it happens."
+          },
+          {
+            "sq": "Gjunjët përkulen shumë: ushtrimi kthehet në një variant të squat-it.",
+            "en": "Your knees bend too much: the exercise turns into a squat variation."
+          },
+          {
+            "sq": "Shufra largohet nga trupi: sa më larg trupit, aq më shumë ngarkohet beli.",
+            "en": "The bar drifts away from your body: the further it is from you, the more load goes on your lower back."
+          },
+          {
+            "sq": "Lëvizje me vrull ose me impuls: tensioni te kofshët e pasme bie.",
+            "en": "Jerky movement or momentum: the tension on the hamstrings drops."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa prish formën ose pozicionin e shpinës.",
+            "en": "A load so heavy that your form or spinal position breaks down."
+          },
+          {
+            "sq": "Ulje e pamjaftueshme: pa shtrirje të mjaftueshme të kofshëve të pasme bie stimuli ekscentrik dhe zhvillimi i tyre.",
+            "en": "Not lowering far enough: without enough of a hamstring stretch the eccentric stimulus and their development drop."
+          },
+          {
+            "sq": "Shikimi te pasqyra: kthimi i qafës e ngarkon shtyllën e qafës; shiko drejt dyshemesë.",
+            "en": "Looking in the mirror: turning your neck stresses the cervical spine; look towards the floor."
+          }
+        ],
+        "sources": [
+          "nasm_rdl",
+          "ace_tech"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Top to Bottom Legs)",
+          "text": {
+            "sq": "Romanian deadlift-i të detyron të përdorësh më pak peshë se deadlift-i i zakonshëm, por e vë theksin edhe më shumë te muskujt e pasëm të këmbës, sepse e gjithë lëvizja është shtrirje e ijës.",
+            "en": "The Romanian deadlift makes you use less weight than a standard deadlift, but it puts even more emphasis on the muscles at the back of the leg, because the whole movement is hip extension."
+          },
+          "sources": [
+            "stoppani_legs"
+          ]
+        },
+        {
+          "who": "ACE, Pete McCall · ACE Technique Series",
+          "text": {
+            "sq": "Mësoje lëvizjen pa peshë: kur bën 10–15 përkulje të mira të ijës me shtyllën të qëndrueshme dhe lëvizje të mirë në ije, je gati për RDL me peshë. Rrëshqite shufrën poshtë kofshëve: sipas Tony Gentilcore, C.S.C.S., të cituar nga ACE, sa më larg trupit shufra, aq më shumë stres merr beli (titulli sipas ACE).",
+            "en": "Learn the movement without weight: once you can do 10–15 good hip hinges with a stable spine and good range through the hips, you are ready for the RDL with load. Slide the bar down your thighs: according to Tony Gentilcore, C.S.C.S., quoted by ACE, the further the bar is from you, the more stress your lower back takes (title as given by ACE)."
+          },
+          "sources": [
+            "ace_tech"
+          ]
+        },
+        {
+          "who": "ACE, Pete McCall · The Deadlift and Romanian Deadlift, 2021",
+          "text": {
+            "sq": "Rripi i belit e ndihmon shtyllën, por vetëm me pesha të rënda. Kur e mëson ushtrimin përdor pesha më të lehta, që muskujt e thellë ta mbajnë vetë shtyllën; rripi këshillohet me ngarkesa maksimale prej tri përsëritjesh ose më pak.",
+            "en": "A weight belt supports the spine, but only with heavy weights. While you learn the exercise use lighter weights so the deep muscles stabilise the spine themselves; a belt is advised with maximal loads of three reps or fewer."
+          },
+          "sources": [
+            "ace_mccall"
+          ]
+        },
+        {
+          "who": "ACE, Pete McCall · ACE Technique Series",
+          "text": {
+            "sq": "Versioni me këmbë krejt të drejta ngarkon drejtpërdrejt kofshët e pasme dhe është shumë i avancuar: bëhet vetëm nga ata që kanë përvojë dhe kontroll të shkëlqyer të trupit.",
+            "en": "The version with fully straight legs loads the hamstrings more directly and is very advanced: it is for experienced lifters with excellent body control only."
+          },
+          "sources": [
+            "ace_tech"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Kur shpina rrumbullakoset, ule peshën: ngarkimi i belit kur është i përkulur është mekanizëm i mundshëm dëmtimi.",
+            "en": "When your back rounds, lower the weight: loading the lower back while it is flexed is a possible mechanism of injury."
+          },
+          {
+            "sq": "Nëse ende nuk e kontrollon lëvizjen e ijës, nis me përkulje pa peshë ose me peshë shumë të lehtë.",
+            "en": "If you cannot yet control the hip movement, start with hinges without weight or with a very light load."
+          },
+          {
+            "sq": "Dhimbja e mprehtë ose e papritur gjatë ushtrimit është sinjal për të ndalur; ndalo çdo ushtrim që të shkakton dhimbje.",
+            "en": "Sharp or sudden pain during an exercise is a signal to stop; stop any exercise that causes you pain."
+          }
+        ],
+        "sources": [
+          "ace_tech",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_rdl": {
+          "label": "NASM, Romanian Deadlift Barbell",
+          "url": "https://www.nasm.org/resource-center/exercise-library/romanian-deadlift-barbell",
+          "checked": "2026-11-15"
+        },
+        "ace_rdl": {
+          "label": "ACE, Romanian Deadlift",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/317/romanian-deadlift/",
+          "checked": "2026-11-15"
+        },
+        "ace_tech": {
+          "label": "ACE, ACE Technique Series: Romanian Deadlift (Pete McCall), 2016",
+          "url": "https://www.acefitness.org/prosourcearticle/5767/ace-technique-series-romanian-deadlift",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "stoppani_legs": {
+          "label": "Jim Stoppani, PhD, Top to Bottom Legs",
+          "url": "https://www.jimstoppani.com/training/top-to-bottom-legs",
+          "checked": "2026-11-15"
+        },
+        "ace_mccall": {
+          "label": "ACE, The Deadlift and Romanian Deadlift (Pete McCall), 2021",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/7963/what-is-the-difference-between-romanian-deadlift-vs-deadlift/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Lying Leg Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu me barkun poshtë në makinë, me këmbët të shtrira dhe jastëkun pak mbi kyçet e këmbëve.",
+            "en": "Lie face down on the machine with your legs extended and the pad just above your ankles."
+          },
+          {
+            "sq": "Vendos të dyja këmbët nën jastëk, me gjunjët të përkulur rreth 90°, dhe kapu pas dorezave për stabilitet.",
+            "en": "Place both legs under the pad with your knees bent at about 90° and hold the handles for stability."
+          },
+          {
+            "sq": "Mbaji ijët në makinë gjatë gjithë lëvizjes.",
+            "en": "Keep your hips on the machine throughout the movement."
+          },
+          {
+            "sq": "Sipas ACE, për curl-in e shtrirë me kabllo: forco barkun, që të parandalosh ngritjen e ijëve dhe harkimin e belit.",
+            "en": "According to ACE, for the prone cable curl: brace your abs to help prevent your hips lifting and your lower back arching."
+          }
+        ],
+        "sources": [
+          "nasm_lying",
+          "ace_prone"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Kurbo jastëkun lart duke përkulur gjunjët dhe duke sjellë thembrat drejt vithve, me lëvizje të kontrolluar.",
+            "en": "Curl the pad up by bending your knees, bringing your heels towards your glutes, with controlled movement."
+          },
+          {
+            "sq": "Mbaji kofshët dhe ijët në vend: mos i ngrit ijët nga makina dhe mos e harko belin.",
+            "en": "Keep your thighs and hips still: don't lift your hips off the machine or arch your lower back."
+          },
+          {
+            "sq": "Vazhdo deri sa thembrat afrohen te vithet, ose deri ku ijët ose beli fillojnë të lëvizin: aty është kufiri yt.",
+            "en": "Continue until your heels near your glutes, or until your hips or lower back start to move: that is your limit."
+          },
+          {
+            "sq": "Kthe jastëkun ngadalë deri pak para shtrirjes së plotë, që tensioni të mbetet.",
+            "en": "Return the pad slowly to just short of full extension so the tension stays on."
+          }
+        ],
+        "sources": [
+          "nasm_lying",
+          "ace_prone"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Kurbo lart për rreth 1 s dhe ktheje peshën poshtë ngadalë për rreth 2 s.",
+            "en": "Curl up for about 1 s and return the weight down slowly for about 2 s."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Sipas ACE, për curl-in e shtrirë me kabllo: nxirre ajrin ndërsa kurbon dhe merre ndërsa e kthen peshën.",
+            "en": "According to ACE, for the prone cable curl: breathe out as you curl and in as you return the weight."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_prone"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ijët në makinë",
+            "en": "Hips on the machine"
+          },
+          {
+            "sq": "Beli nuk harkohet",
+            "en": "Don't arch your lower back"
+          },
+          {
+            "sq": "Thembrat drejt vithve",
+            "en": "Heels towards your glutes"
+          },
+          {
+            "sq": "Ktheje peshën ngadalë",
+            "en": "Return the weight slowly"
+          },
+          {
+            "sq": "Kontroll në të dyja drejtimet",
+            "en": "Control both directions"
+          }
+        ],
+        "sources": [
+          "nasm_lying",
+          "ace_prone"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Peshë aq e rëndë sa lëvizja bëhet me vrull ose forma prishet.",
+            "en": "A load so heavy that the movement turns jerky or your form breaks down."
+          },
+          {
+            "sq": "Ijët ngrihen ose zhvendosen nga makina: mbaji poshtë gjatë gjithë përsëritjes.",
+            "en": "Your hips lift or shift off the machine: keep them down for the whole rep."
+          },
+          {
+            "sq": "Beli harkohet për ta ndihmuar lëvizjen: forco barkun që ta parandalosh.",
+            "en": "Your lower back arches to help the movement: brace your abs to prevent it."
+          },
+          {
+            "sq": "Lëvizje e shkurtër: pa lëvizje të plotë kofshët e pasme aktivizohen më pak.",
+            "en": "A shortened range: without full range of motion the hamstrings are activated less."
+          },
+          {
+            "sq": "Kthim i shpejtë i peshës: kontrollo të dyja fazat njësoj, jo vetëm kurbimin.",
+            "en": "Letting the weight drop back: control both phases equally, not just the curl."
+          }
+        ],
+        "sources": [
+          "nasm_lying",
+          "ace_prone"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Maeo dhe kolegët, 2021 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Në një studim 12-javor me 20 të rritur, njëra këmbë stërvitej me curl të ulur dhe tjetra me curl të shtrirë (70% e 1RM-së, 10 përsëritje, 5 sete, 2 herë në javë). Kofshët e pasme u rritën +14% me curl të ulur kundrejt +9% me curl të shtrirë; muskujt dy-nyjorë +8%–24% kundrejt +4%–19%, ndërsa muskuli njënyjor +10% kundrejt +9%. Mbrojtja nga dëmtimi pas ushtrimit eksentrik ishte e ngjashme.",
+            "en": "In a 12-week study of 20 adults, one leg trained with the seated curl and the other with the prone curl (70% of 1RM, 10 reps, 5 sets, twice a week). The hamstrings grew +14% with the seated curl versus +9% with the prone curl; the two-joint muscles +8%–24% versus +4%–19%, the single-joint muscle +10% versus +9%. Protection against damage after eccentric exercise was similar."
+          },
+          "sources": [
+            "maeo21"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Nëse ijët ngrihen ose beli harkohet, ule peshën.",
+            "en": "If your hips lift or your lower back arches, lower the weight."
+          },
+          {
+            "sq": "Dhimbja e mprehtë ose e papritur gjatë ushtrimit është sinjal për të ndalur; ndalo çdo ushtrim që të shkakton dhimbje.",
+            "en": "Sharp or sudden pain during an exercise is a signal to stop; stop any exercise that causes you pain."
+          }
+        ],
+        "sources": [
+          "ace_prone",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_lying": {
+          "label": "NASM, Lying Leg Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/lying-leg-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_prone": {
+          "label": "ACE, Prone Lying Hamstrings Curl",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/131/prone-lying-hamstrings-curl/",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "maeo21": {
+          "label": "Maeo dhe kolegët, 2021, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/33009197",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Seated Leg Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në makinë me shpinën fort te mbështetësja.",
+            "en": "Sit on the machine with your back firmly against the backrest."
+          },
+          {
+            "sq": "Rregulloje uljen që jastëku të jetë pak mbi kyçet e këmbëve dhe vendos këmbët në platformë.",
+            "en": "Adjust the seat so the pad sits just above your ankles and put your feet on the platform."
+          },
+          {
+            "sq": "Vendos të dyja këmbët nën jastëk, me gjunjët të përkulur rreth 90°, dhe kapu pas dorezave për stabilitet.",
+            "en": "Place both legs under the pad with your knees bent at about 90° and hold the handles for stability."
+          },
+          {
+            "sq": "Forco barkun para se të nisësh.",
+            "en": "Brace your core before you start."
+          }
+        ],
+        "sources": [
+          "nasm_seated"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Kurbo jastëkun poshtë duke përkulur gjunjët dhe duke sjellë thembrat drejt vithve, me lëvizje të kontrolluar.",
+            "en": "Curl the pad down by bending your knees, bringing your heels towards your glutes, with controlled movement."
+          },
+          {
+            "sq": "Përqendrohu te kontraktimi i kofshëve të pasme gjatë gjithë lëvizjes.",
+            "en": "Focus on contracting your hamstrings throughout the movement."
+          },
+          {
+            "sq": "Kthe jastëkun ngadalë deri pak para shtrirjes së plotë, që tensioni të mbetet gjatë gjithë setit.",
+            "en": "Return the pad slowly to just short of full extension so the tension stays on through the whole set."
+          }
+        ],
+        "sources": [
+          "nasm_seated"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Kurbo poshtë për rreth 1 s dhe ktheje peshën lart ngadalë për rreth 2 s.",
+            "en": "Curl down for about 1 s and return the weight up slowly for about 2 s."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina te mbështetësja",
+            "en": "Back against the pad"
+          },
+          {
+            "sq": "Thembrat drejt vithve",
+            "en": "Heels towards your glutes"
+          },
+          {
+            "sq": "Ijët nuk lëvizin",
+            "en": "Keep your hips still"
+          },
+          {
+            "sq": "Ktheje peshën ngadalë",
+            "en": "Return the weight slowly"
+          },
+          {
+            "sq": "Kontroll në të dyja drejtimet",
+            "en": "Control both directions"
+          }
+        ],
+        "sources": [
+          "nasm_seated"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Peshë aq e rëndë sa lëvizja bëhet me vrull ose forma prishet.",
+            "en": "A load so heavy that the movement turns jerky or your form breaks down."
+          },
+          {
+            "sq": "Ijët zhvendosen ose rrotullohen gjatë lëvizjes: mbaji të palëvizshme.",
+            "en": "Your hips shift or rotate during the movement: keep them still."
+          },
+          {
+            "sq": "Lëvizje e shkurtër: pa lëvizje të plotë kofshët e pasme aktivizohen dhe rriten më pak.",
+            "en": "A shortened range: without full range of motion the hamstrings are activated less and grow less."
+          },
+          {
+            "sq": "Kthim i shpejtë i peshës: kontrollo të dyja fazat njësoj, jo vetëm kurbimin.",
+            "en": "Letting the weight return fast: control both phases equally, not just the curl."
+          }
+        ],
+        "sources": [
+          "nasm_seated"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Maeo dhe kolegët, 2021 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Në një studim 12-javor me 20 të rritur, curl-i i ulur i rriti kofshët e pasme më shumë se curl-i i shtrirë: +14% kundrejt +9% për të gjithë grupin, dhe +8%–24% kundrejt +4%–19% te muskujt dy-nyjorë; te muskuli njënyjor pothuajse njësoj (+10% kundrejt +9%). Autorët e lidhin me stërvitjen në gjatësi më të madhe të muskulit: ijët e përkulura i zgjasin më shumë kofshët dy-nyjore.",
+            "en": "In a 12-week study of 20 adults, the seated curl grew the hamstrings more than the prone curl: +14% versus +9% for the whole group, and +8%–24% versus +4%–19% in the two-joint muscles; the single-joint muscle grew almost the same (+10% versus +9%). The authors link this to training at longer muscle lengths: the flexed hip lengthens the two-joint hamstrings more."
+          },
+          "sources": [
+            "maeo21"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Nëse ijët zhvendosen ose forma prishet, ule peshën.",
+            "en": "If your hips shift or your form breaks down, lower the weight."
+          },
+          {
+            "sq": "Dhimbja e mprehtë ose e papritur gjatë ushtrimit është sinjal për të ndalur; ndalo çdo ushtrim që të shkakton dhimbje.",
+            "en": "Sharp or sudden pain during an exercise is a signal to stop; stop any exercise that causes you pain."
+          }
+        ],
+        "sources": [
+          "nasm_seated",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_seated": {
+          "label": "NASM, Seated Leg Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/seated-leg-curl",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "maeo21": {
+          "label": "Maeo dhe kolegët, 2021, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/33009197",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}

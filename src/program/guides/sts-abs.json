@@ -1,0 +1,625 @@
+{
+  "group": "sts-abs",
+  "guides": [
+    {
+      "exercise": "Crunch",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu në shpinë mbi një tapet, me gjunjët të përkulur dhe këmbët të sheshta në dysheme.",
+            "en": "Lie on your back on a mat with your knees bent and your feet flat on the floor."
+          },
+          {
+            "sq": "Thembrat rreth 30 deri 46 cm nga bishti i shtyllës.",
+            "en": "Heels about 30 to 46 cm from your tailbone."
+          },
+          {
+            "sq": "Duart pas kokës, shpatullat të tërhequra drejt njëra-tjetrës dhe bërrylat të hapur mbrapa, ndërsa belin e mban pa e harkuar.",
+            "en": "Hands behind your head, shoulder blades drawn together and elbows open back, while you keep your lower back from arching."
+          },
+          {
+            "sq": "Koka mbetet në vijë me shtyllën; lejohet një përkulje e lehtë e mjekrës gjatë ngritjes.",
+            "en": "Keep your head in line with your spine; a slight chin tuck is fine as you curl up."
+          }
+        ],
+        "sources": [
+          "ace_crunch"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin, forco barkun dhe përkule trupin ngadalë drejt kofshëve, duke afruar kafazin e kraharorit me legenin.",
+            "en": "Breathe out, brace your abs and slowly curl your torso towards your thighs, bringing your rib cage closer to your pelvis."
+          },
+          {
+            "sq": "Përkule derisa pjesa e sipërme e shpinës të ngrihet nga tapeti dhe ndalo pak.",
+            "en": "Curl until your upper back lifts off the mat and pause briefly."
+          },
+          {
+            "sq": "Këmbët, bishti i shtyllës dhe pjesa e poshtme e shpinës mbeten në tapet gjatë gjithë kohës.",
+            "en": "Your feet, tailbone and lower back stay in contact with the mat throughout."
+          },
+          {
+            "sq": "Merr frymë dhe uleje trupin ngadalë, me kontroll, deri te tapeti.",
+            "en": "Breathe in and lower your torso slowly and under control back to the mat."
+          }
+        ],
+        "sources": [
+          "ace_crunch"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uleje trupin ngadalë dhe ngrije pak më shpejt.",
+            "en": "Down 2 s, up 1 s: lower your torso slowly and curl up a little faster."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ndërsa ngrihesh dhe merre ndërsa ulesh.",
+            "en": "Breathe out as you curl up and in as you lower."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_crunch"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Kafazi drejt legenit",
+            "en": "Ribs towards your pelvis"
+          },
+          {
+            "sq": "Qafa e relaksuar",
+            "en": "Neck relaxed"
+          },
+          {
+            "sq": "Beli mbetet në tapet",
+            "en": "Lower back stays on the mat"
+          },
+          {
+            "sq": "Ngrihu ngadalë, pa vrull",
+            "en": "Rise slowly, no momentum"
+          }
+        ],
+        "sources": [
+          "ace_crunch"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Përsëritje shumë e shpejtë, me fleksorët e ijeve që ndihmojnë: legeni anon përpara dhe rritet ngarkesa në bel.",
+            "en": "Rushing the rep so the hip flexors help: the pelvis tilts forward and the load on the lower back rises."
+          },
+          {
+            "sq": "Beli ose këmbët largohen nga tapeti gjatë ngritjes: forma e pastër e mbron belin nga ngarkesa e tepërt.",
+            "en": "Your lower back or feet leave the mat as you curl up: clean form protects your lower back from excess stress."
+          },
+          {
+            "sq": "Qafa dhe shpatullat tensionohen: përqendrohu te afrimi i kafazit me legenin, jo te tërheqja e kokës.",
+            "en": "Tensing your neck and shoulders: focus on bringing your rib cage towards your pelvis, not on pulling your head."
+          },
+          {
+            "sq": "Vetëm kruncha në çdo stërvitje: ushtrimi stërvit vetëm përkuljen e shtyllës, jo rezistencën ndaj zgjatjes, rrotullimit dhe përkuljes anësore.",
+            "en": "Relying on crunches alone: the exercise trains spinal flexion only, not resistance to extension, rotation and side bending."
+          }
+        ],
+        "sources": [
+          "ace_crunch",
+          "nasm_abs"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (jimstoppani.com)",
+          "text": {
+            "sq": "Mos bëj kruncha brenda orës së parë pas zgjimit, as pas një kohe të gjatë ulur: ngrohu para tyre ose lëri ushtrimet e barkut për në fund të stërvitjes.",
+            "en": "Avoid crunches within the first hour after waking or after a long spell of sitting: warm up first or leave ab work for the end of the session."
+          },
+          "sources": [
+            "stoppani_abs"
+          ]
+        },
+        {
+          "who": "Stuart McGill, PhD · profesor emeritus, Universiteti i Waterloo (përmes ACE)",
+          "text": {
+            "sq": "Variant me më pak lëvizje të shtyllës: curl-up. Shtrihu me një gju të përkulur dhe duart nën belin, ngri kokën dhe shpatullat si një bllok, mbaji shpinën neutrale dhe mbaje 10 s.",
+            "en": "A variant with less spinal movement: the curl-up. Lie with one knee bent and your hands under your lower back, lift your head and shoulders as one unit, keep your spine neutral and hold for 10 s."
+          },
+          "sources": [
+            "ace_mcgill",
+            "ace_verstegen"
+          ]
+        },
+        {
+          "who": "Contreras dhe Schoenfeld, 2011 · Strength and Conditioning Journal",
+          "text": {
+            "sq": "Autorët sugjerojnë jo më shumë se rreth 60 përsëritje me përkulje të belit në një seancë dhe thonë se kundërindikimet vlejnë kryesisht për ata me patologji ekzistuese të shtyllës.",
+            "en": "The authors suggest no more than about 60 repetitions of lumbar flexion per session and say contraindications mainly apply to people with existing spinal pathology."
+          },
+          "sources": [
+            "contreras"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Përsëritjet e shpejta me ndihmën e fleksorëve të ijeve e rrisin ngarkesën në bel: ngadalëso dhe lëviz kafazin drejt legenit.",
+            "en": "Fast reps with the hip flexors helping raise the load on your lower back: slow down and move your rib cage towards your pelvis."
+          },
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          }
+        ],
+        "sources": [
+          "ace_crunch",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_crunch": {
+          "label": "ACE, Crunch",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/52/crunch/",
+          "checked": "2026-11-15"
+        },
+        "nasm_abs": {
+          "label": "NASM, Best Abs Exercises",
+          "url": "https://www.nasm.org/resource-center/blog/training/best-abs-exercises",
+          "checked": "2026-11-15"
+        },
+        "ace_mcgill": {
+          "label": "ACE, Low Back Exercises: Stuart McGill's Big Three",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/7077/low-back-exercises-stuart-mcgill-s-big-three/",
+          "checked": "2026-11-15"
+        },
+        "contreras": {
+          "label": "Contreras (MA, CSCS) dhe Schoenfeld (MSc, CSCS), 2011, Strength and Conditioning Journal",
+          "url": "https://doi.org/10.1519/ssc.0b013e3182259d05",
+          "checked": "2026-11-15"
+        },
+        "stoppani_abs": {
+          "label": "Jim Stoppani, PhD, Ab and Core Exercises and Workouts",
+          "url": "https://www.jimstoppani.com/training/ab-and-core-workouts",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "ace_verstegen": {
+          "label": "ACE, Train This, Not That: The Core Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5038/train-this-not-that-the-core-edition/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Plank",
+      "tempo": null,
+      "setup": {
+        "items": [
+          {
+            "sq": "Mbështetu te parakrahët në dysheme, me secilin bërryl drejt nën shpatullën e vet.",
+            "en": "Rest on your forearms on the floor, each elbow directly below its shoulder."
+          },
+          {
+            "sq": "Vendosi këmbët në gjerësinë e ijëve.",
+            "en": "Set your feet at hip width."
+          },
+          {
+            "sq": "Mbaji shpatullat të tërhequra poshtë dhe shiko pak përpara, që qafa të mbetet në vijë me shtyllën.",
+            "en": "Keep your shoulders drawn down and look slightly ahead so your neck stays in line with your spine."
+          }
+        ],
+        "sources": [
+          "nasm_plank",
+          "ace_plank"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Forco barkun duke tërhequr kërthizën drejt shtyllës.",
+            "en": "Brace your core by drawing your navel towards your spine."
+          },
+          {
+            "sq": "Ngrije trupin dhe formo një vijë të drejtë nga koka te thembrat, me shtyllën neutrale.",
+            "en": "Lift your body into a straight line from head to heels with a neutral spine."
+          },
+          {
+            "sq": "Mbaje pozicionin me tension të vazhdueshëm në bark dhe me frymëmarrje të kontrolluar.",
+            "en": "Hold the position with steady core tension and controlled breathing."
+          },
+          {
+            "sq": "Kur mbaron koha, uli trupin në dysheme dhe pusho para setit tjetër.",
+            "en": "When time is up, lower to the floor and rest before the next set."
+          }
+        ],
+        "sources": [
+          "nasm_plank",
+          "ace_plank"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Mos e mbaj frymën: vazhdo të marrësh frymë gjatë gjithë mbajtjes.",
+            "en": "Don't hold your breath: keep breathing for the whole hold."
+          },
+          {
+            "sq": "NASM këshillon mbajtje 20 deri 30 s, me synim 60 s ose më shumë. ACE thotë se planket e mbajtura gjatë humbasin vlerën dhe jep 10 s mbajtje, 2 s pushim, 4 deri 6 sete.",
+            "en": "NASM advises holds of 20 to 30 s, working towards 60 s or more. ACE says planks held for a long time lose their value and gives 10 s holds, 2 s rest, 4 to 6 sets."
+          }
+        ],
+        "sources": [
+          "nasm_plank",
+          "ace_verstegen"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Vijë e drejtë, koka te thembrat",
+            "en": "Straight line, head to heels"
+          },
+          {
+            "sq": "Bërrylat nën shpatulla",
+            "en": "Elbows under your shoulders"
+          },
+          {
+            "sq": "Mos i lësho ijët poshtë",
+            "en": "Don't let your hips drop"
+          },
+          {
+            "sq": "Merr frymë, mos e mbaj",
+            "en": "Keep breathing"
+          }
+        ],
+        "sources": [
+          "nasm_plank",
+          "ace_plank"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Ijët lëshohen drejt dyshemesë: tregon se barku nuk punon.",
+            "en": "Letting your hips sag towards the floor: it shows your core is not working."
+          },
+          {
+            "sq": "Harkim i tepërt i belit ose anim i legenit përpara.",
+            "en": "Excessive arching of the lower back or tilting the pelvis forward."
+          },
+          {
+            "sq": "Bërrylat shumë përpara ose pas shpatullave; ngritje e shpatullave drejt veshëve.",
+            "en": "Elbows too far forward or behind your shoulders; shrugging your shoulders towards your ears."
+          },
+          {
+            "sq": "Frymëmarrja ndalet gjatë mbajtjes: barku humb presionin e brendshëm që e mban trupin të qëndrueshëm.",
+            "en": "Breathing stops during the hold: your abdomen loses the internal pressure that keeps your body stable."
+          },
+          {
+            "sq": "Rritje shumë e shpejtë e kohës pa e mbajtur formën e pastër.",
+            "en": "Adding time too quickly without keeping clean form."
+          }
+        ],
+        "sources": [
+          "nasm_plank",
+          "ace_plank"
+        ]
+      },
+      "tips": [
+        {
+          "who": "NASM",
+          "text": {
+            "sq": "Një mbajtje e shkurtër me formë të mirë i bën më mirë barkut se një e gjatë me ijë të rënë. Fut planket 2 deri 3 herë në javë brenda një programi më të gjerë për bërthamën.",
+            "en": "A short hold with good form does more for your abs than a long one with sagging hips. Include planks 2 to 3 times a week within a broader core programme."
+          },
+          "sources": [
+            "nasm_abs",
+            "nasm_plank"
+          ]
+        },
+        {
+          "who": "ACE",
+          "text": {
+            "sq": "Forco gjithë trupin gjatë mbajtjes, edhe vithet, që të ruash vijën e drejtë nga koka te thembrat.",
+            "en": "Brace your whole body during the hold, glutes included, to keep a straight line from head to heels."
+          },
+          "sources": [
+            "ace_verstegen"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Nëse ijët bien para 10 s, vëri gjunjët në dysheme në vend që ta mbash me formë të prishur.",
+            "en": "If your hips sag before 10 s, put your knees on the floor rather than holding with broken form."
+          }
+        ],
+        "sources": [
+          "nasm_red",
+          "acsm_road",
+          "ace_verstegen"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_abs": {
+          "label": "NASM, Best Abs Exercises",
+          "url": "https://www.nasm.org/resource-center/blog/training/best-abs-exercises",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasm_plank": {
+          "label": "NASM, Plank",
+          "url": "https://www.nasm.org/resource-center/exercise-library/plank",
+          "checked": "2026-11-15"
+        },
+        "ace_plank": {
+          "label": "ACE, Front Plank",
+          "url": "https://acefitness.org/resources/everyone/exercise-library/32/front-plank/",
+          "checked": "2026-11-15"
+        },
+        "ace_verstegen": {
+          "label": "ACE, Train This, Not That: The Core Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5038/train-this-not-that-the-core-edition/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Side Plank",
+      "tempo": null,
+      "setup": {
+        "items": [
+          {
+            "sq": "Shtrihu mbi njërën anë dhe mbaje trupin drejt si një dërrasë, nga koka te këmbët.",
+            "en": "Lie on one side and keep your body straight like a board, from head to feet."
+          },
+          {
+            "sq": "Mbështetu te parakrahu, me bërrylin nën shpatull.",
+            "en": "Prop yourself on your forearm with your elbow under your shoulder."
+          },
+          {
+            "sq": "Vendosi këmbët njëra mbi tjetrën ose pak njëra para tjetrës për ekuilibër më të mirë.",
+            "en": "Stack your feet or place one slightly in front of the other for better balance."
+          }
+        ],
+        "sources": [
+          "nasm_side",
+          "ace_side"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Forco barkun dhe ngri legenin nga dyshemeja derisa trupi të formojë vijë të drejtë.",
+            "en": "Brace your abs and lift your pelvis off the floor until your body forms a straight line."
+          },
+          {
+            "sq": "Mbaje legenin lart dhe shpatullat të tërhequra poshtë; mos e lër trupin të përkulet ose të rrotullohet.",
+            "en": "Keep your pelvis up and your shoulders drawn down; don't let your body sag or rotate."
+          },
+          {
+            "sq": "Kur mbaron koha, uli legenin në dysheme, pusho dhe kalo në anën tjetër.",
+            "en": "When time is up, lower your pelvis to the floor, rest and switch sides."
+          }
+        ],
+        "sources": [
+          "nasm_side",
+          "ace_side"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin ndërsa forcon barkun dhe ngre legenin; merr frymë ndërsa e ul.",
+            "en": "Breathe out as you brace and lift your pelvis; breathe in as you lower it."
+          },
+          {
+            "sq": "Mos e ndal frymëmarrjen gjatë mbajtjes: barku humb presionin e brendshëm dhe stabilitetin.",
+            "en": "Don't stop breathing during the hold: your abdomen loses internal pressure and stability."
+          },
+          {
+            "sq": "Cilësia para kohës: nis me 20 deri 30 s dhe ngjitu drejt 45 deri 60 s.",
+            "en": "Quality before time: start with 20 to 30 s and build towards 45 to 60 s."
+          }
+        ],
+        "sources": [
+          "ace_side",
+          "nasm_side"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Vijë e drejtë, koka te këmbët",
+            "en": "Straight line, head to feet"
+          },
+          {
+            "sq": "Bërryli nën shpatull",
+            "en": "Elbow under your shoulder"
+          },
+          {
+            "sq": "Ijët lart, mos i lësho",
+            "en": "Hips up, don't let them drop"
+          },
+          {
+            "sq": "Mos rrotullo trupin",
+            "en": "Don't rotate your torso"
+          }
+        ],
+        "sources": [
+          "nasm_side",
+          "ace_side"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Ijët shkojnë drejt dyshemesë: barku punon më pak.",
+            "en": "Hips drop towards the floor: your abs work less."
+          },
+          {
+            "sq": "Trupi anon para ose mbrapa: prishet drejtimi i trupit dhe stabiliteti.",
+            "en": "Your torso tips forwards or backwards: alignment and stability suffer."
+          },
+          {
+            "sq": "Bërryli shumë përpara ose pas shpatullës.",
+            "en": "Elbow too far in front of or behind your shoulder."
+          },
+          {
+            "sq": "Frymëmarrja ndalet gjatë mbajtjes: barku humb presionin e brendshëm dhe stabilitetin.",
+            "en": "Breathing stops during the hold: your abdomen loses internal pressure and stability."
+          },
+          {
+            "sq": "Koha shtohet shumë shpejt dhe forma prishet.",
+            "en": "Time is added too quickly and form breaks down."
+          }
+        ],
+        "sources": [
+          "nasm_side"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Stuart McGill, PhD · profesor emeritus, Universiteti i Waterloo (përmes ACE)",
+          "text": {
+            "sq": "Version më i lehtë: gjunjët të përkulur 90°, dora në shpatullën tjetër, ngri ijët dhe mbaji 10 s. Për më shumë sfidë, shtrij këmbët.",
+            "en": "An easier version: knees bent to 90°, your hand on the opposite shoulder; lift your hips and hold for 10 s. For a greater challenge, straighten your legs."
+          },
+          "sources": [
+            "ace_mcgill"
+          ]
+        },
+        {
+          "who": "McGill dhe Karpowicz, 2009 · Archives of Physical Medicine and Rehabilitation",
+          "text": {
+            "sq": "Në një studim me 8 burra të shëndetshëm (curl-up, side bridge, bird dog), forcimi i murit të barkut rriti në përgjithësi aktivizimin e obliqueve.",
+            "en": "In a study of 8 healthy men (curl-up, side bridge, bird dog), bracing the abdominal wall generally enhanced activation of the obliques."
+          },
+          "sources": [
+            "mcgill_2009"
+          ]
+        },
+        {
+          "who": "NASM",
+          "text": {
+            "sq": "Mbaj vijë të drejtë nga koka te thembrat dhe angazho vithet gjatë gjithë mbajtjes.",
+            "en": "Keep a straight line from head to heels and actively engage your glutes throughout the hold."
+          },
+          "sources": [
+            "nasm_abs"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Dhimbja gjatë ushtrimit, ndryshe nga djegia e muskulit, është sinjal për të ndalur; dhimbje e mprehtë ose e papritur: ndalo ushtrimin.",
+            "en": "Pain during the exercise, unlike the muscle burn, is a signal to stop; sharp or sudden pain: stop the exercise."
+          },
+          {
+            "sq": "Nëse nuk i mban ijët lart me trup të drejtë, nise nga gjunjët: është version më i lehtë.",
+            "en": "If you cannot hold your hips up in a straight line, start from your knees: it is an easier version."
+          }
+        ],
+        "sources": [
+          "nasm_red",
+          "acsm_road",
+          "ace_verstegen"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_abs": {
+          "label": "NASM, Best Abs Exercises",
+          "url": "https://www.nasm.org/resource-center/blog/training/best-abs-exercises",
+          "checked": "2026-11-15"
+        },
+        "ace_mcgill": {
+          "label": "ACE, Low Back Exercises: Stuart McGill's Big Three",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/7077/low-back-exercises-stuart-mcgill-s-big-three/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        },
+        "ace_verstegen": {
+          "label": "ACE, Train This, Not That: The Core Edition",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5038/train-this-not-that-the-core-edition/",
+          "checked": "2026-11-15"
+        },
+        "nasm_side": {
+          "label": "NASM, Side Plank",
+          "url": "https://www.nasm.org/resource-center/exercise-library/side-plank",
+          "checked": "2026-11-15"
+        },
+        "ace_side": {
+          "label": "ACE, Side Plank with Straight Leg",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/101/side-plank-with-straight-leg/",
+          "checked": "2026-11-15"
+        },
+        "mcgill_2009": {
+          "label": "McGill dhe Karpowicz, 2009, Archives of Physical Medicine and Rehabilitation",
+          "url": "https://europepmc.org/article/MED/19154838",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}
