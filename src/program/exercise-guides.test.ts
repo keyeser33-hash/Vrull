@@ -4,7 +4,11 @@ import { SHORTCUT_TO_SIZE } from './shortcut-to-size'
 import { type ExerciseGuide, type GuideFile, guideProblems } from './exercise-guides'
 
 const KNOWN = new Set([...SHORTCUT_TO_SIZE.exercises.map((exercise) => exercise.id), ...library.exercises.map((exercise) => exercise.id)])
-const FILES = import.meta.glob<GuideFile>('./guides/*.json', { eager: true, import: 'default' })
+// GUIDE_FILE=sts-chest.json e kufizon provën te një skedar, që agjentët paralelë të mos ndikojnë njëri-tjetrin.
+const ONLY = process.env.GUIDE_FILE
+const FILES = Object.fromEntries(
+  Object.entries(import.meta.glob<GuideFile>('./guides/*.json', { eager: true, import: 'default' })).filter(([path]) => !ONLY || path.endsWith(`/${ONLY}`)),
+)
 
 const t = (sq: string, en: string) => ({ sq, en })
 const list = (n: number, prefix: string, sources = ['nasm']) => ({

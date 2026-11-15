@@ -23,7 +23,7 @@ Biblioteka (`library.json`, 739) mban vetëm kategoritë strength, powerlifting,
 ## Hapat e një grupi
 
 1. **Brief-i**: ushtrimet e grupit, skedari i daljes `src/program/guides/<grupi>.json`, skedari i provave `docs/research/guides/<grupi>.md` (pohimi, lidhja, fjalia e burimit).
-2. **Kërkimi**: agjenti hap çdo burim, shkruan me fjalët e veta dhe e mbyll kur `npx vitest run src/program/exercise-guides.test.ts` kalon.
+2. **Kërkimi**: agjenti hap çdo burim, shkruan me fjalët e veta dhe e mbyll kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-guides.test.ts` kalon.
 3. **Kontrolli**: `vrull-reviewer` hap çdo lidhje te këshillat dhe siguria dhe rreth 30% të tjerave; çdo mospërputhje ndreqet ose pohimi hiqet.
 4. **Bashkimi**: orkestruesi lexon shqipen, nis provat, bën commit me `[skip ci]`, shkruan KOSTOT dhe MESIMET.
 5. **Videot e grupit** (vetëm biblioteka): skripti te built-in browser, rregullat e `exercise-videos.ts`; orkestruesi sheh vetëm rastet e paqarta.

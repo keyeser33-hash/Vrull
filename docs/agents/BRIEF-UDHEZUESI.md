@@ -8,7 +8,7 @@ Ky brief vlen për çdo agjent që shkruan udhëzues ushtrimesh. Brief-i i nisje
 2. `docs/research/guides/<grupi>.md`: për çdo ushtrim dhe çdo pohim, lidhja e burimit dhe fjalia e burimit që e mbështet (deri në 25 fjalë, në gjuhën e burimit), plus kredencialet e çdo eksperti dhe ku i vërtetove. Ky skedar është për kontrolluesin; nuk hyn në app.
 3. Raporti përfundimtar (tekst): ushtrimet e bëra, burimet që nuk u hapën, pohimet që hoqe, pyetjet e hapura, mësimet.
 
-Puna mbaron kur `npx vitest run src/program/exercise-guides.test.ts` kalon. Mos prek skedarë të tjerë. Mos bëj commit ose push.
+Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-guides.test.ts` kalon (prova vetëm për skedarin tënd; agjentë të tjerë shkruajnë skedarë të tjerë njëkohësisht). Mos prek skedarë të tjerë. Mos bëj commit ose push.
 
 ## Modeli
 
