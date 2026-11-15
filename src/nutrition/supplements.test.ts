@@ -21,14 +21,14 @@ describe('suplementet sipas orarit (§10)', () => {
       '17:45 Betainë',
       '17:45 BCAA',
     ])
-    expect(items.filter((item) => item.startsWith('19:30'))).toEqual([
-      '19:30 Kreatinë',
-      '19:30 Beta-alaninë',
-      '19:30 Betainë',
-      '19:30 BCAA',
-      '19:30 Karnitinë',
-      '19:30 Glutaminë',
-      '19:30 Dekstrozë ose gummy',
+    expect(items.filter((item) => item.startsWith('19:15'))).toEqual([
+      '19:15 Kreatinë',
+      '19:15 Beta-alaninë',
+      '19:15 Betainë',
+      '19:15 BCAA',
+      '19:15 Karnitinë',
+      '19:15 Glutaminë',
+      '19:15 Dekstrozë ose gummy',
     ])
   })
 

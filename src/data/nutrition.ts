@@ -7,6 +7,7 @@ import { mealSchedule } from '@/nutrition/schedule'
 import { type DoseUnit, doseForMeal, type Evidence } from '@/nutrition/supplements'
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, JIM_WEIGHT_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
+import { plannedWorkoutMinutes } from './training'
 import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
 import { myPlan, type MyPlanItem } from './my-plan'
 import { isSupplementSource, mealPowder, supplementList } from './supplements'
@@ -144,6 +145,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
     wakeTime: profile.wakeTime,
     sleepTime: profile.sleepTime,
     trainingTime: dayType === 'training' ? trainingTimeOn(schedule, date) : null,
+    workoutMinutes: dayType === 'training' ? await plannedWorkoutMinutes(store) : null,
     plan: mealPlanOn(schedule.plan, date),
   })
   const byLoggedAt = (a: LocalRow, b: LocalRow) => String(a.logged_at).localeCompare(String(b.logged_at))

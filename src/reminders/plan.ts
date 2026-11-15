@@ -69,6 +69,8 @@ export interface ReminderInput {
   supplements: (Omit<SupplementDef, 'key'> & { id: string; enabled: boolean })[]
   /** Llojet e ditëve të ndryshuara me dorë, sipas datës. */
   dayTypes: Record<string, DayType>
+  /** Kohëzgjatja e vlerësuar e stërvitjes (V62), për orën e vaktit pas stërvitjes; pa të, 60 min. */
+  workoutMinutes?: number | null
   /** Ora e stërvitjes sipas ditës ISO (V35); pa të, `trainingTime` për çdo ditë. */
   trainingTimes?: Record<number, string>
   /** Plani i vakteve (V35): vlen nga `from`, para saj `previous`. */
@@ -228,7 +230,7 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     const withSupplements = input.toggles.supplements && !smart?.muted.supplements
     const myPlan = smart?.plan[training ? 'training' : 'rest']
     const candidates: (Omit<Reminder, 'id'> & { priority: number })[] = []
-    for (const { meal, minutes } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? trainingTime : null, plan })) {
+    for (const { meal, minutes } of mealSchedule({ wakeTime: input.wakeTime, sleepTime: input.sleepTime, trainingTime: training ? trainingTime : null, workoutMinutes: input.workoutMinutes, plan })) {
       // Minutat e ditës: një vakt pas mesnate bie të nesërmen kalendarike, por i përket kësaj dite (V46).
       const mealAt = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, minutes)
       const mealKey = `${date}|${meal}`

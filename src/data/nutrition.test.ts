@@ -16,6 +16,27 @@ async function setup() {
   return store
 }
 
+describe('vakti pas stërvitjes (V62)', () => {
+  it('ora = fillimi + kohëzgjatja e vlerësuar e stërvitjes së radhës + 15 min', async () => {
+    const store = await setup()
+    const { plannedWorkoutMinutes } = await import('./training')
+    const minutes = await plannedWorkoutMinutes(store)
+    expect(minutes).toBeGreaterThan(0)
+    const day = await nutritionDay(store, MONDAY, at(MONDAY, '06:30'))
+    const post = day.meals.find((meal) => meal.meal === 'post_workout')!.time
+    const total = 18 * 60 + minutes! + 15
+    expect(post).toBe(`${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`)
+  })
+
+  it('pa program aktiv: 60 + 15 min', async () => {
+    const store = await setup()
+    const [settings] = await store.all('user_settings')
+    await store.put('user_settings', { id: settings.id, active_program_id: null })
+    const day = await nutritionDay(store, MONDAY, at(MONDAY, '06:30'))
+    expect(day.meals.find((meal) => meal.meal === 'post_workout')?.time).toBe('19:15')
+  })
+})
+
 describe('dita e ushqimit', () => {
   it('ditë pushimi për 80 kg: objektivat e Shtojcës C dhe shtatë vaktet me orë', async () => {
     const store = await setup()

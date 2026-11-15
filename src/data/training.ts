@@ -8,6 +8,7 @@ import type { WorkedSession } from '@/program/recovery'
 import { sessionVolume } from '@/progress/history'
 import { sessionBests } from '@/progress/records'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
+import { workoutMinutes } from '@/program/week-plan'
 import type {
   Block,
   Equipment,
@@ -280,6 +281,17 @@ export async function openSession(store: LocalStore, programId: string, pointer:
       row.week === pointer.week &&
       row.day_id === pointer.dayId,
   )
+}
+
+/**
+ * Kohëzgjatja e vlerësuar e stërvitjes së radhës (si "~45 min" te editori), për orën e vaktit pas
+ * stërvitjes (V62); null pa program aktiv, pa stërvitje të mbetur ose pa ushtrime.
+ */
+export async function plannedWorkoutMinutes(store: LocalStore): Promise<number | null> {
+  const loaded = await activeProgram(store)
+  if (!loaded || loaded.pointer.completed) return null
+  const minutes = workoutMinutes(planSession(loaded.engine, loaded.pointer).slots)
+  return minutes > 0 ? minutes : null
 }
 
 /** Gjithçka që i duhet ekranit Sot dhe seancës: plani i stërvitjes së radhës dhe seanca e nisur. */

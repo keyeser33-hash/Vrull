@@ -27,7 +27,7 @@ describe('oraret e përdoruesit', () => {
     expect(trainingTimeOn(saved, '2026-12-07')).toBe('21:00')
     // E enjtja në 20:30: darka bie te stërvitja dhe kalon pas saj (rregulli i PDF-së).
     const thursday = await nutritionDay(store, '2026-12-10', at('2026-12-10', '09:00'))
-    expect(thursday.meals.map((meal) => `${meal.time} ${meal.meal}`).slice(-4)).toEqual(['20:15 pre_workout', '22:00 post_workout', '23:00 dinner', '00:30 bedtime'])
+    expect(thursday.meals.map((meal) => `${meal.time} ${meal.meal}`).slice(-4)).toEqual(['20:15 pre_workout', '21:30 post_workout', '22:30 dinner', '00:30 bedtime'])
   })
 
   it('plani i vakteve vlen nga nesër; sot mbetet si ishte', async () => {

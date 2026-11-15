@@ -2,7 +2,8 @@ import type { MealKey } from './meals'
 
 // Orari i vakteve të një dite (SPEC §13 dhe PDF-ja): mëngjesi 1 në zgjim, mëngjesi 2 pas 45 min,
 // vaktet e tjera me hapa 2,5–3 orë, vakti para gjumit 30 min para gjumit. Në ditë stërvitjeje
-// shake-u dhe molla 15 min para, vakti pas stërvitjes 90 min pas fillimit. Kur një vakt bie te
+// shake-u dhe molla 15 min para; vakti pas stërvitjes 15 min pas mbarimit të vlerësuar të stërvitjes
+// ("brenda 30 minutave pas stërvitjes", PDF faqja 13; pa vlerësim, stërvitja llogaritet 60 min). Kur një vakt bie te
 // stërvitja (30 min para vaktit para stërvitjes deri 30 min pas vaktit pas saj), ai vjen 1 orë pas
 // vaktit pas stërvitjes dhe vaktet pas tij zhvendosen bashkë me të (rregulli i PDF-së).
 
@@ -12,6 +13,12 @@ export interface ScheduledMeal {
   /** Minutat nga mesnata e ditës; pas mesnate kalojnë 1440 (vakti i përket po kësaj dite, V46). */
   minutes: number
 }
+
+/** Kohëzgjatja e stërvitjes kur nuk dihet vlerësimi i programit. */
+export const DEFAULT_WORKOUT_MINUTES = 60
+/** Vakti pas stërvitjes vjen kaq minuta pas mbarimit, dhe asnjëherë më vonë se 30 (PDF, faqja 13). */
+const POST_WORKOUT_AFTER_END = 15
+const POST_WORKOUT_LATEST = 30
 
 const REGULAR: [MealKey, number][] = [
   ['breakfast_1', 0],
@@ -62,11 +69,14 @@ export function mealSchedule({
   wakeTime,
   sleepTime,
   trainingTime,
+  workoutMinutes,
   plan,
 }: {
   wakeTime: string
   sleepTime: string
   trainingTime: string | null
+  /** Kohëzgjatja e vlerësuar e stërvitjes së ditës (si te editori, "~45 min"); pa të, 60. */
+  workoutMinutes?: number | null
   plan?: MealPlan
 }): ScheduledMeal[] {
   const wake = toMinutes(wakeTime)
@@ -80,7 +90,8 @@ export function mealSchedule({
     let start = toMinutes(trainingTime)
     if (start < wake - 60) start += 1440
     const pre = start - 15
-    const post = start + 90
+    const duration = workoutMinutes && workoutMinutes > 0 ? workoutMinutes : DEFAULT_WORKOUT_MINUTES
+    const post = start + duration + Math.min(POST_WORKOUT_AFTER_END, POST_WORKOUT_LATEST)
     extra.push({ meal: 'pre_workout', minutes: pre }, { meal: 'post_workout', minutes: post })
     const first = meals.findIndex((entry) => entry.minutes >= pre - 30 && entry.minutes <= post + 30)
     if (first >= 0) {

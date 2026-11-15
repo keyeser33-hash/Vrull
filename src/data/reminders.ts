@@ -11,7 +11,7 @@ import { readSchedule } from './schedule-settings'
 import type { LocalStore } from './store'
 import { settingsRow } from './settings-row'
 import { supplementFoodIds, supplementList } from './supplements'
-import { trainingSnapshot } from './training'
+import { plannedWorkoutMinutes, trainingSnapshot } from './training'
 
 // Cilësimet e rikujtuesve (SPEC §13) dhe të dhënat që u duhen për t'u planifikuar. Të gjitha
 // cilësimet rrinë te `user_settings.reminders` (jsonb): çelësat, orët e qeta, llojet e heshtura
@@ -95,7 +95,7 @@ export async function setMeasurementDay(store: LocalStore, day: number) {
 
 /** Gjithçka që i duhet planit të rikujtuesve për 7 ditët nga `now`, me rikujtuesit e zgjuar (V37). */
 export async function reminderInput(store: LocalStore, now: Date): Promise<ReminderInput> {
-  const [profile, settings, supplements, snapshot, targets, schedule, missed] = await Promise.all([
+  const [profile, settings, supplements, snapshot, targets, schedule, missed, workoutMinutes] = await Promise.all([
     readProfile(store),
     reminderSettings(store),
     supplementList(store),
@@ -103,6 +103,7 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     store.all('nutrition_targets'),
     readSchedule(store),
     readMissedInput(store),
+    plannedWorkoutMinutes(store),
   ])
   // Ditët me check-in (V50): rikujtuesi i stërvitjes shton "Si ndihesh?" vetëm në ditët pa të.
   const today = localDate(now)
@@ -114,6 +115,7 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     wakeTime: profile.wakeTime,
     sleepTime: profile.sleepTime,
     trainingTime: profile.trainingTime,
+    workoutMinutes,
     trainingDays: profile.trainingDays,
     toggles: settings.toggles,
     measurementDay: settings.measurementDay,

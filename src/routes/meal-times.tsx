@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { inputClass } from '@/components/ui/field-styles'
 import { store, useLocalQuery } from '@/data/app-data'
+import { plannedWorkoutMinutes } from '@/data/training'
 import { mealPlanOn, readSchedule, saveSchedule, type ScheduleSettings } from '@/data/schedule-settings'
 import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -29,8 +30,9 @@ const tomorrowOf = (date: string) => {
 export function MealTimesPage() {
   const [today] = useState(() => localDate(new Date()))
   const schedule = useLocalQuery(() => readSchedule(store), [])
+  const minutes = useLocalQuery(() => plannedWorkoutMinutes(store), [])
   const { t } = useI18n()
-  if (!schedule) {
+  if (!schedule || minutes === undefined) {
     return (
       <div className="flex flex-col gap-5">
         <BackHeader title={t('food.schedule.title')} back={t('tab.food')} fallback="/ushqimi" />
@@ -38,7 +40,7 @@ export function MealTimesPage() {
       </div>
     )
   }
-  return <MealTimesEditor schedule={schedule} today={today} />
+  return <MealTimesEditor schedule={schedule} today={today} workoutMinutes={minutes} />
 }
 
 interface Draft {
@@ -48,7 +50,7 @@ interface Draft {
   plan: MealPlan
 }
 
-function MealTimesEditor({ schedule, today }: { schedule: ScheduleSettings; today: string }) {
+function MealTimesEditor({ schedule, today, workoutMinutes }: { schedule: ScheduleSettings; today: string; workoutMinutes: number | null }) {
   const { t } = useI18n()
   const navigate = useNavigate()
   const [draft, setDraft] = useState<Draft>(() => ({
@@ -62,7 +64,7 @@ function MealTimesEditor({ schedule, today }: { schedule: ScheduleSettings; toda
   const [failed, setFailed] = useState(false)
   const firstDay = schedule.trainingDays[0]
   const trainingTime = preview === 'training' && firstDay !== undefined ? (draft.trainingTimes[firstDay] ?? null) : null
-  const base = { wakeTime: draft.wakeTime, sleepTime: draft.sleepTime, trainingTime }
+  const base = { wakeTime: draft.wakeTime, sleepTime: draft.sleepTime, trainingTime, workoutMinutes }
   const defaults = mealSchedule(base)
   const meals = mealSchedule({ ...base, plan: draft.plan })
   const available = defaults.map((entry) => entry.meal)

@@ -40,7 +40,7 @@ describe('orari me gjumin pas mesnate', () => {
       '16:50 snack_pm 1010',
       '19:50 dinner 1190',
       '20:45 pre_workout 1245',
-      '22:30 post_workout 1350',
+      '22:15 post_workout 1335',
       '00:30 bedtime 1470',
     ])
   })
@@ -59,7 +59,7 @@ describe('orari i përdoruesit', () => {
       '16:50 snack_pm',
       '19:50 dinner',
       '20:45 pre_workout',
-      '22:30 post_workout',
+      '22:15 post_workout',
       '00:30 bedtime',
     ])
   })

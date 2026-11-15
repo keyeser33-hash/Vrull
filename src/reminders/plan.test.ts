@@ -39,9 +39,9 @@ describe('rikujtuesit (§13)', () => {
   it('ditë stërvitjeje: në mëngjes stërvitja e radhës; vaktet para dhe pas', () => {
     const items = lines(base({ from: new Date('2026-12-07T06:00:00') }))
     expect(items).toContain('07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00')
-    expect(items.filter((item) => item.startsWith('17:45') || item.startsWith('19:30'))).toEqual([
+    expect(items.filter((item) => item.startsWith('17:45') || item.startsWith('19:15'))).toEqual([
       '17:45 Para stërvitjes: Mollë, pluhur proteine · me pluhur proteine, kreatinë, beta-alaninë, betainë, BCAA',
-      '19:30 Pas stërvitjes: Karamele gummy · me kreatinë, beta-alaninë, betainë, BCAA, karnitinë, glutaminë, dekstrozë ose gummy',
+      '19:15 Pas stërvitjes: Karamele gummy · me kreatinë, beta-alaninë, betainë, BCAA, karnitinë, glutaminë, dekstrozë ose gummy',
     ])
   })
 
@@ -62,7 +62,7 @@ describe('rikujtuesit (§13)', () => {
     const items = lines(base({ from: new Date('2026-12-07T06:00:00'), days: 7 }), en)
     expect(items).toContain('07:30 Today: Phase 1 · Week 2 · Workout 3: Workout at 18:00')
     expect(items).toContain('07:00 Breakfast 1: Protein powder, cantaloupe · with protein powder')
-    expect(items).toContain('19:30 Post-workout: Gummy sweets · with creatine, beta-alanine, betaine, BCAA, carnitine, glutamine, dextrose or gummies')
+    expect(items).toContain('19:15 Post-workout: Gummy sweets · with creatine, beta-alanine, betaine, BCAA, carnitine, glutamine, dextrose or gummies')
     expect(items).toContain('07:30 Workout today: Workout at 18:00')
     expect(items).toContain('07:00 Weekly measurement: Weight before breakfast, measurements and photos.')
     const supplementsOnly = lines(base({ from: new Date('2026-12-09T13:10:00'), toggles: { meals: false, supplements: true, training: true, measurements: true } }), en)
@@ -168,7 +168,7 @@ describe('rikujtuesit e zgjuar (V37)', () => {
 
   it('kufiri: ditë stërvitjeje me nëntë vakte, katër njoftime sipas përparësisë; stërvitja nuk numërohet', () => {
     const items = planReminders(base({ from: MONDAY, smart: smart() }), sq)
-    expect(food(items)).toEqual(['13:00 Dreka', '17:45 Para stërvitjes', '19:30 Pas stërvitjes', '22:30 Para gjumit'])
+    expect(food(items)).toEqual(['13:00 Dreka', '17:45 Para stërvitjes', '19:15 Pas stërvitjes', '22:30 Para gjumit'])
     expect(kinds(items, 'training')).toHaveLength(1)
   })
 
@@ -196,15 +196,15 @@ describe('rikujtuesit e zgjuar (V37)', () => {
     expect(food(planReminders(base({ from: MONDAY, smart: smart({ logged }) }), sq))).toEqual([
       '13:00 Suplementet · Dreka',
       '17:45 Para stërvitjes',
-      '19:30 Pas stërvitjes',
+      '19:15 Pas stërvitjes',
       '22:30 Para gjumit',
     ])
     const lunchSupplements = SUPPLEMENTS.flatMap((supplement, index) => (supplement.timing.includes('lunch') ? [`2026-12-07|lunch|s${index}`] : []))
     const both = { ...logged, supplements: lunchSupplements }
     expect(food(planReminders(base({ from: MONDAY, smart: smart({ logged: both }) }), sq))).toEqual([
       '17:45 Para stërvitjes',
-      '19:30 Pas stërvitjes',
-      '20:30 Darka',
+      '19:15 Pas stërvitjes',
+      '20:15 Darka',
       '22:30 Para gjumit',
     ])
   })
