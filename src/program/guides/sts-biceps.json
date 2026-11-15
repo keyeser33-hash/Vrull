@@ -1,0 +1,1441 @@
+{
+  "group": "sts-biceps",
+  "guides": [
+    {
+      "exercise": "Barbell Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Qëndro me këmbët sa gjerësia e ijëve dhe kap shufrën me pëllëmbët përpara, me duart sa gjerësia e shpatullave ose pak më të gjera.",
+            "en": "Stand with your feet hip-width apart and grip the bar with your palms facing forward, hands shoulder-width or slightly wider."
+          },
+          {
+            "sq": "Forco barkun dhe mbaj shpatullat pas dhe poshtë.",
+            "en": "Brace your core and keep your shoulders back and down."
+          },
+          {
+            "sq": "Mbaj bërrylat pranë trupit; kyçet, bërrylat dhe shpatullat janë në një vijë.",
+            "en": "Keep your elbows next to your body; your wrists, elbows and shoulders are in one line."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "ace_curl"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Përkul bërrylat dhe ngrije shufrën drejt shpatullave.",
+            "en": "Bend your elbows and curl the bar towards your shoulders."
+          },
+          {
+            "sq": "Mbaj bërrylat pranë trupit dhe gjoksin të palëvizur: punojnë vetëm krahët.",
+            "en": "Keep your elbows by your sides and your chest still: only your arms move."
+          },
+          {
+            "sq": "Ule shufrën ngadalë dhe me kontroll deri te lartësia e ijëve, pa e lënë të bjerë.",
+            "en": "Lower the bar slowly and with control back to hip height, without letting it drop."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "ace_curl"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          },
+          {
+            "sq": "Nxirre frymën kur e ngre peshën, merre kur e ul.",
+            "en": "Breathe out as you curl the weight up, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "korakakis",
+          "ace_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat pranë trupit",
+            "en": "Elbows by your sides"
+          },
+          {
+            "sq": "Gjoksi i palëvizur",
+            "en": "Keep your chest still"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Ule ngadalë, mos e lësho",
+            "en": "Lower slowly, don't drop it"
+          },
+          {
+            "sq": "Kyçet e duarve të drejtë",
+            "en": "Wrists straight"
+          }
+        ],
+        "sources": [
+          "nasm",
+          "ace_curl",
+          "ace_db"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Peshë aq e rëndë sa trupi merr vrull dhe forma prishet.",
+            "en": "A load so heavy that body momentum takes over and your form breaks down."
+          },
+          {
+            "sq": "Lëkundja e shufrës në vend të lakimit të kontrolluar.",
+            "en": "Swinging the bar instead of curling it under control."
+          },
+          {
+            "sq": "Bërrylat largohen nga trupi gjatë ngritjes.",
+            "en": "Letting your elbows drift away from your body as you curl."
+          },
+          {
+            "sq": "Ulje pa kontroll: tensioni te muskuli humbet dhe ushtrimi bëhet më pak efikas.",
+            "en": "An uncontrolled lowering: the muscle loses tension and the exercise becomes less effective."
+          },
+          {
+            "sq": "Ngritja ose lëvizja e gjoksit për të ndihmuar krahët.",
+            "en": "Heaving or rocking your chest to help your arms."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "ace_curl"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Building Bigger Biceps)",
+          "text": {
+            "sq": "Barbell curl-in e quan ushtrimin kryesor për masë: bëje herët, kur je i freskët, me 3 sete me 8–10 përsëritje. Përdor kapje të hapur, me gishtin e madh poshtë shufrës dhe pa e mbështjellë, që të shtrëngosh më pak dhe të përqendrohesh te bicepsi.",
+            "en": "He calls the barbell curl the main mass mover: do it early, while fresh, for 3 sets of 8–10 reps. Use an open grip, with your thumb under the bar rather than wrapped round it, so you squeeze less and focus on the biceps."
+          },
+          "sources": [
+            "stoppani_qa"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e vë theksin te gjatësitë e gjata të muskulit dhe një përsëritje me 2 deri në 8 s. Nuk është e qartë nëse ia vlen ta zgjasësh uljen ose ngritjen, ndaj zgjidh peshën dhe kontrollin para sekondave.",
+            "en": "The review recommends a range that emphasises long muscle lengths and a rep lasting 2 to 8 s. It is unclear whether extending the lowering or the lifting phase helps, so put load and control ahead of seconds."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        },
+        {
+          "who": "Wolf, Androulakis-Korakakis, Fisher, Schoenfeld dhe Steele, 2023 · International Journal of Strength and Conditioning",
+          "text": {
+            "sq": "Meta-analiza gjeti një avantazh shumë të vogël për lëvizjen e plotë ndaj asaj të pjesshme, dhe thotë se e pjesshmja është alternativë e vlefshme për variacion ose kur dëmtimi pengon lëvizjen e plotë.",
+            "en": "The meta-analysis found a very small advantage for full over partial range of motion, and says partial range is a valid alternative for variety or when an injury rules out the full range."
+          },
+          "sources": [
+            "wolf"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Porcari dhe kolegëve · American Council on Exercise",
+          "text": {
+            "sq": "Te studimi i ACE-s me 16 persona me njëfarë përvoje me peshat dhe 70% të 1RM-së, concentration curl-i dha aktivizimin më të lartë të bicepsit. Incline dhe concentration curl-i aktivizuan shpatullën e përparme më pak se curl-i me shufër; kur shpatulla merr pjesë, i heq punën bicepsit.",
+            "en": "In the ACE study of 16 people with some weight-training experience at 70% of 1RM, the concentration curl gave the highest biceps activation. The incline and concentration curls used the front shoulder less than the barbell curl; when the shoulder joins in, it takes work away from the biceps."
+          },
+          "sources": [
+            "ace_study",
+            "ace_better"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën: pesha e tepërt dhe vrulli e kthejnë ushtrimin në lëkundje.",
+            "en": "Choose a load you can control: too much weight and momentum turn the exercise into a swing."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          },
+          {
+            "sq": "Nëse parakrahët të shqetësojnë me shufër të drejtë, provo curl-in me dumbbell.",
+            "en": "If a straight bar bothers your forearms, try the dumbbell curl."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "nasm_red",
+          "ace_better"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_curl": {
+          "label": "ACE, Bicep Curl",
+          "url": "https://www.acefitness.org/exercise-library-details/2/70/",
+          "checked": "2026-11-15"
+        },
+        "ace_db": {
+          "label": "ACE, Seated Dumbbell Bicep Curl",
+          "url": "https://www.acefitness.org/exerciselibrary/44/seated-dumbbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_study": {
+          "label": "ACE, studimi për ushtrimet e bicepsit (John Porcari, PhD, Universiteti i Wisconsin–La Crosse)",
+          "url": "https://www.acefitness.org/prosourcearticle/4933/ace-study-reveals-best-biceps-exercises",
+          "checked": "2026-11-15"
+        },
+        "ace_better": {
+          "label": "ACE, Building Better Biceps: Evidence-based Exercises for Strength and Function",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/9033/building-better-biceps-evidence-based-exercises-for-strength-and-function/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "wolf": {
+          "label": "Wolf, Androulakis-Korakakis, Fisher, Schoenfeld dhe Steele, 2023, International Journal of Strength and Conditioning",
+          "url": "https://journal.iusca.org/index.php/Journal/article/view/182",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Preacher Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu te stoli preacher dhe mbështet krahët e sipërm në jastëk.",
+            "en": "Sit at the preacher bench and rest your upper arms on the pad."
+          },
+          {
+            "sq": "Kap shufrën EZ me pëllëmbët kthyer lart; kapja e saj është diku mes asaj neutrale dhe asaj nga poshtë.",
+            "en": "Grip the EZ bar with your palms facing up; its grip sits somewhere between a neutral and a standard underhand grip."
+          },
+          {
+            "sq": "Fillo me krahët pothuajse të shtrirë dhe bërrylat të mbështetur në jastëk.",
+            "en": "Start with your arms almost straight and your elbows resting on the pad."
+          }
+        ],
+        "sources": [
+          "pedrosa",
+          "stoppani_qa"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Përkul bërrylat dhe ngrije shufrën drejt shpatullave, me krahët e sipërm në jastëk.",
+            "en": "Bend your elbows and curl the bar towards your shoulders, with your upper arms on the pad."
+          },
+          {
+            "sq": "Ule shufrën ngadalë deri sa krahët të jenë pothuajse të shtrirë.",
+            "en": "Lower the bar slowly until your arms are almost straight."
+          }
+        ],
+        "sources": [
+          "pedrosa",
+          "korakakis"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          },
+          {
+            "sq": "Nxirre frymën kur e ngre peshën, merre kur e ul.",
+            "en": "Breathe out as you curl the weight up, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "korakakis",
+          "ace_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahët e sipërm në jastëk",
+            "en": "Upper arms on the pad"
+          },
+          {
+            "sq": "Bërrylat të palëvizur",
+            "en": "Keep your elbows still"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          },
+          {
+            "sq": "Ule deri te shtrirja",
+            "en": "Lower to almost straight"
+          },
+          {
+            "sq": "Pa lëkundje",
+            "en": "No swinging"
+          }
+        ],
+        "sources": [
+          "pedrosa",
+          "stoppani_qa",
+          "nasm",
+          "korakakis"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Peshë aq e rëndë sa të detyron të lëkundesh ose të ngrihesh nga jastëku.",
+            "en": "A load so heavy that you swing or lift off the pad."
+          },
+          {
+            "sq": "Ulje e shpejtë ose e pakontrolluar: tensioni te muskuli humbet.",
+            "en": "A fast or uncontrolled lowering: the muscle loses tension."
+          },
+          {
+            "sq": "Shkurtimi i lëvizjes poshtë, pa e shtrirë krahun: humbet pjesa ku muskuli është më i gjatë.",
+            "en": "Cutting the range short at the bottom without extending your arm: you lose the part where the muscle is longest."
+          },
+          {
+            "sq": "Bërrylat largohen nga njëri-tjetri ose nga jastëku gjatë ngritjes.",
+            "en": "Letting your elbows drift apart or off the pad during the curl."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "pedrosa",
+          "korakakis"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Pedrosa dhe kolegët, 2023 · Sports",
+          "text": {
+            "sq": "Në një studim 8-javor me 19 gra të patrajnuara, krahu që stërvitej në pjesën fillestare të lëvizjes (0°–68°, nga krahu i shtrirë) kishte rritje më të madhe të bicepsit në pjesën distale dhe fitim më të madh të 1RM-së se krahu që stërvitej në pjesën e fundit (68°–135°).",
+            "en": "In an 8-week study of 19 untrained women, the arm trained in the initial part of the range (0°–68°, from a straight arm) gained more biceps size in the distal region and more 1RM than the arm trained in the final part (68°–135°)."
+          },
+          "sources": [
+            "pedrosa"
+          ]
+        },
+        {
+          "who": "Oliveira dhe kolegët, 2009 · Journal of Sports Science and Medicine",
+          "text": {
+            "sq": "Te një studim EMG me dumbbell, curl-i incline dhe curl-i i zakonshëm me dumbbell dhanë aktivizim të ngjashëm të bicepsit gjatë gjithë lëvizjes, ndërsa curl-i preacher dha aktivizim të lartë vetëm në një pjesë të vogël të këndit të bërrylit.",
+            "en": "In an EMG study with dumbbells, the incline curl and the standard dumbbell curl gave similar biceps activation across the whole range, while the preacher curl gave high activation only over a short range of elbow angle."
+          },
+          "sources": [
+            "oliveira"
+          ]
+        },
+        {
+          "who": "Kassiano dhe kolegët, 2025 · International Journal of Sports Medicine",
+          "text": {
+            "sq": "Në një provë të randomizuar me 63 gra të reja, 8 javë, incline curl-i dha rritje më të madhe të trashësisë së fleksorëve të bërrylit në pjesën proksimale të krahut (diferenca mesatare 0,08 cm) dhe preacher curl-i në pjesën distale (0,10 cm).",
+            "en": "In a randomised trial of 63 young women over 8 weeks, the incline curl gave a greater gain in elbow flexor thickness in the proximal part of the arm (mean difference 0.08 cm) and the preacher curl in the distal part (0.10 cm)."
+          },
+          "sources": [
+            "kassiano"
+          ]
+        },
+        {
+          "who": "Attarieh dhe kolegët, 2025 · European Journal of Sport Science",
+          "text": {
+            "sq": "Një studim me 15 burra, 10 javë, me kabllo, krahasoi preacher curl-in (shpatulla përpara) me Bayesian curl-in (shpatulla rreth 50° pas trupit, si te incline curl). Nuk gjeti dallim te hipertrofia ose forca dhe as dëshmi se bicepsi përfiton më shumë nga gjatësia e madhe.",
+            "en": "A study of 15 men over 10 weeks, using cables, compared the preacher curl (shoulder forward) with the Bayesian curl (shoulder about 50° behind the body, like an incline curl). It found no difference in hypertrophy or strength and no evidence that the biceps gains more from long lengths."
+          },
+          "sources": [
+            "attarieh"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën: pesha e tepërt dhe vrulli e kthejnë ushtrimin në lëkundje.",
+            "en": "Choose a load you can control: too much weight and momentum turn the exercise into a swing."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_db": {
+          "label": "ACE, Seated Dumbbell Bicep Curl",
+          "url": "https://www.acefitness.org/exerciselibrary/44/seated-dumbbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "oliveira": {
+          "label": "Oliveira dhe kolegët, 2009, Journal of Sports Science and Medicine",
+          "url": "https://www.jssm.org/jssm-08-24.xml-Fulltext",
+          "checked": "2026-11-15"
+        },
+        "pedrosa": {
+          "label": "Pedrosa dhe kolegët, 2023, Sports",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9960616",
+          "checked": "2026-11-15"
+        },
+        "kassiano": {
+          "label": "Kassiano dhe kolegët, 2025, International Journal of Sports Medicine",
+          "url": "https://thieme-connect.de/products/ejournals/html/10.1055/a-2517-0509",
+          "checked": "2026-11-15"
+        },
+        "attarieh": {
+          "label": "Attarieh dhe kolegët, 2025, European Journal of Sport Science",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11906226/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Incline Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në stol të pjerrët me shpinën te mbështetësja: koka, shpatullat dhe vithet prekin stolin, këmbët janë fort në dysheme.",
+            "en": "Sit on an incline bench with your back against the backrest: your head, shoulders and glutes touch the bench and your feet are planted on the floor."
+          },
+          {
+            "sq": "Mbaj dumbbell-et me pëllëmbët kthyer lart dhe lëri krahët të varen pranë trupit.",
+            "en": "Hold the dumbbells with your palms facing up and let your arms hang close to your body."
+          },
+          {
+            "sq": "Tërhiq shpatullat pas dhe poshtë.",
+            "en": "Draw your shoulder blades back and down."
+          },
+          {
+            "sq": "Nëse struktura e bërrylit nuk të lejon t'i mbash dumbbell-et në anë, zgjidh një pozicion të rehatshëm që e mban kyçin e dorës të drejtë.",
+            "en": "If your elbow structure stops you holding the dumbbells at your sides, choose a comfortable position that keeps your wrists straight."
+          }
+        ],
+        "sources": [
+          "ace_db",
+          "nasm_incline"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre frymën dhe përkul të dy bërrylat njëkohësisht drejt gjoksit.",
+            "en": "Breathe out and curl both elbows together towards your chest."
+          },
+          {
+            "sq": "Mos e harko shpinën, mos i çoj bërrylat përpara dhe mos i ngri shpatullat.",
+            "en": "Don't arch your back, move your elbows forward or shrug."
+          },
+          {
+            "sq": "Mbaj bërrylat të mbledhur anash trupit dhe mos e lëkund trupin.",
+            "en": "Keep your elbows tucked into your sides and don't swing your body."
+          },
+          {
+            "sq": "Merr frymë dhe ule dumbbell-et ngadalë deri te pozicioni fillestar.",
+            "en": "Breathe in and lower the dumbbells slowly back to the start."
+          },
+          {
+            "sq": "Variant: nise me pëllëmbët nga trupi, rrotulloji përpara gjatë ngritjes dhe kthejini mbrapa gjatë uljes.",
+            "en": "Variation: start with your palms facing your sides, rotate them forward as you lift and back as you lower."
+          }
+        ],
+        "sources": [
+          "ace_db",
+          "nasm_incline"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          },
+          {
+            "sq": "Nxirre frymën kur e ngre peshën, merre kur e ul.",
+            "en": "Breathe out as you curl the weight up, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "korakakis",
+          "ace_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina te mbështetësja",
+            "en": "Back against the pad"
+          },
+          {
+            "sq": "Bërrylat nuk shkojnë përpara",
+            "en": "Elbows stay back"
+          },
+          {
+            "sq": "Kyçet e drejtë",
+            "en": "Wrists straight"
+          },
+          {
+            "sq": "Shpatullat pas dhe poshtë",
+            "en": "Shoulders back and down"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "ace_db"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Harkimi i shpinës për ta ngritur peshën.",
+            "en": "Arching your back to lift the weight."
+          },
+          {
+            "sq": "Bërrylat shkojnë përpara: lëvizja ndryshon dhe shpatulla e përparme merr më shumë punë.",
+            "en": "Elbows drifting forward: the movement changes and the front shoulder does more of the work."
+          },
+          {
+            "sq": "Ngritja e shpatullave drejt veshëve.",
+            "en": "Shrugging your shoulders towards your ears."
+          },
+          {
+            "sq": "Kyçet e duarve të përkulur.",
+            "en": "Bent wrists."
+          },
+          {
+            "sq": "Lëkundja e trupit gjatë lakimit.",
+            "en": "Swinging your body while curling."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa vrulli e merr lëvizjen.",
+            "en": "A load so heavy that momentum takes over the movement."
+          }
+        ],
+        "sources": [
+          "ace_db",
+          "nasm",
+          "nasm_incline"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Building Bigger Biceps)",
+          "text": {
+            "sq": "Kur krahët bien pas trupit bicepsi shtrihet, dhe Stoppani thotë se një muskul i shtrirë mund të kontraktohet me më shumë forcë. Rrotulloje pëllëmbën lart (supinim) për të angazhuar më shumë biceps. Ai propozon 3 sete me 10–12 përsëritje.",
+            "en": "When your arms fall behind your body the biceps is stretched, and Stoppani says a stretched muscle can contract with more force. Turn your palm up (supinate) to bring in more biceps. He suggests 3 sets of 10–12 reps."
+          },
+          "sources": [
+            "stoppani_qa"
+          ]
+        },
+        {
+          "who": "Oliveira dhe kolegët, 2009 · Journal of Sports Science and Medicine",
+          "text": {
+            "sq": "Te një studim EMG me dumbbell, curl-i incline dhe curl-i i zakonshëm me dumbbell dhanë aktivizim të ngjashëm të bicepsit gjatë gjithë lëvizjes, ndërsa curl-i preacher dha aktivizim të lartë vetëm në një pjesë të vogël të këndit të bërrylit.",
+            "en": "In an EMG study with dumbbells, the incline curl and the standard dumbbell curl gave similar biceps activation across the whole range, while the preacher curl gave high activation only over a short range of elbow angle."
+          },
+          "sources": [
+            "oliveira"
+          ]
+        },
+        {
+          "who": "Kassiano dhe kolegët, 2025 · International Journal of Sports Medicine",
+          "text": {
+            "sq": "Në një provë të randomizuar me 63 gra të reja, 8 javë, incline curl-i dha rritje më të madhe të trashësisë së fleksorëve të bërrylit në pjesën proksimale të krahut (diferenca mesatare 0,08 cm) dhe preacher curl-i në pjesën distale (0,10 cm).",
+            "en": "In a randomised trial of 63 young women over 8 weeks, the incline curl gave a greater gain in elbow flexor thickness in the proximal part of the arm (mean difference 0.08 cm) and the preacher curl in the distal part (0.10 cm)."
+          },
+          "sources": [
+            "kassiano"
+          ]
+        },
+        {
+          "who": "Attarieh dhe kolegët, 2025 · European Journal of Sport Science",
+          "text": {
+            "sq": "Një studim me 15 burra, 10 javë, me kabllo, krahasoi preacher curl-in (shpatulla përpara) me Bayesian curl-in (shpatulla rreth 50° pas trupit, si te incline curl). Nuk gjeti dallim te hipertrofia ose forca dhe as dëshmi se bicepsi përfiton më shumë nga gjatësia e madhe.",
+            "en": "A study of 15 men over 10 weeks, using cables, compared the preacher curl (shoulder forward) with the Bayesian curl (shoulder about 50° behind the body, like an incline curl). It found no difference in hypertrophy or strength and no evidence that the biceps gains more from long lengths."
+          },
+          "sources": [
+            "attarieh"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Porcari dhe kolegëve · American Council on Exercise",
+          "text": {
+            "sq": "Te studimi i ACE-s me 16 persona me njëfarë përvoje me peshat dhe 70% të 1RM-së, concentration curl-i dha aktivizimin më të lartë të bicepsit. Incline dhe concentration curl-i aktivizuan shpatullën e përparme më pak se curl-i me shufër; kur shpatulla merr pjesë, i heq punën bicepsit.",
+            "en": "In the ACE study of 16 people with some weight-training experience at 70% of 1RM, the concentration curl gave the highest biceps activation. The incline and concentration curls used the front shoulder less than the barbell curl; when the shoulder joins in, it takes work away from the biceps."
+          },
+          "sources": [
+            "ace_study",
+            "ace_better"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaj kyçet e duarve të drejtë dhe mos i ngri shpatullat: kështu ngarkesa mbetet te krahët.",
+            "en": "Keep your wrists straight and don't shrug: that keeps the load on your arms."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          }
+        ],
+        "sources": [
+          "ace_db",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_db": {
+          "label": "ACE, Seated Dumbbell Bicep Curl",
+          "url": "https://www.acefitness.org/exerciselibrary/44/seated-dumbbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_study": {
+          "label": "ACE, studimi për ushtrimet e bicepsit (John Porcari, PhD, Universiteti i Wisconsin–La Crosse)",
+          "url": "https://www.acefitness.org/prosourcearticle/4933/ace-study-reveals-best-biceps-exercises",
+          "checked": "2026-11-15"
+        },
+        "ace_better": {
+          "label": "ACE, Building Better Biceps: Evidence-based Exercises for Strength and Function",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/9033/building-better-biceps-evidence-based-exercises-for-strength-and-function/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "nasm_incline": {
+          "label": "NASM, How to do a Incline Dumbbell Curl (video, përshkrimi)",
+          "url": "https://www.youtube.com/watch?v=0dT4L6Lsi80",
+          "checked": "2026-11-15"
+        },
+        "oliveira": {
+          "label": "Oliveira dhe kolegët, 2009, Journal of Sports Science and Medicine",
+          "url": "https://www.jssm.org/jssm-08-24.xml-Fulltext",
+          "checked": "2026-11-15"
+        },
+        "kassiano": {
+          "label": "Kassiano dhe kolegët, 2025, International Journal of Sports Medicine",
+          "url": "https://thieme-connect.de/products/ejournals/html/10.1055/a-2517-0509",
+          "checked": "2026-11-15"
+        },
+        "attarieh": {
+          "label": "Attarieh dhe kolegët, 2025, European Journal of Sport Science",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11906226/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Incline Cable Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Kap dorezën e kabllos dhe lëre krahun pas trupit, me shpatullën të shtrirë (te studimi, rreth 50° mbrapa trupit).",
+            "en": "Take the cable handle and let your arm sit behind your body, with the shoulder extended (about 50° behind the body in the study)."
+          },
+          {
+            "sq": "Mbaj lopatën e shpatullës të tërhequr pas.",
+            "en": "Keep your shoulder blade retracted."
+          }
+        ],
+        "sources": [
+          "attarieh",
+          "nasm_cable"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Lako bërrylin duke e mbajtur lopatën e shpatullës të tërhequr pas.",
+            "en": "Curl by flexing your elbow, keeping your shoulder blade retracted."
+          },
+          {
+            "sq": "Lako deri sa bërryli të përkulet plotësisht.",
+            "en": "Curl until your elbow is fully flexed."
+          },
+          {
+            "sq": "Kthehu ngadalë te pozicioni fillestar duke e shtrirë bërrylin.",
+            "en": "Slowly return to the start by extending your elbow."
+          }
+        ],
+        "sources": [
+          "nasm_cable"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          }
+        ],
+        "sources": [
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Lopata e shpatullës pas",
+            "en": "Shoulder blade back"
+          },
+          {
+            "sq": "Lako deri në përkulje të plotë",
+            "en": "Curl to full elbow flexion"
+          },
+          {
+            "sq": "Kthehu ngadalë",
+            "en": "Return slowly"
+          }
+        ],
+        "sources": [
+          "nasm_cable"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Lëkundja e trupit në vend të lakimit të kontrolluar.",
+            "en": "Swinging your body instead of curling under control."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa e prish kontrollin dhe vrulli e merr lëvizjen.",
+            "en": "A load so heavy that you lose control and momentum takes over."
+          },
+          {
+            "sq": "Ulje pa kontroll: tensioni te muskuli humbet.",
+            "en": "An uncontrolled lowering: the muscle loses tension."
+          }
+        ],
+        "sources": [
+          "nasm"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Attarieh dhe kolegët, 2025 · European Journal of Sport Science",
+          "text": {
+            "sq": "Një studim me 15 burra, 10 javë, me kabllo, krahasoi preacher curl-in (shpatulla përpara) me Bayesian curl-in (shpatulla rreth 50° pas trupit, si te incline curl). Nuk gjeti dallim te hipertrofia ose forca dhe as dëshmi se bicepsi përfiton më shumë nga gjatësia e madhe.",
+            "en": "A study of 15 men over 10 weeks, using cables, compared the preacher curl (shoulder forward) with the Bayesian curl (shoulder about 50° behind the body, like an incline curl). It found no difference in hypertrophy or strength and no evidence that the biceps gains more from long lengths."
+          },
+          "sources": [
+            "attarieh"
+          ]
+        },
+        {
+          "who": "Kassiano dhe kolegët, 2025 · International Journal of Sports Medicine",
+          "text": {
+            "sq": "Në një provë të randomizuar me 63 gra të reja, 8 javë, incline curl-i dha rritje më të madhe të trashësisë së fleksorëve të bërrylit në pjesën proksimale të krahut (diferenca mesatare 0,08 cm) dhe preacher curl-i në pjesën distale (0,10 cm).",
+            "en": "In a randomised trial of 63 young women over 8 weeks, the incline curl gave a greater gain in elbow flexor thickness in the proximal part of the arm (mean difference 0.08 cm) and the preacher curl in the distal part (0.10 cm)."
+          },
+          "sources": [
+            "kassiano"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën: pesha e tepërt dhe vrulli e kthejnë ushtrimin në lëkundje.",
+            "en": "Choose a load you can control: too much weight and momentum turn the exercise into a swing."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "nasm_cable": {
+          "label": "NASM, How to do Cable Biceps Curls with Shoulder Flexed (video, përshkrimi)",
+          "url": "https://www.youtube.com/watch?v=NuEXzpxehRk",
+          "checked": "2026-11-15"
+        },
+        "kassiano": {
+          "label": "Kassiano dhe kolegët, 2025, International Journal of Sports Medicine",
+          "url": "https://thieme-connect.de/products/ejournals/html/10.1055/a-2517-0509",
+          "checked": "2026-11-15"
+        },
+        "attarieh": {
+          "label": "Attarieh dhe kolegët, 2025, European Journal of Sport Science",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11906226/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Arm High Cable Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos dorezën me tirant te kasneci i sipërm i kullës së kabllos; duhet një stacion crossover i vërtetë, sepse ato më të ngushtët e kufizojnë lëvizjen.",
+            "en": "Attach a stirrup handle to the high pulley of the cable station; you need a true crossover station, because narrower ones limit the range of motion."
+          },
+          {
+            "sq": "Qëndro tërthor kullës dhe kapu me dorën tjetër për stabilitet, që rezistenca të mbetet edhe në fund të lëvizjes.",
+            "en": "Stand side-on to the station and hold the other side with your free hand for stability, so the resistance stays on at the end of the range."
+          },
+          {
+            "sq": "Kap dorezën me kapje të hapur: gishti i madh në të njëjtën anë me gishtat, që doreza të qëndrojë pranë kyçit.",
+            "en": "Hold the handle with an open grip: thumb on the same side as your fingers, so the handle stays near your wrist."
+          }
+        ],
+        "sources": [
+          "stoppani_high"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Mbaje krahun e sipërm të palëvizur dhe lakoje vetëm bicepsin.",
+            "en": "Keep your upper arm still and flex only the biceps."
+          },
+          {
+            "sq": "Kthe dorezën sa më afër që mundesh, për një kontraktim të mirë në fund.",
+            "en": "Curl the handle in as far as you can for a good peak contraction at the end."
+          },
+          {
+            "sq": "Ule ngadalë deri sa krahu të shtrihet plotësisht.",
+            "en": "Lower slowly until your arm is fully straight."
+          },
+          {
+            "sq": "Bëj të gjitha përsëritjet me një krah para se të ndërrosh.",
+            "en": "Finish all the reps on one arm before switching."
+          }
+        ],
+        "sources": [
+          "stoppani_high"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          }
+        ],
+        "sources": [
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërryli drejt dyshemesë",
+            "en": "Elbow pointing down"
+          },
+          {
+            "sq": "Krahu i sipërm i palëvizur",
+            "en": "Upper arm still"
+          },
+          {
+            "sq": "Kapje e hapur",
+            "en": "Open grip"
+          },
+          {
+            "sq": "Kthe sa më afër që mundesh",
+            "en": "Curl in as far as you can"
+          },
+          {
+            "sq": "Ule deri te shtrirja e plotë",
+            "en": "Lower to a full stretch"
+          }
+        ],
+        "sources": [
+          "stoppani_high"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërryli shkon pas trupit në vend që të tregojë drejt dyshemesë.",
+            "en": "The elbow drifting behind you instead of pointing down at the floor."
+          },
+          {
+            "sq": "Krahu i sipërm lëviz dhe puna nuk mbetet te bicepsi.",
+            "en": "The upper arm moving, so the work no longer stays on the biceps."
+          },
+          {
+            "sq": "Kapje e mbyllur që e afron dorezën te gishtat dhe ngarkon parakrahun më shumë se bicepsin.",
+            "en": "A closed grip that moves the handle to your fingers and loads the forearm more than the biceps."
+          },
+          {
+            "sq": "Ulje jo e plotë, pa e shtrirë krahun në fund.",
+            "en": "An incomplete lowering, without straightening your arm at the bottom."
+          }
+        ],
+        "sources": [
+          "stoppani_high"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (High Cable Curl Master Class)",
+          "text": {
+            "sq": "Stoppani e parapëlqen versionin me një krah: vija e tërheqjes është më horizontale dhe përqendrohesh te një krah, gjë që e lidh me lidhjen më të mirë mendje-muskul. Në Q&A-në e tij propozon 3 sete me 12–15 përsëritje.",
+            "en": "Stoppani prefers the one-arm version: the line of pull is more horizontal and you focus on a single arm, which he links to a better mind-muscle connection. In his Q&A he suggests 3 sets of 12–15 reps."
+          },
+          "sources": [
+            "stoppani_high",
+            "stoppani_qa"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (High Cable Curl Master Class)",
+          "text": {
+            "sq": "Pa stacion crossover, Stoppani sugjeron banda të lidhura lart ose një dumbbell curl të shtrirë anash në stol të sheshtë me krahun që varet drejt dyshemesë. Nëse stacioni është i ngushtë, mund të ngrihesh në gjunjë, por tërheqja bëhet më vertikale. Në mungesë të gjithçkaje, bëj curl të zakonshëm me dumbbell.",
+            "en": "With no crossover station, Stoppani suggests bands tethered high, or a dumbbell curl lying on your side on a flat bench with the working arm hanging towards the floor. If the station is narrow you can kneel, but the pull becomes more vertical. Failing all that, do a standard dumbbell curl."
+          },
+          "sources": [
+            "stoppani_high"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e vë theksin te gjatësitë e gjata të muskulit dhe një përsëritje me 2 deri në 8 s. Nuk është e qartë nëse ia vlen ta zgjasësh uljen ose ngritjen, ndaj zgjidh peshën dhe kontrollin para sekondave.",
+            "en": "The review recommends a range that emphasises long muscle lengths and a rep lasting 2 to 8 s. It is unclear whether extending the lowering or the lifting phase helps, so put load and control ahead of seconds."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          },
+          {
+            "sq": "Mendim i Stoppani-t, te diskutimi për tendinitin e bërrylit: shtrëngimi i dorezës pa e hapur dorën mund t'i çekuilibrojë muskujt dhe të çojë në dëmtime.",
+            "en": "Stoppani's view, in his discussion of elbow tendonitis: gripping and squeezing without opening your hand can unbalance the muscles and lead to injuries."
+          }
+        ],
+        "sources": [
+          "nasm_red",
+          "stoppani_qa"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "stoppani_high": {
+          "label": "Jim Stoppani, PhD, High Cable Curl Master Class",
+          "url": "https://www.jimstoppani.com/training/high-cable-curl",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Behind-Back Cable Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos kabllon ose bandën në pozicionin e poshtëm, që vija e tërheqjes të vijë nga pas trupit.",
+            "en": "Set the cable or band low, so the line of pull comes from behind your body."
+          },
+          {
+            "sq": "Qëndro me shpinën nga kulla dhe kap dorezën me një krah, që krahu të shkojë pas trupit.",
+            "en": "Stand with your back to the stack and take the handle in one hand, so your arm travels behind your body."
+          }
+        ],
+        "sources": [
+          "stoppani_qa",
+          "attarieh"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Mbaje bërrylin pas trupit dhe lakoje dorezën drejt shpatullës.",
+            "en": "Keep your elbow behind your body and curl the handle towards your shoulder."
+          },
+          {
+            "sq": "Mos lësho bërrylin të vijë përpara për ta ndihmuar peshën.",
+            "en": "Don't let your elbow come forward to help the weight up."
+          },
+          {
+            "sq": "Ule dorezën ngadalë deri sa krahu të jetë pothuajse i shtrirë.",
+            "en": "Lower the handle slowly until your arm is almost straight."
+          }
+        ],
+        "sources": [
+          "stoppani_qa",
+          "attarieh",
+          "korakakis"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          }
+        ],
+        "sources": [
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Mbaj bërrylin pas trupit",
+            "en": "Keep your elbow back"
+          },
+          {
+            "sq": "Pa mashtrim",
+            "en": "No cheating"
+          },
+          {
+            "sq": "Bërryli nuk vjen përpara",
+            "en": "Elbow stays behind you"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          },
+          {
+            "sq": "Ule deri te shtrirja",
+            "en": "Lower to almost straight"
+          }
+        ],
+        "sources": [
+          "stoppani_qa",
+          "korakakis"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërryli vjen përpara për ta ndihmuar peshën, që del nga pozicioni i shtrirë.",
+            "en": "The elbow coming forward to help the weight, taking your arm out of the stretched position."
+          },
+          {
+            "sq": "Lëkundja e trupit për ta kaluar pikën e dobët të lëvizjes.",
+            "en": "Swinging your body to get past the weak point of the range."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa e prish kontrollin.",
+            "en": "A load so heavy that you lose control."
+          },
+          {
+            "sq": "Ulje e shpejtë që e humb tensionin.",
+            "en": "A fast lowering that loses tension."
+          }
+        ],
+        "sources": [
+          "stoppani_qa",
+          "nasm"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Attarieh dhe kolegët, 2025 · European Journal of Sport Science",
+          "text": {
+            "sq": "Një studim me 15 burra, 10 javë, me kabllo, krahasoi preacher curl-in (shpatulla përpara) me Bayesian curl-in (shpatulla rreth 50° pas trupit, si te incline curl). Nuk gjeti dallim te hipertrofia ose forca dhe as dëshmi se bicepsi përfiton më shumë nga gjatësia e madhe.",
+            "en": "A study of 15 men over 10 weeks, using cables, compared the preacher curl (shoulder forward) with the Bayesian curl (shoulder about 50° behind the body, like an incline curl). It found no difference in hypertrophy or strength and no evidence that the biceps gains more from long lengths."
+          },
+          "sources": [
+            "attarieh"
+          ]
+        },
+        {
+          "who": "Kassiano dhe kolegët, 2025 · International Journal of Sports Medicine",
+          "text": {
+            "sq": "Në një provë të randomizuar me 63 gra të reja, 8 javë, incline curl-i dha rritje më të madhe të trashësisë së fleksorëve të bërrylit në pjesën proksimale të krahut (diferenca mesatare 0,08 cm) dhe preacher curl-i në pjesën distale (0,10 cm).",
+            "en": "In a randomised trial of 63 young women over 8 weeks, the incline curl gave a greater gain in elbow flexor thickness in the proximal part of the arm (mean difference 0.08 cm) and the preacher curl in the distal part (0.10 cm)."
+          },
+          "sources": [
+            "kassiano"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e vë theksin te gjatësitë e gjata të muskulit dhe një përsëritje me 2 deri në 8 s. Nuk është e qartë nëse ia vlen ta zgjasësh uljen ose ngritjen, ndaj zgjidh peshën dhe kontrollin para sekondave.",
+            "en": "The review recommends a range that emphasises long muscle lengths and a rep lasting 2 to 8 s. It is unclear whether extending the lowering or the lifting phase helps, so put load and control ahead of seconds."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën: pesha e tepërt dhe vrulli e kthejnë ushtrimin në lëkundje.",
+            "en": "Choose a load you can control: too much weight and momentum turn the exercise into a swing."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "kassiano": {
+          "label": "Kassiano dhe kolegët, 2025, International Journal of Sports Medicine",
+          "url": "https://thieme-connect.de/products/ejournals/html/10.1055/a-2517-0509",
+          "checked": "2026-11-15"
+        },
+        "attarieh": {
+          "label": "Attarieh dhe kolegët, 2025, European Journal of Sport Science",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11906226/",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Dumbbell Concentration Curl",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu dhe mbështet pjesën e sipërme të krahut kundër kofshës, me dumbbell-in që varet nga dora.",
+            "en": "Sit and press the upper part of your arm against your thigh, with the dumbbell hanging from your hand."
+          },
+          {
+            "sq": "Mund ta bësh edhe në këmbë; Stoppani e përmend si variant.",
+            "en": "You can also do it standing; Stoppani mentions it as a variation."
+          }
+        ],
+        "sources": [
+          "ace_study",
+          "stoppani_qa"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Lako dumbbell-in drejt shpatullës ndërsa krahu i sipërm mbetet i shtypur kundër kofshës.",
+            "en": "Curl the dumbbell towards your shoulder while your upper arm stays pressed against your thigh."
+          },
+          {
+            "sq": "Rrotulloje krahun nga brenda, që lëvizja të dalë anash dhe jo përpara trupit.",
+            "en": "Turn your arm inwards so the movement goes out to the side rather than in front of your body."
+          }
+        ],
+        "sources": [
+          "ace_study",
+          "stoppani_qa"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ule peshën 2 s (muskuli zgjatet), ngrije 1 s (muskuli shkurtohet): një përsëritje prej 2 deri në 8 s hyn te kufijtë që rekomandon rishikimi për rritjen e muskulit.",
+            "en": "Lower the weight for 2 s (the muscle lengthens), lift it for 1 s (the muscle shortens): a rep of 2 to 8 s sits within the range the review recommends for muscle growth."
+          },
+          {
+            "sq": "Nxirre frymën kur e ngre peshën, merre kur e ul.",
+            "en": "Breathe out as you curl the weight up, breathe in as you lower it."
+          }
+        ],
+        "sources": [
+          "korakakis",
+          "ace_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Krahu i sipërm te kofsha",
+            "en": "Upper arm against your thigh"
+          },
+          {
+            "sq": "Pa lëkundje",
+            "en": "No swinging"
+          },
+          {
+            "sq": "Rrotullo krahun nga brenda",
+            "en": "Turn your arm inwards"
+          },
+          {
+            "sq": "Ule ngadalë",
+            "en": "Lower slowly"
+          }
+        ],
+        "sources": [
+          "ace_study",
+          "stoppani_qa"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Krahu i sipërm shkëputet nga kofsha dhe lëkundet.",
+            "en": "The upper arm leaving your thigh and swinging."
+          },
+          {
+            "sq": "Peshë aq e rëndë sa vrulli e merr lëvizjen.",
+            "en": "A load so heavy that momentum takes over the movement."
+          },
+          {
+            "sq": "Ulje e shpejtë që e humb tensionin.",
+            "en": "A fast lowering that loses tension."
+          },
+          {
+            "sq": "Shpatulla e përparme merr punën në vend të bicepsit.",
+            "en": "The front shoulder taking over the work instead of the biceps."
+          }
+        ],
+        "sources": [
+          "ace_study",
+          "nasm"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Building Bigger Biceps)",
+          "text": {
+            "sq": "Stoppani e përshkruan concentration curl-in si lëvizje anash, ku e rrotullon krahun nga brenda, dhe thotë se mund të bëhet edhe në këmbë ose ulur.",
+            "en": "Stoppani describes the concentration curl as a sideways movement in which you turn your arm inwards, and says it can be done standing or seated."
+          },
+          "sources": [
+            "stoppani_qa"
+          ]
+        },
+        {
+          "who": "ACE, studimi i Porcari dhe kolegëve · American Council on Exercise",
+          "text": {
+            "sq": "Te studimi i ACE-s me 16 persona me njëfarë përvoje me peshat dhe 70% të 1RM-së, concentration curl-i dha aktivizimin më të lartë të bicepsit. Incline dhe concentration curl-i aktivizuan shpatullën e përparme më pak se curl-i me shufër; kur shpatulla merr pjesë, i heq punën bicepsit.",
+            "en": "In the ACE study of 16 people with some weight-training experience at 70% of 1RM, the concentration curl gave the highest biceps activation. The incline and concentration curls used the front shoulder less than the barbell curl; when the shoulder joins in, it takes work away from the biceps."
+          },
+          "sources": [
+            "ace_study",
+            "ace_better"
+          ]
+        },
+        {
+          "who": "Androulakis Korakakis dhe kolegët, 2023 · Journal of Functional Morphology and Kinesiology",
+          "text": {
+            "sq": "Rishikimi rekomandon një lëvizje që e vë theksin te gjatësitë e gjata të muskulit dhe një përsëritje me 2 deri në 8 s. Nuk është e qartë nëse ia vlen ta zgjasësh uljen ose ngritjen, ndaj zgjidh peshën dhe kontrollin para sekondave.",
+            "en": "The review recommends a range that emphasises long muscle lengths and a rep lasting 2 to 8 s. It is unclear whether extending the lowering or the lifting phase helps, so put load and control ahead of seconds."
+          },
+          "sources": [
+            "korakakis"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën: pesha e tepërt dhe vrulli e kthejnë ushtrimin në lëkundje.",
+            "en": "Choose a load you can control: too much weight and momentum turn the exercise into a swing."
+          },
+          {
+            "sq": "Dhimbje e mprehtë ose e papritur gjatë setit: ndalo ushtrimin dhe vendos nëse vazhdon.",
+            "en": "Sharp or sudden pain during a set: stop the exercise and decide whether to continue."
+          }
+        ],
+        "sources": [
+          "nasm",
+          "nasm_red"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm": {
+          "label": "NASM, Barbell Bicep Curl",
+          "url": "https://www.nasm.org/resource-center/exercise-library/barbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_db": {
+          "label": "ACE, Seated Dumbbell Bicep Curl",
+          "url": "https://www.acefitness.org/exerciselibrary/44/seated-dumbbell-bicep-curl",
+          "checked": "2026-11-15"
+        },
+        "ace_study": {
+          "label": "ACE, studimi për ushtrimet e bicepsit (John Porcari, PhD, Universiteti i Wisconsin–La Crosse)",
+          "url": "https://www.acefitness.org/prosourcearticle/4933/ace-study-reveals-best-biceps-exercises",
+          "checked": "2026-11-15"
+        },
+        "ace_better": {
+          "label": "ACE, Building Better Biceps: Evidence-based Exercises for Strength and Function",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/9033/building-better-biceps-evidence-based-exercises-for-strength-and-function/",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "stoppani_qa": {
+          "label": "Jim Stoppani, PhD, Building Bigger Biceps (Live Training Q&A)",
+          "url": "https://www.jimstoppani.com/training/building-bigger-biceps-live-training-qa-transcript",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801605/",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}

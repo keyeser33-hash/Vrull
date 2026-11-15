@@ -45,7 +45,9 @@ Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-gui
 - Shqip: sentence case, pa pikëçuditje dhe pa emoji, në vetën e dytë njëjës ("Ule shufrën"), me fjalët e `GLOSSARY.md`. Emrat e ushtrimeve mbeten në anglisht. Numrat me presje dhjetore (62,5), njësitë me hapësirë (kg, s, °).
 - Anglisht: anglishte britanike (favour, programme), përkthim besnik i shqipes, jo tekst tjetër.
 - Shkruaj me fjalët e tua; mos kopjo fjali nga burimi. Citatet shkojnë vetëm te skedari i provave.
-- Rreshti nuk e kalon 280 shenja; sinjali 40.
+- Rreshti nuk e kalon 280 shenja; këshilla dhe "Pak histori" 560; sinjali 40.
+- Kur një burim e kundërshton vetveten, ose dy burime nuk bien dakord, shkruaj të dyja fjalitë te skedari i provave dhe mos zgjidh njërën te udhëzuesi pa e thënë te raporti.
+- Mos i vër një burimi një fjali që është përfundimi yt ("Pra…", "Mos e bëj…"); përfundimi pa burim nuk hyn.
 
 ## Mjetet
 
