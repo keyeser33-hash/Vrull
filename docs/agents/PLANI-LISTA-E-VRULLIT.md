@@ -34,6 +34,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Vala 2 (15.11.2026, 9a7411f, de3a8be, 5beea77):** Ciqual 2025 (2025-11-03) 3 323 rreshta, CoFID 2021 2 820, Livsmedelsverket (2026-06-29) 2 605. Ndërtimi i plotë [V, `summary.json`]: 22 349 rreshta, roja 0 gabime dhe 1 447 `kcal_flag`, 7,9 MB, 0,8 MB me gzip. Frida 5.5 nuk u bë: shkarkimi zyrtar ridrejtohet te `s3q.ait.dtu.dk:9000`, që rrjeti i kësaj sesioni nuk e arrin; skedari (XLSX, 12,3 MB, DOI 10.11583/DTU.29500682) mund ta japë pronari. Për valën 3: karbohidratet e USDA ("by difference") përfshijnë fibrat, ato të Ciqual, CoFID dhe Livsmedelsverket jo; fibra e CoFID mungon te rreth gjysma e rreshtave; alkooli i CoFID (për 100 ml) u la jashtë.
 
+- **Vala 3, pjesa e parë (15.11.2026, 6babf8c, af56f60; V61):** karbohidratet e USDA pa fibrat (12 847 `computed`, 754 `includes_fiber`), `candidates.mjs`, formati `common/*.json` me vërtetimin (`common-list.mjs`) dhe prova e parë `common/001.json` me 94 të zakonshme (18 ushqime të Jimit dhe bazat shqiptare): 195 dyfishime të hequra, 22 154 rreshta, 0 gabime, 6 shënime `kcal_differs`. Pa përputhje: Clif Bar (markë), karamelet gummy; pluhuri i proteinës është "whey based" i USDA (352 kcal, plani i Jimit 400). Emrat shqip janë të pakontrolluar (`name_sq_checked: false`). Karbohidratet e `jim.ts` i përfshijnë fibrat: kur Lista lidhet me planin, kjo duhet njësuar.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
