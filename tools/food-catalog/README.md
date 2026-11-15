@@ -1,6 +1,6 @@
 # Ndërtimi i Listës së Vrullit (`tools/food-catalog/`)
 
-Kthen tabelat e hapura të ushqimeve në rreshta të njëtrajtshëm (për 100 g pjesë të ngrënshme) për `food_catalog`. Plani: `docs/agents/PLANI-LISTA-E-VRULLIT.md`; rregullat: SPEC §0.3h; burimet: `docs/research/food-sources.md`. Burimet: USDA FoodData Central (Foundation Foods, SR Legacy, FNDDS; branded jo) dhe, nga vala 2, Ciqual 2025.
+Kthen tabelat e hapura të ushqimeve në rreshta të njëtrajtshëm (për 100 g pjesë të ngrënshme) për `food_catalog`. Plani: `docs/agents/PLANI-LISTA-E-VRULLIT.md`; rregullat: SPEC §0.3h; burimet: `docs/research/food-sources.md`. Burimet: USDA FoodData Central (Foundation Foods, SR Legacy, FNDDS; branded jo) dhe, nga vala 2, Ciqual 2025 dhe CoFID 2021.
 
 Shkarkimet nuk hyjnë në repo; `sources.json` mban URL-në, versionin dhe sha256 të çdo skedari.
 
@@ -15,7 +15,7 @@ npx vitest run tools/food-catalog
 
 - `download.mjs`: shkarkon nga faqet zyrtare të burimeve (URL te `sources.json`), kontrollon sha256 (herën e parë e shkruan aty), nuk shkarkon dy herë, shpaketon zip-et te `<dosja>/<id>/`; me id në fund shkarkon vetëm ato burime. `NODE_USE_ENV_PROXY=1` vetëm pas proxy-t.
 - `usda.mjs`: leximi i tre datasets dhe rregulli i energjisë (te komenti i skedarit).
-- `ciqual.mjs`: leximi i Ciqual (XML) dhe rregullat e energjisë dhe të vlerave të veçanta (te komenti i skedarit). `common.mjs`: ndihmësit e përbashkët të burimeve të reja.
+- `ciqual.mjs`, `cofid.mjs`: leximi i Ciqual (XML) dhe i CoFID (Excel) me rregullat e energjisë dhe të vlerave të veçanta (te komenti i skedarit). `xlsx.mjs`: lexuesi minimal i XLSX me `unzip -p`, pa varësi të reja. `common.mjs`: ndihmësit e përbashkët të burimeve të reja.
 - `check.mjs`: roja (ID unike, burim, licencë, version; kcal brenda 15 % të 4P+4K+9Y ose `kcal_flag`; asnjë vlerë negative ose mbi 100 g; porcionet me gram > 0).
 - `build.mjs`: `catalog.jsonl` dhe `summary.json` (numri për burim, të hequrit, rregulluarit, shënimet e rojës, madhësia dhe madhësia e ngjeshur me gzip). Del me kod 1 kur roja ka gabime. Asgjë nuk shkruhet te `src/`.
 
@@ -25,6 +25,7 @@ npx vitest run tools/food-catalog
 - Karbohidratet janë "by difference"; një rresht pa to hiqet (nuk zëvendësohet me "by summation"). Deri në -1 g rrumbullakohen në 0 (e numëruar te `adjusted`).
 - Vlerat nuk përzihen mes burimeve: një rresht vjen nga një dataset.
 - Ciqual: kcal nga konstanta 328 (Rregullorja EU 1169/2011), proteina 25003 (kur mungon, 25000), karbohidratet 31000 (pa fibrat, ndryshe nga USDA), yndyra 40000, fibrat 34100. "traces" dhe "< x" bëhen 0, "-" është i munguar (fibrat null; një makro ose energji që mungon e heq rreshtin). `name_en` = `alim_nom_eng`, `name_source` = `alim_nom_fr` kur ndryshon.
+- CoFID: kcal = KCALS (protein 4, yndyrë 9, karbohidrat të disponueshëm 3,75, alkool 7), karbohidratet CHO (monosaharid, pa fibrat; 100–106 g bëhen 100, e numëruar), fibra vetëm AOAC (pa të, null; NSP nuk e zëvendëson). "Tr" = 0, "N" = i munguar. Pijet alkoolike (grupi Q, për 100 ml) dhe dy ushqimet me kodin e dyfishtë 13-669 hiqen.
 - `kcal_flag`: rreshti hyn, por kcal del jashtë 15 % të 4P+4K+9Y (alkool, fibra e lartë, Atwater specifik).
 - Kufiri i kcal te roja është 950 (yndyrat e pastra dalin 902); migrimi i `food_catalog` duhet të lejojë të njëjtin kufi.
 
@@ -43,5 +44,13 @@ Dataset: Table de composition nutritionnelle des aliments Ciqual 2025, versioni 
 > Sous réserve de : mentionner la paternité de l'« Information » : sa source (au moins le nom du « Concédant ») et la date de dernière mise à jour de l'« Information » réutilisée. [...] Cette mention de paternité ne confère aucun caractère officiel à la « Réutilisation » de l'« Information », et ne doit pas suggérer une quelconque reconnaissance ou caution par le « Concédant »...
 
 Citimi i datasetit (Dataverse): "Du Chaffaut, Laure; Oseredczuk, Marine; Gauvreau-Béziat, Julie, 2025, \"Table de composition nutritionnelle des aliments Ciqual 2025\", https://doi.org/10.57745/RDMHWY, Recherche Data Gouv, V1". Faqja "Burimet" shkruan: Anses, Table Ciqual 2025, përditësuar 2025-11-03 (skedarët) / 2025-11-19 (publikimi), pa sugjeruar miratim nga Anses.
+
+### UK CoFID 2021 (OGL-3.0)
+
+Dataset: McCance and Widdowson's The Composition of Foods Integrated Dataset 2021, Public Health England, përditësuar 19.03.2021, https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid. Faqja zyrtare: "All content is available under the Open Government Licence v3.0, except where otherwise stated", "© Crown copyright". Faqja nuk jep një fjali atribuimi të veçantë, ndaj vlen ajo e licencës (https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/):
+
+> acknowledge the source of the Information in your product or application by including or linking to any attribution statement specified by the Information Provider(s) and, where possible, provide a link to this licence; If the Information Provider does not provide a specific attribution statement, you must use the following: Contains public sector information licensed under the Open Government Licence v3.0.
+
+Faqja "Burimet" shkruan: "Contains public sector information licensed under the Open Government Licence v3.0. McCance and Widdowson's The Composition of Foods Integrated Dataset 2021, Public Health England, © Crown copyright 2021", me lidhjen te licenca.
 
 Prodhuar nga Claude (AI); rishikohet nga Andi

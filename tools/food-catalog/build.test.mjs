@@ -6,6 +6,7 @@ import { assemble, READERS } from './build.mjs'
 import { SOURCE_LICENSES } from './check.mjs'
 import { itemsOf, sha256Of, verifySha } from './download.mjs'
 import { readCiqual } from './ciqual.mjs'
+import { readCofid } from './cofid.mjs'
 import { readDataset } from './usda.mjs'
 
 const fixture = (name) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url))
@@ -16,23 +17,25 @@ const parts = () => [
     ['usda_fndds', 'fndds'],
   ].map(([source, dir]) => ({ source, version: 'test', ...readDataset(source, fixture(dir)) })),
   { source: 'ciqual', version: 'test', ...readCiqual(fixture('ciqual')) },
+  { source: 'cofid', version: 'test', ...readCofid(fixture('cofid/cofid-mini.xlsx')) },
 ]
 
 describe('ndërtimi i listës', () => {
   it('bashkon burimet pa gabime të rojës dhe numëron sipas burimit', () => {
     const { jsonl, summary, errors } = assemble(parts())
     expect(errors).toEqual([])
-    expect(summary.total).toBe(15)
+    expect(summary.total).toBe(20)
     expect(Object.fromEntries(Object.entries(summary.bySource).map(([key, value]) => [key, value.rows]))).toEqual({
       usda_foundation: 5,
       usda_sr_legacy: 2,
       usda_fndds: 3,
       ciqual: 5,
+      cofid: 5,
     })
     expect(summary.check.notes.kcal_flag).toBe(3)
     const rows = jsonl.trim().split('\n').map((line) => JSON.parse(line))
-    expect(rows).toHaveLength(15)
-    expect(new Set(rows.map((row) => row.id)).size).toBe(15)
+    expect(rows).toHaveLength(20)
+    expect(new Set(rows.map((row) => row.id)).size).toBe(20)
   })
 
   it('madhësia e ngjeshur përputhet me gzip të skedarit', () => {
@@ -72,6 +75,7 @@ describe('shkarkimi', () => {
       usda_sr_legacy: /^https:\/\/fdc\.nal\.usda\.gov\/fdc-datasets\/.+\.zip$/,
       usda_fndds: /^https:\/\/fdc\.nal\.usda\.gov\/fdc-datasets\/.+\.zip$/,
       ciqual: /^https:\/\/entrepot\.recherche\.data\.gouv\.fr\/api\/access\/datafile\/\d+$/,
+      cofid: /^https:\/\/assets\.publishing\.service\.gov\.uk\/media\/[0-9a-f]+\/.+\.xlsx$/,
     }
     expect(config.files.map((file) => file.id)).toEqual(Object.keys(official))
     for (const file of config.files) {

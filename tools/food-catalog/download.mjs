@@ -31,7 +31,7 @@ export function itemsOf(file, dir) {
   const kind = file.kind ?? 'zip'
   if (kind === 'zip') return [{ item: file, path: join(dir, `${file.id}.zip`) }]
   if (kind === 'parts') return file.parts.map((item) => ({ item, path: join(dir, file.id, item.name) }))
-  return [{ item: file, path: join(dir, file.id, file.name ?? `${file.id}.dat`) }]
+  return [{ item: file, path: join(dir, file.id, file.filename ?? `${file.id}.dat`) }]
 }
 
 async function fetchBytes(url) {

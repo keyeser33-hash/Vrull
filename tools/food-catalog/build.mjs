@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { checkCatalog } from './check.mjs'
 import { readCiqual } from './ciqual.mjs'
+import { readCofid } from './cofid.mjs'
 import { readDataset } from './usda.mjs'
 
 const SOURCES = fileURLToPath(new URL('./sources.json', import.meta.url))
@@ -19,6 +20,7 @@ export const READERS = {
   usda_sr_legacy: (dir, listVersion) => readDataset('usda_sr_legacy', dir, listVersion),
   usda_fndds: (dir, listVersion) => readDataset('usda_fndds', dir, listVersion),
   ciqual: readCiqual,
+  cofid: (dir, listVersion) => readCofid(join(dir, 'cofid-2021.xlsx'), listVersion),
 }
 
 /** Bashkon daljen e burimeve (në radhën e sources.json) dhe e kalon nga roja. Funksion i pastër, i provueshëm. */
