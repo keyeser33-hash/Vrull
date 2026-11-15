@@ -646,7 +646,7 @@ Numri në kllapa te "Slot" tregon setet kur janë 4; pa numër janë 3. Përsër
 | 3 | Incline Dumbbell Flye | Dumbbell Flye | Incline Dumbbell Flye |
 | 4 | Cable Crossover | Incline Cable Flye | Cable Crossover |
 | 5 | Triceps Pressdown | Triceps Pressdown | Triceps Pressdown |
-| 6 | Lying Triceps Extension | Dumbbell Overhead Triceps Extension | One-Arm Overhead Cable Triceps Extension |
+| 6 | Lying Triceps Extension | Dumbbell Overhead Triceps Extension | Cable Triceps Extension |
 | 7 | Cable Overhead Triceps Extension | Cable Lying Triceps Extension | Close-Grip Bench Press |
 | 8 (4, pulpa) | Standing Calf Raise | Standing Calf Raise | Standing Calf Raise |
 | 9 (4, pulpa) | Seated Calf Raise | Seated Calf Raise | Seated Calf Raise |
@@ -755,7 +755,7 @@ K = kryesor, N = ndihmës. Çelësat sipas Shtojcës D.
 | Dumbbell Flye | pectoralis_major_sternocostal | pectoralis_major_clavicular, deltoid_anterior |
 | Cable Crossover | pectoralis_major_sternocostal | pectoralis_minor, deltoid_anterior |
 | Close-Grip Bench Press | triceps_brachii | pectoralis_major_sternocostal, deltoid_anterior |
-| Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, One-Arm Overhead Cable Triceps Extension | triceps_brachii | – |
+| Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, Cable Triceps Extension | triceps_brachii | – |
 | Standing Calf Raise, Leg Press Calf Raise | gastrocnemius | soleus |
 | Seated Calf Raise | soleus | gastrocnemius |
 | Dumbbell Bent-Over Row | latissimus_dorsi, rhomboid_major | trapezius, teres_major, deltoid_posterior, biceps_brachii, erector_spinae |

@@ -103,9 +103,9 @@ Burimet janë ato të pikës 2 (ACE dhe Stoppani përshkruajnë shufrën; lëviz
 - ACE, Triceps Extension (dumbbell, ID 74) [D]: "Stand in a split stance holding one dumbbell with both hands"; "Brace your core and depress and retract your shoulder blades"; "extending your elbows until your upper arms are vertical to the floor. Elbows point forward and stay not completely locked"; "Stop when your elbows reach about a 90-degree bend or when your upper arms start moving backward"; cautions: "Don't let the dumbbell contact the back of your head", "Keep your head, torso, upper arms, wrists, and feet still"; tips: "elbows about shoulder-width apart"; frymë: "Exhale and slowly press ... Inhale and let the weight slowly bend your elbows." https://www.acefitness.org/resources/everyone/exercise-library/74/triceps-extension/
 - Maeo, Korakakis, Kholinne si te pika 4. NSCA Standard 3.2 [V] për pesha mbi kokë ose fytyrë. Dumbbell-i lëviz pas kokës, jo mbi fytyrë; zbatimi i standardit është gjykimi im [S] (shih pyetjet).
 
-## 6. One-Arm Overhead Cable Triceps Extension
+## 6. Cable Triceps Extension
 
-Asnjë burim i pranuar nuk e përshkruan këtë variant me një krah. Udhëzuesi është nxjerrë nga burimet e variantit me litar (pika 4): ACE (Kovar) për qëndrimin, shpinën dhe tensionin [D], Maeo për lëvizjen e bërrylit nga 90° në 0° me krahun mbi kokë [V]. Fakti që lëvizja bëhet me një dorë (dorezë e vetme, një bërryl) është gjykimi im [S], jo pohim i burimit. Përmendet te raporti.
+Emri është ai i PDF-së së Jimit (faqet 9–11, V62); më parë app-i e shkruante "One-Arm Overhead Cable Triceps Extension". Udhëzuesi nuk ndryshoi: PDF-ja nuk thotë nëse lëvizja është me një krah ose mbi kokë, ndaj teksti mbetet ai i variantit që u kërkua më parë. Asnjë burim i pranuar nuk e përshkruan këtë variant me një krah. Udhëzuesi është nxjerrë nga burimet e variantit me litar (pika 4): ACE (Kovar) për qëndrimin, shpinën dhe tensionin [D], Maeo për lëvizjen e bërrylit nga 90° në 0° me krahun mbi kokë [V]. Fakti që lëvizja bëhet me një dorë (dorezë e vetme, një bërryl) është gjykimi im [S], jo pohim i burimit. Përmendet te raporti.
 
 ## Pohimet e hequra
 

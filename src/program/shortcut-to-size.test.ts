@@ -16,7 +16,7 @@ const APPENDIX_A: Row[][] = [
     [3, 'main', 'Incline Dumbbell Flye', 'Dumbbell Flye', 'Incline Dumbbell Flye'],
     [3, 'main', 'Cable Crossover', 'Incline Cable Flye', 'Cable Crossover'],
     [3, 'main', 'Triceps Pressdown', 'Triceps Pressdown', 'Triceps Pressdown'],
-    [3, 'main', 'Lying Triceps Extension', 'Dumbbell Overhead Triceps Extension', 'One-Arm Overhead Cable Triceps Extension'],
+    [3, 'main', 'Lying Triceps Extension', 'Dumbbell Overhead Triceps Extension', 'Cable Triceps Extension'],
     [3, 'main', 'Cable Overhead Triceps Extension', 'Cable Lying Triceps Extension', 'Close-Grip Bench Press'],
     [4, 'calves', 'Standing Calf Raise', 'Standing Calf Raise', 'Standing Calf Raise'],
     [4, 'calves', 'Seated Calf Raise', 'Seated Calf Raise', 'Seated Calf Raise'],
@@ -101,7 +101,7 @@ const APPENDIX_E: [string, string, string][] = [
   ['Cable Crossover', 'pectoralis_major_sternocostal', 'pectoralis_minor, deltoid_anterior'],
   ['Close-Grip Bench Press', 'triceps_brachii', 'pectoralis_major_sternocostal, deltoid_anterior'],
   [
-    'Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, One-Arm Overhead Cable Triceps Extension',
+    'Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, Cable Triceps Extension',
     'triceps_brachii',
     '',
   ],

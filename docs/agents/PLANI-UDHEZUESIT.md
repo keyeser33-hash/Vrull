@@ -35,7 +35,7 @@ Biblioteka (`library.json`, 739) mban vetëm kategoritë strength, powerlifting,
 | Grupi | Skedari | Ushtrimet |
 |---|---|---|
 | A | `sts-chest.json` | Bench Press (konvertim i tekstit të kontrolluar), Incline Bench Press, Incline Dumbbell Press, Reverse-Grip Incline Dumbbell Press, Incline Dumbbell Flye, Incline Cable Flye, Dumbbell Flye, Cable Crossover, Close-Grip Bench Press |
-| B | `sts-triceps.json` | Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, One-Arm Overhead Cable Triceps Extension |
+| B | `sts-triceps.json` | Triceps Pressdown, Lying Triceps Extension, Cable Lying Triceps Extension, Cable Overhead Triceps Extension, Dumbbell Overhead Triceps Extension, Cable Triceps Extension |
 | C | `sts-back.json` | Dumbbell Bent-Over Row, Seated Cable Row, Wide-Grip Pulldown, Behind-Neck Pulldown, Reverse-Grip Pulldown, Standing Pulldown, Straight-Arm Pulldown |
 | D | `sts-biceps.json` | Barbell Curl, Preacher Curl, Dumbbell Incline Curl, Incline Cable Curl, One-Arm High Cable Curl, Behind-Back Cable Curl, Dumbbell Concentration Curl |
 | E | `sts-shoulders.json` | Dumbbell Shoulder Press, Dumbbell Lateral Raise, One-Arm Cable Lateral Raise, One-Arm Cable Front Raise, High Cable Rear Delt Fly, Bent-Over Lateral Raise, Smith Machine Upright Row, Dumbbell Upright Row, Dumbbell Shrug, Barbell Shrug, One-Arm Smith Machine Shrug |

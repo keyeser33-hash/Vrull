@@ -153,7 +153,7 @@ export const EXERCISE_VIDEOS: Record<string, ExerciseVideos> = {
     ],
   },
   // videoja tregon variantin me dy krahë
-  'One-Arm Overhead Cable Triceps Extension': {
+  'Cable Triceps Extension': {
     main: stoppani('bEDusgF5SGQ', 'Cable Overhead Triceps Extension Tips by Jim Stoppani', 381),
     more: [
       athleanX('Fwl0T1_giQ0', 'Stop Doing THIS Triceps Exercise (DO THIS INSTEAD!)', 418),
