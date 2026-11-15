@@ -736,7 +736,8 @@
     "group": "Mish",
     "preferred": "usda-fdc-172643",
     "also": [
-      "cofid-18-486"
+      "cofid-18-486",
+      "usda-fdc-175269"
     ]
   },
   {
@@ -841,7 +842,7 @@
   {
     "key": "cookies-oatmeal-raisin",
     "rank": 369,
-    "name_sq": "Biskota me tërshërë dhe stafida",
+    "name_sq": "Biskota me tërshërë dhe stafidhe",
     "name_en": "Cookie, oatmeal with raisins",
     "group": "Sheqer dhe ëmbëlsira",
     "preferred": "usda-fdc-333008",

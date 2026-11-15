@@ -336,7 +336,8 @@
     "group": "Perime",
     "preferred": "usda-fdc-2685579",
     "also": [
-      "usda-fdc-169074"
+      "usda-fdc-169074",
+      "usda-fdc-170054"
     ]
   },
   {
@@ -915,8 +916,11 @@
     "name_sq": "Griz (semolinë), i thatë",
     "name_en": "Semolina, enriched",
     "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-169715",
-    "also": []
+    "preferred": "usda-fdc-2003589",
+    "also": [
+      "usda-fdc-169715",
+      "ciqual-9610"
+    ]
   },
   {
     "key": "peanuts-roasted",

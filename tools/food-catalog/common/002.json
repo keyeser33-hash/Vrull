@@ -46,7 +46,7 @@
   {
     "key": "beef-ground-cooked",
     "rank": 99,
-    "name_sq": "Mish gjedhi i grirë, i pjekur",
+    "name_sq": "Mish gjedhi i grirë (90% pa yndyrë), i pjekur",
     "name_en": "Beef, ground, 80% lean meat / 20% fat, patty, cooked, pan-broiled",
     "group": "Mish",
     "preferred": "usda-fdc-171793",
@@ -322,7 +322,7 @@
   {
     "key": "raisins",
     "rank": 126,
-    "name_sq": "Stafida",
+    "name_sq": "Stafidhe",
     "name_en": "Raisins, golden, seedless",
     "group": "Fruta",
     "preferred": "usda-fdc-168165",
@@ -605,7 +605,8 @@
     "preferred": "usda-fdc-170317",
     "also": [
       "cofid-11-936",
-      "ciqual-25478"
+      "ciqual-25478",
+      "usda-fdc-2708613"
     ]
   },
   {
@@ -769,7 +770,9 @@
     "name_en": "Beef, loin, top sirloin filet, boneless, separable lean only, trimmed to 0\" fat, select, cooked, grilled",
     "group": "Mish",
     "preferred": "usda-fdc-173050",
-    "also": []
+    "also": [
+      "usda-fdc-168635"
+    ]
   },
   {
     "key": "lentils-raw",

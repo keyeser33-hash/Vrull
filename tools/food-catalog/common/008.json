@@ -106,15 +106,6 @@
     "also": []
   },
   {
-    "key": "chicken-wing-meat-roasted",
-    "rank": 713,
-    "name_sq": "Krah pule pa lëkurë, i pjekur",
-    "name_en": "Chicken wing, meat only, roasted",
-    "group": "Mish",
-    "preferred": "usda-fdc-172392",
-    "also": []
-  },
-  {
     "key": "chicken-ground-cooked",
     "rank": 714,
     "name_sq": "Mish pule i grirë, i gatuar",
@@ -209,14 +200,12 @@
     "name_en": "Pork shoulder, lean and fat, raw",
     "group": "Mish",
     "preferred": "usda-fdc-167843",
-    "also": [
-      "ciqual-28009"
-    ]
+    "also": []
   },
   {
     "key": "pork-loin-lf-raw",
     "rank": 724,
-    "name_sq": "Kurriz derri me dhjamë, i pagatuar",
+    "name_sq": "Fileto derri me dhjamë, e pagatuar",
     "name_en": "Pork loin, lean and fat, raw",
     "group": "Mish",
     "preferred": "usda-fdc-167818",
@@ -225,7 +214,7 @@
   {
     "key": "pork-loin-lf-roasted",
     "rank": 725,
-    "name_sq": "Kurriz derri me dhjamë, i pjekur",
+    "name_sq": "Fileto derri me dhjamë, e pjekur",
     "name_en": "Pork loin, lean and fat, roasted",
     "group": "Mish",
     "preferred": "usda-fdc-167821",
@@ -290,39 +279,10 @@
   {
     "key": "beef-sirloin-raw",
     "rank": 732,
-    "name_sq": "Biftek sirloin, i pagatuar",
+    "name_sq": "Biftek gjedhi (sirloin), i pagatuar",
     "name_en": "Beef top sirloin steak, raw",
     "group": "Mish",
     "preferred": "usda-fdc-2727574",
-    "also": []
-  },
-  {
-    "key": "beef-sirloin-broiled",
-    "rank": 733,
-    "name_sq": "Biftek sirloin, i pjekur",
-    "name_en": "Beef top sirloin steak, broiled",
-    "group": "Mish",
-    "preferred": "usda-fdc-168635",
-    "also": []
-  },
-  {
-    "key": "beef-porterhouse",
-    "rank": 734,
-    "name_sq": "Biftek porterhouse, i pagatuar",
-    "name_en": "Beef porterhouse steak, raw",
-    "group": "Mish",
-    "preferred": "usda-fdc-335109",
-    "also": [
-      "usda-fdc-168640"
-    ]
-  },
-  {
-    "key": "beef-strip-broiled",
-    "rank": 735,
-    "name_sq": "Biftek strip (top loin), i pjekur",
-    "name_en": "Beef top loin steak, broiled",
-    "group": "Mish",
-    "preferred": "usda-fdc-169541",
     "also": []
   },
   {
@@ -349,7 +309,7 @@
   {
     "key": "beef-round-eye-roasted",
     "rank": 738,
-    "name_sq": "Rosto gjedhi (eye of round), i pjekur",
+    "name_sq": "Rosto gjedhi (eye of round), e pjekur",
     "name_en": "Beef eye of round roast, cooked",
     "group": "Mish",
     "preferred": "usda-fdc-171807",
@@ -367,7 +327,7 @@
   {
     "key": "beef-chuck-pot-roast",
     "rank": 740,
-    "name_sq": "Rosto gjedhi (chuck), e zier",
+    "name_sq": "Mish gjedhi (shpatull) me dhjamë, i zier në tavë",
     "name_en": "Beef chuck pot roast, braised",
     "group": "Mish",
     "preferred": "usda-fdc-170614",
@@ -435,7 +395,7 @@
     "name_sq": "Kofshë qengji me dhjamë, e pjekur",
     "name_en": "Lamb leg, lean and fat, roasted",
     "group": "Mish",
-    "preferred": "usda-fdc-174314",
+    "preferred": "usda-fdc-174312",
     "also": []
   },
   {
@@ -444,7 +404,7 @@
     "name_sq": "Shpatull qengji me dhjamë, e pagatuar",
     "name_en": "Lamb shoulder, lean and fat, raw",
     "group": "Mish",
-    "preferred": "usda-fdc-174326",
+    "preferred": "usda-fdc-172496",
     "also": []
   },
   {
@@ -453,7 +413,7 @@
     "name_sq": "Shpatull qengji me dhjamë, e pjekur",
     "name_en": "Lamb shoulder, lean and fat, roasted",
     "group": "Mish",
-    "preferred": "usda-fdc-172499",
+    "preferred": "usda-fdc-174325",
     "also": []
   },
   {
@@ -471,7 +431,7 @@
     "name_sq": "Mëlçi qengji, e pagatuar",
     "name_en": "Lamb liver, raw",
     "group": "Mish",
-    "preferred": "usda-fdc-172615",
+    "preferred": "usda-fdc-172531",
     "also": [
       "ciqual-40102",
       "cofid-18-413",
@@ -484,7 +444,7 @@
     "name_sq": "Veshka qengji, të pagatuara",
     "name_en": "Lamb kidney, raw",
     "group": "Mish",
-    "preferred": "usda-fdc-174442",
+    "preferred": "usda-fdc-174354",
     "also": [
       "ciqual-40407",
       "cofid-18-402",
@@ -518,20 +478,13 @@
   {
     "key": "brains-cooked",
     "rank": 754,
-    "name_sq": "Tru, i gatuar",
+    "name_sq": "Tru gjedhi, i zier",
     "name_en": "Brains, cooked",
     "group": "Mish",
-    "preferred": "usda-fdc-2706159",
-    "also": []
-  },
-  {
-    "key": "veal-leg-raw",
-    "rank": 755,
-    "name_sq": "Mish viçi (kofshë), i pagatuar",
-    "name_en": "Veal leg (top round), raw",
-    "group": "Mish",
-    "preferred": "usda-fdc-175269",
-    "also": []
+    "preferred": "usda-fdc-168624",
+    "also": [
+      "usda-fdc-2706159"
+    ]
   },
   {
     "key": "veal-liver-raw",
@@ -556,13 +509,11 @@
   {
     "key": "luncheon-meat",
     "rank": 758,
-    "name_sq": "Mish i konservuar (luncheon meat)",
+    "name_sq": "Mish derri i konservuar (luncheon meat)",
     "name_en": "Luncheon meat, canned",
     "group": "Mish",
     "preferred": "usda-fdc-174571",
-    "also": [
-      "usda-fdc-2706211"
-    ]
+    "also": []
   },
   {
     "key": "frankfurter-chicken",
@@ -598,15 +549,6 @@
     "name_en": "Salami, cooked, turkey",
     "group": "Mish",
     "preferred": "usda-fdc-172937",
-    "also": []
-  },
-  {
-    "key": "turkey-breast-deli",
-    "rank": 763,
-    "name_sq": "Gjoks gjeldeti, në feta (deli)",
-    "name_en": "Turkey breast, sliced, prepackaged",
-    "group": "Mish",
-    "preferred": "usda-fdc-172941",
     "also": []
   },
   {
@@ -677,21 +619,11 @@
   {
     "key": "cod-fried",
     "rank": 771,
-    "name_sq": "Merluc i skuqur",
+    "name_sq": "Merluc atlantiku, i skuqur",
     "name_en": "Cod, fried",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-2706244",
     "also": []
-  },
-  {
-    "key": "cod-steamed",
-    "rank": 772,
-    "name_sq": "Merluc i zier në avull",
-    "name_en": "Cod, steamed",
-    "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-2706245",
-    "also": [],
-    "reason": "SR ka vetëm merlucin e Paqësorit, të pjekur (lloj tjetër)"
   },
   {
     "key": "seabass-fried",
@@ -730,15 +662,6 @@
     "also": []
   },
   {
-    "key": "shrimp-fried",
-    "rank": 777,
-    "name_sq": "Karkalec deti i skuqur",
-    "name_en": "Shrimp, fried",
-    "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-2706364",
-    "also": []
-  },
-  {
     "key": "calamari-cooked",
     "rank": 778,
     "name_sq": "Kallamar, i gatuar",
@@ -753,10 +676,9 @@
     "name_sq": "Skumbri i konservuar",
     "name_en": "Mackerel, canned",
     "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-175121",
-    "also": [
-      "usda-fdc-2706268"
-    ]
+    "preferred": "ciqual-26123",
+    "also": [],
+    "reason": "USDA ka vetëm jack mackerel (shkrapë), lloj tjetër nga skumbri"
   },
   {
     "key": "anchovy-canned",
@@ -785,8 +707,9 @@
     "name_sq": "Karkalec deti i konservuar",
     "name_en": "Shrimp, canned",
     "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-2706367",
+    "preferred": "usda-fdc-171972",
     "also": [
+      "usda-fdc-2706367",
       "cofid-16-247"
     ]
   },
@@ -872,8 +795,11 @@
     "name_sq": "Mocarela e freskët",
     "name_en": "Mozzarella, fresh",
     "group": "Qumësht dhe bulmet",
-    "preferred": "cofid-12-360",
-    "also": [],
+    "preferred": "ciqual-19590",
+    "also": [
+      "cofid-12-360",
+      "livsmedelsverket-2255"
+    ],
     "reason": "USDA ka vetëm mocarelën e përpunuar"
   },
   {
@@ -902,16 +828,18 @@
     "group": "Qumësht dhe bulmet",
     "preferred": "usda-fdc-2707444",
     "also": [],
-    "reason": "SR ka vetëm kosin e soje SILK me fruta (markë)"
+    "reason": "SR ka vetëm kosin e soje SILK (markë)"
   },
   {
     "key": "coffee-creamer",
     "rank": 795,
-    "name_sq": "Krem për kafe, i lëngshëm",
+    "name_sq": "Krem kafeje bimor (creamer), i lëngshëm",
     "name_en": "Coffee creamer, liquid",
     "group": "Qumësht dhe bulmet",
-    "preferred": "usda-fdc-2705600",
-    "also": []
+    "preferred": "usda-fdc-171261",
+    "also": [
+      "usda-fdc-2705600"
+    ]
   },
   {
     "key": "ice-cream-light",
@@ -931,15 +859,6 @@
     "name_en": "Ice cream, soft serve, vanilla",
     "group": "Qumësht dhe bulmet",
     "preferred": "usda-fdc-167981",
-    "also": []
-  },
-  {
-    "key": "gelato-vanilla",
-    "rank": 798,
-    "name_sq": "Xhelato me vanilje",
-    "name_en": "Gelato, vanilla",
-    "group": "Qumësht dhe bulmet",
-    "preferred": "usda-fdc-2705636",
     "also": []
   },
   {

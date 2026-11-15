@@ -1,40 +1,11 @@
 [
   {
-    "key": "cake-angel-food",
-    "rank": 902,
-    "name_sq": "Kek angel food",
-    "name_en": "Cake, angel food",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2707854",
-    "also": []
-  },
-  {
     "key": "cake-carrot",
     "rank": 903,
     "name_sq": "Tortë me karrota",
     "name_en": "Carrot cake",
     "group": "Sheqer dhe ëmbëlsira",
     "preferred": "usda-fdc-2707859",
-    "also": []
-  },
-  {
-    "key": "cake-boston-cream",
-    "rank": 904,
-    "name_sq": "Tortë Boston cream",
-    "name_en": "Boston cream pie",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-172696",
-    "also": [
-      "usda-fdc-2707858"
-    ]
-  },
-  {
-    "key": "cake-choc-white-icing",
-    "rank": 905,
-    "name_sq": "Tortë me çokollatë dhe krem të bardhë",
-    "name_en": "Chocolate cake with white icing, bakery",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2707864",
     "also": []
   },
   {
@@ -52,17 +23,10 @@
     "name_sq": "Copëza çokollate",
     "name_en": "Chocolate chips",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710333",
-    "also": []
-  },
-  {
-    "key": "choc-fudge",
-    "rank": 908,
-    "name_sq": "Fudge me çokollatë",
-    "name_en": "Chocolate fudge",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710340",
-    "also": []
+    "preferred": "usda-fdc-167976",
+    "also": [
+      "usda-fdc-2710333"
+    ]
   },
   {
     "key": "choc-peanut-butter",
@@ -92,40 +56,15 @@
     "also": []
   },
   {
-    "key": "candy-licorice",
-    "rank": 912,
-    "name_sq": "Sheqerka me hithër (licorice)",
-    "name_en": "Licorice candy",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710352",
-    "also": []
-  },
-  {
-    "key": "candy-mint",
-    "rank": 913,
-    "name_sq": "Sheqerka me nenexhik",
-    "name_en": "Mint candy",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710358",
-    "also": []
-  },
-  {
-    "key": "candy-lollipop",
-    "rank": 914,
-    "name_sq": "Llokum me shkop (lollipop)",
-    "name_en": "Lollipop",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710361",
-    "also": []
-  },
-  {
     "key": "peanut-brittle",
     "rank": 915,
-    "name_sq": "Karamel me kikirikë (peanut brittle)",
+    "name_sq": "Krokant me kikirikë",
     "name_en": "Peanut brittle",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710357",
-    "also": []
+    "preferred": "usda-fdc-169586",
+    "also": [
+      "usda-fdc-2710357"
+    ]
   },
   {
     "key": "fruit-leather",
@@ -135,26 +74,9 @@
     "group": "Sheqer dhe ëmbëlsira",
     "preferred": "usda-fdc-167541",
     "also": [
-      "usda-fdc-2710368"
+      "usda-fdc-2710368",
+      "usda-fdc-2710367"
     ]
-  },
-  {
-    "key": "fruit-snacks",
-    "rank": 917,
-    "name_sq": "Sheqerka me fruta (fruit snacks)",
-    "name_en": "Fruit snacks",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710367",
-    "also": []
-  },
-  {
-    "key": "candy-taffy",
-    "rank": 918,
-    "name_sq": "Karamele e butë (taffy)",
-    "name_en": "Taffy",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710369",
-    "also": []
   },
   {
     "key": "cotton-candy",
@@ -276,17 +198,10 @@
     "name_sq": "Pure domatesh",
     "name_en": "Tomato puree, canned",
     "group": "Të tjera",
-    "preferred": "usda-fdc-170546",
-    "also": []
-  },
-  {
-    "key": "tomato-sauce-canned",
-    "rank": 932,
-    "name_sq": "Salcë domateje e konservuar",
-    "name_en": "Tomato sauce, canned",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-170054",
-    "also": []
+    "preferred": "usda-fdc-2685582",
+    "also": [
+      "usda-fdc-170546"
+    ]
   },
   {
     "key": "dressing-honey-mustard",
@@ -295,15 +210,6 @@
     "name_en": "Honey mustard dressing",
     "group": "Të tjera",
     "preferred": "usda-fdc-171043",
-    "also": []
-  },
-  {
-    "key": "tamari",
-    "rank": 934,
-    "name_sq": "Salcë soje tamari",
-    "name_en": "Tamari soy sauce",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-174278",
     "also": []
   },
   {
@@ -327,15 +233,6 @@
     "also": []
   },
   {
-    "key": "walnuts-black",
-    "rank": 937,
-    "name_sq": "Arra të zeza",
-    "name_en": "Walnuts, black",
-    "group": "Arra dhe fara",
-    "preferred": "usda-fdc-170186",
-    "also": []
-  },
-  {
     "key": "cashews-roasted",
     "rank": 938,
     "name_sq": "Shqeme të pjekura, të kripura",
@@ -354,33 +251,28 @@
     "also": []
   },
   {
-    "key": "peanuts-boiled",
-    "rank": 940,
-    "name_sq": "Kikirikë të ziera, të kripura",
-    "name_en": "Peanuts, boiled, salted",
-    "group": "Arra dhe fara",
-    "preferred": "usda-fdc-174260",
-    "also": [
-      "usda-fdc-2707513"
-    ]
-  },
-  {
     "key": "chestnuts-raw",
     "rank": 941,
     "name_sq": "Gështenja të freskëta",
     "name_en": "Chestnuts, European, raw",
     "group": "Arra dhe fara",
-    "preferred": "usda-fdc-170575",
-    "also": []
+    "preferred": "usda-fdc-170574",
+    "also": [
+      "ciqual-15024",
+      "livsmedelsverket-1563"
+    ],
+    "reason": "SR \"raw, peeled\" pa fibra; SR \"unpeeled\" i ka (8,1 g)"
   },
   {
     "key": "pumpkin-seeds-roasted",
     "rank": 942,
-    "name_sq": "Fara kungulli të pjekura, pa kripë",
+    "name_sq": "Fara kungulli me lëvozhgë, të pjekura",
     "name_en": "Pumpkin seeds, roasted, unsalted",
     "group": "Arra dhe fara",
     "preferred": "usda-fdc-170188",
-    "also": []
+    "also": [
+      "usda-fdc-168601"
+    ]
   },
   {
     "key": "sunflower-seeds-roasted",
@@ -401,27 +293,9 @@
     "also": []
   },
   {
-    "key": "oil-sunflower-oleic",
-    "rank": 945,
-    "name_sq": "Vaj luledielli me oleik të lartë",
-    "name_en": "Sunflower oil, high oleic",
-    "group": "Yndyrna dhe vajra",
-    "preferred": "usda-fdc-172338",
-    "also": []
-  },
-  {
-    "key": "butter-whipped",
-    "rank": 946,
-    "name_sq": "Gjalpë i rrahur",
-    "name_en": "Butter, whipped",
-    "group": "Yndyrna dhe vajra",
-    "preferred": "usda-fdc-173411",
-    "also": []
-  },
-  {
     "key": "cream-light",
     "rank": 947,
-    "name_sq": "Krem i lehtë për kafe",
+    "name_sq": "Krem qumështi i lehtë (20% yndyrë)",
     "name_en": "Cream, light",
     "group": "Qumësht dhe bulmet",
     "preferred": "usda-fdc-170857",
@@ -430,57 +304,12 @@
     ]
   },
   {
-    "key": "evaporated-milk-nonfat",
-    "rank": 948,
-    "name_sq": "Qumësht i avulluar pa yndyrë",
-    "name_en": "Evaporated milk, nonfat",
-    "group": "Qumësht dhe bulmet",
-    "preferred": "usda-fdc-170878",
-    "also": []
-  },
-  {
     "key": "kohlrabi-cooked",
     "rank": 949,
-    "name_sq": "Kolrabi, e zier",
+    "name_sq": "Lakër rrepë (kolrabi), e zier",
     "name_en": "Kohlrabi, cooked",
     "group": "Perime",
     "preferred": "usda-fdc-168425",
-    "also": []
-  },
-  {
-    "key": "rutabaga-cooked",
-    "rank": 950,
-    "name_sq": "Rrepë e verdhë (rutabaga), e zier",
-    "name_en": "Rutabaga, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-168455",
-    "also": []
-  },
-  {
-    "key": "summer-squash-cooked",
-    "rank": 951,
-    "name_sq": "Kungull i njomë (crookneck), i zier",
-    "name_en": "Summer squash, crookneck, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-168465",
-    "also": []
-  },
-  {
-    "key": "mustard-greens-cooked",
-    "rank": 952,
-    "name_sq": "Gjethe mustarde, të ziera",
-    "name_en": "Mustard greens, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-169257",
-    "also": []
-  },
-  {
-    "key": "shiitake-stirfried",
-    "rank": 953,
-    "name_sq": "Kërpudha shiitake, të skuqura në tigan",
-    "name_en": "Shiitake mushrooms, stir-fried",
-    "group": "Perime",
-    "preferred": "usda-fdc-168435",
     "also": []
   },
   {
@@ -502,15 +331,6 @@
     "also": []
   },
   {
-    "key": "corn-white-cooked",
-    "rank": 956,
-    "name_sq": "Misër i ëmbël i bardhë, i zier",
-    "name_en": "Sweet corn, white, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-168539",
-    "also": []
-  },
-  {
     "key": "mushroom-crimini",
     "rank": 957,
     "name_sq": "Kërpudha kremini (kafe)",
@@ -520,48 +340,12 @@
     "also": []
   },
   {
-    "key": "mushroom-enoki",
-    "rank": 958,
-    "name_sq": "Kërpudha enoki",
-    "name_en": "Mushrooms, enoki",
-    "group": "Perime",
-    "preferred": "usda-fdc-2003600",
-    "also": []
-  },
-  {
     "key": "mushroom-king-oyster",
     "rank": 959,
     "name_sq": "Kërpudha pleurot të mëdha (king oyster)",
     "name_en": "Mushrooms, king oyster",
     "group": "Perime",
     "preferred": "usda-fdc-2003599",
-    "also": []
-  },
-  {
-    "key": "tomato-roma",
-    "rank": 960,
-    "name_sq": "Domate roma",
-    "name_en": "Tomato, roma",
-    "group": "Perime",
-    "preferred": "usda-fdc-1750354",
-    "also": []
-  },
-  {
-    "key": "spinach-baby",
-    "rank": 961,
-    "name_sq": "Spinaq i vogël (baby)",
-    "name_en": "Spinach, baby",
-    "group": "Perime",
-    "preferred": "usda-fdc-1750352",
-    "also": []
-  },
-  {
-    "key": "bamboo-shoots-cooked",
-    "rank": 962,
-    "name_sq": "Filiza bambuje, të ziera",
-    "name_en": "Bamboo shoots, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-169211",
     "also": []
   },
   {
@@ -583,33 +367,6 @@
     "also": []
   },
   {
-    "key": "plantain-boiled",
-    "rank": 965,
-    "name_sq": "Banane gatimi, e zier",
-    "name_en": "Plantain, green, boiled",
-    "group": "Perime",
-    "preferred": "usda-fdc-168216",
-    "also": []
-  },
-  {
-    "key": "plantain-fried",
-    "rank": 966,
-    "name_sq": "Banane gatimi, e skuqur",
-    "name_en": "Plantain, green, fried",
-    "group": "Perime",
-    "preferred": "usda-fdc-168199",
-    "also": []
-  },
-  {
-    "key": "plantain-baked",
-    "rank": 967,
-    "name_sq": "Banane gatimi e pjekur (e pjekur, e verdhë)",
-    "name_en": "Plantain, yellow, baked",
-    "group": "Perime",
-    "preferred": "usda-fdc-169131",
-    "also": []
-  },
-  {
     "key": "pears-dried",
     "rank": 968,
     "name_sq": "Dardha të thata",
@@ -628,33 +385,6 @@
     "also": []
   },
   {
-    "key": "currants-zante",
-    "rank": 970,
-    "name_sq": "Stafida korinti (zante)",
-    "name_en": "Currants, zante, dried",
-    "group": "Fruta",
-    "preferred": "usda-fdc-171724",
-    "also": []
-  },
-  {
-    "key": "blueberries-dried",
-    "rank": 971,
-    "name_sq": "Boronica të thata, të ëmbëlsuara",
-    "name_en": "Blueberries, dried, sweetened",
-    "group": "Fruta",
-    "preferred": "usda-fdc-168158",
-    "also": []
-  },
-  {
-    "key": "raisins-seeded",
-    "rank": 972,
-    "name_sq": "Stafida me fara",
-    "name_en": "Raisins, seeded",
-    "group": "Fruta",
-    "preferred": "usda-fdc-168166",
-    "also": []
-  },
-  {
     "key": "flour-00",
     "rank": 973,
     "name_sq": "Miell 00",
@@ -666,29 +396,23 @@
   {
     "key": "flour-spelt",
     "rank": 974,
-    "name_sq": "Miell spelte, integral",
+    "name_sq": "Miell shpelti, integral",
     "name_en": "Flour, spelt, whole grain",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2003587",
     "also": []
   },
   {
-    "key": "semolina-fine",
-    "rank": 975,
-    "name_sq": "Griz i imët",
-    "name_en": "Semolina, fine",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2003589",
-    "also": []
-  },
-  {
     "key": "flour-rice-brown",
     "rank": 976,
-    "name_sq": "Miell orizi kafe",
+    "name_sq": "Miell orizi integral",
     "name_en": "Flour, rice, brown",
     "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-1104812",
-    "also": []
+    "preferred": "usda-fdc-168898",
+    "also": [
+      "usda-fdc-1104812"
+    ],
+    "reason": "Foundation pa fibra (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "flour-buckwheat",
@@ -718,93 +442,12 @@
     "also": []
   },
   {
-    "key": "flour-cassava",
-    "rank": 980,
-    "name_sq": "Miell manioke",
-    "name_en": "Flour, cassava",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2512377",
-    "also": []
-  },
-  {
-    "key": "masa-harina",
-    "rank": 981,
-    "name_sq": "Miell misri për tortilla (masa harina)",
-    "name_en": "Corn flour, masa harina",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2710835",
-    "also": []
-  },
-  {
     "key": "flour-chestnut",
     "rank": 982,
     "name_sq": "Miell gështenje",
     "name_en": "Flour, chestnut",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2515377",
-    "also": []
-  },
-  {
-    "key": "flour-quinoa",
-    "rank": 983,
-    "name_sq": "Miell kinoa",
-    "name_en": "Flour, quinoa",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2512372",
-    "also": []
-  },
-  {
-    "key": "flour-bread",
-    "rank": 984,
-    "name_sq": "Miell për bukë",
-    "name_en": "Flour, bread",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-790146",
-    "also": []
-  },
-  {
-    "key": "flour-pastry",
-    "rank": 985,
-    "name_sq": "Miell për ëmbëlsira të buta (pastry)",
-    "name_en": "Flour, pastry",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-1104913",
-    "also": []
-  },
-  {
-    "key": "farro-raw",
-    "rank": 986,
-    "name_sq": "Farro, e thatë",
-    "name_en": "Farro, pearled, dry",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2710828",
-    "also": []
-  },
-  {
-    "key": "rice-black-raw",
-    "rank": 987,
-    "name_sq": "Oriz i zi, i thatë",
-    "name_en": "Rice, black, raw",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2710825",
-    "also": []
-  },
-  {
-    "key": "rice-red-raw",
-    "rank": 988,
-    "name_sq": "Oriz i kuq, i thatë",
-    "name_en": "Rice, red, raw",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2710838",
-    "also": []
-  },
-  {
-    "key": "flax-ground",
-    "rank": 989,
-    "name_sq": "Fara liri të bluara",
-    "name_en": "Flaxseed, ground",
-    "group": "Arra dhe fara",
-    "preferred": "usda-fdc-2262075",
     "also": []
   },
   {
@@ -828,11 +471,13 @@
   {
     "key": "choc-cream-filled",
     "rank": 992,
-    "name_sq": "Çokollatë me mbushje kremi",
+    "name_sq": "Çokollatë me mbushje fondant",
     "name_en": "Chocolate, cream filled",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2710344",
-    "also": []
+    "preferred": "usda-fdc-167978",
+    "also": [
+      "usda-fdc-2710344"
+    ]
   },
   {
     "key": "choc-dark-nuts",
@@ -876,26 +521,9 @@
     "name_sq": "Biskota me bajame",
     "name_en": "Cookie, almond",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2707900",
-    "also": []
-  },
-  {
-    "key": "taco-chicken-flour",
-    "rank": 998,
-    "name_sq": "Tako me pulë dhe djathë (tortilla gruri)",
-    "name_en": "Taco, flour tortilla, chicken, cheese",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708526",
-    "also": []
-  },
-  {
-    "key": "taco-beans-corn",
-    "rank": 999,
-    "name_sq": "Tako me fasule dhe djathë (tortilla misri)",
-    "name_en": "Taco, corn tortilla, beans, cheese",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708521",
-    "also": []
+    "preferred": "ciqual-24614",
+    "also": [],
+    "reason": "USDA ka vetëm biskotat shortbread pa bajame"
   },
   {
     "key": "egg-sandwich-cheese",

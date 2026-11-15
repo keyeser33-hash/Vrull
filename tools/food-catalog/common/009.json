@@ -9,27 +9,9 @@
     "also": []
   },
   {
-    "key": "rice-butter",
-    "rank": 803,
-    "name_sq": "Oriz i zier me gjalpë",
-    "name_en": "Rice, white, cooked with butter",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2708405",
-    "also": []
-  },
-  {
-    "key": "rice-oil",
-    "rank": 804,
-    "name_sq": "Oriz i zier me vaj",
-    "name_en": "Rice, white, cooked with oil",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2708404",
-    "also": []
-  },
-  {
     "key": "rice-parboiled-cooked",
     "rank": 805,
-    "name_sq": "Oriz parboiled, i zier",
+    "name_sq": "Oriz i avulluar (parboiled), i zier",
     "name_en": "Rice, white, parboiled, cooked",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-169708",
@@ -110,15 +92,6 @@
     "also": []
   },
   {
-    "key": "oats-steel-cut",
-    "rank": 813,
-    "name_sq": "Tërshërë e prerë (steel cut), e thatë",
-    "name_en": "Oats, steel cut",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-2346397",
-    "also": []
-  },
-  {
     "key": "oatmeal-milk",
     "rank": 814,
     "name_sq": "Tërshërë e gatuar me qumësht",
@@ -135,7 +108,8 @@
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-169731",
     "also": [
-      "ciqual-9863"
+      "ciqual-9821",
+      "cofid-11-715"
     ]
   },
   {
@@ -200,11 +174,11 @@
     "name_sq": "Bukë e vogël e bardhë (panine)",
     "name_en": "Roll, white, dinner",
     "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-172793",
+    "preferred": "usda-fdc-2707654",
     "also": [
-      "usda-fdc-2707654",
       "cofid-11-1006"
-    ]
+    ],
+    "reason": "SR ka vetëm dinner rolls me yndyrë"
   },
   {
     "key": "bread-garlic",
@@ -228,15 +202,6 @@
     "also": []
   },
   {
-    "key": "bread-italian",
-    "rank": 825,
-    "name_sq": "Bukë italiane",
-    "name_en": "Bread, Italian",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-174913",
-    "also": []
-  },
-  {
     "key": "pita-wholewheat",
     "rank": 826,
     "name_sq": "Bukë pita integrale",
@@ -257,39 +222,6 @@
     ]
   },
   {
-    "key": "bread-potato",
-    "rank": 828,
-    "name_sq": "Bukë me patate",
-    "name_en": "Bread, potato",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-167943",
-    "also": [
-      "usda-fdc-2707642"
-    ]
-  },
-  {
-    "key": "bread-egg",
-    "rank": 829,
-    "name_sq": "Bukë me vezë (challah)",
-    "name_en": "Bread, egg, challah",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-172673",
-    "also": [
-      "usda-fdc-2707624"
-    ]
-  },
-  {
-    "key": "bread-sprouted",
-    "rank": 830,
-    "name_sq": "Bukë me grurë të mbirë",
-    "name_en": "Bread, sprouted wheat",
-    "group": "Drithëra dhe bukë",
-    "preferred": "usda-fdc-171850",
-    "also": [
-      "usda-fdc-2707718"
-    ]
-  },
-  {
     "key": "breadsticks",
     "rank": 831,
     "name_sq": "Shkopinj buke (grissini)",
@@ -301,7 +233,7 @@
   {
     "key": "melba-toast",
     "rank": 832,
-    "name_sq": "Bukë e thatë (melba toast)",
+    "name_sq": "Peksimet (melba toast)",
     "name_en": "Melba toast",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-172822",
@@ -325,14 +257,13 @@
     "preferred": "usda-fdc-174975",
     "also": [
       "usda-fdc-2708150",
-      "ciqual-38410",
       "livsmedelsverket-1628"
     ]
   },
   {
     "key": "puff-pastry",
     "rank": 835,
-    "name_sq": "Brumë petash (puff pastry)",
+    "name_sq": "Brumë sfoliatë (puff pastry), i papjekur",
     "name_en": "Puff pastry",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-172790",
@@ -343,7 +274,7 @@
   {
     "key": "crepe",
     "rank": 836,
-    "name_sq": "Krep të thjeshtë",
+    "name_sq": "Krep i thjeshtë",
     "name_en": "Crepe",
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2708341",
@@ -366,7 +297,6 @@
     "group": "Drithëra dhe bukë",
     "preferred": "usda-fdc-2708486",
     "also": [
-      "ciqual-32129",
       "livsmedelsverket-726"
     ]
   },
@@ -389,15 +319,6 @@
     "also": []
   },
   {
-    "key": "potato-baked-flesh",
-    "rank": 841,
-    "name_sq": "Patate e pjekur, pa lëkurë",
-    "name_en": "Potato, baked, flesh",
-    "group": "Perime",
-    "preferred": "usda-fdc-170033",
-    "also": []
-  },
-  {
     "key": "potato-gratin",
     "rank": 842,
     "name_sq": "Patate me djathë në furrë (au gratin)",
@@ -412,10 +333,13 @@
     "name_sq": "Patate e ëmbël, e pagatuar",
     "name_en": "Sweet potato, raw",
     "group": "Perime",
-    "preferred": "usda-fdc-2346404",
+    "preferred": "usda-fdc-168482",
     "also": [
+      "usda-fdc-2346404",
+      "ciqual-4101",
       "cofid-13-463"
-    ]
+    ],
+    "reason": "Foundation pa fibra (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "pepper-yellow",
@@ -423,8 +347,10 @@
     "name_sq": "Spec i verdhë i ëmbël",
     "name_en": "Pepper, sweet, yellow",
     "group": "Perime",
-    "preferred": "usda-fdc-169383",
-    "also": []
+    "preferred": "usda-fdc-2258589",
+    "also": [
+      "usda-fdc-169383"
+    ]
   },
   {
     "key": "tomato-cherry",
@@ -434,8 +360,10 @@
     "group": "Perime",
     "preferred": "ciqual-20172",
     "also": [
-      "livsmedelsverket-4937"
-    ]
+      "livsmedelsverket-4937",
+      "cofid-13-519"
+    ],
+    "reason": "Foundation ka vetëm domatet grape"
   },
   {
     "key": "celeriac",
@@ -520,33 +448,6 @@
     "reason": "USDA ka vetëm patëllxhanin e zier"
   },
   {
-    "key": "broccoli-frozen",
-    "rank": 855,
-    "name_sq": "Brokoli i ngrirë, i zier",
-    "name_en": "Broccoli, frozen, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-170380",
-    "also": []
-  },
-  {
-    "key": "peas-frozen",
-    "rank": 856,
-    "name_sq": "Bizele të ngrira, të ziera",
-    "name_en": "Peas, green, frozen, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-170017",
-    "also": []
-  },
-  {
-    "key": "green-beans-frozen",
-    "rank": 857,
-    "name_sq": "Bishtaja të ngrira, të ziera",
-    "name_en": "Green beans, frozen, cooked",
-    "group": "Perime",
-    "preferred": "usda-fdc-169963",
-    "also": []
-  },
-  {
     "key": "mixed-veg-canned",
     "rank": 858,
     "name_sq": "Perime të përziera, të konservuara",
@@ -563,8 +464,7 @@
     "group": "Perime",
     "preferred": "usda-fdc-169207",
     "also": [
-      "ciqual-20076",
-      "livsmedelsverket-404"
+      "ciqual-20076"
     ]
   },
   {
@@ -582,8 +482,11 @@
     "name_sq": "Bizele të konservuara",
     "name_en": "Peas, green, canned",
     "group": "Perime",
-    "preferred": "usda-fdc-170014",
-    "also": [],
+    "preferred": "usda-fdc-170013",
+    "also": [
+      "usda-fdc-2709961",
+      "livsmedelsverket-413"
+    ],
     "reason": "Foundation ka bizele me sheqer të shtuar (78 kcal)"
   },
   {
@@ -592,10 +495,11 @@
     "name_sq": "Bishtaja të konservuara",
     "name_en": "Green beans, canned",
     "group": "Perime",
-    "preferred": "usda-fdc-321611",
+    "preferred": "usda-fdc-169143",
     "also": [
-      "usda-fdc-169143"
-    ]
+      "usda-fdc-321611"
+    ],
+    "reason": "Foundation pa fibra (karbohidratet i përfshijnë fibrat, kundër V61); SR Legacy i ka"
   },
   {
     "key": "portobello",
@@ -603,8 +507,10 @@
     "name_sq": "Kërpudha portobello",
     "name_en": "Mushrooms, portabella, raw",
     "group": "Perime",
-    "preferred": "usda-fdc-169255",
-    "also": []
+    "preferred": "usda-fdc-2003598",
+    "also": [
+      "usda-fdc-169255"
+    ]
   },
   {
     "key": "chives",
@@ -645,9 +551,9 @@
     "name_sq": "Sallatë greke (me feta dhe ullinj)",
     "name_en": "Greek salad with feta and olives",
     "group": "Perime",
-    "preferred": "livsmedelsverket-529",
+    "preferred": "ciqual-26262",
     "also": [
-      "ciqual-26262"
+      "livsmedelsverket-529"
     ],
     "reason": "FNDDS jep sallatën pa salcë (48 kcal)"
   },
@@ -679,15 +585,6 @@
     "also": []
   },
   {
-    "key": "lima-beans-cooked",
-    "rank": 871,
-    "name_sq": "Fasule lima, të ziera",
-    "name_en": "Lima beans, cooked",
-    "group": "Bishtajore",
-    "preferred": "usda-fdc-174253",
-    "also": []
-  },
-  {
     "key": "pinto-cooked",
     "rank": 872,
     "name_sq": "Fasule pinto, të ziera",
@@ -697,24 +594,13 @@
     "also": []
   },
   {
-    "key": "mung-cooked",
-    "rank": 873,
-    "name_sq": "Fasule mung, të ziera",
-    "name_en": "Mung beans, cooked",
-    "group": "Bishtajore",
-    "preferred": "usda-fdc-174257",
-    "also": []
-  },
-  {
     "key": "white-beans-canned",
     "rank": 874,
     "name_sq": "Fasule të bardha, të konservuara",
     "name_en": "White beans, canned",
     "group": "Bishtajore",
     "preferred": "usda-fdc-175204",
-    "also": [
-      "livsmedelsverket-3761"
-    ]
+    "also": []
   },
   {
     "key": "kidney-beans-canned",
@@ -722,48 +608,23 @@
     "name_sq": "Fasule të kuqe, të konservuara",
     "name_en": "Kidney beans, canned",
     "group": "Bishtajore",
-    "preferred": "usda-fdc-173741",
+    "preferred": "usda-fdc-174285",
     "also": [
-      "cofid-13-660"
+      "cofid-13-660",
+      "livsmedelsverket-3816"
     ],
     "reason": "Foundation ka kokrra me sheqer të shtuar (123 kcal)"
   },
   {
-    "key": "hash-brown-fresh",
-    "rank": 876,
-    "name_sq": "Patate të grira të skuqura (hash brown), të shtëpisë",
-    "name_en": "Hash browns, from fresh",
-    "group": "Perime",
-    "preferred": "usda-fdc-2709483",
-    "also": []
-  },
-  {
-    "key": "hash-brown-fast-food",
-    "rank": 877,
-    "name_sq": "Hash brown (fast food)",
-    "name_en": "Hash browns, fast food",
-    "group": "Perime",
-    "preferred": "usda-fdc-2709478",
-    "also": [],
-    "reason": "SR ka vetëm hash brown-in e McDonald's (markë)"
-  },
-  {
-    "key": "home-fries",
-    "rank": 878,
-    "name_sq": "Patate të prera të skuqura në tigan (home fries)",
-    "name_en": "Home fries, ready-to-heat",
-    "group": "Perime",
-    "preferred": "usda-fdc-2709475",
-    "also": []
-  },
-  {
     "key": "fries-oven",
     "rank": 879,
-    "name_sq": "Patate të skuqura në furrë, të ngrira",
+    "name_sq": "Patate fri të ngrira, të pjekura në furrë",
     "name_en": "French fries, frozen, baked",
     "group": "Perime",
-    "preferred": "usda-fdc-2709460",
-    "also": []
+    "preferred": "usda-fdc-169264",
+    "also": [
+      "usda-fdc-2709460"
+    ]
   },
   {
     "key": "fries-cheese",
@@ -775,96 +636,15 @@
     "also": []
   },
   {
-    "key": "potato-skins",
-    "rank": 881,
-    "name_sq": "Lëkurë patateje e pjekur me djathë",
-    "name_en": "Potato skins with cheese",
-    "group": "Perime",
-    "preferred": "usda-fdc-2709489",
-    "also": []
-  },
-  {
-    "key": "taco-beef-corn",
-    "rank": 882,
-    "name_sq": "Tako me mish gjedhi dhe djathë (tortilla misri)",
-    "name_en": "Taco, corn tortilla, beef, cheese",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708515",
-    "also": [],
-    "reason": "SR ka vetëm takon e Taco Bell (markë)"
-  },
-  {
-    "key": "taco-chicken-corn",
-    "rank": 883,
-    "name_sq": "Tako me pulë dhe djathë (tortilla misri)",
-    "name_en": "Taco, corn tortilla, chicken, cheese",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708519",
-    "also": [],
-    "reason": "SR ka vetëm takon e Taco Bell (markë)"
-  },
-  {
-    "key": "taco-beef-flour",
-    "rank": 884,
-    "name_sq": "Tako me mish gjedhi dhe djathë (tortilla gruri)",
-    "name_en": "Taco, flour tortilla, beef, cheese",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708522",
-    "also": []
-  },
-  {
-    "key": "taco-fish",
-    "rank": 885,
-    "name_sq": "Tako me peshk",
-    "name_en": "Taco, fish",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708529",
-    "also": []
-  },
-  {
-    "key": "taco-salad-meat",
-    "rank": 886,
-    "name_sq": "Sallatë tako me mish",
-    "name_en": "Taco salad with meat",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708508",
-    "also": []
-  },
-  {
     "key": "pizza-thin-frozen",
     "rank": 887,
     "name_sq": "Pica me djathë, e ngrirë (brumë i hollë)",
     "name_en": "Pizza, cheese, frozen, thin crust",
     "group": "Të tjera",
-    "preferred": "usda-fdc-2708612",
-    "also": []
-  },
-  {
-    "key": "pizza-thick-frozen",
-    "rank": 888,
-    "name_sq": "Pica me djathë, e ngrirë (brumë i trashë)",
-    "name_en": "Pizza, cheese, frozen, thick crust",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708613",
-    "also": []
-  },
-  {
-    "key": "pizza-stuffed-crust",
-    "rank": 889,
-    "name_sq": "Pica me djathë në skaje",
-    "name_en": "Pizza, cheese, stuffed crust",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708618",
-    "also": []
-  },
-  {
-    "key": "pizza-extra-cheese",
-    "rank": 890,
-    "name_sq": "Pica me shumë djathë",
-    "name_en": "Pizza, extra cheese, thin crust",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708622",
-    "also": []
+    "preferred": "usda-fdc-170373",
+    "also": [
+      "usda-fdc-2708612"
+    ]
   },
   {
     "key": "paella",
@@ -873,62 +653,6 @@
     "name_en": "Paella with seafood",
     "group": "Të tjera",
     "preferred": "usda-fdc-2706711",
-    "also": []
-  },
-  {
-    "key": "jambalaya",
-    "rank": 892,
-    "name_sq": "Xhambalaja me mish dhe oriz",
-    "name_en": "Jambalaya with meat and rice",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2706727",
-    "also": []
-  },
-  {
-    "key": "biryani-chicken",
-    "rank": 893,
-    "name_sq": "Oriz biryani me pulë",
-    "name_en": "Biryani with chicken",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2706538",
-    "also": []
-  },
-  {
-    "key": "bibimbap",
-    "rank": 894,
-    "name_sq": "Bibimbap (oriz korean me perime)",
-    "name_en": "Bibimbap, Korean",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2708950",
-    "also": []
-  },
-  {
-    "key": "egg-muffin-sausage",
-    "rank": 895,
-    "name_sq": "Sandviç me vezë dhe suxhuk në panine angleze",
-    "name_en": "Egg sandwich, English muffin, sausage",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2707316",
-    "also": [],
-    "reason": "SR ka versionin me djathë dhe markat (McDonald's)"
-  },
-  {
-    "key": "egg-muffin-bacon",
-    "rank": 896,
-    "name_sq": "Sandviç me vezë dhe proshutë të tymosur në panine angleze",
-    "name_en": "Egg sandwich, English muffin, bacon",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2707317",
-    "also": [],
-    "reason": "SR ka versionin me djathë dhe proshutë kanadeze"
-  },
-  {
-    "key": "egg-salad-sandwich",
-    "rank": 897,
-    "name_sq": "Sandviç me sallatë vezësh",
-    "name_en": "Egg salad sandwich on white",
-    "group": "Të tjera",
-    "preferred": "usda-fdc-2707280",
     "also": []
   },
   {
@@ -943,30 +667,19 @@
   {
     "key": "biscotti",
     "rank": 899,
-    "name_sq": "Biskota biskotti",
+    "name_sq": "Biskoti (biskota italiane me bajame)",
     "name_en": "Cookie, biscotti",
     "group": "Sheqer dhe ëmbëlsira",
     "preferred": "usda-fdc-2707902",
     "also": []
   },
   {
-    "key": "brownie-icing",
-    "rank": 900,
-    "name_sq": "Brauni me glazurë",
-    "name_en": "Brownie with icing",
-    "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2707905",
-    "also": []
-  },
-  {
     "key": "cookie-choc-sandwich",
     "rank": 901,
-    "name_sq": "Biskota sanduiç me krem çokollate",
+    "name_sq": "Biskota kakaoje me mbushje kremi (tip Oreo)",
     "name_en": "Cookie, chocolate chip sandwich",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-174095",
-    "also": [
-      "usda-fdc-2707912"
-    ]
+    "preferred": "usda-fdc-172718",
+    "also": []
   }
 ]
