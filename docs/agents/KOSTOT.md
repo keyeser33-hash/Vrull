@@ -18,3 +18,4 @@ Matjet:
 | Bordet e Mëso (E3-12) | 15.11.2026, 02:05–02:20 | Rreth 540 mijë, tre agjentë me Sonnet, me dy ndreqje me SendMessage | 0 | – | – | 4 mësime (datat e historisë, numrat e bordit, `read_file` me `project/`, PubMed pa WebFetch) |
 | Kuizi si story dhe Sot me story (E3-12) | 15.11.2026, 02:21–02:40 | Rreth 306 mijë, dy agjentë me Sonnet | 0 | – | – | Bordet shihen me built-in browser pas publikimit (ORKESTRIMI › Bordet e dizajnit) |
 | Sot i ri (E3-19, bordet) | 15.11.2026, 02:41–02:55 | Rreth 201 mijë, një agjent me Sonnet | 0 | – | – | Numrat e bordeve nga një tabelë e vetme te brief-i (ORKESTRIMI › Bordet e dizajnit) |
+| Sot unik, variantet A dhe B (E3-19) | 15.11.2026, 02:58–03:05 | Rreth 139 mijë, një agjent me Sonnet | 0 | – | – | Numrat e ditës nga logjika e app-it (`mealSchedule`) te tabela e brief-it |
