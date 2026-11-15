@@ -22,6 +22,8 @@ import * as session from './areas/session'
 import * as today from './areas/today'
 import * as videos from './areas/videos'
 import * as week from './areas/week'
+import * as foodday from './areas/foodday'
+import * as foodsearch from './areas/foodsearch'
 import type { base as sqBase, Translation } from './sq'
 import type { TranslationOf } from './translate'
 
@@ -281,4 +283,6 @@ export const en: Translation = {
   ...readiness.en,
   ...lighter.en,
   ...daymode.en,
+  ...foodday.en,
+  ...foodsearch.en,
 }
