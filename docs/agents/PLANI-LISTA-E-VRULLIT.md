@@ -42,6 +42,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Të zakonshmet 299–500 (15.11.2026, 10125d8, 3ace984):** `common/004.json` dhe `005.json` (grupi u ndal në mes dhe u rimor); rishikimi i pavarur gjeti 98 probleme te 202 hyrje (kryesisht rreshti i SR Legacy ose Foundation i pazgjedhur dhe lloje të përziera te `also`), `docs/research/rishikimi-te-zakonshmet-004-005.md`; u zbatuan 97 dhe 1 pjesërisht. Gjithsej 500 të zakonshme, 773 dyfishime të hequra, 0 gabime, 13 shënime të shqyrtuara. Vërtetimi nuk e sheh një rresht më të preferuar që nuk është te hyrja; këtë e kap vetëm rishikimi.
 
+- **Të zakonshmet 502–700 (15.11.2026, 3169060, 36bfc2e):** `common/006.json` dhe `007.json`; rishikimi i pavarur gjeti 61 probleme te 199 hyrje (`docs/research/rishikimi-te-zakonshmet-006-007.md`), u zbatuan të gjitha (portokalli navel u bashkua te #71). Byreku mbetet recetë (V31), megjithëse Livsmedelsverket ka një byrek (livsmedelsverket-6948). Gjithsej 698 të zakonshme, 0 gabime, 14 shënime të shqyrtuara; roja 21 367 rreshta, 0 gabime.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
