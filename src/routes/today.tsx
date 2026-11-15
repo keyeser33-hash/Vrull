@@ -179,7 +179,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
         {upcoming ? <p className="relative type-label text-muted-foreground">{t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')}</p> : null}
         <span className="relative flex flex-wrap items-center gap-x-2 gap-y-1 type-caption text-muted-foreground tabular-nums">
           {meta}
-          {until ? <span className="rounded-pill border border-subtle px-2 py-0.5 text-foreground">{t('sot.workout.in', { until })}</span> : null}
+          {until ? <span className="rounded-pill border border-subtle bg-surface px-2 py-0.5 text-foreground">{t('sot.workout.in', { until })}</span> : null}
         </span>
         <h2 className="relative max-w-[216px] type-display-s">{programDayName(t, plan.dayName)}</h2>
         {mode === 'session' ? null : (

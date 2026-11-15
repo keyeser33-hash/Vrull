@@ -227,7 +227,7 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe fletat e tyre', () => {
     await setup()
     await act(() => language.set('en'))
     await renderCard()
-    await userEvent.click(await screen.findByRole('button', { name: 'How do you feel?, new' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'How are you?, new' }))
     const form = await screen.findByRole('dialog', { name: 'Daily check-in' })
     expect(within(form).getByText('From your bedtime · 01:10–07:10')).toBeInTheDocument()
     expect(within(form).getByText('6 hours')).toBeInTheDocument()

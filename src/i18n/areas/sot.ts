@@ -34,8 +34,7 @@ export const sq = {
   'sot.protein.spoken': 'Proteina: {protein} nga {target} g. Hap ushqimin',
   'sot.protein.spokenNoTarget': 'Proteina: {protein} g. Hap ushqimin',
   'sot.water.title': 'Uji',
-  'sot.water.of': '/ {target} L',
-  'sot.water.ofNoTarget': 'L sot',
+  'sot.water.of': '/ {target}',
   'sot.water.add': 'Shto {ml} ml ujë. Mbaje shtypur për sasi të tjera',
   'sot.water.spoken': '{total} nga {target} litra',
   'sot.water.spokenNoTarget': '{total} litra',
@@ -119,7 +118,7 @@ export const sq = {
 
 export const en: TranslationOf<typeof sq> = {
   'sot.stories.label': 'Today’s circles',
-  'sot.story.checkin': 'How do you feel?',
+  'sot.story.checkin': 'How are you?',
   'sot.story.ready': 'Ready {percent}%',
   'sot.story.mentor': 'Mentor',
   'sot.story.plan': 'Plan',
@@ -146,8 +145,7 @@ export const en: TranslationOf<typeof sq> = {
   'sot.protein.spoken': 'Protein: {protein} of {target} g. Open food',
   'sot.protein.spokenNoTarget': 'Protein: {protein} g. Open food',
   'sot.water.title': 'Water',
-  'sot.water.of': '/ {target} L',
-  'sot.water.ofNoTarget': 'L today',
+  'sot.water.of': '/ {target}',
   'sot.water.add': 'Add {ml} ml of water. Hold for other amounts',
   'sot.water.spoken': '{total} of {target} litres',
   'sot.water.spokenNoTarget': '{total} litres',

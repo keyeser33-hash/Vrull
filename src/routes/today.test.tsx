@@ -156,7 +156,7 @@ describe('Sot', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Today' })).toBeInTheDocument()
     expect(banner()).toHaveTextContent('Sunday, 8 November · Phase 1 · Week 2')
     expect(screen.getByRole('list', { name: 'Today’s circles' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'How do you feel?, new' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'How are you?, new' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Calories, protein and water today' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Your day, from 07:00 to 23:00' })).toBeInTheDocument()
     expect(weekLabels('This week').at(-1)).toBe('Today, Sunday 8, next workout. no workout, food not reached, water not reached')

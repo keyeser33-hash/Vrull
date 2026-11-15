@@ -22,7 +22,7 @@ const HIT = 22
 const LONG_PRESS_MS = 400
 const SLOP = 8
 const BUBBLE_MS = 4000
-const BUBBLE_WIDTH = 224
+const BUBBLE_WIDTH = 280
 
 const WORKOUT_DOT = 'absolute top-[11px] flex size-[22px] -translate-x-1/2 items-center justify-center rounded-pill border-[1.5px] border-ember-text'
 const WORKOUT_DONE = 'bg-ember text-on-ember'
@@ -178,6 +178,11 @@ export function DayRhythm({ view }: { view: TodayView }) {
         <span aria-hidden className="absolute top-0 -translate-x-1/2 text-[11px] leading-[1.2] font-semibold whitespace-nowrap text-ember-text tabular-nums" style={{ left: leftOf(rhythm.nowFraction) }}>
           {rhythm.nowTime}
         </span>
+        {rhythm.nowFraction < 0.85 ? (
+          <span aria-hidden className="absolute top-0 right-3 text-[11px] leading-[1.2] whitespace-nowrap text-muted-foreground tabular-nums">
+            {t('sot.rhythm.sleep', { time: rhythm.sleepTime })}
+          </span>
+        ) : null}
         {dragged && drag ? <span aria-hidden className="absolute top-[36px] h-3.5 w-0 -translate-x-1/2 border-l border-dashed border-muted-foreground" style={{ left: leftOf(fractionOf(drag.from)) }} /> : null}
         {points.map((point) =>
           point.kind === 'workout' ? (
@@ -226,14 +231,13 @@ export function DayRhythm({ view }: { view: TodayView }) {
           </Bubble>
         ) : null}
       </div>
-      <p className="m-0 flex items-baseline justify-between gap-3 type-caption text-foreground tabular-nums">
-        <span className="min-w-0 truncate">{nextLine}</span>
-        <span className="shrink-0 text-muted-foreground">{t('sot.rhythm.sleep', { time: rhythm.sleepTime })}</span>
-      </p>
+      <p className="m-0 type-caption text-foreground tabular-nums">{nextLine}</p>
       <span role="status" className="sr-only">
         {announce}
       </span>
-      <span className="sr-only">{t('sot.rhythm.nowAt', { time: rhythm.nowTime })}</span>
+      <span className="sr-only">
+        {t('sot.rhythm.nowAt', { time: rhythm.nowTime })}. {t('sot.rhythm.sleep', { time: rhythm.sleepTime })}
+      </span>
     </section>
   )
 }

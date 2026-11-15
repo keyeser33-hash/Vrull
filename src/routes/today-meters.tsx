@@ -24,7 +24,7 @@ const WATER_SIZES = [250, 330, 500] as const
 const MIN_ML = 50
 const MAX_ML = 2000
 
-const tileClass = cn(surfaceClass, 'flex min-h-[104px] min-w-0 flex-col gap-1 rounded-lg p-3 text-left text-foreground')
+const tileClass = cn(surfaceClass, 'flex min-h-[104px] min-w-0 flex-col gap-0.5 rounded-lg p-3 text-left text-foreground')
 const numberClass = 'font-display text-[28px] leading-none font-extrabold whitespace-nowrap tabular-nums'
 
 function Title({ icon, children }: { icon: 'flaka' | 'kofsha' | 'pika-uji'; children: string }) {
@@ -80,7 +80,7 @@ export function TodayMeters({ view }: { view: TodayView }) {
       >
         <Title icon="flaka">{t('sot.cal.title')}</Title>
         {targetKcal ? <Arc ratio={kcal / targetKcal} /> : null}
-        <span className={cn(numberClass, 'mt-1')}>
+        <span className={cn(numberClass, 'mt-0.5')}>
           <RollingNumber value={Math.abs(left)} />
         </span>
         <span aria-hidden className="text-xs leading-[1.2] text-muted-foreground">
@@ -98,7 +98,7 @@ export function TodayMeters({ view }: { view: TodayView }) {
         className={tileClass}
       >
         <Title icon="kofsha">{t('sot.protein.title')}</Title>
-        <span className={cn(numberClass, 'mt-1')}>
+        <span className={cn(numberClass, 'mt-0.5')}>
           <RollingNumber value={proteinG} />
           <span className="font-text text-sm font-normal text-muted-foreground"> g</span>
           <span className="font-text text-xs font-normal text-muted-foreground"> {targetProteinG === null ? '' : t('sot.protein.of', { target: fmt.number(targetProteinG) })}</span>
@@ -198,12 +198,10 @@ function WaterTile({ date }: { date: string }) {
       >
         <Title icon="pika-uji">{t('sot.water.title')}</Title>
         {day.targetMl ? <Glass ratio={day.totalMl / day.targetMl} /> : <Glass ratio={0} />}
-        <span className={cn(numberClass, 'mt-1')}>
+        <span className={cn(numberClass, 'mt-0.5')}>
           <RollingNumber value={day.totalMl / 1000} format={() => total} />
           <span className="font-text text-sm font-normal text-muted-foreground"> L</span>
-        </span>
-        <span aria-hidden className="text-xs leading-[1.2] whitespace-nowrap text-muted-foreground tabular-nums">
-          {target === null ? t('sot.water.ofNoTarget') : t('sot.water.of', { target })}
+          <span className="font-text text-xs font-normal text-muted-foreground"> {target === null ? '' : t('sot.water.of', { target })}</span>
         </span>
         <span aria-hidden className="mt-auto self-start rounded-pill border border-subtle px-2 py-0.5 text-xs font-semibold tabular-nums">
           +{fmt.unit(GLASS_ML, 'ml')}
