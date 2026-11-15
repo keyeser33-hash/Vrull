@@ -13,7 +13,7 @@
   {
     "key": "brussels-sprouts",
     "rank": 402,
-    "name_sq": "Lakra të Brukselit",
+    "name_sq": "Lakër Brukseli",
     "name_en": "Brussels sprouts, raw",
     "group": "Perime",
     "preferred": "usda-fdc-2685575",
@@ -26,7 +26,7 @@
   {
     "key": "fennel-raw",
     "rank": 403,
-    "name_sq": "Mares (fennel)",
+    "name_sq": "Finok",
     "name_en": "Fennel, bulb, raw",
     "group": "Perime",
     "preferred": "usda-fdc-2747655",
@@ -96,9 +96,9 @@
     "name_sq": "Hash brown (patate të skuqura të grira)",
     "name_en": "Hash browns",
     "group": "Perime",
-    "preferred": "usda-fdc-2709477",
+    "preferred": "usda-fdc-170044",
     "also": [
-      "usda-fdc-2709483"
+      "usda-fdc-2709477"
     ]
   },
   {
@@ -171,7 +171,7 @@
     "name_sq": "Perime të përziera, të ngrira, të ziera",
     "name_en": "Mixed vegetables, frozen, cooked",
     "group": "Perime",
-    "preferred": "usda-fdc-170142",
+    "preferred": "usda-fdc-170472",
     "also": [
       "usda-fdc-2710013"
     ]
@@ -190,7 +190,7 @@
   {
     "key": "potato-salad",
     "rank": 418,
-    "name_sq": "Sallatë patatesh",
+    "name_sq": "Sallatë patatesh me majonezë",
     "name_en": "Potato salad",
     "group": "Perime",
     "preferred": "usda-fdc-169269",
@@ -215,7 +215,7 @@
     "name_sq": "Misër i ëmbël, i zier",
     "name_en": "Corn, sweet, cooked",
     "group": "Perime",
-    "preferred": "usda-fdc-168525",
+    "preferred": "usda-fdc-169999",
     "also": []
   },
   {
@@ -244,25 +244,22 @@
   {
     "key": "peaches-canned",
     "rank": 423,
-    "name_sq": "Pjeshkë të konservuara në shurup",
+    "name_sq": "Komposto pjeshke",
     "name_en": "Peaches, canned in syrup",
     "group": "Fruta",
     "preferred": "usda-fdc-168181",
-    "also": [
-      "cofid-14-189"
-    ]
+    "also": []
   },
   {
     "key": "fruit-cocktail-canned",
     "rank": 424,
-    "name_sq": "Kompost frutash (fruit cocktail)",
+    "name_sq": "Komposto frutash (fruit cocktail)",
     "name_en": "Fruit cocktail, canned",
     "group": "Fruta",
     "preferred": "usda-fdc-168178",
     "also": [
       "usda-fdc-2709290",
       "ciqual-13706",
-      "cofid-14-097",
       "livsmedelsverket-632"
     ]
   },
@@ -272,8 +269,10 @@
     "name_sq": "Pure molle",
     "name_en": "Applesauce",
     "group": "Fruta",
-    "preferred": "usda-fdc-2709216",
-    "also": []
+    "preferred": "usda-fdc-167773",
+    "also": [
+      "usda-fdc-2709216"
+    ]
   },
   {
     "key": "cherries-sour-raw",
@@ -294,8 +293,7 @@
     "group": "Fruta",
     "preferred": "usda-fdc-168195",
     "also": [
-      "usda-fdc-2709164",
-      "livsmedelsverket-560"
+      "usda-fdc-2709164"
     ]
   },
   {
@@ -348,8 +346,9 @@
     "name_sq": "Kanellë",
     "name_en": "Cinnamon, ground",
     "group": "Të tjera",
-    "preferred": "ciqual-11025",
+    "preferred": "usda-fdc-171320",
     "also": [
+      "ciqual-11025",
       "livsmedelsverket-2306"
     ]
   },
@@ -369,7 +368,7 @@
   {
     "key": "pecans",
     "rank": 434,
-    "name_sq": "Pekan",
+    "name_sq": "Arra pekan",
     "name_en": "Pecans, raw",
     "group": "Arra dhe fara",
     "preferred": "usda-fdc-2346395",
@@ -381,19 +380,20 @@
   {
     "key": "macadamia",
     "rank": 435,
-    "name_sq": "Makadamia",
+    "name_sq": "Arra makadamia",
     "name_en": "Macadamia nuts, raw",
     "group": "Arra dhe fara",
-    "preferred": "usda-fdc-2515378",
+    "preferred": "usda-fdc-170178",
     "also": [
-      "usda-fdc-170178",
+      "usda-fdc-2515378",
       "livsmedelsverket-7024"
-    ]
+    ],
+    "reason": "Foundation jep karbohidrate 16,5 g dhe yndyrë 64,9 g, kurse SR dhe Livsmedelsverket 5,2 g dhe 75,8 g"
   },
   {
     "key": "pine-nuts",
     "rank": 436,
-    "name_sq": "Kokrra pishe (pine nuts)",
+    "name_sq": "Fara pishe (pinoli)",
     "name_en": "Pine nuts",
     "group": "Arra dhe fara",
     "preferred": "usda-fdc-2346392",
@@ -417,7 +417,7 @@
   {
     "key": "soybeans-cooked",
     "rank": 438,
-    "name_sq": "Soje, e zier",
+    "name_sq": "Fasule soje, të ziera",
     "name_en": "Soybeans, cooked",
     "group": "Bishtajore",
     "preferred": "usda-fdc-174271",
@@ -426,7 +426,7 @@
   {
     "key": "split-peas-cooked",
     "rank": 439,
-    "name_sq": "Bizele të thara, të ziera",
+    "name_sq": "Bizele të thata, të ziera",
     "name_en": "Split peas, cooked",
     "group": "Bishtajore",
     "preferred": "usda-fdc-172429",
@@ -484,11 +484,12 @@
     "name_sq": "Arra braziliane (Brazil nuts)",
     "name_en": "Brazil nuts, raw",
     "group": "Arra dhe fara",
-    "preferred": "usda-fdc-2515373",
+    "preferred": "usda-fdc-170569",
     "also": [
-      "usda-fdc-170569",
+      "usda-fdc-2515373",
       "livsmedelsverket-1568"
-    ]
+    ],
+    "reason": "Foundation jep karbohidrate 15,7 g dhe yndyrë 57,4 g, kurse SR 4,2 g dhe 67,1 g"
   },
   {
     "key": "lychee-raw",
@@ -496,8 +497,9 @@
     "name_sq": "Liçi",
     "name_en": "Lychee, raw",
     "group": "Fruta",
-    "preferred": "usda-fdc-2709240",
+    "preferred": "usda-fdc-169086",
     "also": [
+      "usda-fdc-2709240",
       "cofid-14-142",
       "livsmedelsverket-2569"
     ]
@@ -505,11 +507,12 @@
   {
     "key": "passion-fruit-raw",
     "rank": 446,
-    "name_sq": "Fruta e pasionit",
+    "name_sq": "Marakuja (fruta e pasionit)",
     "name_en": "Passion fruit, raw",
     "group": "Fruta",
-    "preferred": "usda-fdc-2709248",
+    "preferred": "usda-fdc-169108",
     "also": [
+      "usda-fdc-2709248",
       "livsmedelsverket-579"
     ]
   },
@@ -631,8 +634,9 @@
     "name_sq": "Salcë Caesar",
     "name_en": "Caesar dressing",
     "group": "Të tjera",
-    "preferred": "usda-fdc-2710199",
+    "preferred": "usda-fdc-169055",
     "also": [
+      "usda-fdc-2710199",
       "ciqual-11248"
     ]
   },
@@ -683,7 +687,7 @@
   {
     "key": "hot-sauce",
     "rank": 462,
-    "name_sq": "Salcë djegëse (Tabasco)",
+    "name_sq": "Salcë djegëse",
     "name_en": "Hot pepper sauce",
     "group": "Të tjera",
     "preferred": "usda-fdc-174527",
@@ -783,7 +787,7 @@
   {
     "key": "veal-shank-raw",
     "rank": 471,
-    "name_sq": "Mish viçi për zierje (kërcell), i pagatuar",
+    "name_sq": "Kërci viçi (për zierje), i pagatuar",
     "name_en": "Veal, shank, raw",
     "group": "Mish",
     "preferred": "usda-fdc-172645",
@@ -797,8 +801,9 @@
     "name_sq": "Karavidhe, e gatuar",
     "name_en": "Lobster, cooked",
     "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-2706349",
+    "preferred": "usda-fdc-174209",
     "also": [
+      "usda-fdc-2706349",
       "cofid-16-332",
       "livsmedelsverket-1393"
     ]
@@ -821,7 +826,7 @@
     "name_sq": "Harengë, e pagatuar",
     "name_en": "Herring, raw",
     "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-173669",
+    "preferred": "usda-fdc-175116",
     "also": [
       "ciqual-26011",
       "livsmedelsverket-1241"
@@ -830,18 +835,19 @@
   {
     "key": "surimi",
     "rank": 475,
-    "name_sq": "Surimi (shkopinj gaforrjeje)",
+    "name_sq": "Surimi (shkopinj gaforreje)",
     "name_en": "Surimi",
     "group": "Peshk dhe fruta deti",
-    "preferred": "usda-fdc-173702",
+    "preferred": "usda-fdc-174203",
     "also": [
-      "livsmedelsverket-2035"
+      "usda-fdc-2706568",
+      "ciqual-26046"
     ]
   },
   {
     "key": "fish-sticks",
     "rank": 476,
-    "name_sq": "Shkopinj peshku, të ngrira",
+    "name_sq": "Shkopinj peshku, të gatuar",
     "name_en": "Fish sticks, frozen",
     "group": "Peshk dhe fruta deti",
     "preferred": "usda-fdc-174195",
@@ -853,8 +859,9 @@
     "name_sq": "Mëlçi derri, e pagatuar",
     "name_en": "Pork liver, raw",
     "group": "Mish",
-    "preferred": "ciqual-40119",
+    "preferred": "usda-fdc-167862",
     "also": [
+      "ciqual-40119",
       "livsmedelsverket-1449"
     ]
   },
@@ -872,18 +879,19 @@
   {
     "key": "liver-pate",
     "rank": 479,
-    "name_sq": "Pate me mëlçi derri",
-    "name_en": "Liver sausage, pork",
+    "name_sq": "Pashtet mëlçie (pate)",
+    "name_en": "Pate, liver",
     "group": "Mish",
-    "preferred": "usda-fdc-173870",
+    "preferred": "usda-fdc-172930",
     "also": [
-      "ciqual-30176"
+      "cofid-19-317",
+      "ciqual-8305"
     ]
   },
   {
     "key": "pepperoni",
     "rank": 480,
-    "name_sq": "Pepperoni (feta)",
+    "name_sq": "Pepperoni, në feta",
     "name_en": "Pepperoni",
     "group": "Mish",
     "preferred": "usda-fdc-174575",
@@ -894,7 +902,7 @@
   {
     "key": "turkey-bacon",
     "rank": 481,
-    "name_sq": "Bekon gjeldeti",
+    "name_sq": "Bekon gjeldeti, i gatuar",
     "name_en": "Turkey bacon",
     "group": "Mish",
     "preferred": "usda-fdc-171639",
@@ -908,8 +916,9 @@
     "name_sq": "Qumësht pluhur, i plotë",
     "name_en": "Milk powder, whole",
     "group": "Qumësht dhe bulmet",
-    "preferred": "ciqual-19021",
+    "preferred": "usda-fdc-173454",
     "also": [
+      "ciqual-19021",
       "livsmedelsverket-4537"
     ]
   },
@@ -940,8 +949,9 @@
     "name_sq": "Verë e shkumëzuar (shampanjë)",
     "name_en": "Sparkling wine, champagne",
     "group": "Pije",
-    "preferred": "ciqual-5207",
+    "preferred": "usda-fdc-2710687",
     "also": [
+      "ciqual-5207",
       "ciqual-5201"
     ]
   },
@@ -951,8 +961,10 @@
     "name_sq": "Kafe latte",
     "name_en": "Caffè latte",
     "group": "Pije",
-    "preferred": "livsmedelsverket-2816",
-    "also": []
+    "preferred": "usda-fdc-2710386",
+    "also": [
+      "livsmedelsverket-2816"
+    ]
   },
   {
     "key": "coffee-instant-prepared",
@@ -979,9 +991,7 @@
     "name_en": "Milk shake, vanilla",
     "group": "Pije",
     "preferred": "usda-fdc-170884",
-    "also": [
-      "cofid-12-591"
-    ]
+    "also": []
   },
   {
     "key": "frozen-yogurt",
@@ -1012,8 +1022,9 @@
     "name_sq": "Krem vanilje (custard)",
     "name_en": "Custard",
     "group": "Sheqer dhe ëmbëlsira",
-    "preferred": "usda-fdc-2705682",
+    "preferred": "usda-fdc-169595",
     "also": [
+      "usda-fdc-2705682",
       "cofid-12-573"
     ]
   },
@@ -1036,19 +1047,18 @@
     "group": "Sheqer dhe ëmbëlsira",
     "preferred": "ciqual-31113",
     "also": [
-      "cofid-11-819",
-      "livsmedelsverket-2072"
+      "cofid-11-819"
     ]
   },
   {
     "key": "onion-rings",
     "rank": 495,
-    "name_sq": "Rruaza qepe të skuqura",
+    "name_sq": "Unaza qepe të panuara, të pjekura në furrë",
     "name_en": "Onion rings, breaded",
     "group": "Të tjera",
     "preferred": "usda-fdc-324317",
     "also": [
-      "usda-fdc-2710055"
+      "usda-fdc-170415"
     ]
   },
   {
@@ -1059,10 +1069,9 @@
     "group": "Bishtajore",
     "preferred": "ciqual-25571",
     "also": [
-      "livsmedelsverket-6283",
-      "ciqual-25590"
+      "livsmedelsverket-6283"
     ],
-    "reason": "USDA ka falafel pa fibra të njohura (karbohidratet i përfshijnë fibrat)"
+    "reason": "USDA nuk ka falafel pa fibra të njohura në SR (karbohidratet i përfshijnë fibrat); FNDDS ka 514 kcal, larg Ciqual dhe Livsmedelsverket"
   },
   {
     "key": "burrito",
@@ -1078,7 +1087,7 @@
   {
     "key": "gyro-sandwich",
     "rank": 498,
-    "name_sq": "Gjiros me bukë",
+    "name_sq": "Sufllaqe me gjiro",
     "name_en": "Gyro sandwich",
     "group": "Të tjera",
     "preferred": "usda-fdc-2706962",
@@ -1100,6 +1109,15 @@
     "name_en": "Chicken fillet sandwich",
     "group": "Të tjera",
     "preferred": "usda-fdc-2707000",
+    "also": []
+  },
+  {
+    "key": "toast-ham-cheese",
+    "rank": 501,
+    "name_sq": "Tost me proshutë dhe djathë",
+    "name_en": "Toasted ham and cheese sandwich",
+    "group": "Të tjera",
+    "preferred": "ciqual-25547",
     "also": []
   }
 ]
