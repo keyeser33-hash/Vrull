@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { BackButton } from '@/components/layout/page'
+import { BackHeader } from '@/components/layout/page'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
@@ -54,9 +54,12 @@ export function LibraryPage() {
 
   return (
     <div className="flex flex-col gap-3">
-      <header className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <BackButton label={t('programme.backToProgramme')} fallback="/programi" />
+      <BackHeader
+        title={t('programme.libraryTitle')}
+        subtitle={catalog ? t('programme.libraryIntro', { count: catalog.libraryCount }) : undefined}
+        back={t('programme.backToProgramme')}
+        fallback="/programi"
+        actions={
           <Link
             to="/programi/biblioteka/krijo"
             aria-label={t('programme.createExercise')}
@@ -64,10 +67,8 @@ export function LibraryPage() {
           >
             <Icon name="plus" size={22} />
           </Link>
-        </div>
-        <h1 className="type-display-m">{t('programme.libraryTitle')}</h1>
-        {catalog ? <p className="mt-0.5 type-caption text-muted-foreground">{t('programme.libraryIntro', { count: catalog.libraryCount })}</p> : null}
-      </header>
+        }
+      />
 
       <div className="relative">
         <label htmlFor={searchId} className="sr-only">

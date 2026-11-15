@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { TrendChart } from '@/components/charts/trend-chart'
 import { EmptyState } from '@/components/layout/empty-state'
 import { Group, LinkRow } from '@/components/layout/list-group'
-import { BackButton } from '@/components/layout/page'
+import { BackHeader } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
@@ -259,15 +259,12 @@ export function MetricPage() {
   const latest = history.at(-1)
   return (
     <div className="flex flex-col gap-5">
-      <header className="flex min-h-11 items-center">
-        <BackButton label={t('body.backToProgress')} fallback="/progresi" />
-      </header>
-      <div className="flex flex-col gap-1">
-        <h1 className="type-display-m">{name}</h1>
-        <span className="type-body text-muted-foreground tabular-nums">
-          {latest ? `${valueText(i18n, metric, latest.value)} · ${dayText(i18n, latest.date)}` : t('progress.noMeasurements')}
-        </span>
-      </div>
+      <BackHeader
+        title={name}
+        subtitle={latest ? `${valueText(i18n, metric, latest.value)} · ${dayText(i18n, latest.date)}` : t('progress.noMeasurements')}
+        back={t('body.backToProgress')}
+        fallback="/progresi"
+      />
       {line.length > 1 ? (
         <TrendChart
           ground="page"

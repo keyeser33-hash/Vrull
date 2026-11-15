@@ -10,7 +10,8 @@ import { programBlockName, programDayName, programWeekLabel } from '@/i18n/domai
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { atNoon, capitalize, goalCells, hoursText, metGoals, signedText, summaryCaption, summaryTitle } from './week-format'
-import { BackLink, GoalSegments } from './week-parts'
+import { BackButton } from '@/components/layout/page'
+import { GoalSegments } from './week-parts'
 import { spokenDuration } from './session-format'
 import { achievementName, achievementRule } from './achievement-format'
 import { AchievementBadge } from './achievement-parts'
@@ -28,7 +29,11 @@ export function WeekSummaryPage() {
   const { t } = useI18n()
   const { monday = '' } = useParams()
   const summary = useLocalQuery(() => (MONDAY.test(monday) ? weekSummary(store, monday) : Promise.resolve(null)), [monday])
-  const back = <BackLink text={t('common.back')} label={t('common.back')} fallback="/progresi" />
+  const back = (
+    <div className="flex min-h-14 items-center">
+      <BackButton label={t('common.back')} fallback="/progresi" />
+    </div>
+  )
   if (summary === undefined) {
     return (
       <div className="flex flex-col gap-3">

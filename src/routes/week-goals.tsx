@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { BackHeader } from '@/components/layout/page'
 import { Icon } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { targetsWeight } from '@/data/nutrition'
@@ -11,7 +12,7 @@ import { cn } from '@/lib/cn'
 import { GOAL_DAYS } from '@/progress/weekly-goals'
 import { waterTargetMl } from '@/nutrition/water'
 import { atNoon, capitalize, type GoalCell, goalCells, weekHeading, weekRangeText } from './week-format'
-import { BackLink, GoalValue } from './week-parts'
+import { GoalValue } from './week-parts'
 
 // Qëllimet e javës (V43, SPEC §0.3c, bordi "Qëllimet"; /sot/java): për çdo qëllim, shtatë ditët e javës
 // me gjendjen e tyre, rregulli me fjalë, dita rezervë e bllokut dhe vargu. Rregullat jetojnë te
@@ -29,12 +30,10 @@ export function WeekGoalsPage() {
   const i18n = useI18n()
   const { t } = i18n
   const page = useLocalQuery(goalsPage, [])
-  const back = <BackLink text={t('tab.today')} label={t('week.goals.back')} fallback="/" />
   if (!page) {
     return (
       <div className="flex flex-col gap-3">
-        {back}
-        <h1 className="type-display-m">{t('week.goals.title')}</h1>
+        <BackHeader title={t('week.goals.title')} back={t('week.goals.back')} fallback="/" />
         <div aria-hidden className="h-80 rounded-lg bg-surface" />
       </div>
     )
@@ -47,13 +46,7 @@ export function WeekGoalsPage() {
   const todayIndex = goals.training.days.findIndex((day) => day.today)
   return (
     <div className="flex flex-col gap-[18px] pb-4">
-      <div className="flex flex-col">
-        {back}
-        <div className="flex flex-col gap-1">
-          <h1 className="type-display-m">{t('week.goals.title')}</h1>
-          <span className="type-caption text-muted-foreground tabular-nums">{caption}</span>
-        </div>
-      </div>
+      <BackHeader title={t('week.goals.title')} subtitle={caption} back={t('week.goals.back')} fallback="/" />
       <div aria-hidden className={cn(GRID, 'text-xs text-muted-foreground')}>
         <span />
         {goals.training.days.map((day, index) => (

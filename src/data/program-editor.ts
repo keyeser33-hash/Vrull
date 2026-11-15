@@ -1,4 +1,6 @@
+import { localDate, localDay, shiftDate } from '@/lib/calendar'
 import { planSession } from '@/program/engine'
+import { mondayOf } from '@/progress/weekly-goals'
 import { type LibraryExercise, loadLibrary, muscleKeys } from '@/program/library'
 import { type Scope, slotRules, type SlotRules } from '@/program/rules'
 import { isTemplateId, type ProgramTemplate, type TemplateId, templateById } from '@/program/templates'
@@ -636,6 +638,11 @@ export interface ProgramEditorView {
   exercises: Record<string, ExerciseRecord>
   blocks: Block[]
   days: EditorDay[]
+  /**
+   * E hëna kur nis blloku i parë (YYYY-MM-DD): java kalendarike e `started_at` të programit, ose, kur
+   * programi s'ka nisur ende, e hëna e radhës (sot, nëse sot është e hënë).
+   */
+  startsOn: string
   /** Çfarë vlen për slotin në një nivel dhe nga vjen. */
   rules: (slotId: string, scope: RuleScope) => SlotRules
   /** Plani i një dite në një bllok dhe javë, për shikimin paraprak. */
@@ -643,8 +650,11 @@ export interface ProgramEditorView {
 }
 
 export async function programEditor(store: LocalStore, programId: string): Promise<ProgramEditorView | null> {
-  const [model, [settings]] = await Promise.all([programModel(store, programId), store.all('user_settings')])
+  const [model, [settings], states] = await Promise.all([programModel(store, programId), store.all('user_settings'), store.where('program_state', 'program_id', programId)])
   if (!model) return null
+  const startedAt = states.find((state) => state.started_at)?.started_at
+  const today = localDate(store.now())
+  const startsOn = startedAt ? mondayOf(localDay(String(startedAt))) : mondayOf(shiftDate(today, 6))
   const { engine, exercises } = model
   const order = <T extends { position: number }>(list: T[]) => [...list].sort((a, b) => a.position - b.position)
   return {
@@ -670,6 +680,7 @@ export async function programEditor(store: LocalStore, programId: string): Promi
         restSeconds: slot.restSeconds,
       })),
     })),
+    startsOn,
     rules: (slotId, scope) => slotRules(engine, slotId, scope),
     plan: (blockId, week, dayId) => planSession(engine, { run: 1, blockId, week, dayId, completed: false }),
   }

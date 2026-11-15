@@ -17,7 +17,8 @@ import { loadLibrary } from '@/program/library'
 import { buildProgram, type Choice, choiceKey, choiceName, draftCounts, type ExerciseQuestion, type Matching, matchExercises, type PreviewDay, previewDays } from '@/program/pdf-import'
 import { euro, euroLimit, fileSize } from './ai-format'
 import { prescriptionValue } from './builder-format'
-import { EditorBar, EditorFooter } from './builder-parts'
+import { BackHeader } from '@/components/layout/page'
+import { EditorFooter } from './builder-parts'
 import { useEditorPaths, useSheet } from './editor-nav'
 
 // Importi i programit nga PDF me AI (V2-E1-11; bordi "Importo nga PDF"): zgjedhja e skedarit, leximi,
@@ -116,7 +117,7 @@ export function ProgramImportPage() {
   return (
     // Lartësia e ekranit pa kornizën (pt-5, pb safe + 24 px), që veprimi të rrijë poshtë edhe kur faqja është e shkurtër.
     <div className="flex min-h-[calc(100dvh-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-4">
-      <EditorBar icon="back" label={t('ai.import.back')} fallback={back} title={t('ai.import.title')} heading />
+      <BackHeader title={t('ai.import.title')} subtitle={t('ai.import.subtitle')} back={t('ai.import.back')} fallback={back} />
       <input
         ref={input}
         type="file"

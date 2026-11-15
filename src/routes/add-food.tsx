@@ -266,7 +266,7 @@ export function AddFoodPage() {
     <div className={cn('flex flex-col gap-3.5', basket.items.length > 0 && 'pb-36')}>
       <h1 className="sr-only">{t('foodsearch.title', { meal: mealLabel })}</h1>
       <header className="flex items-center gap-1">
-        <BackButton label={t('foodsearch.back')} fallback="/ushqimi" className="-ml-2" />
+        <BackButton label={t('foodsearch.back')} fallback="/ushqimi" />
         <span className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-md border border-foreground bg-surface pr-1 pl-3">
           <Icon name="kerko" size={18} className="shrink-0 text-muted-foreground" />
           <label htmlFor={searchId} className="sr-only">

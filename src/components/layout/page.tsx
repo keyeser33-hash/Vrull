@@ -16,7 +16,7 @@ export function BackButton({ label, fallback = '/', className }: { label: string
       variant="ghost"
       size="icon"
       aria-label={label}
-      className={cn('-ml-3 rounded-pill text-foreground', className)}
+      className={cn('-ml-2 rounded-pill text-foreground', className)}
       onClick={() => (location.key === 'default' ? navigate(fallback, { replace: true }) : navigate(-1))}
     >
       <Icon name="chevron-majtas" size={22} />
@@ -25,15 +25,30 @@ export function BackButton({ label, fallback = '/', className }: { label: string
 }
 
 /**
- * Kreu i ekraneve brenda një vendi (Cilësimet, Pamja, Trupi): shigjeta mbrapa 44 px dhe titulli
- * `display-m`, si te bordet; veprimet e ekranit djathtas.
+ * Kreu i çdo nën-faqeje (V2-E3-30; bordet "Kreu"): shigjeta mbrapa 44 px (e vetmja në app) dhe titulli
+ * `display-m`, me një rresht poshtë (`subtitle`) kur ekrani ka një; veprimet e ekranit djathtas.
  */
-export function BackHeader({ title, back, fallback, actions }: { title: string; back: string; fallback?: string; actions?: ReactNode }) {
+export function BackHeader({
+  title,
+  subtitle,
+  back,
+  fallback,
+  actions,
+}: {
+  title: string
+  subtitle?: ReactNode
+  back: string
+  fallback?: string
+  actions?: ReactNode
+}) {
   return (
-    <header className="flex min-h-14 items-center gap-1">
-      <BackButton label={back} fallback={fallback} className="-ml-2" />
-      <h1 className="min-w-0 flex-1 type-display-m">{title}</h1>
-      {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
+    <header className="flex flex-col">
+      <div className="flex min-h-14 items-center gap-1">
+        <BackButton label={back} fallback={fallback} />
+        <h1 className="min-w-0 flex-1 type-display-m">{title}</h1>
+        {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
+      </div>
+      {subtitle ? <p className="-mt-1 pl-10 type-body text-muted-foreground tabular-nums">{subtitle}</p> : null}
     </header>
   )
 }

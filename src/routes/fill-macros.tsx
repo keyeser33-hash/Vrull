@@ -40,7 +40,7 @@ export function FillMacrosPage() {
   const result = target && target.plan === null ? fillMacros(target, view!.foods) : null
   const header = (
     <header className="flex items-start gap-1">
-      <BackButton label={t('foodday.fill.back')} fallback="/ushqimi" className="-ml-2" />
+      <BackButton label={t('foodday.fill.back')} fallback="/ushqimi" />
       <div className="flex min-w-0 flex-1 flex-col gap-1 pt-2">
         <h1 className="type-display-m">{t('foodday.fill.title')}</h1>
         {view?.left ? (

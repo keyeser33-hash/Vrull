@@ -15,7 +15,8 @@ import { groupsOf } from '@/program/exercise-catalog'
 import { resolveRow, type RuleField, sameScope, type Scope } from '@/program/rules'
 import type { Prescription, ProgressionRule, Technique } from '@/program/types'
 import { levelName, levelTitle, prescriptionLabel, prescriptionValue, rirText, saveLabel } from './builder-format'
-import { ChoiceChip, ConfirmSheet, EditorBar, EditorFooter, MoreButton, NotFound, Segmented, SelectButton, StepButton } from './builder-parts'
+import { BackHeader } from '@/components/layout/page'
+import { ChoiceChip, ConfirmSheet, EditorFooter, MoreButton, NotFound, Segmented, SelectButton, StepButton } from './builder-parts'
 import { useEditorPaths, useSheet } from './editor-nav'
 import { PrescriptionSheet } from './prescription-sheet'
 import { DEFAULT_PRESCRIPTION } from './prescription-form'
@@ -95,12 +96,11 @@ function SlotEditor({ view, dayId, slotId }: { view: ProgramEditorView; dayId: s
 
   return (
     <div className="flex flex-col gap-3.5">
-      <EditorBar
-        icon="back"
-        label={t('builder.slot.back')}
-        fallback={paths.day(view.id, dayId)}
+      <BackHeader
         title={t('builder.slot.caption', { day: programDayName(t, day.name), number: index + 1 })}
-        action={<MoreButton label={t('builder.slot.more')} onClick={() => open('hiq')} />}
+        back={t('builder.slot.back')}
+        fallback={paths.day(view.id, dayId)}
+        actions={<MoreButton label={t('builder.slot.more')} onClick={() => open('hiq')} />}
       />
 
       <div className="flex flex-col gap-2.5">

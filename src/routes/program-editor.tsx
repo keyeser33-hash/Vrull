@@ -1,7 +1,9 @@
 import { type KeyboardEvent, type PointerEvent, useEffect, useId, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { LibraryPicker } from '@/components/forms/library-picker'
-import { BackButton } from '@/components/layout/page'
+import { BackHeader } from '@/components/layout/page'
+import { atNoon } from './week-format'
+import { shiftDate } from '@/lib/calendar'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { ExercisePhoto } from '@/components/ui/exercise-photo'
@@ -49,7 +51,6 @@ import { workoutMinutes } from '@/program/week-plan'
 import { prescriptionValue, rirText, slotSummary, useTemplateNames } from './builder-format'
 import {
   ConfirmSheet,
-  EditorBar,
   EditorFooter,
   MoreButton,
   NameSheet,
@@ -82,10 +83,10 @@ function useWeightSteps() {
 }
 
 /** "javët 1–4", "java 9": javët e bllokut te programi. */
-function blockSpan(t: ReturnType<typeof useI18n>['t'], blocks: { weeks: number }[], index: number) {
-  const from = blocks.slice(0, index).reduce((sum, block) => sum + block.weeks, 1)
-  const to = from + blocks[index].weeks - 1
-  return from === to ? t('builder.structure.blockWeek', { week: from }) : t('builder.structure.blockWeeks', { from, to })
+/** "nga 16 nëntor": data e hënës kur nis blloku (V2-E3-30), jo numrat e javëve. */
+function blockSpan({ t, fmt }: ReturnType<typeof useI18n>, view: { startsOn: string; blocks: { weeks: number }[] }, index: number) {
+  const weeksBefore = view.blocks.slice(0, index).reduce((sum, block) => sum + block.weeks, 0)
+  return t('builder.structure.blockFrom', { date: fmt.date(atNoon(shiftDate(view.startsOn, weeksBefore * 7)), { weekday: false }) })
 }
 
 // ——— Programet e mia (bordi "Programet") ———
@@ -118,10 +119,7 @@ export function ProgramsPage() {
 
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="flex flex-col">
-        <BackButton label={t('builder.programmes.back')} fallback="/programi" className="-ml-2.5" />
-        <h1 className="type-display-m">{t('builder.programmes.title')}</h1>
-      </div>
+      <BackHeader title={t('builder.programmes.title')} back={t('builder.programmes.back')} fallback="/programi" />
 
       <div className="grid grid-cols-2 gap-2">
         <Button variant="primary" size="lg" className="px-3 text-xl" disabled={busy} onClick={() => void build()}>
@@ -256,8 +254,7 @@ export function BuildStartPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <EditorBar icon="back" label={t('builder.onboarding.back')} fallback="/fillimi" title={t('builder.onboarding.title')} />
-      <h1 className="type-display-m">{t('builder.onboarding.heading')}</h1>
+      <BackHeader title={t('builder.onboarding.heading')} back={t('builder.onboarding.back')} fallback="/fillimi" />
       <button
         type="button"
         disabled={busy}
@@ -295,7 +292,8 @@ export function BuildStartPage() {
 // ——— Struktura (bordi "Ndërto") ———
 
 export function ProgramEditorPage() {
-  const { t } = useI18n()
+  const i18n = useI18n()
+  const { t } = i18n
   const { programId = '' } = useParams()
   const view = useLocalQuery(() => programEditor(store, programId), [programId])
   const steps = useWeightSteps()
@@ -360,27 +358,23 @@ export function ProgramEditorPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <EditorBar
-        icon={view.draft ? 'close' : 'back'}
-        label={view.draft ? t('builder.structure.close') : t('builder.structure.back')}
-        fallback={paths.programmes}
+      <BackHeader
         title={view.draft ? t('builder.structure.newTitle') : t('builder.structure.title')}
-        heading
-        action={paths.onboarding ? undefined : <MoreButton label={t('builder.structure.more')} onClick={() => open('me-shume')} />}
+        subtitle={`${view.name} · ${t('builder.structure.totalWeeks', { count: totalWeeks })}`}
+        back={t('builder.structure.back')}
+        fallback={paths.programmes}
+        actions={paths.onboarding ? undefined : <MoreButton label={t('builder.structure.more')} onClick={() => open('me-shume')} />}
       />
 
       <ProgramName key={view.name} view={view} hint={templateText} />
 
       <section aria-labelledby="structure-blocks" className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <h2 id="structure-blocks" className="type-title">
-            {t('builder.structure.blocks')}
-          </h2>
-          <span className="type-caption text-muted-foreground tabular-nums">{t('builder.structure.totalWeeks', { count: totalWeeks })}</span>
-        </div>
+        <h2 id="structure-blocks" className="type-title">
+          {t('builder.structure.blocks')}
+        </h2>
         {view.blocks.map((entry, index) => {
           const name = programBlockName(t, entry.name)
-          const span = blockSpan(t, view.blocks, index)
+          const span = blockSpan(i18n, view, index)
           return (
             <div key={entry.id} className={cn(surfaceClass, 'flex min-h-row items-center gap-2.5 rounded-lg py-1.5 pr-1.5 pl-3')}>
               <span aria-hidden className="flex size-7 shrink-0 items-center justify-center rounded-pill bg-surface-2 text-[13px] font-bold text-muted-foreground tabular-nums">
@@ -611,7 +605,8 @@ function SmartCard({ view, dumbbellStep }: { view: ProgramEditorView; dumbbellSt
 
 /** Blloku: emri, radha, kopja dhe fshirja (javët ndryshohen te rreshti). */
 function BlockSheet({ view, blockId, onClose }: { view: ProgramEditorView; blockId: string; onClose: () => void }) {
-  const { t } = useI18n()
+  const i18n = useI18n()
+  const { t } = i18n
   const index = view.blocks.findIndex((candidate) => candidate.id === blockId)
   const block = view.blocks[index]
   const [name, setName] = useState(programBlockName(t, block.name))
@@ -632,7 +627,7 @@ function BlockSheet({ view, blockId, onClose }: { view: ProgramEditorView; block
     </Button>
   )
   return (
-    <Sheet title={programBlockName(t, block.name)} description={blockSpan(t, view.blocks, index)} onClose={onClose} footer={footer}>
+    <Sheet title={programBlockName(t, block.name)} description={blockSpan(i18n, view, index)} onClose={onClose} footer={footer}>
       <label htmlFor={nameId} className="type-label text-muted-foreground">
         {t('builder.block.name')}
       </label>
@@ -789,17 +784,20 @@ export function DayEditorPage() {
 
   return (
     <div className="flex flex-col gap-3.5">
-      <EditorBar icon="back" label={t('builder.day.back')} fallback={paths.program(view.id)} title={view.name} action={<MoreButton label={t('builder.day.more')} onClick={() => open('me-shume')} />} />
-
-      <div className="flex items-end justify-between gap-2.5">
-        <div className="flex min-w-0 flex-col">
-          <span className="type-caption text-muted-foreground tabular-nums">{meta}</span>
-          <h1 className="type-display-m break-words">{dayName}</h1>
-        </div>
-        <Button variant="secondary" ground="page" size="icon" aria-label={t('builder.day.rename')} onClick={() => open('emri')}>
-          <Icon name="laps" size={20} />
-        </Button>
-      </div>
+      <BackHeader
+        title={dayName}
+        subtitle={meta}
+        back={t('builder.day.back')}
+        fallback={paths.program(view.id)}
+        actions={
+          <>
+            <Button variant="secondary" ground="page" size="icon" aria-label={t('builder.day.rename')} onClick={() => open('emri')}>
+              <Icon name="laps" size={20} />
+            </Button>
+            <MoreButton label={t('builder.day.more')} onClick={() => open('me-shume')} />
+          </>
+        }
+      />
 
       {items.length === 0 ? (
         <p className="type-body text-muted-foreground">{t('builder.day.empty')}</p>

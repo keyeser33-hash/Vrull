@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import type { Tone } from '@/body/model-math'
-import { BackButton } from '@/components/layout/page'
+import { BackHeader } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
@@ -152,10 +152,7 @@ function MeasureForm({ date, today, context, onDate }: { date: string; today: st
 
   return (
     <div className="flex flex-col gap-3.5">
-      <header className="flex min-h-14 items-center gap-1">
-        <BackButton label={t('measure.back')} fallback="/progresi" className="-ml-2" />
-        <h1 className="min-w-0 flex-1 type-display-m">{t('measure.title')}</h1>
-      </header>
+      <BackHeader title={t('measure.title')} back={t('measure.back')} fallback="/progresi" />
 
       <DateRow date={date} today={today} onDate={onDate} />
 

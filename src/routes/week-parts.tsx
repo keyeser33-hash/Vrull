@@ -1,13 +1,11 @@
-import { Link, useLocation, useNavigate } from 'react-router'
-import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/ui/icons'
+import { Link } from 'react-router'
 import { RollingNumber } from '@/components/ui/rolling-number'
 import { cn } from '@/lib/cn'
 import { useSpark } from './goal-motion'
 import type { GoalCell } from './week-format'
 
 // Pjesët e përbashkëta të javës (bordet "Sot", "Qëllimet", "Java", "Sot · Diela"): matësit e tre
-// qëllimeve me shiritin me segmente, dhe lidhja mbrapa me tekst ("‹ Sot").
+// qëllimeve me shiritin me segmente.
 
 /** Shiriti me segmente: i mbushuri prush (mbushet nga e majta, 320 ms), dita rezervë me vijë të ndërprerë. */
 export function GoalSegments({ cell, ground = 'page', className }: { cell: GoalCell; ground?: 'page' | 'card'; className?: string }) {
@@ -106,28 +104,6 @@ export function GoalMetersShort({ cells, label }: { cells: GoalCell[]; label: st
           </span>
         </span>
       ))}
-    </div>
-  )
-}
-
-/**
- * Lidhja mbrapa me tekst (bordet "Qëllimet" dhe "Java": "‹ Sot"): kthehet aty nga erdhi përdoruesi,
- * ose te `fallback` kur faqja është e para në histori.
- */
-export function BackLink({ text, label, fallback }: { text: string; label: string; fallback: string }) {
-  const navigate = useNavigate()
-  const location = useLocation()
-  return (
-    <div className="flex min-h-[52px] items-center">
-      <Button
-        variant="ghost"
-        aria-label={label}
-        className="-ml-3 gap-1 px-2 font-text text-[15px] font-semibold tracking-normal normal-case"
-        onClick={() => (location.key === 'default' ? navigate(fallback, { replace: true }) : navigate(-1))}
-      >
-        <Icon name="mbrapa" size={22} />
-        {text}
-      </Button>
     </div>
   )
 }

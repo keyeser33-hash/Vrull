@@ -89,6 +89,9 @@ describe('importi nga PDF', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Importo nga PDF' })).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/programet/importo')
     expect(screen.getByRole('heading', { level: 2, name: 'Programi nga një PDF' })).toBeInTheDocument()
+    // Kreu si te çdo nën-faqe (V2-E3-30): shigjeta mbrapa, titulli i madh dhe nëntitulli.
+    expect(screen.getByRole('button', { name: 'Mbrapa' })).toBeInTheDocument()
+    expect(screen.getByText('AI e lexon PDF-në dhe mbush ndërtuesin')).toBeInTheDocument()
     expect(await screen.findByText(/Deri në 15 MB\. .* Këtë muaj: 1,24\s€ nga 10\s€/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Zgjidh PDF-në' })).toBeInTheDocument()
 

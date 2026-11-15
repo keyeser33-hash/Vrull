@@ -1,5 +1,5 @@
 import { type ReactNode, useId, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
@@ -10,51 +10,11 @@ import { cn } from '@/lib/cn'
 import { PROGRAM_TEMPLATES, type TemplateId } from '@/program/templates'
 import { useTemplateNames, useTemplateText } from './builder-format'
 
-// Pjesët e përbashkëta të ndërtuesit (V2-E1-10; bordet "Ndërto", "Dita", "Sloti"): shiriti sipër me
-// titullin e vogël në mes, veprimi kryesor poshtë, çipat dhe segmentet 44 px, zgjedhja si buton,
+// Pjesët e përbashkëta të ndërtuesit (V2-E1-10; bordet "Ndërto", "Dita", "Sloti"):
+// veprimi kryesor poshtë, çipat dhe segmentet 44 px, zgjedhja si buton,
 // çelësi, fletët e emrit, të konfirmimit dhe të veprimeve, dhe shabllonet.
 
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
-
-/**
- * Shiriti 56 px i ekraneve të ndërtuesit: × ose shigjeta majtas, titulli i vogël në mes, veprimi djathtas.
- * Mbrapa kthehet aty nga erdhi përdoruesi, ose te `fallback` kur ekrani është i pari në histori.
- */
-export function EditorBar({
-  icon,
-  label,
-  fallback,
-  title,
-  heading = false,
-  action,
-}: {
-  icon: 'close' | 'back'
-  label: string
-  fallback: string
-  title: string
-  /** Titulli i vogël është titulli i ekranit (struktura, ku emri është fushë). */
-  heading?: boolean
-  action?: ReactNode
-}) {
-  const Title = heading ? 'h1' : 'span'
-  const navigate = useNavigate()
-  const location = useLocation()
-  return (
-    <div className="-mx-2 -mt-3 flex h-14 items-center justify-between gap-1">
-      <Button
-        variant="ghost"
-        size="icon"
-        aria-label={label}
-        className="rounded-pill"
-        onClick={() => (location.key === 'default' ? navigate(fallback, { replace: true }) : navigate(-1))}
-      >
-        <Icon name={icon === 'close' ? 'mbyll-vrull' : 'mbrapa'} size={22} />
-      </Button>
-      <Title className="min-w-0 truncate text-center font-display text-lg leading-[1.2] font-bold tracking-[0.04em] text-muted-foreground uppercase">{title}</Title>
-      {action ?? <span aria-hidden className="size-touch shrink-0" />}
-    </div>
-  )
-}
 
 /** Butoni ⋯ i shiritit, që hap fletën e veprimeve. */
 export function MoreButton({ label, onClick }: { label: string; onClick: () => void }) {
@@ -234,7 +194,7 @@ export function Switch({ checked, label, onChange }: { checked: boolean; label: 
 export function NotFound({ text, back, fallback }: { text: string; back: string; fallback: string }) {
   return (
     <div className="flex flex-col gap-4">
-      <EditorBar icon="back" label={back} fallback={fallback} title="" />
+      <BackHeader title="" back={back} fallback={fallback} />
       <p className="type-body text-muted-foreground">{text}</p>
     </div>
   )

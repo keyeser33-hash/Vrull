@@ -11,10 +11,11 @@ export const sq = {
 
   // Importi (bordi "Importo nga PDF").
   'ai.import.title': 'Importo nga PDF',
+  'ai.import.subtitle': 'AI e lexon PDF-në dhe mbush ndërtuesin',
   'ai.import.back': 'Mbrapa',
   'ai.import.file': 'PDF-ja e programit',
   'ai.import.chooseTitle': 'Programi nga një PDF',
-  'ai.import.chooseText': 'AI e lexon PDF-në dhe mbush ndërtuesin: blloqet, ditët, ushtrimet, setet dhe përsëritjet. Për ushtrimet ku nuk është e sigurt, të pyet ty.',
+  'ai.import.chooseText': 'Blloqet, ditët, ushtrimet, setet dhe përsëritjet. Për ushtrimet ku nuk është e sigurt, të pyet ty.',
   'ai.import.choose': 'Zgjidh PDF-në',
   'ai.import.limits': 'Deri në {size}. Kostoja varet nga faqet dhe del pas leximit.',
   'ai.import.monthSoFar': 'Këtë muaj: {spent} nga {limit}',
@@ -126,10 +127,11 @@ export const en: TranslationOf<typeof sq> = {
   'ai.entry.importText': 'AI reads it and fills in the builder',
 
   'ai.import.title': 'Import from PDF',
+  'ai.import.subtitle': 'AI reads the PDF and fills in the builder',
   'ai.import.back': 'Back',
   'ai.import.file': 'Programme PDF',
   'ai.import.chooseTitle': 'A programme from a PDF',
-  'ai.import.chooseText': 'AI reads the PDF and fills in the builder: blocks, days, exercises, sets and reps. Where it is not sure about an exercise, it asks you.',
+  'ai.import.chooseText': 'Blocks, days, exercises, sets and reps. Where it is not sure about an exercise, it asks you.',
   'ai.import.choose': 'Choose the PDF',
   'ai.import.limits': 'Up to {size}. The cost depends on the pages and shows after reading.',
   'ai.import.monthSoFar': 'This month: {spent} of {limit}',
