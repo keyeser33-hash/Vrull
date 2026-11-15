@@ -415,7 +415,16 @@ Një e vërtetë e shkurtër me burim për një ushtrim, ushqim, pjatë ose për
 _Avoid_: këshillë, kur ka burim dhe nuk është udhëzim
 
 **Kuizi javor**:
-Pesë pyetje nga ushtrimet dhe ushqimet e përdoruesit në atë javë, me përgjigje dhe shpjegim.
+Pesë pyetje nga ushtrimet dhe ushqimet e përdoruesit në atë javë, me përgjigje dhe shpjegim; hapet të dielën bashkë me **Përmbledhjen e javës**.
+
+**Vargu i kuizit**:
+Javët njëra pas tjetrës me **Kuizin javor** të mbyllur.
+
+**Paketa e fakteve**:
+Të gjithë **Faktet** që vijnë me app-in, secili me burimin e vet; ndryshon vetëm me një version të ri.
+
+**Faqja Mëso**:
+Faqja te Progresi me **Faktet** që përdoruesi ka parë dhe **Kuizet javore** të kaluara.
 
 ## Miqtë
 

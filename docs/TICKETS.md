@@ -219,10 +219,35 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-05 | Pllaka "Gati" dhe fleta me pjesët dhe 14 ditët | E3-02, E3-03 |
 | V2-E3-06 | Sugjerimi, seanca më e lehtë, "Shtyje për nesër", "Më e lehtë" te historiku | E3-02, E3-03 |
 | V2-E3-07 | Pamja e ditës (rërë, lëvizja, tekstet) dhe "Pamja ndjek gjendjen" | E3-02 |
-| V2-E3-08 | Bordet e Mëso, Health Connect, ujit sipas motit, zakoneve dhe raportit PDF | E3-01 |
+| V2-E3-08 | Bordet e Health Connect, ujit sipas motit, zakoneve dhe raportit PDF (Mëso: E3-12) | E3-01 |
 | V2-E3-10 | Trupi 3D: drita, shkëlqimi dhe kamera e lirë (V53) | – |
 | V2-E3-11 | Lëshimi 0.24.0: gatishmëria dhe Trupi 3D, më herët se 0.40.0 (V54) | E3-02 … E3-07, E3-10 |
+| V2-E3-12 | Bordet e Mëso (V56, SPEC §0.3e) | – |
+| V2-E3-13 | Paketa e fakteve: burimet, kontrolli, shqip dhe anglisht (provat e formës përpara) | E3-12 |
+| V2-E3-14 | Të dhënat: migrimi `learn_events`, `TABLES`/`INDEXES`, `db.ts`, `data/learn.ts` (skeleti i valës) | E3-12 |
+| V2-E3-15 | Logjika: fakti i ditës për çdo vend, kuizi i javës, vargu dhe arritja (provat përpara) | E3-13, E3-14 |
+| V2-E3-16 | "A e dije?" te Sot, pushimi mes seteve dhe ushqimi, dhe cilësimi | E3-15 |
+| V2-E3-17 | Faqja e ushtrimit dhe e pjatës, "Shpjegoje më shumë" | E3-13 |
+| V2-E3-18 | Kuizi i së dielës dhe faqja Mëso te Progresi | E3-15 |
 | V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
+
+## V2-E3-12 · Bordet e Mëso
+
+Faqja "0.40 · Mëso" te kanavaca, në 390 px dhe në tri temat. Bordet:
+- Sot me "A e dije?" në një ditë stërvitjeje;
+- seanca, pushimi mes seteve me kartën;
+- Ushqimi pas regjistrimit me kartën;
+- faqja e ushtrimit me "Si punon", "Gabimet e zakonshme", "Pak histori" dhe "Shpjegoje më shumë";
+- shpjegimi i AI-së me etiketën;
+- faqja e pjatës;
+- Sot të dielën me kartën e kuizit;
+- një pyetje e kuizit pas përgjigjes;
+- rezultati i kuizit me vargun;
+- faqja Mëso te Progresi;
+- Cilësimet me çelësin "A e dije?";
+- një bord në anglisht.
+
+Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta komentosh" rendit vendimet që duhen miratuar. **Pranimi:** përdoruesi i miraton ose i komenton.
 
 ## V2-E3-01 · Bordet e dizajnit 0.24
 
