@@ -38,3 +38,13 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 - [ ] Shina e këndeve (Para, 3/4, Anash, Mbrapa) e kthen trupin butë; prekja e një muskuli hap kartën me vijën te muskuli, dhe "×" kthen te trupi i plotë.
 - [ ] Cilësimet › Gjuha › English: njoftimi i seancës kalon në anglisht.
 - [ ] Butoni mbrapa i Android-it kthen te faqja e mëparshme; te Sot e çon app-in në sfond.
+
+## 6. Ushqimi i ri dhe auditimi (0.25.0, 3 min)
+
+- [ ] Sot, në një telefon pa lejen e njoftimeve: "Fillo stërvitjen" hap fletën "Njoftimi i pushimit"; "Lejo njoftimet" kërkon lejen e Android-it, "Jo tani, fillo pa to" e nis seancën. Butoni tregon "Po fillon" dhe nuk zbehet.
+- [ ] Ushqimi: "Si në plan" te vakti i radhës shton vaktin dhe njoftimi "Zhbëj" e heq; uji +250 dhe "Zhbëj" po ashtu, pa vonesë të dukshme.
+- [ ] "Çfarë hëngre?" → shkruaj "pule" → rezultatet dalin pa internet; "+" e shton në shportë; "Shto te vakti" kthen te Ushqimi me njoftimin.
+- [ ] Barkodi nga fusha hap kamerën; produkti i gjetur hap sasinë.
+- [ ] "Plotëso makrot": në mes të ditës thotë "Plani i ditës e mbush proteinën" (ose çfarë mungon); në mbrëmje propozon deri në 3 kombinime.
+- [ ] Kutia e AI-së bosh: kufiri i muajit është 40 € për pronarin.
+
