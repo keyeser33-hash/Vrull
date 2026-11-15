@@ -183,7 +183,7 @@ describe('Ushqimi', () => {
     expect(screen.queryAllByRole('link', { name: /^Plotëso makrot/ })).toHaveLength(0)
     // Dita e kaluar: asnjë vakt i radhës; çdo vakt pa regjistrim është "pa regjistruar".
     expect(within(await timeline()).queryAllByText(/^I radhës/).length).toBe(0)
-    expect(within(await timeline()).getByRole('button', { name: 'Darka, 20:30, pa regjistruar' })).toBeInTheDocument()
+    expect(within(await timeline()).getByRole('button', { name: 'Darka, 20:00, pa regjistruar' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Kthehu te sot' }))
     expect(await screen.findByText('Sot · 9 dhjetor')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Dita tjetër' }))

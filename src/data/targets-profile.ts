@@ -96,7 +96,7 @@ export const adjustmentOn = (adjustments: readonly TargetAdjustment[], date: str
 // pa kolonë: sinkronizohet pa migrim dhe ruajtja e rikujtuesve e ruan (`reminders.ts`).
 const CHOICE_KEY = 'targets_source'
 
-const choiceOf = (row: { reminders?: unknown } | undefined): TargetsChoice | null => {
+const choiceOf = (row: Record<string, unknown> | undefined): TargetsChoice | null => {
   const raw = row?.reminders
   return raw && typeof raw === 'object' && (raw as Record<string, unknown>)[CHOICE_KEY] === 'jim' ? 'jim' : null
 }

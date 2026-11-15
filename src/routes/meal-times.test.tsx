@@ -51,7 +51,7 @@ describe('Oraret e vakteve', () => {
     expect(screen.getByRole('button', { name: 'Rikthe Snack paradite' })).toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('Ora e vaktit Dreka'), { target: { value: '14:00' } })
     expect(screen.getByText(/E lëvizur nga ti, ishte 14:20/)).toBeInTheDocument()
-    expect(times().slice(-3)).toEqual(['20:45Para stërvitjes15 min para stërvitjes, lëviz me të', '22:30Pas stërvitjes90 min pas fillimit, lëviz me të', '00:30Para gjumit'])
+    expect(times().slice(-3)).toEqual(['20:45Para stërvitjes15 min para stërvitjes, lëviz me të', '22:00Pas stërvitjes15 min pas mbarimit, lëviz me të', '00:30Para gjumit'])
 
     await user.click(screen.getByRole('button', { name: 'Ruaj oraret' }))
     expect(await screen.findByText('Ushqimi')).toBeInTheDocument()
