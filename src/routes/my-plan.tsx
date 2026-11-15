@@ -109,7 +109,13 @@ function PlanTotals({ day }: { day: NutritionDay }) {
           <span className="font-display text-[52px] leading-[0.85] font-extrabold">{kcalText(i18n, totals.kcal)}</span>
           <span className="pb-0.5 text-sm text-muted-foreground">{targets ? t('food.plan.of', { target: kcalText(i18n, targets.kcal) }) : 'kcal'}</span>
         </span>
-        {targets ? (
+        {targets && day.targetsSource === 'jim' ? (
+          // Plani i Jimit është vetë objektivi: totalet me vlerat e USDA-së ndryshojnë pak nga ato që shkruan PDF-ja.
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-success">
+            <Icon name="zgjedhur" size={18} />
+            {t('food.plan.asPdf')}
+          </span>
+        ) : targets ? (
           <span className={cn('flex items-center gap-1.5 text-sm font-semibold', within ? 'text-success' : 'text-muted-foreground')}>
             {within ? <Icon name="zgjedhur" size={18} /> : null}
             {t(within ? 'food.plan.within' : 'food.plan.away')}

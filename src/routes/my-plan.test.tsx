@@ -116,6 +116,20 @@ describe('Plani im', () => {
     expect(await within(meals()).findByText(/^Salmon \d+\s?g, bukë integrale .*, gjoks pule 100\s?g$/)).toBeInTheDocument()
   })
 
+  it('me "Plani i Jimit" (V62): sasitë e PDF-së pa shkallëzim dhe "Si te PDF-ja", jo "Larg objektivave"', async () => {
+    const { setTargetsChoice } = await import('@/data/targets-profile')
+    await setTargetsChoice(data.store, 'jim', '2026-12-07')
+    try {
+      await renderPage()
+      expect(await screen.findByText('nga 3 700 kcal')).toBeInTheDocument()
+      expect(screen.getByText('Si te PDF-ja')).toBeInTheDocument()
+      expect(screen.queryByText('Larg objektivave')).not.toBeInTheDocument()
+      expect(within(meals()).getByRole('button', { name: /Mëngjesi 2/ })).toHaveTextContent('3 vezë')
+    } finally {
+      await setTargetsChoice(data.store, 'personal', '2026-12-07')
+    }
+  })
+
   it('dita e pushimit ka shtatë vakte, pa vaktet e stërvitjes', async () => {
     const user = userEvent.setup()
     await renderPage()

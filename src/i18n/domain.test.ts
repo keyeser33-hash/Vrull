@@ -51,12 +51,13 @@ describe('emrat e ushqimit', () => {
     expect(portionText(en, enFmt, { count: 227, unit: 'gram' })).toBe('227 g')
   })
 
-  it('emri brenda fjalisë: me shkronjë të vogël, përveç shkurtimeve', () => {
+  it('emri brenda fjalisë: me shkronjë të vogël, përveç shkurtimeve dhe markave (Clif Bar)', () => {
     expect(nameInSentence('Pluhur proteine', 'sq')).toBe('pluhur proteine')
     expect(nameInSentence('Creatine', 'en')).toBe('creatine')
     expect(nameInSentence('ZMA', 'en')).toBe('ZMA')
     expect(nameInSentence('BCAA', 'sq')).toBe('BCAA')
-    expect(nameInSentence('Clif Bar', 'en')).toBe('clif bar')
+    expect(nameInSentence('Clif Bar', 'sq')).toBe('Clif Bar')
+    expect(nameInSentence('Clif Bar', 'en')).toBe('Clif Bar')
   })
 
   it('suplementet e planit: emri, doza dhe evidenca; një emër ose dozë e ndryshuar mbetet', () => {

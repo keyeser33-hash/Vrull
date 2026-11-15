@@ -28,7 +28,7 @@ describe('rikujtuesit (§13)', () => {
     expect(lines(base())).toEqual([
       '07:00 Mëngjesi 1: Pluhur proteine, pjepër · me pluhur proteine',
       '07:45 Mëngjesi 2: Vezë, e bardhë veze, vaj ulliri, djathë amerikan me pak yndyrë, tërshërë e gatuar',
-      '10:30 Snack paradite: Gjizë me pak yndyrë, ananas, clif bar',
+      '10:30 Snack paradite: Gjizë me pak yndyrë, ananas, Clif Bar',
       '13:00 Dreka: Ton albacore në ujë, bukë integrale, majonezë light, mollë · me multivitaminë',
       '15:30 Snack pasdite: Pluhur proteine, gjalpë kikiriku, reçel, bukë integrale · me pluhur proteine',
       '18:30 Darka: Salmon, brokoli, sallatë jeshile e përzier, salcë me vaj ulliri dhe uthull',

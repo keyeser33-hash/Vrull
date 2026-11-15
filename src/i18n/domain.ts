@@ -101,7 +101,8 @@ export function missedNo(t: T, weekday: number | null): string {
 }
 
 export function nameInSentence(name: string, lang: string): string {
-  return /^[\p{Lu}\d-]{2,}$/u.test(name) ? name : name.toLocaleLowerCase(lang)
+  // Shkurtimet ("ZMA") dhe emrat e markave me shkronjë të madhe në mes ("Clif Bar") mbeten siç janë.
+  return /^[\p{Lu}\d-]{2,}$/u.test(name) || /\s\p{Lu}/u.test(name) ? name : name.toLocaleLowerCase(lang)
 }
 
 /** "Kreatinë" / "Creatine" për suplementet e planit; një emër tjetër siç është. */
