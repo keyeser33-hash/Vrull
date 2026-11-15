@@ -12,6 +12,8 @@ export const sq = {
   'sot.story.plan': 'Plani',
   'sot.story.week': 'Java jote',
   'sot.story.new': '{label}, e re',
+  'sot.viewer.position': 'Story {n} nga {total}: {title}',
+  'sot.viewer.back': 'Story i mëparshëm',
   'sot.mentor.steps': 'Hapat',
   'sot.mentor.learn': 'Mëso',
 
@@ -124,6 +126,8 @@ export const en: TranslationOf<typeof sq> = {
   'sot.story.plan': 'Plan',
   'sot.story.week': 'Your week',
   'sot.story.new': '{label}, new',
+  'sot.viewer.position': 'Story {n} of {total}: {title}',
+  'sot.viewer.back': 'Previous story',
   'sot.mentor.steps': 'Steps',
   'sot.mentor.learn': 'Learn',
 
