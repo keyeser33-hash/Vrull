@@ -51,7 +51,7 @@ describe('Oraret e vakteve', () => {
     expect(screen.getByRole('button', { name: 'Rikthe Snack paradite' })).toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('Ora e vaktit Dreka'), { target: { value: '14:00' } })
     expect(screen.getByText(/E lëvizur nga ti, ishte 14:20/)).toBeInTheDocument()
-    expect(times().slice(-3)).toEqual(['20:45Para stërvitjes15 min para stërvitjes, lëviz me të', '22:30Pas stërvitjes90 min pas fillimit, lëviz me të', 'Para gjumit'])
+    expect(times().slice(-3)).toEqual(['20:45Para stërvitjes15 min para stërvitjes, lëviz me të', '22:30Pas stërvitjes90 min pas fillimit, lëviz me të', '00:30Para gjumit'])
 
     await user.click(screen.getByRole('button', { name: 'Ruaj oraret' }))
     expect(await screen.findByText('Ushqimi')).toBeInTheDocument()
@@ -67,5 +67,14 @@ describe('Oraret e vakteve', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Meal times' })).toBeInTheDocument()
     expect(screen.getByLabelText('Time of Lunch')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Save times' })).toBeEnabled()
+  })
+
+  it('ora shfaqet e plotë me 24 orë, jo e prerë dhe jo "AM/PM", në të dyja gjuhët (F1)', async () => {
+    await renderPage()
+    const lunch = await screen.findByLabelText('Ora e vaktit Dreka')
+    expect(lunch.parentElement).toHaveTextContent(/^\d{2}:\d{2}$/)
+    expect(lunch.parentElement).toHaveClass('h-touch')
+    expect(screen.getByLabelText('Ora e vaktit Para gjumit').parentElement).toHaveTextContent('00:30')
+    expect(document.body).not.toHaveTextContent(/[AP]M/)
   })
 })

@@ -64,6 +64,9 @@ describe('Rikujtuesit', () => {
     expect(await screen.findByText(/^Vjen vetëm kur vakti, uji ose suplementi nuk është regjistruar\. Rreth 4 në ditë, jo nga gjumi deri te zgjimi \(23:00–07:00\)/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Orët e qeta, Pa interval' }))
     const sheet = screen.getByRole('dialog', { name: 'Orët e qeta' })
+    // Ora vizatohet e plotë me 24 orë mbi input-in e padukshëm (F1).
+    expect(within(sheet).getByLabelText(/^Nga/).parentElement).toHaveTextContent('12:00')
+    expect(within(sheet).getByLabelText(/^Deri/).parentElement).toHaveTextContent('14:00')
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj intervalin' }))
     expect(await screen.findByRole('button', { name: 'Orët e qeta, 12:00–14:00' })).toBeInTheDocument()
     expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ quiet: { from: '12:00', to: '14:00' } })

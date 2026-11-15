@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { ChoiceRow, Group, Row, SwitchRow } from '@/components/layout/list-group'
 import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
+import { TimeField } from '@/components/forms/time-field'
 import { WEEK_DAYS } from '@/components/forms/week-days'
 import { planRemindersNow, store, useLocalQuery } from '@/data/app-data'
 import { readProfile } from '@/data/profile'
@@ -152,13 +153,7 @@ function QuietSheet({ current, onClose }: { current: ReminderSettings['quiet']; 
         ].map((field) => (
           <label key={field.id} htmlFor={field.id} className="flex flex-col gap-1.5">
             <span className="type-caption text-muted-foreground">{field.label}</span>
-            <input
-              id={field.id}
-              type="time"
-              value={field.value}
-              onChange={(event) => event.target.value && field.set(event.target.value)}
-              className={cn(inputClass, 'text-center font-display text-xl font-extrabold tabular-nums')}
-            />
+            <TimeField id={field.id} value={field.value} onChange={field.set} className={cn(inputClass, 'font-display text-xl font-extrabold')} />
           </label>
         ))}
       </div>

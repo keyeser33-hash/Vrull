@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
+import { TimeField } from '@/components/forms/time-field'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { inputClass } from '@/components/ui/field-styles'
@@ -165,12 +166,11 @@ function MealTimesEditor({ schedule, today }: { schedule: ScheduleSettings; toda
                 {linked ? (
                   <span className="flex h-touch min-w-[84px] items-center justify-center font-display text-[19px] font-extrabold text-muted-foreground tabular-nums">{entry.time}</span>
                 ) : (
-                  <input
-                    type="time"
-                    aria-label={t('food.schedule.mealTime', { meal: name })}
+                  <TimeField
+                    label={t('food.schedule.mealTime', { meal: name })}
                     value={entry.time}
-                    onChange={(event) => setMealTime(entry.meal, event.target.value)}
-                    className={cn(inputClass, 'w-[84px] px-2 text-center font-display text-[19px] font-extrabold tabular-nums', moved && 'border-2 border-ember-text')}
+                    onChange={(time) => setMealTime(entry.meal, time)}
+                    className={cn(inputClass, 'w-[84px] px-2 font-display text-[19px] font-extrabold', moved && 'border-2 border-ember-text')}
                   />
                 )}
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -238,13 +238,7 @@ function TimeRow({ label, detail, value, onChange, last }: { label: string; deta
         <span className="text-base">{label}</span>
         {detail ? <span className="text-[13px] leading-[1.35] text-muted-foreground">{detail}</span> : null}
       </label>
-      <input
-        id={id}
-        type="time"
-        value={value}
-        onChange={(event) => event.target.value && onChange(event.target.value)}
-        className={cn(inputClass, 'w-[96px] shrink-0 px-2 text-center font-display text-xl font-extrabold tabular-nums')}
-      />
+      <TimeField id={id} value={value} onChange={onChange} className={cn(inputClass, 'w-[96px] shrink-0 px-2 font-display text-xl font-extrabold')} />
     </div>
   )
 }
@@ -254,13 +248,7 @@ function DayTime({ day, value, onChange }: { day: string; value: string; onChang
   return (
     <label htmlFor={id} className="flex flex-col gap-1 rounded-md border border-border bg-surface px-3 py-2">
       <span className="text-[13px] text-muted-foreground">{day}</span>
-      <input
-        id={id}
-        type="time"
-        value={value}
-        onChange={(event) => event.target.value && onChange(event.target.value)}
-        className="h-touch w-full bg-transparent font-display text-xl font-extrabold text-foreground tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-      />
+      <TimeField id={id} value={value} onChange={onChange} align="start" className="w-full font-display text-xl font-extrabold text-foreground" />
     </label>
   )
 }
