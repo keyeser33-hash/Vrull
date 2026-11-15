@@ -115,4 +115,11 @@ Shenjat: [V] = e lexova vetë te faqja primare (URL pranë). [S] = gjykimi im. �
 - Livsmedelsverket: "The data is published under the Creative Commons Attribution 4.0 license.", "The Swedish Food Agency must be stated as the source.", rreth 2 500 ushqime, emri anglisht te `/api/v1/livsmedel` [V, faqja e §5].
 - Pyetja 4 u rishkrua: versioni i agjentit përmendte një person që nuk ka lidhje me app-in.
 
+## 12. Vendimet e pronarit (2026-11-15)
+
+- A. Open Food Facts: tabelë më vete, e pandryshuar, me atribuim; të dhënat u jepen kujt i kërkon me ODbL.
+- B. Frida 5.5: po, me CC BY 4.0.
+- C. Tabela e Hoxha dhe kolegëve (2024): jo.
+- D. Pjatat shqiptare: recetë bazë nga përbërësit e Listës së Vrullit, me burimin "Vrull, recetë", të kontrolluara nga Admini.
+
 Prodhuar nga Claude (AI); rishikohet nga Andi

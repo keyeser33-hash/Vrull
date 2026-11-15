@@ -272,6 +272,8 @@ Faqja "0.42 · Ushqimi i ri" te kanavaca, në OLED dhe shqip, me një bord angli
 
 **Gjendja (15.11.2026, 09:20):** 9 borde te faqja "0.42 · Ushqimi i ri" (kanavaca, faqja e nisjes): dita me rripin e suplementeve dhe vijën e kohës (12:20, plani i Jimit, 17 suplementet e §10), fleta e suplementeve, anglisht, kërkimi me shportën, sasia, shporta, fjalia te AI-ja, barkodi pa produkt me etiketën, Plotëso makrot; parë në built-in browser. Raporti i burimeve (`docs/research/food-sources.md`): CC0 USDA (Foundation, SR Legacy, FNDDS), Ciqual 2025 (etalab 2.0), CoFID (OGL v3.0), Livsmedelsverket (CC BY 4.0); presin vendim Open Food Facts (ODbL), Frida, tabela shqiptare e Hoxha 2024 dhe pjatat shqiptare që mungojnë kudo. Limitet e Open Food Facts sot: 15 lexime dhe 10 kërkime në minutë, pa kërkim gjatë shkrimit.
 
+**Gjendja (15.11.2026, 09:35):** përdoruesi vendosi A–D: Open Food Facts në tabelë më vete, të pandryshuar dhe me atribuim (ODbL); Frida po, me CC BY 4.0; tabela e Hoxha dhe kolegëve jo; pjatat shqiptare me recetë nga përbërësit. Te SPEC §0.3h dhe te raporti (§12). Plani i E3-27: `docs/agents/PLANI-LISTA-E-VRULLIT.md`. Bordet presin komentet.
+
 ## V2-E3-20 · Bordet e seancës së re
 
 Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglisht. Rregullat: SPEC §0.3g (V58). Bordet: fleta e ushtrimit me tabelën (seti i parë, mes setesh, me rekord), tastiera e peshës, "Zhbëj", ndryshimi i një seti të një ushtrimi të kaluar, pushimi me tabelën dhe me ushtrimin e ri, mbyllja me "Kontrollo setet", lëvizja (e palosur, e hapur, me "lëvizje të reduktuar"), videoja, faqja e ushtrimit me udhëzuesin. **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit (0.41.0).

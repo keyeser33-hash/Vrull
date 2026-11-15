@@ -1,0 +1,36 @@
+# Plani: Lista e Vrullit (V2-E3-27)
+
+Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.md` (me vendimet e pronarit, §12). Kodi nis pas miratimit të bordeve të 0.42 dhe pas migrimit në Supabase.
+
+## Çfarë ndërtohet
+
+1. **Ndërtimi i listës** (`tools/food-catalog/`, si `tools/exercise-library/`): një skript për çdo burim e kthen skedarin e shkarkuar në rreshta të njëjtë: burimi, ID-ja origjinale, emri anglisht (dhe emri i burimit), grupi, kcal, proteina, karbohidratet, yndyrat, fibrat për 100 g pjesë të ngrënshme, porcionet kur burimi i ka, licenca, versioni. Shkarkimet nuk hyjnë në repo; skripti mban URL-në dhe sha256 e çdo skedari.
+2. **Bashkimi:** i njëjti ushqim në disa burime mbahet një herë sipas radhës USDA (Foundation, SR Legacy, FNDDS), Ciqual, CoFID, Livsmedelsverket, Frida; të tjerët ruhen te `also_in`. Vlerat nuk përzihen mes burimeve.
+3. **Emrat shqip:** përkthim nga anglishtja, i shënuar "i pakontrolluar"; rreth 1 000 ushqimet më të zakonshme kontrollohen të parat (nga Admini ose në rishikim).
+4. **Pjatat shqiptare:** recetë bazë me gramët e përbërësve nga lista; makrot llogariten; burimi "Vrull, recetë"; Admini i kontrollon (V31). Burimi i recetës shënohet për çdo pjatë.
+5. **Supabase:** tabelat `food_catalog` (lexim për përdoruesit e kyçur, pa shkrim nga app-i) dhe `food_products` (produktet e Open Food Facts dhe të etiketave, pa emrin e kujt e shtoi te leximi). Migrimi i jepet pronarit si SQL; `TABLES`, `INDEXES` dhe versioni i ri te `db.ts`.
+6. **Telefoni:** versioni i listës vjen me app-in (punon pa internet që në nisje) dhe përditësohet me **Versionin e listës**; kërkimi bëhet në telefon, pa rrjet.
+7. **Faqja "Burimet"** te Cilësimet, me atribuimet që kërkon secila licencë (USDA, ANSES, Crown copyright/OGL, Livsmedelsverket, DTU, Open Food Facts).
+
+## Rojet dhe provat
+
+- Për çdo burim: provë me një skedar të vogël shembull (rreshtat e pritur, njësitë, energjia).
+- Roja e listës: ID unike; çdo rresht ka burim, licencë dhe version; kcal brenda 15% të 4·P + 4·K + 9·Y ose i shënuar; asnjë vlerë negative; porcionet me gram.
+- Madhësia: masim listën e ngjeshur dhe kohën e kërkimit në telefon para se ta vendosim në app.
+
+## Valët
+
+| Vala | Puna | Kush |
+|---|---|---|
+| 1 | Skeleti i ndërtimit, USDA (3 burimet), roja dhe provat | `vrull-builder` |
+| 2 | Ciqual, CoFID, Livsmedelsverket, Frida (paralel, një për burim) | `vrull-builder` × 4 |
+| 3 | Bashkimi, radha e të zakonshmeve, emrat shqip | orkestruesi + agjentë përkthimi |
+| 4 | Recetat e pjatave shqiptare me burimet e tyre | agjentë kërkimi + rishikues |
+| 5 | Migrimi, kopja në telefon, kërkimi, faqja "Burimet" | `vrull-builder` |
+
+## Pyetjet që mbeten për ndërtimin
+
+- Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
+- Sa ushqime hyjnë në app: e gjithë lista apo vetëm një pjesë, pasi të masim madhësinë.
+
+Prodhuar nga Claude (AI); rishikohet nga Andi
