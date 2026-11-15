@@ -67,4 +67,13 @@ export const VRULL_ICONS = {
   zjarri: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z"/>',
   flamuri: '<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>',
   ndaj: '<path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>',
+  // Sot i ri (V57, bordet "Sot"): rrathët e story-ve, matësit e drejtpërdrejtë dhe menyja e ujit.
+  zemra: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  pulsi: '<path d="M3 12h4l3-7 4 14 3-7h4"/>',
+  biseda: '<path d="M4 5h16v11H10l-6 4z"/>',
+  flaka: '<path d="M12 2.5c.6 3 4.5 5.2 4.5 10.2a4.5 4.5 0 0 1-9 0c0-2.6 1.5-4.3 2.6-5.4.1 1.8.9 2.9 1.9 3.4.3-3.2-.8-5.9 0-8.2z"/><path d="M12 21a2 2 0 0 0 2-2c0-1.4-1-2.2-2-3.5-1 1.3-2 2.1-2 3.5a2 2 0 0 0 2 2z"/>',
+  kofsha: '<path d="M14.5 4a5.5 5.5 0 0 1 3.9 9.4c-1.8 1.8-4.3 2.2-6.4 1.2L9 17.6a2 2 0 1 1-2.6 2.6 2 2 0 1 1-2.6-2.6 2 2 0 1 1 2.6-2.6L9.4 12c-1-2.1-.6-4.6 1.2-6.4A5.5 5.5 0 0 1 14.5 4z"/>',
+  'pika-uji': '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
+  kanaca: '<path d="M8 4h8v16H8zM8 8h8"/>',
+  shishja: '<path d="M10 3h4v3l2 3v11H8V9l2-3z"/>',
 } as const
