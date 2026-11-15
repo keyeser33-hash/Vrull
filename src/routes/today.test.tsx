@@ -441,6 +441,8 @@ describe('Sot', () => {
     await renderToday()
     const card = await screen.findByRole('region', { name: 'Stërvitja e sotme' })
     expect(banner()).toHaveTextContent('E diel, 8 nëntor · Java 0')
+    // Rripi i javës thotë të njëjtën javë si kreu (jo "Java 1" e bllokut me një javë).
+    expect(screen.getByRole('region', { name: 'Java 0' })).toBeInTheDocument()
     expect(within(card).getByText('Bench Press: zgjidh peshën ku mbyll 12–⁠15.')).toBeInTheDocument()
     expect(within(card).getByText('9 ushtrime · ~45 min')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^Kalori: 0 nga/ })).toBeInTheDocument()

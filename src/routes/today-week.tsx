@@ -7,6 +7,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { localDate } from '@/lib/calendar'
 import { dayDots } from '@/today/week-dots'
 import { DaySheet } from './day-sheet'
+import { weekShort } from './programme-format'
 import { DAY_PARAM } from './sheet-params'
 import { atNoon } from './week-format'
 
@@ -42,7 +43,7 @@ export function TodayWeek({ view, goals }: { view: TodayView; goals: WeekGoalsVi
     <section aria-labelledby="today-week" className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
         <h2 id="today-week" className="type-label text-muted-foreground">
-          {plan ? t('plan.week', { week: plan.week }) : t('week.yours')}
+          {plan && plan.blockName ? weekShort(t, { ...plan, blockName: plan.blockName }) : t('week.yours')}
         </h2>
         <Link to="/sot/java" className="-my-3 -mr-2 flex min-h-12 items-center gap-1 rounded-md px-2 text-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-foreground">
           {t('today.week.goals')}
