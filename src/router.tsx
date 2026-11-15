@@ -50,6 +50,7 @@ const appScreens: RouteObject[] = [
       { path: 'programi/editori/:programId/sloti/:slotId', ...screen(() => import('@/routes/slot-editor'), (m) => m.SlotEditorPage), ...tab(null) },
       { path: 'ushqimi', ...screen(() => import('@/routes/nutrition'), (m) => m.NutritionPage), ...tab('food') },
       { path: 'ushqimi/shto/:meal', ...screen(() => import('@/routes/add-food'), (m) => m.AddFoodPage), ...tab(null) },
+      { path: 'ushqimi/plotesomakrot', ...screen(() => import('@/routes/fill-macros'), (m) => m.FillMacrosPage), ...tab(null) },
       { path: 'ushqimi/objektivat', ...screen(() => import('@/routes/nutrition-targets'), (m) => m.TargetsPage), ...tab(null) },
       { path: 'ushqimi/oraret', ...screen(() => import('@/routes/meal-times'), (m) => m.MealTimesPage), ...tab(null) },
       { path: 'ushqimi/plani', ...screen(() => import('@/routes/my-plan'), (m) => m.MyPlanPage), ...tab(null) },
