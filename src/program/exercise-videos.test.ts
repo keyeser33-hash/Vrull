@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import library from './library.json'
-import { EXERCISE_VIDEOS, curatedVideos, mainVideoId } from './exercise-videos'
+import { EXERCISE_VIDEOS, WITHOUT_VIDEO, curatedVideos, mainVideoId } from './exercise-videos'
+import { SHORTCUT_TO_SIZE } from './shortcut-to-size'
 import { watchUrl, youtubeId } from '@/lib/youtube'
 
-const BENCH = 'Barbell_Bench_Press_-_Medium_Grip'
+const BENCH = { libraryId: 'Barbell_Bench_Press_-_Medium_Grip', name: 'Bench Press' }
+const SIT_UP = { libraryId: '3_4_Sit-Up', name: '3/4 Sit-Up' }
+const STS_IDS = SHORTCUT_TO_SIZE.exercises.map((exercise) => exercise.id)
 
 describe('videot e zgjedhura të ushtrimeve (SPEC §0.3g)', () => {
   it('Bench Press ka videon e NASM dhe tri video më të gjata nga autorë me titull', () => {
@@ -17,14 +19,24 @@ describe('videot e zgjedhura të ushtrimeve (SPEC §0.3g)', () => {
     ])
   })
 
-  it('ushtrimi pa video të zgjedhur kthen null', () => {
-    expect(curatedVideos('3_4_Sit-Up')).toBeNull()
-    expect(curatedVideos(null)).toBeNull()
+  it('ushtrimi gjendet edhe me ID-në e bibliotekës vetëm, edhe me emrin vetëm', () => {
+    expect(curatedVideos({ libraryId: BENCH.libraryId, name: 'Barbell Bench Press - Medium Grip' })?.main.id).toBe('CayG6UYqL8g')
+    expect(curatedVideos({ libraryId: null, name: 'Bench Press' })?.main.id).toBe('CayG6UYqL8g')
   })
 
-  it('çdo hyrje i përket një ushtrimi të bibliotekës', () => {
-    const ids = new Set(library.exercises.map((exercise) => exercise.id))
-    for (const key of Object.keys(EXERCISE_VIDEOS)) expect(ids.has(key), key).toBe(true)
+  it('ushtrimi pa video të zgjedhur kthen null', () => {
+    expect(curatedVideos(SIT_UP)).toBeNull()
+    expect(curatedVideos({ libraryId: null, name: 'Ushtrimi im' })).toBeNull()
+  })
+
+  it('çdo hyrje është një ushtrim i Shortcut to Size', () => {
+    for (const key of Object.keys(EXERCISE_VIDEOS)) expect(STS_IDS, key).toContain(key)
+  })
+
+  it('çdo ushtrim i Shortcut to Size ka videon kryesore, përveç atyre pa burim të pranuar', () => {
+    const missing = STS_IDS.filter((id) => !EXERCISE_VIDEOS[id])
+    expect(missing).toEqual(WITHOUT_VIDEO)
+    for (const id of WITHOUT_VIDEO) expect(STS_IDS, id).toContain(id)
   })
 
   it('çdo video ka ID të vlefshme, autorin, kohëzgjatjen dhe datën e kontrollit', () => {
@@ -56,6 +68,6 @@ describe('videoja kryesore e ushtrimit', () => {
   })
 
   it('pa video të zgjedhur dhe pa link: null', () => {
-    expect(mainVideoId('3_4_Sit-Up', null)).toBeNull()
+    expect(mainVideoId(SIT_UP, null)).toBeNull()
   })
 })

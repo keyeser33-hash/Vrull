@@ -275,6 +275,8 @@ Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglis
 
 **Gjendja (15.11.2026, 05:35):** përdoruesi pranoi mjekët (MD) dhe fizioterapeutët (DPT) me titull si ekspertë (vendimi B; SPEC §0.3g). Videot e Bench Press janë te të dhënat e app-it, `src/program/exercise-videos.ts` (me provat), pas kontrollit me built-in browser: titulli, kanali, kohëzgjatja dhe luajtja brenda app-it (të katërtat po). Videoja e NASM zgjat 0:25 si te player-i (jo 0:26): u ndreq te bordet. Lëshimi i Etapës 3 merr ID-në V2-E3-25, sepse E3-20 ishte dy herë.
 
+**Gjendja (15.11.2026, 06:20):** me kërkesën e përdoruesit ("kontrollo për të gjitha ushtrimet"), videot e 66 ushtrimeve të Shortcut to Size (pjesë e E3-23), me built-in browser: kërkimi në YouTube (dy kalime, 0 gabime), pastaj 146 video të hapura një nga një (titulli, kanali, kohëzgjatja, luajtja brenda app-it, prezantuesi te RP) dhe miniaturat për titujt e paqartë të NASM. 62 ushtrime kanë videon kryesore dhe deri në 3 të tjera; 4 pa video nga burimet e pranuara (`WITHOUT_VIDEO`). Kopja lokale u krahasua me të dhënat e shfletuesit me SHA-256 (e njëjtë). Variantet janë të shënuara te komentet. Kanalet dhe titujt e autorëve u kontrolluan: Jeff Cavaliere, MSPT, CSCS; Dr. Mike Israetel, PhD (vetëm videoja ku përshkrimi e emëron).
+
 ## V2-E3-19 · Sot i ri
 
 Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, dita e pushimit, fleta e një dite të kaluar dhe e një të ardhshme, plus story-t e gjendjes së ditës dhe "A e dije?". Rregullat: SPEC §0.3f (V57). **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit dhe del me 0.40.0.
