@@ -127,6 +127,11 @@ export async function saveExternalFood(store: LocalStore, food: ExternalFood): P
   return row.id
 }
 
+/** Ushqimet sipas id-së: burimi dhe porcioni i rreshtave të kërkimit që vijnë si porcione (të fundit, të preferuarat). */
+export async function foodsById(store: LocalStore): Promise<Map<string, Food>> {
+  return new Map((await store.all('foods')).map((row) => [row.id, toFood(row)]))
+}
+
 export async function foodById(store: LocalStore, id: string): Promise<Food | null> {
   const row = await store.get('foods', id)
   return row ? toFood(row) : null

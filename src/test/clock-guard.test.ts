@@ -17,7 +17,6 @@ const BASELINE: Record<string, number> = {
   'src/lib/music-tempo.test.ts': 2,
   'src/lib/session-notification.test.ts': 3,
   'src/routes/achievements.test.tsx': 1,
-  'src/routes/add-food.test.tsx': 1,
   'src/routes/ai-box.test.tsx': 2,
   'src/routes/exercise.test.tsx': 1,
   'src/routes/history.test.tsx': 1,

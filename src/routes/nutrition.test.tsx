@@ -40,7 +40,7 @@ describe('Ushqimi', () => {
   afterAll(() => vi.useRealTimers())
   afterEach(() => language.set('sq'))
 
-  async function renderPage(entry = '/ushqimi') {
+  async function renderPage(entry: string | { pathname: string; state: unknown } = '/ushqimi') {
     const { NutritionPage } = await import('./nutrition')
     const router = createMemoryRouter(
       [
@@ -152,6 +152,25 @@ describe('Ushqimi', () => {
     await waitFor(async () => expect(await dayRows()).toHaveLength(0))
     expect(await within(await timeline()).findByRole('region', { name: 'Dreka' })).toBeInTheDocument()
     expect(await hero(/^Sot: 0 nga 3\s037 kcal, mbeten 3\s037$/)).toBeInTheDocument()
+  })
+
+  it('pas shtimit nga shporta (Shto ushqim): njoftimi "U shtua te Dreka" vjen nga `location.state`, një herë, dhe "Zhbëj" heq regjistrimet', async () => {
+    const user = userEvent.setup()
+    const { createCustomFood } = await import('@/data/foods')
+    const { logFood } = await import('@/data/nutrition')
+    const food = await createCustomFood(data.store, { name: 'Oriz kaf', kcal: 120, proteinG: 3, carbsG: 25, fatG: 1 })
+    await logFood(data.store, { date: TODAY, meal: 'lunch', foodId: food, grams: 100 })
+    await logFood(data.store, { date: TODAY, meal: 'lunch', foodId: food, grams: 150 })
+    const ids = (await dayRows()).map((row) => row.id)
+    expect(ids).toHaveLength(2)
+    const router = await renderPage({ pathname: '/ushqimi', state: { added: { meal: 'lunch', kcal: 300, ids } } })
+    const toast = await screen.findByRole('status')
+    expect(toast).toHaveTextContent('U shtua te Dreka · 300 kcalZhbëj')
+    // Gjendja pastrohet nga historia, që rifreskimi ose kthimi mbrapa të mos e tregojë përsëri.
+    await waitFor(() => expect(router.state.location.state).toBeNull())
+    await user.click(within(toast).getByRole('button', { name: 'Zhbëj' }))
+    await waitFor(async () => expect(await dayRows()).toHaveLength(0))
+    expect(screen.queryByRole('status')).toBeNull()
   })
 
   it('‹ › ndërrojnë ditën: deri te nesër, jo më tej; data te kreu kthen te sot', async () => {

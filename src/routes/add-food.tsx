@@ -1,44 +1,45 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
-import { ValueStepper } from '@/components/forms/value-stepper'
-import { Group, Row } from '@/components/layout/list-group'
-import { BackHeader } from '@/components/layout/page'
+import { AmountSheet, type LeftToday } from '@/components/food/amount-sheet'
+import { BarcodeSheet } from '@/components/food/barcode-sheet'
+import { BasketBar } from '@/components/food/basket-bar'
+import { BasketSheet } from '@/components/food/basket-sheet'
+import { CustomFoodSheet } from '@/components/food/custom-food-sheet'
+import { portionLabel, sourceKey } from '@/components/food/food-labels'
+import { PickRow, PickSection } from '@/components/food/food-pick'
+import { logWithUndo } from '@/components/food/meal-actions'
+import { MealChip, MealPicker } from '@/components/food/meal-chip'
+import { type BasketApi, useBasket } from '@/components/food/use-basket'
+import { useMealPhoto } from '@/components/food/use-meal-photo'
 import { Sheet } from '@/components/layout/sheet'
+import { BackButton } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
-import { inputClass } from '@/components/ui/field-styles'
-import { Icon } from '@/components/ui/icons'
+import { Icon, type IconName } from '@/components/ui/icons'
 import { searchUsda, store, useLocalQuery } from '@/data/app-data'
-import { localDate } from '@/lib/calendar'
-import { createCustomFood, type Food, foodById, recentFoods, saveExternalFood, searchFoods } from '@/data/foods'
-import { logFood } from '@/data/nutrition'
-import type { I18n, MessageKey } from '@/i18n'
-import { foodName, mealName } from '@/i18n/domain'
+import { type BasketItem, basketItemFromFood, basketItemFromPortion, itemMacros, logBasket } from '@/data/basket'
+import { type Food, foodById, foodsById, saveExternalFood, searchFoods } from '@/data/foods'
+import { currentFoodDate, nutritionDay, planFoodId, type TemplateLine } from '@/data/nutrition'
+import { favoriteFoods, type Portion, recentPortions, yesterdayMeal } from '@/data/quick-food'
+import { foodName, mealName, portionText } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
+import { cn } from '@/lib/cn'
 import { macrosFor } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
-import { type ExternalFood, offProduct, offSearch } from '@/nutrition/off'
-import { canScanBarcode, scanBarcode } from '@/lib/barcode-native'
-import { cn } from '@/lib/cn'
-import { gramsText, macrosLine, parseGrams } from './nutrition-format'
+import { type ExternalFood, offSearch } from '@/nutrition/off'
+import { QuickMacrosSheet } from './meal-quick'
+import { kcalText } from './nutrition-format'
 
-// Shto ushqim te një vakt (TH-15), varianti A (07.11.2026; referencat nga Mobbin: Fitbit, Yazio,
-// Garmin): kërkimi me butonin e barkodit; pa kërkim, ushqimet e përdorura së fundi; me kërkim,
-// ushqimet e tua dhe pastaj Open Food Facts. Ushqimi hapet në fletën e sasisë (?ushqimi=id).
-// Tekstet nga katalogu ('food.*'); ushqimet e shabllonit në gjuhën e app-it (`foodName`), ato të
-// Open Food Facts, USDA dhe të përdoruesit siç janë.
-
-/** Burimet e jashtme, me emrin e tyre në të dyja gjuhët. */
-const OPEN_FOOD_FACTS = 'Open Food Facts'
-const USDA = 'USDA'
-
-/** "Ferrero · 539 kcal / 100 g". */
-const per100 = (i18n: I18n, food: { kcal: number; brand?: string | null }) =>
-  [food.brand, `${i18n.fmt.unit(Math.round(food.kcal), 'kcal')} / ${i18n.fmt.unit(100, 'g')}`].filter(Boolean).join(' · ')
+// Shto ushqim (V59, SPEC §0.3h, V2-E3-28b; bordet "Ushqimi · Kërko", "Sasia", "Shporta"): kreu me kërkimin, barkodin dhe
+// çipin e vaktit; pa shkrim mjetet (Barkodi, Foto, Makrot, Ushqim i ri) dhe Si dje, Plani im, të preferuarat, të fundit,
+// secili me "+" te shporta; me shkrim ushqimet e tua (në telefon), USDA pas pushimit dhe Open Food Facts vetëm me prekjen
+// "Kërko te produktet e paketuara" (kufi 10 kërkime në minutë, jo gjatë shkrimit). Fletat hapen me `?ndrysho=` (sasia
+// `&ushqimi=`, `&redakto=1` nga rishikimi), që butoni mbrapa i Android-it t'i mbyllë; `?barkod=1` hap barkodin, `?q=` mbush kërkimin.
+// Shporta ruhet në telefon; shtimi regjistron çdo artikull dhe kthen te Ushqimi me njoftimin "U shtua te <vakti>" (`location.state`).
 
 type Remote = { state: 'idle' } | { state: 'loading' } | { state: 'done'; foods: ExternalFood[] } | { state: 'offline' } | { state: 'error' }
 
-/** Kërkimi në një burim të jashtëm pasi ndalon shkrimi; pa internet thuhet qartë. */
-function useRemoteSearch(query: string, search: (query: string, signal: AbortSignal) => Promise<ExternalFood[]>): Remote {
+/** USDA pas pushimit të shkrimit; pa internet ose me gabim thuhet qartë. Open Food Facts nuk kalon këtu (V59). */
+function useUsdaSearch(query: string): Remote {
   const [remote, setRemote] = useState<Remote>({ state: 'idle' })
   const trimmed = query.trim()
   useEffect(() => {
@@ -50,7 +51,7 @@ function useRemoteSearch(query: string, search: (query: string, signal: AbortSig
         return
       }
       setRemote({ state: 'loading' })
-      search(trimmed, controller.signal)
+      searchUsda(trimmed)
         .then((foods) => {
           if (!controller.signal.aborted) setRemote({ state: 'done', foods })
         })
@@ -62,364 +63,408 @@ function useRemoteSearch(query: string, search: (query: string, signal: AbortSig
       clearTimeout(timer)
       controller.abort()
     }
-    // `search` është një funksion i qëndrueshëm i modulit.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trimmed])
   return trimmed.length < 3 ? { state: 'idle' } : remote
 }
 
-const usdaSearch = (query: string) => searchUsda(query)
+/** Open Food Facts: një kërkim për çdo prekje; një tekst tjetër e kthen në gjendjen e parë (rezultati mban tekstin e vet). */
+function usePackagedSearch(query: string) {
+  const [stored, setStored] = useState<{ query: string; remote: Remote }>({ query: '', remote: { state: 'idle' } })
+  const controller = useRef<AbortController | null>(null)
+  const trimmed = query.trim()
+  const search = () => {
+    if (trimmed.length < 2) return
+    const set = (remote: Remote) => setStored({ query: trimmed, remote })
+    if (!navigator.onLine) return set({ state: 'offline' })
+    controller.current?.abort()
+    const next = new AbortController()
+    controller.current = next
+    set({ state: 'loading' })
+    offSearch(trimmed, next.signal)
+      .then((foods) => {
+        if (!next.signal.aborted) set({ state: 'done', foods })
+      })
+      .catch(() => {
+        if (!next.signal.aborted) set({ state: navigator.onLine ? 'error' : 'offline' })
+      })
+  }
+  return { remote: stored.query === trimmed ? stored.remote : ({ state: 'idle' } as Remote), search }
+}
+
+/** Ushqimi i jashtëm ruhet (një herë sipas burimit dhe kodit) dhe bëhet artikull me porcionin e tij. */
+async function externalItem(food: ExternalFood): Promise<BasketItem | null> {
+  const saved = await foodById(store, await saveExternalFood(store, food))
+  return saved ? basketItemFromFood(saved) : null
+}
+
+const amountOf = (item: BasketItem) => item.grams ?? item.servings ?? 0
+const sameFood = (foodId: string) => (item: BasketItem) => item.foodId === foodId
+const none = () => false
 
 export function AddFoodPage() {
   const i18n = useI18n()
-  const { t, lang } = i18n
-  const { meal = 'lunch' } = useParams() as { meal: MealKey }
+  const { t, fmt, lang } = i18n
+  const { meal: routeMeal = 'lunch' } = useParams() as { meal: MealKey }
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const [query, setQuery] = useState('')
-  const [added, setAdded] = useState<string | null>(null)
+  const [pickedMeal, setPickedMeal] = useState<MealKey>(routeMeal)
+  const [query, setQuery] = useState(params.get('q') ?? '')
+  const [busy, setBusy] = useState(false)
+  const basket = useBasket()
+  const field = useRef<HTMLInputElement>(null)
   const searchId = useId()
-  const recent = useLocalQuery(() => recentFoods(store), [])
-  // Ushqimet e shabllonit gjenden edhe me emrin që sheh përdoruesi (anglisht).
-  const local = useLocalQuery(() => searchFoods(store, query, (food) => foodName(t, food)), [query, lang])
-  const remote = useRemoteSearch(query, offSearch)
-  const usda = useRemoteSearch(query, usdaSearch)
-  const sheet = params.get('ndrysho')
+  const fromTool = params.get('barkod') === '1'
+  const sheet = params.get('ndrysho') ?? (fromTool ? 'barkodi' : null)
   const foodId = params.get('ushqimi')
-  const open = (name: string, extra: Record<string, string> = {}) => setParams({ ndrysho: name, ...extra })
-  const close = () => navigate(-1)
 
-  async function openExternal(food: ExternalFood) {
-    const id = await saveExternalFood(store, food)
-    open('sasia', { ushqimi: id })
+  // Dita, vaktet dhe ajo që lexohet nga telefoni; rilexohet pas çdo shkrimi (shtimi te favoritët, regjistrimet).
+  const view = useLocalQuery(async () => {
+    const now = store.now()
+    const date = await currentFoodDate(store, now)
+    const day = await nutritionDay(store, date, now)
+    const meal = (day.meals.find((entry) => entry.meal === pickedMeal) ?? day.next ?? day.meals[0]).meal
+    const [yesterday, favorites, recent, foods] = await Promise.all([yesterdayMeal(store, date, meal), favoriteFoods(store), recentPortions(store, 8), foodsById(store)])
+    return { date, day, meal, yesterday, favorites, recent, foods }
+  }, [pickedMeal])
+  const meal = view?.meal ?? pickedMeal
+  const slot = view?.day.meals.find((entry) => entry.meal === meal)
+  const photo = useMealPhoto(view?.date ?? '', meal)
+
+  const trimmed = query.trim()
+  const searching = trimmed.length > 0
+  const local = useLocalQuery(() => searchFoods(store, query, (food) => foodName(t, food)), [query, lang])
+  const usda = useUsdaSearch(query)
+  const packaged = usePackagedSearch(query)
+
+  useEffect(() => {
+    if (!fromTool) field.current?.focus()
+    // Vetëm kur hapet ekrani.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const open = (name: string, extra: Record<string, string> = {}) => setParams({ ndrysho: name, ...extra })
+  // Kalim nga një fletë te tjetra pa shtuar hyrje në histori; `barkod=1` mbetet, që mbyllja të kthejë te faqja pa hyrë mbrapa.
+  const swap = (name: string, extra: Record<string, string> = {}) => setParams({ ...(fromTool ? { barkod: '1' } : {}), ndrysho: name, ...extra }, { replace: true })
+  const close = () => (fromTool ? setParams({}, { replace: true }) : navigate(-1))
+
+  const left: LeftToday | null = view?.day.targets
+    ? { kcal: view.day.targets.kcal - view.day.totals.kcal, proteinG: view.day.targets.proteinG - view.day.totals.proteinG }
+    : null
+
+  async function addPortions(portions: Portion[]) {
+    for (const portion of portions) {
+      const item = await basketItemFromPortion(store, portion)
+      if (item) basket.add(item)
+    }
   }
 
-  const searching = query.trim().length > 0
-  return (
-    <div className="flex flex-col gap-5">
-      <BackHeader title={t('food.addTo', { meal: mealName(t, meal) })} back={t('food.backToFood')} fallback="/ushqimi" />
+  async function addPlan() {
+    for (const line of slot?.template ?? []) {
+      const item = await planItem(line)
+      if (item) basket.add(item)
+    }
+  }
 
-      <div className="flex gap-2">
-        <label htmlFor={searchId} className="sr-only">
-          {t('food.search')}
-        </label>
-        {/* Pa "×"-in blu të shfletuesit (ngjyrë jashtë tokenave); kërkimi fshihet me tastierë. */}
-        <input
-          id={searchId}
-          type="search"
-          autoComplete="off"
-          placeholder={t('food.search')}
-          value={query}
-          onChange={(event) => (setQuery(event.currentTarget.value), setAdded(null))}
-          className={cn(inputClass, 'min-w-0 flex-1 appearance-none [&::-webkit-search-cancel-button]:appearance-none')}
-        />
-        <Button variant="outline" size="icon" aria-label={t('food.searchBarcode')} onClick={() => open('barkodi')}>
-          <Icon name="barkodi" size={20} />
+  async function planItem(line: TemplateLine) {
+    const food = await foodById(store, await planFoodId(store, line.food))
+    return food ? basketItemFromFood(food, line.grams) : null
+  }
+
+  async function submit() {
+    if (busy || !view || basket.items.length === 0) return
+    setBusy(true)
+    const items = basket.items
+    try {
+      const { kcal, ids } = await logWithUndo(store, view.date, meal, () => logBasket(store, view.date, meal, items))
+      basket.clear()
+      navigate('/ushqimi', { replace: true, state: { added: { meal, kcal: Math.round(kcal), ids } } })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const rowDetail = (portion: string, kcal: number, proteinG: number) => t('foodsearch.detail', { portion, kcal: kcalText(i18n, kcal), protein: fmt.number(Math.round(proteinG)) })
+
+  /** Një rresht nga një porcion i fundit ose i preferuar. */
+  const portionRow = (portion: Portion) => {
+    const food = view?.foods.get(portion.foodId)
+    const text = portionLabel(i18n, { grams: portion.grams, servings: portion.servings, servingG: food?.servingG ?? null, servingLabel: food?.servingLabel ?? null })
+    return (
+      <PickRow
+        key={portion.foodId}
+        name={foodName(t, portion)}
+        tag={t(sourceKey({ source: food?.source ?? null, sourceId: portion.sourceId }))}
+        detail={rowDetail(text, portion.kcal, portion.proteinG)}
+        basket={basket}
+        match={sameFood(portion.foodId)}
+        unit={portion.grams ?? portion.servings ?? 1}
+        resolve={() => basketItemFromPortion(store, portion)}
+        onOpen={(id) => open('sasia', { ushqimi: id })}
+      />
+    )
+  }
+
+  /** Një rresht nga ushqimet e tua (në telefon). */
+  const foodRow = (food: Food) => {
+    const item = basketItemFromFood(food)
+    const macros = itemMacros(item)
+    return (
+      <PickRow
+        key={food.id}
+        name={foodName(t, food)}
+        tag={t(sourceKey(food))}
+        detail={rowDetail(portionLabel(i18n, item), macros.kcal, macros.proteinG)}
+        size="lg"
+        basket={basket}
+        match={sameFood(food.id)}
+        unit={amountOf(item)}
+        resolve={async () => item}
+        onOpen={(id) => open('sasia', { ushqimi: id })}
+      />
+    )
+  }
+
+  /** Një rresht nga një burim i jashtëm (USDA, Open Food Facts): ruhet kur shtohet ose hapet. */
+  const externalRow = (food: ExternalFood) => {
+    const grams = food.servingG ?? 100
+    const macros = macrosFor(food, grams)
+    return (
+      <PickRow
+        key={`${food.source}-${food.sourceId}`}
+        name={food.name}
+        tag={food.brand ?? undefined}
+        detail={rowDetail(portionLabel(i18n, { grams, servings: null, servingG: food.servingG, servingLabel: food.servingLabel }), macros.kcal, macros.proteinG)}
+        size="lg"
+        basket={basket}
+        match={(item) => item.source === food.source && item.sourceId === food.sourceId}
+        unit={grams}
+        resolve={() => externalItem(food)}
+        onOpen={(id) => open('sasia', { ushqimi: id })}
+      />
+    )
+  }
+
+  const mealLabel = mealName(t, meal)
+  const tools: { key: string; icon: IconName; text: string; disabled?: boolean; onClick: () => void }[] = [
+    { key: 'barcode', icon: 'barkodi-vija', text: t('foodsearch.tool.barcode'), onClick: () => open('barkodi') },
+    { key: 'photo', icon: 'kamera', text: t('foodsearch.tool.photo'), disabled: !view || photo.disabled, onClick: photo.open },
+    { key: 'macros', icon: 'laps', text: t('foodsearch.tool.macros'), disabled: !slot, onClick: () => open('makrot') },
+    { key: 'new', icon: 'shto', text: t('foodsearch.tool.newFood'), onClick: () => open('i-ri') },
+  ]
+  const plan = slot && slot.status !== 'done' ? slot.template : []
+
+  return (
+    <div className={cn('flex flex-col gap-3.5', basket.items.length > 0 && 'pb-36')}>
+      <h1 className="sr-only">{t('foodsearch.title', { meal: mealLabel })}</h1>
+      <header className="flex items-center gap-1">
+        <BackButton label={t('foodsearch.back')} fallback="/ushqimi" className="-ml-2" />
+        <span className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-md border border-foreground bg-surface pr-1 pl-3">
+          <Icon name="kerko" size={18} className="shrink-0 text-muted-foreground" />
+          <label htmlFor={searchId} className="sr-only">
+            {t('foodsearch.field')}
+          </label>
+          {/* Pa "×"-in blu të shfletuesit (ngjyrë jashtë tokenave); kërkimi fshihet me butonin e vet. */}
+          <input
+            id={searchId}
+            ref={field}
+            type="search"
+            autoComplete="off"
+            enterKeyHint="search"
+            placeholder={t('foodsearch.field')}
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            className="h-11 min-w-0 flex-1 appearance-none bg-transparent text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-none [&::-webkit-search-cancel-button]:appearance-none"
+          />
+          {query ? (
+            <button
+              type="button"
+              aria-label={t('foodsearch.clear')}
+              onClick={() => {
+                setQuery('')
+                field.current?.focus()
+              }}
+              className="flex size-11 shrink-0 items-center justify-center text-muted-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+            >
+              <Icon name="mbyll-vrull" size={18} />
+            </button>
+          ) : null}
+        </span>
+        <Button variant="outline" size="icon" className="size-12 shrink-0 rounded-md" aria-label={t('foodsearch.barcode')} onClick={() => open('barkodi')}>
+          <Icon name="barkodi-vija" size={20} />
         </Button>
+      </header>
+
+      <div className="flex items-center justify-between gap-2">
+        {slot ? <MealChip meal={meal} time={slot.time} onClick={() => open('vakti')} /> : <span aria-hidden className="h-11" />}
+        {searching ? <span className="text-[13px] text-muted-foreground">{t('foodsearch.worksOffline')}</span> : null}
       </div>
 
-      {added ? (
-        <p role="status" className="-mt-2 type-caption text-success">
-          {t('food.added', { food: added })}
-        </p>
-      ) : null}
-
       {searching ? (
-        <>
-          {local && local.length > 0 ? (
-            <Group title={t('food.yours')}>
-              {local.map((food) => (
-                <Row key={food.id} label={foodName(t, food)} detail={per100(i18n, food)} onClick={() => open('sasia', { ushqimi: food.id })} />
-              ))}
-            </Group>
-          ) : null}
-          <RemoteResults source={OPEN_FOOD_FACTS} remote={remote} onPick={(food) => void openExternal(food)} />
-          <RemoteResults source={USDA} remote={usda} onPick={(food) => void openExternal(food)} quiet />
-        </>
-      ) : recent === undefined ? (
-        <div aria-hidden className="h-48 rounded-lg bg-surface" />
-      ) : recent.length > 0 ? (
-        <Group title={t('food.recent')}>
-          {recent.map((food) => (
-            <Row key={food.id} label={foodName(t, food)} detail={per100(i18n, food)} onClick={() => open('sasia', { ushqimi: food.id })} />
-          ))}
-        </Group>
+        <div className="flex flex-col gap-3.5">
+          {local === undefined ? null : local.length > 0 ? (
+            <PickSection title={t('foodsearch.mine')}>{local.map(foodRow)}</PickSection>
+          ) : (
+            <p className="type-caption text-muted-foreground">{t('foodsearch.noMine', { query: trimmed })}</p>
+          )}
+          {usda.state === 'done' && usda.foods.length > 0 ? <PickSection title={t('foodsearch.usda')}>{usda.foods.map(externalRow)}</PickSection> : null}
+          {usda.state === 'error' ? <p className="type-caption text-muted-foreground">{t('foodsearch.usdaError')}</p> : null}
+          {packaged.remote.state === 'done' && packaged.remote.foods.length > 0 ? (
+            <PickSection title={t('foodsearch.packaged.results')}>{packaged.remote.foods.map(externalRow)}</PickSection>
+          ) : (
+            <PackagedRow query={trimmed} state={packaged.remote.state} onSearch={packaged.search} />
+          )}
+        </div>
+      ) : view === undefined ? (
+        <div aria-hidden className="h-72 rounded-lg bg-surface" />
       ) : (
-        <p className="type-caption text-muted-foreground">{t('food.recentEmpty')}</p>
+        <>
+          <div role="group" aria-label={t('foodsearch.tools')} className="grid grid-cols-4 gap-2">
+            {tools.map((tool) => (
+              <button
+                key={tool.key}
+                type="button"
+                disabled={tool.disabled}
+                onClick={tool.onClick}
+                className="flex min-h-16 min-w-0 flex-col items-center justify-center gap-1.5 rounded-lg border border-surface-border bg-surface px-1 text-[13px] leading-none font-semibold text-foreground disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              >
+                <Icon name={tool.icon} size={22} className="text-muted-foreground" />
+                {tool.text}
+              </button>
+            ))}
+          </div>
+          {photo.input}
+          {view.yesterday ? (
+            <PickSection title={t('foodsearch.yesterday', { meal: mealLabel })} onAddAll={() => void addPortions(view.yesterday!.items)} addAllLabel={t('foodsearch.addAllLabel', { section: t('foodsearch.yesterday', { meal: mealLabel }) })}>
+              <PickRow
+                name={view.yesterday.items.map((item) => foodName(t, item)).join(', ')}
+                detail={t('foodsearch.yesterdayRow', { count: view.yesterday.items.length, kcal: kcalText(i18n, view.yesterday.kcal), protein: fmt.number(Math.round(view.yesterday.items.reduce((sum, item) => sum + item.proteinG, 0))) })}
+                basket={basket}
+                match={none}
+                unit={0}
+                resolve={async () => null}
+                onOpen={() => undefined}
+                onAdd={() => void addPortions(view.yesterday!.items)}
+                addLabel={t('foodsearch.addYesterday', { meal: mealLabel })}
+              />
+            </PickSection>
+          ) : null}
+          {plan.length > 0 ? (
+            <PickSection title={t('foodsearch.plan', { meal: mealLabel })} onAddAll={() => void addPlan()} addAllLabel={t('foodsearch.addAllLabel', { section: t('foodsearch.plan', { meal: mealLabel }) })}>
+              {plan.map((line, index) => (
+                <PickRow
+                  key={`${line.food}-${index}`}
+                  name={foodName(t, { name: line.name, sourceId: line.sourceId })}
+                  detail={rowDetail(portionText(t, fmt, line.portion), line.kcal, line.proteinG)}
+                  basket={basket}
+                  match={(item) => (line.food.startsWith('food:') ? item.foodId === line.food.slice('food:'.length) : item.sourceId === line.sourceId)}
+                  unit={line.grams}
+                  resolve={() => planItem(line)}
+                  onOpen={(id) => open('sasia', { ushqimi: id })}
+                />
+              ))}
+            </PickSection>
+          ) : null}
+          {view.favorites.length > 0 ? <PickSection title={t('foodsearch.favorites')}>{view.favorites.map(portionRow)}</PickSection> : null}
+          {view.recent.length > 0 ? <PickSection title={t('foodsearch.recent')}>{view.recent.map(portionRow)}</PickSection> : null}
+        </>
       )}
 
-      <Button variant="outline" className="w-full" onClick={() => open('i-ri')}>
-        <Icon name="shto" size={20} />
-        {t('food.new')}
-      </Button>
+      {basket.items.length > 0 ? (
+        <BasketBar items={basket.items} meal={meal} busy={busy} onOpen={() => open('shporta')} onRemove={basket.remove} onSubmit={() => void submit()} />
+      ) : null}
 
-      {sheet === 'sasia' && foodId ? (
-        <AmountSheet
-          foodId={foodId}
+      {sheet === 'sasia' && foodId ? <AmountEntry key={foodId} foodId={foodId} edit={params.get('redakto') === '1'} basket={basket} left={left} onClose={close} /> : null}
+      {sheet === 'shporta' && view ? (
+        <BasketSheet
+          items={basket.items}
+          day={view.day}
           meal={meal}
+          time={slot?.time ?? ''}
+          busy={busy}
           onClose={close}
-          onAdded={(text) => {
-            setAdded(text)
+          onChangeMeal={() => open('vakti')}
+          onEdit={(id) => open('sasia', { ushqimi: id, redakto: '1' })}
+          onRemove={(id) => {
+            basket.remove(id)
+            if (basket.items.length <= 1) close()
+          }}
+          onSubmit={() => void submit()}
+          onClear={() => {
+            basket.clear()
             close()
           }}
         />
       ) : null}
-      {sheet === 'i-ri' ? (
-        <CustomFoodSheet
-          initialName={query.trim()}
+      {sheet === 'vakti' && view ? (
+        <MealPicker
+          meals={view.day.meals.map((entry) => ({ meal: entry.meal, time: entry.time }))}
+          selected={meal}
+          onPick={(next) => {
+            setPickedMeal(next)
+            close()
+          }}
           onClose={close}
-          onCreated={(id) => setParams({ ndrysho: 'sasia', ushqimi: id }, { replace: true })}
         />
       ) : null}
-      {sheet === 'barkodi' ? (
-        <BarcodeSheet
-          onClose={close}
-          onFound={(id) => setParams({ ndrysho: 'sasia', ushqimi: id }, { replace: true })}
-          onMissing={() => setParams({ ndrysho: 'i-ri' }, { replace: true })}
-        />
+      {sheet === 'i-ri' ? <CustomFoodSheet initialName={trimmed} onClose={close} onCreated={(id) => swap('sasia', { ushqimi: id })} /> : null}
+      {sheet === 'barkodi' ? <BarcodeSheet onClose={close} onFound={(id) => swap('sasia', { ushqimi: id })} onMissing={() => swap('i-ri')} /> : null}
+      {sheet === 'makrot' && view && slot ? <QuickMacrosSheet date={view.date} meal={slot} onClose={close} onSaved={() => navigate('/ushqimi', { replace: true })} /> : null}
+    </div>
+  )
+}
+
+/** "Kërko “…” te produktet e paketuara" me gjendjet e Open Food Facts: kërkon vetëm kur preket. */
+function PackagedRow({ query, state, onSearch }: { query: string; state: Remote['state']; onSearch: () => void }) {
+  const { t } = useI18n()
+  const note = state === 'loading' ? 'foodsearch.packaged.loading' : state === 'offline' ? 'foodsearch.packaged.offline' : state === 'error' ? 'foodsearch.packaged.error' : state === 'done' ? 'foodsearch.packaged.empty' : null
+  return (
+    <div className="flex flex-col gap-2">
+      <button
+        type="button"
+        disabled={state === 'loading'}
+        onClick={onSearch}
+        className="flex min-h-14 items-center gap-3 rounded-md border border-dashed border-subtle px-3 text-left disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      >
+        <Icon name="kerko" size={20} className="shrink-0 text-muted-foreground" />
+        <span className="flex min-w-0 flex-col gap-0.5">
+          <span className="type-body-strong">{t('foodsearch.packaged', { query })}</span>
+          <span className="text-[13px] text-muted-foreground">{t('foodsearch.packagedDetail')}</span>
+        </span>
+      </button>
+      {note ? (
+        <p role="status" className="type-caption text-muted-foreground">
+          {t(note, { query })}
+        </p>
       ) : null}
     </div>
   )
 }
 
-/** Rezultatet e një burimi të jashtëm. `quiet`: pa mesazhe për gjendjet (burimi i dytë). */
-function RemoteResults({ source, remote, onPick, quiet = false }: { source: string; remote: Remote; onPick: (food: ExternalFood) => void; quiet?: boolean }) {
-  const i18n = useI18n()
-  const { t } = i18n
-  const note = (text: string) => (quiet ? null : <p className="type-caption text-muted-foreground">{text}</p>)
-  if (remote.state === 'idle') return note(t('food.remote.idle', { source }))
-  if (remote.state === 'loading') return note(t('food.remote.loading', { source }))
-  if (remote.state === 'offline') return note(t('food.remote.offline'))
-  if (remote.state === 'error') return <p className="type-caption text-muted-foreground">{t('food.remote.error', { source })}</p>
-  if (remote.foods.length === 0) return note(t('food.remote.empty', { source }))
-  return (
-    <Group title={source === USDA ? t('food.remote.usda') : source}>
-      {remote.foods.map((food) => (
-        <Row key={`${food.source}-${food.sourceId}`} label={food.name} detail={per100(i18n, food)} onClick={() => onPick(food)} />
-      ))}
-    </Group>
-  )
-}
-
-function AmountSheet({ foodId, meal, onClose, onAdded }: { foodId: string; meal: MealKey; onClose: () => void; onAdded: (text: string) => void }) {
+/** Fleta e sasisë: ushqimi nga baza (shtim) ose artikulli i shportës (ndryshim nga rishikimi). */
+function AmountEntry({ foodId, edit, basket, left, onClose }: { foodId: string; edit: boolean; basket: BasketApi; left: LeftToday | null; onClose: () => void }) {
   const { t } = useI18n()
   const food = useLocalQuery(() => foodById(store, foodId), [foodId])
-  if (food === undefined) return null
-  if (food === null) {
+  const existing = basket.items.find((item) => item.foodId === foodId)
+  const item = useMemo(() => (edit ? existing : food ? basketItemFromFood(food) : null), [edit, existing, food])
+  if (edit ? !existing : food === undefined) return null
+  if (!item) {
     return (
-      <Sheet title={t('food.foodTitle')} onClose={onClose}>
-        <p className="type-caption text-muted-foreground">{t('food.missing')}</p>
+      <Sheet title={t('foodsearch.amount.title')} onClose={onClose}>
+        <p className="type-caption text-muted-foreground">{t('foodsearch.amount.missing')}</p>
       </Sheet>
     )
   }
-  return <AmountForm food={food} meal={meal} onClose={onClose} onAdded={onAdded} />
-}
-
-function AmountForm({ food, meal, onClose, onAdded }: { food: Food; meal: MealKey; onClose: () => void; onAdded: (text: string) => void }) {
-  const i18n = useI18n()
-  const { t, fmt } = i18n
-  const [amount, setAmount] = useState(food.servingG ?? 100)
-  const [busy, setBusy] = useState(false)
-  const macros = macrosFor(food, amount)
-  const step = amount < 50 ? 5 : 10
-  const name = foodName(t, food)
-  async function add() {
-    setBusy(true)
-    await logFood(store, { date: localDate(new Date()), meal, foodId: food.id, grams: amount })
-    onAdded(`${name}, ${gramsText(i18n, amount)}`)
-  }
   return (
-    <Sheet
-      title={name}
-      description={per100(i18n, food)}
+    <AmountSheet
+      item={item}
+      mode={edit ? 'edit' : 'add'}
+      left={left}
       onClose={onClose}
-      footer={
-        <Button variant="primary" size="xl" disabled={busy} onClick={() => void add()}>
-          {t('food.addTo', { meal: mealName(t, meal) })}
-        </Button>
-      }
-    >
-      <ValueStepper
-        label={t('food.amount')}
-        hideLabel
-        variant="hero"
-        text={fmt.number(amount, { maxDigits: 1 })}
-        unit="g"
-        inputMode="decimal"
-        minusLabel={t('food.less', { step })}
-        plusLabel={t('food.more', { step })}
-        onMinus={() => setAmount((value) => Math.max(1, value - step))}
-        onPlus={() => setAmount((value) => Math.min(2000, value + step))}
-        onCommit={(text) => {
-          const value = parseGrams(text)
-          if (value !== null && value <= 2000) setAmount(Math.round(value * 10) / 10)
-        }}
-      />
-      {food.servingG ? (
-        <Button variant="outline" onClick={() => setAmount(food.servingG!)}>
-          {t('food.serving', { serving: food.servingLabel ?? gramsText(i18n, food.servingG) })}
-        </Button>
-      ) : null}
-      <p className="text-center type-caption text-muted-foreground tabular-nums">
-        <b className="font-semibold text-foreground">{fmt.unit(Math.round(macros.kcal), 'kcal')}</b> · {macrosLine(i18n, macros)}
-      </p>
-    </Sheet>
-  )
-}
-
-const FIELDS = [
-  { key: 'kcal', label: 'food.field.kcal' },
-  { key: 'proteinG', label: 'food.field.protein' },
-  { key: 'carbsG', label: 'food.field.carbs' },
-  { key: 'fatG', label: 'food.field.fat' },
-] as const satisfies readonly { key: string; label: MessageKey }[]
-
-type CustomProblem = 'food.error.name' | 'food.error.numbers' | 'food.error.range' | 'food.error.serving'
-
-function CustomFoodSheet({ initialName, onClose, onCreated }: { initialName: string; onClose: () => void; onCreated: (id: string) => void }) {
-  const { t } = useI18n()
-  const [name, setName] = useState(initialName)
-  const [values, setValues] = useState<Record<(typeof FIELDS)[number]['key'], string>>({ kcal: '', proteinG: '', carbsG: '', fatG: '' })
-  const [serving, setServing] = useState('')
-  const [problem, setProblem] = useState<CustomProblem | null>(null)
-  const nameId = useId()
-  const servingId = useId()
-  const parse = (text: string) => (text.trim() === '' ? Number.NaN : Number(text.trim().replace(',', '.')))
-
-  async function save() {
-    if (!name.trim()) return setProblem('food.error.name')
-    const numbers = Object.fromEntries(FIELDS.map((field) => [field.key, parse(values[field.key])])) as Record<(typeof FIELDS)[number]['key'], number>
-    if (Object.values(numbers).some((value) => !Number.isFinite(value) || value < 0)) return setProblem('food.error.numbers')
-    if (numbers.kcal > 900 || numbers.proteinG + numbers.carbsG + numbers.fatG > 100) return setProblem('food.error.range')
-    const servingG = serving.trim() === '' ? null : parseGrams(serving)
-    if (serving.trim() !== '' && servingG === null) return setProblem('food.error.serving')
-    const id = await createCustomFood(store, { name, ...numbers, servingG })
-    onCreated(id)
-  }
-
-  return (
-    <Sheet
-      title={t('food.new')}
-      onClose={onClose}
-      footer={
-        <Button variant="primary" size="xl" onClick={() => void save()}>
-          {t('food.saveFood')}
-        </Button>
-      }
-    >
-      <label htmlFor={nameId} className="text-sm leading-5 font-medium">
-        {t('food.name')}
-      </label>
-      <input id={nameId} value={name} maxLength={120} autoComplete="off" onChange={(event) => (setName(event.currentTarget.value), setProblem(null))} className={inputClass} />
-      <fieldset className="flex flex-col gap-1.5">
-        <legend className="mb-1.5 text-sm leading-5 font-semibold">{t('food.per100')}</legend>
-        <div className="grid grid-cols-2 gap-2">
-          {FIELDS.map((field) => (
-            <NumberInput key={field.key} label={t(field.label)} value={values[field.key]} onChange={(value) => (setValues((current) => ({ ...current, [field.key]: value })), setProblem(null))} />
-          ))}
-        </div>
-      </fieldset>
-      <label htmlFor={servingId} className="text-sm leading-5 font-medium">
-        {t('food.servingField')}
-      </label>
-      <input id={servingId} inputMode="decimal" autoComplete="off" placeholder={t('food.noServing')} value={serving} onChange={(event) => setServing(event.currentTarget.value)} className={inputClass} />
-      {problem ? (
-        <p role="alert" className="type-caption text-danger">
-          {t(problem)}
-        </p>
-      ) : null}
-    </Sheet>
-  )
-}
-
-function NumberInput({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
-  const id = useId()
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm leading-5 font-medium">
-        {label}
-      </label>
-      <input id={id} inputMode="decimal" autoComplete="off" value={value} onChange={(event) => onChange(event.currentTarget.value)} className={inputClass} />
-    </div>
-  )
-}
-
-type BarcodeState = 'idle' | 'busy' | 'missing' | 'offline' | 'error' | 'installing' | 'scan-error'
-
-const BARCODE_MESSAGE: Record<BarcodeState, MessageKey | null> = {
-  idle: null,
-  busy: null,
-  missing: 'food.barcode.missing',
-  offline: 'food.barcode.offline',
-  error: 'food.barcode.error',
-  installing: 'food.barcode.installing',
-  'scan-error': 'food.barcode.scanError',
-}
-
-function BarcodeSheet({ onClose, onFound, onMissing }: { onClose: () => void; onFound: (id: string) => void; onMissing: () => void }) {
-  const { t } = useI18n()
-  const [code, setCode] = useState('')
-  const [state, setState] = useState<BarcodeState>('idle')
-  const codeId = useId()
-  async function scan() {
-    setState('busy')
-    const result = await scanBarcode()
-    if (result.state === 'found') {
-      setCode(result.code)
-      return lookUp(result.code)
-    }
-    setState(result.state === 'cancelled' ? 'idle' : result.state === 'installing' ? 'installing' : 'scan-error')
-  }
-  async function lookUp(scanned?: string) {
-    const value = (scanned ?? code).replace(/\D/g, '')
-    if (value.length < 8) return setState('error')
-    if (!navigator.onLine) return setState('offline')
-    setState('busy')
-    try {
-      const food = await offProduct(value)
-      if (!food) return setState('missing')
-      onFound(await saveExternalFood(store, food))
-    } catch {
-      setState(navigator.onLine ? 'error' : 'offline')
-    }
-  }
-  const message = BARCODE_MESSAGE[state]
-  return (
-    <Sheet title={t('food.barcode')} onClose={onClose}>
-      {canScanBarcode() ? (
-        <Button variant="outline" size="xl" disabled={state === 'busy'} onClick={() => void scan()}>
-          <Icon name="barkodi" size={22} />
-          {t('food.scan')}
-        </Button>
-      ) : null}
-      <label htmlFor={codeId} className="text-sm leading-5 font-medium">
-        {canScanBarcode() ? t('food.digitsOr') : t('food.digits')}
-      </label>
-      <input
-        id={codeId}
-        inputMode="numeric"
-        autoComplete="off"
-        value={code}
-        aria-invalid={state === 'error' ? true : undefined}
-        onChange={(event) => (setCode(event.currentTarget.value), setState('idle'))}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') void lookUp()
-        }}
-        className={inputClass}
-      />
-      {message ? (
-        <p role="alert" className={cn('type-caption', state === 'error' || state === 'scan-error' ? 'text-danger' : 'text-muted-foreground')}>
-          {t(message)}
-        </p>
-      ) : null}
-      {state === 'missing' ? (
-        <Button variant="outline" onClick={onMissing}>
-          {t('food.addAsNew')}
-        </Button>
-      ) : null}
-      <Button variant="primary" size="lg" disabled={state === 'busy'} onClick={() => void lookUp()}>
-        {state === 'busy' ? t('food.searching') : t('food.find')}
-      </Button>
-    </Sheet>
+      onSubmit={(result) => {
+        if (edit) basket.setAmount(foodId, result.grams !== null ? { grams: result.grams } : { servings: result.servings ?? 1 })
+        else basket.add(result)
+        onClose()
+      }}
+    />
   )
 }

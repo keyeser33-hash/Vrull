@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { AskDock } from '@/components/food/ask-dock'
 import { DayTimeline } from '@/components/food/day-timeline'
 import { DayHero, FoodHeader } from '@/components/food/day-summary'
@@ -9,7 +9,8 @@ import { SupplementsSheet, SupplementStrip } from '@/components/food/supplement-
 import { buttonVariants } from '@/components/ui/button-variants'
 import { InsightCard } from '@/components/ui/insight-card'
 import { store, useLocalQuery } from '@/data/app-data'
-import { currentFoodDate, type NutritionDay, nutritionDay } from '@/data/nutrition'
+import { currentFoodDate, type NutritionDay, nutritionDay, removeDiaryEntry } from '@/data/nutrition'
+import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { shiftDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
@@ -36,6 +37,8 @@ export function NutritionPage() {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const { toast, show, clear } = useFoodToast()
+  const { t } = useI18n()
+  const location = useLocation()
   const asked = params.get('data')
   // Dita e ushqimit (V46): pas mesnate, deri 3 orë para zgjimit, mbetet dita e djeshme. Jo përtej sot + 1.
   const view = useLocalQuery(async () => {
@@ -44,6 +47,15 @@ export function NutritionPage() {
     const date = asked && /^\d{4}-\d{2}-\d{2}$/.test(asked) ? (asked > last ? last : asked) : today
     return { today, day: await nutritionDay(store, date, now) }
   }, [now.getTime(), asked])
+  // Pas shtimit nga shporta (Shto ushqim) vjen `location.state.added`: njoftimi "U shtua te <vakti>" me "Zhbëj", që heq regjistrimet.
+  useEffect(() => {
+    const added = (location.state as { added?: { meal: MealKey; kcal: number; ids: string[] } } | null)?.added
+    if (!added) return
+    show(t('foodday.added', { meal: mealName(t, added.meal), kcal: added.kcal }), async () => {
+      for (const id of added.ids) await removeDiaryEntry(store, id)
+    })
+    navigate(`${location.pathname}${location.search}`, { replace: true, state: null })
+  }, [location, navigate, show, t])
   const opened = params.get('vakti') as MealKey | null
   const open = (next: Record<string, string>) => setParams({ ...Object.fromEntries(params), ...next })
   const go = (date: string, today: string) => {
