@@ -11,7 +11,7 @@ import { addWater, undoWater, waterDay } from '@/data/water'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { GLASS_ML } from '@/nutrition/water'
-import { SHEET, useOpenSheet } from './readiness-sheets'
+import { SHEET, useOpenSheet } from './sheet-params'
 
 // Matësit e drejtpërdrejtë te Sot (V57, SPEC §0.3f; bordi "Sot"): kaloritë (çfarë mbetet, hark), proteina (gramë, një
 // segment për vakt) dhe uji (litra, gota që mbushet). Kaloritë dhe proteina hapin Ushqimin. Uji: një prekje shton 250 ml

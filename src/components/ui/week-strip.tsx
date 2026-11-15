@@ -1,6 +1,7 @@
 import { type T } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
+import type { DayDots, DotState } from '@/today/week-dots'
 
 // Java kalendarike te Sot: shtatë rrathë 34 px. Ditët e stërvitjes së bërë në prush, sot me unazë
 // 2 px `ember-text`, pushimet `mark`. Ditët e humbura (V38) kanë unazë të ndërprerë dhe sjellin legjendën poshtë javës. Çdo rreth e thotë ditën dhe gjendjen me fjalë ("E hënë 2,
@@ -18,6 +19,8 @@ export interface WeekDay {
   day: number
   state: WeekDayState
   today?: boolean
+  /** Tri pikat nën datë (V57): stërvitja, ushqimi, uji; null pa pika (dita që vjen). */
+  dots?: DayDots | null
   onSelect?: () => void
 }
 
@@ -31,7 +34,26 @@ function spoken(t: T, day: WeekDay) {
         : day.state === 'missed'
           ? t('ui.week.missed', { day: name })
           : t(day.today ? 'ui.week.next' : 'ui.week.planned', { day: name })
-  return text.charAt(0).toLocaleUpperCase() + text.slice(1)
+  const dots = day.dots
+    ? (['training', 'food', 'water'] as const)
+        .filter((kind) => day.dots![kind] !== null)
+        .map((kind) => t(`sot.dot.${kind}.${day.dots![kind]}` as 'sot.dot.food.on'))
+        .join(', ')
+    : ''
+  const full = dots ? `${text}. ${dots}` : text
+  return full.charAt(0).toLocaleUpperCase() + full.slice(1)
+}
+
+/** Tri pikat 6 px: e mbushur = arritur, kufi 1 px = jo (ende), vend bosh = nuk vlen për atë ditë. */
+function Dots({ dots }: { dots: DayDots }) {
+  const dot = (state: DotState, key: string) => <span key={key} className={cn('box-border size-1.5 rounded-pill', state === 'on' && 'bg-foreground', state === 'off' && 'border border-subtle')} />
+  return (
+    <span aria-hidden className="flex h-1.5 gap-[3px]">
+      {dot(dots.training, 'training')}
+      {dot(dots.food, 'food')}
+      {dot(dots.water, 'water')}
+    </span>
+  )
 }
 
 export function WeekStrip({ days, className }: { days: WeekDay[]; className?: string }) {
@@ -60,16 +82,17 @@ export function WeekStrip({ days, className }: { days: WeekDay[]; className?: st
             >
               {day.day}
             </span>
+            {days.some((other) => other.dots) ? <span className="flex h-1.5 items-center">{day.dots ? <Dots dots={day.dots} /> : null}</span> : null}
           </>
         )
         return (
-          <li key={day.key} className="flex">
+          <li key={day.key} className={cn('flex', days.some((other) => other.dots) ? 'min-h-16' : 'min-h-row')}>
             {day.onSelect ? (
-              <button type="button" aria-label={label} onClick={day.onSelect} className="flex min-h-row flex-1 flex-col items-center justify-center gap-1 rounded-md">
+              <button type="button" aria-label={label} onClick={day.onSelect} className="flex flex-1 flex-col items-center justify-center gap-1 rounded-md">
                 {content}
               </button>
             ) : (
-              <div className="flex min-h-row flex-1 flex-col items-center justify-center gap-1">{content}</div>
+              <div className="flex flex-1 flex-col items-center justify-center gap-1">{content}</div>
             )}
           </li>
         )

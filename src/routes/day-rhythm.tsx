@@ -8,7 +8,8 @@ import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import type { MealKey } from '@/nutrition/meals'
-import { canMoveMeal, clockText, type MealMove, moveMeals, nearestPoint, type RhythmPoint, rhythmOf, untilParts } from '@/today/rhythm'
+import { untilText } from './until-text'
+import { canMoveMeal, clockText, type MealMove, moveMeals, nearestPoint, type RhythmPoint, rhythmOf } from '@/today/rhythm'
 
 // Ritmi i ditës te Sot (V57, SPEC §0.3f; bordet "Sot", "Sot · Rreshqit", "Sot · Lëviz"): vija nga zgjimi te gjumi me vaktet
 // e orarit (të ngrënat të mbushura), stërvitjen dhe "Tani". Një prekje hap vaktin ose stërvitjen; rrëshqitja jep një
@@ -23,9 +24,13 @@ const SLOP = 8
 const BUBBLE_MS = 4000
 const BUBBLE_WIDTH = 224
 
+const WORKOUT_DOT = 'absolute top-[11px] flex size-[22px] -translate-x-1/2 items-center justify-center rounded-pill border-[1.5px] border-ember-text'
+const WORKOUT_DONE = 'bg-ember text-on-ember'
+const WORKOUT_TODO = 'bg-background text-ember-text'
+
 const leftOf = (fraction: number) => `calc(${PAD}px + (100% - ${PAD * 2}px) * ${fraction})`
 
-export function workoutPoint(view: TodayView) {
+function workoutPoint(view: TodayView) {
   return isTrainingMode(view) || view.mode === 'done' ? { time: view.trainingTime, done: view.mode === 'done' } : null
 }
 
@@ -148,12 +153,10 @@ export function DayRhythm({ view }: { view: TodayView }) {
   const bubblePoint = drag ? null : points.find((point) => point.id === bubble)
   const dragged = drag ? points.find((point) => point.id === drag.meal) : null
   const next = rhythm.next
-  const until = untilParts(rhythm.nextInMinutes ?? 0)
-  const untilText = [until.hours > 0 ? t('sot.until.hours', { count: until.hours }) : '', until.minutes > 0 || until.hours === 0 ? t('sot.until.minutes', { count: until.minutes }) : ''].filter(Boolean).join(' ')
   const nextLine = !next
     ? t('sot.rhythm.nextNone')
     : (rhythm.nextInMinutes ?? 0) > 0
-      ? t('sot.rhythm.next', { meal: mealName(t, next.id as MealKey), time: next.time, until: untilText })
+      ? t('sot.rhythm.next', { meal: mealName(t, next.id as MealKey), time: next.time, until: untilText(t, rhythm.nextInMinutes ?? 0) })
       : t('sot.rhythm.nextDue', { meal: mealName(t, next.id as MealKey), time: next.time })
 
   return (
@@ -179,7 +182,7 @@ export function DayRhythm({ view }: { view: TodayView }) {
             <span
               key={point.id}
               aria-hidden
-              className={cn('absolute top-[11px] flex size-[22px] -translate-x-1/2 items-center justify-center rounded-pill border-[1.5px]', point.done ? 'border-ember-text bg-ember text-on-ember' : 'border-ember-text bg-background text-ember-text')}
+              className={cn(WORKOUT_DOT, point.done ? WORKOUT_DONE : WORKOUT_TODO)}
               style={{ left: leftOf(point.fraction) }}
             >
               <Icon name="programi" size={14} />

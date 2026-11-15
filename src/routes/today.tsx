@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useMemo, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { MUSCLE_ROLE } from '@/components/body/roles'
 import { ScreenHeader } from '@/components/layout/screen-header'
@@ -6,27 +6,22 @@ import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon } from '@/components/ui/icons'
-import { ProgressTrack } from '@/components/ui/progress-bar'
-import { RollingNumber } from '@/components/ui/rolling-number'
 import { surfaceClass } from '@/components/ui/surface'
-import { type WeekDay, WeekStrip } from '@/components/ui/week-strip'
-import { newAchievements } from '@/data/achievements'
 import { store, useLocalQuery } from '@/data/app-data'
 import { isTrainingMode, type TodayView, todayView } from '@/data/today'
-import { type WeekGoalsView, weekGoalsView, type WeekSummary, weekSummary } from '@/data/weekly-goals'
+import { weekGoalsView } from '@/data/weekly-goals'
+import { mondayOf } from '@/progress/weekly-goals'
 import { setLighterFirstSession } from '@/data/welcome-back'
 import { DayLine } from './day-line'
 import { MissedDayCard } from './missed-day-card'
-import { ReadinessCard } from './readiness-card'
 import { ReadinessSuggestion } from './readiness-suggestion'
 import { useStrengths, useSuggestionPending } from './readiness-suggestion-state'
 import { strengthLine } from './readiness-suggestion-text'
 import { WeeklyCheckCard } from './weekly-check-card'
-import { WaterCard } from './water-card'
 import { AiBoxDock } from './ai-box-dock'
 import { restartProgram, skipWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
-import { mealName, muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
+import { muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { facesBack } from '@/body/model-focus'
 import { localDate, shiftDate } from '@/lib/calendar'
@@ -34,19 +29,22 @@ import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
 import { useStartWorkout } from './start-workout'
-import { achievementName } from './achievement-format'
 import { repsText, targetLine } from './today-format'
-import { atNoon, capitalize, goalCells, goalsSpoken, summaryTitle, weekHeading, weekRangeText } from './week-format'
-import { useGoalCelebration, WEEK_COMPLETE } from './goal-motion'
-import { GoalMeters, GoalMetersShort, WeekSpark } from './week-parts'
+import { atNoon, capitalize } from './week-format'
+import { DayRhythm } from './day-rhythm'
+import { ReadinessSheets } from './readiness-sheets'
+import { TodayMeters } from './today-meters'
+import { TodayStories } from './today-stories'
+import { TodayWeek } from './today-week'
+import { DAY_PARAM } from './sheet-params'
+import { untilText } from './until-text'
 
-// Sot (V2-E1-06; pamja e re e 0.23, SPEC §0.3c, bordet "Sot", "Sot · Ditë · EN", "Kthimi", "Sot ·
-// Diela"): titulli "Sot" me datën dhe javën e programit; java me rripin e ditëve dhe tre matësit e
-// qëllimeve (hapin Qëllimet e javës); një kartë kryesore: stërvitja e sotme (me muskujt në 3D), ose
-// "Mirë se u ktheve" pas 7 ditësh pa seancë, ose "Java jote" nga e diela 20:00 deri të hënën kur s'ka
-// stërvitje sot (në një të hënë stërvitjeje: stërvitja dhe rreshti "Java N · Shiko"). "Kapërce këtë
-// stërvitje" si lidhje e qetë poshtë kartës; ushqimi dhe uji si lista; kutia e AI-së poshtë.
-// Gjendjet e mëparshme mbeten: seanca e hapur, pushimi, pas mbylljes, programi i përfunduar, pa program.
+// Sot (V57, V63, SPEC §0.3f; bordet "Sot", "Sot · Pushim", "Sot · Diela"): titulli "Sot" me datën dhe javën e programit;
+// rrathët e ditës; matësit e drejtpërdrejtë (kalori, proteina, ujë); ritmi i ditës; stërvitja e sotme (me muskujt në 3D),
+// ose "Mirë se u ktheve" pas 7 ditësh pa seancë, ose në ditë pushimi stërvitja e radhës si rresht; java me tri pika nën
+// datë; kutia e AI-së poshtë. "Fillo stërvitjen" është i vetmi veprim në prush dhe duhet të dukej pa lëvizur faqen në
+// 390 × 844. "Kapërce këtë stërvitje" si lidhje e qetë poshtë kartës. Gjendjet e mëparshme mbeten: seanca e hapur,
+// pas mbylljes, programi i përfunduar, pa program.
 
 const BodyModel = lazy(() => import('@/components/body/body-model'))
 
@@ -56,56 +54,56 @@ const noop = () => {}
 async function todayScreen() {
   const view = await todayView(store)
   const open = view.mode !== 'none' && view.mode !== 'completed'
-  const [goals, summary] = await Promise.all([open ? weekGoalsView(store) : null, open && view.weekCard ? weekSummary(store, view.weekCard) : null])
-  return { view, goals, summary }
+  return { view, goals: open ? await weekGoalsView(store) : null }
+}
+
+/** "Tani" e ritmit të ditës ndjek orën: një rilexim në minutë. */
+function useMinuteTick() {
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    const timer = setInterval(() => setTick((value) => value + 1), 60_000)
+    return () => clearInterval(timer)
+  }, [])
+  return tick
 }
 
 export function TodayPage() {
-  const screen = useLocalQuery(todayScreen, [])
-  const i18n = useI18n()
-  const { t } = i18n
-  const navigate = useNavigate()
+  const tick = useMinuteTick()
+  const screen = useLocalQuery(todayScreen, [tick])
+  const { t } = useI18n()
   if (!screen) {
     return (
       <div className="flex flex-col gap-3.5">
         <h1 className="sr-only">{t('tab.today')}</h1>
         <div aria-hidden className="h-[132px] rounded-lg bg-surface" />
-        <div aria-hidden className="h-[276px] rounded-xl bg-surface" />
+        <div aria-hidden className="h-[280px] rounded-xl bg-surface" />
       </div>
     )
   }
-  const { view, goals, summary } = screen
+  const { view, goals } = screen
   const programme = view.mode !== 'none' && view.mode !== 'completed'
   const back = programme ? view.welcomeBack : null
-  const workoutToday = isTrainingMode(view)
-  // "Java jote" zë vendin e kartës kur sot s'ka stërvitje; përndryshe vjen si rresht i shkurtër. Pas
-  // pushimit (Mirë se u ktheve) asnjëra: java e kaluar ishte e zbrazët dhe karta e kthimit flet pa faj.
-  const weekCard = summary && !back && !workoutToday ? summary : null
-  const weekRow = summary && !back && !weekCard ? summary : null
-  const openDay = (id: string) => navigate(`/progresi/historiku/${id}`)
+  const upcoming = view.mode === 'rest' || view.mode === 'done' || view.postponed
   return (
     <div className="flex flex-col gap-3.5">
       <TodayHeader view={view} />
+      <TodayStories view={view} />
+      <TodayMeters view={view} />
+      <DayRhythm view={view} />
       {/* Vala e gatishmërisë (V50): secili vend ka skedarin e vet. */}
       <DayLine view={view} />
-      <ReadinessCard view={view} />
       <ReadinessSuggestion view={view} />
       <UpdateNotice />
-      {weekRow ? <WeekRow summary={weekRow} /> : null}
-      {programme && goals && !back && !weekCard ? <WeekSection goals={goals} days={weekDays(view, i18n, openDay)} /> : null}
       {back ? null : <MissedDayCard view={view} />}
       <WeeklyCheckCard date={view.date} />
       {view.mode === 'none' ? (
         <NoProgramme />
       ) : view.mode === 'completed' ? (
         <ProgrammeCompleted snapshot={view.snapshot!} />
-      ) : weekCard ? (
-        <>
-          <WeekCard summary={weekCard} />
-          <NextWorkoutRow summary={weekCard} view={view} />
-        </>
       ) : back ? (
         <WelcomeBackCard view={view} />
+      ) : upcoming && view.mode !== 'session' && !view.postponed ? (
+        <NextWorkoutRow view={view} />
       ) : (
         <>
           {/* Stërvitja e shtyrë për nesër (V50): vetëm karta "Ditë pushimi sot" te sugjerimi, si te bordi. */}
@@ -113,9 +111,8 @@ export function TodayPage() {
           {view.mode === 'session' || view.postponed ? null : <SkipWorkout />}
         </>
       )}
-      {back && goals ? <WeekSection goals={goals} fresh /> : null}
-      <FoodSection view={view} />
-      <WaterCard date={view.date} training={view.trainingDay} />
+      {programme ? <TodayWeek view={view} goals={goals} /> : null}
+      <ReadinessSheets view={view} />
       {/* Vendi i kutisë së AI-së mbi tab-bar-in, që pjesa e fundit të mos mbetet poshtë saj. */}
       <div aria-hidden className="h-[76px] shrink-0" />
       <AiBoxDock />
@@ -129,52 +126,6 @@ function TodayHeader({ view }: { view: TodayView }) {
   const date = capitalize(fmt.date(view.now))
   const plan = snapshot && !snapshot.completed ? snapshot.plan : null
   return <ScreenHeader title={t('tab.today')} subtitle={<span className="tabular-nums">{plan ? `${date} · ${programWeekLabel(t, plan)}` : date}</span>} />
-}
-
-/** Java e bordit; një ditë e bërë hap seancën e saj te historiku. */
-function weekDays(view: TodayView, { t, fmt }: I18n, open: (sessionId: string) => void): WeekDay[] {
-  return view.week.map((day) => ({
-    key: day.date,
-    letter: t(`today.weekLetter.${day.weekday}` as 'today.weekLetter.1'),
-    name: t('today.weekDay', { weekday: fmt.weekday(atNoon(day.date)), day: String(day.day) }),
-    day: day.day,
-    state: day.state,
-    today: day.today,
-    onSelect: day.sessionId ? () => open(day.sessionId!) : undefined,
-  }))
-}
-
-/**
- * Java (bordi "Sot"): "Java N" me lidhjen "Qëllimet", rripi i ditëve dhe tre matësit që hapin Qëllimet
- * e javës. Pas pushimit (bordi "Kthimi") vjen pas kartës si "Java e re", pa rripin, me ditën rezervë.
- */
-function WeekSection({ goals, days, fresh = false }: { goals: WeekGoalsView; days?: WeekDay[]; fresh?: boolean }) {
-  const i18n = useI18n()
-  const { t } = i18n
-  const cells = goalCells(i18n, goals)
-  const met = cells.filter((cell) => cell.met).map((cell): string => cell.key)
-  const celebrate = useGoalCelebration(goals.monday, goals.complete ? [...met, WEEK_COMPLETE] : met)
-  const title = fresh ? t('today.week.fresh') : weekHeading(i18n, goals.monday, goals.today)
-  const spare = goals.spare
-  return (
-    <section aria-labelledby="today-week" className="flex flex-col gap-2.5">
-      <div className="flex items-center justify-between gap-2">
-        <h2 id="today-week" className="type-label text-muted-foreground">
-          {title}
-        </h2>
-        <Link to="/sot/java" className="-my-3 -mr-2 flex min-h-12 items-center gap-1 rounded-md px-2 text-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-foreground">
-          {t('today.week.goals')}
-          <Icon name="hap" size={16} />
-        </Link>
-      </div>
-      {days ? <WeekStrip days={days} /> : null}
-      <div className="relative">
-        <GoalMeters cells={cells} to="/sot/java" label={goalsSpoken(i18n, cells, goals.complete)} celebrate={celebrate} />
-        {celebrate.has(WEEK_COMPLETE) ? <WeekSpark /> : null}
-      </div>
-      {fresh && spare && !spare.used ? <span className="type-caption text-muted-foreground">{t('week.spare.blockFree', { block: programBlockName(t, spare.blockName) })}</span> : null}
-    </section>
-  )
 }
 
 /** Ora dhe dita e stërvitjes që tregon karta: "Sot · 17:15 · Stërvitja 1", "Nesër · 17:15 · Stërvitja 2". */
@@ -200,13 +151,18 @@ function WorkoutCard({ view }: { view: TodayView }) {
   const upcoming = mode === 'rest' || mode === 'done'
   const meta = mode === 'session' ? `${whenLine(view, i18n)} · ${t('today.setsLogged', { done: workout.loggedSets, count: workout.sets })}` : whenLine(view, i18n)
   const model = webglAvailable() && workout.focus !== null
+  // "Pas 3 orë 30 min" deri në orën e stërvitjes (bordi "Sot"); pas saj pa pilulë.
+  const [hours, minutes] = view.trainingTime.split(':').map(Number)
+  const wait = hours * 60 + minutes - (view.now.getHours() * 60 + view.now.getMinutes())
+  const until = mode === 'train' && wait > 0 ? untilText(t, wait) : null
   const action = mode === 'session' ? t('today.resume') : view.firstEver ? t('today.startFirst') : t('today.start')
 
   return (
     <>
       <section
+        id="sot-workout"
         aria-label={t(upcoming ? 'today.nextLabel' : 'today.workoutLabel')}
-        className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-2 overflow-hidden rounded-xl p-4', model && 'min-h-[262px]')}
+        className={cn(surfaceClass, 'relative flex min-h-[280px] shrink-0 scroll-mt-4 flex-col gap-2 overflow-hidden rounded-xl p-4')}
       >
         {model ? (
           <>
@@ -221,7 +177,10 @@ function WorkoutCard({ view }: { view: TodayView }) {
           </>
         ) : null}
         {upcoming ? <p className="relative type-label text-muted-foreground">{t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')}</p> : null}
-        <span className="relative max-w-[250px] type-caption text-muted-foreground tabular-nums">{meta}</span>
+        <span className="relative flex flex-wrap items-center gap-x-2 gap-y-1 type-caption text-muted-foreground tabular-nums">
+          {meta}
+          {until ? <span className="rounded-pill border border-subtle px-2 py-0.5 text-foreground">{t('sot.workout.in', { until })}</span> : null}
+        </span>
         <h2 className="relative max-w-[216px] type-display-s">{programDayName(t, plan.dayName)}</h2>
         {mode === 'session' ? null : (
           <span className="relative type-caption text-muted-foreground tabular-nums">
@@ -318,97 +277,55 @@ function WelcomeBackCard({ view }: { view: TodayView }) {
 }
 
 /**
- * "Java jote" (V43, bordi "Sot · Diela"): nga e diela 20:00 deri të hënën, kur sot s'ka stërvitje. Qëllimet
- * e shkurtra, rekordet, vargu dhe "Shiko javën" (prushi i ekranit).
+ * Ditë pushimi ose stërvitja e sotme u bë (bordet "Sot · Pushim", "Sot · Diela"): stërvitja e radhës si rresht me datën,
+ * emrin dhe ushtrimet; prekja hap fletën e ditës së saj (vetëm për t'u parë).
  */
-function WeekCard({ summary }: { summary: WeekSummary }) {
-  const i18n = useI18n()
-  const { t, fmt } = i18n
-  // Arritjet e dhëna gjatë javës së kartës (e hëna–e diela), e para sipas radhës së faqes.
-  const earned = useLocalQuery(() => newAchievements(store, { since: summary.monday, until: shiftDate(summary.monday, 6) }), [summary.monday])
-  const first = earned?.[0]
-  const cells = goalCells(i18n, summary.goals, !!summary.spare)
-  const top = summary.training.records.top[0]
-  return (
-    <section aria-labelledby="today-week-card" className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-3 overflow-hidden rounded-xl p-4')}>
-      <span aria-hidden className="pointer-events-none absolute top-0 right-0 h-[130px] w-[150px] bg-speed-lines" />
-      <span className="relative type-caption text-muted-foreground tabular-nums">
-        {t('week.yours')} · {weekRangeText(i18n, summary.monday)}
-      </span>
-      <h2 id="today-week-card" className="relative -mt-1.5 type-display-m">
-        {summaryTitle(i18n, summary)}
-      </h2>
-      <GoalMetersShort cells={cells} label={goalsSpoken(i18n, cells, summary.goals.complete)} />
-      <ul className="relative m-0 flex list-none flex-col p-0 text-[15px]">
-        {summary.training.records.count > 0 ? (
-          <li className="flex min-h-10 items-center justify-between gap-2 border-t border-border">
-            <span>{t('week.summary.records.count', { count: summary.training.records.count })}</span>
-            {top ? (
-              <span className="truncate text-muted-foreground tabular-nums">{t('week.summary.topRecord', { exercise: top.name, kg: fmt.unit(top.e1rmKg, 'kg', { maxDigits: 1 }) })}</span>
-            ) : null}
-          </li>
-        ) : null}
-        <li className="flex min-h-10 items-center justify-between gap-2 border-y border-border">
-          <span>{t('week.summary.streak')}</span>
-          <span className="text-muted-foreground tabular-nums">{t('week.summary.streakValue', { count: summary.streak })}</span>
-        </li>
-        {first ? (
-          <li className="flex min-h-10 items-center justify-between gap-2 border-b border-border">
-            <span>{t('achievements.close.new')}</span>
-            <span className="truncate font-semibold text-ember-text">{achievementName(i18n, first.key)}</span>
-          </li>
-        ) : null}
-      </ul>
-      <Link to={`/progresi/java/${summary.monday}`} className={cn(buttonVariants({ variant: 'primary', size: 'lg' }), 'relative w-full')}>
-        {t('week.summary.see')}
-      </Link>
-    </section>
-  )
-}
-
-/** Rreshti i shkurtër i javës kur sot ka stërvitje (e hëna): "Java 2 · 2–8 nëntor · Shiko". */
-function WeekRow({ summary }: { summary: WeekSummary }) {
-  const i18n = useI18n()
-  const { t } = i18n
-  const range = weekRangeText(i18n, summary.monday)
-  const week = summary.programWeek ? t('plan.week', { week: summary.programWeek.week }) : t('week.yours')
-  return (
-    <Link
-      to={`/progresi/java/${summary.monday}`}
-      aria-label={t('week.summary.seeLabel', { range })}
-      className={cn(surfaceClass, 'flex min-h-row items-center gap-3 rounded-lg py-2 pr-3 pl-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
-    >
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="type-body-strong">{summaryTitle(i18n, summary)}</span>
-        <span className="type-caption text-muted-foreground tabular-nums">
-          {week} · {range}
-        </span>
-      </span>
-      <span className="text-sm font-semibold">{t('week.summary.seeShort')}</span>
-      <Icon name="hap" size={18} className="shrink-0 text-muted-foreground" />
-    </Link>
-  )
-}
-
-/** Stërvitja e radhës pas kartës "Java jote": "Nesër · 17:15 · Java 4 · Stërvitja 1". */
-function NextWorkoutRow({ summary, view }: { summary: WeekSummary; view: TodayView }) {
-  const i18n = useI18n()
-  const { t, fmt } = i18n
-  const next = summary.next
-  if (!next) return null
-  const tomorrow = next.date === shiftDate(localDate(view.now), 1)
-  const when = !next.date ? null : next.date === localDate(view.now) ? t('today.when.today') : tomorrow ? t('today.when.tomorrow') : capitalize(fmt.date(atNoon(next.date)))
-  const line = [when, next.time, programWeekLabel(t, next.plan), t('today.workoutTitle', { day: next.plan.dayNumber })].filter(Boolean).join(' · ')
-  return (
-    <Link to="/programi" className="flex min-h-row items-center gap-3 rounded-lg py-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground">
+function NextWorkoutRow({ view }: { view: TodayView }) {
+  const { t, fmt } = useI18n()
+  const [, setParams] = useSearchParams()
+  const { workout, snapshot, nextDate } = view
+  if (!snapshot || snapshot.completed || !workout) return null
+  const plan = snapshot.plan
+  const tomorrow = nextDate === shiftDate(localDate(view.now), 1)
+  const sameWeek = !nextDate || mondayOf(nextDate) === mondayOf(localDate(view.now))
+  const line = [
+    nextDate ? (tomorrow ? t('today.when.tomorrow') : null) : null,
+    nextDate ? fmt.date(atNoon(nextDate)) : null,
+    sameWeek ? null : t('plan.week', { week: plan.week }),
+    t('today.workoutTitle', { day: plan.dayNumber }),
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  const body = (
+    <>
       <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="type-caption text-muted-foreground tabular-nums">{line}</span>
-        <span className="type-title">{programDayName(t, next.plan.dayName)}</span>
+        <span className="type-caption text-muted-foreground tabular-nums">{capitalize(line)}</span>
+        <span className="type-display-s">{programDayName(t, plan.dayName)}</span>
         <span className="type-caption text-muted-foreground tabular-nums">
-          {t('today.exercises', { count: next.plan.slots.length })} · {t('today.minutes', { minutes: next.minutes })}
+          {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
         </span>
       </span>
       <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
+    </>
+  )
+  const className = 'flex min-h-row items-center gap-3 border-t border-border pt-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  return nextDate ? (
+    <button
+      type="button"
+      className={className}
+      onClick={() =>
+        setParams((current) => {
+          const next = new URLSearchParams(current)
+          next.set(DAY_PARAM, nextDate)
+          return next
+        })
+      }
+    >
+      {body}
+    </button>
+  ) : (
+    <Link to="/programi" className={className}>
+      {body}
     </Link>
   )
 }
@@ -438,48 +355,6 @@ function WorkoutModel({ primary, focus }: { primary: string[]; focus: string[] }
         />
       </Suspense>
     </div>
-  )
-}
-
-/** Ushqimi si listë (bordi "Sot"): kaloritë dhe proteina kundrejt objektivave, vakti i radhës; hap Ushqimin. */
-function FoodSection({ view }: { view: TodayView }) {
-  const i18n = useI18n()
-  const { t, fmt } = i18n
-  const { kcal, targetKcal, proteinG, targetProteinG, next } = view.food
-  const spoken =
-    targetKcal !== null && targetProteinG !== null
-      ? t('today.food.spoken', { kcal: fmt.number(kcal), target: fmt.number(targetKcal), protein: fmt.number(proteinG), proteinTarget: fmt.number(targetProteinG) })
-      : t('today.food.spokenNoTarget', { kcal: fmt.number(kcal), protein: fmt.number(proteinG) })
-  return (
-    <Link
-      to="/ushqimi"
-      aria-label={spoken}
-      className="flex flex-col gap-2.5 border-t border-border pt-3 text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-    >
-      <span className="flex items-baseline justify-between gap-2">
-        <span className="type-label text-muted-foreground">{t('today.food.title')}</span>
-        {next ? <span className="truncate type-caption text-muted-foreground tabular-nums">{t('today.food.next', { meal: mealName(t, next.meal), time: next.time })}</span> : null}
-      </span>
-      <span className="grid grid-cols-2 gap-4">
-        <span className="flex min-w-0 flex-col gap-1.5">
-          <span className="font-display text-[28px] leading-none font-extrabold whitespace-nowrap tabular-nums">
-            <RollingNumber value={kcal} />
-            <span className="font-text text-sm font-normal text-muted-foreground"> {targetKcal === null ? t('today.food.kcal') : t('today.food.kcalOf', { target: fmt.number(targetKcal) })}</span>
-          </span>
-          {targetKcal ? <ProgressTrack ratio={kcal / targetKcal} ground="page" /> : null}
-        </span>
-        <span className="flex min-w-0 flex-col gap-1.5">
-          <span className="font-display text-[28px] leading-none font-extrabold whitespace-nowrap tabular-nums">
-            <RollingNumber value={proteinG} />
-            <span className="font-text text-sm font-normal text-muted-foreground">
-              {' '}
-              {targetProteinG === null ? t('today.food.protein') : t('today.food.proteinOf', { target: fmt.number(targetProteinG) })}
-            </span>
-          </span>
-          {targetProteinG ? <ProgressTrack ratio={proteinG / targetProteinG} ground="page" /> : null}
-        </span>
-      </span>
-    </Link>
   )
 }
 

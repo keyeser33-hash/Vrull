@@ -8,7 +8,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { mondayOf } from '@/progress/weekly-goals'
 import { markStorySeen, readSeenStories, type Story, storyRing } from '@/today/stories'
 import { MentorSheet } from './mentor-sheet'
-import { SHEET, useOpenSheet } from './readiness-sheets'
+import { SHEET, useOpenSheet } from './sheet-params'
 
 // Rrathët e ditës te Sot (V57, SPEC §0.3f): "Si ndihesh?" deri sa dita të plotësohet, pastaj "Gati N%"; "Mentori" vetëm
 // kur ka shënim këtë javë ose seancë (V55); të dielën "Java jote". Prekja hap rrjedhat që ekzistojnë dhe e shënon rrethin

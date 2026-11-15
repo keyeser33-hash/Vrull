@@ -4,26 +4,10 @@ import { readinessView } from '@/data/readiness-view'
 import type { TodayView } from '@/data/today'
 import { CheckInSheet } from './checkin-sheet'
 import { ReadinessSheet } from './readiness-sheet'
+import { SHEET, useOpenSheet } from './sheet-params'
 
 // Fletat "Gjendja e ditës" dhe "Gati" (V50, V2-E3-04/05; bordet "Gjendja e ditës", "Fleta Gati"), të hapura nga rrathët
 // e Sot (V57): me një parametër në adresë (`fleta=gjendja|gati`), që butoni mbrapa i Android-it t'i mbyllë.
-
-export const SHEET = 'fleta'
-
-/** Hap një fletë të Sot me parametrin e adresës; `replace` kur vjen nga një fletë tjetër (Ndrysho gjendjen). */
-export function useOpenSheet() {
-  const [, setParams] = useSearchParams()
-  return (name: string, extra: Record<string, string> = {}, replace = false) =>
-    setParams(
-      (current) => {
-        const next = new URLSearchParams(current)
-        next.set(SHEET, name)
-        for (const [key, value] of Object.entries(extra)) next.set(key, value)
-        return next
-      },
-      { replace },
-    )
-}
 
 export function ReadinessSheets({ view }: { view: TodayView }) {
   const navigate = useNavigate()
