@@ -1,0 +1,1121 @@
+[
+  {
+    "key": "anchovy-raw",
+    "rank": 195,
+    "name_sq": "Açuge, e papërpunuar",
+    "name_en": "Fish, anchovy, european, raw",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-174182",
+    "also": [
+      "ciqual-26079"
+    ]
+  },
+  {
+    "key": "carp-raw",
+    "rank": 196,
+    "name_sq": "Krap, i papërpunuar",
+    "name_en": "Fish, carp, raw",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-171952",
+    "also": [
+      "ciqual-27003",
+      "cofid-16-172"
+    ]
+  },
+  {
+    "key": "eel-raw",
+    "rank": 197,
+    "name_sq": "Ngjalë, e papërpunuar",
+    "name_en": "Fish, eel, mixed species, raw",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-174193",
+    "also": [
+      "cofid-16-173"
+    ]
+  },
+  {
+    "key": "sardine-canned-oil",
+    "rank": 198,
+    "name_sq": "Sardele në vaj, të konservuara",
+    "name_en": "Fish, sardine, Atlantic, canned in oil, drained solids with bone",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-175139",
+    "also": [
+      "ciqual-26034",
+      "cofid-16-440"
+    ]
+  },
+  {
+    "key": "flour-corn",
+    "rank": 199,
+    "name_sq": "Miell misri",
+    "name_en": "Corn flour, whole-grain, yellow",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-170290",
+    "also": [
+      "ciqual-9545"
+    ]
+  },
+  {
+    "key": "flour-wholewheat",
+    "rank": 200,
+    "name_sq": "Miell gruri integral",
+    "name_en": "Wheat flour, whole-grain, soft wheat",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-168944",
+    "also": [
+      "cofid-11-889"
+    ]
+  },
+  {
+    "key": "bread-rye",
+    "rank": 201,
+    "name_sq": "Bukë thekre",
+    "name_en": "Bread, rye",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-172684",
+    "also": [
+      "usda-fdc-2707755",
+      "ciqual-7125",
+      "livsmedelsverket-209"
+    ]
+  },
+  {
+    "key": "bread-toasted",
+    "rank": 202,
+    "name_sq": "Bukë e thekur",
+    "name_en": "Bread, white, commercially prepared, toasted",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-174925",
+    "also": [
+      "usda-fdc-2707599",
+      "cofid-11-1001"
+    ]
+  },
+  {
+    "key": "quinoa-cooked",
+    "rank": 203,
+    "name_sq": "Kinoa, e zier",
+    "name_en": "Quinoa, cooked",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-168917",
+    "also": [
+      "ciqual-9341"
+    ]
+  },
+  {
+    "key": "noodles-egg-cooked",
+    "rank": 204,
+    "name_sq": "Petë me vezë, të zjera",
+    "name_en": "Noodles, egg, enriched, cooked",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-169732",
+    "also": []
+  },
+  {
+    "key": "phyllo",
+    "rank": 205,
+    "name_sq": "Petë byreku (filo)",
+    "name_en": "Phyllo dough",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-172791",
+    "also": [
+      "ciqual-23445"
+    ]
+  },
+  {
+    "key": "muesli",
+    "rank": 206,
+    "name_sq": "Musli",
+    "name_en": "Muesli (average)",
+    "group": "Drithëra dhe bukë",
+    "preferred": "ciqual-32004",
+    "also": [
+      "cofid-11-780"
+    ]
+  },
+  {
+    "key": "oat-bran",
+    "rank": 207,
+    "name_sq": "Krunde tërshëre",
+    "name_en": "Oat bran, raw",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-168872",
+    "also": []
+  },
+  {
+    "key": "biscuit-plain",
+    "rank": 208,
+    "name_sq": "Biskota Marie",
+    "name_en": "Marie biscuits",
+    "group": "Drithëra dhe bukë",
+    "preferred": "livsmedelsverket-1614",
+    "also": []
+  },
+  {
+    "key": "cracker",
+    "rank": 209,
+    "name_sq": "Kraker (krisur)",
+    "name_en": "Crackers, saltines, unsalted tops (includes oyster, soda, soup)",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-175057",
+    "also": [
+      "cofid-11-820",
+      "livsmedelsverket-1611"
+    ]
+  },
+  {
+    "key": "rice-cake",
+    "rank": 210,
+    "name_sq": "Kek orizi i fryrë",
+    "name_en": "Snacks, rice cakes, brown rice, plain, unsalted",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-170250",
+    "also": []
+  },
+  {
+    "key": "popcorn",
+    "rank": 211,
+    "name_sq": "Kokoshkë misri",
+    "name_en": "Snacks, popcorn, air-popped (Unsalted)",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-170246",
+    "also": []
+  },
+  {
+    "key": "peas-green-raw",
+    "rank": 212,
+    "name_sq": "Bizele jeshile, të papërpunuara",
+    "name_en": "Peas, green, raw",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-170419",
+    "also": [
+      "usda-fdc-2709797"
+    ]
+  },
+  {
+    "key": "fava-cooked",
+    "rank": 213,
+    "name_sq": "Bathë, e zier",
+    "name_en": "Broadbeans (fava beans), mature seeds, cooked, boiled, without salt",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-173753",
+    "also": []
+  },
+  {
+    "key": "tofu",
+    "rank": 214,
+    "name_sq": "Tofu",
+    "name_en": "Tofu, raw, firm, prepared with calcium sulfate",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-172475",
+    "also": [
+      "ciqual-20904"
+    ]
+  },
+  {
+    "key": "soy-protein-isolate",
+    "rank": 215,
+    "name_sq": "Pluhur proteine soje",
+    "name_en": "Soy protein isolate",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-174276",
+    "also": []
+  },
+  {
+    "key": "black-beans-cooked",
+    "rank": 216,
+    "name_sq": "Fasule e zezë, e zier",
+    "name_en": "Beans, black, mature seeds, cooked, boiled, without salt",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-173735",
+    "also": []
+  },
+  {
+    "key": "pumpkin-cooked",
+    "rank": 217,
+    "name_sq": "Kungull, i zier",
+    "name_en": "Pumpkin, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-168449",
+    "also": []
+  },
+  {
+    "key": "beetroot-raw",
+    "rank": 218,
+    "name_sq": "Panxhar",
+    "name_en": "Beets, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2685576",
+    "also": [
+      "usda-fdc-169145",
+      "usda-fdc-2709770",
+      "ciqual-20091",
+      "cofid-13-164"
+    ]
+  },
+  {
+    "key": "turnip-raw",
+    "rank": 219,
+    "name_sq": "Rrepë",
+    "name_en": "Turnips, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2747674",
+    "also": [
+      "usda-fdc-170465"
+    ]
+  },
+  {
+    "key": "radish-raw",
+    "rank": 220,
+    "name_sq": "Rrepkë e kuqe",
+    "name_en": "Radishes, red, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2747665",
+    "also": [
+      "usda-fdc-169276"
+    ]
+  },
+  {
+    "key": "lettuce-iceberg-raw",
+    "rank": 221,
+    "name_sq": "Sallatë ajsberg",
+    "name_en": "Lettuce, iceberg, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2346388",
+    "also": [
+      "usda-fdc-169248",
+      "ciqual-20200"
+    ]
+  },
+  {
+    "key": "cauliflower-cooked",
+    "rank": 222,
+    "name_sq": "Lulelakër, e zier",
+    "name_en": "Cauliflower, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-170397",
+    "also": []
+  },
+  {
+    "key": "sweet-potato-baked",
+    "rank": 223,
+    "name_sq": "Patate e ëmbël, e pjekur",
+    "name_en": "Sweet potato, cooked, baked in skin, flesh, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-168483",
+    "also": []
+  },
+  {
+    "key": "pepper-green-raw",
+    "rank": 224,
+    "name_sq": "Spec i gjelbër",
+    "name_en": "Peppers, sweet, green, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-170427",
+    "also": [
+      "usda-fdc-2709800"
+    ]
+  },
+  {
+    "key": "pepper-hot-raw",
+    "rank": 225,
+    "name_sq": "Spec djegës",
+    "name_en": "Peppers, hot chili, red, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-170106",
+    "also": []
+  },
+  {
+    "key": "tomato-sauce",
+    "rank": 226,
+    "name_sq": "Salcë domateje",
+    "name_en": "Tomato, sauce, canned, with salt added",
+    "group": "Perime",
+    "preferred": "usda-fdc-2685579",
+    "also": [
+      "usda-fdc-169074"
+    ]
+  },
+  {
+    "key": "tomatoes-canned",
+    "rank": 227,
+    "name_sq": "Domate të konservuara",
+    "name_en": "Tomatoes, red, ripe, canned, packed in tomato juice, no salt added",
+    "group": "Perime",
+    "preferred": "usda-fdc-170138",
+    "also": []
+  },
+  {
+    "key": "cabbage-cooked",
+    "rank": 228,
+    "name_sq": "Lakër e zier",
+    "name_en": "Cabbage, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-169976",
+    "also": []
+  },
+  {
+    "key": "celery-raw",
+    "rank": 229,
+    "name_sq": "Selino (kërcell)",
+    "name_en": "Celery, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2346405",
+    "also": [
+      "usda-fdc-169988",
+      "usda-fdc-2709778",
+      "ciqual-20023"
+    ]
+  },
+  {
+    "key": "asparagus-raw",
+    "rank": 230,
+    "name_sq": "Asparagus",
+    "name_en": "Asparagus, green, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-2710823",
+    "also": [
+      "usda-fdc-168389",
+      "usda-fdc-2709767",
+      "ciqual-20279",
+      "cofid-13-157"
+    ]
+  },
+  {
+    "key": "okra-cooked",
+    "rank": 231,
+    "name_sq": "Bamje, e zier",
+    "name_en": "Okra, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-169261",
+    "also": []
+  },
+  {
+    "key": "artichoke-cooked",
+    "rank": 232,
+    "name_sq": "Angjinare, e zier",
+    "name_en": "Artichokes, (globe or french), cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-168386",
+    "also": []
+  },
+  {
+    "key": "green-onion-raw",
+    "rank": 233,
+    "name_sq": "Qepë të njoma",
+    "name_en": "Onions, spring or scallions (includes tops and bulb), raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-170005",
+    "also": []
+  },
+  {
+    "key": "corn-canned",
+    "rank": 234,
+    "name_sq": "Misër i konservuar",
+    "name_en": "Corn, sweet, yellow, canned, whole kernel, drained solids",
+    "group": "Perime",
+    "preferred": "usda-fdc-169214",
+    "also": []
+  },
+  {
+    "key": "pickles-cucumber",
+    "rank": 235,
+    "name_sq": "Turshi kastravecash",
+    "name_en": "Pickles, cucumber, dill or kosher dill",
+    "group": "Perime",
+    "preferred": "usda-fdc-324653",
+    "also": [
+      "usda-fdc-168558"
+    ]
+  },
+  {
+    "key": "green-beans-cooked",
+    "rank": 236,
+    "name_sq": "Fasule jeshile, të zjera",
+    "name_en": "Beans, snap, green, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-169141",
+    "also": []
+  },
+  {
+    "key": "mushroom-cooked",
+    "rank": 237,
+    "name_sq": "Kërpudha, të gatuara",
+    "name_en": "Mushrooms, white, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-169252",
+    "also": []
+  },
+  {
+    "key": "eggplant-cooked",
+    "rank": 238,
+    "name_sq": "Patëllxhan, i zier",
+    "name_en": "Eggplant, cooked, boiled, drained, without salt",
+    "group": "Perime",
+    "preferred": "usda-fdc-169229",
+    "also": []
+  },
+  {
+    "key": "parsley-raw",
+    "rank": 239,
+    "name_sq": "Majdanoz",
+    "name_en": "Parsley, fresh",
+    "group": "Perime",
+    "preferred": "usda-fdc-170416",
+    "also": [
+      "usda-fdc-2709796"
+    ]
+  },
+  {
+    "key": "kale-raw",
+    "rank": 240,
+    "name_sq": "Lakër kale",
+    "name_en": "Kale, raw",
+    "group": "Perime",
+    "preferred": "usda-fdc-323505",
+    "also": [
+      "usda-fdc-168421",
+      "usda-fdc-2709599",
+      "ciqual-20346",
+      "cofid-13-234"
+    ]
+  },
+  {
+    "key": "quince-raw",
+    "rank": 241,
+    "name_sq": "Ftua",
+    "name_en": "Quinces, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-168163",
+    "also": []
+  },
+  {
+    "key": "persimmon-raw",
+    "rank": 242,
+    "name_sq": "Hurmë (kaki)",
+    "name_en": "Persimmons, japanese, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-169941",
+    "also": []
+  },
+  {
+    "key": "dates-dried",
+    "rank": 243,
+    "name_sq": "Hurma të thata (data)",
+    "name_en": "Dates, deglet noor",
+    "group": "Fruta",
+    "preferred": "usda-fdc-171726",
+    "also": [
+      "ciqual-13011",
+      "cofid-14-394",
+      "livsmedelsverket-603"
+    ]
+  },
+  {
+    "key": "figs-dried",
+    "rank": 244,
+    "name_sq": "Fiq të thatë",
+    "name_en": "Figs, dried, uncooked",
+    "group": "Fruta",
+    "preferred": "usda-fdc-326905",
+    "also": [
+      "usda-fdc-174665",
+      "ciqual-13013",
+      "cofid-14-092",
+      "livsmedelsverket-604"
+    ]
+  },
+  {
+    "key": "apricots-dried",
+    "rank": 245,
+    "name_sq": "Kajsi të thata",
+    "name_en": "Apricots, dried, sulfured, uncooked",
+    "group": "Fruta",
+    "preferred": "usda-fdc-173941",
+    "also": [
+      "ciqual-13001",
+      "cofid-14-031"
+    ]
+  },
+  {
+    "key": "prunes-dried",
+    "rank": 246,
+    "name_sq": "Kumbulla të thata",
+    "name_en": "Plums, dried (prunes), uncooked",
+    "group": "Fruta",
+    "preferred": "usda-fdc-168162",
+    "also": [
+      "livsmedelsverket-605"
+    ]
+  },
+  {
+    "key": "grapefruit-raw",
+    "rank": 247,
+    "name_sq": "Grejpfrut",
+    "name_en": "Grapefruit, raw, pink and red and white, all areas",
+    "group": "Fruta",
+    "preferred": "usda-fdc-173033",
+    "also": []
+  },
+  {
+    "key": "blackberries-raw",
+    "rank": 248,
+    "name_sq": "Manaferra",
+    "name_en": "Blackberries, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-173946",
+    "also": [
+      "usda-fdc-2709273"
+    ]
+  },
+  {
+    "key": "raspberries-raw",
+    "rank": 249,
+    "name_sq": "Mjedra",
+    "name_en": "Raspberries, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-2263888",
+    "also": [
+      "usda-fdc-167755",
+      "usda-fdc-2709281"
+    ]
+  },
+  {
+    "key": "chestnuts-roasted",
+    "rank": 250,
+    "name_sq": "Gështenja, të pjekura",
+    "name_en": "Nuts, chestnuts, european, roasted",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-170190",
+    "also": []
+  },
+  {
+    "key": "nectarine-raw",
+    "rank": 251,
+    "name_sq": "Nektarinë",
+    "name_en": "Nectarines, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-327357",
+    "also": [
+      "usda-fdc-169914",
+      "cofid-14-380"
+    ]
+  },
+  {
+    "key": "honeydew-raw",
+    "rank": 252,
+    "name_sq": "Pjepër i verdhë (honeydew)",
+    "name_en": "Melons, honeydew, raw",
+    "group": "Fruta",
+    "preferred": "usda-fdc-2710816",
+    "also": [
+      "usda-fdc-169911"
+    ]
+  },
+  {
+    "key": "grape-juice",
+    "rank": 253,
+    "name_sq": "Lëng rrushi",
+    "name_en": "Grape juice, canned or bottled, unsweetened, with added ascorbic acid",
+    "group": "Pije",
+    "preferred": "usda-fdc-173041",
+    "also": [
+      "cofid-17-745"
+    ]
+  },
+  {
+    "key": "pumpkin-seeds",
+    "rank": 254,
+    "name_sq": "Fara kungulli",
+    "name_en": "Seeds, pumpkin seeds (pepitas), raw",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-2515380",
+    "also": []
+  },
+  {
+    "key": "flaxseed",
+    "rank": 255,
+    "name_sq": "Fara liri",
+    "name_en": "Seeds, flaxseed",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-169414",
+    "also": [
+      "ciqual-15034"
+    ]
+  },
+  {
+    "key": "chia-seeds",
+    "rank": 256,
+    "name_sq": "Fara çia",
+    "name_en": "Seeds, chia seeds, dried",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-170554",
+    "also": []
+  },
+  {
+    "key": "almond-butter",
+    "rank": 257,
+    "name_sq": "Gjalpë bajamesh",
+    "name_en": "Nuts, almond butter, plain, with salt added",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-168603",
+    "also": []
+  },
+  {
+    "key": "coconut-dried",
+    "rank": 258,
+    "name_sq": "Kokos i grirë",
+    "name_en": "Nuts, coconut meat, dried (desiccated), not sweetened",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-170170",
+    "also": []
+  },
+  {
+    "key": "rapeseed-oil",
+    "rank": 259,
+    "name_sq": "Vaj kolzë (kanola)",
+    "name_en": "Oil, canola",
+    "group": "Yndyrna dhe vajra",
+    "preferred": "usda-fdc-172336",
+    "also": [
+      "usda-fdc-2710188",
+      "ciqual-17130",
+      "cofid-17-041",
+      "livsmedelsverket-2189"
+    ]
+  },
+  {
+    "key": "lard",
+    "rank": 260,
+    "name_sq": "Dhjamë derri",
+    "name_en": "Lard",
+    "group": "Yndyrna dhe vajra",
+    "preferred": "usda-fdc-171401",
+    "also": [
+      "usda-fdc-2710166",
+      "ciqual-16520",
+      "cofid-17-010"
+    ]
+  },
+  {
+    "key": "hazelnut-spread",
+    "rank": 261,
+    "name_sq": "Krem lajthie me çokollatë",
+    "name_en": "Chocolate-flavored hazelnut spread",
+    "group": "Sheqer dhe ëmbëlsira",
+    "preferred": "usda-fdc-168000",
+    "also": [
+      "usda-fdc-2710289",
+      "ciqual-31032",
+      "cofid-17-659",
+      "livsmedelsverket-1860"
+    ]
+  },
+  {
+    "key": "baklava",
+    "rank": 262,
+    "name_sq": "Bakllavë",
+    "name_en": "Baklava",
+    "group": "Sheqer dhe ëmbëlsira",
+    "preferred": "usda-fdc-2708044",
+    "also": [
+      "ciqual-23300",
+      "cofid-11-842",
+      "livsmedelsverket-3267"
+    ]
+  },
+  {
+    "key": "cake-sponge",
+    "rank": 263,
+    "name_sq": "Pandispanjë",
+    "name_en": "Cake, sponge, prepared from recipe",
+    "group": "Sheqer dhe ëmbëlsira",
+    "preferred": "usda-fdc-172707",
+    "also": [
+      "usda-fdc-2707886",
+      "ciqual-23050"
+    ]
+  },
+  {
+    "key": "sugar-powdered",
+    "rank": 264,
+    "name_sq": "Sheqer pluhur",
+    "name_en": "Sugars, powdered",
+    "group": "Sheqer dhe ëmbëlsira",
+    "preferred": "usda-fdc-169656",
+    "also": [
+      "cofid-17-062"
+    ]
+  },
+  {
+    "key": "cocoa-powder",
+    "rank": 265,
+    "name_sq": "Kakao pluhur, pa sheqer",
+    "name_en": "Cocoa, dry powder, unsweetened",
+    "group": "Pije",
+    "preferred": "usda-fdc-169593",
+    "also": []
+  },
+  {
+    "key": "soy-milk",
+    "rank": 266,
+    "name_sq": "Qumësht soje",
+    "name_en": "Soymilk, original and vanilla, unfortified",
+    "group": "Pije",
+    "preferred": "usda-fdc-172446",
+    "also": [
+      "ciqual-18113",
+      "cofid-12-523"
+    ]
+  },
+  {
+    "key": "almond-milk",
+    "rank": 267,
+    "name_sq": "Qumësht bajameje",
+    "name_en": "Almond milk, unsweetened, plain, shelf stable",
+    "group": "Pije",
+    "preferred": "usda-fdc-1750338",
+    "also": [
+      "usda-fdc-174832",
+      "usda-fdc-2705409"
+    ]
+  },
+  {
+    "key": "lemonade",
+    "rank": 268,
+    "name_sq": "Limonadë",
+    "name_en": "Lemonade, with sugar(s)",
+    "group": "Pije",
+    "preferred": "ciqual-18010",
+    "also": []
+  },
+  {
+    "key": "egg-yolk-raw",
+    "rank": 269,
+    "name_sq": "E verdhë veze",
+    "name_en": "Egg, yolk, raw, fresh",
+    "group": "Vezë",
+    "preferred": "usda-fdc-172184",
+    "also": [
+      "ciqual-22002",
+      "cofid-12-939",
+      "livsmedelsverket-1226"
+    ]
+  },
+  {
+    "key": "omelette",
+    "rank": 270,
+    "name_sq": "Omletë",
+    "name_en": "Omelette, plain, homemade",
+    "group": "Vezë",
+    "preferred": "ciqual-22500",
+    "also": [
+      "cofid-12-946",
+      "livsmedelsverket-1229"
+    ]
+  },
+  {
+    "key": "milk-chocolate-drink",
+    "rank": 271,
+    "name_sq": "Qumësht me çokollatë",
+    "name_en": "Milk, chocolate, fluid, commercial, whole, with added vitamin A and vitamin D",
+    "group": "Pije",
+    "preferred": "usda-fdc-170879",
+    "also": [
+      "cofid-12-535"
+    ]
+  },
+  {
+    "key": "mustard",
+    "rank": 272,
+    "name_sq": "Mustardë",
+    "name_en": "Mustard, prepared, yellow",
+    "group": "Të tjera",
+    "preferred": "usda-fdc-326698",
+    "also": [
+      "usda-fdc-172234"
+    ]
+  },
+  {
+    "key": "vinegar",
+    "rank": 273,
+    "name_sq": "Uthull",
+    "name_en": "Vinegar, distilled",
+    "group": "Të tjera",
+    "preferred": "usda-fdc-172237",
+    "also": [
+      "ciqual-11018",
+      "cofid-17-339"
+    ]
+  },
+  {
+    "key": "soy-sauce",
+    "rank": 274,
+    "name_sq": "Salcë soje",
+    "name_en": "Soy sauce made from soy (tamari)",
+    "group": "Të tjera",
+    "preferred": "usda-fdc-174278",
+    "also": [
+      "usda-fdc-2707442",
+      "livsmedelsverket-909"
+    ]
+  },
+  {
+    "key": "tomato-juice",
+    "rank": 275,
+    "name_sq": "Lëng domateje",
+    "name_en": "Tomato juice, canned, with salt added",
+    "group": "Pije",
+    "preferred": "usda-fdc-170458",
+    "also": [
+      "cofid-13-382",
+      "livsmedelsverket-408"
+    ]
+  },
+  {
+    "key": "yogurt-drink",
+    "rank": 276,
+    "name_sq": "Ajran (kos i pijshëm)",
+    "name_en": "Yoghurt drink e.g. Ayran",
+    "group": "Qumësht dhe bulmet",
+    "preferred": "livsmedelsverket-6959",
+    "also": []
+  },
+  {
+    "key": "coconut-water",
+    "rank": 277,
+    "name_sq": "Ujë kokosi",
+    "name_en": "Nuts, coconut water (liquid from coconuts)",
+    "group": "Pije",
+    "preferred": "usda-fdc-170174",
+    "also": [
+      "livsmedelsverket-1591"
+    ]
+  },
+  {
+    "key": "chickpeas-canned",
+    "rank": 278,
+    "name_sq": "Qiqra, të konservuara",
+    "name_en": "Chickpeas (garbanzo beans, bengal gram), canned, sodium added, drained and rinsed",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-2644288",
+    "also": [
+      "usda-fdc-173800"
+    ]
+  },
+  {
+    "key": "semolina-dry",
+    "rank": 279,
+    "name_sq": "Semolinë, e thatë",
+    "name_en": "Semolina, enriched",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-169715",
+    "also": []
+  },
+  {
+    "key": "peanuts-roasted",
+    "rank": 280,
+    "name_sq": "Kikirikë të pjekur, të kripur",
+    "name_en": "Peanuts, dry roasted, salted",
+    "group": "Arra dhe fara",
+    "preferred": "usda-fdc-2707517",
+    "also": []
+  },
+  {
+    "key": "walnut-oil",
+    "rank": 281,
+    "name_sq": "Vaj arre",
+    "name_en": "Oil, walnut",
+    "group": "Yndyrna dhe vajra",
+    "preferred": "usda-fdc-171030",
+    "also": [
+      "usda-fdc-2710193",
+      "ciqual-17220",
+      "cofid-17-047"
+    ]
+  },
+  {
+    "key": "sesame-oil",
+    "rank": 282,
+    "name_sq": "Vaj susami",
+    "name_en": "Oil, sesame, salad or cooking",
+    "group": "Yndyrna dhe vajra",
+    "preferred": "usda-fdc-171016",
+    "also": [
+      "usda-fdc-2710190",
+      "ciqual-17400",
+      "cofid-17-043",
+      "livsmedelsverket-38"
+    ]
+  },
+  {
+    "key": "beef-tenderloin-cooked",
+    "rank": 283,
+    "name_sq": "Fileto gjedhi, e pjekur",
+    "name_en": "Beef, tenderloin, steak, separable lean only, trimmed to 1/8\" fat, choice, cooked, broiled",
+    "group": "Mish",
+    "preferred": "usda-fdc-173117",
+    "also": []
+  },
+  {
+    "key": "pork-ribs-cooked",
+    "rank": 284,
+    "name_sq": "Brinjë derri, të pjekura",
+    "name_en": "Pork, fresh, spareribs, separable lean and fat, cooked, braised",
+    "group": "Mish",
+    "preferred": "usda-fdc-167854",
+    "also": []
+  },
+  {
+    "key": "duck-roasted",
+    "rank": 285,
+    "name_sq": "Rosë, e pjekur",
+    "name_en": "Duck, domesticated, meat only, cooked, roasted",
+    "group": "Mish",
+    "preferred": "usda-fdc-172411",
+    "also": [
+      "cofid-18-372"
+    ]
+  },
+  {
+    "key": "turkey-ham-sliced",
+    "rank": 286,
+    "name_sq": "Proshutë gjeldeti (feta)",
+    "name_en": "Ham, turkey, sliced, extra lean, prepackaged or deli",
+    "group": "Mish",
+    "preferred": "usda-fdc-168092",
+    "also": []
+  },
+  {
+    "key": "provolone",
+    "rank": 287,
+    "name_sq": "Djathë kaçkavall (provolone)",
+    "name_en": "Cheese, provolone, sliced",
+    "group": "Qumësht dhe bulmet",
+    "preferred": "usda-fdc-2647440",
+    "also": [
+      "usda-fdc-170850",
+      "usda-fdc-2705733",
+      "ciqual-12716"
+    ]
+  },
+  {
+    "key": "swiss-cheese",
+    "rank": 288,
+    "name_sq": "Djathë zviceran (emmental)",
+    "name_en": "Cheese, swiss",
+    "group": "Qumësht dhe bulmet",
+    "preferred": "usda-fdc-326135",
+    "also": [
+      "usda-fdc-171251",
+      "usda-fdc-2705735",
+      "ciqual-12115",
+      "cofid-12-493"
+    ]
+  },
+  {
+    "key": "milk-goat",
+    "rank": 289,
+    "name_sq": "Qumësht dhie",
+    "name_en": "Milk, goat, fluid, with added vitamin D",
+    "group": "Qumësht dhe bulmet",
+    "preferred": "usda-fdc-171278",
+    "also": [
+      "ciqual-19200",
+      "cofid-12-328"
+    ]
+  },
+  {
+    "key": "milk-sheep",
+    "rank": 290,
+    "name_sq": "Qumësht dhensh",
+    "name_en": "Milk, sheep, fluid",
+    "group": "Qumësht dhe bulmet",
+    "preferred": "usda-fdc-170882",
+    "also": [
+      "ciqual-19250",
+      "cofid-12-329"
+    ]
+  },
+  {
+    "key": "pasta-wholewheat-cooked",
+    "rank": 291,
+    "name_sq": "Makarona integrale, të gatuara",
+    "name_en": "Pasta, whole grain, 51% whole wheat, remaining unenriched semolina, cooked",
+    "group": "Drithëra dhe bukë",
+    "preferred": "usda-fdc-168916",
+    "also": []
+  },
+  {
+    "key": "baked-beans-canned",
+    "rank": 292,
+    "name_sq": "Fasule me salcë domateje, të konservuara",
+    "name_en": "Beans, baked, canned, plain or vegetarian",
+    "group": "Bishtajore",
+    "preferred": "usda-fdc-175182",
+    "also": [
+      "ciqual-20194",
+      "cofid-13-532"
+    ]
+  },
+  {
+    "key": "lemon-juice",
+    "rank": 293,
+    "name_sq": "Lëng limoni",
+    "name_en": "Lemon juice, raw",
+    "group": "Pije",
+    "preferred": "usda-fdc-167747",
+    "also": []
+  },
+  {
+    "key": "potato-mashed",
+    "rank": 294,
+    "name_sq": "Pure patatesh",
+    "name_en": "Potatoes, mashed, home-prepared, whole milk and butter added",
+    "group": "Perime",
+    "preferred": "usda-fdc-168555",
+    "also": [
+      "ciqual-4047",
+      "cofid-13-553"
+    ]
+  },
+  {
+    "key": "salmon-smoked",
+    "rank": 295,
+    "name_sq": "Salmon i tymosur",
+    "name_en": "Fish, salmon, chinook, smoked",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-173687",
+    "also": [
+      "usda-fdc-2706292"
+    ]
+  },
+  {
+    "key": "cod-baked",
+    "rank": 296,
+    "name_sq": "Merluc (cod), i pjekur",
+    "name_en": "Fish, cod, Atlantic, cooked, dry heat",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-171956",
+    "also": []
+  },
+  {
+    "key": "trout-cooked",
+    "rank": 297,
+    "name_sq": "Troftë, e pjekur",
+    "name_en": "Fish, trout, rainbow, farmed, cooked, dry heat",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-173718",
+    "also": []
+  },
+  {
+    "key": "sea-bass-cooked",
+    "rank": 298,
+    "name_sq": "Levrek, i pjekur",
+    "name_en": "Fish, sea bass, mixed species, cooked, dry heat",
+    "group": "Peshk dhe fruta deti",
+    "preferred": "usda-fdc-173694",
+    "also": []
+  }
+]
