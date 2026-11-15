@@ -40,6 +40,8 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 
 - **Rishikimi i pavarur i 001–003 (15.11.2026, 8318e0e):** një agjent që nuk i ndërtoi gjeti 82 probleme te 298 hyrje (35 të sigurta, 47 të mundshme: përputhje, emra shqip, vlera, një dyfishim); `docs/research/rishikimi-te-zakonshmet-001-003.md`. U zbatuan të gjitha përveç emrave të gjizës (mbeten si te plani i Jimit); gjalpi me dhe pa kripë u bashkua (297 të zakonshme). Rregull i ri te vërtetimi: `includes_fiber_preferred` (Foundation pa fibra nuk preferohet kur një rresht tjetër i ka, pragu 2 g/100 g). Ndërtimi: 21 905 rreshta, 0 gabime, 11 `kcal_differs` të shqyrtuara. Çdo grup i ri i të zakonshmeve kalon të njëjtin rishikim para se të hyjë te `main`.
 
+- **Të zakonshmet 299–500 (15.11.2026, 10125d8, 3ace984):** `common/004.json` dhe `005.json` (grupi u ndal në mes dhe u rimor); rishikimi i pavarur gjeti 98 probleme te 202 hyrje (kryesisht rreshti i SR Legacy ose Foundation i pazgjedhur dhe lloje të përziera te `also`), `docs/research/rishikimi-te-zakonshmet-004-005.md`; u zbatuan 97 dhe 1 pjesërisht. Gjithsej 500 të zakonshme, 773 dyfishime të hequra, 0 gabime, 13 shënime të shqyrtuara. Vërtetimi nuk e sheh një rresht më të preferuar që nuk është te hyrja; këtë e kap vetëm rishikimi.
+
 ## Pyetjet që mbeten për ndërtimin
 
 - Përkthimi i emrave: me agjentët e kësaj sesioni (pa çelës API) apo me një funksion të Supabase brenda kufirit të AI-së.
