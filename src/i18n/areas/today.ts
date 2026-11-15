@@ -6,6 +6,13 @@ import type { Messages, TranslationOf } from '../translate'
 
 export const sq = {
   // Gjendja e kartës kur sot s'ka stërvitje (0.23: titulli i ekranit është gjithnjë "Sot").
+  // Fillimi i stërvitjes (V2-E3-30): butoni gjatë fillimit dhe fleta para lejes së njoftimeve.
+  'today.starting': 'Po fillon',
+  'today.preparing': 'Po përgatis seancën',
+  'today.notify.title': 'Njoftimi i pushimit',
+  'today.notify.text': 'Vrull të tregon kur mbaron pushimi mes seteve, edhe me ekran të kyçur. Telefoni do të pyesë një herë.',
+  'today.notify.allow': 'Lejo njoftimet',
+  'today.notify.skip': 'Jo tani, fillo pa to',
   'today.restTitle': 'Ditë pushimi',
   'today.doneTitle': 'U krye për sot',
   'today.workoutTitle': 'Stërvitja {day}',
@@ -129,6 +136,12 @@ export const sq = {
 } as const satisfies Messages
 
 export const en: TranslationOf<typeof sq> = {
+  'today.starting': 'Starting',
+  'today.preparing': 'Preparing the session',
+  'today.notify.title': 'Rest notification',
+  'today.notify.text': 'Vrull tells you when the rest between sets is over, even with the screen locked. Your phone will ask once.',
+  'today.notify.allow': 'Allow notifications',
+  'today.notify.skip': 'Not now, start without them',
   'today.restTitle': 'Rest day',
   'today.doneTitle': 'Done for today',
   'today.workoutTitle': 'Workout {day}',

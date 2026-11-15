@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { TrendChart } from '@/components/charts/trend-chart'
 import { EmptyState } from '@/components/layout/empty-state'
 import { Group, LinkRow } from '@/components/layout/list-group'
@@ -11,11 +11,11 @@ import { surfaceClass } from '@/components/ui/surface'
 import { photos, store, useLocalQuery } from '@/data/app-data'
 import { localDate, shiftDate } from '@/lib/calendar'
 import { type ComplianceDay, metricHistory, progressStart, progressView, trainingProgress } from '@/data/progress'
-import { startWorkout, trainingSnapshot } from '@/data/training'
+import { trainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
 import { muscleName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
-import { prepareRestNotifications } from '@/lib/rest-alarm'
+import { useStartWorkout } from './start-workout'
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, metricByKey, movingAverage } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
@@ -200,21 +200,8 @@ function WeightSection({ view }: { view: Awaited<ReturnType<typeof progressView>
 /** Bordi "Gjendje · Bosh": grafikët nisin me setin e parë; Trupi dhe matjet hapen që tani. */
 function ProgressEmpty({ weightKg, snapshot, label }: { weightKg: number | null; snapshot: Snapshot | undefined; label?: string }) {
   const { t, fmt, lang } = useI18n()
-  const navigate = useNavigate()
-  const [busy, setBusy] = useState(false)
+  const starter = useStartWorkout()
   const plan = snapshot && !snapshot.completed ? snapshot.plan : null
-
-  async function start() {
-    setBusy(true)
-    try {
-      // Lejet e timer-it kërkohen kur nevojiten: në stërvitjen e parë (SPEC §3a).
-      await prepareRestNotifications()
-      await startWorkout(store)
-      navigate('/seanca')
-    } finally {
-      setBusy(false)
-    }
-  }
 
   return (
     <div className="flex min-h-[calc(100dvh-var(--spacing-tab-bar)-var(--safe-top)-var(--safe-bottom)-44px)] flex-col gap-[18px]">
@@ -234,9 +221,12 @@ function ProgressEmpty({ weightKg, snapshot, label }: { weightKg: number | null;
         ]}
         action={
           plan ? (
-            <Button variant="primary" size="xl" disabled={busy} onClick={() => void start()}>
-              {t('progress.startFirst')}
-            </Button>
+            <>
+              <Button variant="primary" size="xl" {...starter.buttonProps}>
+                {starter.label(t('progress.startFirst'))}
+              </Button>
+              {starter.sheet}
+            </>
           ) : undefined
         }
         caption={plan && label ? t('progress.nextWorkout', { label, day: plan.dayNumber, name: programDayName(t, plan.dayName).toLocaleLowerCase(lang) }) : undefined}

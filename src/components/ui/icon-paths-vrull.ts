@@ -61,6 +61,8 @@ export const VRULL_ICONS = {
   vale: '<path d="M3 9c3-3 6 3 9 0s6 3 9 0M3 15c3-3 6 3 9 0s6 3 9 0"/>',
   // Java (0.23, bordet "Sot", "Java", "Karta"): gota e ujit dhe ndarja e kartës.
   gota: '<path d="M6 4h12l-1.5 16h-9z"/><path d="M7 9h10"/>',
+  // Fillimi i stërvitjes (V2-E3-30): rrethi që rrotullohet kur butoni punon.
+  ngarkim: '<path d="M12 3a9 9 0 1 0 9 9"/>',
   // Arritjet (V2-E3-30): vargu i javëve dhe fundi i programit.
   zjarri: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z"/>',
   flamuri: '<path d="M5 21V4M5 4h12l-2.5 4L17 12H5"/>',

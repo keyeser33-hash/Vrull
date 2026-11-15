@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { BackHeader } from '@/components/layout/page'
 import { ProfileButton, ScreenHeader } from '@/components/layout/screen-header'
 import { Button } from '@/components/ui/button'
@@ -8,11 +8,11 @@ import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type ProgrammeBlock, type ProgrammeDay, type ActiveProgramHome, activeProgramHome } from '@/data/programme'
-import { programView, startWorkout } from '@/data/training'
+import { programView } from '@/data/training'
 import { programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
-import { prepareRestNotifications } from '@/lib/rest-alarm'
+import { useStartWorkout } from './start-workout'
 import { editorPath } from './editor-nav'
 import { capitalize, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
 
@@ -169,24 +169,11 @@ const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
 
 function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: ProgrammeDay; now: Date }) {
   const { t, fmt } = useI18n()
-  const navigate = useNavigate()
-  const [busy, setBusy] = useState(false)
+  const starter = useStartWorkout()
   const next = home.next!
   const first = next.first
   const when = day.date ? (sameDay(day.date, now) ? t('programme.todayOn', { date: fmt.date(day.date) }) : capitalize(fmt.date(day.date), fmt.locale)) : null
   const missed = next.missedOn ? t('programme.missedOn', { date: fmt.date(new Date(`${next.missedOn}T12:00:00`)) }) : null
-
-  async function start() {
-    setBusy(true)
-    try {
-      // Lejet e timer-it kërkohen kur nevojiten: në stërvitjen e parë (SPEC §3a).
-      await prepareRestNotifications()
-      await startWorkout(store)
-      navigate('/seanca')
-    } finally {
-      setBusy(false)
-    }
-  }
 
   return (
     <article
@@ -224,9 +211,10 @@ function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: Program
           ) : null}
         </div>
       ) : null}
-      <Button variant="primary" size="lg" className="w-full" disabled={busy || !first} onClick={() => void start()}>
-        {next.inProgress ? t('programme.resume') : t('programme.start')}
+      <Button variant="primary" size="lg" className="w-full" disabled={!first} {...starter.buttonProps}>
+        {starter.label(next.inProgress ? t('programme.resume') : t('programme.start'))}
       </Button>
+      {starter.sheet}
     </article>
   )
 }

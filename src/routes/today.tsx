@@ -24,16 +24,16 @@ import { strengthLine } from './readiness-suggestion-text'
 import { WeeklyCheckCard } from './weekly-check-card'
 import { WaterCard } from './water-card'
 import { AiBoxDock } from './ai-box-dock'
-import { restartProgram, skipWorkout, startWorkout, type TrainingSnapshot } from '@/data/training'
+import { restartProgram, skipWorkout, type TrainingSnapshot } from '@/data/training'
 import type { I18n } from '@/i18n'
 import { mealName, muscleName, programBlockName, programDayName, programWeekLabel } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { facesBack } from '@/body/model-focus'
 import { localDate, shiftDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
-import { prepareRestNotifications } from '@/lib/rest-alarm'
 import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
+import { useStartWorkout } from './start-workout'
 import { achievementName } from './achievement-format'
 import { repsText, targetLine } from './today-format'
 import { atNoon, capitalize, goalCells, goalsSpoken, summaryTitle, weekHeading, weekRangeText } from './week-format'
@@ -188,27 +188,10 @@ function whenLine(view: TodayView, { t, fmt }: I18n): string {
   return [when, ...(view.nextTime ? [view.nextTime] : []), workout].join(' · ')
 }
 
-function useStart() {
-  const navigate = useNavigate()
-  const [busy, setBusy] = useState(false)
-  async function start() {
-    setBusy(true)
-    try {
-      // Lejet e timer-it kërkohen kur nevojiten: në stërvitjen e parë (SPEC §3a).
-      await prepareRestNotifications()
-      await startWorkout(store)
-      navigate('/seanca')
-    } finally {
-      setBusy(false)
-    }
-  }
-  return { busy, start }
-}
-
 function WorkoutCard({ view }: { view: TodayView }) {
   const i18n = useI18n()
   const { t } = i18n
-  const { busy, start } = useStart()
+  const starter = useStartWorkout()
   const quiet = useSuggestionPending(view)
   const strength = useStrengths(view.date)
   const { mode, workout } = view
@@ -220,45 +203,48 @@ function WorkoutCard({ view }: { view: TodayView }) {
   const action = mode === 'session' ? t('today.resume') : view.firstEver ? t('today.startFirst') : t('today.start')
 
   return (
-    <section
-      aria-label={t(upcoming ? 'today.nextLabel' : 'today.workoutLabel')}
-      className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-2 overflow-hidden rounded-xl p-4', model && 'min-h-[262px]')}
-    >
-      {model ? (
-        <>
-          <WorkoutModel primary={workout.primary} focus={workout.focus!.keys} />
-          {/* Teksti mbi model: karta zbehet drejt së tejdukshmes me ngjyrën e vet (DESIGN.md › Rregullat e temave). */}
-          <div aria-hidden className="absolute inset-0 bg-linear-to-r from-surface from-42% to-surface/0 to-72%" />
-          <Link
-            to="/progresi/trupi"
-            aria-label={t('today.openBody')}
-            className="absolute top-0 right-0 h-[190px] w-32 rounded-tr-xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
-          />
-        </>
-      ) : null}
-      {upcoming ? <p className="relative type-label text-muted-foreground">{t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')}</p> : null}
-      <span className="relative max-w-[250px] type-caption text-muted-foreground tabular-nums">{meta}</span>
-      <h2 className="relative max-w-[216px] type-display-s">{programDayName(t, plan.dayName)}</h2>
-      {mode === 'session' ? null : (
-        <span className="relative type-caption text-muted-foreground tabular-nums">
-          {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
-        </span>
-      )}
-      {workout.first ? <p className="relative max-w-[210px] type-body text-foreground tabular-nums">{targetLine(i18n, workout.first)}</p> : null}
-      {workout.focus && workout.recovery ? (
-        <p className="relative flex items-center gap-1.5 type-caption text-muted-foreground">
-          <span aria-hidden className={cn('size-2 shrink-0 rounded-pill', workout.recovery === 'gati' ? 'bg-success' : 'bg-sand')} />
-          {t('today.recovery', {
-            group: muscleName(t, workout.focus.group.id),
-            status: t(`today.recovery.${workout.recovery}`),
-          })}
-        </p>
-      ) : null}
-      {strength && !upcoming ? <p className="relative type-caption text-muted-foreground tabular-nums">{strengthLine(i18n, strength.percent, strength.strengths)}</p> : null}
-      <Button variant={upcoming || quiet ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={busy || workout.exercises === 0} onClick={() => void start()}>
-        {action}
-      </Button>
-    </section>
+    <>
+      <section
+        aria-label={t(upcoming ? 'today.nextLabel' : 'today.workoutLabel')}
+        className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-2 overflow-hidden rounded-xl p-4', model && 'min-h-[262px]')}
+      >
+        {model ? (
+          <>
+            <WorkoutModel primary={workout.primary} focus={workout.focus!.keys} />
+            {/* Teksti mbi model: karta zbehet drejt së tejdukshmes me ngjyrën e vet (DESIGN.md › Rregullat e temave). */}
+            <div aria-hidden className="absolute inset-0 bg-linear-to-r from-surface from-42% to-surface/0 to-72%" />
+            <Link
+              to="/progresi/trupi"
+              aria-label={t('today.openBody')}
+              className="absolute top-0 right-0 h-[190px] w-32 rounded-tr-xl focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+            />
+          </>
+        ) : null}
+        {upcoming ? <p className="relative type-label text-muted-foreground">{t(mode === 'rest' ? 'today.restTitle' : 'today.doneTitle')}</p> : null}
+        <span className="relative max-w-[250px] type-caption text-muted-foreground tabular-nums">{meta}</span>
+        <h2 className="relative max-w-[216px] type-display-s">{programDayName(t, plan.dayName)}</h2>
+        {mode === 'session' ? null : (
+          <span className="relative type-caption text-muted-foreground tabular-nums">
+            {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
+          </span>
+        )}
+        {workout.first ? <p className="relative max-w-[210px] type-body text-foreground tabular-nums">{targetLine(i18n, workout.first)}</p> : null}
+        {workout.focus && workout.recovery ? (
+          <p className="relative flex items-center gap-1.5 type-caption text-muted-foreground">
+            <span aria-hidden className={cn('size-2 shrink-0 rounded-pill', workout.recovery === 'gati' ? 'bg-success' : 'bg-sand')} />
+            {t('today.recovery', {
+              group: muscleName(t, workout.focus.group.id),
+              status: t(`today.recovery.${workout.recovery}`),
+            })}
+          </p>
+        ) : null}
+        {strength && !upcoming ? <p className="relative type-caption text-muted-foreground tabular-nums">{strengthLine(i18n, strength.percent, strength.strengths)}</p> : null}
+        <Button variant={upcoming || quiet ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={workout.exercises === 0} {...starter.buttonProps}>
+          {starter.label(action)}
+        </Button>
+      </section>
+      {starter.sheet}
+    </>
   )
 }
 
@@ -269,7 +255,7 @@ function WorkoutCard({ view }: { view: TodayView }) {
 function WelcomeBackCard({ view }: { view: TodayView }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
-  const { busy, start } = useStart()
+  const starter = useStartWorkout()
   const [saving, setSaving] = useState(false)
   const back = view.welcomeBack!
   const { workout, mode } = view
@@ -283,48 +269,51 @@ function WelcomeBackCard({ view }: { view: TodayView }) {
   const detail = back.lighter ? (example ?? t('today.back.lighterOn')) : t('today.back.lighterOff')
 
   return (
-    <section aria-labelledby="today-back" className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-3 overflow-hidden rounded-xl p-4')}>
-      <h2 id="today-back" className="type-display-m">
-        {t('today.back.title')}
-      </h2>
-      <p className="type-body-l text-foreground">{t('today.back.text', { count: back.days })}</p>
-      <div className="flex flex-col gap-1">
-        <span className="type-caption text-muted-foreground tabular-nums">{whenLine(view, i18n)}</span>
-        <span className="type-title">{programDayName(t, plan.dayName)}</span>
-        {workout ? (
-          <span className="type-caption text-muted-foreground tabular-nums">
-            {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
+    <>
+      <section aria-labelledby="today-back" className={cn(surfaceClass, 'relative flex shrink-0 flex-col gap-3 overflow-hidden rounded-xl p-4')}>
+        <h2 id="today-back" className="type-display-m">
+          {t('today.back.title')}
+        </h2>
+        <p className="type-body-l text-foreground">{t('today.back.text', { count: back.days })}</p>
+        <div className="flex flex-col gap-1">
+          <span className="type-caption text-muted-foreground tabular-nums">{whenLine(view, i18n)}</span>
+          <span className="type-title">{programDayName(t, plan.dayName)}</span>
+          {workout ? (
+            <span className="type-caption text-muted-foreground tabular-nums">
+              {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
+            </span>
+          ) : null}
+        </div>
+        <label className="flex min-h-[52px] cursor-pointer items-center gap-3 border-t border-border pt-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground">
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="type-body-strong">{t('today.back.lighter')}</span>
+            <span className="type-caption text-muted-foreground tabular-nums">{detail}</span>
           </span>
-        ) : null}
-      </div>
-      <label className="flex min-h-[52px] cursor-pointer items-center gap-3 border-t border-border pt-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground">
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="type-body-strong">{t('today.back.lighter')}</span>
-          <span className="type-caption text-muted-foreground tabular-nums">{detail}</span>
-        </span>
-        <input
-          type="checkbox"
-          role="switch"
-          checked={back.lighter}
-          disabled={saving}
-          onChange={(event) => {
-            setSaving(true)
-            void setLighterFirstSession(store, event.currentTarget.checked).finally(() => setSaving(false))
-          }}
-          className="peer sr-only"
-        />
-        {/* Si çelësat e Cilësimeve: i ndezur në bojë, me dorezën në ngjyrën e kartës (150 ms). */}
-        <span
-          aria-hidden
-          className="flex h-8 w-[52px] shrink-0 items-center rounded-pill border-2 border-muted-foreground p-[3px] transition-colors duration-150 ease-out peer-checked:justify-end peer-checked:border-foreground peer-checked:bg-foreground peer-checked:*:bg-surface"
-        >
-          <span className="size-5 rounded-pill bg-muted-foreground" />
-        </span>
-      </label>
-      <Button variant={today ? 'primary' : 'secondary'} size="lg" className="w-full" disabled={busy || !workout || workout.exercises === 0} onClick={() => void start()}>
-        {mode === 'session' ? t('today.resume') : t('today.start')}
-      </Button>
-    </section>
+          <input
+            type="checkbox"
+            role="switch"
+            checked={back.lighter}
+            disabled={saving}
+            onChange={(event) => {
+              setSaving(true)
+              void setLighterFirstSession(store, event.currentTarget.checked).finally(() => setSaving(false))
+            }}
+            className="peer sr-only"
+          />
+          {/* Si çelësat e Cilësimeve: i ndezur në bojë, me dorezën në ngjyrën e kartës (150 ms). */}
+          <span
+            aria-hidden
+            className="flex h-8 w-[52px] shrink-0 items-center rounded-pill border-2 border-muted-foreground p-[3px] transition-colors duration-150 ease-out peer-checked:justify-end peer-checked:border-foreground peer-checked:bg-foreground peer-checked:*:bg-surface"
+          >
+            <span className="size-5 rounded-pill bg-muted-foreground" />
+          </span>
+        </label>
+        <Button variant={today ? 'primary' : 'secondary'} size="lg" className="w-full" disabled={!workout || workout.exercises === 0} {...starter.buttonProps}>
+          {starter.label(mode === 'session' ? t('today.resume') : t('today.start'))}
+        </Button>
+      </section>
+      {starter.sheet}
+    </>
   )
 }
 
@@ -504,36 +493,36 @@ function SkipWorkout() {
   const close = () => navigate(-1)
   return (
     <>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        onClick={() => setParams({ veprim: 'kaperce' })}
-        className="-my-2 -ml-2 min-h-touch self-start rounded-md px-2 text-sm font-semibold text-muted-foreground underline underline-offset-[3px] focus-visible:outline-2 focus-visible:outline-foreground"
-      >
-        {t('today.skip')}
-      </button>
-      {open ? (
-        <Sheet title={t('today.skip')} description={t('today.skipText')} onClose={close}>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="secondary" size="lg" onClick={close}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              disabled={busy}
-              onClick={() => {
-                setBusy(true)
-                void skipWorkout(store)
-                  .then(close)
-                  .finally(() => setBusy(false))
-              }}
-            >
-              {t('today.skipConfirm')}
-            </Button>
-          </div>
-        </Sheet>
-      ) : null}
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => setParams({ veprim: 'kaperce' })}
+          className="-my-2 -ml-2 min-h-touch self-start rounded-md px-2 text-sm font-semibold text-muted-foreground underline underline-offset-[3px] focus-visible:outline-2 focus-visible:outline-foreground"
+        >
+          {t('today.skip')}
+        </button>
+        {open ? (
+          <Sheet title={t('today.skip')} description={t('today.skipText')} onClose={close}>
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="secondary" size="lg" onClick={close}>
+                {t('common.cancel')}
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                disabled={busy}
+                onClick={() => {
+                  setBusy(true)
+                  void skipWorkout(store)
+                    .then(close)
+                    .finally(() => setBusy(false))
+                }}
+              >
+                {t('today.skipConfirm')}
+              </Button>
+            </div>
+          </Sheet>
+        ) : null}
     </>
   )
 }

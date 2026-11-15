@@ -21,7 +21,7 @@ vi.mock('@/data/app-data', async () => {
     useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
-vi.mock('@/lib/rest-alarm', () => ({ prepareRestNotifications: async () => {} }))
+vi.mock('@/lib/rest-alarm', () => ({ prepareRestNotifications: async () => {}, restNotificationsPrompt: async () => false }))
 
 async function renderAt(path: string) {
   const { ProgramPage, WorkoutPage } = await import('./program')

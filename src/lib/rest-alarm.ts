@@ -44,6 +44,17 @@ export async function prepareRestNotifications() {
   }
 }
 
+/** A do ta pyeste telefoni tani për njoftimet (vetëm native, leja ende pa u kërkuar)? Fleta e shpjegimit del para kësaj kërkese. */
+export async function restNotificationsPrompt(): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) return false
+  try {
+    const { display } = await LocalNotifications.checkPermissions()
+    return display === 'prompt' || display === 'prompt-with-rationale'
+  } catch {
+    return false
+  }
+}
+
 /** Kur pushimi mbaron me app-in të hapur dhe pa leje njoftimesh: të paktën një dridhje. */
 export async function restFinishedInApp() {
   if (!Capacitor.isNativePlatform()) return
