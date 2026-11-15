@@ -1,0 +1,1923 @@
+{
+  "group": "sts-legs",
+  "guides": [
+    {
+      "exercise": "Squat",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendose shufrën në raft: NASM thotë rreth lartësisë së gjoksit, ACE pak nën lartësinë e shpatullave. Vendos pinat e sigurisë, ose kërko rojë nëse nuk ke pina.",
+            "en": "Set the bar in the rack: NASM says around chest height, ACE just below shoulder height. Set the safety pins, or use a spotter if you have no pins."
+          },
+          {
+            "sq": "Futu nën shufër dhe vendose mbi shpinën e sipërme: mbi trapezin e sipërm (shufër e lartë) ose pak më poshtë (shufër e ulët), me kapje pak më të gjerë se shpatullat.",
+            "en": "Duck under the bar and set it across your upper back: on the upper traps (high bar) or slightly lower (low bar), with a grip a little wider than your shoulders."
+          },
+          {
+            "sq": "Ngri kraharorin dhe shtrëngo shpatullat pas; ngrihu për ta hequr shufrën nga rafti dhe bëj dy hapa mbrapa.",
+            "en": "Lift your chest and squeeze your shoulder blades together; stand up to take the bar off the rack and take two steps back."
+          },
+          {
+            "sq": "Këmbët: NASM thotë pak më gjerë se ijët, ACE pak më gjerë se shpatullat.",
+            "en": "Feet: NASM says slightly wider than hip-width, ACE says a little wider than shoulder-width."
+          },
+          {
+            "sq": "Forco barkun para se të ulesh dhe mbaje shpinën neutrale.",
+            "en": "Brace your core before you descend and keep your spine neutral."
+          }
+        ],
+        "sources": [
+          "ace_back_squat",
+          "nasm_squat",
+          "stoppani_squat"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nis uljen duke çuar ijët pas dhe duke përkulur gjunjët e ijët me të njëjtin ritëm; kraharori lart, shpina me harkun e saj natyror.",
+            "en": "Start the descent by pushing your hips back and bending your knees and hips at about the same rate; chest up, back in its natural arch."
+          },
+          {
+            "sq": "Gjunjët ndjekin vijën e gishtave të dytë e të tretë dhe nuk mbyllen nga brenda gjatë uljes dhe ngritjes.",
+            "en": "Your knees track over your second and third toes and do not collapse inward on the way down or up."
+          },
+          {
+            "sq": "Ule deri sa kofshët të jenë paralele me dyshemenë ose ijët nën gjunjë, sa të mbetet shpina neutrale dhe thembrat poshtë; thellësia varet nga lëvizshmëria dhe forca jote.",
+            "en": "Lower until your thighs are parallel to the floor or your hips are below your knees, as long as your spine stays neutral and your heels stay down; depth depends on your mobility and strength."
+          },
+          {
+            "sq": "Shtyj këmbët në dysheme dhe çoje ijën përpara për t'u ngritur, me kraharorin lart.",
+            "en": "Press your feet into the floor and drive your hips forward to stand, chest up."
+          }
+        ],
+        "sources": [
+          "ace_back_squat",
+          "nasm_squat",
+          "stoppani_squat"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Merr një frymë të thellë para uljes dhe mbaje ndërsa forcon barkun; nxirre fuqishëm gjatë ngritjes.",
+            "en": "Take a deep breath before you descend and hold it as you brace your core; breathe out forcefully as you rise."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "nasm_squat"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shpina neutrale, kraharori lart",
+            "en": "Neutral spine, chest up"
+          },
+          {
+            "sq": "Thembrat në dysheme",
+            "en": "Heels on the floor"
+          },
+          {
+            "sq": "Gjunjët ndjekin gishtat e këmbës",
+            "en": "Knees follow your toes"
+          },
+          {
+            "sq": "Ijët pas, pastaj poshtë",
+            "en": "Hips back, then down"
+          },
+          {
+            "sq": "Forco barkun para uljes",
+            "en": "Brace before you descend"
+          },
+          {
+            "sq": "Shtyj dyshemenë gjatë ngritjes",
+            "en": "Drive the floor away as you rise"
+          }
+        ],
+        "sources": [
+          "ace_back_squat",
+          "nasm_squat",
+          "stoppani_squat"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Shpina rrumbullakoset nën peshë: Stoppani e quan shumë të rrezikshme për shtyllën kurrizore; mbaje harkun natyror gjatë gjithë lëvizjes.",
+            "en": "Your back rounds under load: Stoppani calls this very dangerous for the spine; keep its natural arch throughout."
+          },
+          {
+            "sq": "Thembrat ngrihen dhe gjunjët shkojnë shumë përpara: qendra e peshës ka ikur përpara; çoji ijët pas dhe mbaji thembrat poshtë.",
+            "en": "Your heels lift and your knees travel too far forward: your centre of gravity has shifted forward; send your hips back and keep your heels down."
+          },
+          {
+            "sq": "Gjunjët mbyllen nga brenda: mbaji mbi gishtat e dytë e të tretë gjatë uljes dhe ngritjes.",
+            "en": "Your knees collapse inward: keep them over your second and third toes on the way down and up."
+          },
+          {
+            "sq": "Kraharori bie përpara gjatë uljes: ACE kërkon kraharorin lart; çoji ijët pas që pesha të mbetet mbi thembra.",
+            "en": "Your chest drops forward on the way down: ACE asks for the chest up; send your hips back so the weight stays over your heels."
+          },
+          {
+            "sq": "Shpejtësi e tepërt ose vrull para se ta mësosh teknikën: nis me peshë të lehtë dhe lëvize me kontroll.",
+            "en": "Too much speed or momentum before you have learned the technique: start light and move with control."
+          }
+        ],
+        "sources": [
+          "stoppani_squat",
+          "nasm_squat",
+          "ace_back_squat"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Squat Master Class)",
+          "text": {
+            "sq": "Shufra e lartë (mbi trapezin e sipërm) e mban trupin më vertikal dhe i jep theksin kuadricepsit; shufra e ulët (pak më poshtë) e anon trupin përpara dhe i jep më shumë punë ijëve dhe pjesës së pasme të kofshës. Pesha mbi rreth 80% të 1RM-së i theksojnë po ashtu ijët dhe pjesën e pasme të kofshës.",
+            "en": "The high bar (on the upper traps) keeps your torso more upright and emphasises the quadriceps; the low bar (a little lower) leans your torso forward and gives more work to the hips and hamstrings. Loads above about 80% of 1RM also emphasise the hips and hamstrings."
+          },
+          "sources": [
+            "stoppani_squat"
+          ]
+        },
+        {
+          "who": "Hartmann, Wirth dhe Klusemann, 2013 · Sports Medicine",
+          "text": {
+            "sq": "Një rishikim i mbi 164 artikujve nuk gjeti që squat-i i thellë e rrit rrezikun e dëmtimit të indeve pasive të gjurit; autorët e kushtëzojnë me teknikën e mësuar me mbikëqyrje dhe me ngarkesë që rritet gradualisht.",
+            "en": "A review of over 164 articles found that the deep squat does not raise the risk of injury to the passive tissues of the knee; the authors make this conditional on technique learned under supervision and on progressively increasing loads."
+          },
+          "sources": [
+            "hartmann"
+          ]
+        },
+        {
+          "who": "Escamilla, 2001 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Rishikimi i tij i biomekanikës së gjurit e quan squat-in paralel të padëmshëm për gjurin e shëndetshëm dhe e rekomandon mbi squat-in e thellë, sepse rreziku për menisqet dhe ligamentet mund të rritet me thellësinë e madhe.",
+            "en": "His review of knee biomechanics finds the parallel squat not injurious to the healthy knee and recommends it over the deep squat, because the risk to the menisci and ligaments may increase with a deep squat."
+          },
+          "sources": [
+            "escamilla"
+          ]
+        },
+        {
+          "who": "Kubo, Ikebukuro dhe Yata, 2019 · European Journal of Applied Physiology",
+          "text": {
+            "sq": "Në 17 meshkuj, 10 javë squat i plotë ose gjysmë squat e rritën njësoj vëllimin e kuadricepsit (4,9% dhe 4,6%), por squat-i i plotë e rriti më shumë gluteus maximus (6,7% kundrejt 2,2%) dhe adduktorët (6,2% kundrejt 2,7%).",
+            "en": "In 17 men, 10 weeks of full or half squats grew the quadriceps equally (4.9% and 4.6%), but the full squat grew the gluteus maximus more (6.7% versus 2.2%) and the adductors more (6.2% versus 2.7%)."
+          },
+          "sources": [
+            "kubo"
+          ]
+        },
+        {
+          "who": "Yanagisawa dhe kolegët, 2021 · Scandinavian Journal of Medicine & Science in Sports",
+          "text": {
+            "sq": "Në 13 të rinj me 80% të 1RM-së në Smith machine, squat-i paralel e uli më shumë treguesin e lëvizjes së ujit në diskun L5/S1 se gjysmë squat-i, dhe lordoza e belit në fund ishte më e vogël; autorët e lidhin stresin më të madh të diskeve të poshtme me këtë.",
+            "en": "In 13 young adults at 80% of 1RM on a Smith machine, the parallel squat lowered the water-movement index in the L5/S1 disc more than the half squat did, and lumbar lordosis at the bottom was smaller; the authors link the greater stress on the lower discs to this."
+          },
+          "sources": [
+            "yanagisawa"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Përdor raftin me pina sigurie; pa pina, kërko rojë. NSCA kërkon rojë të vëmendshme bashkë me pajisje si rafti kur pesha mbahet mbi trup.",
+            "en": "Use a rack with safety pins; without pins, ask for a spotter. The NSCA requires attentive spotting, together with equipment such as racks, whenever a weight is held on the trunk."
+          },
+          {
+            "sq": "Roja duhet të qëndrojë pas teje; bisedoni më parë për nivelin e ndihmës që të duhet.",
+            "en": "The spotter should be positioned behind you; talk to your spotter beforehand about the level of assistance you need."
+          },
+          {
+            "sq": "Ngroh 5–10 minuta me kardio të lehtë dhe bëj një set 8–10 përsëritjesh me peshë më të lehtë; nis lehtë për ta mësuar teknikën.",
+            "en": "Warm up for 5–10 minutes with light cardio and do a set of 8–10 reps with a lighter weight; start light to learn the technique."
+          },
+          {
+            "sq": "Mbaje shpinën pa u rrumbullakosur; nëse nuk e mban dot nën peshë, ule peshën.",
+            "en": "Keep your back from rounding; if you cannot hold it under load, lower the weight."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "nasm_squat",
+          "stoppani_squat",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "ace_back_squat": {
+          "label": "ACE, Back Squat",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/11/back-squat/",
+          "checked": "2026-11-15"
+        },
+        "nasm_squat": {
+          "label": "NASM, The NASM Guide to Squats and Deadlifts",
+          "url": "https://trainer.nasm.org/hubfs/NASM_Free%20Guide_Squats%20and%20Deadlifts.pdf?hsLang=en",
+          "checked": "2026-11-15"
+        },
+        "stoppani_squat": {
+          "label": "Jim Stoppani, PhD, Squat Master Class",
+          "url": "https://www.jimstoppani.com/training/squat-master-class",
+          "checked": "2026-11-15"
+        },
+        "hartmann": {
+          "label": "Hartmann, Wirth dhe Klusemann, 2013, Sports Medicine",
+          "url": "https://europepmc.org/article/MED/23821469",
+          "checked": "2026-11-15"
+        },
+        "escamilla": {
+          "label": "Escamilla, 2001, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/11194098",
+          "checked": "2026-11-15"
+        },
+        "kubo": {
+          "label": "Kubo, Ikebukuro dhe Yata, 2019, European Journal of Applied Physiology",
+          "url": "https://europepmc.org/article/MED/31230110",
+          "checked": "2026-11-15"
+        },
+        "yanagisawa": {
+          "label": "Yanagisawa dhe kolegët, 2021, Scandinavian Journal of Medicine & Science in Sports",
+          "url": "https://europepmc.org/article/MED/33038028",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Front Squat",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos raftin dhe pinat e sigurisë para se ta ngarkosh shufrën; pa pina, kërko rojë. Kjo vjen nga PDF-ja e NASM për back squat, jo nga një burim për front squat.",
+            "en": "Set up the rack and the safety pins before you load the bar; without pins, use a spotter. This comes from the NASM back squat PDF, not from a front squat source."
+          },
+          {
+            "sq": "Vendose shufrën para trupit, mbi pjesën e përparme të shpatullave (deltoidet).",
+            "en": "Rest the bar in front of your body, across the front of your shoulders (the front delts)."
+          },
+          {
+            "sq": "Mbaje shufrën me kapje clean ose me krahët e kryqëzuar para gjoksit.",
+            "en": "Hold the bar in a clean grip or with your arms crossed over your chest."
+          },
+          {
+            "sq": "Mbaji bërrylat lart gjatë gjithë setit: kur bien, shufra del nga pozicioni.",
+            "en": "Keep your elbows high for the whole set: if they drop, the bar slides out of position."
+          },
+          {
+            "sq": "Këmbët afërsisht sa gjerësia e shpatullave, gishtat përpara ose paksa nga jashtë.",
+            "en": "Feet about shoulder-width apart, toes pointing forward or turned out slightly."
+          },
+          {
+            "sq": "Kraharori lart dhe i drejtë; një ngritje e lehtë e shpatullave krijon një raft për shufrën.",
+            "en": "Chest up and tall; a slight shrug of your shoulders creates a shelf for the bar."
+          }
+        ],
+        "sources": [
+          "nasm_squat",
+          "hk_austin",
+          "stoppani_legs"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Çoji ijët pak pas dhe përkulu në gjunjë; kraharori mbetet i drejtë gjatë gjithë uljes.",
+            "en": "Push your hips back slightly and bend your knees; your chest stays upright for the whole descent."
+          },
+          {
+            "sq": "Gjunjët mbeten në vijë me kyçet e këmbëve dhe mbi gishtat, pa u mbyllur nga brenda.",
+            "en": "Your knees stay in line with your ankles and over your toes, without collapsing inward."
+          },
+          {
+            "sq": "Ule deri sa kreshta e ijëve të kalojë nën majën e gjurit, ose së paku kofshët paralele me dyshemenë; ndalo para se thembrat të ngrihen ose trupi të përkulet përpara.",
+            "en": "Lower until the crease of your hips passes below the top of your knee, or at least until your thighs are parallel to the floor; stop before your heels lift or your torso folds forward."
+          },
+          {
+            "sq": "Shtyj thembrat në dysheme; ijët dhe trupi ngrihen së bashku, bërrylat mbeten lart. Në krye shtrije plotësisht ijët dhe gjunjët.",
+            "en": "Drive your heels into the floor; your hips and torso rise together and your elbows stay high. At the top, fully extend your hips and knees."
+          }
+        ],
+        "sources": [
+          "hk_austin",
+          "ace_front_db",
+          "nasm_dbfront"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Merr një frymë të thellë dhe forco barkun para se të ulesh; nxirre ajrin kur shtyn thembrat gjatë ngritjes.",
+            "en": "Take a deep breath and brace your core before you descend; breathe out as you drive through your heels on the way up."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "nasm_dbfront",
+          "ace_front_db"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Bërrylat lart",
+            "en": "Elbows high"
+          },
+          {
+            "sq": "Kraharori lart dhe i drejtë",
+            "en": "Chest up and tall"
+          },
+          {
+            "sq": "Gjunjët ndjekin gishtat",
+            "en": "Knees follow your toes"
+          },
+          {
+            "sq": "Thembrat poshtë",
+            "en": "Heels down"
+          },
+          {
+            "sq": "Ijët pas, pastaj poshtë",
+            "en": "Hips back, then down"
+          },
+          {
+            "sq": "Forco barkun",
+            "en": "Brace your core"
+          }
+        ],
+        "sources": [
+          "hk_austin",
+          "ace_front_db",
+          "nasm_dbfront"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bërrylat bien: shufra rrëshqet nga pozicioni; mbaji lart gjatë gjithë setit.",
+            "en": "Your elbows drop: the bar slides out of position; keep them high for the whole set."
+          },
+          {
+            "sq": "Trupi anohet përpara gjatë uljes: mbaje kraharorin lart; ACE këshillon t'i çosh gjunjët përpara me thembrat poshtë dhe ta drejtosh trupin nga ijët, jo nga beli.",
+            "en": "Your torso leans forward on the way down: keep your chest up; ACE advises moving your knees forward with your heels down and straightening your torso from the hips, not from the lower back."
+          },
+          {
+            "sq": "Gjunjët mbyllen nga brenda: mbaji në vijë me gishtat e këmbëve.",
+            "en": "Your knees collapse inward: keep them in line with your toes."
+          },
+          {
+            "sq": "Shpina e sipërme rrumbullakoset: mbaje shtrirjen e kraharorit; kur bërrylat bien, rritet përkulja e shtyllës.",
+            "en": "Your upper back rounds: keep your chest extended; when your elbows drop, spinal flexion increases."
+          },
+          {
+            "sq": "Thembrat ngrihen: ndalo uljen para kësaj pike.",
+            "en": "Your heels lift: stop the descent before this point."
+          }
+        ],
+        "sources": [
+          "hk_austin",
+          "ace_front_db",
+          "nasm_dbfront"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Exercises for Bigger, Stronger Legs)",
+          "text": {
+            "sq": "Sipas tij, front squat-i vendos më shumë tension te kuadricepsi se te glutet krahasuar me squat-in me shufër në shpinë; me shufrën para trupit, trupi mbetet më vertikal, që sipas tij e lehtëson belin për ata me probleme.",
+            "en": "He writes that the front squat puts more tension on the quadriceps relative to the glutes than the back squat does; with the bar in front, the torso stays more upright, which he says eases the lower back for people with problems."
+          },
+          "sources": [
+            "stoppani_legs"
+          ]
+        },
+        {
+          "who": "Gullett dhe kolegët, 2009 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 15 persona të stërvitur, squat-i para dha forca shtypëse dhe momente zgjatjeje të gjurit dukshëm më të ulëta se squat-i pas, me aktivizim të përgjithshëm muskujsh të krahasueshëm; autorët thonë se mund të jetë më i përshtatshëm për probleme si ça e meniskut.",
+            "en": "In 15 trained people, the front squat produced significantly lower compressive forces and knee extensor moments than the back squat, with comparable overall muscle activation; the authors say it may suit problems such as meniscus tears."
+          },
+          "sources": [
+            "gullett"
+          ]
+        },
+        {
+          "who": "Dan Austin, MSCC, dhe Bryan Mann, PhD, CSCS · Powerlifting, 2nd edition (Human Kinetics)",
+          "text": {
+            "sq": "Vëre me kujdes të veçantë thembrat; në këtë pikë ata mund të arrijnë të qëndrojnë të sheshta në tokë.",
+            "en": "Pay special attention to your heels; at this point they might be able to remain flat on the ground."
+          },
+          "sources": [
+            "hk_austin"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Shufra mbahet mbi trup: përdor raftin me pina sigurie dhe kërko rojë me pesha të rënda (rafti dhe pinat sipas PDF-së së NASM për back squat). NSCA kërkon rojë të vëmendshme bashkë me pajisje si rafti kur pesha mbahet mbi trup.",
+            "en": "The bar is held on your trunk: use a rack with safety pins and ask for a spotter with heavy loads (rack and pins per the NASM back squat PDF). The NSCA requires attentive spotting, together with equipment such as racks, whenever a weight is held on the trunk."
+          },
+          {
+            "sq": "Nis me peshë të lehtë për ta mësuar teknikën dhe shmang shpejtësinë e tepërt; nëse bërrylat bien ose shpina rrumbullakoset, ule peshën.",
+            "en": "Start light to learn the technique and avoid excessive speed; if your elbows drop or your back rounds, lower the weight."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "nsca",
+          "nasm_squat",
+          "hk_austin",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "nasm_squat": {
+          "label": "NASM, The NASM Guide to Squats and Deadlifts",
+          "url": "https://trainer.nasm.org/hubfs/NASM_Free%20Guide_Squats%20and%20Deadlifts.pdf?hsLang=en",
+          "checked": "2026-11-15"
+        },
+        "stoppani_legs": {
+          "label": "Jim Stoppani, PhD, Exercises for Bigger, Stronger Legs",
+          "url": "https://www.jimstoppani.com/training/leg-exercises",
+          "checked": "2026-11-15"
+        },
+        "gullett": {
+          "label": "Gullett dhe kolegët, 2009, Journal of Strength and Conditioning Research",
+          "url": "https://europepmc.org/article/MED/19002072",
+          "checked": "2026-11-15"
+        },
+        "hk_austin": {
+          "label": "Austin dhe Mann, Powerlifting, 2nd edition (Human Kinetics), Front Squat",
+          "url": "https://us.humankinetics.com/blogs/excerpt/learn-this-foundational-exercise-front-squat",
+          "checked": "2026-11-15"
+        },
+        "ace_front_db": {
+          "label": "ACE, Front Squat (dumbbell)",
+          "url": "https://www.acefitness.org/education-and-resources/lifestyle/exercise-library/22/front-squat",
+          "checked": "2026-11-15"
+        },
+        "nasm_dbfront": {
+          "label": "NASM, Dumbbell Front Squat",
+          "url": "https://www.nasm.org/resource-center/exercise-library/dumbbell-front-squat",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nsca": {
+          "label": "NSCA, Strength and Conditioning Professional Standards and Guidelines, 2017, Standard 3.2",
+          "url": "https://dxpprod.nsca.com/globalassets/education/nsca_strength_and_conditioning_professional_standards_and_guidelines.pdf",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Leg Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu me shpinën, kokën dhe bishtin të ngjitur në mbështetëse dhe mbaji kështu gjatë gjithë setit.",
+            "en": "Sit with your back, head and tailbone against the backrest and keep them there for the whole set."
+          },
+          {
+            "sq": "Vendos këmbët në platformë, nga gjerësia e ijëve deri te ajo e shpatullave, me gishtat përpara; rregulloje sedilen që gjunjët të përkulen rreth 90°.",
+            "en": "Place your feet on the platform, hip-width to shoulder-width apart, toes forward; adjust the seat so your knees bend to about 90°."
+          },
+          {
+            "sq": "Vendosja e këmbëve: sa më poshtë në platformë, aq më shumë punon kuadricepsi; më lart hyn pak edhe pjesa e pasme e kofshës, por kurrë shtrirje e plotë e ijës.",
+            "en": "Foot position: the lower on the platform, the more the quadriceps work; higher up adds a little hamstring, but never full hip extension."
+          },
+          {
+            "sq": "Kapi dorezat lehtë për stabilitet dhe forco barkun.",
+            "en": "Hold the handles lightly for stability and brace your core."
+          },
+          {
+            "sq": "Lëshoji sigurimet e makinës para se të nisësh.",
+            "en": "Release the machine's safety catches before you start."
+          }
+        ],
+        "sources": [
+          "ace_lp",
+          "nasm_lp",
+          "stoppani_lp"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Nxirre ajrin dhe shtyj platformën duke drejtuar ijët dhe gjunjët; thembrat mbeten të ngjitur në platformë.",
+            "en": "Breathe out and press the platform away by extending your hips and knees; your heels stay pressed into the platform."
+          },
+          {
+            "sq": "Shtrije këmbët pothuajse plotësisht, por mos i blloko gjunjët.",
+            "en": "Extend your legs almost fully, but do not lock your knees."
+          },
+          {
+            "sq": "Ndalo pak, pastaj ule platformën ngadalë dhe me kontroll deri sa gjunjët të jenë përsëri rreth 90°.",
+            "en": "Pause briefly, then lower the platform slowly and with control until your knees are back at about 90°."
+          },
+          {
+            "sq": "Mbaje belin neutral dhe vithet në sedilje; mos lejo kofshët të shtypen në brinjë.",
+            "en": "Keep your lower back neutral and your glutes on the seat; do not let your thighs press into your ribcage."
+          }
+        ],
+        "sources": [
+          "ace_lp",
+          "nasm_lp",
+          "stoppani_lp"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ngadalë ndërsa e shtyn platformën.",
+            "en": "Breathe out slowly as you press the platform away."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lp"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Vithet në sedilje",
+            "en": "Glutes on the seat"
+          },
+          {
+            "sq": "Mos i blloko gjunjët",
+            "en": "Don't lock your knees"
+          },
+          {
+            "sq": "Gjunjët ndjekin gishtat e këmbës",
+            "en": "Knees follow your toes"
+          },
+          {
+            "sq": "Thembrat në platformë",
+            "en": "Heels on the platform"
+          },
+          {
+            "sq": "Koka në mbështetëse",
+            "en": "Head against the pad"
+          },
+          {
+            "sq": "Ule me kontroll",
+            "en": "Lower with control"
+          }
+        ],
+        "sources": [
+          "ace_lp",
+          "nasm_lp",
+          "stoppani_lp"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Vithet ngrihen nga sedilja në fund: shpina rrumbullakoset nën peshë dhe Stoppani e lidh këtë me dëmtimin e belit; ndalo uljen para kësaj pike.",
+            "en": "Your glutes lift off the seat at the bottom: your back rounds under load and Stoppani links this with lower back injury; stop the descent before this point."
+          },
+          {
+            "sq": "Bllokim i gjunjëve lart: heq tensionin nga muskulli dhe ngarkon nyjën.",
+            "en": "Locking your knees at the top: it removes tension from the muscle and stresses the joint."
+          },
+          {
+            "sq": "Gjunjët bien nga brenda kur pesha është shumë e rëndë: ule peshën që t'i mbash mbi gishtat.",
+            "en": "Your knees cave inward when the weight is too heavy: lower the weight so you can keep them over your toes."
+          },
+          {
+            "sq": "Ulje e shpejtë, pa kontroll: platforma duhet të kthehet ngadalë dhe me kontroll.",
+            "en": "A fast, uncontrolled descent: the platform should come back slowly and with control."
+          },
+          {
+            "sq": "Koka vjen përpara nga mbështetësja: Stoppani paralajmëron për probleme me qafën; mbaje kokën në jastëk gjatë gjithë setit.",
+            "en": "Your head comes forward off the pad: Stoppani warns of neck problems; keep your head on the pad for the whole set."
+          }
+        ],
+        "sources": [
+          "stoppani_lp",
+          "nasm_lp",
+          "ace_lp"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Leg Press Master Class)",
+          "text": {
+            "sq": "Shtyj nëpër thembra për ta ulur stresin në gju, sidomos nëse ke probleme me gjunjët; për më shumë theks te kuadricepsi, shtyj nga pjesa e përparme e këmbës. Sipas tij, leg press-i e kufizon shtrirjen e ijës, ndaj nuk e quan ndërtues të gluteve a të pjesës së pasme të kofshës.",
+            "en": "Drive through your heels to reduce knee stress, especially if you have knee problems; for more quadriceps emphasis, push through the balls of your feet. He says the leg press limits hip extension, so he does not count it as a builder of the glutes or hamstrings."
+          },
+          "sources": [
+            "stoppani_lp"
+          ]
+        },
+        {
+          "who": "Larsen dhe kolegët, 2025 · Journal of Sports Sciences",
+          "text": {
+            "sq": "Në 23 persona me përvojë, 8 javë leg press njëkëmbësh, rritja e kuadricepsit ishte e ngjashme me lëvizje 5–100° të gjurit dhe me lëvizjen maksimale të secilit (deri në rreth 154°); ulja më e thellë nuk dha më shumë.",
+            "en": "In 23 experienced lifters doing 8 weeks of one-leg leg presses, quadriceps growth was similar with a 5–100° knee range and with each person's maximum range (up to about 154°); the deeper range did not add more."
+          },
+          "sources": [
+            "larsen_lp"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2026 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Në 17 të rritur të patrajnuar, 12 javë, leg press-i e rriti kuadricepsin pothuajse po aq sa leg extension-i (4,9% kundrejt 7,1%) dhe, ndryshe nga ai, rriti edhe gluteus maximus (15,4%) dhe adductor magnus (6,2%).",
+            "en": "In 17 untrained adults over 12 weeks, the leg press grew the quadriceps almost as much as the leg extension (4.9% versus 7.1%) and, unlike it, also grew the gluteus maximus (15.4%) and the adductor magnus (6.2%)."
+          },
+          "sources": [
+            "kinoshita_le"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që e mban formën; pesha e tepërt e prish formën dhe i bën gjunjët të bien nga brenda.",
+            "en": "Choose a weight that keeps your form; excess weight breaks your form and makes your knees cave inward."
+          },
+          {
+            "sq": "Mos i lër vithet të ngrihen nga sedilja dhe belin të rrumbullakoset: ndalo uljen para kësaj pike.",
+            "en": "Do not let your glutes lift off the seat or your lower back round: stop the descent before that point."
+          },
+          {
+            "sq": "Mos i hiperzgjat gjunjët lart.",
+            "en": "Do not hyperextend your knees at the top."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "stoppani_lp",
+          "nasm_lp",
+          "ace_lp",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_lp": {
+          "label": "Jim Stoppani, PhD, Leg Press Master Class",
+          "url": "https://www.jimstoppani.com/training/leg-press",
+          "checked": "2026-11-15"
+        },
+        "ace_lp": {
+          "label": "ACE, Seated Leg Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/154/seated-leg-press/",
+          "checked": "2026-11-15"
+        },
+        "nasm_lp": {
+          "label": "NASM, Leg Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/leg-press",
+          "checked": "2026-11-15"
+        },
+        "larsen_lp": {
+          "label": "Larsen dhe kolegët, 2025, Journal of Sports Sciences (leg press)",
+          "url": "https://europepmc.org/article/MED/40113586",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_le": {
+          "label": "Kinoshita dhe kolegët, 2026, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/41630124",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "One-Leg Leg Press",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu me shpinën dhe kokën fort në mbështetëse.",
+            "en": "Sit with your back and head firmly against the backrest."
+          },
+          {
+            "sq": "Vendos një këmbë në platformë, rreth gjerësisë së ijëve, me gjurin rreth 90°, dhe hiqe tjetrën nga platforma.",
+            "en": "Put one foot on the platform, about hip-width apart, with the knee at about 90°, and take the other foot off the platform."
+          },
+          {
+            "sq": "Forco barkun dhe vendos duart te dorezat për mbështetje dhe siguri.",
+            "en": "Brace your core and place your hands on the handles for support and safety."
+          },
+          {
+            "sq": "Bëj të gjitha përsëritjet me një këmbë para se të kalosh te tjetra.",
+            "en": "Complete all the reps on one leg before you switch to the other."
+          }
+        ],
+        "sources": [
+          "nasm_slp",
+          "stoppani_lp"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtyj platformën duke drejtuar këmbën dhe duke shtyrë nëpër këmbë, pa e bllokuar gjurin lart.",
+            "en": "Press the platform away by straightening your leg and driving through your foot, without locking your knee at the top."
+          },
+          {
+            "sq": "Përqendrohu te shtytja e kontrolluar dhe te tkurrja e kuadricepsit gjatë gjithë lëvizjes.",
+            "en": "Focus on a controlled push and on contracting your quadriceps throughout the movement."
+          },
+          {
+            "sq": "Ule platformën me kontroll deri sa gjuri të jetë përsëri rreth 90°, duke mbajtur tensionin.",
+            "en": "Lower the platform with control until your knee is back at about 90°, keeping tension throughout."
+          }
+        ],
+        "sources": [
+          "nasm_slp"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          },
+          {
+            "sq": "Nxirre ajrin ngadalë ndërsa e shtyn platformën.",
+            "en": "Breathe out slowly as you press the platform away."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "ace_lp"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Gjuri ndjek gishtat e këmbës",
+            "en": "Knee follows your toes"
+          },
+          {
+            "sq": "Mos e blloko gjurin lart",
+            "en": "Don't lock your knee at the top"
+          },
+          {
+            "sq": "Ijët stabile, vithet poshtë",
+            "en": "Steady hips, glutes down"
+          },
+          {
+            "sq": "Ule deri rreth 90°",
+            "en": "Lower to about 90°"
+          },
+          {
+            "sq": "Shtyj me kontroll",
+            "en": "Press with control"
+          }
+        ],
+        "sources": [
+          "nasm_slp",
+          "stoppani_lp"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Gjuri bie nga brenda: NASM e lidh me kontroll të dobët motorik; mbaje gjurin mbi këmbën.",
+            "en": "Your knee caves inward: NASM links this to poor motor control; keep your knee over your foot."
+          },
+          {
+            "sq": "Peshë e tepërt, që prish formën ose e bën lëvizjen me vrull.",
+            "en": "Excessive weight that breaks your form or makes the movement jerky."
+          },
+          {
+            "sq": "Bllokim i gjurit lart: heq tensionin nga muskulli dhe ngarkon nyjën.",
+            "en": "Locking your knee at the top: it removes tension from the muscle and stresses the joint."
+          },
+          {
+            "sq": "Ulje shumë mbi 90° të gjurit: humb kontrolli i lëvizjes.",
+            "en": "Descending far beyond 90° of knee flexion: you lose control of the movement."
+          },
+          {
+            "sq": "Pabarazi mes dy këmbëve që nuk i trajton para se të shtosh peshë.",
+            "en": "Side-to-side differences you do not address before adding weight."
+          }
+        ],
+        "sources": [
+          "nasm_slp"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Leg Press Master Class)",
+          "text": {
+            "sq": "Ai e quan versionin me një këmbë pak më të sigurt se atë me dy, sepse këmba që nuk punon e ndihmon ijën të mbetet në sedilje, dhe e rekomandon për të trajtuar pabarazitë e forcës dhe të madhësisë mes këmbëve.",
+            "en": "He calls the one-leg version slightly safer than the two-leg one, because the resting leg helps keep your hips on the seat, and recommends it for dealing with strength and size differences between your legs."
+          },
+          "sources": [
+            "stoppani_lp"
+          ]
+        },
+        {
+          "who": "Larsen dhe kolegët, 2025 · Journal of Sports Sciences",
+          "text": {
+            "sq": "Në 23 persona me përvojë, 8 javë leg press njëkëmbësh me lëvizje 5–100° të gjurit ose me lëvizjen maksimale (deri në rreth 154°) dhanë rritje të ngjashme të kuadricepsit; ulja më e thellë nuk dha më shumë.",
+            "en": "In 23 experienced lifters, 8 weeks of one-leg leg presses with a 5–100° knee range or with the maximum range (up to about 154°) gave similar quadriceps growth; the deeper range did not add more."
+          },
+          "sources": [
+            "larsen_lp"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2026 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Në 17 të rritur të patrajnuar, një këmbë stërvitej me leg press dhe tjetra me leg extension (12 javë): leg press-i rriti kuadricepsin pothuajse po aq dhe, ndryshe nga extension-i, gluteus maximus (15,4%) dhe adductor magnus (6,2%).",
+            "en": "In 17 untrained adults, one leg trained with the leg press and the other with the leg extension (12 weeks): the leg press grew the quadriceps almost as much and, unlike the extension, also the gluteus maximus (15.4%) and the adductor magnus (6.2%)."
+          },
+          "sources": [
+            "kinoshita_le"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mbaje kokën në mbështetëse dhe vithet në sedilje gjatë gjithë setit.",
+            "en": "Keep your head against the backrest and your glutes on the seat for the whole set."
+          },
+          {
+            "sq": "Zgjidh një peshë që nuk e bën gjurin të bjerë nga brenda; përmirëso pabarazitë para se të shtosh peshë.",
+            "en": "Choose a weight that does not make your knee cave inward; address side-to-side differences before adding weight."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "stoppani_lp",
+          "nasm_slp",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_lp": {
+          "label": "Jim Stoppani, PhD, Leg Press Master Class",
+          "url": "https://www.jimstoppani.com/training/leg-press",
+          "checked": "2026-11-15"
+        },
+        "ace_lp": {
+          "label": "ACE, Seated Leg Press",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/154/seated-leg-press/",
+          "checked": "2026-11-15"
+        },
+        "nasm_slp": {
+          "label": "NASM, Single-Leg Press",
+          "url": "https://www.nasm.org/resource-center/exercise-library/single-leg-press",
+          "checked": "2026-11-15"
+        },
+        "larsen_lp": {
+          "label": "Larsen dhe kolegët, 2025, Journal of Sports Sciences (leg press)",
+          "url": "https://europepmc.org/article/MED/40113586",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_le": {
+          "label": "Kinoshita dhe kolegët, 2026, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/41630124",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Leg Extension",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në makinë dhe vendose jastëkun mbi pjesën e sipërme të kyçeve të këmbëve.",
+            "en": "Sit in the machine and position the pad on the tops of your ankles."
+          },
+          {
+            "sq": "Rregulloje mbështetësen që gjuri të jetë në vijë me boshtin e rrotullimit të makinës.",
+            "en": "Adjust the backrest so your knee lines up with the machine's axis of rotation."
+          },
+          {
+            "sq": "Mayo Clinic thotë se për shumicën e njerëzve mjafton një set me 12–15 përsëritje.",
+            "en": "Mayo Clinic says one set of 12 to 15 repetitions is adequate for most people."
+          }
+        ],
+        "sources": [
+          "mayo_le",
+          "stoppani_le"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ngrije ngadalë pjesën e poshtme të këmbëve derisa gjunjët të jenë pothuajse të drejtë.",
+            "en": "Slowly move your lower legs upward until your knees are nearly straight."
+          },
+          {
+            "sq": "Pastaj kthehu ngadalë në pozicionin fillestar, deri në fund.",
+            "en": "Then slowly return to the starting position, all the way."
+          }
+        ],
+        "sources": [
+          "mayo_le"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Ngrije jastëkun për rreth 1 s dhe ule peshën për rreth 2 s: ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Raise the pad for about 1 s and lower the weight for about 2 s: a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Gjuri në vijë me boshtin",
+            "en": "Knee in line with the axis"
+          },
+          {
+            "sq": "Mos i blloko gjunjët lart",
+            "en": "Don't lock your knees at the top"
+          },
+          {
+            "sq": "Ktheje deri në fillim",
+            "en": "Return all the way to the start"
+          },
+          {
+            "sq": "Ngadalë lart e poshtë",
+            "en": "Slowly up and down"
+          }
+        ],
+        "sources": [
+          "mayo_le",
+          "stoppani_le"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Bllokim i gjunjëve kur janë të shtrirë.",
+            "en": "Locking your knees when they are extended."
+          },
+          {
+            "sq": "Lëvizje e shkurtuar: Mayo Clinic thotë se lëvizjet më të shkurtra nuk e synojnë mirë kuadricepsin dhe mund ta ngarkojnë tepër gjurin; kthehu deri në pozicionin fillestar.",
+            "en": "A shortened movement: Mayo Clinic says shorter movements do not target the quadriceps effectively and can place too much stress on your knees; return all the way to the starting position."
+          },
+          {
+            "sq": "Ngarkesë e tepërt në gjunjë: Mayo Clinic thotë se, për ta ulur stresin në gjunjë, jastëku mund të ngrihet mbi pjesën e poshtme të këmbëve (në vend të kyçeve).",
+            "en": "Too much stress on your knees: Mayo Clinic says that, to reduce knee stress, you can move the pad upward onto your lower legs (instead of the ankles)."
+          }
+        ],
+        "sources": [
+          "mayo_le"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Lean On the Leg Extension)",
+          "text": {
+            "sq": "Ai shkruan se animi pas rreth 40 gradë gjatë leg extension-it mund të jetë çelësi për madhësinë e kuadricepsit, kundrejt pozicionit të zakonshëm ulur në 90 gradë, sepse rectus femoris, i vetmi nga katër muskujt që kalon mbi ijë, zgjatet më shumë. Nëse mbështetësja nuk rregullohet, çoji vithet përpara në sedilje dhe mbaje gjurin në vijë me boshtin.",
+            "en": "He writes that leaning back about 40 degrees during leg extensions could be the key to boosting quadriceps size, versus the standard upright seated position at 90 degrees, because the rectus femoris, the only one of the four muscles that crosses the hip, is stretched more. If the backrest does not adjust, slide your hips forward on the seat and keep your knee in line with the axis."
+          },
+          "sources": [
+            "stoppani_le"
+          ]
+        },
+        {
+          "who": "Larsen dhe kolegët, 2025 · Journal of Sports Sciences",
+          "text": {
+            "sq": "Në 22 meshkuj të patrajnuar, 10 javë, me fleksion të ijës 40° kundrejt 90°, rectus femoris u rrit më shumë me 40° (prova «ekstreme»); për vastus lateralis prova «të forta» tregonin se nuk kishte dallim. Autorët sugjerojnë fleksion më të vogël të ijës kur synohet rectus femoris.",
+            "en": "In 22 untrained men over 10 weeks, with 40° versus 90° of hip flexion, the rectus femoris grew more with 40° ('extreme' evidence); for the vastus lateralis, 'strong' evidence indicated no difference. The authors suggest reduced hip flexion when targeting the rectus femoris."
+          },
+          "sources": [
+            "larsen_hip"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2026 · Medicine & Science in Sports & Exercise",
+          "text": {
+            "sq": "Në 17 të rritur të patrajnuar, rectus femoris u rrit 13,2% me leg extension kundrejt 1,1% me leg press; vasti dhe i gjithë kuadricepsi u rritën në mënyrë të krahasueshme. Autorët e quajnë extension-in thelbësor për rectus femoris.",
+            "en": "In 17 untrained adults, the rectus femoris grew 13.2% with the leg extension versus 1.1% with the leg press; the vasti and the whole quadriceps grew comparably. The authors call the extension essential for the rectus femoris."
+          },
+          "sources": [
+            "kinoshita_le"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Exercises for Bigger, Stronger Legs)",
+          "text": {
+            "sq": "Për theks te vastus medialis (pika e lotit), kthe gishtat e këmbëve nga jashtë dhe mbaje këtë pozicion gjatë gjithë setit.",
+            "en": "To emphasise the vastus medialis (the teardrop), turn your toes out to the sides and keep that foot position for the whole set."
+          },
+          "sources": [
+            "stoppani_legs"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Mos i blloko gjunjët kur janë të shtrirë.",
+            "en": "Do not lock your knees when they are extended."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "mayo_le",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_legs": {
+          "label": "Jim Stoppani, PhD, Exercises for Bigger, Stronger Legs",
+          "url": "https://www.jimstoppani.com/training/leg-exercises",
+          "checked": "2026-11-15"
+        },
+        "stoppani_le": {
+          "label": "Jim Stoppani, PhD, Lean On the Leg Extension",
+          "url": "https://www.jimstoppani.com/training/best-way-to-do-leg-extensions-for-bigger-legs",
+          "checked": "2026-11-15"
+        },
+        "larsen_hip": {
+          "label": "Larsen dhe kolegët, 2025, Journal of Sports Sciences (leg extension)",
+          "url": "https://europepmc.org/article/MED/39699974",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_le": {
+          "label": "Kinoshita dhe kolegët, 2026, Medicine & Science in Sports & Exercise",
+          "url": "https://europepmc.org/article/MED/41630124",
+          "checked": "2026-11-15"
+        },
+        "mayo_le": {
+          "label": "Mayo Clinic, Knee extension with weight machine",
+          "url": "https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/knee-extension/vid-20084686",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Standing Calf Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos peshën para se të nisësh.",
+            "en": "Set the weight before you start."
+          },
+          {
+            "sq": "Qëndro me topin e çdo këmbe të vendosur fort në platformë dhe thembrat jashtë buzës së saj.",
+            "en": "Stand with the ball of each foot firmly on the platform and your heels hanging off its edge."
+          },
+          {
+            "sq": "Mbaji gjunjët drejt, pa i bllokuar, gjatë gjithë setit: gastrocnemius punon më mirë me gjunjë të drejtë.",
+            "en": "Keep your knees straight, without locking them, for the whole set: the gastrocnemius works best with straight knees."
+          }
+        ],
+        "sources": [
+          "ace_calf_mach",
+          "ace_jo",
+          "nasm_calf",
+          "ace_calf_bar"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtyj gishtat në platformë dhe ngrije thembrat sa më lart; ndalo pak në krye dhe shtrëngo kavillen.",
+            "en": "Press your toes into the platform and raise your heels as high as you can; pause at the top and squeeze your calves."
+          },
+          {
+            "sq": "Ule thembrat ngadalë, për 2–3 s, deri poshtë buzës së platformës, ku kavillja shtrihet plotësisht.",
+            "en": "Lower your heels slowly, over 2–3 s, below the edge of the platform, where the calf is fully stretched."
+          },
+          {
+            "sq": "Ndalo pak në pikën e poshtme para përsëritjes tjetër; mos u hidh nga tendini i Akilit.",
+            "en": "Pause briefly at the bottom before the next rep; do not bounce off the Achilles tendon."
+          }
+        ],
+        "sources": [
+          "ace_calf_bar",
+          "nasm_calf",
+          "ace_jo"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen e thembrave bëje 2–3 s dhe ngrije më shpejt; ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: lower your heels over 2–3 s and rise faster; a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "nasm_calf"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ule thembrat nën platformë",
+            "en": "Lower your heels below the platform"
+          },
+          {
+            "sq": "Ndalo poshtë, pa u hedhur",
+            "en": "Pause at the bottom, no bouncing"
+          },
+          {
+            "sq": "Gjunjët drejt, pa i bllokuar",
+            "en": "Knees straight, not locked"
+          },
+          {
+            "sq": "Ngrihu sa më lart",
+            "en": "Rise as high as you can"
+          },
+          {
+            "sq": "Shtrëngo kavillen lart",
+            "en": "Squeeze your calves at the top"
+          }
+        ],
+        "sources": [
+          "nasm_calf",
+          "ace_calf_bar",
+          "ace_jo"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Lëvizje me vrull dhe hedhje nga tendini i Akilit: pauza poshtë e heq hedhjen dhe e bën muskulin të punojë.",
+            "en": "A jerky movement and bouncing off the Achilles tendon: the pause at the bottom removes the bounce and makes the muscle do the work."
+          },
+          {
+            "sq": "Lëvizje e shkurtuar, pa thembra nën platformë: kavillja nuk shtrihet plotësisht, dhe NASM e lidh këtë me aktivizim më të ulët.",
+            "en": "A shortened movement, with your heels not dropping below the platform: the calf is not fully stretched, and NASM links this with lower activation."
+          },
+          {
+            "sq": "Gjunjët të përkulur: te studimi i Kinoshita-s, me gjunjë 90° gastrocnemius pati hipertrofi më të vogël se me gjunjë të shtrirë.",
+            "en": "Bent knees: in the Kinoshita study, with the knees at 90° the gastrocnemius showed less hypertrophy than with the knees extended."
+          },
+          {
+            "sq": "Peshë shumë e rëndë: pesha e punës zakonisht ulet kur forma përmirësohet.",
+            "en": "A load that is too heavy: working loads usually drop once your form improves."
+          }
+        ],
+        "sources": [
+          "nasm_calf",
+          "nasm_lpcr",
+          "kinoshita_calf"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Standing Calf Raises for Best Growth)",
+          "text": {
+            "sq": "Ai përshkruan një studim japonez 12-javor ku kavillja e stërvitur me ngritje në këmbë u rrit më shumë se dyfish krahasuar me atë me ngritje ulur, dhe thotë se ajo mund të jetë më e mira nga të dyja për të maksimizuar rritjen e kavilles.",
+            "en": "He describes a 12-week Japanese study in which the calf trained with standing raises grew more than double the calf trained with seated raises, and says the standing raise may be the better of the two choices to maximise calf growth."
+          },
+          "sources": [
+            "stoppani_standing"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2023 · Frontiers in Physiology",
+          "text": {
+            "sq": "Në 14 të rritur, 12 javë, ngritja në këmbë e rriti më shumë se ajo ulur gastrocnemius anësor (12,4% kundrejt 1,7%), medial (9,2% kundrejt 0,6%) dhe gjithë triceps surae (5,6% kundrejt 2,1%); soleusi u rrit njësoj (2,1% dhe 2,9%). Autorët rekomandojnë ngritjen në këmbë.",
+            "en": "In 14 adults over 12 weeks, the standing raise grew the lateral gastrocnemius (12.4% versus 1.7%), the medial (9.2% versus 0.6%) and the whole triceps surae (5.6% versus 2.1%) more than the seated raise; the soleus grew equally (2.1% and 2.9%). The authors recommend the standing raise."
+          },
+          "sources": [
+            "kinoshita_calf"
+          ]
+        },
+        {
+          "who": "Riemann dhe kolegët, 2011 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 20 persona të stërvitur, brenda secilit pozicion: me gishtat nga jashtë aktivizimi i kokës mediale ishte më i madh se i asaj anësore, me gishtat nga brenda aktivizimi i anësores ishte më i madh se i medialit. Autorët thonë se studimi nuk parashikon nëse kjo sjell përshtatje më të mëdha.",
+            "en": "In 20 trained people, within each position: with the toes turned out, medial head activation was greater than lateral, and with the toes turned in, lateral activation was greater than medial. The authors say the study cannot predict whether this leads to greater adaptations."
+          },
+          "sources": [
+            "riemann"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që të lejon ta mbash lëvizjen të plotë dhe të kontrolluar; mos u hidh nga tendini i Akilit.",
+            "en": "Choose a weight that lets you keep the movement full and controlled; do not bounce off the Achilles tendon."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or radiating pain, stop and seek a medical assessment."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "nasm_calf",
+          "ace_calf_mach",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_standing": {
+          "label": "Jim Stoppani, PhD, Standing Calf Raises for Best Growth",
+          "url": "https://jimstoppani.com/training/standing-calf-raises-for-best-growth",
+          "checked": "2026-11-15"
+        },
+        "nasm_calf": {
+          "label": "NASM, Calf Training (Heather Cherry)",
+          "url": "https://www.nasm.org/resource-center/blog/training/calf-training-how-to-program-this-stubborn-muscle-group-for-clients",
+          "checked": "2026-11-15"
+        },
+        "nasm_lpcr": {
+          "label": "NASM, Leg Press Calf Raise",
+          "url": "https://www.nasm.org/resource-center/exercise-library/leg-press-calf-raise",
+          "checked": "2026-11-15"
+        },
+        "ace_calf_bar": {
+          "label": "ACE, Calf Raises (me shufër)",
+          "url": "https://www.acefitness.org/resources/everyone/exercise-library/51/calf-raises/",
+          "checked": "2026-11-15"
+        },
+        "ace_calf_mach": {
+          "label": "ACE, Calf Raise (makinë)",
+          "url": "https://www.acefitness.org/education-and-resources/lifestyle/exercise-library/294/calf-raise",
+          "checked": "2026-11-15"
+        },
+        "ace_jo": {
+          "label": "ACE, Get Stronger Calves with These 5 Exercises (Sabrena Jo, PhD)",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5771/get-stronger-calves-with-these-5-exercises/",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_calf": {
+          "label": "Kinoshita dhe kolegët, 2023, Frontiers in Physiology",
+          "url": "https://europepmc.org/articles/PMC10753835",
+          "checked": "2026-11-15"
+        },
+        "riemann": {
+          "label": "Riemann dhe kolegët, 2011, Journal of Strength and Conditioning Research",
+          "url": "https://europepmc.org/article/MED/20581696",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Leg Press Calf Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Ulu në makinën e leg press me shpinën dhe kokën fort në mbështetëse dhe lëshoji shufrat e sigurisë.",
+            "en": "Sit in the leg press machine with your back and head firmly against the backrest and release the safety bars."
+          },
+          {
+            "sq": "Vendos topin e çdo këmbe në platformë, këmbët rreth gjerësisë së ijëve.",
+            "en": "Place the ball of each foot on the platform, feet about hip-width apart."
+          },
+          {
+            "sq": "Mbaji këmbët të drejta dhe forco barkun; vendos peshën para se të nisësh.",
+            "en": "Keep your legs straight and brace your core; set the weight before you start."
+          }
+        ],
+        "sources": [
+          "nasm_lpcr",
+          "ace_calf_mach"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Shtyj platformën poshtë me gishtat duke ngritur thembrat (plantarfleksion), me gjunjët të drejtë.",
+            "en": "Push the platform away with your toes by raising your heels (plantarflexion), with your knees straight."
+          },
+          {
+            "sq": "Përqendrohu te tkurrja e kavilles gjatë gjithë ngritjes.",
+            "en": "Focus on contracting your calves throughout the lift."
+          },
+          {
+            "sq": "Ule thembrat ngadalë, me kontroll, duke ruajtur tensionin; ndalo pak para kontaktit të plotë të thembrave.",
+            "en": "Lower your heels slowly and with control, keeping tension; stop just short of full heel contact."
+          }
+        ],
+        "sources": [
+          "nasm_lpcr",
+          "ace_calf_mach"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen e thembrave bëje 2–3 s dhe ngrije më shpejt; ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: lower your heels over 2–3 s and rise faster; a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "nasm_calf"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Shtyj me gishtat",
+            "en": "Push through your toes"
+          },
+          {
+            "sq": "Ule thembrat ngadalë",
+            "en": "Lower your heels slowly"
+          },
+          {
+            "sq": "Këmbët të drejta",
+            "en": "Keep your legs straight"
+          },
+          {
+            "sq": "Shtrëngo kavillen lart",
+            "en": "Squeeze your calves at the top"
+          },
+          {
+            "sq": "Pa lëvizje me vrull",
+            "en": "No jerky movement"
+          }
+        ],
+        "sources": [
+          "nasm_lpcr",
+          "ace_calf_mach"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Lëvizje me vrull, pa kontroll: ul kohën nën tension.",
+            "en": "Jerky, uncontrolled movement: it cuts the time under tension."
+          },
+          {
+            "sq": "Lëvizja e shkurtuar: NASM e lidh lëvizjen jo të plotë me aktivizim më të ulët të kavilles, ndërsa Kassiano 2023 gjeti rritje më të madhe të gastrocnemius medial me pjesën e zgjatur (15,2%) se me lëvizjen e plotë (6,7%). Burimet nuk pajtohen.",
+            "en": "A shortened movement: NASM links an incomplete range with lower calf activation, whereas Kassiano 2023 found greater medial gastrocnemius growth with the lengthened part (15.2%) than with the full range (6.7%). The sources disagree."
+          },
+          {
+            "sq": "Gjunjët të përkulur: te studimi i Kinoshita-s, me gjunjë 90° gastrocnemius pati hipertrofi më të vogël se me gjunjë të shtrirë.",
+            "en": "Bent knees: in the Kinoshita study, with the knees at 90° the gastrocnemius showed less hypertrophy than with the knees extended."
+          },
+          {
+            "sq": "Peshë shumë e rëndë: zgjidh peshë që lejon lëvizje të plotë e të kontrolluar.",
+            "en": "A load that is too heavy: choose a weight that allows a full, controlled movement."
+          }
+        ],
+        "sources": [
+          "nasm_lpcr",
+          "ace_calf_mach",
+          "kinoshita_calf"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Kassiano dhe kolegët, 2023 · Journal of Strength and Conditioning Research",
+          "text": {
+            "sq": "Në 42 gra, 8 javë, me ngritje të kavilles në makinën e leg press, pjesa e poshtme e lëvizjes (kavillja e zgjatur) e rriti gastrocnemius medial më shumë (15,2%) se lëvizja e plotë (6,7%) ose pjesa e sipërme (3,4%).",
+            "en": "In 42 women over 8 weeks, doing calf raises on a leg press machine, the bottom part of the range (calf lengthened) grew the medial gastrocnemius more (15.2%) than the full range (6.7%) or the top part (3.4%)."
+          },
+          "sources": [
+            "kassiano"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2023 · Frontiers in Physiology",
+          "text": {
+            "sq": "Gastrocnemius u rrit shumë më tepër me ngritje me gjunjë të shtrirë se me gjunjë të përkulur 90° (anësor 12,4% kundrejt 1,7%; medial 9,2% kundrejt 0,6%).",
+            "en": "The gastrocnemius grew far more with knee-extended raises than with the knee flexed to 90° (lateral 12.4% versus 1.7%; medial 9.2% versus 0.6%)."
+          },
+          "sources": [
+            "kinoshita_calf"
+          ]
+        },
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Exercises for Bigger, Stronger Legs)",
+          "text": {
+            "sq": "Ndrysho pozicionin e gishtave: nga brenda punon më shumë pjesa e jashtme e kavilles, nga jashtë ajo e brendshme, përpara kryesisht e brendshmja. Ai sugjeron të paktën katër seri, dy me gishtat nga brenda dhe dy përpara, ose gjashtë me edhe dy nga jashtë.",
+            "en": "Change your toe position: toes in work the outer calf more, toes out the inner calf, toes forward mainly the inner. He suggests at least four sets, two with toes in and two forward, or six if you add two with toes out."
+          },
+          "sources": [
+            "stoppani_legs"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Lëshoji shufrat e sigurisë dhe zgjidh një peshë që e mban lëvizjen të kontrolluar.",
+            "en": "Release the safety bars and choose a weight that keeps the movement controlled."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or radiating pain, stop and seek a medical assessment."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "nasm_lpcr",
+          "ace_calf_mach",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_legs": {
+          "label": "Jim Stoppani, PhD, Exercises for Bigger, Stronger Legs",
+          "url": "https://www.jimstoppani.com/training/leg-exercises",
+          "checked": "2026-11-15"
+        },
+        "nasm_calf": {
+          "label": "NASM, Calf Training (Heather Cherry)",
+          "url": "https://www.nasm.org/resource-center/blog/training/calf-training-how-to-program-this-stubborn-muscle-group-for-clients",
+          "checked": "2026-11-15"
+        },
+        "nasm_lpcr": {
+          "label": "NASM, Leg Press Calf Raise",
+          "url": "https://www.nasm.org/resource-center/exercise-library/leg-press-calf-raise",
+          "checked": "2026-11-15"
+        },
+        "ace_calf_mach": {
+          "label": "ACE, Calf Raise (makinë)",
+          "url": "https://www.acefitness.org/education-and-resources/lifestyle/exercise-library/294/calf-raise",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_calf": {
+          "label": "Kinoshita dhe kolegët, 2023, Frontiers in Physiology",
+          "url": "https://europepmc.org/articles/PMC10753835",
+          "checked": "2026-11-15"
+        },
+        "kassiano": {
+          "label": "Kassiano dhe kolegët, 2023, Journal of Strength and Conditioning Research",
+          "url": "https://europepmc.org/article/MED/37015016",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    },
+    {
+      "exercise": "Seated Calf Raise",
+      "tempo": {
+        "downS": 2,
+        "upS": 1
+      },
+      "setup": {
+        "items": [
+          {
+            "sq": "Vendos peshën para se të nisësh.",
+            "en": "Set the weight before you start."
+          },
+          {
+            "sq": "Ulu në makinë me gjunjët të përkulur rreth 90°.",
+            "en": "Sit in the machine with your knees bent to about 90°."
+          },
+          {
+            "sq": "Vendos topin e çdo këmbe fort në platformë, thembrat jashtë buzës së saj.",
+            "en": "Place the ball of each foot firmly on the platform, with your heels hanging off its edge."
+          }
+        ],
+        "sources": [
+          "ace_calf_mach",
+          "kinoshita_calf",
+          "ace_jo"
+        ]
+      },
+      "steps": {
+        "items": [
+          {
+            "sq": "Ule thembrat ngadalë poshtë buzës së platformës, deri ku kavillja shtrihet plotësisht.",
+            "en": "Lower your heels slowly below the edge of the platform, until your calves are fully stretched."
+          },
+          {
+            "sq": "Ngrije thembrat sa më lart dhe shtrëngo pak në krye.",
+            "en": "Raise your heels as high as you can and squeeze briefly at the top."
+          },
+          {
+            "sq": "Ndalo pak në pikën e poshtme para përsëritjes tjetër; mos u hidh nga tendini i Akilit.",
+            "en": "Pause briefly at the bottom before the next rep; do not bounce off the Achilles tendon."
+          }
+        ],
+        "sources": [
+          "ace_jo",
+          "nasm_calf"
+        ]
+      },
+      "breathing": {
+        "items": [
+          {
+            "sq": "Poshtë 2 s, lart 1 s: uljen e thembrave bëje 2–3 s dhe ngrije më shpejt; ulja më e ngadaltë dhe ngritja më e shpejtë duket kombinimi më i mirë për rritjen e muskulit.",
+            "en": "Down 2 s, up 1 s: lower your heels over 2–3 s and rise faster; a slower lowering with a faster lift looks like the best combination for muscle growth."
+          },
+          {
+            "sq": "Një përsëritje zgjat nga 2 deri në 8 s; si e ndan mes dy fazave është zgjedhja jote.",
+            "en": "A rep lasts 2 to 8 s; how you split it between the two phases is up to you."
+          }
+        ],
+        "sources": [
+          "wilk",
+          "korakakis",
+          "nasm_calf"
+        ]
+      },
+      "cues": {
+        "items": [
+          {
+            "sq": "Ule thembrat nën platformë",
+            "en": "Lower your heels below the platform"
+          },
+          {
+            "sq": "Ndalo poshtë, pa u hedhur",
+            "en": "Pause at the bottom, no bouncing"
+          },
+          {
+            "sq": "Ngrihu sa më lart",
+            "en": "Rise as high as you can"
+          },
+          {
+            "sq": "Gjunjët të përkulur rreth 90°",
+            "en": "Knees bent to about 90°"
+          }
+        ],
+        "sources": [
+          "ace_jo",
+          "nasm_calf",
+          "kinoshita_calf"
+        ]
+      },
+      "mistakes": {
+        "items": [
+          {
+            "sq": "Hedhje nga tendini i Akilit pa ndalim poshtë: pauza e heq hedhjen dhe e bën muskulin të punojë.",
+            "en": "Bouncing off the Achilles tendon with no pause at the bottom: the pause removes the bounce and makes the muscle do the work."
+          },
+          {
+            "sq": "Lëvizje e shkurtuar, pa thembra nën platformë: kavillja nuk shtrihet plotësisht.",
+            "en": "A shortened movement, with your heels not dropping below the platform: the calf is not fully stretched."
+          },
+          {
+            "sq": "Ngritja ulur si zëvendësim i plotë i asaj në këmbë: me gjunjë 90° gastrocnemius u rrit pothuajse aspak në studim (1,7% dhe 0,6%).",
+            "en": "Using the seated raise as a full replacement for the standing one: with the knees at 90°, the gastrocnemius barely grew in the study (1.7% and 0.6%)."
+          },
+          {
+            "sq": "Peshë shumë e rëndë: pesha e punës zakonisht ulet kur forma përmirësohet.",
+            "en": "A load that is too heavy: working loads usually drop once your form improves."
+          }
+        ],
+        "sources": [
+          "nasm_calf",
+          "ace_jo",
+          "kinoshita_calf"
+        ]
+      },
+      "tips": [
+        {
+          "who": "Jim Stoppani, PhD · autori i Shortcut to Size (Exercises for Bigger, Stronger Legs)",
+          "text": {
+            "sq": "Në planin e tij për kavillen ai e rekomandon ngritjen ulur për të goditur soleusin, muskulin më të thellë të kavilles.",
+            "en": "In his calf plan he recommends the seated raise to hit the soleus, the deeper calf muscle."
+          },
+          "sources": [
+            "stoppani_legs"
+          ]
+        },
+        {
+          "who": "NASM, Heather Cherry · Calf Training",
+          "text": {
+            "sq": "Gastrocnemius kalon mbi gju dhe punon më mirë me gjunjë të drejtë; soleusi kalon vetëm mbi kyçin e këmbës dhe merr punën kur gjuri është i përkulur. Një program i plotë përfshin të dyja.",
+            "en": "The gastrocnemius crosses the knee and works best with straight knees; the soleus crosses only the ankle and takes over when the knee is bent. A complete programme includes both."
+          },
+          "sources": [
+            "nasm_calf"
+          ]
+        },
+        {
+          "who": "Kinoshita dhe kolegët, 2023 · Frontiers in Physiology",
+          "text": {
+            "sq": "Në 14 të rritur, 12 javë, soleusi u rrit njësoj me ngritje ulur dhe në këmbë (2,9% dhe 2,1%), ndërsa gastrocnemius u rrit shumë më pak ulur. Autorët e shpjegojnë me stërvitjen në gjatësi të madhe të muskulit.",
+            "en": "In 14 adults over 12 weeks, the soleus grew equally with seated and standing raises (2.9% and 2.1%), while the gastrocnemius grew far less seated. The authors explain this by training at long muscle lengths."
+          },
+          "sources": [
+            "kinoshita_calf"
+          ]
+        }
+      ],
+      "safety": {
+        "items": [
+          {
+            "sq": "Zgjidh një peshë që të lejon ta mbash lëvizjen të plotë dhe të kontrolluar; mos u hidh nga tendini i Akilit.",
+            "en": "Choose a weight that lets you keep the movement full and controlled; do not bounce off the Achilles tendon."
+          },
+          {
+            "sq": "Nëse ndjen gudulisje, mpirje ose dhimbje që rrezaton, ndalo dhe kërko vlerësim mjekësor.",
+            "en": "If you feel tingling, numbness or radiating pain, stop and seek a medical assessment."
+          },
+          {
+            "sq": "Djegia e muskulit gjatë seteve të forta është e zakonshme; dhimbja e mprehtë ose e papritur është sinjal për të ndalur ushtrimin.",
+            "en": "Muscle burn during hard sets is common; sharp or sudden pain is a signal to stop the exercise."
+          }
+        ],
+        "sources": [
+          "nasm_calf",
+          "ace_jo",
+          "nasm_red",
+          "acsm_road"
+        ]
+      },
+      "history": null,
+      "sources": {
+        "stoppani_legs": {
+          "label": "Jim Stoppani, PhD, Exercises for Bigger, Stronger Legs",
+          "url": "https://www.jimstoppani.com/training/leg-exercises",
+          "checked": "2026-11-15"
+        },
+        "nasm_calf": {
+          "label": "NASM, Calf Training (Heather Cherry)",
+          "url": "https://www.nasm.org/resource-center/blog/training/calf-training-how-to-program-this-stubborn-muscle-group-for-clients",
+          "checked": "2026-11-15"
+        },
+        "ace_calf_mach": {
+          "label": "ACE, Calf Raise (makinë)",
+          "url": "https://www.acefitness.org/education-and-resources/lifestyle/exercise-library/294/calf-raise",
+          "checked": "2026-11-15"
+        },
+        "ace_jo": {
+          "label": "ACE, Get Stronger Calves with These 5 Exercises (Sabrena Jo, PhD)",
+          "url": "https://www.acefitness.org/resources/pros/expert-articles/5771/get-stronger-calves-with-these-5-exercises/",
+          "checked": "2026-11-15"
+        },
+        "kinoshita_calf": {
+          "label": "Kinoshita dhe kolegët, 2023, Frontiers in Physiology",
+          "url": "https://europepmc.org/articles/PMC10753835",
+          "checked": "2026-11-15"
+        },
+        "wilk": {
+          "label": "Wilk, Zając dhe Tufano, 2021, Sports Medicine",
+          "url": "https://europepmc.org/articles/PMC8310485",
+          "checked": "2026-11-15"
+        },
+        "korakakis": {
+          "label": "Androulakis Korakakis dhe kolegët, 2023, Journal of Functional Morphology and Kinesiology",
+          "url": "https://europepmc.org/article/MED/38249086",
+          "checked": "2026-11-15"
+        },
+        "nasm_red": {
+          "label": "NASM, Corrective Exercise Red Flags",
+          "url": "https://www.nasm.org/resource-center/blog/corrective-exercise-red-flags",
+          "checked": "2026-11-15"
+        },
+        "acsm_road": {
+          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
+          "checked": "2026-11-15"
+        }
+      }
+    }
+  ]
+}
