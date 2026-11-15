@@ -49,7 +49,10 @@ create table public.food_catalog (
   -- Për 100 g pjesë të ngrënshme. Deri në 950 kcal: USDA ka yndyra me 902 kcal (rrumbullakimi i faktorëve).
   kcal numeric(6, 1) not null check (kcal between 0 and 950),
   protein_g numeric(5, 1) not null check (protein_g between 0 and 100),
+  -- Karbohidratet pa fibrat, si te etiketat në BE (V61). computed: USDA ("by difference") me fibrat e zbritura;
+  -- includes_fiber: USDA pa fibra të njohura, ndaj vlera i përfshin; bosh: vlera e burimit, pa fibrat.
   carbs_g numeric(5, 1) not null check (carbs_g between 0 and 100),
+  carbs_note text check (carbs_note in ('computed', 'includes_fiber')),
   fat_g numeric(5, 1) not null check (fat_g between 0 and 100),
   fiber_g numeric(5, 1) check (fiber_g between 0 and 100),
   -- [{"label_en": "1 cup", "label_sq": "1 gotë", "grams": 240}]
