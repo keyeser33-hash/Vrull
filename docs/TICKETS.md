@@ -235,7 +235,7 @@ Rishikimi i kodit në tri boshtet, provat e plota dhe e2e me Supabase, prova në
 | V2-E3-22 | Seanca e re: tabela e seteve me rreshtin aktiv, ndryshimi i çdo seti, "Zhbëj", "Kontrollo setet" te mbyllja (provat përpara; 0.41.0) | E3-20 |
 | V2-E3-23 | Lëvizja e ushtrimit nga dy fotot me tempon, fotot e dyta në app, videot YouTube të zgjedhura, "Filmo veten" (0.41.0) | E3-20, E3-21 |
 | V2-E3-24 | Udhëzuesi i bibliotekës (876 ushtrime) në valë sipas grupit të muskujve, secila me version të ri | E3-21 |
-| V2-E3-20 | Lëshimi 0.40.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
+| V2-E3-25 | Lëshimi 0.40.0 dhe 0.41.0 (gjithë Etapa 3) | të gjitha tiketat e Etapës 3 |
 
 ## V2-E3-12 · Bordet e Mëso
 
@@ -272,6 +272,8 @@ Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglis
 **Gjendja (15.11.2026, 05:10):** me kërkesën e përdoruesit, kontroll i dytë i burimeve në internet. Tempo bëhet "Poshtë 2 s · lart 1 s" (Wilk dhe kolegët 2021: ulja më e ngadaltë me ngritjen më të shpejtë; Korakakis, Schoenfeld dhe kolegët 2023: 2–8 s për përsëritje), në vend të tempos 2/2 të një protokolli studimi. Siguria ka tani burim: NSCA Standards and Guidelines 2017, Standard 3.2 (roja dhe rafti), ACSM dhe NASM (dhimbja do të thotë ndalo). Këshillat e avancuara janë 5, me ACSM Position Stand 2026 dhe rishikimin e Korakakis. Për Incline rekomandohet 30° (Rodríguez-Ridao 2020, Lauver 2016). Videoja mbetet ajo që lidh faqja e NASM; video në kanalet e NSCA, ACE ose NASM nuk u gjet. Bordet u panë me built-in browser.
 
 **Gjendja (15.11.2026, 05:25):** me kërkesën e përdoruesit, raundi i tretë i burimeve, edhe në YouTube. Videoja kryesore është nga kanali zyrtar i NASM ("How to do a Barbell Bench Press | Proper Form & Technique", 0:26; "Sports Lodge" i shënimit të mëparshëm ishte lexim i gabuar i WebFetch-it). Faqja e ushtrimit ka seksionin "Më shumë video" me tri video nga autorë me titull (Jordan Feigenbaum, MD; Dr. Aaron Horschig, DPT, CSCS), të gjitha të hapura me built-in browser. Burime të reja: Jim Stoppani, PhD (Bench Press Master Class: pesë pikat e kontaktit, ulja drejt pjesës së poshtme të gjoksit) dhe Faigenbaum e Westcott, Youth Strength Training (Human Kinetics). Sinjali 3 te seanca bëhet "Bërrylat rreth 45° nga trupi". Pyetje e re te shënimi i kanavacës (B): a pranohen MD dhe DPT si ekspertë me titull. Vendimet A–E presin.
+
+**Gjendja (15.11.2026, 05:35):** përdoruesi pranoi mjekët (MD) dhe fizioterapeutët (DPT) me titull si ekspertë (vendimi B; SPEC §0.3g). Videot e Bench Press janë te të dhënat e app-it, `src/program/exercise-videos.ts` (me provat), pas kontrollit me built-in browser: titulli, kanali, kohëzgjatja dhe luajtja brenda app-it (të katërtat po). Videoja e NASM zgjat 0:25 si te player-i (jo 0:26): u ndreq te bordet. Lëshimi i Etapës 3 merr ID-në V2-E3-25, sepse E3-20 ishte dy herë.
 
 ## V2-E3-19 · Sot i ri
 
