@@ -39,7 +39,7 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 - [ ] Cilësimet › Gjuha › English: njoftimi i seancës kalon në anglisht.
 - [ ] Butoni mbrapa i Android-it kthen te faqja e mëparshme; te Sot e çon app-in në sfond.
 
-## 6. Ushqimi i ri dhe auditimi (0.25.0, 3 min)
+## 6. Ushqimi i ri, auditimi dhe PDF-ja (0.26.0, 4 min)
 
 - [ ] Sot, në një telefon pa lejen e njoftimeve: "Fillo stërvitjen" hap fletën "Njoftimi i pushimit"; "Lejo njoftimet" kërkon lejen e Android-it, "Jo tani, fillo pa to" e nis seancën. Butoni tregon "Po fillon" dhe nuk zbehet.
 - [ ] Ushqimi: "Si në plan" te vakti i radhës shton vaktin dhe njoftimi "Zhbëj" e heq; uji +250 dhe "Zhbëj" po ashtu, pa vonesë të dukshme.
@@ -48,3 +48,5 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 - [ ] "Plotëso makrot": në mes të ditës thotë "Plani i ditës e mbush proteinën" (ose çfarë mungon); në mbrëmje propozon deri në 3 kombinime.
 - [ ] Kutia e AI-së bosh: kufiri i muajit është 40 € për pronarin.
 
+- [ ] Ushqimi › Objektivat: zgjidh "Plani i Jimit"; Plani im tregon "Si te PDF-ja", 3 vezë te mëngjesi 2 dhe salmon 227 g te darka.
+- [ ] Me stërvitje në 18:00, vakti pas stërvitjes del rreth 19:00, dhe darka 1 orë më pas.
