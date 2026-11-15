@@ -279,6 +279,8 @@ Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglis
 
 **Gjendja (15.11.2026, 06:40):** përdoruesi kërkoi video edhe për 4 ushtrimet pa burim ("add video"). Me built-in browser dhe me kontrollin e titujve në internet: Incline Cable Flye nga J2FIT (Michael Dewar, M.Ed., CSCS), me Champion PT and Performance si video shtesë; Oblique Crunch nga HealthspanMD (Robert Todd Hurst, MD); Cable Woodchopper nga Champion PT and Performance (klinika e Mike Reinold, PT, DPT). Machine Crunch mbetet pa video: gjetëm vetëm videon e prodhuesit (Hammer Strength), që nuk është burim i pranuar. Kanali "Dr. Kelsey Redman, PT, DPT" mbeti jashtë, sepse titulli nuk u vërtetua jashtë kanalit.
 
+**Gjendja (15.11.2026, 08:10), E3-21 vala 0:** përdoruesi zgjodhi udhëzuesin e plotë për të gjitha ushtrimet (PLANI-UDHEZUESIT.md). 8 agjentë kërkimi (Sonnet) shkruan grupet, 8 kontrollues (`vrull-reviewer`) i lexuan burimet pa e parë punën, agjentët ndreqën gjetjet (P1: atribuime të gabuara, burime pa autor, lëvizje e huazuar nga një ushtrim tjetër). 53 nga 66 ushtrime kanë udhëzuesin te `src/program/guides/`; 13 pa burim të pranuar për teknikën (lista te plani). Fushat e tempos u bënë `eccentricS`/`concentricS`. Mospërputhjet e burimeve dalin te udhëzuesi me emrat e të dyja anëve; lista për përdoruesin është te raporti i valës.
+
 ## V2-E3-19 · Sot i ri
 
 Bordet te faqja "0.40 · Mëso", rreshtat 4 dhe 5: dita e stërvitjes, e diela, dita e pushimit, fleta e një dite të kaluar dhe e një të ardhshme, plus story-t e gjendjes së ditës dhe "A e dije?". Rregullat: SPEC §0.3f (V57). **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit dhe del me 0.40.0.

@@ -4,8 +4,8 @@
     {
       "exercise": "Barbell Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -236,8 +236,8 @@
     {
       "exercise": "Preacher Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -456,8 +456,8 @@
     {
       "exercise": "Dumbbell Incline Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -718,8 +718,8 @@
     {
       "exercise": "Incline Cable Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -880,8 +880,8 @@
     {
       "exercise": "One-Arm High Cable Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1062,8 +1062,8 @@
     {
       "exercise": "Behind-Back Cable Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1250,8 +1250,8 @@
     {
       "exercise": "Dumbbell Concentration Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [

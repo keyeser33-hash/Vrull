@@ -4,8 +4,8 @@
     {
       "exercise": "Crunch",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [

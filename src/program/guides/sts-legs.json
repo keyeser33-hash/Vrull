@@ -4,8 +4,8 @@
     {
       "exercise": "Squat",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -285,7 +285,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -294,8 +294,8 @@
     {
       "exercise": "Front Squat",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -547,7 +547,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -556,8 +556,8 @@
     {
       "exercise": "Leg Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -798,7 +798,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -807,8 +807,8 @@
     {
       "exercise": "One-Leg Leg Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1026,7 +1026,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -1035,8 +1035,8 @@
     {
       "exercise": "Leg Extension",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1234,7 +1234,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -1243,8 +1243,8 @@
     {
       "exercise": "Standing Calf Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1472,7 +1472,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -1481,8 +1481,8 @@
     {
       "exercise": "Leg Press Calf Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1696,7 +1696,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }
@@ -1705,8 +1705,8 @@
     {
       "exercise": "Seated Calf Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1913,7 +1913,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         }

@@ -32,8 +32,9 @@ export interface GuideSource {
 export interface ExerciseGuide {
   /** Emri te Shortcut to Size ose ID-ja e free-exercise-db. */
   exercise: string
-  /** Sekondat poshtë dhe lart; null për mbajtjet (plank). */
-  tempo: { downS: number; upS: number } | null
+  /** Sekondat e fazës ekscentrike (ulja e kontrolluar, muskuli zgjatet) dhe koncentrike, pavarësisht
+   * drejtimit të shufrës; null për mbajtjet (plank). */
+  tempo: { eccentricS: number; concentricS: number } | null
   setup: GuideList
   steps: GuideList
   breathing: GuideList
@@ -93,8 +94,8 @@ export function guideProblems(guide: ExerciseGuide, known: Set<string>): string[
   const out: string[] = []
   if (!known.has(guide.exercise)) out.push(`ushtrimi nuk njihet: ${guide.exercise}`)
   if (guide.tempo) {
-    const { downS, upS } = guide.tempo
-    if (!Number.isInteger(downS) || !Number.isInteger(upS) || downS < 1 || downS > 6 || upS < 1 || upS > 4) out.push('tempo: jashtë kufijve')
+    const { eccentricS, concentricS } = guide.tempo
+    if (!Number.isInteger(eccentricS) || !Number.isInteger(concentricS) || eccentricS < 1 || eccentricS > 6 || concentricS < 1 || concentricS > 4) out.push('tempo: jashtë kufijve')
   }
 
   for (const [key, [min, max]] of Object.entries(LIMITS) as [keyof typeof LIMITS, [number, number]][]) {

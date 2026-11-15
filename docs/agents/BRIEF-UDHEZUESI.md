@@ -18,7 +18,7 @@ Puna mbaron kur `GUIDE_FILE=<grupi>.json npx vitest run src/program/exercise-gui
 
 | Fusha | Çfarë ka | Sa |
 |---|---|---|
-| `tempo` | `downS` = faza ekscentrike (ulja e kontrolluar e peshës, muskuli zgjatet), `upS` = faza koncentrike, pavarësisht drejtimit të shufrës. Pa burim të posaçëm: 2 dhe 1. Burimet: Wilk, Zając dhe Tufano 2021, "Key Points" te teksti i plotë (https://europepmc.org/articles/PMC8310485: kombinimi i uljes më të ngadaltë me ngritjen më të shpejtë duket më i miri për muskulin; abstrakti nuk e thotë), dhe Korakakis, Schoenfeld dhe kolegët 2023 (2–8 s për përsëritje). Mbajtjet (plank): `null`. `breathing` e thotë drejtimin me fjalë ("Tërhiqe për 1 s, lëshoje për 2 s") | – |
+| `tempo` | `eccentricS` = faza ekscentrike (ulja e kontrolluar e peshës, muskuli zgjatet), `concentricS` = faza koncentrike, pavarësisht drejtimit të shufrës. Pa burim të posaçëm: 2 dhe 1. Burimet: Wilk, Zając dhe Tufano 2021, "Key Points" te teksti i plotë (https://europepmc.org/articles/PMC8310485: kombinimi i uljes më të ngadaltë me ngritjen më të shpejtë duket më i miri për muskulin; abstrakti nuk e thotë), dhe Korakakis, Schoenfeld dhe kolegët 2023 (2–8 s për përsëritje). Mbajtjet (plank): `null`. `breathing` e thotë drejtimin me fjalë ("Tërhiqe për 1 s, lëshoje për 2 s") | – |
 | `setup` | Pajisja, pozicioni, kapja | 2–6 |
 | `steps` | Lëvizja hap pas hapi | 2–6 |
 | `breathing` | Tempo me fjalë dhe fryma | 1–4 |

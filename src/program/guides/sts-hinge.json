@@ -4,8 +4,8 @@
     {
       "exercise": "Romanian Deadlift",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -242,7 +242,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         },
@@ -261,8 +261,8 @@
     {
       "exercise": "Lying Leg Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -446,7 +446,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         },
@@ -460,8 +460,8 @@
     {
       "exercise": "Seated Leg Curl",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -623,7 +623,7 @@
           "checked": "2026-11-15"
         },
         "acsm_road": {
-          "label": "ACSM, A Road Map to Effective Muscle Recovery",
+          "label": "ACSM, Getting Started with an Exercise Program (2019)",
           "url": "https://www.acsm.org/docs/default-source/files-for-resource-library/a-road-map-to-effective-muscle-recovery.pdf",
           "checked": "2026-11-15"
         },

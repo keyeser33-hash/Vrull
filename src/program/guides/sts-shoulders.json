@@ -4,8 +4,8 @@
     {
       "exercise": "Dumbbell Shoulder Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -247,8 +247,8 @@
     {
       "exercise": "Dumbbell Lateral Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -487,8 +487,8 @@
     {
       "exercise": "One-Arm Cable Lateral Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -710,8 +710,8 @@
     {
       "exercise": "One-Arm Cable Front Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -918,8 +918,8 @@
     {
       "exercise": "High Cable Rear Delt Fly",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1123,8 +1123,8 @@
     {
       "exercise": "Bent-Over Lateral Raise",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1325,8 +1325,8 @@
     {
       "exercise": "Smith Machine Upright Row",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1592,8 +1592,8 @@
     {
       "exercise": "Dumbbell Upright Row",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1837,8 +1837,8 @@
     {
       "exercise": "Dumbbell Shrug",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -2047,8 +2047,8 @@
     {
       "exercise": "Barbell Shrug",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -2254,8 +2254,8 @@
     {
       "exercise": "One-Arm Smith Machine Shrug",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [

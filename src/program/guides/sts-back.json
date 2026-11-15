@@ -4,8 +4,8 @@
     {
       "exercise": "Dumbbell Bent-Over Row",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -215,8 +215,8 @@
     {
       "exercise": "Seated Cable Row",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -422,8 +422,8 @@
     {
       "exercise": "Wide-Grip Pulldown",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -672,8 +672,8 @@
     {
       "exercise": "Behind-Neck Pulldown",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -891,8 +891,8 @@
     {
       "exercise": "Reverse-Grip Pulldown",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1128,8 +1128,8 @@
     {
       "exercise": "Standing Pulldown",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [

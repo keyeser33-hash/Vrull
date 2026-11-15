@@ -19,7 +19,7 @@ const list = (n: number, prefix: string, sources = ['nasm']) => ({
 function good(): ExerciseGuide {
   return {
     exercise: 'Bench Press',
-    tempo: { downS: 2, upS: 1 },
+    tempo: { eccentricS: 2, concentricS: 1 },
     setup: list(4, 'Hapi'),
     steps: list(4, 'Lëvizja'),
     breathing: list(2, 'Fryma', ['wilk']),
@@ -87,7 +87,7 @@ describe('kontrolli i një udhëzuesi (SPEC §0.3g)', () => {
     g.tips[0] = { ...g.tips[0], who: ' ' }
     expect(guideProblems(g, KNOWN)).toContain('tips 1: pa emrin e ekspertit')
     expect(guideProblems({ ...good(), tempo: null }, KNOWN)).toEqual([])
-    expect(guideProblems({ ...good(), tempo: { downS: 0, upS: 1 } }, KNOWN)).toContain('tempo: jashtë kufijve')
+    expect(guideProblems({ ...good(), tempo: { eccentricS: 0, concentricS: 1 } }, KNOWN)).toContain('tempo: jashtë kufijve')
   })
 })
 

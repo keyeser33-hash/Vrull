@@ -40,15 +40,17 @@ Biblioteka (`library.json`, 739) mban vetëm kategoritë strength, powerlifting,
 | D | `sts-biceps.json` | Barbell Curl, Preacher Curl, Dumbbell Incline Curl, Incline Cable Curl, One-Arm High Cable Curl, Behind-Back Cable Curl, Dumbbell Concentration Curl |
 | E | `sts-shoulders.json` | Dumbbell Shoulder Press, Dumbbell Lateral Raise, One-Arm Cable Lateral Raise, One-Arm Cable Front Raise, High Cable Rear Delt Fly, Bent-Over Lateral Raise, Smith Machine Upright Row, Dumbbell Upright Row, Dumbbell Shrug, Barbell Shrug, One-Arm Smith Machine Shrug |
 | F1 | `sts-legs.json` | Squat, Front Squat, Leg Press, One-Leg Leg Press, Leg Extension, Standing Calf Raise, Leg Press Calf Raise, Seated Calf Raise |
-| F2 | `sts-hinge.json` | Romanian Deadlift, Lying Leg Curl, Seated Leg Curl, Hip Thrust, Weighted Hip Thrust, Smith Machine Hip Thrust |
+| F2 | `sts-hinge.json` | Romanian Deadlift, Lying Leg Curl, Seated Leg Curl, dhe tre Hip Thrust-et, që te programi janë ushtrime barku (SPEC §5), jo të gluteve |
 | G | `sts-abs.json` | Crunch, Weighted Crunch, Cable Crunch, Machine Crunch, Hanging Leg Raise, Plank, Oblique Crunch, Cable Oblique Crunch, Cable Woodchopper, Band Roundhouse Elbow, Dumbbell Side Bend, Side Plank |
 
 Raundi 1: A, B, C, D, E. Raundi 2: F1, F2, G.
+
+**Rezultati i valës 0 (15.11.2026):** 53 nga 66 ushtrime kanë udhëzuesin, secili i kontrolluar nga një agjent tjetër dhe i ndrequr. 13 mbeten pa udhëzues, sepse asnjë burim i pranuar nuk e përshkruan teknikën e tyre: Straight-Arm Pulldown, Hip Thrust, Weighted Hip Thrust, Smith Machine Hip Thrust, Hanging Leg Raise, Weighted Crunch, Cable Crunch, Machine Crunch, Oblique Crunch, Cable Oblique Crunch, Cable Woodchopper, Band Roundhouse Elbow, Dumbbell Side Bend. Për to mbeten lëvizja, videoja dhe linku i përdoruesit. Kostoja: rreth 3,9 milionë tokena (kërkimi rreth 2,4, kontrolli rreth 1,5), pra rreth 74 mijë për udhëzues.
 
 **Valët e bibliotekës (E3-24)**, sipas muskulit kryesor, secila e ndarë në grupe me të njëjtën lëvizje: biceps 50 (piloti: mat koston para të tjerave), triceps 69, gjoksi 79, shpatullat 119, shpina (lats dhe mesi) 61, kuadricepsi 119, hamstring-et dhe vithet 75, barku 85, të tjerat (pulpat, trapezi, parakrahu, qafa, beli, aduktorët, abduktorët) 82.
 
 ## Kostot dhe kufijtë
 
-- Kostoja e përafërt: vala 0 rreth 2–3 milionë tokena; biblioteka me udhëzuesin e plotë rreth 3 herë më shumë se varianti i shkurtër, pra rreth 40–50 milionë; videot rreth 2 milionë. Piloti i bicepsit e mat; çdo grup shkruan rreshtin e vet te `KOSTOT.md`.
+- Kostoja e përafërt: vala 0 doli rreth 3,9 milionë tokena për 53 udhëzues (rreth 74 mijë secili); me këtë normë biblioteka (689) do rreth 50 milionë; videot rreth 2 milionë. Piloti i bicepsit e mat; çdo grup shkruan rreshtin e vet te `KOSTOT.md`.
 - 0 minuta Actions: të dhënat dhe dokumentet shkojnë me `[skip ci]`.
 - Të dhënat nuk shihen në telefon pa kodin e Mëso-s dhe të faqes së ushtrimit (0.40) dhe të seancës (0.41).

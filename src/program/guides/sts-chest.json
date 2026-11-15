@@ -4,8 +4,8 @@
     {
       "exercise": "Bench Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -330,8 +330,8 @@
     {
       "exercise": "Incline Bench Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -597,8 +597,8 @@
     {
       "exercise": "Incline Dumbbell Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -831,8 +831,8 @@
     {
       "exercise": "Reverse-Grip Incline Dumbbell Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1047,8 +1047,8 @@
     {
       "exercise": "Incline Dumbbell Flye",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1219,8 +1219,8 @@
     {
       "exercise": "Incline Cable Flye",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1377,8 +1377,8 @@
     {
       "exercise": "Dumbbell Flye",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1553,8 +1553,8 @@
     {
       "exercise": "Cable Crossover",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
@@ -1733,8 +1733,8 @@
     {
       "exercise": "Close-Grip Bench Press",
       "tempo": {
-        "downS": 2,
-        "upS": 1
+        "eccentricS": 2,
+        "concentricS": 1
       },
       "setup": {
         "items": [
