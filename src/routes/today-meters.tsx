@@ -145,9 +145,8 @@ function WaterTile({ date }: { date: string }) {
   // Prekja shfaqet menjëherë (V57: numri rrotullohet me prekjen). Te Sot leximi i ujit mund të vonojë disa sekonda
   // pas një shkrimi, sepse çdo shkrim rinis të gjitha leximet e ekranit; totali i pritur mbetet deri sa leximi ta arrijë.
   const [pending, setPending] = useState<PendingWater | null>(null)
-  useEffect(() => {
-    if (pending && day && !waiting(day.totalMl, pending)) setPending(null)
-  }, [day, pending])
+  // Leximi e arriti totalin e pritur (ose uji ndryshoi nga një vend tjetër): pritja mbaron, gjatë vizatimit.
+  if (pending && day && !waiting(day.totalMl, pending)) setPending(null)
   const press = useRef<{ x: number; y: number; timer: ReturnType<typeof setTimeout> } | null>(null)
   const fired = useRef(false)
   useEffect(() => {

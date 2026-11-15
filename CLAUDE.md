@@ -42,6 +42,7 @@ App personal Android për palestrën (Shortcut to Size, ushqimi, matjet, modeli 
 - `src/components/forms`, `src/components/ui/field.tsx`: fushat dhe zgjedhja e ditëve (të v1, me tokenat e Vrullit).
 - `src/lib`: logjika e përbashkët (tema, `cn`, butoni mbrapa).
 - `src/program`: logjika e programit pa UI dhe pa bazë: motori (`engine.ts`), Shortcut to Size si të dhëna, biblioteka e ushtrimeve (`library.json`, nga `tools/exercise-library/build.mjs`).
+- `src/today`: logjika e Sot pa UI: ritmi i ditës (pikat, flluska, lëvizja e vakteve), rrathët e story-ve, pikat e rripit të javës (§0.3f).
 - `src/nutrition`: logjika e ushqimit pa UI: objektivat (Shtojca C), orari i vakteve (§13), shablloni i Jimit me makrot e ushqimeve.
 - `src/reminders`: plani i rikujtuesve pa UI (§13); njoftimet në telefon: `lib/reminders-native.ts`.
 - `src/update`: përditësimi brenda app-it pa UI (`updater.ts`); plugin-i native `AppUpdaterPlugin.java`, publikimi `scripts/publish-update.mjs` (SPEC §3b).
