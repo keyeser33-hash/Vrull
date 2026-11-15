@@ -5,6 +5,7 @@ import { DayModeRoot } from '@/components/layout/day-mode-root'
 import type { ShellHandle, TabId } from '@/components/layout/nav-places'
 import { AppGate } from '@/routes/gate'
 import { Moved } from '@/routes/moved'
+import { CrashPage, NotFoundPage } from '@/routes/not-found'
 
 /** Tab-i aktiv i një rruge te korniza; `null` pa tab-bar (cilësimet, editorët, shtimi). */
 const tab = (id: TabId | null): { handle: ShellHandle } => ({ handle: { tab: id } })
@@ -74,6 +75,8 @@ const appScreens: RouteObject[] = [
       { path: 'cilesimet/rikujtuesit', ...screen(() => import('@/routes/settings-reminders'), (m) => m.RemindersPage), ...tab(null) },
       { path: 'cilesimet/admin', ...screen(() => import('@/routes/admin-ai'), (m) => m.AdminAiPage), ...tab(null) },
       { path: 'cilesimet/ai', ...screen(() => import('@/routes/settings-ai'), (m) => m.AiSettingsPage), ...tab(null) },
+      // Adresë e panjohur: gjendje bosh brenda kornizës, jo faqja e gabimit të React Router.
+      { path: '*', element: <NotFoundPage />, ...tab(null) },
     ],
   },
   // Kutia e AI-së, seanca e stërvitjes dhe mbyllja e saj zënë gjithë ekranin, pa navigimin poshtë.
@@ -83,12 +86,13 @@ const appScreens: RouteObject[] = [
 ]
 
 // Pamja e ditës (`data-day`, V50) vendoset mbi të gjitha rrugët e mësipërme, edhe ato jashtë kornizës.
-export const appRoutes: RouteObject[] = [{ element: <DayModeRoot />, children: appScreens }]
+export const appRoutes: RouteObject[] = [{ element: <DayModeRoot />, errorElement: <CrashPage />, children: appScreens }]
 
 // E gjithë app-i: porta vendos nëse shfaqet hyrja, hapat e para apo ekranet e mësipërme.
 export const routes: RouteObject[] = [
   {
     element: <AppGate />,
+    errorElement: <CrashPage />,
     children: [
       { path: '/hyrja', ...screen(() => import('@/routes/login'), (m) => m.LoginPage) },
       {
@@ -107,5 +111,5 @@ export const routes: RouteObject[] = [
     ],
   },
   // Faqja e brendshme e sistemit Vrull: pa lidhje nga app-i, jashtë portës (pa të dhëna).
-  { path: '/dev/ds', ...screen(() => import('@/routes/dev-ds'), (m) => m.DesignSystemPage) },
+  { path: '/dev/ds', errorElement: <CrashPage />, ...screen(() => import('@/routes/dev-ds'), (m) => m.DesignSystemPage) },
 ]
