@@ -274,6 +274,8 @@ Faqja "0.42 · Ushqimi i ri" te kanavaca, në OLED dhe shqip, me një bord angli
 
 **Gjendja (15.11.2026, 09:35):** përdoruesi vendosi A–D: Open Food Facts në tabelë më vete, të pandryshuar dhe me atribuim (ODbL); Frida po, me CC BY 4.0; tabela e Hoxha dhe kolegëve jo; pjatat shqiptare me recetë nga përbërësit. Te SPEC §0.3h dhe te raporti (§12). Plani i E3-27: `docs/agents/PLANI-LISTA-E-VRULLIT.md`. Bordet presin komentet.
 
+**Gjendja (15.11.2026, 09:55):** përdoruesi i pëlqeu bordet dhe kërkoi më shumë përmirësime. Raundi 2: 14 borde (dita me ‹ ›, uji dhe Plotëso makrot si pllaka, gjurma e suplementeve, vaktet që vijnë me planin; mbrëmja para stërvitjes; "Zhbëj" pas shportës; kërkimi pa shkrim; fleta e vaktit me "Ndërro"; çipat e sasisë; fjalët e kuptuara te AI-ja; tema Ditë). Tokenat u ndreqën sipas `globals.css` (prushi si tekst në OLED është `#FF5B2E`, jo `#FF8A66` i bordeve të vjetra; AI = `data`) dhe çdo prekje është 44 px. U hoq "Ruaje si vakt të zakonshëm" te shporta: do të ishte një koncept i ri pranë "Si dje" dhe "Vakti i zakonshëm". SPEC §0.3h, "Raundi 2".
+
 ## V2-E3-20 · Bordet e seancës së re
 
 Faqja "0.41 · Seanca e re" te kanavaca, në OLED dhe shqip, me një bord anglisht. Rregullat: SPEC §0.3g (V58). Bordet: fleta e ushtrimit me tabelën (seti i parë, mes setesh, me rekord), tastiera e peshës, "Zhbëj", ndryshimi i një seti të një ushtrimi të kaluar, pushimi me tabelën dhe me ushtrimin e ri, mbyllja me "Kontrollo setet", lëvizja (e palosur, e hapur, me "lëvizje të reduktuar"), videoja, faqja e ushtrimit me udhëzuesin. **Pranimi:** përdoruesi i miraton ose i komenton; kodi nis pas miratimit (0.41.0).
