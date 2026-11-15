@@ -1545,7 +1545,9 @@ try {
     await click(page, 'a[href="/progresi"]')
     await waitFor(() => page.evaluate(`!!document.querySelector('a[href="/progresi/trupi"]')`), 'Trupi te Progresi')
     await click(page, 'a[href="/progresi/trupi"]')
-    await waitForHeading(page, 'Trupi')
+    // V2-E3-30: të katër tab-et e Progresit kanë kreun "Progresi"; Trupi njihet nga adresa.
+    await waitForPath(page, '/progresi/trupi')
+    await waitForHeading(page, 'Progresi')
     // Trupi 3D (V2-E1-14): modeli vizatohet me WebGL nga GLB-ja në APK; emulatori e vizaton me CPU.
     const webgl = await page.evaluate(`(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')) })()`)
     if (!webgl) {
