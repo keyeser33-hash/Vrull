@@ -176,7 +176,7 @@ describe('seanca dhe njoftimi i seancës (V2-E1-08)', () => {
     await renderSession({ notificationSet: { slotId: bench.slotId, setNumber: 1, values: { reps: 8 } } })
     expect(await setGroup('Seti 1: 62,5 kg, 8 përsëritje')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
-    expect(await screen.findByText('Seti 1 u ruajt: 62,5 × 8')).toBeInTheDocument()
+    expect(screen.getByText('Seti 1 u ruajt · 62,5 × 8')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Kapërce' }))
     // Seti tjetër nuk merr më vlerat e njoftimit, por ato të setit të mëparshëm.
     expect(await setGroup('Seti 2: 62,5 kg, 8 përsëritje')).toBeInTheDocument()

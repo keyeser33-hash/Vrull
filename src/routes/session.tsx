@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useId, useMemo, useState } from 'react'
+import { type PointerEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { ExerciseVideoSheet } from '@/components/ui/exercise-video'
@@ -6,7 +6,7 @@ import { Icon } from '@/components/ui/icons'
 import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
 import { store, useLocalQuery } from '@/data/app-data'
-import { type ExerciseRecord, finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
+import { type ExerciseRecord, finishWorkout, saveSet, type SetRecord, undoSet, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { type WorkoutWeight, workoutWeights } from '@/data/week-weights'
 import type { I18n } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
@@ -17,6 +17,7 @@ import { type SetRow, setTable } from '@/program/set-table'
 import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
+import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { openedSet, sessionView } from '@/lib/session-notification'
 import { useRestTimer } from '@/lib/use-rest-timer'
@@ -31,9 +32,11 @@ import { SessionGuide } from './session-guide'
 import { useSessionGuide } from './session-guide-hook'
 import { type KeypadChip, KeypadSheet } from './session-keypad'
 import { SessionLighter } from './session-lighter'
+import { type LocalChange, setKey, settled, useTapGuard, withLocal } from './session-local'
 import { SavedSets } from './session-sets'
 import { ChangeExerciseSheet, ExerciseListSheet } from './session-sheets'
-import { SetTable } from './session-table'
+import { ActiveNote, SetTable } from './session-table'
+import { UndoToast } from './session-undo'
 import { EditSetSheet } from './set-edit-sheet'
 import { clock } from './training-format'
 
@@ -109,6 +112,50 @@ function asHistory(set: SetRecord, plan: SessionPlan, sessionId: string): Histor
   }
 }
 
+/** Koha e një seti të ri: tani, ose një milisekondë pas setit të fundit kur ai vjen më vonë. */
+function after(last: string | undefined): string {
+  const now = Date.now()
+  const previous = last ? Date.parse(last) : Number.NaN
+  return new Date(Number.isFinite(previous) && previous >= now ? previous + 1 : now).toISOString()
+}
+
+/** Historia me ndryshimet lokale të seancës: setet e zhbëra hiqen, ato të ruajtura në prekje shtohen. */
+function liveHistory(sets: HistorySet[], changes: readonly LocalChange[], plan: SessionPlan, sessionId: string): HistorySet[] {
+  if (changes.length === 0) return sets
+  const touched = new Set(
+    changes.flatMap((change) => {
+      const slotId = change.key.slice(0, change.key.lastIndexOf(':'))
+      const slot = plan.slots.find((entry) => entry.slotId === slotId)
+      return slot ? [`${slot.exerciseId}:${change.key.slice(change.key.lastIndexOf(':') + 1)}`] : []
+    }),
+  )
+  const kept = sets.filter((set) => !(set.sessionId === sessionId && touched.has(`${set.exerciseId}:${set.setNumber}`)))
+  const added = changes.flatMap((change) => (change.set ? [asHistory(change.set, plan, sessionId)] : []))
+  return [...kept, ...added].sort((a, b) => a.loggedAt.localeCompare(b.loggedAt))
+}
+
+/** Seti që ruan "Ruaj setin": sloti, numri, teknika e setit dhe segmenti që pret, kur është ai. */
+interface Step {
+  slot: PlannedSlot
+  setNumber: number
+  technique: Technique
+  segment: SegmentStep | null
+}
+
+/** "Zhbëj" për setin e sapo ruajtur (6 s): çelësi, teksti dhe shkrimi që duhet pritur para heqjes. */
+interface UndoEntry {
+  key: string
+  token: number
+  slotId: string
+  setId: string
+  setNumber: number
+  segment: boolean
+  /** Seti para segmentit, që "Zhbëj" e kthen pa të. */
+  base: SetRecord | null
+  text: string
+  done: Promise<SetRecord>
+}
+
 function ActiveSession({
   snapshot,
   session,
@@ -131,8 +178,6 @@ function ActiveSession({
   // Segmenti që përdoruesi e kapërceu; pa të, seti i fundit me teknikë pret segmentin e vet.
   const [dismissed, setDismissed] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  // Pas ruajtjes, setin tjetër e lejon vetëm leximi që e ka parë setin e ruajtur (pa dyfishim).
-  const [awaiting, setAwaiting] = useState<{ id: string; segments: number } | null>(null)
   // Banderola e rekordit (0.23): seti i sapo ruajtur që dha rekord, deri sa banderola të ikë.
   const [banner, setBanner] = useState<BannerRecord | null>(null)
   const rest = useRestTimer(session.id, () => void restFinishedInApp())
@@ -146,27 +191,65 @@ function ActiveSession({
   // Njoftimi tregon të njëjtin ushtrim si ekrani; pa ekran, radhën e programit.
   useEffect(() => sessionView.set({ sessionId: session.id, selected, dismissedSegment: dismissed }), [session.id, selected, dismissed])
   useEffect(() => () => sessionView.set(null), [])
+
+  // "Ruaj setin" dhe "Zhbëj" duken në prekje, para bazës (V58; docs/MESIMET.md): ndryshimet lokale mbi
+  // leximin largohen kur shkrimi mbaron dhe leximi i tregon. Shkrimet shkojnë një nga një, që "Zhbëj" të
+  // heqë setin pasi është shkruar dhe një set i ri me të njëjtin numër të vijë pas heqjes.
+  const [changes, setChanges] = useState<LocalChange[]>([])
+  const sets = useMemo(() => withLocal(session.sets, changes), [session.sets, changes])
+  useEffect(() => {
+    setChanges((current) => {
+      const next = settled(session.sets, current)
+      return next.length === current.length ? current : next
+    })
+  }, [session.sets, changes])
+  const writes = useRef<Promise<unknown>>(Promise.resolve())
+  const tokens = useRef(0)
+  const enqueue = <T,>(task: () => Promise<T>): Promise<T> => {
+    const run = writes.current.then(task)
+    writes.current = run.catch(() => undefined)
+    return run
+  }
+  /** Një ndryshim lokal i setit; shkrimi e shënon të shkruar, ose e heq kur dështon. */
+  function local(key: string, set: SetRecord | null, write: Promise<unknown>): number {
+    const token = ++tokens.current
+    setChanges((current) => [...current.filter((entry) => entry.key !== key), { key, set, written: false, token }])
+    write.then(
+      () => setChanges((current) => current.map((entry) => (entry.token === token ? { ...entry, written: true } : entry))),
+      () => {
+        setChanges((current) => current.filter((entry) => entry.token !== token))
+        setUndo((entry) => (entry?.token === token ? null : entry))
+      },
+    )
+    return token
+  }
+  const [undo, setUndo] = useState<UndoEntry | null>(null)
+
   const now = useNow(1000)
   const { plan, exercises } = snapshot
-  const progress = sessionProgress(plan, session.sets, selected)
-  // Rekordi i çdo seti në kohën e vet (§6: e1RM-ja, ose pesha më e madhe për ato përsëritje): çipat,
-  // rreshtat e pushimit dhe fleta e ndryshimit; seti 1 mbetet rekord edhe kur seti 2 e kalon.
-  const records = useMemo(() => sessionSetRecords(history.sets, session.id), [history.sets, session.id])
+  const progress = sessionProgress(plan, sets, selected)
+  // Rekordi i çdo seti në kohën e vet (§6: e1RM-ja, ose pesha më e madhe për ato përsëritje): tabela,
+  // pushimi dhe fleta e ndryshimit; seti 1 mbetet rekord edhe kur seti 2 e kalon.
+  // Historia me setet që leximi s'i ka ende (ose i ka ende pas "Zhbëj"): rekordet, pragu dhe lista e
+  // ndjekin setin në prekje, si tabela.
+  const live = useMemo(() => liveHistory(history.sets, changes, snapshot.plan, session.id), [history.sets, changes, snapshot.plan, session.id])
+  const records = useMemo(() => sessionSetRecords(live, session.id), [live, session.id])
   const elapsed = (now - Date.parse(session.startedAt)) / 1000
-  const shown = awaiting ? session.sets.find((set) => set.id === awaiting.id) : undefined
-  const waiting = awaiting !== null && !(shown && shown.segments.length >= awaiting.segments)
 
-  const lastSet = session.sets.at(-1) ?? null
+  const lastSet = sets.at(-1) ?? null
   const lastSlot = lastSet ? plan.slots.find((entry) => entry.slotId === lastSet.slotId) : undefined
-  const segmentDue = selected ? null : pendingSegment(plan, session.sets)
+  const segmentDue = selected ? null : pendingSegment(plan, sets)
   const segment: SegmentStep | null = segmentDue && dismissed !== segmentDue.set.id ? segmentDue : null
-  const shownIndex = segment ? plan.slots.findIndex((slot) => slot.slotId === segment.slot.slotId) : progress.current
+  // Rrëshqitja dhe lista hapin edhe një ushtrim të bërë: setet e tij shihen dhe ndryshohen (V58).
+  const selectedIndex = selected ? plan.slots.findIndex((entry) => entry.slotId === selected) : -1
+  const viewing = selectedIndex >= 0 && progress.slots[selectedIndex].done >= progress.slots[selectedIndex].slot.sets ? selectedIndex : null
+  const shownIndex = segment ? plan.slots.findIndex((entry) => entry.slotId === segment.slot.slotId) : (viewing ?? progress.current)
   const current = shownIndex === null ? null : progress.slots[shownIndex]
   const slot = current?.slot ?? null
   const exercise = slot ? exercises[slot.exerciseId] : undefined
   const position = t('session.position', { exercise: (shownIndex ?? plan.slots.length - 1) + 1, exercises: plan.slots.length, elapsed: elapsedText(elapsed) })
   // Seti në ekran; gjatë pushimit, seti që vjen. Videoja e formës regjistrohet për të (V2-E1-13).
-  const setNumber = current ? (segment ? segment.set.setNumber : current.done + 1) : 0
+  const setNumber = current ? (segment ? segment.set.setNumber : Math.min(current.done + 1, current.slot.sets)) : 0
   const videoTarget: FormVideoTarget | null =
     slot && exercise ? { exerciseId: slot.exerciseId, exerciseName: exercise.name, sessionId: session.id, setNumber } : null
 
@@ -188,23 +271,115 @@ function ActiveSession({
     setBusy(true)
     rest.skip()
     onClosing(session.id)
-    void finishWorkout(store, session.id)
+    void enqueue(() => finishWorkout(store, session.id))
   }
   /** Pesha e ushtrimit në këtë seancë: e setit të fundit, ose pesha e javës për setin e parë. */
   const weightOf = (target: PlannedSlot) => {
-    const inSession = session.sets.filter((set) => set.slotId === target.slotId).at(-1)
+    const inSession = sets.filter((set) => set.slotId === target.slotId).at(-1)
     return inSession ? inSession.weightKg : (weights.get(target.slotId)?.weightKg ?? null)
   }
   function startRest(after: PlannedSlot, newSet: boolean) {
-    setSelected(null)
     const remaining = progress.totalSets - progress.doneSets - (newSet ? 1 : 0)
     if (remaining > 0) rest.start(after.restSeconds)
   }
+  /** Ushtrimi tjetër ose i mëparshmi (rrëshqitja anash), edhe kur është bërë. */
+  const go = (index: number) => {
+    const target = plan.slots[Math.min(plan.slots.length - 1, Math.max(0, index))]
+    if (target) setSelected(target.slotId)
+  }
 
-  // "Ndrysho setin" (0.23): prekja e një seti të ruajtur te çipat ose te pushimi; fleta e historikut.
+  // "Ndrysho setin": prekja e një seti të ruajtur të çdo ushtrimi te tabela; fleta e historikut.
   const editId = params.get('seti')
-  const edited = editId ? session.sets.find((set) => set.id === editId && editable(set)) : undefined
+  const edited = editId ? sets.find((set) => set.id === editId && editable(set)) : undefined
   const openEdit = (set: SetRecord) => setParams({ seti: set.id })
+
+  /**
+   * "Ruaj setin" (§6, §0.3c): seti del menjëherë te tabela me "Zhbëj", pushimi nis, rekordi del te
+   * banderola; baza shkruhet pas tij. Segmenti i shtohet setit të fundit.
+   */
+  function save(step: Step, values: SetValues) {
+    const { slot: at, setNumber: number, technique, segment: due } = step
+    const tracking = exercises[at.exerciseId]?.tracking ?? 'weight_reps'
+    // Seti i ri e mbyll pushimin: njoftimi i tij anulohet (TH-09).
+    if (rest.running) rest.skip()
+    const weightKg = tracking === 'timed' ? null : values.weightKg
+    const key = setKey({ slotId: at.slotId, setNumber: number })
+    if (due) {
+      const withSegment: SetRecord = { ...due.set, segments: [{ weightKg: tracking === 'weight_reps' ? weightKg : null, reps: values.reps ?? 0 }] }
+      const done = enqueue(() =>
+        saveSet(store, {
+          id: due.set.id,
+          sessionId: session.id,
+          slot: due.slot,
+          setNumber: due.set.setNumber,
+          weightKg: due.set.weightKg,
+          reps: due.set.reps,
+          seconds: due.set.seconds,
+          rir: due.set.rir,
+          technique: due.set.technique,
+          segments: withSegment.segments,
+        }),
+      )
+      const token = local(key, withSegment, done)
+      setUndo({ key, token, slotId: at.slotId, setId: due.set.id, setNumber: number, segment: true, base: due.set, text: setValue(withSegment, texts), done })
+      void savePulse()
+      setSelected(null)
+      startRest(due.slot, false)
+      return
+    }
+    const id = crypto.randomUUID()
+    const saved: SetRecord = {
+      id,
+      slotId: at.slotId,
+      exerciseId: at.exerciseId,
+      setNumber: number,
+      weightKg,
+      reps: values.reps,
+      seconds: values.seconds,
+      rir: values.rir,
+      rpe: null,
+      technique: technique.type,
+      segments: [],
+      // Pas setit më të ri të njohur, që seti i ri të jetë i fundit edhe për rekordet, kur ora e telefonit ndryshon.
+      loggedAt: after(live.at(-1)?.loggedAt),
+      notes: null,
+    }
+    const done = enqueue(() =>
+      saveSet(store, { newId: id, sessionId: session.id, slot: at, setNumber: number, weightKg, reps: values.reps, seconds: values.seconds, rir: values.rir, technique: technique.type }),
+    )
+    const token = local(key, saved, done)
+    setUndo({ key, token, slotId: at.slotId, setId: id, setNumber: number, segment: false, base: null, text: setValue(saved, texts), done })
+    // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
+    // mbi pushimin dhe një dridhje e rëndë në vend të së lehtës së çdo ruajtjeje.
+    const record = setRecord(asHistory(saved, plan, session.id), live)
+    if (record) {
+      setBanner({ id, exercise: exercises[at.exerciseId]?.name ?? '', record })
+      void recordPulse()
+    } else void savePulse()
+    // Ushtrimi i zgjedhur mbetet në ekran derisa t'i mbarojnë setet.
+    if (number >= at.sets) setSelected(null)
+    if (technique.type === 'rest_pause' || technique.type === 'drop_set') {
+      if (technique.type === 'rest_pause') rest.start(technique.restSeconds ?? 15)
+      return
+    }
+    startRest(at, true)
+  }
+
+  /** "Zhbëj": seti (ose segmenti) hiqet menjëherë nga ekrani, pushimi dhe njoftimi i tij ndalen. */
+  function undoLast(entry: UndoEntry) {
+    setUndo(null)
+    rest.skip()
+    setBanner((current) => (current?.id === entry.setId ? null : current))
+    const done = enqueue(async () => {
+      const written = await entry.done
+      await undoSet(store, written.id, { segment: entry.segment })
+    })
+    local(entry.key, entry.segment && entry.base ? { ...entry.base, segments: [] } : null, done)
+    if (entry.segment) setDismissed(null)
+    else setSelected(entry.slotId)
+  }
+
+  const notice = undo ? <UndoToast key={undo.token} text={t(undo.segment ? 'session.undo.segment' : 'session.undo.saved', { set: undo.setNumber, value: undo.text })} setNumber={undo.setNumber} onUndo={() => undoLast(undo)} onExpire={() => setUndo((entry) => (entry?.token === undo.token ? null : entry))} /> : null
 
   const frame = (children: ReactNode, restNext: { exercise: string | null; text: string } | null = null) => (
     <SessionFrame
@@ -216,7 +391,7 @@ function ActiveSession({
       onMuscles={exercise ? () => openSheet('muskujt') : undefined}
       onVideo={videoTarget ? () => openSheet('video') : undefined}
       music={<MusicButton beat={beat} sessionId={session.id} onOpen={() => openSheet('ritmi')} onConnect={() => openSheet('lidh-muziken')} />}
-      top={<SessionLighter snapshot={snapshot} started={session.sets.length > 0} />}
+      top={<SessionLighter snapshot={snapshot} started={sets.length > 0} />}
     >
       {children}
       <RecordBanner banner={banner} onDone={() => setBanner(null)} />
@@ -224,8 +399,8 @@ function ActiveSession({
         <ExerciseListSheet
           snapshot={snapshot}
           progress={progress}
-          sets={session.sets}
-          history={history.sets}
+          sets={sets}
+          history={live}
           sessionId={session.id}
           elapsed={elapsedText(elapsed)}
           busy={busy}
@@ -251,11 +426,11 @@ function ActiveSession({
       {params.has('prek') && beat.session ? <TapSheet beat={beat} onClose={closeSheet} /> : null}
       {params.has('lidh-muziken') ? <MusicConnectScreen beat={beat} sessionId={session.id} onClose={closeSheet} /> : null}
       {/* Fleta e historikut mban rregullin e vet (e1RM-ja): "nuk është më rekord" vlen për rekordin e e1RM-së. */}
-      {edited ? <EditSavedSet set={edited} snapshot={snapshot} history={history} record={records.get(edited.id)?.kind === 'e1rm'} onClose={closeSheet} /> : null}
+      {edited ? <EditSavedSet set={edited} snapshot={snapshot} history={{ ...history, sets: live }} record={records.get(edited.id)?.kind === 'e1rm'} onClose={closeSheet} /> : null}
     </SessionFrame>
   )
 
-  if (rest.running && lastSet) {
+  if (rest.running && lastSet && viewing === null) {
     let next: { exercise: string | null; text: string } | null = null
     if (segment) {
       next = {
@@ -271,13 +446,14 @@ function ActiveSession({
     return frame(
       <RestView
         rest={rest}
-        saved={waiting ? null : lastSet}
-        sets={session.sets.filter((set) => set.slotId === lastSet.slotId)}
+        saved={undo?.setId === lastSet.id || undo?.key === setKey(lastSet) ? null : lastSet}
+        sets={sets.filter((set) => set.slotId === lastSet.slotId)}
         records={records}
-        next={waiting ? null : next}
+        next={next}
+        notice={notice}
         onEdit={openEdit}
       />,
-      waiting ? null : next,
+      next,
     )
   }
 
@@ -289,6 +465,7 @@ function ActiveSession({
           <p className="type-body text-muted-foreground">{t('session.allDoneText')}</p>
         </main>
         <SessionFooter>
+          {notice}
           <Button variant="primary" size="xl" disabled={busy} onClick={finish}>
             {t('session.finish')}
           </Button>
@@ -297,13 +474,14 @@ function ActiveSession({
     )
   }
 
+  const active = viewing === null
   const isLastSet = setNumber === slot.sets
   const tracking: Tracking = exercise?.tracking ?? 'weight_reps'
   const step = exercise ? weightStep(exercise.equipment, history.weightSteps) : 2.5
-  const lastInSlot = session.sets.filter((set) => set.slotId === slot.slotId).at(-1)
+  const lastInSlot = sets.filter((set) => set.slotId === slot.slotId).at(-1)
   const week = weights.get(slot.slotId)
   const drop = (base: number) =>
-    dropWeight(history.sets, { exerciseId: slot.exerciseId, run: plan.run, blockPosition: plan.blockPosition }, base, slot.technique.type === 'drop_set' ? slot.technique : {}, step)
+    dropWeight(live, { exerciseId: slot.exerciseId, run: plan.run, blockPosition: plan.blockPosition }, base, slot.technique.type === 'drop_set' ? slot.technique : {}, step)
 
   // Vlerat e propozuara, të njëjta me njoftimin e seancës (`program/next-set.ts`). Pesha e setit të
   // parë: rreshti i "Peshave të javës", përndryshe propozimi i §7 ose pesha e fundit.
@@ -315,81 +493,31 @@ function ActiveSession({
   const defaults: SetValues = fromNotification ? { ...proposed, ...opened.values } : proposed
   const technique: Technique = isLastSet && !segment ? slot.technique : { type: 'none' }
 
-  async function save(values: SetValues) {
-    if (!slot) return
-    setBusy(true)
-    // Seti i ri e mbyll pushimin: njoftimi i tij anulohet (TH-09).
-    if (rest.running) rest.skip()
-    try {
-      const weightKg = tracking === 'timed' ? null : values.weightKg
-      if (segment) {
-        await saveSet(store, {
-          id: segment.set.id,
-          sessionId: session.id,
-          slot: segment.slot,
-          setNumber: segment.set.setNumber,
-          weightKg: segment.set.weightKg,
-          reps: segment.set.reps,
-          seconds: segment.set.seconds,
-          rir: segment.set.rir,
-          technique: segment.set.technique,
-          segments: [{ weightKg: tracking === 'weight_reps' ? weightKg : null, reps: values.reps ?? 0 }],
-        })
-        setAwaiting({ id: segment.set.id, segments: 1 })
-        void savePulse()
-        startRest(segment.slot, false)
-        return
-      }
-      const saved = await saveSet(store, {
-        sessionId: session.id,
-        slot,
-        setNumber,
-        weightKg,
-        reps: values.reps,
-        seconds: values.seconds,
-        rir: values.rir,
-        technique: technique.type,
-      })
-      setAwaiting({ id: saved.id, segments: 0 })
-      // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
-      // mbi pushimin dhe një dridhje e rëndë në vend të së lehtës së çdo ruajtjeje.
-      const record = setRecord(asHistory(saved, plan, session.id), history.sets)
-      if (record) {
-        setBanner({ id: saved.id, exercise: exercise?.name ?? '', record })
-        void recordPulse()
-      } else void savePulse()
-      if (technique.type === 'rest_pause' || technique.type === 'drop_set') {
-        setSelected(null)
-        if (technique.type === 'rest_pause') rest.start(technique.restSeconds ?? 15)
-        return
-      }
-      startRest(slot, true)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const previous = segment ? null : reference(history.sets, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })
+  const previous = segment ? null : reference(live, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })
   const rows = setTable({
     slot,
-    sets: session.sets,
-    active: setNumber,
+    sets,
+    active: active ? setNumber : null,
     segment: Boolean(segment),
     weekWeightKg: week?.weightKg ?? null,
-    history: history.sets,
+    history: live,
     at: { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, sessionId: session.id },
   })
   const folded = foldedSlots[slot.slotId] ?? (current.done > 0 || segment !== null)
+  const nextIndex = progress.current
+  const continueTo = !active && nextIndex !== null ? (exercises[progress.slots[nextIndex].slot.exerciseId]?.name ?? '') : null
 
   return frame(
     <SetView
-      key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}`}
+      key={`${slot.slotId}:${setNumber}:${active ? '' : 'view:'}${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}`}
+      mode={active ? 'set' : 'view'}
       exercise={exercise}
       exerciseName={exercise?.name ?? ''}
       tracking={segment && tracking !== 'weight_reps' ? 'bodyweight_reps' : tracking}
       target={slot.target}
       setNumber={setNumber}
       sets={slot.sets}
+      done={current.done}
       restSeconds={slot.restSeconds}
       segment={segment ? segment.set.technique : null}
       defaults={defaults}
@@ -398,17 +526,23 @@ function ActiveSession({
       basis={week?.proposal.basis ?? null}
       weekKg={week?.weekKg ?? null}
       weekWeightKg={week?.weightKg ?? null}
-      history={history.sets}
+      history={live}
       rows={rows}
       records={records}
       dropTo={slot.technique.type === 'drop_set' ? drop(lastInSlot?.weightKg ?? defaults.weightKg) : null}
       restPauseSeconds={slot.technique.type === 'rest_pause' ? (slot.technique.restSeconds ?? 15) : null}
-      folded={folded}
-      onFold={(value) => setFoldedSlots((current) => ({ ...current, [slot.slotId]: value }))}
+      dots={{ count: plan.slots.length, shown: shownIndex ?? 0, done: progress.slots.map((entry) => entry.done >= entry.slot.sets) }}
+      onSwipe={(direction) => go((shownIndex ?? 0) + direction)}
+      folded={active ? folded : (foldedSlots[slot.slotId] ?? true)}
+      onFold={(value) => setFoldedSlots((state) => ({ ...state, [slot.slotId]: value }))}
       onVideo={() => openSheet('videoja')}
       onEdit={openEdit}
-      busy={busy || waiting}
-      onSave={(values) => void save(values)}
+      notice={notice}
+      continueTo={continueTo}
+      onContinue={() => setSelected(null)}
+      onFinish={finish}
+      busy={busy}
+      onSave={(values) => save({ slot, setNumber, technique, segment }, values)}
       onSkipSegment={
         segment
           ? () => {
@@ -521,12 +655,14 @@ function SessionFooter({ children }: { children: ReactNode }) {
 }
 
 function SetView({
+  mode,
   exercise,
   exerciseName,
   tracking,
   target,
   setNumber,
   sets,
+  done,
   restSeconds,
   segment,
   defaults,
@@ -540,20 +676,30 @@ function SetView({
   records,
   dropTo,
   restPauseSeconds,
+  dots,
+  onSwipe,
   folded,
   onFold,
   onVideo,
   onEdit,
+  notice,
+  continueTo,
+  onContinue,
+  onFinish,
   busy,
   onSave,
   onSkipSegment,
 }: {
+  /** `set`: seti aktiv me stepper-in; `view`: një ushtrim i bërë, me setet që ndryshohen. */
+  mode: 'set' | 'view'
   exercise: ExerciseRecord | undefined
   exerciseName: string
   tracking: Tracking
   target: Target
   setNumber: number
   sets: number
+  /** Setet e ruajtura të ushtrimit. */
+  done: number
   /** Pushimi pas setit (receta e slotit), te nëntitulli. */
   restSeconds: number
   /** Segmenti që po regjistrohet, ose null për një set të zakonshëm. */
@@ -572,10 +718,20 @@ function SetView({
   records: ReadonlyMap<string, unknown>
   dropTo: number | null
   restPauseSeconds: number | null
+  /** Pikat poshtë kreut: një për ushtrim, i shfaquri si vijë prushi. */
+  dots: { count: number; shown: number; done: boolean[] }
+  /** Rrëshqitja anash: −1 ushtrimi i mëparshëm, +1 i radhës. */
+  onSwipe: (direction: -1 | 1) => void
   folded: boolean
   onFold: (folded: boolean) => void
   onVideo: () => void
   onEdit: (set: SetRecord) => void
+  /** "Zhbëj" mbi veprimin kryesor. */
+  notice: ReactNode
+  /** Te një ushtrim i bërë: ushtrimi ku vazhdon seanca; null kur të gjitha setet janë bërë. */
+  continueTo: string | null
+  onContinue: () => void
+  onFinish: () => void
   busy: boolean
   onSave: (values: SetValues) => void
   onSkipSegment?: () => void
@@ -604,6 +760,9 @@ function SetView({
   const bounds = target.kind === 'reps' ? { min: target.min, max: target.max } : target.kind === 'timed' ? null : { min: target.reps, max: target.reps }
   const hint = !segment && tracking === 'weight_reps' && bounds ? recordHint(history, { exerciseId: exercise?.id ?? '', weightKg, ...bounds }) : null
   const keypadFor = t('session.keypad.for', { exercise: exerciseName, set: setNumber })
+  const ready = useTapGuard()
+  const swipe = useSwipe(onSwipe)
+  const viewing = mode === 'view'
 
   const card = (
     <div className="flex flex-col gap-3 rounded-lg border-2 border-ember-text bg-surface p-3">
@@ -631,13 +790,15 @@ function SetView({
       ) : null}
       {tracking === 'bodyweight_reps' && !segment ? <p className="type-caption text-muted-foreground">{t('session.extraWeight')}</p> : null}
       {rir === null || segment ? null : <RirPicker ground="card" value={rir} onChange={setRir} />}
+      <ActiveNote row={rows.find((row) => row.state === 'active')} dropTo={dropTo} restPauseSeconds={restPauseSeconds} />
       {segment ? null : <SetHints previous={previous} basis={basis} range={range} hint={hint} />}
     </div>
   )
 
   return (
     <>
-      <main className="flex flex-1 flex-col gap-3 px-4 pt-1">
+      <main className="flex flex-1 touch-pan-y flex-col gap-3 px-4 pt-1" {...swipe}>
+        <Dots {...dots} />
         <div className="flex flex-col">
           <div className="flex items-start justify-between gap-2">
             <h1 className="min-w-0 type-display-l">{exerciseName}</h1>
@@ -656,23 +817,55 @@ function SetView({
             ) : null}
           </div>
           <p className="mt-1 type-body text-muted-foreground tabular-nums">
-            <span>{subtitle}</span>
-            {!segment && restSeconds > 0 ? <span> · {t('session.restSeconds', { seconds: restSeconds })}</span> : null}
+            {viewing ? (
+              <span>{t('session.doneSubtitle', { done, sets, target: targetText(target, texts) })}</span>
+            ) : (
+              <>
+                <span>{subtitle}</span>
+                {!segment && restSeconds > 0 ? <span> · {t('session.restSeconds', { seconds: restSeconds })}</span> : null}
+              </>
+            )}
           </p>
         </div>
 
         {exercise ? <SessionGuide exercise={exercise} folded={folded} onFold={onFold} onVideo={onVideo} /> : null}
 
-        <SetTable rows={rows} tracking={tracking} target={target} records={records} dropTo={dropTo} restPauseSeconds={restPauseSeconds} active={card} onEdit={onEdit} />
+        <SetTable
+          rows={rows}
+          tracking={tracking}
+          target={target}
+          records={records}
+          dropTo={dropTo}
+          restPauseSeconds={restPauseSeconds}
+          active={viewing ? undefined : card}
+          onEdit={onEdit}
+        />
       </main>
 
+      {viewing ? (
+        <SessionFooter>
+          {notice}
+          {continueTo ? (
+            <Button variant="secondary" ground="page" size="xl" onClick={onContinue}>
+              {t('session.continueTo', { exercise: continueTo })}
+            </Button>
+          ) : (
+            <Button variant="primary" size="xl" disabled={busy} onClick={onFinish}>
+              {t('session.finish')}
+            </Button>
+          )}
+        </SessionFooter>
+      ) : (
       <SessionFooter>
+        {notice}
         <Button
           variant="primary"
           size="xl"
           disabled={busy || (!timed && reps < 1) || (timed && seconds < 1) || needsWeight}
           aria-describedby={needsWeight ? weightNeededId : undefined}
-          onClick={() => onSave({ weightKg, reps: timed ? null : reps, seconds: timed ? seconds : null, rir })}
+          onClick={() => {
+            if (ready()) onSave({ weightKg, reps: timed ? null : reps, seconds: timed ? seconds : null, rir })
+          }}
         >
           {t(segment ? 'session.saveSegment' : 'session.save')}
         </Button>
@@ -687,6 +880,7 @@ function SetView({
           </Button>
         ) : null}
       </SessionFooter>
+      )}
 
       {editing === 'pesha' || editing === 'perseritjet' || editing === 'sekondat' ? (
         <KeypadSheet
@@ -707,6 +901,46 @@ function SetView({
       ) : null}
     </>
   )
+}
+
+/** Pikat e ushtrimeve poshtë kreut (bordi "Seanca"): i shfaquri vijë prushi, të bërët gri; dekor, lista i thotë me fjalë. */
+function Dots({ count, shown, done }: { count: number; shown: number; done: boolean[] }) {
+  if (count < 2) return null
+  return (
+    <div aria-hidden className="flex justify-center gap-1.5 pb-0.5">
+      {Array.from({ length: count }, (_, index) => (
+        <span
+          key={index}
+          className={cn('h-1.5 rounded-pill transition-[width] duration-150 ease-out', index === shown ? 'w-5 bg-ember' : cn('w-1.5', done[index] ? 'bg-muted-foreground' : 'bg-subtle'))}
+        />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Rrëshqitja anash te fleta e ushtrimit (V58): mbi 56 px dhe më shumë anash se lart-poshtë çon te ushtrimi
+ * tjetër ose i mëparshmi. Fotot e lëvizjes kanë rrëshqitjen e tyre (fillimi → fundi), ndaj nuk e nisin.
+ */
+function useSwipe(onSwipe: (direction: -1 | 1) => void) {
+  const start = useRef<{ x: number; y: number } | null>(null)
+  return {
+    onPointerDown: (event: PointerEvent<HTMLElement>) => {
+      const target = event.target as HTMLElement
+      start.current = target.closest('[data-motion-stage], input, [role="dialog"]') ? null : { x: event.clientX, y: event.clientY }
+    },
+    onPointerUp: (event: PointerEvent<HTMLElement>) => {
+      const from = start.current
+      start.current = null
+      if (!from) return
+      const dx = event.clientX - from.x
+      const dy = event.clientY - from.y
+      if (Math.abs(dx) >= 56 && Math.abs(dx) > Math.abs(dy) * 1.5) onSwipe(dx < 0 ? 1 : -1)
+    },
+    onPointerCancel: () => {
+      start.current = null
+    },
+  }
 }
 
 /** Çipat e tastierës: "Herën e kaluar" dhe "Pesha e javës" për peshën, "Herën e kaluar" për përsëritjet. */
@@ -823,6 +1057,7 @@ function RestView({
   sets,
   records,
   next,
+  notice,
   onEdit,
 }: {
   rest: ReturnType<typeof useRestTimer>
@@ -833,6 +1068,8 @@ function RestView({
   /** Setet që ishin rekord në kohën e tyre (`sessionSetRecords`). */
   records: ReadonlyMap<string, SetRecordResult>
   next: { exercise: string | null; text: string } | null
+  /** "Zhbëj" për setin e sapo ruajtur. */
+  notice: ReactNode
   onEdit: (set: SetRecord) => void
 }) {
   const texts = useI18n()
@@ -895,6 +1132,7 @@ function RestView({
       ) : null}
 
       <SavedSets sets={sets} records={records} onEdit={onEdit} />
+      {notice}
     </main>
   )
 }

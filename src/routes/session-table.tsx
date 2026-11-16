@@ -151,13 +151,7 @@ function TableRow({
       </span>
     </span>
   )
-  const noteText = note
-    ? note.kind === 'drop'
-      ? note.dropTo
-        ? t('session.table.dropTo', { weight: fmt.unit(note.dropTo, 'kg') })
-        : t('session.table.dropSet')
-      : t('session.table.restPause', { seconds: note.seconds })
-    : null
+  const noteText = noteFor(note, texts)
   const look = cn(
     'flex w-full flex-col justify-center gap-1 rounded-md px-2',
     compact ? 'min-h-11 py-1.5' : 'min-h-12 py-2',
@@ -192,6 +186,19 @@ function TableRow({
       {body}
     </li>
   )
+}
+
+function noteFor(note: ReturnType<typeof techniqueNote>, { t, fmt }: Pick<ReturnType<typeof useI18n>, 't' | 'fmt'>) {
+  if (!note) return null
+  if (note.kind === 'restPause') return t('session.table.restPause', { seconds: note.seconds })
+  return note.dropTo ? t('session.table.dropTo', { weight: fmt.unit(note.dropTo, 'kg') }) : t('session.table.dropSet')
+}
+
+/** Shënimi i teknikës te karta aktive, kur seti aktiv është i fundit ("Pastaj 52,5 kg, pa pushim"). */
+export function ActiveNote({ row, dropTo, restPauseSeconds }: { row: SetRow<SetRecord> | undefined; dropTo: number | null; restPauseSeconds: number | null }) {
+  const texts = useI18n()
+  const text = row && !row.segment ? noteFor(techniqueNote(row, dropTo, restPauseSeconds), texts) : null
+  return text ? <p className="type-caption text-muted-foreground tabular-nums">{text}</p> : null
 }
 
 function techniqueTag(row: SetRow<SetRecord>, t: ReturnType<typeof useI18n>['t']) {

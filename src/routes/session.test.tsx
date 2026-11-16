@@ -1,9 +1,10 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import type { LocalDatabase } from '@/data/db'
 import type { LocalStore } from '@/data/store'
 import { language } from '@/i18n'
+import { setRestAlarm } from '@/lib/use-rest-timer'
 import { createFakeRemote } from '@/test/fake-remote'
 
 // Seanca në Vrull (V2-E1-07). Pranimi: një seancë e plotë e Stërvitjes 1 regjistrohet pa internet
@@ -164,7 +165,7 @@ describe('seanca (V2-E1-07)', () => {
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
 
     // Rekordi del në moment: banderola mbi pushimin, me ushtrimin, e1RM-në dhe shtesën.
-    expect(await screen.findByText('Seti 1 u ruajt: 62,5 × 12')).toBeInTheDocument()
+    expect(await screen.findByText('Seti 1 u ruajt · 62,5 × 12')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Rekord i riBench Press · e1RM 87,5 kg +1,5 kg')
     // Dridhja e rëndë e rekordit, jo edhe e lehta e ruajtjes.
     expect(pulses.record).toHaveBeenCalledTimes(1)
@@ -211,7 +212,7 @@ describe('seanca (V2-E1-07)', () => {
     // 57,5 × 9: nën 60 kg të Javës 1 dhe nën e1RM-në e saj.
     for (let step = 0; step < 2; step++) await user.click(screen.getByRole('button', { name: 'Ul peshën me 2,5 kg' }))
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
-    expect(await screen.findByText('Seti 1 u ruajt: 57,5 × 9')).toBeInTheDocument()
+    expect(await screen.findByText('Seti 1 u ruajt · 57,5 × 9')).toBeInTheDocument()
     expect(screen.getByRole('status')).toBeEmptyDOMElement()
     expect(pulses.save).toHaveBeenCalledTimes(1)
     expect(pulses.record).not.toHaveBeenCalled()
@@ -262,7 +263,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(within(list).getByRole('button', { name: /^Bench Press/ })).toHaveAttribute('aria-current', 'step')
     expect(within(list).getByText('Tani: seti 1 nga 4 · 9–11')).toBeInTheDocument()
     expect(within(list).getByRole('button', { name: 'Ndrysho ushtrimin' })).toBeInTheDocument()
-    expect(within(list).getByText('Mbetën 30 sete. Setet e bëra ruhen kur e mbyll.')).toBeInTheDocument()
+    expect(within(list).getByText('Prek një ushtrim për ta parë dhe për të ndryshuar setet. Mbetën 30 sete.')).toBeInTheDocument()
     await user.click(within(list).getByRole('button', { name: /^Standing Calf Raise/ }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Standing Calf Raise' })).toBeInTheDocument()
     expect(await setGroup('Seti 1: 70 kg, 15 përsëritje')).toBeInTheDocument()
@@ -296,7 +297,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(await screen.findByText('Seti 4 nga 4 · rest-pause, deri në dështim')).toBeInTheDocument()
     expect(await setGroup('Seti 4: 62,5 kg, 4 përsëritje')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj segmentin' }))
-    expect(await screen.findByText('Seti 4 u ruajt: 62,5 × 12 + 4')).toBeInTheDocument()
+    expect(await screen.findByText('Segmenti i setit 4 u ruajt · 62,5 × 12 + 4')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Kapërce' }))
 
     // Lista: Bench Press i bërë me rekordin, Incline Bench Press tani.
@@ -368,7 +369,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.queryByText('Shkruaj peshën')).not.toBeInTheDocument()
     await user.click(await screen.findByRole('button', { name: 'Ruaj setin' }))
     // Seti i parë i ushtrimit nuk është rekord: pa banderolë, pa etiketë.
-    expect(await screen.findByText('Seti 1 u ruajt: 47,5 × 12')).toBeInTheDocument()
+    expect(await screen.findByText('Seti 1 u ruajt · 47,5 × 12')).toBeInTheDocument()
     expect(screen.getByRole('status')).toBeEmptyDOMElement()
     expect(screen.getByRole('region', { name: 'Setet e ruajtura' })).toHaveTextContent('Seti 147,5 × 12Ndrysho')
     expect((await data.store.where('set_logs', 'session_id', sessionId))[0]).toMatchObject({ weight_kg: 47.5, reps: 12, rir: 3 })
@@ -450,7 +451,7 @@ describe('seanca (V2-E1-07)', () => {
 
     for (let rep = 0; rep < 3; rep++) await user.click(screen.getByRole('button', { name: 'Increase reps' }))
     await user.click(screen.getByRole('button', { name: 'Log set' }))
-    expect(await screen.findByText('Set 1 logged: 62.5 × 12')).toBeInTheDocument()
+    expect(await screen.findByText('Set 1 logged · 62.5 × 12')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('New personal bestBench Press · e1RM 87.5 kg +1.5 kg')
     expect(screen.getByRole('button', { name: 'Dismiss personal best' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Logged sets' })).toHaveTextContent('Set 162.5 × 12recordEdit')
@@ -466,7 +467,7 @@ describe('seanca (V2-E1-07)', () => {
     const list = screen.getByRole('dialog', { name: 'Today’s exercises' })
     expect(within(list).getByText('Now: set 2 of 4 · 9–11')).toBeInTheDocument()
     expect(within(list).getByText('Set 1: 62.5 kg × 12')).toBeInTheDocument()
-    expect(within(list).getByText('29 sets left. Logged sets are kept when you finish.')).toBeInTheDocument()
+    expect(within(list).getByText('Tap an exercise to see it and edit its sets. 29 sets left.')).toBeInTheDocument()
     await user.click(within(list).getByRole('button', { name: 'Finish workout' }))
     await user.click(within(list).getByRole('button', { name: 'Yes, finish' }))
 
@@ -561,5 +562,147 @@ describe('seanca (V2-E1-07)', () => {
     const router = await renderApp()
     await waitFor(() => expect(router.state.location.pathname).toBe('/'))
     await act(async () => {})
+  })
+})
+
+describe('seanca e re: "Zhbëj", ndryshimi i çdo seti, rrëshqitja dhe lista (V58)', () => {
+  beforeEach(reset)
+  afterEach(() => {
+    language.set('sq')
+    setRestAlarm(undefined)
+    expect(fetchSpy).not.toHaveBeenCalled()
+  })
+
+  it('"Ruaj setin" e shfaq setin dhe "Zhbëj" menjëherë, pa pritur bazën; "Zhbëj" e heq setin dhe ndal pushimin me njoftimin e tij', async () => {
+    const { sessionId } = await atPhaseOneWeekTwo()
+    const alarm = { schedule: vi.fn(), cancel: vi.fn() }
+    setRestAlarm(alarm)
+    const user = userEvent.setup()
+    await renderApp()
+    expect(await setGroup('Seti 1: 62,5 kg, 9 përsëritje')).toBeInTheDocument()
+    for (let rep = 0; rep < 3; rep++) await user.click(screen.getByRole('button', { name: 'Rrit përsëritjet' }))
+
+    // Shkrimi i setit vonon 2 s, si një telefon i zënë: ekrani nuk e pret.
+    const put = data.store.put
+    let release: () => void = () => {}
+    const slow = new Promise<void>((resolve) => (release = resolve))
+    data.store.put = (async (table, values, options) => {
+      if (table === 'set_logs') await slow
+      return put(table, values, options)
+    }) as typeof put
+    try {
+      await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
+      // Pa asnjë pritje: pushimi, "Zhbëj", seti te tabela e pushimit dhe banderola e rekordit.
+      expect(screen.getByRole('timer')).toBeInTheDocument()
+      expect(screen.getByText('Seti 1 u ruajt · 62,5 × 12')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Zhbëj setin 1' })).toBeInTheDocument()
+      expect(screen.getByRole('status')).toHaveTextContent('Rekord i ri')
+      expect(alarm.schedule).toHaveBeenCalledTimes(1)
+      expect(await data.store.where('set_logs', 'session_id', sessionId)).toEqual([])
+
+      // "Zhbëj" para se baza ta ketë shkruar: seti zhduket, pushimi dhe njoftimi i tij ndalen, banderola ikën.
+      await user.click(screen.getByRole('button', { name: 'Zhbëj setin 1' }))
+      expect(screen.queryByRole('timer')).not.toBeInTheDocument()
+      expect(alarm.cancel).toHaveBeenCalled()
+      expect(screen.getByRole('status')).toBeEmptyDOMElement()
+      expect(screen.queryByText('Seti 1 u ruajt · 62,5 × 12')).not.toBeInTheDocument()
+      expect(await setGroup('Seti 1: 62,5 kg, 9 përsëritje')).toBeInTheDocument()
+      expect(table()[0]).toHaveAttribute('aria-current', 'step')
+    } finally {
+      release()
+      data.store.put = put
+    }
+    // Shkrimi mbaroi, pastaj fshirja: asnjë set i gjallë, fshirja e butë pret sinkronizimin.
+    await waitFor(async () =>
+      expect((await data.db.set_logs.toArray()).filter((row) => row.session_id === sessionId)).toEqual([expect.objectContaining({ deleted_at: expect.any(String), reps: 12 })]),
+    )
+    expect(await data.store.where('set_logs', 'session_id', sessionId)).toEqual([])
+    expect(screen.getByRole('progressbar', { name: 'Progresi i seancës' })).toHaveAttribute('aria-valuetext', '0 nga 30 sete')
+  })
+
+  it('"Zhbëj" ikën pas 6 sekondash', async () => {
+    await atPhaseOneWeekTwo()
+    await renderApp()
+    const save = await screen.findByRole('button', { name: 'Ruaj setin' })
+    // Me kohëmatës të rremë vetëm setTimeout (docs/MESIMET.md): klikimi me fireEvent, pa findBy.
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      fireEvent.click(save)
+      expect(screen.getByRole('button', { name: 'Zhbëj setin 1' })).toBeInTheDocument()
+      await act(() => vi.advanceTimersByTimeAsync(5900))
+      expect(screen.getByRole('button', { name: 'Zhbëj setin 1' })).toBeInTheDocument()
+      await act(() => vi.advanceTimersByTimeAsync(200))
+      expect(screen.queryByRole('button', { name: 'Zhbëj setin 1' })).not.toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+    }
+    // Pa "Zhbëj", lexuesi i ekranit e dëgjon setin te pushimi.
+    expect(screen.getByText('Seti 1 u ruajt: 62,5 × 9')).toBeInTheDocument()
+  })
+
+  it('ushtrimi i bërë hapet nga lista dhe me rrëshqitje: çdo set i tij ndryshohet me parapamjen e e1RM-së dhe të rekordit', async () => {
+    const { bench, sessionId } = await atPhaseOneWeekTwo()
+    const { saveSet } = await import('@/data/training')
+    // Bench Press i bërë: 62,5 × 12 (rekord), 12, 11, 10 + 3.
+    for (const [setNumber, reps] of [[1, 12], [2, 12], [3, 11]]) await saveSet(data.store, { sessionId, slot: bench, setNumber, weightKg: 62.5, reps })
+    await saveSet(data.store, { sessionId, slot: bench, setNumber: 4, weightKg: 62.5, reps: 10, technique: 'rest_pause', segments: [{ weightKg: 62.5, reps: 3 }] })
+    const user = userEvent.setup()
+    await renderApp()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Incline Bench Press' })).toBeInTheDocument()
+
+    // Lista: Bench Press i bërë, me miniaturën dhe shenjën, hapet për t'u parë.
+    await user.click(screen.getByRole('button', { name: /^Ushtrimet e seancës/ }))
+    const list = screen.getByRole('dialog', { name: 'Ushtrimet e sotme' })
+    expect(within(list).getByText('Prek një ushtrim për ta parë dhe për të ndryshuar setet. Mbetën 26 sete.')).toBeInTheDocument()
+    await user.click(within(list).getByRole('button', { name: /^E bërëBench Press/ }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
+    expect(screen.getByText('4 nga 4 sete të ruajtura · 9–11 përsëritje')).toBeInTheDocument()
+    expect(tableText()).toEqual([
+      'Seti 1: 62,5 kg × 12, rekord. Prek për ta ndryshuar',
+      'Seti 2: 62,5 kg × 12. Prek për ta ndryshuar',
+      'Seti 3: 62,5 kg × 11. Prek për ta ndryshuar',
+      'Seti 4: 62,5 kg × 10 + 3. Prek për ta ndryshuar',
+    ])
+    expect(screen.queryByRole('button', { name: 'Ruaj setin' })).not.toBeInTheDocument()
+
+    // Seti 2 bëhet 65 × 12: e1RM 91,0 kg, rekord +3,5 kg kundrejt setit 1.
+    await user.click(screen.getByRole('button', { name: 'Seti 2: 62,5 kg × 12. Prek për ta ndryshuar' }))
+    const sheet = screen.getByRole('dialog', { name: 'Ndrysho setin 2' })
+    await user.click(within(sheet).getByRole('button', { name: 'Rrit peshën me 2,5 kg' }))
+    expect(within(sheet).getByText('e1RM 91,0 kg · rekord +3,5 kg')).toBeInTheDocument()
+    await user.click(within(sheet).getByRole('button', { name: 'Ruaj ndryshimin' }))
+    expect(await screen.findByRole('button', { name: 'Seti 2: 65 kg × 12, rekord. Prek për ta ndryshuar' })).toBeInTheDocument()
+    const [set2] = (await data.store.where('set_logs', 'session_id', sessionId)).filter((row) => row.set_number === 2)
+    expect(set2).toMatchObject({ weight_kg: 65, reps: 12 })
+
+    // "Vazhdo te Incline Bench Press" kthen te seti që pret; rrëshqitja majtas e hap Bench Press përsëri.
+    await user.click(screen.getByRole('button', { name: 'Vazhdo te Incline Bench Press' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Incline Bench Press' })).toBeInTheDocument()
+    const main = screen.getByRole('main')
+    fireEvent.pointerDown(main, { clientX: 60, clientY: 400 })
+    fireEvent.pointerUp(main, { clientX: 260, clientY: 410 })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
+    // Rrëshqitja djathtas çon te ushtrimi i radhës; një lëvizje e vogël ose vertikale jo.
+    fireEvent.pointerDown(screen.getByRole('main'), { clientX: 300, clientY: 400 })
+    fireEvent.pointerUp(screen.getByRole('main'), { clientX: 280, clientY: 600 })
+    expect(screen.getByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
+    fireEvent.pointerDown(screen.getByRole('main'), { clientX: 300, clientY: 400 })
+    fireEvent.pointerUp(screen.getByRole('main'), { clientX: 120, clientY: 420 })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Incline Bench Press' })).toBeInTheDocument()
+  })
+
+  it('anglisht: "Undo", ushtrimi i bërë dhe lista', async () => {
+    language.set('en')
+    const { bench, sessionId } = await atPhaseOneWeekTwo()
+    const { saveSet } = await import('@/data/training')
+    for (const setNumber of [1, 2, 3]) await saveSet(data.store, { sessionId, slot: bench, setNumber, weightKg: 62.5, reps: 10 })
+    const user = userEvent.setup()
+    await renderApp()
+    expect(await setGroup('Set 4: 62.5 kg, 10 reps')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Log set' }))
+    expect(screen.getByText('Set 4 logged · 62.5 × 10')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Undo set 4' }))
+    expect(await setGroup('Set 4: 62.5 kg, 10 reps')).toBeInTheDocument()
+    expect(screen.getByText('Then 15 s rest and keep going')).toBeInTheDocument()
   })
 })

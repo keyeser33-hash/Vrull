@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { LibraryPicker } from '@/components/forms/library-picker'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
-import { inputClass } from '@/components/ui/field-styles'
+import { ExercisePhoto } from '@/components/ui/exercise-photo'
 import { Icon } from '@/components/ui/icons'
 import { store } from '@/data/app-data'
 import { replaceExerciseForBlock, type SetRecord, type TrainingSnapshot } from '@/data/training'
@@ -15,8 +15,9 @@ import type { PlannedSlot, SessionPlan } from '@/program/types'
 import { cn } from '@/lib/cn'
 import { rangeText, setsDetail, setValue, targetText } from './session-format'
 
-// Fletët e seancës (bordi "Ushtrimet"). Hapen me një parametër në adresë (?lista, ?ndrysho,
-// ?shkruaj), që butoni mbrapa i Android-it t'i mbyllë pa dalë nga stërvitja.
+// Fletët e seancës (bordet "Ushtrimet" dhe, nga 0.41, "Seanca · lista" me miniaturat). Hapen me një
+// parametër në adresë (?lista, ?ndrysho, ?shkruaj), që butoni mbrapa i Android-it t'i mbyllë pa dalë nga
+// stërvitja. Çdo ushtrim i listës hapet, edhe i bëri, që setet e tij të shihen dhe të ndryshohen (V58).
 
 /** Kufiri i butonave me kontur mbi fletë: `subtle` (dekor), si te bordi; `border` mbi `surface` del pothuajse i padukshëm. */
 const SHEET_OUTLINE = 'border-subtle'
@@ -69,7 +70,7 @@ export function ExerciseListSheet({
       </div>
     ) : (
       <div className="flex flex-col gap-2.5">
-        <p className="type-caption text-muted-foreground">{remaining > 0 ? t('session.list.remaining', { count: remaining }) : t('session.list.allDone')}</p>
+        <p className="type-caption text-muted-foreground">{remaining > 0 ? t('session.list.hint', { count: remaining }) : t('session.list.hintDone')}</p>
         <Button
           variant={remaining > 0 ? 'outline' : 'primary'}
           size="lg"
@@ -88,8 +89,24 @@ export function ExerciseListSheet({
         {progress.slots.map((entry, index) => {
           const name = snapshot.exercises[entry.slot.exerciseId]?.name ?? ''
           const slotSets = sets.filter((set) => set.slotId === entry.slot.slotId)
+          const libraryId = snapshot.exercises[entry.slot.exerciseId]?.libraryId ?? null
+          const select = () => {
+            onSelect(entry.slot.slotId)
+            onClose()
+          }
           if (entry.done >= entry.slot.sets) {
-            return <DoneRow key={entry.slot.slotId} name={name} entry={entry} sets={slotSets} recordKg={records.get(entry.slot.exerciseId)?.e1rmKg ?? null} />
+            return (
+              <DoneRow
+                key={entry.slot.slotId}
+                index={index}
+                name={name}
+                libraryId={libraryId}
+                entry={entry}
+                sets={slotSets}
+                recordKg={records.get(entry.slot.exerciseId)?.e1rmKg ?? null}
+                onSelect={select}
+              />
+            )
           }
           if (index === progress.current) {
             return (
@@ -97,6 +114,7 @@ export function ExerciseListSheet({
                 key={entry.slot.slotId}
                 index={index}
                 name={name}
+                libraryId={libraryId}
                 entry={entry}
                 last={slotSets.at(-1) ?? null}
                 onSelect={onClose}
@@ -105,16 +123,7 @@ export function ExerciseListSheet({
             )
           }
           return (
-            <PendingRow
-              key={entry.slot.slotId}
-              index={index}
-              name={name}
-              entry={entry}
-              onSelect={() => {
-                onSelect(entry.slot.slotId)
-                onClose()
-              }}
-            />
+            <PendingRow key={entry.slot.slotId} index={index} name={name} libraryId={libraryId} entry={entry} onSelect={select} />
           )
         })}
       </ol>
@@ -135,14 +144,47 @@ function SetCount({ entry }: { entry: SlotProgress }) {
   )
 }
 
-function DoneRow({ name, entry, sets, recordKg }: { name: string; entry: SlotProgress; sets: SetRecord[]; recordKg: number | null }) {
+/** Miniatura e ushtrimit (bardh e zi, 44 px), me shenjën e të bërit kur setet mbaruan. */
+function Thumb({ libraryId, done }: { libraryId: string | null; done: boolean }) {
+  const { t } = useI18n()
+  return (
+    <span className="relative shrink-0">
+      <ExercisePhoto libraryId={libraryId} size="square" ground="card" />
+      {done ? (
+        <span role="img" aria-label={t('session.list.done')} className="absolute -right-1.5 -bottom-1.5 flex size-5 items-center justify-center rounded-pill border-2 border-surface bg-foreground text-background">
+          <Icon name="zgjedhur" size={12} />
+        </span>
+      ) : null}
+    </span>
+  )
+}
+
+function DoneRow({
+  index,
+  name,
+  libraryId,
+  entry,
+  sets,
+  recordKg,
+  onSelect,
+}: {
+  index: number
+  name: string
+  libraryId: string | null
+  entry: SlotProgress
+  sets: SetRecord[]
+  recordKg: number | null
+  onSelect: () => void
+}) {
   const texts = useI18n()
   const { t, fmt } = texts
   return (
-    <li className="flex min-h-row items-center gap-3 rounded-lg px-3 py-2.5">
-      <span role="img" aria-label={t('session.list.done')} className="flex size-7 shrink-0 items-center justify-center rounded-pill bg-ember text-on-ember">
-        <Icon name="zgjedhur" size={16} />
-      </span>
+    <li>
+      <button type="button" onClick={onSelect} className="flex min-h-row w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left">
+        <span aria-hidden className="w-4 shrink-0 text-center text-sm text-muted-foreground tabular-nums">
+          {fmt.number(index + 1)}
+        </span>
+        <Thumb libraryId={libraryId} done />
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="type-body-strong">{name}</span>
         <span className="type-caption text-muted-foreground tabular-nums">{setsDetail(sets, texts)}</span>
@@ -154,6 +196,8 @@ function DoneRow({ name, entry, sets, recordKg }: { name: string; entry: SlotPro
         ) : null}
       </span>
       <SetCount entry={entry} />
+      <Icon name="chevron-djathtas" size={18} className="shrink-0 text-muted-foreground" />
+      </button>
     </li>
   )
 }
@@ -161,6 +205,7 @@ function DoneRow({ name, entry, sets, recordKg }: { name: string; entry: SlotPro
 function CurrentRow({
   index,
   name,
+  libraryId,
   entry,
   last,
   onSelect,
@@ -168,6 +213,7 @@ function CurrentRow({
 }: {
   index: number
   name: string
+  libraryId: string | null
   entry: SlotProgress
   last: SetRecord | null
   onSelect: () => void
@@ -179,9 +225,10 @@ function CurrentRow({
   return (
     <li className="flex flex-col gap-1 rounded-lg border border-ember-text bg-surface-2 pt-1 pb-3">
       <button type="button" aria-current="step" onClick={onSelect} className="flex min-h-row items-center gap-3 rounded-lg px-3 py-1.5 text-left">
-        <span aria-hidden className="flex size-7 shrink-0 items-center justify-center rounded-pill border-2 border-ember-text text-sm font-bold tabular-nums">
+        <span aria-hidden className="w-4 shrink-0 text-center text-sm font-bold text-ember-text tabular-nums">
           {fmt.number(index + 1)}
         </span>
+        <Thumb libraryId={libraryId} done={false} />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="type-body-strong">{name}</span>
           <span className="text-sm leading-[1.35] font-semibold tabular-nums">{t('session.list.now', { set: entry.done + 1, sets: entry.slot.sets, range })}</span>
@@ -189,7 +236,7 @@ function CurrentRow({
         </span>
         <SetCount entry={entry} />
       </button>
-      <div className="pr-3 pl-[52px]">
+      <div className="pr-3 pl-[88px]">
         <Button variant="outline" className={SHEET_OUTLINE} onClick={onChange}>
           <Icon name="nderro" size={18} />
           {t('session.list.change')}
@@ -199,16 +246,17 @@ function CurrentRow({
   )
 }
 
-function PendingRow({ index, name, entry, onSelect }: { index: number; name: string; entry: SlotProgress; onSelect: () => void }) {
+function PendingRow({ index, name, libraryId, entry, onSelect }: { index: number; name: string; libraryId: string | null; entry: SlotProgress; onSelect: () => void }) {
   const texts = useI18n()
   const { t, fmt } = texts
   const range = rangeText(entry.slot.target, fmt) ?? targetText(entry.slot.target, texts)
   return (
     <li>
       <button type="button" onClick={onSelect} className="flex min-h-row w-full items-center gap-3 rounded-lg px-3 py-1.5 text-left">
-        <span aria-hidden className="flex size-7 shrink-0 items-center justify-center rounded-pill bg-surface-2 text-sm text-muted-foreground tabular-nums">
+        <span aria-hidden className="w-4 shrink-0 text-center text-sm text-muted-foreground tabular-nums">
           {fmt.number(index + 1)}
         </span>
+        <Thumb libraryId={libraryId} done={false} />
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="type-body-strong">{name}</span>
           <span className="type-caption text-muted-foreground tabular-nums">
@@ -235,67 +283,6 @@ export function ChangeExerciseSheet({ plan, slot, exerciseName, onClose }: { pla
           void replaceExerciseForBlock(store, { plan, slotId: slot.slotId, library: item }).then(onClose)
         }}
       />
-    </Sheet>
-  )
-}
-
-/** Prekja e numrit të madh: pesha, përsëritjet ose sekondat me tastierën numerike. */
-export function NumberSheet({ label, value, decimals, onSave, onClose }: { label: string; value: number; decimals: boolean; onSave: (value: number) => void; onClose: () => void }) {
-  const { t, fmt } = useI18n()
-  const [text, setText] = useState(() => fmt.number(value, { maxDigits: decimals ? 2 : 0 }).replace(/\s/g, ''))
-  const [error, setError] = useState<string | null>(null)
-  const input = useRef<HTMLInputElement>(null)
-  // Fleta fokuson veten kur hapet; fusha merr fokusin pas saj, që tastiera numerike të hapet menjëherë.
-  useEffect(() => {
-    const id = window.setTimeout(() => {
-      input.current?.focus()
-      input.current?.select()
-    })
-    return () => window.clearTimeout(id)
-  }, [])
-  const submit = () => {
-    const parsed = Number(text.replace(/\s/g, '').replace(',', '.'))
-    if (text.trim() === '' || !Number.isFinite(parsed) || parsed < 0) setError(t('session.edit.invalid'))
-    else onSave(parsed)
-  }
-  return (
-    <Sheet
-      title={label}
-      onClose={onClose}
-      footer={
-        <Button variant="primary" size="lg" className="w-full" onClick={submit}>
-          {t('common.save')}
-        </Button>
-      }
-    >
-      <form
-        noValidate
-        onSubmit={(event) => {
-          event.preventDefault()
-          submit()
-        }}
-        className="flex flex-col gap-1.5"
-      >
-        <input
-          ref={input}
-          aria-label={label}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? 'number-sheet-error' : undefined}
-          inputMode={decimals ? 'decimal' : 'numeric'}
-          enterKeyHint="done"
-          value={text}
-          onChange={(event) => {
-            setText(event.target.value)
-            setError(null)
-          }}
-          className={cn(inputClass, 'h-button text-2xl')}
-        />
-        {error ? (
-          <p id="number-sheet-error" className="type-caption text-danger">
-            {error}
-          </p>
-        ) : null}
-      </form>
     </Sheet>
   )
 }
