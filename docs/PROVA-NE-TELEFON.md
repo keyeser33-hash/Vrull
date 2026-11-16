@@ -65,3 +65,16 @@ Para instalimit: migrimi `20261116090000_learn_events.sql` te Supabase › SQL E
 - [ ] Faqja e Bench Press: lëvizja me dy foto, "Shiko videon" luan brenda app-it, udhëzuesi me "Burimi" poshtë çdo seksioni.
 - [ ] Mëso: "A e dije?" te Sot hap story-n me burimin; të dielën pas 20:00 rrethi "Kuizi"; Progresi › Mëso tregon faktet e para.
 - [ ] Cilësimet › Mëso: çelësi "A e dije?" i fik kartat.
+
+## 8. Lista e Vrullit, shpjegimi dhe shufra (0.28.0, 4 min)
+
+Para instalimit: `vrull-0.28-lista.sql` te Supabase › SQL Editor (pa të, ushqimet e listës dhe produktet me barkod nuk sinkronizohen).
+
+- [ ] Ushqimi › Shto: "veze", "kos", "byrek" pa internet (modaliteti aeroplan) japin rezultate menjëherë, me emrin shqip dhe anglishten pranë.
+- [ ] Një ushqim i listës i shtuar te dreka del edhe pas sinkronizimit, me të njëjtat vlera.
+- [ ] Barkodi: një produkt i skanuar del te kërkimi i radhës.
+- [ ] Faqja e Bench Press: "Shpjegoje më shumë" jep 3–6 paragrafë me "Shpjeguar nga AI"; hapja e dytë punon pa internet; pa internet dhe pa shpjegim të ruajtur butoni thotë pse.
+- [ ] Tastiera e peshës te Bench Press: "Shufra" → 15 kg ndryshon disqet për anë; hape përsëri, mbetet 15 kg.
+- [ ] Të dielën, kur java e re ka pesha të reja: rreshti "N pesha të reja presin vendimin" hap Peshat e javës; pas "Prano" ose "Më vonë" rreshti ikën.
+- [ ] Cilësimet › Burimet dhe licencat: USDA, Ciqual, CoFID, Livsmedelsverket dhe Open Food Facts me licencat.
+
