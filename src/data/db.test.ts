@@ -42,7 +42,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.week_weights.get('w-1')).toMatchObject({ program_id: 'p' })
     expect(await db._photo_files.get('f-1')).toMatchObject({ storagePath: 'u/f-1.jpg' })
     await db.form_videos.put({ id: 'v-1', _dirty: 1, exercise_id: 'e', session_id: 's' } as never)
@@ -65,7 +65,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.form_videos.get('v-1')).toMatchObject({ exercise_id: 'e' })
     await db.ai_usage.put({ id: 'a-1', _dirty: 0, month: '2026-11-01', cost_eur: 0.27 } as never)
     expect(await db.ai_usage.where('month').equals('2026-11-01').count()).toBe(1)
@@ -85,7 +85,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.ai_usage.get('a-1')).toMatchObject({ month: '2026-11-01' })
     await db.water_logs.put({ id: 'w-1', _dirty: 1, date: '2026-12-07', ml: 250 } as never)
     expect(await db.water_logs.where('date').equals('2026-12-07').count()).toBe(1)
@@ -106,7 +106,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.water_logs.get('w-1')).toMatchObject({ ml: 250 })
     await db.weekly_checks.put({ id: 'c-1', _dirty: 1, week_start: '2026-11-09', status: 'accepted', kcal: 90 } as never)
     expect(await db.weekly_checks.where('week_start').equals('2026-11-09').count()).toBe(1)
@@ -129,7 +129,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.weekly_checks.get('c-1')).toMatchObject({ kcal: 90 })
     await db.ai_limits.put({ id: 'l-1', _dirty: 0, monthly_eur: 40 } as never)
     expect(await db.ai_limits.count()).toBe(1)
@@ -153,7 +153,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.ai_limits.get('l-1')).toMatchObject({ monthly_eur: 40 })
     await db.achievements.put({ id: 'a-1', _dirty: 1, key: 'first_session', earned_on: '2026-11-02' } as never)
     expect(await db.achievements.count()).toBe(1)
@@ -178,7 +178,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.achievements.get('a-1')).toMatchObject({ key: 'first_session' })
     await db.daily_states.put({ id: 's-1', _dirty: 1, date: '2026-11-19', mood: 3, energy: 2, sleep_minutes: 360, sleep_quality: 3, soreness: 2, sore_groups: ['chest'], choice: null } as never)
     expect(await db.daily_states.where('date').equals('2026-11-19').count()).toBe(1)
@@ -206,7 +206,7 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.daily_states.get('s-1')).toMatchObject({ mood: 3 })
     await db.mentor_notes.put({ id: 'm-1', _dirty: 0, kind: 'komenti_seances', session_id: 'sess-1', title: 'Squat 75 × 11' } as never)
     expect(await db.mentor_notes.where('session_id').equals('sess-1').count()).toBe(1)
@@ -234,10 +234,38 @@ describe('baza lokale', () => {
 
     const db = createDatabase(name)
     await db.open()
-    expect(db.verno).toBe(12)
+    expect(db.verno).toBe(13)
     expect(await db.mentor_notes.get('m-1')).toMatchObject({ title: 'Plani' })
     await db.learn_events.put({ id: 'l-1', _dirty: 1, kind: 'fact', date: '2026-11-16', place: 'today', fact_id: 'bench-press-1' } as never)
     expect(await db.learn_events.where('kind').equals('fact').count()).toBe(1)
+    db.close()
+  })
+
+  it('një bazë e versionit 12 merr Listën e Vrullit (V2-E3-27) pa humbur faktet e Mëso-s', async () => {
+    const name = `db-${crypto.randomUUID()}`
+    const old = new Dexie(name)
+    old.version(1).stores({ _meta: 'key', ...Object.fromEntries(TABLES_V1.map((table) => [table, 'id, _dirty'])) })
+    old.version(2).stores({ _photo_files: 'id, uploaded' })
+    old.version(3).stores({ week_weights: 'id, _dirty, program_id' })
+    old.version(4).stores({ form_videos: 'id, _dirty, exercise_id, session_id', _video_files: 'id, uploaded, removed' })
+    old.version(5).stores({ ai_usage: 'id, _dirty, month' })
+    old.version(6).stores({ water_logs: 'id, _dirty, date' })
+    old.version(7).stores({ weekly_checks: 'id, _dirty, week_start' })
+    old.version(8).stores({ ai_limits: 'id, _dirty' })
+    old.version(9).stores({ achievements: 'id, _dirty' })
+    old.version(10).stores({ daily_states: 'id, _dirty, date', daily_choices: 'id, _dirty, date' })
+    old.version(11).stores({ mentor_notes: 'id, _dirty, kind, session_id' })
+    old.version(12).stores({ learn_events: 'id, _dirty, kind' })
+    await old.open()
+    await old.table('learn_events').put({ id: 'l-1', _dirty: 0, kind: 'fact', date: '2026-11-16' })
+    old.close()
+
+    const db = createDatabase(name)
+    await db.open()
+    expect(db.verno).toBe(13)
+    expect(await db.learn_events.get('l-1')).toMatchObject({ kind: 'fact' })
+    await db._catalog.put({ id: 'head', version: 1, count: 0 })
+    expect((await db._catalog.get('head'))?.version).toBe(1)
     db.close()
   })
 })

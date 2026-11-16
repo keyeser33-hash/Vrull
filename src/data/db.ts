@@ -29,8 +29,21 @@ export interface VideoFile {
   storagePath: string
 }
 
+/**
+ * Lista e Vrullit në telefon (V2-E3-27): një rresht `head` (versioni, numri, kokët e dekodimit) dhe copat `rest:0`, `rest:1`…
+ * me rreshtat e ngjeshur të pjesës që nuk hyn në nisje. Vetëm në telefon; nuk sinkronizohet kurrë me Supabase.
+ */
+export interface CatalogRecord {
+  id: string
+  version?: number
+  count?: number
+  header?: Record<string, unknown>
+  rows?: unknown[][]
+}
+
 export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> } & {
   _meta: Table<MetaEntry, string>
+  _catalog: Table<CatalogRecord, string>
   _photo_files: Table<PhotoFile, string>
   _video_files: Table<VideoFile, string>
 }
@@ -67,5 +80,7 @@ export function createDatabase(name = 'training-hub'): LocalDatabase {
   db.version(11).stores({ mentor_notes: tableSchema('mentor_notes') })
   // Versioni 12: Mëso (V56): faktet e para dhe kuizet e së dielës.
   db.version(12).stores({ learn_events: tableSchema('learn_events') })
+  // Versioni 13: Lista e Vrullit në telefon (V2-E3-27), vetëm në telefon.
+  db.version(13).stores({ _catalog: 'id' })
   return db
 }

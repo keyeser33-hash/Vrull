@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "total": 21268,
+  "common": {
+    "count": 913,
+    "bytes": 168133,
+    "gzipBytes": 55480
+  },
+  "rest": {
+    "count": 20355,
+    "bytes": 2298258,
+    "gzipBytes": 522083
+  },
+  "bySource": {
+    "usda_foundation": 345,
+    "usda_sr_legacy": 7685,
+    "usda_fndds": 5169,
+    "ciqual": 3049,
+    "cofid": 2611,
+    "livsmedelsverket": 2409
+  }
+}
