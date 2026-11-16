@@ -52,3 +52,7 @@ Rregullat: SPEC §0.3h (V59). Burimet dhe licencat: `docs/research/food-sources.
 - Sa ushqime hyjnë në app: e gjithë lista apo vetëm një pjesë, pasi të masim madhësinë.
 
 Prodhuar nga Claude (AI); rishikohet nga Andi
+
+- **Vala 5 (16.11.2026, 7dbe0ce…a161650):** lista vjen me app-in: 913 të zakonshmet menjëherë, 20 355 të tjerat me `import()` (2,3 MB, 535 kB me gzip) dhe ruhen një herë te Dexie me versionin; kërkimi pa internet dhe pa diakritika (40–166 ms nga shkronja te kuadri me CPU 4× më të ngadaltë; fjalët e plota nën 100 ms); produktet e grupit te `food_products`; "Burimet dhe licencat" te Cilësimet. Dy migrime të reja (`foods` me burimin `catalog`, `insert (id)` te `food_products`) dhe `food_catalog` i 15.11 i jepen përdoruesit si një skedar (`vrull-0.28-lista.sql`), i provuar në Postgres 16 lokal mbi të gjitha migrimet. Mbeten: etiketat e porcioneve shqip (vijnë anglisht nga burimet), `name_sq_checked` nga Admini.
+- **Vala 4 (16.11.2026, në punë):** 30 pjata (V65) te `/tmp/live/dishes/` (brumera, mish, perime), secila me burimin, ujin e numëruar dhe vlerësimet te `estimates`; tre kontrollues të pavarur gjetën 2 P1 (groshë që ishte osobuko italian, supë me lëng të numëruar dy herë) dhe rreth 30 P2, të ndrequra; pesë pjata të zëvendësuara (tavë kosi, japrak, groshë, imam bajalldi, tarator) në kontroll të dytë. Pas miratimit të përdoruesit hyjnë te lista me burimin "Vrull, recetë".
+
