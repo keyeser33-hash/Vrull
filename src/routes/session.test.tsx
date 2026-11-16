@@ -652,7 +652,8 @@ describe('seanca e re: "Zhbëj", ndryshimi i çdo seti, rrëshqitja dhe lista (V
       expect(alarm.cancel).toHaveBeenCalled()
       expect(screen.getByRole('status')).toBeEmptyDOMElement()
       expect(screen.queryByText('Seti 1 u ruajt · 62,5 × 12')).not.toBeInTheDocument()
-      expect(await setGroup('Seti 1: 62,5 kg, 9 përsëritje')).toBeInTheDocument()
+      // Seti hapet me vlerat që u zhbënë, që të ndreqet dhe të ruhet përsëri.
+      expect(await setGroup('Seti 1: 62,5 kg, 12 përsëritje')).toBeInTheDocument()
       expect(table()[0]).toHaveAttribute('aria-current', 'step')
     } finally {
       release()
@@ -749,6 +750,7 @@ describe('seanca e re: "Zhbëj", ndryshimi i çdo seti, rrëshqitja dhe lista (V
     expect(screen.getByText('Set 4 logged · 62.5 × 10')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Undo set 4' }))
     expect(await setGroup('Set 4: 62.5 kg, 10 reps')).toBeInTheDocument()
+    expect(table('Sets for this exercise')[3]).toHaveAttribute('aria-current', 'step')
     expect(screen.getByText('Then 15 s rest and keep going')).toBeInTheDocument()
   })
 })

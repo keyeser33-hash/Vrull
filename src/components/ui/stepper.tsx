@@ -122,7 +122,7 @@ function BigNumber({
   return (
     <div className="flex min-w-0 flex-col items-center gap-1">
       {onEdit ? (
-        <button type="button" aria-label={editLabel} onClick={onEdit} className="min-h-touch rounded-md">
+        <button type="button" aria-label={editLabel} onClick={onEdit} className="min-h-touch min-w-touch rounded-md">
           {number}
         </button>
       ) : (

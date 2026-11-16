@@ -157,6 +157,8 @@ interface UndoEntry {
   /** Seti para segmentit, që "Zhbëj" e kthen pa të. */
   base: SetRecord | null
   text: string
+  /** Vlerat e ruajtura: pas "Zhbëj" seti hapet me to, që të ndreqet dhe të ruhet përsëri. */
+  values: SetValues
   done: Promise<SetRecord>
 }
 
@@ -228,6 +230,8 @@ function ActiveSession({
     return token
   }
   const [undo, setUndo] = useState<UndoEntry | null>(null)
+  // Pas "Zhbëj": vlerat e setit të zhbërë, për setin që hapet përsëri (çelësi me `:segment` për segmentin).
+  const [restored, setRestored] = useState<{ key: string; values: SetValues } | null>(null)
 
   const now = useNow(1000)
   const { plan, exercises } = snapshot
@@ -306,6 +310,7 @@ function ActiveSession({
     const tracking = exercises[at.exerciseId]?.tracking ?? 'weight_reps'
     // Seti i ri e mbyll pushimin: njoftimi i tij anulohet (TH-09).
     if (rest.running) rest.skip()
+    setRestored(null)
     const weightKg = tracking === 'timed' ? null : values.weightKg
     const key = setKey({ slotId: at.slotId, setNumber: number })
     if (due) {
@@ -325,7 +330,7 @@ function ActiveSession({
         }),
       )
       const token = local(key, withSegment, done)
-      setUndo({ key, token, slotId: at.slotId, setId: due.set.id, setNumber: number, segment: true, base: due.set, text: setValue(withSegment, texts), done })
+      setUndo({ key, token, slotId: at.slotId, setId: due.set.id, setNumber: number, segment: true, base: due.set, text: setValue(withSegment, texts), values, done })
       void savePulse()
       setSelected(null)
       startRest(due.slot, false)
@@ -352,7 +357,7 @@ function ActiveSession({
       saveSet(store, { newId: id, sessionId: session.id, slot: at, setNumber: number, weightKg, reps: values.reps, seconds: values.seconds, rir: values.rir, technique: technique.type }),
     )
     const token = local(key, saved, done)
-    setUndo({ key, token, slotId: at.slotId, setId: id, setNumber: number, segment: false, base: null, text: setValue(saved, texts), done })
+    setUndo({ key, token, slotId: at.slotId, setId: id, setNumber: number, segment: false, base: null, text: setValue(saved, texts), values, done })
     // Rekordi del në moment (§6, §0.3c): e1RM-ja ose pesha më e madhe për ato përsëritje; banderola
     // mbi pushimin dhe një dridhje e rëndë në vend të së lehtës së çdo ruajtjeje.
     const record = setRecord(asHistory(saved, plan, session.id), live)
@@ -379,6 +384,7 @@ function ActiveSession({
       await undoSet(store, written.id, { segment: entry.segment })
     })
     local(entry.key, entry.segment && entry.base ? { ...entry.base, segments: [] } : null, done)
+    setRestored({ key: entry.segment ? `${entry.key}:segment` : entry.key, values: entry.values })
     if (entry.segment) setDismissed(null)
     else setSelected(entry.slotId)
   }
@@ -450,7 +456,9 @@ function ActiveSession({
       : setDefaults(slot, lastInSlot, week?.weightKg ?? null)
   // "Ndrysho" te njoftimi hap këtë set me përsëritjet ose sekondat e zgjedhura atje (V2-E1-08).
   const fromNotification = opened !== null && slot !== null && !segment && opened.slotId === slot.slotId && opened.setNumber === setNumber
-  const defaults: SetValues | null = proposed && fromNotification ? { ...proposed, ...opened.values } : proposed
+  const stepKey = slot ? `${setKey({ slotId: slot.slotId, setNumber })}${segment ? ':segment' : ''}` : ''
+  const defaults: SetValues | null =
+    proposed && restored?.key === stepKey ? restored.values : proposed && fromNotification ? { ...proposed, ...opened.values } : proposed
   const technique: Technique = slot && setNumber === slot.sets && !segment ? slot.technique : { type: 'none' }
   const dropTo = slot?.technique.type === 'drop_set' ? drop(lastInSlot?.weightKg ?? defaults?.weightKg ?? 0) : null
   const restPauseSeconds = slot?.technique.type === 'rest_pause' ? (slot.technique.restSeconds ?? 15) : null
@@ -545,7 +553,7 @@ function ActiveSession({
 
   return frame(
     <SetView
-      key={`${slot.slotId}:${setNumber}:${active ? '' : 'view:'}${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}`}
+      key={`${slot.slotId}:${setNumber}:${active ? '' : 'view:'}${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}${restored?.key === stepKey ? ':zhbere' : ''}`}
       mode={active ? 'set' : 'view'}
       exercise={exercise}
       exerciseName={exercise?.name ?? ''}

@@ -17,9 +17,10 @@ import { editable, previousText, setValue, targetShort } from './session-format'
 /** Përsëritjet e një seti të ruajtur me segmentet: "6+5". */
 const repsWithSegments = (set: SetRecord, fmt: Format) => `${fmt.number(set.reps ?? 0)}${set.segments.map((segment) => `+${fmt.number(segment.reps)}`).join('')}`
 
+// Kolona e parë mban numrin dhe etiketën ("rest-pause", "rekord") pa e prerë.
 const COLUMNS = {
-  weighted: 'grid-cols-[46px_minmax(0,1fr)_58px_minmax(52px,64px)_32px]',
-  timed: 'grid-cols-[46px_minmax(0,1fr)_minmax(64px,80px)_32px]',
+  weighted: 'grid-cols-[58px_minmax(0,1fr)_54px_minmax(48px,60px)_32px]',
+  timed: 'grid-cols-[58px_minmax(0,1fr)_minmax(64px,80px)_32px]',
 }
 
 export function SetTable({
@@ -161,7 +162,7 @@ function TableRow({
   const body = (
     <>
       {grid}
-      {noteText ? <span className="pl-[54px] type-caption text-muted-foreground tabular-nums">{noteText}</span> : null}
+      {noteText ? <span className="pl-[66px] type-caption text-muted-foreground tabular-nums">{noteText}</span> : null}
     </>
   )
 
