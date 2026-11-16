@@ -271,7 +271,9 @@ export const exerciseExplainRemote: ExplainRemote = {
       const response = error.context as Response
       result = explainResultFrom(response.status, await response.json().catch(() => null))
     } else result = explainResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
-    if (result.ok || result.error === 'unreadable') void scheduler.syncNow()
+    // Pas një kostoje (ok, unreadable) ose kur serveri thotë "limit", sinkronizimi sjell `ai_usage` dhe telefoni
+    // e mëson kufirin, që butoni të thotë pse pa thirrje të reja.
+    if (result.ok || result.error === 'unreadable' || result.error === 'limit') void scheduler.syncNow()
     return result
   },
 }

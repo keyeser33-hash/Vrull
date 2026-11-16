@@ -261,11 +261,54 @@ describe('Ushtrimi', () => {
       view.dispose()
     })
 
+    it('serveri thotë "limit" para se telefoni ta dijë: butoni thotë pse, me datën e serverit, dhe fiket', async () => {
+      const calls = vi.fn(async () => ({ ok: false as const, error: 'limit' as const, month: { month: '2026-11-01', spentEur: 10, limitEur: 10 } }))
+      data.explain = calls
+      const user = userEvent.setup()
+      online(true)
+      await renderAt('/ushtrimi/Cable_Crunch')
+      const button = await screen.findByRole('button', { name: 'Shpjegoje më shumë' })
+      await waitFor(() => expect(button).toBeEnabled())
+      await user.click(button)
+      expect(await screen.findByText('Kufiri i AI-së u arrit; rinis më 1 dhjetor. Udhëzuesi më sipër mbetet.')).toBeInTheDocument()
+      expect(button).toBeDisabled()
+      expect(calls).toHaveBeenCalledTimes(1)
+    })
+
+    it('lidhja bie pas shtypjes: butoni thotë "Pa internet" dhe mbetet për një provë tjetër', async () => {
+      data.explain = vi.fn(async () => ({ ok: false as const, error: 'offline' as const }))
+      const user = userEvent.setup()
+      online(true)
+      await renderAt('/ushtrimi/Cable_Crunch')
+      const button = await screen.findByRole('button', { name: 'Shpjegoje më shumë' })
+      await waitFor(() => expect(button).toBeEnabled())
+      await user.click(button)
+      expect(await screen.findByText(/^Pa internet: shpjegimi me AI kërkon lidhjen/)).toBeInTheDocument()
+      expect(button).toBeEnabled()
+    })
+
+    it('anglisht: një gabim i funksionit del si alarm dhe butoni mbetet; hyrja e skaduar e thotë', async () => {
+      data.explain = vi.fn(async () => ({ ok: false as const, error: 'timeout' as const }))
+      const user = userEvent.setup()
+      online(true)
+      act(() => language.set('en'))
+      await renderAt('/ushtrimi/Cable_Crunch')
+      const button = await screen.findByRole('button', { name: 'Explain more' })
+      await waitFor(() => expect(button).toBeEnabled())
+      await user.click(button)
+      expect(await screen.findByRole('alert')).toHaveTextContent('The explanation did not come through. Try again in a moment.')
+      expect(button).toBeEnabled()
+      data.explain = vi.fn(async () => ({ ok: false as const, error: 'unauthorized' as const }))
+      await user.click(button)
+      await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Sign in again to use the AI explanation.'))
+    })
+
     it('pas kufirit të muajit: butoni thotë pse dhe nuk thërret asgjë', async () => {
       const calls = vi.fn(async () => reply('A', 'B', 'C'))
       data.explain = calls
+      const usageId = crypto.randomUUID()
       await data.store.put('ai_usage', {
-        id: crypto.randomUUID(),
+        id: usageId,
         user_id: '11111111-1111-4111-8111-111111111111',
         month: `${data.clock.date.getFullYear()}-${String(data.clock.date.getMonth() + 1).padStart(2, '0')}-01`,
         feature: 'explain',
@@ -277,9 +320,14 @@ describe('Ushtrimi', () => {
       })
       await renderAt('/ushtrimi/Cable_Crunch')
       const button = await screen.findByRole('button', { name: 'Shpjegoje më shumë' })
-      await waitFor(() => expect(screen.getByText(/^Kufiri i AI-së u arrit; rinis më /)).toBeInTheDocument())
-      expect(button).toBeDisabled()
-      expect(calls).not.toHaveBeenCalled()
+      try {
+        await waitFor(() => expect(screen.getByText(/^Kufiri i AI-së u arrit; rinis më /)).toBeInTheDocument())
+        expect(button).toBeDisabled()
+        expect(calls).not.toHaveBeenCalled()
+      } finally {
+        // Kufiri i shpenzuar nuk mbetet për provat e tjera të skedarit.
+        await data.store.remove('ai_usage', usageId)
+      }
     })
   })
 })

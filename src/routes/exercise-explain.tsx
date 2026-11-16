@@ -5,6 +5,7 @@ import { surfaceClass } from '@/components/ui/surface'
 import { aiMonth } from '@/data/ai-usage'
 import { exerciseExplainRemote, store, useLocalQuery } from '@/data/app-data'
 import { type ExplainError, type ExplainSubject, explainBlock, explainExercise, savedExplanation } from '@/data/exercise-explain'
+import type { ExplainMonth } from '../../supabase/functions/exercise-explain/shared'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useOnline } from '@/lib/use-online'
@@ -19,8 +20,11 @@ export function ExplainMore({ subject }: { subject: ExplainSubject }) {
   const online = useOnline()
   const [paragraphs, setParagraphs] = useState<string[] | null>(null)
   const [error, setError] = useState<ExplainError | null>(null)
+  // Muaji që ktheu serveri me "limit": kufiri mund të arrihet në server para se telefoni ta dijë (një telefon
+  // tjetër, sinkronizimi që s'ka ardhur), dhe data e rinisjes merret prej tij.
+  const [serverMonth, setServerMonth] = useState<ExplainMonth | null>(null)
   const [busy, setBusy] = useState(false)
-  const state = useLocalQuery(async () => ({ block: await explainBlock(store, online), saved: (await savedExplanation(store, subject.key, language)) !== null, month: await aiMonth(store) }), [online, subject.key, language])
+  const state = useLocalQuery(async () => ({ block: await explainBlock(store, online), saved: (await savedExplanation(store, subject, language)) !== null, month: await aiMonth(store) }), [online, subject.key, language])
 
   if (paragraphs) {
     return (
@@ -30,8 +34,8 @@ export function ExplainMore({ subject }: { subject: ExplainSubject }) {
             <Icon name="shkendija" size={14} />
             {t('programme.explain.by')}
           </span>
-          {paragraphs.map((paragraph) => (
-            <p key={paragraph} className="m-0 text-[15px] leading-[1.5] text-foreground">
+          {paragraphs.map((paragraph, index) => (
+            <p key={index} className="m-0 text-[15px] leading-[1.5] text-foreground">
               {paragraph}
             </p>
           ))}
@@ -44,8 +48,12 @@ export function ExplainMore({ subject }: { subject: ExplainSubject }) {
     )
   }
 
-  const blocked = state && !state.saved ? state.block : null
-  const reason = blocked === 'offline' ? t('programme.explain.offline') : blocked === 'limit' ? t('programme.explain.limit', { date: fmt.date(state!.month.resetsOn, { weekday: false }) }) : null
+  const local = state && !state.saved ? state.block : null
+  // Gabimet "limit" dhe "offline" nga thirrja thonë pse, si gjendja e telefonit: lidhja që bie pas shtypjes,
+  // ose kufiri i serverit që telefoni s'e di ende. Pas "limit" butoni mbetet i fikur; pas "offline" provohet prapë.
+  const blocked = error === 'limit' ? 'limit' : (local ?? (error === 'offline' ? 'offline' : null))
+  const resetsOn = serverMonth && error === 'limit' ? nextMonth(serverMonth.month) : state?.month.resetsOn
+  const reason = blocked === 'offline' ? t('programme.explain.offline') : blocked === 'limit' && resetsOn ? t('programme.explain.limit', { date: fmt.date(resetsOn, { weekday: false }) }) : null
   const failed = error === 'offline' || error === 'limit' ? null : error
   const open = async () => {
     setBusy(true)
@@ -53,14 +61,24 @@ export function ExplainMore({ subject }: { subject: ExplainSubject }) {
     try {
       const result = await explainExercise(store, exerciseExplainRemote, subject, language, navigator.onLine)
       if (result.ok) setParagraphs(result.paragraphs)
-      else setError(result.error)
+      else {
+        setError(result.error)
+        setServerMonth(result.month ?? null)
+      }
     } finally {
       setBusy(false)
     }
   }
   return (
     <div className="flex flex-col gap-2">
-      <Button variant="outline" size="lg" className="w-full" disabled={busy || !state || !!blocked} aria-describedby="explain-note" onClick={() => void open()}>
+      <Button
+        variant="outline"
+        size="lg"
+        className="w-full"
+        disabled={busy || !state || !!local || error === 'limit'}
+        aria-describedby="explain-note"
+        onClick={() => void open()}
+      >
         {busy ? t('programme.explain.loading') : t('programme.explain.button')}
       </Button>
       <p id="explain-note" role={failed ? 'alert' : undefined} className={cn('text-center text-[13px] leading-[1.35]', failed ? 'text-danger' : 'text-muted-foreground')}>
@@ -68,4 +86,10 @@ export function ExplainMore({ subject }: { subject: ExplainSubject }) {
       </p>
     </div>
   )
+}
+
+/** Dita e parë e muajit pas muajit të serverit ("2026-11-01" → 1 dhjetor 2026), kur rinis kufiri. */
+function nextMonth(month: string): Date {
+  const [year, monthNumber] = month.split('-').map(Number)
+  return new Date(year, monthNumber, 1)
 }

@@ -1,6 +1,6 @@
 // "Shpjegoje më shumë" (V56, SPEC §0.3e), pa Deno dhe pa Supabase: kontrolli i kërkesës së telefonit, kërkesa
 // te Claude me udhëzuesin ekzistues si kontekst dhe skemën e daljes, dhe shpjegimi i pastër. index.ts e lidh
-// me Deno.serve; provat: logic.test.ts dhe handler.test.ts.
+// me Deno.serve; provat: handler.test.ts.
 //
 // Asnjë tekst personal nuk shkon këtu: vetëm ushtrimi (emri, muskujt, udhëzuesi i paketuar me app-in) dhe
 // gjuha. Modeli shpjegon çfarë thotë udhëzuesi; nuk shton burime, studime, emra ose numra që s'janë aty.
@@ -24,10 +24,11 @@ export type { ExplainRequest } from './shared.ts'
 /** Haiku 5.5, si te funksionet e tjera me AI (log-parse, supplement-label). */
 export const MODEL = 'claude-haiku-5-5'
 export const API_VERSION = '2026-10-21'
-export const MAX_TOKENS = 1_500
+/** Gjashtë paragrafë deri në 1 000 shkronja në shqip zënë rreth 2 000 tokena; me rezervë që JSON-i të mos pritet. */
+export const MAX_TOKENS = 3_000
 export const EFFORT = 'low'
 export const AI_TIMEOUT_MS = 30_000
-/** Kostoja më e keqe: ~3 000 tokena hyrje dhe 1 500 dalje, rreth $0,001; me rezervë, si kutia. */
+/** Kostoja më e keqe: ~3 000 tokena hyrje dhe 3 000 dalje, rreth $0,002; me rezervë, si kutia. */
 export const AI_CALL_RESERVE_EUR = 0.01
 /** Një paragraf nuk kalon këtë gjatësi (rreth 150 fjalë). */
 export const MAX_PARAGRAPH = 1_000

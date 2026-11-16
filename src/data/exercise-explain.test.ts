@@ -1,5 +1,5 @@
 import { createDatabase } from './db'
-import { type ExplainRemote, type ExplainResult, explainBlock, explainExercise, explainRequest, explainResultFrom, savedExplanation, type ExplainSubject } from './exercise-explain'
+import { type ExplainRemote, type ExplainResult, explainBlock, explainExercise, explainRequest, explainResultFrom, explanationKey, savedExplanation, type ExplainSubject } from './exercise-explain'
 import { createLocalStore } from './store'
 import { CLEAN } from './tables'
 
@@ -83,9 +83,9 @@ describe('shpjegimi', () => {
     const first = await explainExercise(store, fake, SUBJECT, 'sq', true)
     expect(first).toMatchObject({ ok: true, paragraphs: ['Një.', 'Dy.', 'Tre.'] })
     expect(calls).toHaveLength(1)
-    expect(await savedExplanation(store, SUBJECT.key, 'sq')).toEqual(['Një.', 'Dy.', 'Tre.'])
-    expect(await savedExplanation(store, SUBJECT.key, 'en')).toBeNull()
-    expect(await savedExplanation(store, 'tjetri', 'sq')).toBeNull()
+    expect(await savedExplanation(store, SUBJECT, 'sq')).toEqual(['Një.', 'Dy.', 'Tre.'])
+    expect(await savedExplanation(store, SUBJECT, 'en')).toBeNull()
+    expect(await savedExplanation(store, { ...SUBJECT, key: 'tjetri' }, 'sq')).toBeNull()
 
     const again = await explainExercise(store, fake, SUBJECT, 'sq', false)
     expect(again).toMatchObject({ ok: true, paragraphs: ['Një.', 'Dy.', 'Tre.'], costEur: 0 })
@@ -111,7 +111,7 @@ describe('shpjegimi', () => {
     expect(await explainBlock(store, true)).toBe('limit')
     expect(await explainExercise(store, fake, SUBJECT, 'sq', true)).toEqual({ ok: false, error: 'limit' })
     expect(calls).toHaveLength(0)
-    await store.writeDevice(`explain:sq:${SUBJECT.key}`, ['Ruajtur.'])
+    await store.writeDevice(explanationKey(SUBJECT, 'sq'), ['Ruajtur.'])
     expect(await explainExercise(store, fake, SUBJECT, 'sq', true)).toMatchObject({ ok: true, paragraphs: ['Ruajtur.'] })
   })
 
@@ -119,7 +119,20 @@ describe('shpjegimi', () => {
     const { store } = setup()
     const { remote: fake } = remote({ ok: false, error: 'timeout' })
     expect(await explainExercise(store, fake, SUBJECT, 'sq', true)).toEqual({ ok: false, error: 'timeout' })
-    expect(await savedExplanation(store, SUBJECT.key, 'sq')).toBeNull()
+    expect(await savedExplanation(store, SUBJECT, 'sq')).toBeNull()
+  })
+
+  it('kur udhëzuesi ndryshon (një fakt i korrigjuar), shpjegimi i vjetër nuk hapet dhe kërkohet një i ri', async () => {
+    const { store } = setup()
+    const { calls, remote: fake } = remote()
+    await explainExercise(store, fake, SUBJECT, 'sq', true)
+    const corrected = { ...SUBJECT, guide: { ...SUBJECT.guide!, cues: list('Këmbët të ngulura në dysheme') } }
+    expect(await savedExplanation(store, corrected, 'sq')).toBeNull()
+    await explainExercise(store, fake, corrected, 'sq', true)
+    expect(calls).toHaveLength(2)
+    expect(calls[1].guide?.cues).toEqual(['Këmbët të ngulura në dysheme'])
+    // Pa udhëzues (ushtrim pa udhëzues ende): kur udhëzuesi vjen me një valë, shpjegimi rikërkohet.
+    expect(explanationKey({ ...SUBJECT, guide: null }, 'sq')).not.toBe(explanationKey(SUBJECT, 'sq'))
   })
 })
 

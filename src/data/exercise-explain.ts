@@ -61,11 +61,26 @@ export function explainRequest(subject: ExplainSubject, language: ExplainLanguag
   }
 }
 
-const savedKey = (exerciseKey: string, language: ExplainLanguage) => `explain:${language}:${exerciseKey}`
+/** FNV-1a 32 bit: shenja e shkurtër e kërkesës, që një udhëzues i ndryshuar të kërkojë shpjegim të ri. */
+function fingerprint(text: string): string {
+  let hash = 0x811c9dc5
+  for (let index = 0; index < text.length; index++) {
+    hash ^= text.charCodeAt(index)
+    hash = Math.imul(hash, 0x01000193)
+  }
+  return (hash >>> 0).toString(36)
+}
 
-/** Shpjegimi i ruajtur për ushtrimin dhe gjuhën; null kur s'ka. */
-export async function savedExplanation(store: LocalStore, exerciseKey: string, language: ExplainLanguage): Promise<string[] | null> {
-  const value = await store.readDevice(savedKey(exerciseKey, language))
+/**
+ * Ku ruhet shpjegimi: ushtrimi, gjuha dhe shenja e kërkesës. Kur udhëzuesi i paketuar ndryshon (një fakt i
+ * korrigjuar, udhëzuesi që vjen me një valë të re), shenja ndryshon dhe hapja e radhës kërkon shpjegim të ri.
+ */
+export const explanationKey = (subject: ExplainSubject, language: ExplainLanguage) =>
+  `explain:${language}:${subject.key}:${fingerprint(JSON.stringify(explainRequest(subject, language)))}`
+
+/** Shpjegimi i ruajtur për ushtrimin, gjuhën dhe udhëzuesin e tanishëm; null kur s'ka. */
+export async function savedExplanation(store: LocalStore, subject: ExplainSubject, language: ExplainLanguage): Promise<string[] | null> {
+  const value = await store.readDevice(explanationKey(subject, language))
   return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string') ? (value as string[]) : null
 }
 
@@ -88,11 +103,11 @@ export async function explainExercise(
   language: ExplainLanguage,
   online: boolean,
 ): Promise<ExplainResult> {
-  const saved = await savedExplanation(store, subject.key, language)
+  const saved = await savedExplanation(store, subject, language)
   if (saved) return { ok: true, paragraphs: saved, costEur: 0 }
   const block = await explainBlock(store, online)
   if (block) return { ok: false, error: block }
   const result = await remote.explain(explainRequest(subject, language))
-  if (result.ok) await store.writeDevice(savedKey(subject.key, language), result.paragraphs)
+  if (result.ok) await store.writeDevice(explanationKey(subject, language), result.paragraphs)
   return result
 }
