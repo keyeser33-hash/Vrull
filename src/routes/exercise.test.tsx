@@ -7,7 +7,11 @@ import { sampleWeek, type TestClock } from './programme-test-setup'
 
 // Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi, muskujt, rekordet me grafikun e
 // e1RM-së, historia e seteve dhe videoja; edhe për ushtrimet e bibliotekës që s'janë në telefon.
-const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, clock: { date: new Date() } as TestClock }))
+const data = vi.hoisted(() => ({
+  store: null as unknown as LocalStore,
+  clock: { date: new Date() } as TestClock,
+  explain: null as unknown as (request: unknown) => Promise<unknown>,
+}))
 vi.mock('@/data/app-data', async () => {
   const { createDatabase } = await import('@/data/db')
   const { createLocalStore } = await import('@/data/store')
@@ -18,6 +22,7 @@ vi.mock('@/data/app-data', async () => {
   data.store = store
   return {
     store,
+    exerciseExplainRemote: { explain: (request: unknown) => data.explain(request) },
     useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
@@ -195,5 +200,86 @@ describe('Ushtrimi', () => {
     }
     const setup = screen.getByRole('heading', { name: 'Setup' }).closest('section')!
     expect(setup).toHaveTextContent('Source:')
+  })
+
+  // "Shpjegoje më shumë" (V56, §0.3e; bordi "Ushtrimi · AI"): pa prush, "Shpjeguar nga AI", i ruajtur në telefon,
+  // dhe pa internet ose pas kufirit butoni thotë pse.
+  describe('"Shpjegoje më shumë"', () => {
+    const reply = (...paragraphs: string[]) => ({ ok: true as const, paragraphs, costEur: 0.001 })
+    const online = (value: boolean) => vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(value)
+
+    afterEach(() => vi.restoreAllMocks())
+
+    it('anglisht: kërkesa me udhëzuesin anglisht, shpjegimi, etiketa dhe mbyllja', async () => {
+      const requests: any[] = []
+      data.explain = async (request) => (requests.push(request), reply('Elbows decide the work.', 'Keep the chest up.', 'Do not bounce.'))
+      const user = userEvent.setup()
+      act(() => language.set('en'))
+      await renderAt(`/ushtrimi/${await benchId()}`)
+      const button = await screen.findByRole('button', { name: 'Explain more' })
+      await waitFor(() => expect(button).toBeEnabled())
+      expect(screen.getByText('With AI · counts towards your monthly limit')).toBeInTheDocument()
+      await user.click(button)
+      const section = await screen.findByRole('region', { name: 'AI explanation' })
+      expect(section).toHaveTextContent('Explained by AI')
+      expect(section).toHaveTextContent('Elbows decide the work.')
+      expect(section).toHaveTextContent('AI explanations can contain mistakes. The sourced facts are above.')
+      expect(requests).toHaveLength(1)
+      expect(requests[0]).toMatchObject({ language: 'en', exercise: { name: 'Bench Press', primary: ['Chest'] } })
+      expect(requests[0].guide.cues.join(' ')).toMatch(/elbows/i)
+      expect(requests[0].guide.cues.join(' ')).not.toMatch(/Bërrylat/)
+      await user.click(screen.getByRole('button', { name: 'Close the explanation' }))
+      expect(screen.queryByRole('region', { name: 'AI explanation' })).not.toBeInTheDocument()
+    })
+
+    it('pa internet: butoni thotë pse; kur vjen interneti shpjegimi ruhet, dhe hapja e dytë punon pa internet', async () => {
+      const calls = vi.fn(async () => reply('Një paragraf.', 'Dy paragrafë.', 'Tre paragrafë.'))
+      data.explain = calls
+      const user = userEvent.setup()
+      const state = online(false)
+      const view = await renderAt(`/ushtrimi/${await benchId()}`)
+      const button = await screen.findByRole('button', { name: 'Shpjegoje më shumë' })
+      await waitFor(() => expect(screen.getByText(/^Pa internet: shpjegimi me AI/)).toBeInTheDocument())
+      expect(button).toBeDisabled()
+      expect(calls).not.toHaveBeenCalled()
+
+      state.mockReturnValue(true)
+      act(() => window.dispatchEvent(new Event('online')))
+      await waitFor(() => expect(button).toBeEnabled())
+      await user.click(button)
+      const section = await screen.findByRole('region', { name: 'Shpjegim nga AI' })
+      expect(section).toHaveTextContent('Shpjeguar nga AI')
+      expect(section).toHaveTextContent('Shpjegimet e AI-së mund të kanë gabime. Faktet me burim janë më sipër.')
+      expect(calls).toHaveBeenCalledTimes(1)
+
+      await user.click(screen.getByRole('button', { name: 'Mbyll shpjegimin' }))
+      state.mockReturnValue(false)
+      act(() => window.dispatchEvent(new Event('offline')))
+      await user.click(await screen.findByRole('button', { name: 'Shpjegoje më shumë' }))
+      expect(await screen.findByRole('region', { name: 'Shpjegim nga AI' })).toHaveTextContent('Dy paragrafë.')
+      expect(calls).toHaveBeenCalledTimes(1)
+      view.dispose()
+    })
+
+    it('pas kufirit të muajit: butoni thotë pse dhe nuk thërret asgjë', async () => {
+      const calls = vi.fn(async () => reply('A', 'B', 'C'))
+      data.explain = calls
+      await data.store.put('ai_usage', {
+        id: crypto.randomUUID(),
+        user_id: '11111111-1111-4111-8111-111111111111',
+        month: `${data.clock.date.getFullYear()}-${String(data.clock.date.getMonth() + 1).padStart(2, '0')}-01`,
+        feature: 'explain',
+        model: 'claude-haiku-5-5',
+        input_tokens: 1000,
+        output_tokens: 500,
+        cost_usd: 11,
+        cost_eur: 10,
+      })
+      await renderAt('/ushtrimi/Cable_Crunch')
+      const button = await screen.findByRole('button', { name: 'Shpjegoje më shumë' })
+      await waitFor(() => expect(screen.getByText(/^Kufiri i AI-së u arrit; rinis më /)).toBeInTheDocument())
+      expect(button).toBeDisabled()
+      expect(calls).not.toHaveBeenCalled()
+    })
   })
 })

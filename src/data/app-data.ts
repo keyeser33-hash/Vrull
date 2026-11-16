@@ -13,6 +13,7 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js'
 import type { ImportRemote } from './pdf-import'
 import type { LabelRemote } from './supplement-label'
 import type { BoxRemote } from './ai-box'
+import type { ExplainRemote } from './exercise-explain'
 import { type AdminRemote, adminResultFrom } from './ai-admin'
 import { createSync } from './sync'
 import { PENDING, REJECTED, TABLES } from './tables'
@@ -250,6 +251,26 @@ export const boxRemote: BoxRemote = {
       const response = error.context as Response
       result = boxResultFrom(response.status, await response.json().catch(() => null))
     } else result = boxResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
+    if (result.ok || result.error === 'unreadable') void scheduler.syncNow()
+    return result
+  },
+}
+
+/**
+ * "Shpjegoje më shumë" te faqja e ushtrimit (V56), përmes funksionit `exercise-explain` (vetëm me sesion):
+ * kthen paragrafët; kostoja ruhet në server dhe vjen me sinkronizimin.
+ */
+export const exerciseExplainRemote: ExplainRemote = {
+  async explain(request) {
+    const { explainResultFrom } = await import('./exercise-explain')
+    if (!navigator.onLine) return explainResultFrom(null, null)
+    const { data, error } = await supabase.functions.invoke('exercise-explain', { body: request })
+    let result
+    if (!error) result = explainResultFrom(200, data)
+    else if (error instanceof FunctionsHttpError) {
+      const response = error.context as Response
+      result = explainResultFrom(response.status, await response.json().catch(() => null))
+    } else result = explainResultFrom(error instanceof FunctionsFetchError ? null : 502, null)
     if (result.ok || result.error === 'unreadable') void scheduler.syncNow()
     return result
   },

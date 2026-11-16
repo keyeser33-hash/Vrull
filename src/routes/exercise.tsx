@@ -11,6 +11,7 @@ import { ExerciseVideoSheet, MoreVideos, WatchVideoButton } from '@/components/u
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
+import { type ExplainSubject } from '@/data/exercise-explain'
 import { type ExerciseDetail, exerciseDetail, exerciseRowFor } from '@/data/exercises'
 import { programView, setExerciseVideo, trainingHistory } from '@/data/training'
 import type { I18n } from '@/i18n'
@@ -25,6 +26,7 @@ import { type ChosenVideo, chosenVideo, curatedVideos } from '@/program/exercise
 import { tempoOf } from '@/program/motion'
 import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
+import { ExplainMore } from './exercise-explain'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { CueList, GuideHistory, GuideSections, SESSION_CUES } from './exercise-guide'
 import { FormVideosSection } from './form-video'
@@ -96,6 +98,7 @@ export function ExercisePage() {
       {guide ? <GuideSections guide={guide} /> : null}
       <MoreVideos videos={more} />
       {guide ? <GuideHistory guide={guide} /> : null}
+      <ExplainMore subject={explainSubject(detail, guide, i18n)} />
       <UserVideo detail={detail} onWatch={() => open('videoja')} onEdit={() => open('video')} />
       {plan && slot ? (
         <Button variant="outline" className="w-full" onClick={() => open('ushtrimi')}>
@@ -122,6 +125,20 @@ export function ExercisePage() {
       ) : null}
     </div>
   )
+}
+
+/** Ushtrimi për "Shpjegoje më shumë": emri, muskujt në gjuhën e app-it dhe udhëzuesi; asgjë personale. */
+function explainSubject(detail: ExerciseDetail, guide: ReturnType<typeof guideFor>, { t }: I18n): ExplainSubject {
+  const primary = groupsOf(detail.primary)
+  const secondary = groupsOf(detail.secondary).filter((group) => !primary.includes(group))
+  return {
+    key: detail.key,
+    name: detail.name,
+    equipment: equipmentName(t, detail.equipment),
+    primary: primary.map((group) => muscleName(t, group)),
+    secondary: secondary.map((group) => muscleName(t, group)),
+    guide,
+  }
 }
 
 /** "Gjoksi · shufër · 4 sete te Shortcut to Size". */
