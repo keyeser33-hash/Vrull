@@ -80,9 +80,11 @@ export function StoryViewer({
       }
       return
     }
-    if (!free || (event.target as HTMLElement).closest('input, select, textarea')) return
-    if (event.key === 'ArrowRight') go(at + 1)
+    if ((event.target as HTMLElement).closest('input, select, textarea')) return
+    // ← kthen mbrapa edhe te një faqe me zgjedhje të hapura, si butoni "Story i mëparshëm": mbrapa nuk humbet
+    // asgjë. → kalon vetëm kur faqja është e lirë, që një zgjedhje të mos kapërcehet.
     if (event.key === 'ArrowLeft') go(at - 1)
+    if (event.key === 'ArrowRight' && free) go(at + 1)
   }
 
   const onDown = (event: PointerEvent<HTMLDivElement>) => {

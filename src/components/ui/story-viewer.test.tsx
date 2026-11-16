@@ -77,6 +77,14 @@ describe('StoryViewer', () => {
     expect(screen.queryByRole('button', { name: 'Story i mëparshëm' })).not.toBeInTheDocument()
   })
 
+  it('me zgjedhje të hapura: ← kthen mbrapa si "Story i mëparshëm", → jo', () => {
+    render(<Host pages={[info('a'), asking, info('c')]} onClose={() => undefined} start={1} />)
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'ArrowRight' })
+    expect(screen.getByRole('button', { name: 'Përgjigje' })).toBeInTheDocument()
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'ArrowLeft' })
+    expect(screen.getByText('Faqja a')).toBeInTheDocument()
+  })
+
   it('prekja e një butoni brenda nuk e kalon story-n', async () => {
     const press = vi.fn()
     render(<Host pages={[{ key: 'x', label: 'x', children: <button type="button" onClick={press}>Hap</button> }, info('b')]} onClose={() => undefined} />)
