@@ -34,6 +34,7 @@ import { editable, elapsedText, loadText, previousText, rangeText, setValue, spo
 import { type BannerRecord, RecordBanner } from './session-banner'
 import { recordPulse, savePulse } from './session-motion'
 import { SessionGuide } from './session-guide'
+import { RestFactCard } from './learn-cards'
 import { useSessionGuide } from './session-guide-hook'
 import { type KeypadChip, KeypadSheet } from './session-keypad'
 import { SessionLighter } from './session-lighter'
@@ -536,6 +537,7 @@ function ActiveSession({
         next={coming}
         records={records}
         notice={notice}
+        exercise={exercises[lastSet.exerciseId]?.name ?? null}
         onEdit={openEdit}
         onSave={() => {
           if (slot && defaults) save({ slot, setNumber, technique, segment }, defaults)
@@ -1245,10 +1247,13 @@ function RestView({
   next,
   records,
   notice,
+  exercise,
   onEdit,
   onSave,
 }: {
   rest: ReturnType<typeof useRestTimer>
+  /** Ushtrimi i setit të fundit ("A e dije?" i ushtrimit aktual). */
+  exercise: string | null
   /** Seti i fundit, për lexuesin e ekranit; null kur e thotë "Zhbëj". */
   saved: SetRecord | null
   next: RestNext | null
@@ -1318,7 +1323,8 @@ function RestView({
           </Button>
         </div>
 
-        {/* "A e dije?" (§0.3e) vjen me Mëso-n: këtu, poshtë kohëmatësit dhe mbi "Ruaj setin", pa i mbuluar. */}
+        {/* "A e dije?" (§0.3e): një fakt i ushtrimit aktual, poshtë kohëmatësit dhe mbi "Ruaj setin", pa e mbuluar. */}
+        <RestFactCard exercise={exercise} />
 
         {next && next.newExercise ? (
           <NewExerciseCard next={next} target={target} />

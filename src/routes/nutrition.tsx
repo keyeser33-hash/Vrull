@@ -15,6 +15,8 @@ import { useI18n } from '@/i18n/use-i18n'
 import { shiftDate } from '@/lib/calendar'
 import type { MealKey } from '@/nutrition/meals'
 import { JIM_RANGE_KG } from '@/nutrition/targets'
+import { FoodFactCard } from './learn-cards'
+import { useFoodFact } from './learn-hooks'
 
 // Ushqimi (V59, SPEC §0.3h, bordet "0.42 · Ushqimi i ri"): kreu me ditën (‹ ›) dhe llojin e ditës; kaloritë që mbeten,
 // makrot, uji dhe "Plotëso makrot"; rripi i suplementeve; vija e kohës "Dita" me vaktin e radhës të hapur; lidhjet
@@ -56,6 +58,8 @@ export function NutritionPage() {
     })
     navigate(`${location.pathname}${location.search}`, { replace: true, state: null })
   }, [location, navigate, show, t])
+  // "A e dije?" pas regjistrimit (§0.3e): vetëm në ditën e ushqimit të sotme, poshtë vaktit me ushqimin e faktit.
+  const fact = useFoodFact(view?.day.date ?? '', !!view?.day.isToday)
   const opened = params.get('vakti') as MealKey | null
   const open = (next: Record<string, string>) => setParams({ ...Object.fromEntries(params), ...next })
   const go = (date: string, today: string) => {
@@ -77,13 +81,14 @@ export function NutritionPage() {
   }
   const { day, today } = view
   const meal = day.meals.find((entry) => entry.meal === opened)
+  const factMeal = fact ? day.meals.filter((entry) => entry.entries.some((line) => line.sourceId === `jim:${fact.food}`)).at(-1)?.meal : undefined
 
   return (
     <div className="flex flex-col gap-5">
       <FoodHeader day={day} today={today} onGo={(date) => go(date, today)} />
       <DayHero day={day} onToast={show} />
       <SupplementStrip day={day} onOpenList={() => open({ suplementet: '1' })} onToast={show} />
-      <DayTimeline day={day} now={now} onOpen={(next) => open({ vakti: next })} onToast={show} />
+      <DayTimeline day={day} now={now} onOpen={(next) => open({ vakti: next })} onToast={show} after={fact && factMeal ? { meal: factMeal, node: <FoodFactCard entry={fact} /> } : null} />
       <PlanLinks day={day} />
       {/* Vendi i fushës "Çfarë hëngre?" mbi tab-bar-in, që pjesa e fundit të mos mbetet poshtë saj. */}
       <div aria-hidden className="h-[76px] shrink-0" />

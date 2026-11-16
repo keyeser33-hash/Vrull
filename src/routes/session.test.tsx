@@ -788,6 +788,27 @@ describe('seanca e re: pushimi me tabelën dhe ushtrimin e ri (V58)', () => {
     )
   })
 
+  it('"A e dije?" te pushimi (§0.3e): fakti i ushtrimit aktual poshtë kohëmatësit dhe mbi "Ruaj setin 2"; "×" e mbyll për sot', async () => {
+    await atPhaseOneWeekTwo()
+    const user = userEvent.setup()
+    await renderApp()
+    for (let rep = 0; rep < 3; rep++) await user.click(await screen.findByRole('button', { name: 'Rrit përsëritjet' }))
+    await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
+    const card = await screen.findByRole('region', { name: 'A e dije?' })
+    expect(within(card).getByText('Bench Press')).toBeInTheDocument()
+    expect(within(card).getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent)).toEqual(['Mbyll për sot', 'Më shumë'])
+    // Radha në faqe: kohëmatësi, karta, pastaj "Ruaj setin 2" në fund (jashtë kartës, pa e mbuluar).
+    const timer = screen.getByRole('timer')
+    const save = screen.getByRole('button', { name: 'Ruaj setin 2' })
+    expect(timer.compareDocumentPosition(card) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(card.compareDocumentPosition(save) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(card.contains(save)).toBe(false)
+    await waitFor(async () => expect((await data.store.where('learn_events', 'kind', 'fact')).map((row) => [row.place, row.fact_id])).toEqual([['rest', 'bench-press-1']]))
+    await user.click(within(card).getByRole('button', { name: 'Mbyll për sot' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'A e dije?' })).not.toBeInTheDocument())
+    expect((await data.store.where('learn_events', 'kind', 'fact'))[0]).toMatchObject({ dismissed: true })
+  })
+
   it('para një ushtrimi tjetër: lëvizja, tempo dhe 3 sinjalet e tij; pa peshë "Ruaj setin" pret ekranin e setit', async () => {
     const { bench, sessionId } = await atPhaseOneWeekTwo()
     const { saveSet } = await import('@/data/training')

@@ -52,16 +52,41 @@ const dot = {
   ),
 }
 
-export function DayTimeline({ day, now, onOpen, onToast }: { day: NutritionDay; now: Date; onOpen: (meal: MealKey) => void; onToast: ShowToast }) {
+export function DayTimeline({
+  day,
+  now,
+  onOpen,
+  onToast,
+  after,
+}: {
+  day: NutritionDay
+  now: Date
+  onOpen: (meal: MealKey) => void
+  onToast: ShowToast
+  /** "A e dije?" pas regjistrimit (§0.3e): karta poshtë vaktit ku u regjistrua ushqimi. */
+  after?: { meal: MealKey; node: ReactNode } | null
+}) {
   const i18n = useI18n()
   const { t } = i18n
   const training = useLocalQuery(
     async () => (day.dayType === 'training' ? { time: trainingTimeOn(await readSchedule(store), day.date), snapshot: await trainingSnapshot(store) } : null),
     [day.date, day.dayType],
   )
+  // Vendi i stërvitjes në rreshta: para vaktit të parë pas orës së saj (karta "A e dije?" numërohet si rresht).
   const workoutAt = training ? day.meals.findIndex((meal) => meal.time > training.time) : -1
-  const workoutIndex = training ? (workoutAt === -1 ? day.meals.length : workoutAt) : -1
-  const rows = day.meals.map((meal) => <MealRow key={meal.meal} day={day} meal={meal} now={now} onOpen={onOpen} onToast={onToast} />)
+  const factAt = after ? day.meals.findIndex((meal) => meal.meal === after.meal) : -1
+  const shift = (index: number) => index + (factAt !== -1 && factAt < index ? 1 : 0)
+  const workoutIndex = training ? (workoutAt === -1 ? day.meals.length + (factAt !== -1 ? 1 : 0) : shift(workoutAt)) : -1
+  const rows = day.meals.flatMap((meal) => [
+    <MealRow key={meal.meal} day={day} meal={meal} now={now} onOpen={onOpen} onToast={onToast} />,
+    ...(after && after.meal === meal.meal
+      ? [
+          <li key="fact" className="py-2">
+            {after.node}
+          </li>,
+        ]
+      : []),
+  ])
   if (training) rows.splice(workoutIndex, 0, <WorkoutRow key="workout" day={day} now={now} time={training.time} plan={training.snapshot && !training.snapshot.completed ? training.snapshot.plan : null} />)
   return (
     <section aria-labelledby="day-title" className="flex flex-col">

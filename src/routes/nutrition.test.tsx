@@ -303,6 +303,25 @@ describe('Ushqimi', () => {
     expect(router.state.location.state).toEqual({ text: 'pesë feta bukë' })
   })
 
+  it('"A e dije?" pas regjistrimit (§0.3e): karta poshtë vaktit me ushqimin e faktit; "×" e mbyll për sot', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    expect(await screen.findByRole('region', { name: 'Dreka' })).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'A e dije?' })).not.toBeInTheDocument()
+    await user.click(within(screen.getByRole('region', { name: 'Dreka' })).getByRole('button', { name: 'Si në plan' }))
+    const card = await screen.findByRole('region', { name: 'A e dije?' })
+    // Dreka e Jimit: toni dhe buka integrale kanë fakte (molla dhe majoneza jo).
+    expect(['Ton albacore në ujë', 'Bukë integrale']).toContain(within(card).getByText(/^(Ton albacore në ujë|Bukë integrale)$/).textContent)
+    const row = within(await timeline()).getByRole('button', { name: /^Dreka, 13:00/ })
+    expect(row.closest('li')?.nextElementSibling?.contains(card)).toBe(true)
+    await waitFor(async () => expect((await data.store.where('learn_events', 'kind', 'fact')).map((entry) => [entry.date, entry.place])).toEqual([[TODAY, 'food']]))
+    await user.click(within(card).getByRole('button', { name: 'Mbyll për sot' }))
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'A e dije?' })).not.toBeInTheDocument())
+    // Pastrimi për provat që vijnë.
+    for (const entry of await dayRows()) await data.store.remove('diary_entries', entry.id)
+    for (const entry of await data.store.where('learn_events', 'kind', 'fact')) await data.store.remove('learn_events', entry.id)
+  })
+
   it('në anglisht: kreu, ora, suplementet, vaktet dhe fusha', async () => {
     const user = userEvent.setup()
     language.set('en')
