@@ -33,3 +33,4 @@ Matjet:
 | Faqja e ushtrimit dhe lëvizja (E3-34d-1) | 16.11.2026, 04:15–04:40 | Rreth 300 mijë (`vrull-builder` me Sonnet) | CI 1, prova e Android-it 1 (të gjelbra) | – | – | 1 mësim (`git add` emërtimisht) |
 | Seanca me tabelën (E3-34d-2) | 16.11.2026, 05:00–06:25 | Rreth 670 mijë (`vrull-builder` me Opus: arkitekturë e re e seancës) | CI 1, prova e Android-it 1 (të gjelbra) | – | – | – |
 | Mëso, kodi (E3-34c) | 16.11.2026, 06:50–08:15 | Agjenti i parë u ndal nga rinisja e serverit pas 47 min (pa raport); i dyti mbaroi me rreth 200 mijë | 0 | – | – | 1 mësim (rinisja pa raport) |
+| Boshllëqet e bordeve (E3-34e) dhe rishikimi | 16.11.2026, 11:40–13:05 | Rreth 360 mijë (`vrull-builder` me Sonnet); rishikimi rreth 610 mijë (`vrull-reviewer` ×2 rreth 350, `vrull-adversary` rreth 255) | 0 deri te push-i | – | 5 P2, rreth 10 P3 | 2 roja (`story-viewer.test.tsx` për ←, prova e `postpone` me numëruesin) |
