@@ -56,10 +56,9 @@ describe('Ushtrimi', () => {
     await renderAt(`/ushtrimi/${await benchId()}`)
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
     expect(screen.getByText('Gjoksi · shufër · 4 sete te Shortcut to Size')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Bench Press, foto bardh e zi nga free-exercise-db' })).toHaveAttribute(
-      'src',
-      '/exercise-photos/Barbell_Bench_Press_-_Medium_Grip.jpg',
-    )
+    expect(screen.getByRole('img', { name: 'Bench Press, fillimi i lëvizjes' })).toHaveAttribute('src', '/exercise-photos/Barbell_Bench_Press_-_Medium_Grip.jpg')
+    expect(screen.getByRole('img', { name: 'Bench Press, fundi i lëvizjes' })).toHaveAttribute('src', '/exercise-photos/Barbell_Bench_Press_-_Medium_Grip-end.jpg')
+    expect(screen.getByText('Poshtë 2 s · lart 1 s')).toBeInTheDocument()
     expect(fetchPhoto).not.toHaveBeenCalled()
 
     const muscles = screen.getByRole('region', { name: 'Muskujt' })
@@ -94,9 +93,72 @@ describe('Ushtrimi', () => {
     await user.clear(within(sheet).getByLabelText('Lidhja e YouTube'))
     await user.type(within(sheet).getByLabelText('Lidhja e YouTube'), 'https://youtu.be/dQw4w9WgXcQ')
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj' }))
-    expect(await screen.findByTitle('Videoja e Bench Press')).toHaveAttribute('src', expect.stringContaining('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'))
-    expect(screen.getByRole('link', { name: /Shiko videon në YouTube/ })).toHaveAttribute('href', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-    expect(screen.getByRole('button', { name: 'Ndrysho videon' })).toBeInTheDocument()
+    // Lidhja e përdoruesit zë vendin e videos së zgjedhur: "Shiko videon" e luan atë.
+    const watch = await screen.findByRole('button', { name: 'Ndrysho videon' })
+    expect(watch).toBeInTheDocument()
+    expect(screen.getAllByText('Lidhja që shtove').length).toBeGreaterThan(0)
+    await user.click(screen.getAllByRole('button', { name: /Shiko videon/ })[0])
+    const player = screen.getByRole('dialog', { name: 'Videoja' })
+    expect(within(player).getByTitle('Videoja e Bench Press')).toHaveAttribute('src', expect.stringContaining('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'))
+    expect(within(player).getByRole('link', { name: /Hap në YouTube/ })).toHaveAttribute('href', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+    await user.click(within(player).getByRole('button', { name: 'Mbyll' }))
+    // Pa lidhjen e përdoruesit kthehet videoja e zgjedhur (baza e provës ndahet mes provave).
+    await user.click(screen.getByRole('button', { name: 'Ndrysho videon' }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Videoja e ushtrimit' })).getByRole('button', { name: 'Hiq videon' }))
+    expect(await screen.findByRole('button', { name: /Shiko videon/ })).toHaveTextContent('NASM · 0:25')
+  })
+
+  it('Bench Press: videoja e zgjedhur, udhëzuesi me burimet, "Më shumë video" dhe "Pak histori"', async () => {
+    const user = userEvent.setup()
+    await renderAt(`/ushtrimi/${await benchId()}`)
+    await screen.findByRole('heading', { level: 1, name: 'Bench Press' })
+    expect(screen.getByRole('button', { name: /Shiko videon/ })).toHaveTextContent('NASM · 0:25')
+    for (const name of ['Përgatitja', 'Lëvizja hap pas hapi', 'Tempo dhe fryma', 'Sinjalet e formës', 'Gabimet e zakonshme', 'Këshilla të avancuara', 'Siguria', 'Pak histori']) {
+      expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument()
+    }
+    // Secili seksion ka "Burimi" me lidhje që hapet jashtë app-it.
+    const setup = screen.getByRole('heading', { name: 'Përgatitja' }).closest('section')!
+    expect(setup).toHaveTextContent('Burimi:')
+    const link = within(setup).getAllByRole('link')[0]
+    expect(link).toHaveAttribute('href', expect.stringMatching(/^https:\/\//))
+    expect(link).toHaveAttribute('target', '_blank')
+    // Sinjalet: të parat tre dalin te seanca.
+    const cues = screen.getByRole('heading', { name: 'Sinjalet e formës' }).closest('section')!
+    expect(within(cues).getAllByText('Del te seanca')).toHaveLength(3)
+    expect(within(cues).getByText('Bërrylat rreth 45° nga trupi')).toBeInTheDocument()
+    // Këshilla me emrin e ekspertit.
+    expect(within(screen.getByRole('heading', { name: 'Këshilla të avancuara' }).closest('section')!).getAllByText(/Jim Stoppani, PhD/).length).toBeGreaterThan(0)
+    // Më shumë video: titulli, kanali, autori, kohëzgjatja; hapen në YouTube.
+    const more = screen.getByRole('heading', { name: 'Më shumë video' }).closest('section')!
+    expect(within(more).getAllByRole('link')).toHaveLength(3)
+    expect(more).toHaveTextContent('Barbell Medicine · Jordan Feigenbaum, MD · 17:22')
+
+    await user.click(screen.getByRole('button', { name: /Shiko videon/ }))
+    expect(screen.getByTitle('Videoja e Bench Press')).toHaveAttribute('src', expect.stringContaining('/embed/CayG6UYqL8g'))
+  })
+
+  it('"Zgjero" hap ekranin e plotë të lëvizjes me rrëshqitësin, 3 sinjalet dhe videon', async () => {
+    const user = userEvent.setup()
+    await renderAt(`/ushtrimi/${await benchId()}`)
+    await user.click(await screen.findByRole('button', { name: 'Zgjero' }))
+    const sheet = screen.getByRole('dialog', { name: 'Bench Press' })
+    expect(within(sheet).getByRole('slider', { name: 'Pozicioni i lëvizjes, nga fillimi te fundi' })).toBeInTheDocument()
+    expect(within(sheet).getAllByRole('listitem')).toHaveLength(3)
+    expect(within(sheet).getByText('Bërrylat rreth 45° nga trupi')).toBeInTheDocument()
+    expect(within(sheet).getByRole('button', { name: /Shiko videon/ })).toBeInTheDocument()
+    await user.click(within(sheet).getByRole('button', { name: 'Mbyll' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+  })
+
+  it('ushtrim pa udhëzues (Cable Crunch): lëvizja, muskujt dhe videoja, pa seksione bosh', async () => {
+    await renderAt('/ushtrimi/Cable_Crunch')
+    expect(await screen.findByRole('heading', { level: 1, name: /Crunch/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /fillimi i lëvizjes/ })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Muskujt' })).toBeInTheDocument()
+    for (const name of ['Përgatitja', 'Lëvizja hap pas hapi', 'Sinjalet e formës', 'Gabimet e zakonshme', 'Siguria', 'Pak histori']) {
+      expect(screen.queryByRole('heading', { name })).not.toBeInTheDocument()
+    }
+    expect(screen.getByText('Poshtë 2 s · lart 1 s')).toBeInTheDocument()
   })
 
   it('ushtrim i bibliotekës që s’është në telefon: "Pa foto" pa rrjet, muskujt nga grupet, pa rekorde', async () => {
@@ -104,7 +166,8 @@ describe('Ushtrimi', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Arnold Dumbbell Press' })).toBeInTheDocument()
     expect(screen.getByText('Shpatullat · dumbbell')).toBeInTheDocument()
     await waitFor(() => expect(screen.getByText('Pa foto')).toBeInTheDocument())
-    expect(screen.queryByRole('img', { name: /foto bardh e zi/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: /lëvizjes/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Përgatitja' })).not.toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Rekordet e tua' })).toHaveTextContent('Rekordet dalin pas setit të parë me peshë.')
     expect(screen.queryByRole('region', { name: 'Historia e seteve' })).not.toBeInTheDocument()
   })
@@ -124,5 +187,13 @@ describe('Ushtrimi', () => {
     expect(records).toHaveTextContent('Heaviest set60 kg × 13')
     expect(screen.getByRole('region', { name: 'Set history' })).toHaveTextContent('Sunday, 1 November · Week 1')
     expect(screen.getByRole('button', { name: 'Rotate in 3D' })).toBeInTheDocument()
+    expect(screen.getByText('Down 2 s · up 1 s')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Bench Press, start of the movement' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Watch the video/ })).toHaveTextContent('NASM · 0:25')
+    for (const name of ['Setup', 'Step by step', 'Tempo and breathing', 'Form cues', 'Common mistakes', 'Advanced tips', 'Safety', 'More videos', 'A bit of history']) {
+      expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument()
+    }
+    const setup = screen.getByRole('heading', { name: 'Setup' }).closest('section')!
+    expect(setup).toHaveTextContent('Source:')
   })
 })

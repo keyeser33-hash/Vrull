@@ -28,6 +28,8 @@ export interface ExerciseMotionProps {
   defaultFolded?: boolean
   /** "Zgjero": hap ekranin e plotë; i prindit. */
   onExpand?: () => void
+  /** Veprim i dytë pranë "Zgjero" (p.sh. "Shiko videon"), në të njëjtin rresht. */
+  action?: ReactNode
   /** Rrëshqitësi "Fillimi — Fundi" poshtë fotos (ekrani i plotë). */
   slider?: boolean
   /** Mbi foto (p.sh. shigjeta mbrapa te faqja e ushtrimit). */
@@ -47,6 +49,7 @@ export function ExerciseMotion({
   foldable = false,
   defaultFolded = false,
   onExpand,
+  action,
   slider = false,
   overlay,
   stageClassName,
@@ -303,12 +306,15 @@ export function ExerciseMotion({
         </div>
       ) : null}
 
-      {onExpand ? (
-        <div className="px-4 pt-3">
-          <Button variant="outline" className="w-full" onClick={onExpand}>
-            <Icon name="zmadho" size={18} />
-            {t('programme.motion.expand')}
-          </Button>
+      {onExpand || action ? (
+        <div className={cn('px-4 pt-3', onExpand && action ? 'grid grid-cols-2 gap-2' : '')}>
+          {onExpand ? (
+            <Button variant="outline" className="h-auto min-h-14 w-full" onClick={onExpand}>
+              <Icon name="zmadho" size={18} />
+              {t('programme.motion.expand')}
+            </Button>
+          ) : null}
+          {action}
         </div>
       ) : null}
     </section>

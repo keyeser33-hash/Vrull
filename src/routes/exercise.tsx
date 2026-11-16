@@ -6,6 +6,8 @@ import { BackButton } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
+import { ExerciseMotion, ExerciseMotionSheet } from '@/components/ui/exercise-motion'
+import { ExerciseVideoSheet, MoreVideos, WatchVideoButton } from '@/components/ui/exercise-video'
 import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
@@ -16,20 +18,25 @@ import { equipmentName, muscleName, programBlockName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useExercisePhoto } from '@/lib/exercise-photo'
-import { useOnline } from '@/lib/use-online'
-import { embedUrl, watchUrl, youtubeId } from '@/lib/youtube'
+import { youtubeId } from '@/lib/youtube'
 import { groupsOf } from '@/program/exercise-catalog'
+import { guideFor } from '@/program/exercise-guide-data'
+import { type ChosenVideo, chosenVideo, curatedVideos } from '@/program/exercise-videos'
+import { tempoOf } from '@/program/motion'
 import type { HistorySet } from '@/program/loads'
 import { e1rmByWeek, exerciseRecords, recentSessions, type SessionSets, type WeekE1rm } from '@/progress/exercise-records'
 import { ExerciseMusclesSheet } from './exercise-muscles'
+import { CueList, GuideHistory, GuideSections, SESSION_CUES } from './exercise-guide'
 import { FormVideosSection } from './form-video'
 import { capitalize, dotted, groupList, weekShort } from './programme-format'
 import { ChangeExerciseSheet } from './session-sheets'
 
-// Faqja e ushtrimit (bordi "Ushtrimi", V2-E1-09): foto bardh e zi (SPEC §0.3a), muskujt me figurën dhe
-// modelin 3D (§11), "Rekordet e tua" me grafikun e e1RM-së sipas javës, historia e seteve, videot e
-// formës (V2-E1-13, `form-video.tsx`) dhe videoja e YouTube që shtoi përdoruesi (§12). "Si punon",
-// "Gabimet e zakonshme" dhe "Pak histori" vijnë me "Mëso" (V28, Etapa 3) dhe deri atëherë mungojnë.
+// Faqja e ushtrimit (bordet "Ushtrimi", V2-E1-09, dhe "Ushtrimi · Udhëzuesi", V58): lëvizja e ushtrimit
+// (dy fotot bardh e zi sipas tempos, SPEC §0.3g) me "Zgjero" dhe "Shiko videon", muskujt me figurën dhe
+// modelin 3D (§11), "Rekordet e tua", historia e seteve, videot e formës (V2-E1-13, `form-video.tsx`),
+// udhëzuesi i plotë nga `program/guides` (`exercise-guide.tsx`), "Më shumë video", "Pak histori" dhe
+// lidhja e YouTube që shtoi përdoruesi (§12), që zë vendin e videos së zgjedhur. Ushtrimi pa udhëzues
+// (13 të Shortcut to Size, biblioteka deri te vala e tyre) ka lëvizjen, muskujt dhe videon, pa seksione bosh.
 // Hapet edhe për ushtrimet e bibliotekës që s'janë ende në telefon (me ID-në e free-exercise-db).
 
 export function ExercisePage() {
@@ -62,10 +69,22 @@ export function ExercisePage() {
   const sheet = params.get('ndrysho')
   const open = (name: string) => setParams((current) => (current.set('ndrysho', name), current))
   const sets = detail.exerciseId ? history.sets : []
+  const guide = guideFor(detail)
+  const chosen = chosenVideo(detail, detail.videoUrl)
+  const more = curatedVideos(detail)?.more ?? []
+  const tempo = tempoOf(guide?.tempo)
+  const showTempo = !guide || guide.tempo !== null
 
   return (
     <div className="flex flex-col gap-4">
-      <Hero detail={detail} />
+      <Top
+        detail={detail}
+        tempo={tempo}
+        showTempo={showTempo}
+        chosen={chosen}
+        onExpand={() => open('levizja')}
+        onVideo={() => open('videoja')}
+      />
       <div className="-mt-1 flex flex-col gap-0.5">
         <span className="type-caption text-muted-foreground">{eyebrow(detail, i18n)}</span>
         <h1 className="type-display-l">{detail.name}</h1>
@@ -74,7 +93,10 @@ export function ExercisePage() {
       <Records sets={sets} exerciseId={detail.exerciseId} tracking={detail.tracking} />
       <History sets={sets} exerciseId={detail.exerciseId} />
       <FormVideosSection exerciseId={detail.exerciseId} />
-      <Video detail={detail} onEdit={() => open('video')} />
+      {guide ? <GuideSections guide={guide} /> : null}
+      <MoreVideos videos={more} />
+      {guide ? <GuideHistory guide={guide} /> : null}
+      <UserVideo detail={detail} onWatch={() => open('videoja')} onEdit={() => open('video')} />
       {plan && slot ? (
         <Button variant="outline" className="w-full" onClick={() => open('ushtrimi')}>
           {t('programme.changeForBlock', { block: programBlockName(t, plan.blockName) })}
@@ -82,6 +104,13 @@ export function ExercisePage() {
       ) : null}
 
       {sheet === 'muskujt' ? <ExerciseMusclesSheet exercise={detail} onClose={() => navigate(-1)} /> : null}
+      {sheet === 'levizja' ? (
+        <ExerciseMotionSheet libraryId={detail.libraryId} name={detail.name} tempo={tempo} showTempo={showTempo} onClose={() => navigate(-1)}>
+          {guide ? <CueList cues={guide.cues.items.slice(0, SESSION_CUES)} numbered /> : null}
+          {chosen ? <WatchVideoButton chosen={chosen} onOpen={() => open('videoja')} /> : null}
+        </ExerciseMotionSheet>
+      ) : null}
+      {sheet === 'videoja' && chosen ? <ExerciseVideoSheet chosen={chosen} name={detail.name} onClose={() => navigate(-1)} /> : null}
       {sheet === 'video' ? <VideoSheet detail={detail} onClose={() => navigate(-1)} /> : null}
       {sheet === 'ushtrimi' && plan && slot ? (
         <ChangeExerciseSheet
@@ -106,27 +135,60 @@ function eyebrow(detail: ExerciseDetail, { t, fmt }: I18n) {
   return capitalize(text, fmt.locale)
 }
 
-/** Foto bardh e zi në krye, me shigjetën mbrapa sipër saj; pa foto, vend-mbajtësi "Pa foto". */
-function Hero({ detail }: { detail: ExerciseDetail }) {
+/**
+ * Lëvizja e ushtrimit në krye, me shigjetën mbrapa sipër saj, "Zgjero" dhe "Shiko videon" poshtë (bordi
+ * "Ushtrimi · Udhëzuesi"). Pa foto: vend-mbajtësi "Pa foto" dhe vetëm "Shiko videon".
+ */
+function Top({
+  detail,
+  tempo,
+  showTempo,
+  chosen,
+  onExpand,
+  onVideo,
+}: {
+  detail: ExerciseDetail
+  tempo: ReturnType<typeof tempoOf>
+  showTempo: boolean
+  chosen: ChosenVideo | null
+  onExpand: () => void
+  onVideo: () => void
+}) {
   const { t } = useI18n()
   const photo = useExercisePhoto(detail.libraryId)
+  const back = (
+    <BackButton
+      label={t('common.back')}
+      fallback="/programi/biblioteka"
+      className="absolute top-2.5 left-4 z-10 ml-0 bg-background/70 text-foreground backdrop-blur-sm"
+    />
+  )
+  const watch = chosen ? <WatchVideoButton chosen={chosen} onOpen={onVideo} /> : null
+  if (photo.status === 'missing') {
+    return (
+      <>
+        <div className="relative -mx-4 -mt-5">
+          <div className="flex h-[120px] items-end justify-center gap-1.5 bg-surface-2 pb-4 text-muted-foreground">
+            <Icon name="programi" size={18} />
+            <span className="type-caption">{t('exercise.noPhoto')}</span>
+          </div>
+          {back}
+        </div>
+        {watch}
+      </>
+    )
+  }
   return (
-    <div className="relative -mx-4 -mt-5">
-      {photo.status === 'ready' ? (
-        <div className="relative h-[200px] overflow-hidden">
-          <img src={photo.src} alt={t('programme.photoAlt', { name: detail.name })} className="size-full object-cover grayscale" />
-          <div aria-hidden className="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-background to-transparent" />
-        </div>
-      ) : (
-        <div className="flex h-[120px] items-end justify-center gap-1.5 bg-surface-2 pb-4 text-muted-foreground">
-          <Icon name="programi" size={18} />
-          {photo.status === 'missing' ? <span className="type-caption">{t('exercise.noPhoto')}</span> : null}
-        </div>
-      )}
-      <BackButton
-        label={t('common.back')}
-        fallback="/programi/biblioteka"
-        className="absolute top-2.5 left-4 ml-0 bg-background/70 text-foreground backdrop-blur-sm"
+    <div className="-mx-4 -mt-5">
+      <ExerciseMotion
+        libraryId={detail.libraryId}
+        name={detail.name}
+        tempo={tempo}
+        showTempo={showTempo}
+        onExpand={onExpand}
+        action={watch}
+        overlay={back}
+        stageClassName="aspect-auto h-[220px]"
       />
     </div>
   )
@@ -309,21 +371,20 @@ function setsLine(session: SessionSets, fmt: I18n['fmt']) {
   return session.sets.map((set) => `${fmt.number(set.weightKg ?? 0)} × ${reps(set.reps)}`).join(', ')
 }
 
-/** Videoja e YouTube (SPEC §12): brenda faqes me youtube-nocookie kur ka internet, dhe lidhja jashtë app-it. */
-function Video({ detail, onEdit }: { detail: ExerciseDetail; onEdit: () => void }) {
+/** Lidhja e YouTube e përdoruesit (SPEC §12): shtimi, ndryshimi, dhe luajtja te ekrani i videos. */
+function UserVideo({ detail, onWatch, onEdit }: { detail: ExerciseDetail; onWatch: () => void; onEdit: () => void }) {
   const { t } = useI18n()
-  const online = useOnline()
-  const videoId = detail.videoUrl ? youtubeId(detail.videoUrl) : null
-  if (!videoId) {
+  const mine = detail.videoUrl ? youtubeId(detail.videoUrl) : null
+  const rowClass = 'flex min-h-16 min-w-0 flex-1 items-center gap-3 rounded-lg text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  const icon = (
+    <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-md bg-surface-2">
+      <Icon name="video" size={22} />
+    </span>
+  )
+  if (!mine) {
     return (
-      <button
-        type="button"
-        onClick={onEdit}
-        className={cn(surfaceClass, 'flex min-h-16 items-center gap-3 rounded-lg px-3 py-2.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
-      >
-        <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-md bg-surface-2">
-          <Icon name="video" size={22} />
-        </span>
+      <button type="button" onClick={onEdit} className={cn(surfaceClass, rowClass, 'flex-none px-3 py-2.5')}>
+        {icon}
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="type-body-strong">{t('programme.videoAdd')}</span>
           <span className="type-caption text-muted-foreground">{t('programme.videoAddNote')}</span>
@@ -333,41 +394,17 @@ function Video({ detail, onEdit }: { detail: ExerciseDetail; onEdit: () => void 
     )
   }
   return (
-    <section aria-label={t('programme.videoSheet')} className="flex flex-col gap-2">
-      {online ? (
-        <div className="aspect-video overflow-hidden rounded-lg bg-surface-2">
-          <iframe
-            title={t('programme.videoTitle', { name: detail.name })}
-            src={embedUrl(videoId)}
-            className="size-full"
-            allow="encrypted-media; picture-in-picture; fullscreen"
-            referrerPolicy="strict-origin-when-cross-origin"
-            loading="lazy"
-          />
-        </div>
-      ) : (
-        <p className="type-caption text-muted-foreground">{t('programme.videoOffline')}</p>
-      )}
-      <div className={cn(surfaceClass, 'flex min-h-16 items-center gap-1 rounded-lg py-1.5 pr-1.5 pl-3')}>
-        <a
-          href={watchUrl(videoId)}
-          target="_blank"
-          rel="noreferrer"
-          className="flex min-h-touch min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-        >
-          <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-md bg-surface-2">
-            <Icon name="video" size={22} />
-          </span>
-          <span className="flex min-w-0 flex-1 flex-col">
-            <span className="type-body-strong">{t('programme.video')}</span>
-            <span className="type-caption text-muted-foreground">{t('programme.videoNote')}</span>
-          </span>
-          <Icon name="jashte" size={20} className="text-muted-foreground" />
-        </a>
-        <Button variant="ghost" size="icon" aria-label={t('programme.videoChange')} onClick={onEdit}>
-          <Icon name="laps" size={20} />
-        </Button>
-      </div>
+    <section aria-label={t('programme.videoSheet')} className={cn(surfaceClass, 'flex min-h-16 items-center gap-1 rounded-lg py-1.5 pr-1.5 pl-3')}>
+      <button type="button" onClick={onWatch} className={rowClass}>
+        {icon}
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="type-body-strong">{t('programme.watch')}</span>
+          <span className="type-caption text-muted-foreground">{t('programme.watchYours')}</span>
+        </span>
+      </button>
+      <Button variant="ghost" size="icon" aria-label={t('programme.videoChange')} onClick={onEdit}>
+        <Icon name="laps" size={20} />
+      </Button>
     </section>
   )
 }
