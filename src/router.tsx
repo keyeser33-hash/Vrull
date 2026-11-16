@@ -65,6 +65,7 @@ const appScreens: RouteObject[] = [
       { path: 'progresi/historiku', ...screen(history, (m) => m.HistoryPage), ...tab('progress') },
       { path: 'progresi/historiku/:sessionId', ...screen(history, (m) => m.PastSessionPage), ...tab('progress') },
       { path: 'progresi/arritjet', ...screen(() => import('@/routes/achievements'), (m) => m.AchievementsPage), ...tab('progress') },
+      { path: 'progresi/meso', ...screen(() => import('@/routes/learn'), (m) => m.LearnPage), ...tab('progress') },
       // Përmbledhja e javës dhe karta për ndarje (V43, SPEC §0.3c): pa tab-bar, me "Ndaj javën" poshtë.
       { path: 'progresi/java/:monday', ...screen(() => import('@/routes/week-summary'), (m) => m.WeekSummaryPage), ...tab(null) },
       { path: 'progresi/java/:monday/karta', ...screen(() => import('@/routes/week-share'), (m) => m.WeekSharePage), ...tab(null) },

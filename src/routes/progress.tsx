@@ -27,7 +27,8 @@ import { summaryTitle, weekRangeText } from './week-format'
 // Progresi (V2-E1-05; pamja e 0.23, SPEC §0.3c, bordi "Progresi"): tab-et Trupi · Përmbledhja ·
 // Historiku · Arritjet, që hapet te Përmbledhja. Para setit të parë gjendja bosh e bordit "Gjendje ·
 // Bosh" me "Fillo stërvitjen e parë"; pastaj karta e javës (hap përmbledhjen), forca (e1RM), pesha me
-// mesataren 7-ditore, matjet, fotot dhe "Shto matjen" (veprimi kryesor), volumi dhe ushqimi i 7 ditëve.
+// mesataren 7-ditore, matjet, fotot dhe "Shto matjen" (veprimi kryesor), volumi dhe ushqimi i 7 ditëve; në fund
+// lidhja te faqja Mëso (§0.3e).
 // Tekstet: 'progress.*' (V2-E1-16b).
 
 // Një shifër pas presjes: sa mat peshorja dhe centimetri.
@@ -81,6 +82,9 @@ export function ProgressPage() {
       <TrainingSections />
       <WeightSection view={view} />
       <TrainingExtras />
+      <Group>
+        <LinkRow to="/progresi/meso" label={t('learn.link')} detail={t('learn.linkDetail')} />
+      </Group>
     </div>
   )
 }
