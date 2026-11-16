@@ -223,4 +223,12 @@ describe('pendingWeights', () => {
     expect(pendingWeights([row(62.5), row(60), row(null), row(62.5, decided), row(62.5, { ...decided, status: 'changed' }), row(62.5, { ...decided, status: 'postponed' })])).toBe(2)
     expect(pendingWeights([])).toBe(0)
   })
+
+  it('"Më vonë" e heq rreshtin edhe për një slot pa peshë të kaluar: mbetet propozimi', () => {
+    const fresh = { slotId: 's', exerciseId: 'e', previousKg: null, proposal: { weightKg: 40, basis: null }, decision: null } as WeekWeightRow
+    const decisions = postpone([fresh])
+    expect(decisions).toEqual([{ slotId: 's', exerciseId: 'e', weightKg: 40, status: 'postponed' }])
+    expect(pendingWeights([{ ...fresh, decision: decisions[0] }])).toBe(0)
+    expect(postpone([{ ...fresh, proposal: { weightKg: null, basis: null } }])).toEqual([])
+  })
 })

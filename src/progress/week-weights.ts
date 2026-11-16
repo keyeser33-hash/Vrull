@@ -85,11 +85,15 @@ export function acceptAll(rows: WeekWeightRow[]): WeekWeightDecision[] {
   )
 }
 
-/** "Më vonë": mbetet pesha e javës së kaluar ku ka një të tillë; propozimi pret. */
+/**
+ * "Më vonë": mbetet pesha e javës së kaluar; një slot pa peshë të kaluar mban propozimin (s'ka tjetër për
+ * të mbajtur), që rreshti "N pesha të reja presin vendimin" te Sot të ikë pas "Më vonë".
+ */
 export function postpone(rows: WeekWeightRow[]): WeekWeightDecision[] {
-  return rows.flatMap((row) =>
-    row.previousKg === null || changed(row) ? [] : [{ slotId: row.slotId, exerciseId: row.exerciseId, weightKg: row.previousKg, status: 'postponed' as const }],
-  )
+  return rows.flatMap((row) => {
+    const weightKg = row.previousKg ?? row.proposal.weightKg
+    return weightKg === null || changed(row) ? [] : [{ slotId: row.slotId, exerciseId: row.exerciseId, weightKg, status: 'postponed' as const }]
+  })
 }
 
 const planOf = (program: Program, week: WeekRef, dayId: string) =>
