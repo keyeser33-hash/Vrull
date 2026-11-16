@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
-import { BAR_KG, platesPerSide } from '@/program/plates'
+import { exerciseBar, saveExerciseBar } from '@/data/exercise-bar'
+import { store, useLocalQuery } from '@/data/app-data'
+import { BAR_OPTIONS, platesPerSide } from '@/program/plates'
 
 // Tastiera numerike e seancës (bordi "Seanca · tastiera", V58): prekja e numrit të madh hap fletën me
 // numrin, −/+ me hapin e pajisjes, disqet për anë te shufra (20 kg), çipat "Herën e kaluar" dhe "Pesha e
@@ -33,6 +35,7 @@ export function KeypadSheet({
   step,
   chips = [],
   plates = false,
+  exerciseId = null,
   onSave,
   onClose,
 }: {
@@ -45,6 +48,8 @@ export function KeypadSheet({
   chips?: KeypadChip[]
   /** Disqet për anë (ushtrimet me shufër). */
   plates?: boolean
+  /** Ushtrimi, që shufra e zgjedhur ruhet për të. */
+  exerciseId?: string | null
   onSave: (value: number) => void
   onClose: () => void
 }) {
@@ -58,6 +63,16 @@ export function KeypadSheet({
   // Shifra e parë zëvendëson vlerën, si një fushë e zgjedhur e tëra.
   const [fresh, setFresh] = useState(true)
   const [error, setError] = useState(false)
+  // Shufra e ushtrimit (bordi "Seanca · tastiera"): e ruajtur për ushtrimin; zgjedhja ndryshon disqet menjëherë.
+  const savedBar = useLocalQuery(() => (exerciseId ? exerciseBar(store, exerciseId) : Promise.resolve(20)), [exerciseId])
+  const [chosenBar, setChosenBar] = useState<number | null>(null)
+  const [choosingBar, setChoosingBar] = useState(false)
+  const barKg = chosenBar ?? savedBar ?? 20
+  const pickBar = (kg: number) => {
+    setChosenBar(kg)
+    setChoosingBar(false)
+    if (exerciseId) void saveExerciseBar(store, exerciseId, kg)
+  }
   const parsed = parse(text)
   const unit = kind === 'weight' ? 'kg' : kind === 'seconds' ? 's' : t('ui.stepper.repsUnit', { count: Number.isFinite(parsed) ? parsed : 0 })
 
@@ -105,7 +120,8 @@ export function KeypadSheet({
   })
 
   const title = t(kind === 'weight' ? 'session.keypad.weight' : kind === 'seconds' ? 'session.keypad.seconds' : 'session.keypad.reps')
-  const split = plates && kind === 'weight' && Number.isFinite(parsed) ? platesPerSide(parsed) : null
+  const split = plates && kind === 'weight' && Number.isFinite(parsed) ? platesPerSide(parsed, barKg) : null
+  const barName = barKg === 0 ? t('session.keypad.noBar') : t('session.keypad.bar', { weight: fmt.unit(barKg, 'kg') })
   const stepText = fmt.number(step)
   const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', limits.decimals > 0 ? '.' : '', '0', 'back']
 
@@ -148,16 +164,53 @@ export function KeypadSheet({
         </Button>
       </div>
 
-      {split ? (
-        <div className="flex flex-col gap-0.5 rounded-lg bg-surface-2 px-3 py-2.5 text-sm leading-[1.35] tabular-nums">
-          <span className="font-semibold">{t('session.keypad.bar', { weight: fmt.unit(BAR_KG, 'kg') })}</span>
-          <span className="text-muted-foreground">
-            {split.plates.length ? t('session.keypad.perSide', { plates: split.plates.map((plate) => fmt.number(plate)).join(' + ') }) : t('session.keypad.emptyBar')}
-          </span>
-          {split.plates.length ? (
-            <span className="text-muted-foreground">
-              {t('session.keypad.sum', { total: fmt.number(parsed), bar: fmt.number(split.barKg), side: fmt.number(split.perSideKg) })}
-            </span>
+      {plates && kind === 'weight' ? (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2.5 text-sm leading-[1.35] tabular-nums">
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="font-semibold">{barName}</span>
+              {split ? (
+                <>
+                  <span className="text-muted-foreground">{split.plates.length ? t('session.keypad.perSide', { plates: split.plates.map((plate) => fmt.number(plate)).join(' + ') }) : t('session.keypad.emptyBar')}</span>
+                  {split.plates.length ? (
+                    <span className="text-muted-foreground">
+                      {t(barKg === 0 ? 'session.keypad.sumNoBar' : 'session.keypad.sum', { total: fmt.number(parsed), bar: fmt.number(split.barKg), side: fmt.number(split.perSideKg) })}
+                    </span>
+                  ) : null}
+                </>
+              ) : (
+                <span className="text-muted-foreground">{t('session.keypad.noSplit')}</span>
+              )}
+            </div>
+            <Button
+              variant="outline"
+              ground="card"
+              aria-expanded={choosingBar}
+              aria-label={t('session.keypad.barChange', { bar: barName })}
+              onClick={() => setChoosingBar((open) => !open)}
+              className="shrink-0 px-3"
+            >
+              {t('session.keypad.barButton')}
+            </Button>
+          </div>
+          {choosingBar ? (
+            <div role="radiogroup" aria-label={t('session.keypad.barChoose')} className="grid grid-cols-4 gap-2">
+              {BAR_OPTIONS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  role="radio"
+                  aria-checked={option === barKg}
+                  onClick={() => pickBar(option)}
+                  className={cn(
+                    'min-h-touch rounded-md border px-1 text-sm leading-[1.2] font-semibold tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+                    option === barKg ? 'border-foreground bg-surface-2' : 'border-surface-border',
+                  )}
+                >
+                  {option === 0 ? t('session.keypad.noBar') : fmt.unit(option, 'kg')}
+                </button>
+              ))}
+            </div>
           ) : null}
         </div>
       ) : null}

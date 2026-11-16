@@ -938,6 +938,7 @@ function SetView({
           value={editing === 'pesha' ? weightKg : editing === 'sekondat' ? seconds : reps}
           step={editing === 'pesha' ? step : editing === 'sekondat' ? 5 : 1}
           plates={editing === 'pesha' && exercise?.equipment === 'barbell'}
+          exerciseId={exercise?.id ?? null}
           chips={keypadChips(editing, previous, weekWeightKg, texts.t)}
           onSave={(value) => {
             if (editing === 'pesha') setWeight(clamp(value))

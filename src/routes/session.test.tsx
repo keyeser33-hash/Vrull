@@ -282,6 +282,49 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.queryByText('Rekord i ri me')).not.toBeInTheDocument()
   })
 
+  it('"Shufra" te tastiera: 15 kg ndryshon disqet për anë, ruhet për ushtrimin dhe kthehet kur hapet përsëri; pa shufër dhe anglisht', async () => {
+    const { bench } = await atPhaseOneWeekTwo()
+    const { changeWeekWeight } = await import('@/data/week-weights')
+    const { trainingSnapshot } = await import('@/data/training')
+    const { plan } = (await trainingSnapshot(data.store))!
+    await changeWeekWeight(data.store, { blockId: plan.blockId, week: plan.week }, bench.slotId, 62.5)
+    const user = userEvent.setup()
+    await renderApp()
+
+    await user.click(await screen.findByRole('button', { name: 'Shkruaj peshën, 62,5 kg' }))
+    let sheet = screen.getByRole('dialog', { name: 'Pesha' })
+    expect(sheet).toHaveTextContent(/Shufra 20.kg/)
+    expect(sheet).toHaveTextContent('Për anë: 20 + 1,25')
+    await user.click(within(sheet).getByRole('button', { name: /^Ndrysho shufrën, Shufra 20.kg$/ }))
+    const choices = within(sheet).getByRole('radiogroup', { name: 'Zgjidh shufrën' })
+    expect(within(choices).getAllByRole('radio').map((radio) => radio.textContent?.replace(/\u00A0/g, ' '))).toEqual(['20 kg', '15 kg', '10 kg', 'Pa shufër'])
+    await user.click(within(choices).getByRole('radio', { name: /^15.kg$/ }))
+    expect(sheet).toHaveTextContent(/Shufra 15.kg/)
+    expect(sheet).toHaveTextContent('Për anë: 20 + 2,5 + 1,25')
+    expect(sheet).toHaveTextContent('62,5 = 15 + 2 × 23,75')
+    expect(within(sheet).queryByRole('radiogroup')).not.toBeInTheDocument()
+    expect(await data.store.readDevice('bar:' + bench.exerciseId)).toBe(15)
+
+    // Mbyllet dhe hapet përsëri: shufra e ushtrimit mbetet.
+    await user.click(within(sheet).getByRole('button', { name: 'Gati' }))
+    await user.click(await screen.findByRole('button', { name: 'Shkruaj peshën, 62,5 kg' }))
+    sheet = screen.getByRole('dialog', { name: 'Pesha' })
+    await waitFor(() => expect(sheet).toHaveTextContent(/Shufra 15.kg/))
+
+    // Pa shufër: gjysma e peshës për anë; me peshën 15 kg (nën shufrën 20) butoni mbetet.
+    await user.click(within(sheet).getByRole('button', { name: /^Ndrysho shufrën, Shufra 15.kg$/ }))
+    await user.click(within(sheet).getByRole('radio', { name: 'Pa shufër' }))
+    expect(sheet).toHaveTextContent('Pa shufër')
+    expect(sheet).toHaveTextContent('Për anë: 25 + 5 + 1,25')
+    expect(sheet).toHaveTextContent('62,5 = 2 × 31,25')
+
+    act(() => language.set('en'))
+    expect(within(sheet).getByRole('button', { name: 'Change the bar, No bar' })).toHaveTextContent('Bar')
+    expect(sheet).toHaveTextContent('Each side: 25 + 5 + 1.25')
+    await user.click(within(sheet).getByRole('button', { name: 'Change the bar, No bar' }))
+    expect(within(sheet).getByRole('radiogroup', { name: 'Choose the bar' })).toBeInTheDocument()
+  })
+
   it('pranimi: Stërvitja 1 e plotë pa internet, me rest-pause si segmente, mbyllja me rekordin dhe sinkronizimi', async () => {
     const { sessionId } = await atPhaseOneWeekTwo()
     const { createSync } = await import('@/data/sync')
