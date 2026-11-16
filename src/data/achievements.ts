@@ -13,6 +13,7 @@ import {
 } from '@/progress/achievements'
 import { recordsAtTheTime, sessionRecords } from '@/progress/history'
 import type { IntakeDay } from '@/progress/weekly-goals'
+import { quizHistory } from './learn-history'
 import { readMissedInput } from './missed-day'
 import { naturalId } from './natural-id'
 import { dayTargets } from './nutrition'
@@ -116,6 +117,8 @@ async function computeStates(store: LocalStore, saved: Map<string, string>) {
   // Ushqimi dhe uji lexohen vetëm kur ndonjë arritje e tyre mungon: objektivi i çdo dite kushton disa lexime.
   const needFood = !saved.has('food_7') || !saved.has('full_week')
   const needWater = !saved.has('water_7') || !saved.has('full_week')
+  // Javët e kuizit (§0.3e) vetëm kur "Kuizi 4 javë" mungon.
+  const quiz = saved.has('quiz_4') ? { weeks: [], openMonday: null } : await quizHistory(store, store.now())
   const [food, water] = await Promise.all([
     needFood
       ? intakeDays(
@@ -155,8 +158,8 @@ async function computeStates(store: LocalStore, saved: Map<string, string>) {
     activeProgrammeId: activeId,
     food,
     water,
-    quizWeeks: [],
-    quizOpenMonday: null,
+    quizWeeks: quiz.weeks,
+    quizOpenMonday: quiz.openMonday,
   })
   const programmeName = activeId ? (programs.find((program) => program.id === activeId)?.name as string | undefined) ?? null : null
   return { today, states, programmeName }

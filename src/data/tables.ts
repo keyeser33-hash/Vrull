@@ -40,6 +40,8 @@ export const TABLES = [
   'daily_choices',
   // Shënimet e mentorit (Paneli në Claude, P8): i shkruan vetëm mentori në Claude; telefoni vetëm i merr.
   'mentor_notes',
+  // Mëso (V56, §0.3e): faktet e para (dita, vendi, fakti) dhe kuizet e së dielës, me id nga çelësi natyror.
+  'learn_events',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
@@ -104,4 +106,5 @@ export const INDEXES: Record<TableName, string[]> = {
   daily_states: ['date'],
   daily_choices: ['date'],
   mentor_notes: ['kind', 'session_id'],
+  learn_events: ['kind'],
 }
