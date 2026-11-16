@@ -147,6 +147,8 @@ function screenshot(name) {
 /** Pamja e papërpunuar e ekranit: gjerësia, lartësia dhe pikselat RGBA pas kokës. */
 function rawScreen() {
   const raw = execFileSync('adb', ['exec-out', 'screencap'], { maxBuffer: 64 * 1024 * 1024 })
+  // Një emulator që ra (adb offline) kthen pak ose aspak bajte: gabim i qartë, jo "offset out of range".
+  if (raw.length < 16) throw new Error(`screencap ktheu ${raw.length} bajte: emulatori ose adb nuk përgjigjet (infrastrukturë)`)
   const width = raw.readUInt32LE(0)
   const height = raw.readUInt32LE(4)
   return { raw, width, height, header: raw.length - width * height * 4 }
