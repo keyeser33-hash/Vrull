@@ -219,8 +219,10 @@ function ThemeShowcase({ theme }: { theme: Theme }) {
         <FactCard
           fact="Një gram proteinë ose karbohidrat jep rreth 4 kcal, një gram yndyrë rreth 9. Prandaj 10 g arra kanë më shumë kalori se 10 g gjizë."
           source="USDA, faktorët Atwater"
-          onMore={() => {}}
-          onNext={() => {}}
+          context="Gjizë"
+          more="Faktorët Atwater: 4 kcal për gram proteinë dhe karbohidrat, 9 për yndyrën."
+          href="https://fdc.nal.usda.gov"
+          onDismiss={() => {}}
         />
       </Group>
 

@@ -25,6 +25,7 @@ import * as videos from './areas/videos'
 import * as week from './areas/week'
 import * as foodday from './areas/foodday'
 import * as foodsearch from './areas/foodsearch'
+import * as learn from './areas/learn'
 import type { Messages, TranslationOf } from './translate'
 
 // Katalogu shqip: burimi i çelësave. Korniza dhe ekranet e v1 janë këtu (base, me anglishten te en.ts);
@@ -253,7 +254,6 @@ export const base = {
   'ui.fact.title': 'A e dije?',
   'ui.fact.source': 'Burimi: {source}',
   'ui.fact.more': 'Më shumë',
-  'ui.fact.next': 'Tjetër',
   'ui.progress.spoken': '{label} {value} nga {target} {unit}',
   'ui.progress.spokenOver': '{label} {value} nga {target} {unit}, mbi objektiv',
   'ui.progress.over': 'mbi objektiv',
@@ -277,7 +277,7 @@ export const base = {
 } as const satisfies Messages
 
 /** Zonat me skedarin e tyre (src/i18n/areas): çdo çelës jeton në një pjesë të vetme (catalog.test.ts). */
-export const AREAS = { today, sot, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements, week, checkin, readiness, lighter, daymode, foodday, foodsearch }
+export const AREAS = { today, sot, session, programme, body, history, entry, domain, builder, videos, ai, music, notify, food, photos, progress, reminders, box, admin, achievements, week, checkin, readiness, lighter, daymode, foodday, foodsearch, learn }
 
 export const sq = {
   ...base,
@@ -308,6 +308,7 @@ export const sq = {
   ...daymode.sq,
   ...foodday.sq,
   ...foodsearch.sq,
+  ...learn.sq,
 } as const satisfies Messages
 
 /** Forma e çdo gjuhe tjetër: çdo çelës i shqipes, tekst ose shumës si te shqipja. */

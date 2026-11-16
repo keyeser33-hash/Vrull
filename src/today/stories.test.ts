@@ -3,7 +3,16 @@ import { markStorySeen, readSeenStories, storyRing } from './stories'
 // Rrathët e story-ve te Sot (V57, SPEC §0.3f): "Si ndihesh?" i pari deri sa gjendja e ditës të plotësohet, pastaj të
 // pashikuarat, pastaj të shikuarat, dhe "Gati N%" i fundit pas plotësimit. Mentori vetëm kur ka shënim (V55).
 
-const base = { checkedIn: false, skipped: false, percent: null as number | null, mentor: null as { id: string } | null, weekMonday: null as string | null, seen: new Set<string>() }
+const base = {
+  checkedIn: false,
+  skipped: false,
+  percent: null as number | null,
+  mentor: null as { id: string } | null,
+  weekMonday: null as string | null,
+  fact: null as { date: string; seen: boolean } | null,
+  quiz: null as { monday: string; done: boolean } | null,
+  seen: new Set<string>(),
+}
 const ids = (input: Partial<typeof base>) => storyRing({ ...base, ...input }).map((story) => `${story.kind}${story.seen ? ':seen' : ''}`)
 
 describe('storyRing', () => {
@@ -39,6 +48,24 @@ describe('storyRing', () => {
   it('çdo rreth ka çelës të qëndrueshëm: e shikuara lidhet me shënimin dhe me javën, jo vetëm me llojin', () => {
     const ring = storyRing({ ...base, checkedIn: true, percent: 80, mentor: { id: 'n1' }, weekMonday: '2026-11-09' })
     expect(ring.map((story) => story.key)).toEqual(['week:2026-11-09', 'mentor:n1', 'ready'])
+  })
+})
+
+describe('Mëso te rrathët (§0.3e, §0.3f)', () => {
+  it('"A e dije?" pas "Si ndihesh?" dhe para mentorit; i parë (rreshti i ditës) shkon pas të pashikuarave', () => {
+    expect(ids({ fact: { date: '2026-11-09', seen: false }, mentor: { id: 'n1' } })).toEqual(['checkin', 'fact', 'mentor'])
+    expect(ids({ checkedIn: true, percent: 82, fact: { date: '2026-11-09', seen: true }, mentor: { id: 'n1' } })).toEqual(['mentor', 'fact:seen', 'ready'])
+  })
+
+  it('e diela: "Java jote", kuizi, mentori, "A e dije?" i parë, "Gati"; kuizi i bërë është i shikuar', () => {
+    const sunday = { checkedIn: true, percent: 82, weekMonday: '2026-11-09', mentor: { id: 'n1' }, fact: { date: '2026-11-15', seen: true } }
+    expect(ids({ ...sunday, quiz: { monday: '2026-11-09', done: false } })).toEqual(['week', 'quiz', 'mentor', 'fact:seen', 'ready'])
+    expect(ids({ ...sunday, quiz: { monday: '2026-11-09', done: true } })).toEqual(['week', 'mentor', 'quiz:seen', 'fact:seen', 'ready'])
+  })
+
+  it('çelësat lidhen me ditën dhe me javën', () => {
+    const ring = storyRing({ ...base, fact: { date: '2026-11-15', seen: false }, quiz: { monday: '2026-11-09', done: false } })
+    expect(ring.map((story) => story.key)).toEqual(['checkin', 'quiz:2026-11-09', 'fact:2026-11-15'])
   })
 })
 

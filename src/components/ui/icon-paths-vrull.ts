@@ -47,6 +47,8 @@ export const VRULL_ICONS = {
   // Importi nga PDF dhe Cilësimet › AI (bordet "Importo nga PDF", "Cilësimet · AI", V2-E1-11).
   skedari: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
   pyetje: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5h.01"/>',
+  // Mëso (bordet "0.40 · Mëso"): llamba e "A e dije?".
+  llamba: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
   // Kutia e AI-së (bordet "0.22 · AI dhe ushqimi i shpejtë"): shkëndija e AI-së dhe dërgimi.
   shkendija: '<path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>',
   dergo: '<path d="M5 12h14M13 6l6 6-6 6"/>',

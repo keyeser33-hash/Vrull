@@ -25,6 +25,7 @@ import * as videos from './areas/videos'
 import * as week from './areas/week'
 import * as foodday from './areas/foodday'
 import * as foodsearch from './areas/foodsearch'
+import * as learn from './areas/learn'
 import type { base as sqBase, Translation } from './sq'
 import type { TranslationOf } from './translate'
 
@@ -235,7 +236,6 @@ const base: TranslationOf<typeof sqBase> = {
   'ui.fact.title': 'Did you know?',
   'ui.fact.source': 'Source: {source}',
   'ui.fact.more': 'Learn more',
-  'ui.fact.next': 'Next',
   'ui.progress.spoken': '{label}, {value} of {target} {unit}',
   'ui.progress.spokenOver': '{label}, {value} of {target} {unit}, over target',
   'ui.progress.over': 'over target',
@@ -287,4 +287,5 @@ export const en: Translation = {
   ...daymode.en,
   ...foodday.en,
   ...foodsearch.en,
+  ...learn.en,
 }

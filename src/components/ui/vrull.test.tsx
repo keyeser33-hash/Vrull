@@ -184,25 +184,36 @@ describe('InsightCard dhe FactCard', () => {
     expect(screen.getByRole('button', { name: 'Prano' })).toHaveClass('bg-sand')
   })
 
-  it('fakti ka gjithnjë burimin, ose "Shpjeguar nga AI"', () => {
+  it('fakti ka gjithnjë burimin, ose "Shpjeguar nga AI"; vetëm "Më shumë" dhe "×", pa "Tjetër"', async () => {
+    const user = userEvent.setup()
+    const dismiss = vi.fn()
     render(
       <>
-        <FactCard fact="Një gram yndyrë jep rreth 9 kcal." source="USDA, faktorët Atwater" onMore={() => {}} onNext={() => {}} />
+        <FactCard fact="Një gram yndyrë jep rreth 9 kcal." source="USDA, faktorët Atwater" context="Gjizë" more="Faktorët Atwater." href="https://fdc.nal.usda.gov" onDismiss={dismiss} />
         <FactCard fact="Supet ndihmojnë me lëngjet." ai />
       </>,
     )
     const [withSource, fromAi] = screen.getAllByRole('region', { name: 'A e dije?' })
     expect(within(withSource).getByText('Burimi: USDA, faktorët Atwater')).toBeInTheDocument()
-    expect(within(withSource).getByRole('button', { name: 'Tjetër' })).toBeInTheDocument()
+    expect(within(withSource).getByText('Gjizë')).toBeInTheDocument()
+    expect(within(withSource).getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent)).toEqual(['Mbyll për sot', 'Më shumë'])
     expect(within(fromAi).getByText('Shpjeguar nga AI')).toBeInTheDocument()
+    // "Më shumë" hap në vend shpjegimin dhe lidhjen e burimit, që hapet jashtë app-it.
+    await user.click(within(withSource).getByRole('button', { name: 'Më shumë' }))
+    expect(within(withSource).getByText('Faktorët Atwater.')).toBeInTheDocument()
+    expect(within(withSource).getByRole('link', { name: 'Hap burimin' })).toHaveAttribute('href', 'https://fdc.nal.usda.gov')
+    expect(within(withSource).getByRole('link', { name: 'Hap burimin' })).toHaveAttribute('target', '_blank')
+    await user.click(within(withSource).getByRole('button', { name: 'Mbyll për sot' }))
+    expect(dismiss).toHaveBeenCalledOnce()
   })
 
   it('në anglisht', () => {
     language.set('en')
-    render(<FactCard fact="One gram of fat gives about 9 kcal." source="USDA" onMore={() => {}} />)
+    render(<FactCard fact="One gram of fat gives about 9 kcal." source="USDA" more="Atwater." onDismiss={() => {}} />)
     const card = screen.getByRole('region', { name: 'Did you know?' })
     expect(within(card).getByText('Source: USDA')).toBeInTheDocument()
     expect(within(card).getByRole('button', { name: 'Learn more' })).toBeInTheDocument()
+    expect(within(card).getByRole('button', { name: 'Close for today' })).toBeInTheDocument()
   })
 })
 

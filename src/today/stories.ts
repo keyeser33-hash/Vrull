@@ -2,9 +2,11 @@ import type { LocalStore } from '@/data/store'
 
 // Rrathët e story-ve te Sot (V57, SPEC §0.3f), pa UI: radha dhe gjendja "e shikuar". Radha: "Si ndihesh?" (deri sa
 // gjendja e ditës të plotësohet), pastaj të pashikuarat, pastaj të shikuarat; "Gati N%" e fundit pas plotësimit.
+// Brenda tyre: "Java jote", kuizi, "A e dije?", mentori (bordet "Sot · Stories" dhe "Sot · E diela"); "A e dije?" dhe
+// kuizi e marrin "të shikuar" nga tabela `learn_events` (sinkronizohet), jo nga telefoni.
 // "E shikuar" ruhet vetëm në telefon, për ditën e ushqimit (V46): një ditë tjetër fillon me unaza të pashikuara.
 
-export type StoryKind = 'checkin' | 'week' | 'mentor' | 'ready'
+export type StoryKind = 'checkin' | 'week' | 'quiz' | 'fact' | 'mentor' | 'ready'
 
 export interface Story {
   kind: StoryKind
@@ -15,7 +17,7 @@ export interface Story {
   percent?: number
   /** Shënimi i mentorit. */
   noteId?: string
-  /** E hëna e javës që përmbledh "Java jote". */
+  /** E hëna e javës që përmbledh "Java jote", ose e kuizit. */
   monday?: string
 }
 
@@ -29,12 +31,18 @@ export interface StoryInput {
   mentor: { id: string } | null
   /** E hëna e javës që përmbledh "Java jote" (e diela 20:00 deri të hënën në fund); null jashtë saj. */
   weekMonday: string | null
+  /** "A e dije?" i ditës (§0.3e): i parë kur rreshti i ditës ekziston (sinkronizohet); null pa fakt ose me çelësin e fikur. */
+  fact?: { date: string; seen: boolean } | null
+  /** Kuizi i së dielës (§0.3e) kur java ka 5 fakte: i bërë = i shikuar; null jashtë dritares. */
+  quiz?: { monday: string; done: boolean } | null
   seen: ReadonlySet<string>
 }
 
 export function storyRing(input: StoryInput): Story[] {
   const middle: Story[] = []
   if (input.weekMonday) middle.push({ kind: 'week', key: `week:${input.weekMonday}`, seen: input.seen.has(`week:${input.weekMonday}`), monday: input.weekMonday })
+  if (input.quiz) middle.push({ kind: 'quiz', key: `quiz:${input.quiz.monday}`, seen: input.quiz.done, monday: input.quiz.monday })
+  if (input.fact) middle.push({ kind: 'fact', key: `fact:${input.fact.date}`, seen: input.fact.seen })
   if (input.mentor) middle.push({ kind: 'mentor', key: `mentor:${input.mentor.id}`, seen: input.seen.has(`mentor:${input.mentor.id}`), noteId: input.mentor.id })
   const ordered = [...middle.filter((story) => !story.seen), ...middle.filter((story) => story.seen)]
   const ring: Story[] = []
