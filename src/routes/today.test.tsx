@@ -124,9 +124,11 @@ describe('Sot', () => {
       screen.getByRole('link', { name: 'Kutia e AI-së' }),
     ]
     order.slice(1).forEach((element, index) => expect(order[index].compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy())
-    expect(within(order[0]).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual(['Si ndihesh?, e re'])
-    // Pa pllakën "Gati", kartën "Si ndihesh sot?", ushqimin dhe ujin e madh, matësit e javës dhe "A e dije?".
-    expect(screen.queryByText(/A e dije|Sfida|Java jote/)).not.toBeInTheDocument()
+    // "A e dije?" është rreth (story, §0.3e), jo kartë (bordi "Sot · Stories").
+    expect(within(order[0]).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual(['Si ndihesh?, e re', 'A e dije?, e re'])
+    // Pa pllakën "Gati", kartën "Si ndihesh sot?", ushqimin dhe ujin e madh, matësit e javës dhe kartën "A e dije?".
+    expect(screen.queryByText(/Sfida|Java jote/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'A e dije?' })).not.toBeInTheDocument()
     expect(screen.queryByRole('region', { name: 'Uji' })).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Si ndihesh sot?' })).not.toBeInTheDocument()
 
@@ -368,7 +370,8 @@ describe('Sot', () => {
     data.clock = at(8, 11, 20, 30)
     const router = await renderToday()
     const ring = await screen.findByRole('list', { name: 'Rrathët e ditës' })
-    expect(within(ring).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual(['Si ndihesh?, e re', 'Java jote, e re'])
+    // Bordi "Sot · E diela": "Java jote", kuizi (java ka 5 fakte nga ushtrimet dhe ushqimet e saj), "A e dije?".
+    expect(within(ring).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual(['Si ndihesh?, e re', 'Java jote, e re', 'Kuizi, e re', 'A e dije?, e re'])
     expect(screen.queryByRole('region', { name: 'Java 2 u mbyll' })).not.toBeInTheDocument()
     act(() => language.set('en'))
     expect(screen.getByRole('button', { name: 'Your week, new' })).toBeInTheDocument()
