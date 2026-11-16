@@ -1,6 +1,6 @@
 import { APP_NAME } from '@/lib/app-name'
 import type { LocalDatabase } from './db'
-import { type Row, TABLES, type TableName } from './tables'
+import { type Row, USER_TABLES, type UserTableName } from './tables'
 
 // "Eksporto të dhënat" (SPEC §8): një skedar JSON me të gjitha tabelat, pa fotot. Plani falas
 // i Supabase nuk ka kopje ditore automatike, ndaj ky është rrjeti i sigurisë.
@@ -10,15 +10,15 @@ export interface ExportFile {
   version: string
   exported_at: string
   user_id: string | null
-  tables: Record<TableName, Row[]>
+  tables: Record<UserTableName, Row[]>
 }
 
 export async function buildExport(
   db: LocalDatabase,
   options: { version: string; userId: string | null; now?: () => Date },
 ): Promise<ExportFile> {
-  const tables = {} as Record<TableName, Row[]>
-  for (const table of TABLES) {
+  const tables = {} as Record<UserTableName, Row[]>
+  for (const table of USER_TABLES) {
     const rows = await db[table].filter((row) => row.deleted_at === null).toArray()
     tables[table] = rows.map(
       (row) => Object.fromEntries(Object.entries(row).filter(([key]) => !key.startsWith('_'))) as Row,

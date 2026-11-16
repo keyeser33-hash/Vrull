@@ -49,7 +49,7 @@ export type LocalDatabase = Dexie & { [T in TableName]: Table<LocalRow, string> 
 }
 
 // Tabelat e sinkronizuara që erdhën pas versionit 1, me versionin ku hynë.
-const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4, ai_usage: 5, water_logs: 6, weekly_checks: 7, ai_limits: 8, achievements: 9, daily_states: 10, daily_choices: 10, mentor_notes: 11, learn_events: 12 }
+const ADDED_LATER: Partial<Record<TableName, number>> = { week_weights: 3, form_videos: 4, ai_usage: 5, water_logs: 6, weekly_checks: 7, ai_limits: 8, achievements: 9, daily_states: 10, daily_choices: 10, mentor_notes: 11, learn_events: 12, food_products: 14 }
 
 const tableSchema = (table: TableName) => ['id', '_dirty', ...INDEXES[table]].join(', ')
 
@@ -82,5 +82,7 @@ export function createDatabase(name = 'training-hub'): LocalDatabase {
   db.version(12).stores({ learn_events: tableSchema('learn_events') })
   // Versioni 13: Lista e Vrullit në telefon (V2-E3-27), vetëm në telefon.
   db.version(13).stores({ _catalog: 'id' })
+  // Versioni 14: produktet e grupit (V59, V2-E3-27): barkodi, emri dhe makrot e produkteve të skanuara, të përbashkëta për grupin.
+  db.version(14).stores({ food_products: tableSchema('food_products') })
   return db
 }

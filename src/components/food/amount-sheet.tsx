@@ -158,6 +158,7 @@ export function AmountSheet({ item, mode, left, onClose, onSubmit }: { item: Bas
           </div>
         </section>
       ) : null}
+      {item.source === 'off' ? <p className="shrink-0 type-caption text-muted-foreground">{t('foodsearch.attribution')}</p> : null}
     </Sheet>
   )
 }

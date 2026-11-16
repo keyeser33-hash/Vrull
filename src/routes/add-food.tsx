@@ -21,6 +21,7 @@ import type { CatalogFood } from '@/catalog/types'
 import { useCatalog } from '@/catalog/use-catalog'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type BasketItem, basketItemFromFood, basketItemFromPortion, itemMacros, logBasket } from '@/data/basket'
+import { type GroupProduct, saveProductFood, searchProducts } from '@/data/products'
 import { type Food, foodById, foodsById, saveCatalogFood, saveExternalFood, searchFoods } from '@/data/foods'
 import { currentFoodDate, nutritionDay, planFoodId, type TemplateLine } from '@/data/nutrition'
 import { favoriteFoods, type Portion, recentPortions, yesterdayMeal } from '@/data/quick-food'
@@ -115,8 +116,12 @@ export function AddFoodPage() {
   const trimmed = query.trim()
   const searching = trimmed.length > 0
   const local = useLocalQuery(() => searchFoods(store, query, (food) => foodName(t, food)), [query, lang])
+  const group = useLocalQuery(() => searchProducts(store, query), [query])
   const catalog = useCatalog()
   const ownCatalogIds = useMemo(() => new Set((local ?? []).filter((food) => food.source === 'catalog').map((food) => food.sourceId ?? '')), [local])
+  // Produktet e grupit që i ke tashmë te të tuat (i njëjti barkod) nuk dalin dy herë.
+  const ownCodes = useMemo(() => new Set((local ?? []).map((food) => (food.sourceId ?? '').replace(/^label:/, ''))), [local])
+  const groupShown = useMemo(() => (group ?? []).filter((product) => !ownCodes.has(product.barcode)), [group, ownCodes])
   const listed = useMemo(() => (catalog.index && searching ? searchCatalog(catalog.index, query, { exclude: ownCatalogIds }) : []), [catalog.index, query, searching, ownCatalogIds])
   const packaged = usePackagedSearch(query)
 
@@ -256,6 +261,29 @@ export function AddFoodPage() {
     )
   }
 
+  /** Një produkt i grupit (skanuar nga dikush): ruhet te ushqimet e tua kur shtohet ose hapet; emri i kujt e shtoi nuk dihet. */
+  const groupRow = (product: GroupProduct) => {
+    const grams = product.servingG ?? 100
+    const macros = macrosFor({ kcal: product.kcal, proteinG: product.proteinG, carbsG: product.carbsG, fatG: product.fatG }, grams)
+    return (
+      <PickRow
+        key={product.id}
+        name={product.name}
+        tag={product.brand ?? undefined}
+        detail={rowDetail(portionLabel(i18n, { grams, servings: null, servingG: product.servingG, servingLabel: product.servingLabel }), macros.kcal, macros.proteinG)}
+        size="lg"
+        basket={basket}
+        match={(item) => item.sourceId === (product.source === 'open_food_facts' ? product.barcode : `label:${product.barcode}`)}
+        unit={grams}
+        resolve={async () => {
+          const saved = await foodById(store, await saveProductFood(store, product))
+          return saved ? basketItemFromFood(saved) : null
+        }}
+        onOpen={(id) => open('sasia', { ushqimi: id })}
+      />
+    )
+  }
+
   const mealLabel = mealName(t, meal)
   const tools: { key: string; icon: IconName; text: string; disabled?: boolean; onClick: () => void }[] = [
     { key: 'barcode', icon: 'barkodi-vija', text: t('foodsearch.tool.barcode'), onClick: () => open('barkodi') },
@@ -325,6 +353,7 @@ export function AddFoodPage() {
             </p>
           ) : null}
           {catalog.failed ? <p className="type-caption text-muted-foreground">{t('foodsearch.catalogFailed')}</p> : null}
+          {groupShown.length > 0 ? <PickSection title={t('foodsearch.group')}>{groupShown.map(groupRow)}</PickSection> : null}
           {packaged.remote.state === 'done' && packaged.remote.foods.length > 0 ? (
             <PickSection title={t('foodsearch.packaged.results')}>{packaged.remote.foods.map(externalRow)}</PickSection>
           ) : (

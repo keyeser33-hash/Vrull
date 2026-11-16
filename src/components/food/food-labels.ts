@@ -25,6 +25,7 @@ export function sourceKey(food: { source: string | null; sourceId: string | null
   const id = food.sourceId
   if (food.source === 'template' || id?.startsWith('jim:') || id?.startsWith('pdf:')) return 'foodsearch.source.plan'
   if (isQuickFood(id)) return 'foodsearch.source.quick'
+  if (id?.startsWith('label:')) return 'foodsearch.source.label'
   if (isSupplementSource(id)) return 'foodsearch.source.supplement'
   if (food.source === 'catalog') return catalogSourceKey(sourceLabelOfId(id ?? '') ?? 'usda')
   if (food.source === 'usda') return 'foodsearch.source.usda'

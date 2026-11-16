@@ -42,9 +42,19 @@ export const TABLES = [
   'mentor_notes',
   // Mëso (V56, §0.3e): faktet e para (dita, vendi, fakti) dhe kuizet e së dielës, me id nga çelësi natyror.
   'learn_events',
+  // Produktet e grupit (V59, §0.3h, V2-E3-27): barkodi, emri dhe makrot e produkteve që skanon dikush; të përbashkëta për të gjithë
+  // përdoruesit e kyçur (pa pronar te leximi, `added_by` nuk lexohet). Shtohet vetëm; sinkronizimi e dërgon me `insert` dhe e merr
+  // me kolona të emërtuara (`remote-supabase.ts`). Nuk hyn te eksporti i të dhënave të përdoruesit.
+  'food_products',
 ] as const
 
 export type TableName = (typeof TABLES)[number]
+
+/** Tabelat e përbashkëta të grupit: nuk janë të dhëna të përdoruesit (pa user_id te serveri), nuk hyjnë te eksporti. */
+export const SHARED_TABLES = ['food_products'] as const satisfies readonly TableName[]
+export type SharedTableName = (typeof SHARED_TABLES)[number]
+export type UserTableName = Exclude<TableName, SharedTableName>
+export const USER_TABLES: readonly UserTableName[] = TABLES.filter((table): table is UserTableName => !(SHARED_TABLES as readonly TableName[]).includes(table))
 
 // Gjendja lokale e një rreshti: 0 i sinkronizuar, 1 pret dërgimin, 2 i refuzuar nga serveri
 // (provohet përsëri një nga një, që të mos bllokojë rreshtat e tjerë).
@@ -107,4 +117,5 @@ export const INDEXES: Record<TableName, string[]> = {
   daily_choices: ['date'],
   mentor_notes: ['kind', 'session_id'],
   learn_events: ['kind'],
+  food_products: ['barcode'],
 }

@@ -5,14 +5,16 @@ import { inputClass } from '@/components/ui/field-styles'
 import { Icon } from '@/components/ui/icons'
 import { store } from '@/data/app-data'
 import { saveExternalFood } from '@/data/foods'
+import { findProduct, saveProductFood, shareProduct } from '@/data/products'
 import type { MessageKey } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
 import { canScanBarcode, scanBarcode } from '@/lib/barcode-native'
 import { cn } from '@/lib/cn'
 import { offProduct } from '@/nutrition/off'
 
-// Barkodi (SPEC §9): skaneri i Google Play Services në telefon, ose shifrat me dorë. Open Food Facts thirret vetëm me
-// barkod (V59). Produkti i gjetur ruhet dhe hapet te fleta e sasisë; ai që mungon shtohet si ushqim i ri.
+// Barkodi (SPEC §9): skaneri i Google Play Services në telefon, ose shifrat me dorë. Barkodi kërkohet së pari te produktet e grupit (V59, pa
+// internet), pastaj te Open Food Facts (vetëm me barkod), dhe produkti i gjetur ndahet me grupin. Produkti i gjetur ruhet dhe hapet te
+// fleta e sasisë; ai që mungon shtohet si ushqim i ri.
 
 type BarcodeState = 'idle' | 'busy' | 'missing' | 'offline' | 'error' | 'installing' | 'scan-error'
 
@@ -43,12 +45,18 @@ export function BarcodeSheet({ onClose, onFound, onMissing }: { onClose: () => v
   async function lookUp(scanned?: string) {
     const value = (scanned ?? code).replace(/\D/g, '')
     if (value.length < 8) return setState('error')
-    if (!navigator.onLine) return setState('offline')
     setState('busy')
     try {
+      // Së pari te produktet e grupit (në telefon, pa internet); Open Food Facts vetëm kur grupi nuk e ka barkodin (V59).
+      const shared = await findProduct(store, value)
+      if (shared) return onFound(await saveProductFood(store, shared))
+      if (!navigator.onLine) return setState('offline')
       const food = await offProduct(value)
       if (!food) return setState('missing')
-      onFound(await saveExternalFood(store, food))
+      const id = await saveExternalFood(store, food)
+      // Produkti i skanuar ndahet me grupin; një dështim këtu nuk e prish gjetjen.
+      await shareProduct(store, food).catch(() => null)
+      onFound(id)
     } catch {
       setState(navigator.onLine ? 'error' : 'offline')
     }

@@ -94,7 +94,7 @@ describe('Shto ushqim', () => {
   afterAll(() => vi.useRealTimers())
   beforeEach(async () => {
     window.localStorage.clear()
-    await Promise.all([data.db.foods.clear(), data.db.diary_entries.clear()])
+    await Promise.all([data.db.foods.clear(), data.db.diary_entries.clear(), data.db.food_products.clear()])
     off.search.mockReset()
     off.product.mockReset()
   })
@@ -379,11 +379,48 @@ describe('Shto ushqim', () => {
     expect(off.product).toHaveBeenCalledWith('8000500310427')
     const amount = await screen.findByRole('dialog', { name: 'Kinder Bueno' })
     expect(within(amount).getByRole('button', { name: 'bar · 21,5\u00a0g' })).toBeInTheDocument()
+    // Open Food Facts: atribuimi ODbL te produkti, dhe produkti i skanuar ndahet me grupin.
+    expect(within(amount).getByText('Contains data from Open Food Facts, available under the Open Database License')).toBeInTheDocument()
+    expect((await data.store.all('food_products')).map((row) => [row.barcode, row.source, row.license, row.name, row._dirty])).toEqual([['8000500310427', 'open_food_facts', 'ODbL-1.0', 'Kinder Bueno', 1]])
     await user.click(within(amount).getByRole('button', { name: 'Mbyll' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(second.router.state.location.pathname).toBe('/ushqimi/shto/lunch')
     expect(second.router.state.location.search).toBe('')
     expect(router).toBeDefined()
+  })
+
+  it('barkodi gjendet te produktet e grupit pa thirrur Open Food Facts, edhe pa internet; produkti i një tjetri del me markën, pa emrin e kujt e shtoi', async () => {
+    const user = userEvent.setup()
+    await data.db.food_products.put({ id: 'p-1', _dirty: 0, barcode: '5449000000996', source: 'open_food_facts', license: 'ODbL-1.0', name: 'Coca-Cola Zero', brand: 'Coca-Cola', kcal: 0.3, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: null, serving_g: 330, serving_label: '1 kanaçe', created_at: '2026-11-15T10:00:00Z', updated_at: '2026-11-15T10:00:00Z', deleted_at: null, server_updated_at: '2026-11-15T10:00:01Z' } as never)
+    const online = vi.spyOn(window.navigator, 'onLine', 'get')
+    online.mockReturnValue(false)
+    await renderPage('/ushqimi/shto/lunch?barkod=1')
+    // Faqja mbaron leximin para shkrimit (një rivizatim në mes të shkrimit e humbte fokusin).
+    await screen.findAllByText('Ton albacore në ujë')
+    const sheet = await screen.findByRole('dialog', { name: 'Barkodi' })
+    await user.type(within(sheet).getByLabelText('Shifrat poshtë vijave'), '5449000000996{Enter}')
+    const amount = await screen.findByRole('dialog', { name: 'Coca-Cola Zero' })
+    expect(off.product).not.toHaveBeenCalled()
+    expect(within(amount).getByText('Contains data from Open Food Facts, available under the Open Database License')).toBeInTheDocument()
+    const saved = (await data.store.all('foods')).filter((row) => row.source === 'off')
+    expect(saved.map((row) => [row.source_id, row.brand])).toEqual([['5449000000996', 'Coca-Cola']])
+    // Nuk krijohet një rresht i dytë te grupi.
+    expect(await data.db.food_products.count()).toBe(1)
+    online.mockRestore()
+  })
+
+  it('me shkrim: seksioni "Produktet e grupit" me produktin e një tjetri, pas Listës së Vrullit', async () => {
+    const user = userEvent.setup()
+    await data.db.food_products.put({ id: 'p-2', _dirty: 0, barcode: '8000500310427', source: 'open_food_facts', license: 'ODbL-1.0', name: 'Kinder Bueno', brand: 'Ferrero', kcal: 572, protein_g: 8.6, carbs_g: 49.5, fat_g: 37, fiber_g: null, serving_g: 21.5, serving_label: '1 bar', created_at: '2026-11-15T10:00:00Z', updated_at: '2026-11-15T10:00:00Z', deleted_at: null, server_updated_at: '2026-11-15T10:00:01Z' } as never)
+    await renderPage()
+    await user.type(await screen.findByLabelText('Kërko ushqimin'), 'kinder')
+    const group = await screen.findByRole('region', { name: 'Produktet e grupit' })
+    expect(group).toHaveTextContent('Kinder Bueno')
+    expect(group).toHaveTextContent('Ferrero')
+    expect(group).not.toHaveTextContent('added_by')
+    await user.click(within(group).getByRole('button', { name: 'Shto Kinder Bueno në shportë' }))
+    expect(await basketRegion()).toHaveTextContent('Kinder Bueno · 1')
+    expect(off.search).not.toHaveBeenCalled()
   })
 
   it('barkodi që mungon shtohet si ushqim i ri; "Ushqim i ri" nga mjetet hap sasinë dhe e shton në shportë', async () => {

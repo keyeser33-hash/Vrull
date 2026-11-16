@@ -44,7 +44,8 @@ describe.skipIf(!email || !password)('sinkronizimi me Supabase të vërtetë', {
     // Nis nga e pastra: rreshtat e një ekzekutimi të mëparshëm do të shkelnin rregullat e unicitetit
     // (një matje për datë, një ushtrim për library_id). Fëmijët fshihen para prindërve.
     // `ai_usage` e shkruan vetëm serveri (RLS): app-i nuk e fshin dot.
-    for (const table of [...TABLES].reverse().filter((name) => name !== 'ai_usage')) {
+    // `food_products` është e përbashkët (pa user_id): app-i nuk e fshin.
+    for (const table of [...TABLES].reverse().filter((name) => name !== 'ai_usage' && name !== 'food_products')) {
       const { error: deleteError } = await client.from(table).delete().eq('user_id', userId)
       if (deleteError) throw deleteError
     }
