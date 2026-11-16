@@ -26,17 +26,12 @@ export const sq = {
   'session.choose': 'Zgjidh peshën ku mbyll {range} përsëritje',
   'session.needsOneRm': 'Vendos 1RM-në e ushtrimit për peshën e javës',
   'session.extraWeight': "Pesha shtesë, 0 kur s'ka",
-  'session.technique.restPause': 'Seti {set}: rest-pause, {seconds} s pushim',
-  'session.technique.dropSet': 'Seti {set}: drop set',
-  'session.technique.dropSetTo': 'Seti {set}: drop set te {weight}',
-  'session.technique.toFailure': 'Seti {set}: deri në dështim',
   // Rreshtat poshtë stepper-it (0.23, bordi "Seanca"): herën e kaluar dhe pragu i rekordit.
   'session.rows': 'Herën e kaluar dhe pragu i rekordit',
   'session.record.label': 'Rekord i ri me',
   'session.record.reps': { one: '{count} përsëritje · e1RM {e1rm}', other: '{count} përsëritje · e1RM {e1rm}' },
   'session.record.any': 'çdo set në interval · e1RM të paktën {e1rm}',
-  // Çipat e seteve të ushtrimit (0.23): seti i ruajtur, i tanishmi dhe ata që vijnë.
-  'session.chips': 'Setet e ushtrimit',
+  // Etiketat e seteve te tabela: i tanishmi, rekordi, teknika; emri i setit të ruajtur që preket.
   'session.chip.now': 'tani',
   'session.chip.record': 'rekord',
   'session.chip.restPause': 'rest-pause',
@@ -44,7 +39,6 @@ export const sq = {
   'session.chip.edit': 'Seti {set}: {value}. Prek për ta ndryshuar',
   'session.chip.editRecord': 'Seti {set}: {value}, rekord. Prek për ta ndryshuar',
   'session.next': 'Pastaj',
-  'session.nextExercise': 'Ushtrimi i radhës',
   'session.sets': { one: '{count} set', other: '{count} sete' },
   'session.save': 'Ruaj setin',
   'session.weightNeeded': 'Shkruaj peshën',
@@ -56,11 +50,7 @@ export const sq = {
   'session.allDoneText': 'Mbyll stërvitjen që treguesi të kalojë te e radha.',
   'session.finish': 'Mbyll stërvitjen',
 
-  // Numrat me tastierë (prekja e numrit të madh).
-  'session.edit.weight': 'Pesha, kg',
-  'session.edit.reps': 'Përsëritjet',
-  'session.edit.seconds': 'Sekondat',
-  'session.edit.invalid': 'Shkruaj një numër, p.sh. 62,5.',
+  // Sekondat (setet me kohë).
   'session.seconds.unit': { one: 'sekondë', other: 'sekonda' },
   'session.seconds.summary': { one: 'Seti {set}: {count} sekondë', other: 'Seti {set}: {count} sekonda' },
   'session.seconds.lower': 'Pesë sekonda më pak',
@@ -75,9 +65,6 @@ export const sq = {
   'session.rest.more': 'Shto 15 sekonda te pushimi',
   'session.rest.skip': 'Kapërce',
   'session.rest.saved': 'Seti {set} u ruajt: {value}',
-  'session.saved.title': 'Setet e ruajtura',
-  'session.saved.edit': 'Ndrysho',
-  'session.saved.editLabel': 'Ndrysho setin {set}: {value}',
 
   // Banderola e rekordit mbi pushimin (0.23, E2-21).
   'session.banner.title': 'Rekord i ri',
@@ -103,16 +90,11 @@ export const sq = {
   'session.list.lastSet': 'Seti {set}: {value}',
   'session.list.record': 'Rekord i ri: e1RM {e1rm}',
   'session.list.change': 'Ndrysho ushtrimin',
-  'session.list.remaining': {
-    one: 'Mbeti {count} set. Setet e bëra ruhen kur e mbyll.',
-    other: 'Mbetën {count} sete. Setet e bëra ruhen kur e mbyll.',
-  },
   'session.list.confirm': {
     one: 'Mbetet {count} set pa bërë. Stërvitja mbyllet me ato që ke regjistruar.',
     other: 'Mbeten {count} sete pa bërë. Stërvitja mbyllet me ato që ke regjistruar.',
   },
   'session.list.confirmFinish': 'Po, mbyll',
-  'session.list.allDone': 'Të gjitha setet u bënë.',
   'session.change.title': 'Ndrysho ushtrimin',
   'session.change.text': 'Zëvendëson {exercise} në {block}. Fazat e tjera dhe seancat e kaluara nuk ndryshojnë.',
 
@@ -190,6 +172,8 @@ export const sq = {
   'session.rest.tapToEdit': 'Prek setin për ta ndryshuar',
   'session.rest.newExercise': 'Ushtrim i ri',
   'session.rest.saveNext': 'Ruaj setin {set}',
+  // "62,5" i madh, pastaj "kg × 6–8" (bordi "Pushimi · Zhbëj").
+  'session.rest.loadTail': 'kg × {target}',
   // "Kontrollo setet" para "Mbyll stërvitjen" (bordi "Mbyllja · Kontrollo").
   'session.review.open': 'Kontrollo setet',
   'session.review.title': 'Kontrollo setet',
@@ -235,15 +219,10 @@ export const en: TranslationOf<typeof sq> = {
   'session.choose': 'Pick a weight you can do for {range} reps',
   'session.needsOneRm': 'Set the exercise 1RM to get this week’s weight',
   'session.extraWeight': 'Added weight, 0 if none',
-  'session.technique.restPause': 'Set {set}: rest-pause, {seconds} s rest',
-  'session.technique.dropSet': 'Set {set}: drop set',
-  'session.technique.dropSetTo': 'Set {set}: drop set to {weight}',
-  'session.technique.toFailure': 'Set {set}: to failure',
   'session.rows': 'Last time and personal best',
   'session.record.label': 'Personal best with',
   'session.record.reps': { one: '{count} rep · e1RM {e1rm}', other: '{count} reps · e1RM {e1rm}' },
   'session.record.any': 'any set in the range · e1RM at least {e1rm}',
-  'session.chips': 'Sets for this exercise',
   'session.chip.now': 'now',
   'session.chip.record': 'record',
   'session.chip.restPause': 'rest-pause',
@@ -251,7 +230,6 @@ export const en: TranslationOf<typeof sq> = {
   'session.chip.edit': 'Set {set}: {value}. Tap to edit',
   'session.chip.editRecord': 'Set {set}: {value}, personal best. Tap to edit',
   'session.next': 'Next',
-  'session.nextExercise': 'Next exercise',
   'session.sets': { one: '{count} set', other: '{count} sets' },
   'session.save': 'Log set',
   'session.weightNeeded': 'Enter the weight',
@@ -263,10 +241,6 @@ export const en: TranslationOf<typeof sq> = {
   'session.allDoneText': 'Finish the workout to move on to the next one.',
   'session.finish': 'Finish workout',
 
-  'session.edit.weight': 'Weight, kg',
-  'session.edit.reps': 'Reps',
-  'session.edit.seconds': 'Seconds',
-  'session.edit.invalid': 'Enter a number, e.g. 62.5.',
   'session.seconds.unit': { one: 'second', other: 'seconds' },
   'session.seconds.summary': { one: 'Set {set}: {count} second', other: 'Set {set}: {count} seconds' },
   'session.seconds.lower': 'Five seconds less',
@@ -280,9 +254,6 @@ export const en: TranslationOf<typeof sq> = {
   'session.rest.more': 'Add 15 seconds to the rest',
   'session.rest.skip': 'Skip',
   'session.rest.saved': 'Set {set} logged: {value}',
-  'session.saved.title': 'Logged sets',
-  'session.saved.edit': 'Edit',
-  'session.saved.editLabel': 'Edit set {set}: {value}',
 
   'session.banner.title': 'New personal best',
   'session.banner.e1rm': 'e1RM {e1rm}',
@@ -305,16 +276,11 @@ export const en: TranslationOf<typeof sq> = {
   'session.list.lastSet': 'Set {set}: {value}',
   'session.list.record': 'New personal best: e1RM {e1rm}',
   'session.list.change': 'Change exercise',
-  'session.list.remaining': {
-    one: '{count} set left. Logged sets are kept when you finish.',
-    other: '{count} sets left. Logged sets are kept when you finish.',
-  },
   'session.list.confirm': {
     one: '{count} set is still to do. The workout is finished with what you have logged.',
     other: '{count} sets are still to do. The workout is finished with what you have logged.',
   },
   'session.list.confirmFinish': 'Yes, finish',
-  'session.list.allDone': 'All sets are done.',
   'session.change.title': 'Change exercise',
   'session.change.text': 'Replaces {exercise} in {block}. Other phases and past sessions stay the same.',
 
@@ -386,6 +352,7 @@ export const en: TranslationOf<typeof sq> = {
   'session.rest.tapToEdit': 'Tap a set to edit it',
   'session.rest.newExercise': 'New exercise',
   'session.rest.saveNext': 'Log set {set}',
+  'session.rest.loadTail': 'kg × {target}',
   'session.review.open': 'Check your sets',
   'session.review.title': 'Check your sets',
   'session.review.minutes': 'min',

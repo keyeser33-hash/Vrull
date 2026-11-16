@@ -2,9 +2,11 @@ import { type PointerEvent, type ReactNode, useEffect, useId, useMemo, useRef, u
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { ExerciseVideoSheet } from '@/components/ui/exercise-video'
+import { ExerciseMotion } from '@/components/ui/exercise-motion'
 import { Icon } from '@/components/ui/icons'
 import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
+import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type ExerciseRecord, finishWorkout, saveSet, type SetRecord, undoSet, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { type WorkoutWeight, workoutWeights } from '@/data/week-weights'
@@ -12,6 +14,7 @@ import type { I18n } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
 import { chosenVideo } from '@/program/exercise-videos'
+import { tempoOf } from '@/program/motion'
 import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
 import { type SetRow, setTable } from '@/program/set-table'
 import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
@@ -21,11 +24,12 @@ import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { openedSet, sessionView } from '@/lib/session-notification'
 import { useRestTimer } from '@/lib/use-rest-timer'
+import { CueList } from './exercise-guide'
 import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideoScreen, type FormVideoTarget } from './form-video'
 import { type BeatContext, BodyBeatScreen, MusicButton, MusicConnectScreen, TapSheet } from './music'
 import { useSessionBeat } from './music-beat'
-import { editable, elapsedText, loadText, previousText, rangeText, setValue, spokenDuration, targetText } from './session-format'
+import { editable, elapsedText, loadText, previousText, rangeText, setValue, spokenDuration, targetShort, targetText } from './session-format'
 import { type BannerRecord, RecordBanner } from './session-banner'
 import { recordPulse, savePulse } from './session-motion'
 import { SessionGuide } from './session-guide'
@@ -33,7 +37,6 @@ import { useSessionGuide } from './session-guide-hook'
 import { type KeypadChip, KeypadSheet } from './session-keypad'
 import { SessionLighter } from './session-lighter'
 import { type LocalChange, setKey, settled, useTapGuard, withLocal } from './session-local'
-import { SavedSets } from './session-sets'
 import { ChangeExerciseSheet, ExerciseListSheet } from './session-sheets'
 import { ActiveNote, SetTable } from './session-table'
 import { UndoToast } from './session-undo'
@@ -430,6 +433,37 @@ function ActiveSession({
     </SessionFrame>
   )
 
+  // Seti që vjen (te seti dhe te pushimi): vlerat e propozuara, të njëjta me njoftimin e seancës
+  // (`program/next-set.ts`). Pesha e setit të parë: rreshti i "Peshave të javës", përndryshe propozimi i §7.
+  const active = viewing === null
+  const tracking: Tracking = exercise?.tracking ?? 'weight_reps'
+  const step = exercise ? weightStep(exercise.equipment, history.weightSteps) : 2.5
+  const lastInSlot = slot ? sets.filter((set) => set.slotId === slot.slotId).at(-1) : undefined
+  const week = slot ? weights.get(slot.slotId) : undefined
+  const drop = (base: number) =>
+    slot ? dropWeight(live, { exerciseId: slot.exerciseId, run: plan.run, blockPosition: plan.blockPosition }, base, slot.technique.type === 'drop_set' ? slot.technique : {}, step) : null
+  const proposed: SetValues | null = !slot
+    ? null
+    : segment
+      ? segmentDefaults(segment.set, segment.set.technique === 'drop_set' ? drop(segment.set.weightKg ?? 0) : null)
+      : setDefaults(slot, lastInSlot, week?.weightKg ?? null)
+  // "Ndrysho" te njoftimi hap këtë set me përsëritjet ose sekondat e zgjedhura atje (V2-E1-08).
+  const fromNotification = opened !== null && slot !== null && !segment && opened.slotId === slot.slotId && opened.setNumber === setNumber
+  const defaults: SetValues | null = proposed && fromNotification ? { ...proposed, ...opened.values } : proposed
+  const technique: Technique = slot && setNumber === slot.sets && !segment ? slot.technique : { type: 'none' }
+  const dropTo = slot?.technique.type === 'drop_set' ? drop(lastInSlot?.weightKg ?? defaults?.weightKg ?? 0) : null
+  const restPauseSeconds = slot?.technique.type === 'rest_pause' ? (slot.technique.restSeconds ?? 15) : null
+  const rowsFor = (at: PlannedSlot, activeSet: number | null) =>
+    setTable({
+      slot: at,
+      sets,
+      active: activeSet,
+      segment: Boolean(segment),
+      weekWeightKg: weights.get(at.slotId)?.weightKg ?? null,
+      history: live,
+      at: { exerciseId: at.exerciseId, blockPosition: plan.blockPosition, week: plan.week, sessionId: session.id },
+    })
+
   if (rest.running && lastSet && viewing === null) {
     let next: { exercise: string | null; text: string } | null = null
     if (segment) {
@@ -443,21 +477,42 @@ function ActiveSession({
         text: t('session.setOf', { set: current.done + 1, sets: slot.sets, target: loadText(weightOf(slot), slot.target, texts) }),
       }
     }
+    // Pushimi para setit që vjen (bordet "Pushimi · Zhbëj" dhe "Pushimi · ushtrimi i ri"): tabela e
+    // ushtrimit, ose lëvizja dhe sinjalet e ushtrimit të ri; "Ruaj setin N" ruan setin me vlerat e propozuara.
+    const coming: RestNext | null =
+      slot && current && defaults
+        ? {
+            key: `${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}`,
+            exercise: exercise ?? null,
+            slot,
+            setNumber,
+            segment: segment ? segment.set.technique : null,
+            newExercise: lastSet.slotId !== slot.slotId && !segment,
+            weightKg: tracking === 'timed' ? null : defaults.weightKg,
+            tracking,
+            rows: rowsFor(slot, setNumber),
+            dropTo,
+            restPauseSeconds,
+            canSave: !(tracking === 'weight_reps' && defaults.weightKg <= 0) && (tracking === 'timed' ? (defaults.seconds ?? 0) > 0 : (defaults.reps ?? 0) > 0),
+          }
+        : null
     return frame(
       <RestView
         rest={rest}
         saved={undo?.setId === lastSet.id || undo?.key === setKey(lastSet) ? null : lastSet}
-        sets={sets.filter((set) => set.slotId === lastSet.slotId)}
+        next={coming}
         records={records}
-        next={next}
         notice={notice}
         onEdit={openEdit}
+        onSave={() => {
+          if (slot && defaults) save({ slot, setNumber, technique, segment }, defaults)
+        }}
       />,
       next,
     )
   }
 
-  if (!current || !slot) {
+  if (!current || !slot || !defaults) {
     return frame(
       <>
         <main className="flex flex-1 flex-col gap-2 px-4 pt-4">
@@ -474,35 +529,8 @@ function ActiveSession({
     )
   }
 
-  const active = viewing === null
-  const isLastSet = setNumber === slot.sets
-  const tracking: Tracking = exercise?.tracking ?? 'weight_reps'
-  const step = exercise ? weightStep(exercise.equipment, history.weightSteps) : 2.5
-  const lastInSlot = sets.filter((set) => set.slotId === slot.slotId).at(-1)
-  const week = weights.get(slot.slotId)
-  const drop = (base: number) =>
-    dropWeight(live, { exerciseId: slot.exerciseId, run: plan.run, blockPosition: plan.blockPosition }, base, slot.technique.type === 'drop_set' ? slot.technique : {}, step)
-
-  // Vlerat e propozuara, të njëjta me njoftimin e seancës (`program/next-set.ts`). Pesha e setit të
-  // parë: rreshti i "Peshave të javës", përndryshe propozimi i §7 ose pesha e fundit.
-  const proposed: SetValues = segment
-    ? segmentDefaults(segment.set, segment.set.technique === 'drop_set' ? drop(segment.set.weightKg ?? 0) : null)
-    : setDefaults(slot, lastInSlot, week?.weightKg ?? null)
-  // "Ndrysho" te njoftimi hap këtë set me përsëritjet ose sekondat e zgjedhura atje (V2-E1-08).
-  const fromNotification = opened !== null && !segment && opened.slotId === slot.slotId && opened.setNumber === setNumber
-  const defaults: SetValues = fromNotification ? { ...proposed, ...opened.values } : proposed
-  const technique: Technique = isLastSet && !segment ? slot.technique : { type: 'none' }
-
   const previous = segment ? null : reference(live, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })
-  const rows = setTable({
-    slot,
-    sets,
-    active: active ? setNumber : null,
-    segment: Boolean(segment),
-    weekWeightKg: week?.weightKg ?? null,
-    history: live,
-    at: { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, sessionId: session.id },
-  })
+  const rows = rowsFor(slot, active ? setNumber : null)
   const folded = foldedSlots[slot.slotId] ?? (current.done > 0 || segment !== null)
   const nextIndex = progress.current
   const continueTo = !active && nextIndex !== null ? (exercises[progress.slots[nextIndex].slot.exerciseId]?.name ?? '') : null
@@ -529,8 +557,8 @@ function ActiveSession({
       history={live}
       rows={rows}
       records={records}
-      dropTo={slot.technique.type === 'drop_set' ? drop(lastInSlot?.weightKg ?? defaults.weightKg) : null}
-      restPauseSeconds={slot.technique.type === 'rest_pause' ? (slot.technique.restSeconds ?? 15) : null}
+      dropTo={dropTo}
+      restPauseSeconds={restPauseSeconds}
       dots={{ count: plan.slots.length, shown: shownIndex ?? 0, done: progress.slots.map((entry) => entry.done >= entry.slot.sets) }}
       onSwipe={(direction) => go((shownIndex ?? 0) + direction)}
       folded={active ? folded : (foldedSlots[slot.slotId] ?? true)}
@@ -1046,94 +1074,210 @@ function SecondsStepper({ setNumber, seconds, onChange, onEdit }: { setNumber: n
   )
 }
 
+/** Seti që vjen pas pushimit, siç e tregon pushimi. */
+interface RestNext {
+  /** Sloti, numri dhe segmenti: butoni i ruajtjes merr një çelës të ri për çdo set (roja e prekjes). */
+  key: string
+  exercise: ExerciseRecord | null
+  slot: PlannedSlot
+  setNumber: number
+  segment: Technique['type'] | null
+  /** Seti i parë i një ushtrimi tjetër: lëvizja dhe sinjalet e tij në vend të tabelës. */
+  newExercise: boolean
+  weightKg: number | null
+  tracking: Tracking
+  rows: SetRow<SetRecord>[]
+  dropTo: number | null
+  restPauseSeconds: number | null
+  /** Pa peshë (ushtrim pa histori) seti shkruhet te ekrani i setit, jo nga pushimi. */
+  canSave: boolean
+}
+
 /**
- * Pushimi (bordet "Pushimi" dhe, nga 0.23, "Pushimi · banderola e rekordit"): unaza, −15 / +15 dhe
- * "Kapërce", seti që vjen dhe setet e ruajtura të ushtrimit me "rekord" dhe "Ndrysho". Rekordi i setit
- * të sapo ruajtur del te banderola sipër (`RecordBanner`); lexuesi i ekranit dëgjon "Seti 1 u ruajt".
+ * Pushimi (SPEC §0.3c, §0.3g; bordet "Pushimi · Zhbëj" dhe "Pushimi · ushtrimi i ri"): unaza, −15 / +15 dhe
+ * "Kapërce", pastaj seti që vjen. Kur është i të njëjtit ushtrim, tabela e tij me setet që preken për t'u
+ * ndryshuar; kur është një ushtrim tjetër, lëvizja dhe 3 sinjalet e tij. "Ruaj setin N" ruan setin që vjen
+ * me vlerat e propozuara (si njoftimi i seancës) dhe e mbyll pushimin. Lexuesi i ekranit dëgjon "Seti 1 u
+ * ruajt" kur seti erdhi nga njoftimi (pa "Zhbëj").
  */
 function RestView({
   rest,
   saved,
-  sets,
-  records,
   next,
+  records,
   notice,
   onEdit,
+  onSave,
 }: {
   rest: ReturnType<typeof useRestTimer>
-  /** Seti i fundit; null derisa leximi i ri ta sjellë. */
+  /** Seti i fundit, për lexuesin e ekranit; null kur e thotë "Zhbëj". */
   saved: SetRecord | null
-  /** Setet e ruajtura të ushtrimit të setit të fundit. */
-  sets: SetRecord[]
+  next: RestNext | null
   /** Setet që ishin rekord në kohën e tyre (`sessionSetRecords`). */
   records: ReadonlyMap<string, SetRecordResult>
-  next: { exercise: string | null; text: string } | null
   /** "Zhbëj" për setin e sapo ruajtur. */
   notice: ReactNode
   onEdit: (set: SetRecord) => void
+  onSave: () => void
 }) {
   const texts = useI18n()
   const { t, fmt } = texts
-  const size = 232
-  const radius = 108
+  const size = 168
+  const radius = 76
   const length = 2 * Math.PI * radius
   const fraction = rest.total > 0 ? rest.remaining / rest.total : 0
+  const target = next ? (next.segment ? null : targetShort(next.slot.target, fmt)) : null
+  const thenLabel = next
+    ? next.segment
+      ? t('session.review.setTag', { set: next.setNumber, technique: t(next.segment === 'drop_set' ? 'session.chip.dropSet' : 'session.chip.restPause') })
+      : t('session.rest.then', { set: next.setNumber, sets: next.slot.sets })
+    : null
+  // "Herën e kaluar"-i i setit që vjen, si te seti: rreshti aktiv i tabelës.
   return (
-    <main className="flex flex-1 flex-col gap-3.5 px-4 pt-2 pb-[calc(var(--safe-bottom)+20px)]">
-      <h1 className="sr-only">{t('session.rest.label')}</h1>
-      <p aria-live="polite" className="sr-only">
-        {saved ? t('session.rest.saved', { set: saved.setNumber, value: setValue(saved, texts) }) : null}
-      </p>
+    <>
+      <main className="flex flex-1 flex-col gap-3 px-4 pt-1 pb-3">
+        <h1 className="sr-only">{t('session.rest.label')}</h1>
+        <p aria-live="polite" className="sr-only">
+          {saved ? t('session.rest.saved', { set: saved.setNumber, value: setValue(saved, texts) }) : null}
+        </p>
 
-      <div
-        role="timer"
-        aria-label={t('session.rest.spoken', { left: spokenDuration(rest.remaining, t), total: spokenDuration(rest.total, t) })}
-        className="relative size-[232px] shrink-0 self-center"
-      >
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden className="absolute inset-0">
-          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={12} className="stroke-track" />
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            strokeWidth={12}
-            strokeLinecap="round"
-            strokeDasharray={`${fraction * length} ${length}`}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-            className="stroke-ember-text transition-[stroke-dasharray] duration-200"
-          />
-        </svg>
-        <div aria-hidden className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
-          <span className="type-label text-muted-foreground">{t('session.rest.label')}</span>
-          <span className="type-display-hero">{clock(rest.remaining)}</span>
-          <span className="type-caption text-muted-foreground tabular-nums">{t('session.rest.of', { total: clock(rest.total) })}</span>
+        <div
+          role="timer"
+          aria-label={t('session.rest.spoken', { left: spokenDuration(rest.remaining, t), total: spokenDuration(rest.total, t) })}
+          className="relative size-[168px] shrink-0 self-center"
+        >
+          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden className="absolute inset-0">
+            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={10} className="stroke-track" />
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              strokeWidth={10}
+              strokeLinecap="round"
+              strokeDasharray={`${fraction * length} ${length}`}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              className="stroke-ember-text transition-[stroke-dasharray] duration-200"
+            />
+          </svg>
+          <div aria-hidden className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+            <span className="type-label text-muted-foreground">{t('session.rest.label')}</span>
+            <span className="font-display text-[64px] leading-[0.85] font-extrabold tabular-nums">{clock(rest.remaining)}</span>
+            <span className="type-caption text-muted-foreground tabular-nums">{t('session.rest.of', { total: clock(rest.total) })}</span>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        <Button variant="secondary" ground="page" size="lg" aria-label={t('session.rest.less')} className="px-0 text-xl tabular-nums" onClick={() => rest.add(-15)}>
-          <span className="normal-case">−{fmt.unit(15, 's')}</span>
-        </Button>
-        <Button variant="secondary" ground="page" size="lg" aria-label={t('session.rest.more')} className="px-0 text-xl tabular-nums" onClick={() => rest.add(15)}>
-          <span className="normal-case">+{fmt.unit(15, 's')}</span>
-        </Button>
-        <Button variant="secondary" ground="page" size="lg" className="px-0 text-xl" onClick={() => rest.skip()}>
-          {t('session.rest.skip')}
-        </Button>
-      </div>
+        <div className="grid grid-cols-3 gap-2">
+          <Button variant="secondary" ground="page" size="lg" aria-label={t('session.rest.less')} className="px-0 text-xl tabular-nums" onClick={() => rest.add(-15)}>
+            <span className="normal-case">−{fmt.unit(15, 's')}</span>
+          </Button>
+          <Button variant="secondary" ground="page" size="lg" aria-label={t('session.rest.more')} className="px-0 text-xl tabular-nums" onClick={() => rest.add(15)}>
+            <span className="normal-case">+{fmt.unit(15, 's')}</span>
+          </Button>
+          <Button variant="secondary" ground="page" size="lg" className="px-0 text-xl" onClick={() => rest.skip()}>
+            {t('session.rest.skip')}
+          </Button>
+        </div>
 
-      {next ? (
-        <div className="flex flex-col items-center gap-0.5 text-center">
-          <span className="type-caption text-muted-foreground">{t('session.next')}</span>
-          {next.exercise ? <span className="type-body-strong">{next.exercise}</span> : null}
-          <span className="type-body-strong tabular-nums">{next.text}</span>
+        {/* "A e dije?" (§0.3e) vjen me Mëso-n: këtu, poshtë kohëmatësit dhe mbi "Ruaj setin", pa i mbuluar. */}
+
+        {next && next.newExercise ? (
+          <NewExerciseCard next={next} target={target} />
+        ) : next ? (
+          <>
+            <p className="flex items-baseline justify-between gap-3">
+              <span className="type-label text-muted-foreground">{thenLabel}</span>
+              {next.weightKg && target ? (
+                <span className="tabular-nums">
+                  <span className="font-display text-xl font-bold">{fmt.number(next.weightKg)}</span>{' '}
+                  <span className="text-sm text-muted-foreground">{t('session.rest.loadTail', { target })}</span>
+                </span>
+              ) : target ? (
+                <span className="font-display text-xl font-bold tabular-nums">{target}</span>
+              ) : null}
+            </p>
+            <section aria-labelledby="rest-table-title" className={cn(surfaceClass, 'flex flex-col gap-2 rounded-lg p-2.5')}>
+              <div className="flex items-baseline justify-between gap-2 px-1">
+                <h2 id="rest-table-title" className="type-title">
+                  {next.exercise?.name ?? ''}
+                </h2>
+                <span className="type-caption text-muted-foreground">{t('session.rest.tapToEdit')}</span>
+              </div>
+              <SetTable
+                rows={next.rows}
+                tracking={next.tracking}
+                target={next.slot.target}
+                records={records}
+                dropTo={next.dropTo}
+                restPauseSeconds={next.restPauseSeconds}
+                compact
+                onEdit={onEdit}
+              />
+            </section>
+          </>
+        ) : null}
+      </main>
+      {notice || (next && next.canSave) ? (
+        <SessionFooter>
+          {notice}
+          {next && next.canSave ? <RestSave key={next.key} label={next.segment ? t('session.saveSegment') : t('session.rest.saveNext', { set: next.setNumber })} onSave={onSave} /> : null}
+        </SessionFooter>
+      ) : null}
+    </>
+  )
+}
+
+/** "Ruaj setin N" te pushimi; me rojën e prekjes së dytë, sepse del aty ku ishte "Ruaj setin". */
+function RestSave({ label, onSave }: { label: string; onSave: () => void }) {
+  const ready = useTapGuard()
+  return (
+    <Button
+      variant="primary"
+      size="xl"
+      onClick={() => {
+        if (ready()) onSave()
+      }}
+    >
+      {label}
+    </Button>
+  )
+}
+
+/** Ushtrimi i ri pas pushimit (bordi "Pushimi · ushtrimi i ri"): "Pastaj", emri, seti, lëvizja me tempon dhe 3 sinjalet. */
+function NewExerciseCard({ next, target }: { next: RestNext; target: string | null }) {
+  const { t, fmt } = useI18n()
+  const exercise = next.exercise
+  const { guide, cues, hasMotion } = useSessionGuide(exercise ?? undefined)
+  const load = next.weightKg && target ? `${fmt.unit(next.weightKg, 'kg')} × ${target}` : target
+  return (
+    <section aria-labelledby="rest-next-title" className={cn(surfaceClass, 'flex flex-col gap-3 rounded-lg p-3')}>
+      <div className="flex flex-col gap-0.5">
+        <span className="type-label text-muted-foreground">{t('session.next')}</span>
+        <h2 id="rest-next-title" className="type-title">
+          {exercise?.name ?? ''}
+        </h2>
+        <span className="type-caption text-muted-foreground tabular-nums">
+          {t('session.setOf', { set: next.setNumber, sets: next.slot.sets, target: load ?? '' })}
+        </span>
+      </div>
+      {exercise && hasMotion ? (
+        <div className="-mx-3">
+          <ExerciseMotion
+            libraryId={exercise.libraryId}
+            name={exercise.name}
+            tempo={tempoOf(guide?.tempo)}
+            showTempo={!guide || guide.tempo !== null}
+            stageClassName="aspect-auto h-[132px]"
+            overlay={
+              <span className="pointer-events-none absolute top-2 left-2 rounded-sm bg-background/80 px-2 py-0.5 text-xs font-semibold text-foreground">
+                {t('session.rest.newExercise')}
+              </span>
+            }
+          />
         </div>
       ) : null}
-
-      <SavedSets sets={sets} records={records} onEdit={onEdit} />
-      {notice}
-    </main>
+      {cues.length ? <CueList cues={cues} numbered /> : null}
+    </section>
   )
 }
 

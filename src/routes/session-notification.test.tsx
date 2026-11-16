@@ -135,7 +135,7 @@ describe('seanca dhe njoftimi i seancës (V2-E1-08)', () => {
     // Pushimi i njoftimit vazhdon te ekrani, me setin e ruajtur dhe setin që vjen.
     expect(await screen.findByText('Seti 1 u ruajt: 62,5 × 9')).toBeInTheDocument()
     expect(screen.getByRole('timer')).toHaveAccessibleName(/^Pushimi: mbeten 1 minutë e (30|29|28) sekonda nga 1 minutë e 30 sekonda$/)
-    expect(screen.getByText('Seti 2 nga 4 · 62,5 × 9–11')).toBeInTheDocument()
+    expect(screen.getByText('Pastaj · seti 2 nga 4')).toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'Progresi i seancës' })).toHaveAttribute('aria-valuetext', '1 nga 30 sete')
     expect(await data.store.where('set_logs', 'session_id', sessionId)).toMatchObject([{ set_number: 1, weight_kg: 62.5, reps: 9 }])
     // Njoftimi kaloi te seti 2.
@@ -153,7 +153,7 @@ describe('seanca dhe njoftimi i seancës (V2-E1-08)', () => {
     await waitFor(() => expect(notification.queue).toHaveLength(0))
     notification.stop()
     expect(await screen.findByText('Set 1 logged: 62.5 × 9')).toBeInTheDocument()
-    expect(screen.getByText('Set 2 of 4 · 62.5 × 9–11')).toBeInTheDocument()
+    expect(screen.getByText('Next · set 2 of 4')).toBeInTheDocument()
   })
 
   it('"Kapërce pushimin" te njoftimi e mbyll pushimin edhe te seanca', async () => {

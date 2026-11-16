@@ -181,7 +181,7 @@ function TableRow({
   }
   const spoken = saved && !now ? `${t('session.setLabel', { set: row.setNumber })}: ${setValue(saved, texts)}` : t('session.table.upcoming', { set: row.setNumber, target: row.weightKg && !timed ? `${weight} × ${targetShort(target, fmt)}` : targetShort(target, fmt) })
   return (
-    <li className={look}>
+    <li className={look} aria-current={now ? 'step' : undefined}>
       <span className="sr-only">{spoken}</span>
       {body}
     </li>
