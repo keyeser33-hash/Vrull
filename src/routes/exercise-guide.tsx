@@ -11,7 +11,7 @@ import type { ExerciseGuide, GuideList } from '@/program/exercise-guides'
 // anglisht nga të dhënat (`program/guides/*.json`). Seksionet bosh nuk dalin: një ushtrim pa udhëzues nuk e
 // thërret fare këtë skedar.
 
-/** Rreshti "Burimi: A · B"; çdo burim një lidhje (zona e prekjes 44 px me vendosje negative, që rreshti të mos zgjatet). */
+/** Rreshti "Burimi: A · B"; çdo burim një lidhje (zona e prekjes mbi 44 px me vendosje negative, që rreshti të mos zgjatet). */
 export function SourceLine({ guide, keys }: { guide: ExerciseGuide; keys: string[] }) {
   const { t } = useI18n()
   const unique = [...new Set(keys)].flatMap((key) => (guide.sources[key] ? [guide.sources[key]] : []))
@@ -27,7 +27,7 @@ export function SourceLine({ guide, keys }: { guide: ExerciseGuide; keys: string
             target="_blank"
             rel="noreferrer"
             aria-label={t('programme.guide.sourceOpen', { label: source.label })}
-            className="-my-3 inline py-3 underline decoration-border underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="-my-3.5 inline py-3.5 underline decoration-border underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
           >
             {source.label}
           </a>

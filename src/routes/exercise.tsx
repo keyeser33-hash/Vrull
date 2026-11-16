@@ -107,7 +107,7 @@ export function ExercisePage() {
       {sheet === 'levizja' ? (
         <ExerciseMotionSheet libraryId={detail.libraryId} name={detail.name} tempo={tempo} showTempo={showTempo} onClose={() => navigate(-1)}>
           {guide ? <CueList cues={guide.cues.items.slice(0, SESSION_CUES)} numbered /> : null}
-          {chosen ? <WatchVideoButton chosen={chosen} onOpen={() => open('videoja')} /> : null}
+          {chosen ? <WatchVideoButton chosen={chosen} onOpen={() => open('videoja')} className="bg-surface-2" /> : null}
         </ExerciseMotionSheet>
       ) : null}
       {sheet === 'videoja' && chosen ? <ExerciseVideoSheet chosen={chosen} name={detail.name} onClose={() => navigate(-1)} /> : null}

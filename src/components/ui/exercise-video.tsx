@@ -14,6 +14,9 @@ import { surfaceClass } from './surface'
 // nisjes, dhe "Më shumë video" (hapen në YouTube). Pa internet butoni e thotë dhe nuk hapet; lëvizja e
 // ushtrimit punon pa të. Lidhja që shton përdoruesi zë vendin e videos së zgjedhur (`chosenVideo`).
 
+/** Pjesët e rreshtit të burimit pa përsëritje (kanali dhe autori janë shpesh i njëjti emër). */
+const joined = (parts: string[]) => [...new Set(parts)].join(' · ')
+
 const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
 
 /** "Shiko videon" me autorin dhe kohëzgjatjen poshtë; pa internet është i çaktivizuar dhe e thotë. */
@@ -35,7 +38,7 @@ export function WatchVideoButton({ chosen, onOpen, className }: { chosen: Chosen
       <Icon name="video" size={22} />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className="type-body-strong truncate">{t('programme.watch')}</span>
-        <span className="type-caption truncate text-muted-foreground">{online ? meta : t('programme.watchOffline')}</span>
+        <span className="type-caption text-muted-foreground">{online ? meta : t('programme.watchOffline')}</span>
       </span>
     </button>
   )
@@ -66,7 +69,7 @@ export function ExerciseVideoSheet({ chosen, name, onClose }: { chosen: ChosenVi
       <div className="flex flex-col gap-0.5">
         <p className="type-title">{video ? video.title : t('programme.player.yours')}</p>
         <p className="type-caption text-muted-foreground">
-          {video ? t('programme.player.detail', { author: video.author, duration: clock(video.seconds), channel: video.channel }) : t('programme.player.notice')}
+          {video ? joined([video.author, clock(video.seconds), video.channel]) : t('programme.player.notice')}
         </p>
       </div>
       {online ? (
@@ -115,7 +118,7 @@ export function MoreVideos({ videos, heading }: { videos: ExerciseVideo[]; headi
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="type-body-strong">{video.title}</span>
                 <span className="type-caption text-muted-foreground">
-                  {t('programme.moreVideoMeta', { channel: video.channel, author: video.author, duration: clock(video.seconds) })}
+                  {joined([video.channel, video.author, clock(video.seconds)])}
                 </span>
               </span>
               <Icon name="jashte" size={20} className="text-muted-foreground" />

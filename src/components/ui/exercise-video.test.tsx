@@ -95,6 +95,11 @@ describe('MoreVideos', () => {
     expect(screen.getByText('Video në anglisht, nga autorë me titull. Duan internet.')).toBeInTheDocument()
   })
 
+  it('kanali dhe autori i njëjtë del një herë', () => {
+    render(<MoreVideos videos={curatedVideos({ libraryId: null, name: 'Cable Crunch' })!.more} />)
+    expect(screen.getByText('Jim Stoppani, PhD · 3:32')).toBeInTheDocument()
+  })
+
   it('pa video nuk del asgjë', () => {
     const { container } = render(<MoreVideos videos={[]} />)
     expect(container).toBeEmptyDOMElement()
