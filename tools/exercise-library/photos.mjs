@@ -1,4 +1,4 @@
-// Fotot e ushtrimeve të Shortcut to Size, të paketuara në app që të shfaqen pa internet (SPEC §0.3a,
+// Fotot e ushtrimeve të Shortcut to Size (fillimi 0.jpg dhe fundi 1.jpg), të paketuara në app që të shfaqen pa internet (SPEC §0.3a,
 // "Fotot e ushtrimeve"; V10). Burimi: free-exercise-db (github.com/yuhonas/free-exercise-db,
 // Unlicense, domain publik), në të njëjtin commit si library.json. Për çdo ushtrim të programit me ID
 // në bibliotekë merret foto e parë (0.jpg, 850 × 567), bëhet bardh e zi dhe 640 px e gjerë (JPEG 72,
@@ -27,21 +27,28 @@ mkdirSync(out, { recursive: true })
 const work = join(out, '.download')
 mkdirSync(work)
 
+// Foto e fillimit: `<id>.jpg`; foto e fundit e lëvizjes (V58): `<id>-end.jpg`.
+const FRAMES = [
+  ['0', (id) => `${id}.jpg`],
+  ['1', (id) => `${id}-end.jpg`],
+]
 for (const id of ids) {
-  const url = `https://raw.githubusercontent.com/yuhonas/free-exercise-db/${commit}/exercises/${encodeURIComponent(id)}/0.jpg`
-  const response = await fetch(url)
-  if (!response.ok) throw new Error(`${id}: ${response.status} ${url}`)
-  const original = join(work, `${id}.jpg`)
-  writeFileSync(original, Buffer.from(await response.arrayBuffer()))
-  execFileSync('convert', [original, '-strip', '-colorspace', 'Gray', '-resize', '640x', '-quality', '72', '-interlace', 'JPEG', join(out, `${id}.jpg`)])
+  for (const [frame, name] of FRAMES) {
+    const url = `https://raw.githubusercontent.com/yuhonas/free-exercise-db/${commit}/exercises/${encodeURIComponent(id)}/${frame}.jpg`
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`${id}: ${response.status} ${url}`)
+    const original = join(work, `${id}-${frame}.jpg`)
+    writeFileSync(original, Buffer.from(await response.arrayBuffer()))
+    execFileSync('convert', [original, '-strip', '-colorspace', 'Gray', '-resize', '640x', '-quality', '72', '-interlace', 'JPEG', join(out, name(id))])
+  }
 }
 rmSync(work, { recursive: true, force: true })
 
 writeFileSync(
   join(out, 'SOURCE.txt'),
   `Fotot e ushtrimeve: free-exercise-db (https://github.com/yuhonas/free-exercise-db), commit ${commit}.\n` +
-    'Unlicense: domain publik. Bardh e zi dhe 640 px nga tools/exercise-library/photos.mjs.\n',
+    'Unlicense: domain publik. Fillimi (0.jpg) dhe fundi i lëvizjes (1.jpg, <id>-end.jpg), bardh e zi dhe 640 px nga tools/exercise-library/photos.mjs.\n',
 )
-const bytes = ids.reduce((total, id) => total + statSync(join(out, `${id}.jpg`)).size, 0)
+const bytes = ids.reduce((total, id) => total + statSync(join(out, `${id}.jpg`)).size + statSync(join(out, `${id}-end.jpg`)).size, 0)
 writeFileSync(join(root, 'src/program/exercise-photos.json'), JSON.stringify({ source, ids }, null, 2) + '\n')
-console.log(`${readdirSync(out).length - 1} foto, ${(bytes / 1024).toFixed(0)} kB → ${out}`)
+console.log(`${readdirSync(out).length - 1} foto (fillimi dhe fundi), ${(bytes / 1024).toFixed(0)} kB → ${out}`)

@@ -12,14 +12,17 @@ const BUNDLED = new Set<string>(bundled.ids)
 const COMMIT = bundled.source.replace(/^free-exercise-db@/, '')
 const CACHE_NAME = 'exercise-photos-v1'
 
+/** `start`: foto e parë (0.jpg), fillimi i lëvizjes; `end`: e dyta (1.jpg), fundi (V58, lëvizja e ushtrimit). */
+export type PhotoFrame = 'start' | 'end'
+
 /** Foto e paketuar në app, ose null kur ushtrimi s'e ka. */
-export function bundledPhotoUrl(libraryId: string): string | null {
-  return BUNDLED.has(libraryId) ? `${import.meta.env.BASE_URL}exercise-photos/${libraryId}.jpg` : null
+export function bundledPhotoUrl(libraryId: string, frame: PhotoFrame = 'start'): string | null {
+  return BUNDLED.has(libraryId) ? `${import.meta.env.BASE_URL}exercise-photos/${libraryId}${frame === 'end' ? '-end' : ''}.jpg` : null
 }
 
-/** Foto e parë e ushtrimit te free-exercise-db, në commit-in e bibliotekës. */
-export function remotePhotoUrl(libraryId: string): string {
-  return `https://raw.githubusercontent.com/yuhonas/free-exercise-db/${COMMIT}/exercises/${encodeURIComponent(libraryId)}/0.jpg`
+/** Foto e ushtrimit te free-exercise-db, në commit-in e bibliotekës. */
+export function remotePhotoUrl(libraryId: string, frame: PhotoFrame = 'start'): string {
+  return `https://raw.githubusercontent.com/yuhonas/free-exercise-db/${COMMIT}/exercises/${encodeURIComponent(libraryId)}/${frame === 'end' ? 1 : 0}.jpg`
 }
 
 export interface PhotoCache {
@@ -55,10 +58,10 @@ export interface PhotoDeps {
 }
 
 /** Adresa e fotos: nga app-i, nga telefoni, ose nga interneti një herë; null kur s'ka foto. */
-export async function loadPhoto(libraryId: string, deps: PhotoDeps): Promise<string | null> {
-  const local = bundledPhotoUrl(libraryId)
+export async function loadPhoto(libraryId: string, deps: PhotoDeps, frame: PhotoFrame = 'start'): Promise<string | null> {
+  const local = bundledPhotoUrl(libraryId, frame)
   if (local) return local
-  const url = remotePhotoUrl(libraryId)
+  const url = remotePhotoUrl(libraryId, frame)
   try {
     const saved = await deps.cache?.match(url)
     if (saved) return deps.toUrl(saved)
@@ -84,29 +87,34 @@ const LOADING: PhotoState = { status: 'loading', src: null }
  * duket; fotot e paketuara dhe ato të ruajtura shfaqen menjëherë. "loading" derisa të dihet, që
  * vend-mbajtësi të mos thotë "Pa foto" para kohe.
  */
-export function useExercisePhoto(libraryId: string | null, visible = true): PhotoState {
+export function useExercisePhoto(libraryId: string | null, visible = true, frame: PhotoFrame = 'start'): PhotoState {
   const online = useOnline()
-  const known = libraryId ? (bundledPhotoUrl(libraryId) ?? loaded.get(libraryId) ?? null) : null
+  const cacheKey = libraryId ? `${libraryId}:${frame}` : ''
+  const known = libraryId ? (bundledPhotoUrl(libraryId, frame) ?? loaded.get(cacheKey) ?? null) : null
   const [result, setResult] = useState<{ id: string; src: string | null } | null>(null)
   useEffect(() => {
     if (!libraryId || known) return
     let cancelled = false
-    void loadPhoto(libraryId, {
-      online: online && visible,
-      cache: browserPhotoCache(),
-      fetchPhoto,
-      toUrl: (blob) => URL.createObjectURL(blob),
-    }).then((src) => {
+    void loadPhoto(
+      libraryId,
+      {
+        online: online && visible,
+        cache: browserPhotoCache(),
+        fetchPhoto,
+        toUrl: (blob) => URL.createObjectURL(blob),
+      },
+      frame,
+    ).then((src) => {
       if (cancelled) return
       if (src) {
-        loaded.set(libraryId, src)
+        loaded.set(cacheKey, src)
         setResult({ id: libraryId, src })
       } else if (!online || visible) setResult({ id: libraryId, src: null })
     })
     return () => {
       cancelled = true
     }
-  }, [libraryId, known, online, visible])
+  }, [libraryId, cacheKey, frame, known, online, visible])
   if (!libraryId) return MISSING
   if (known) return { status: 'ready', src: known }
   if (result?.id !== libraryId) return LOADING

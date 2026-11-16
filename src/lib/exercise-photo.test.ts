@@ -26,6 +26,20 @@ describe('fotot e ushtrimeve', () => {
     )
   })
 
+  it('foto e dytë (fundi i lëvizjes): në app për Shortcut to Size, 1.jpg te free-exercise-db për të tjerat', async () => {
+    expect(bundledPhotoUrl('Barbell_Curl', 'end')).toBe('/exercise-photos/Barbell_Curl-end.jpg')
+    expect(bundledPhotoUrl('Arnold_Dumbbell_Press', 'end')).toBeNull()
+    expect(remotePhotoUrl('Arnold_Dumbbell_Press', 'end')).toBe(
+      'https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Arnold_Dumbbell_Press/1.jpg',
+    )
+    const cache = memoryCache()
+    const fetchPhoto = vi.fn(async () => new Blob(['end'], { type: 'image/jpeg' }))
+    expect(await loadPhoto('Barbell_Curl', { online: true, cache, fetchPhoto, toUrl }, 'end')).toBe('/exercise-photos/Barbell_Curl-end.jpg')
+    expect(await loadPhoto('Arnold_Dumbbell_Press', { online: true, cache, fetchPhoto, toUrl }, 'end')).toBe('blob:3')
+    expect(fetchPhoto).toHaveBeenCalledWith(remotePhotoUrl('Arnold_Dumbbell_Press', 'end'))
+    expect(cache.saved.has(remotePhotoUrl('Arnold_Dumbbell_Press'))).toBe(false)
+  })
+
   it('foto në app nuk kërkon rrjetin', async () => {
     const fetchPhoto = vi.fn()
     const src = await loadPhoto('Barbell_Curl', { online: true, cache: memoryCache(), fetchPhoto, toUrl })

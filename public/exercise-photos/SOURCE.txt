@@ -1,2 +1,2 @@
 Fotot e ushtrimeve: free-exercise-db (https://github.com/yuhonas/free-exercise-db), commit f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5.
-Unlicense: domain publik. Bardh e zi dhe 640 px nga tools/exercise-library/photos.mjs.
+Unlicense: domain publik. Fillimi (0.jpg) dhe fundi i lëvizjes (1.jpg, <id>-end.jpg), bardh e zi dhe 640 px nga tools/exercise-library/photos.mjs.
