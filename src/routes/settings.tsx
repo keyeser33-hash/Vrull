@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { DayPicker } from '@/components/forms/day-picker'
 import { TimeStepper } from '@/components/forms/time-stepper'
 import { ValueStepper } from '@/components/forms/value-stepper'
-import { Group, LinkRow, Row, rowClass } from '@/components/layout/list-group'
+import { Group, LinkRow, Row, rowClass, SwitchRow } from '@/components/layout/list-group'
 import { BackHeader } from '@/components/layout/page'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,7 @@ import {
   usePendingChanges,
   useSyncStatus,
 } from '@/data/app-data'
+import { factsEnabled, setFactsEnabled } from '@/data/learn'
 import { parseWeight, type Profile, readProfile, updateProfile } from '@/data/profile'
 import { reminderSettings } from '@/data/reminders'
 import { shareExport } from '@/data/share-export'
@@ -35,7 +36,7 @@ import { UpdateSheet } from './app-update'
 import { AiUsageGroup } from './settings-ai'
 import { versionRowDetail } from './update-format'
 
-// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Njoftimet, AI (V2-E1-11), Sinkronizimi,
+// Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Mëso (§0.3e), Njoftimet, AI (V2-E1-11), Sinkronizimi,
 // Versioni dhe "Dil" në fund. Seksionet e etapave të tjera (ora dhe Health Connect, Admini) mungojnë
 // deri atëherë. Një rresht hap një fletë (?ndrysho=...), që butoni mbrapa i Android-it e mbyll, ose një
 // ekran (Pamja, Rikujtuesit).
@@ -98,6 +99,8 @@ export function SettingsPage() {
         <LinkRow to="/cilesimet/pamja" label={t('settings.language')} value={LANGUAGE_NAMES[lang]} ariaLabel={`${t('settings.language')}, ${LANGUAGE_NAMES[lang]}`} />
       </Group>
 
+      <LearnGroup />
+
       <Group title={t('settings.notifications')}>
         <LinkRow to="/cilesimet/rikujtuesit" label={t('settings.reminders')} detail={reminders ? remindersDetail : undefined} />
         <TimerRow />
@@ -131,6 +134,30 @@ export function SettingsPage() {
 }
 
 const capitalize = (text: string) => text.charAt(0).toLocaleUpperCase() + text.slice(1)
+
+/**
+ * Mëso (§0.3e, bordi "Cilësimet"): çelësi "A e dije?", i ndezur si parazgjedhje; ruhet te `user_settings.learn_facts`
+ * (sinkronizohet). Çelësi ndryshon menjëherë dhe ruajtja vjen pas, pa pritur bazën.
+ */
+function LearnGroup() {
+  const { t } = useI18n()
+  const saved = useLocalQuery(() => factsEnabled(store), [])
+  const [chosen, setChosen] = useState<boolean | null>(null)
+  if (saved === undefined) return null
+  return (
+    <Group title={t('learn.settings.group')}>
+      <SwitchRow
+        label={t('learn.settings.facts')}
+        detail={t('learn.settings.factsDetail')}
+        checked={chosen ?? saved}
+        onChange={(on) => {
+          setChosen(on)
+          void setFactsEnabled(store, on)
+        }}
+      />
+    </Group>
+  )
+}
 
 /** Vetëm në telefon: përjashtimi nga optimizimi i baterisë, kur timer-i vonon me ekran të kyçur. */
 function TimerRow() {

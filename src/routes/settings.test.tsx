@@ -94,7 +94,8 @@ describe('cilësimet', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Cilësimet' })).toBeInTheDocument()
     // AI (V2-E1-11): përdorimi i muajit, që hap Cilësimet › AI.
     expect(await screen.findByRole('link', { name: 'Përdorimi këtë muaj, 0,00\u00a0€ nga 10\u00a0€' })).toHaveAttribute('href', '/cilesimet/ai')
-    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Njoftimet', 'AI', 'Sinkronizimi', 'Versioni'])
+    expect(await screen.findByRole('switch', { name: /^A e dije\?/ })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profili', 'Pamja', 'Mëso', 'Njoftimet', 'AI', 'Sinkronizimi', 'Versioni'])
     expect(row(/^Pesha sot/)).toHaveTextContent('80,5 kg')
     expect(row(/^Ditët e stërvitjes/)).toHaveTextContent('Hën, Mar, Enj, Pre')
     expect(row(/^Oraret/)).toHaveTextContent('18:00 · zgjimi 07:00 · gjumi 23:00')
@@ -233,7 +234,8 @@ describe('cilësimet', () => {
     act(() => language.set('en'))
     expect(await screen.findByRole('heading', { level: 1, name: 'Settings' })).toBeInTheDocument()
     expect(await screen.findByRole('link', { name: 'Use this month, €0.00 of €10' })).toBeInTheDocument()
-    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profile', 'Appearance', 'Notifications', 'AI', 'Sync', 'Version'])
+    expect(await screen.findByRole('switch', { name: /^Did you know\?/ })).toBeChecked()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual(['Profile', 'Appearance', 'Learn', 'Notifications', 'AI', 'Sync', 'Version'])
     // Provat e mësipërme kanë ndryshuar peshën, ditët dhe oraret: formatet britanike kontrollohen këtu.
     expect(row(/^Weight today/)).toHaveTextContent(/^Weight today\d+\.\d\skg$/)
     expect(row(/^Training days/)).toHaveTextContent(/^Training daysMon, Tue, Thu, Fri/)
@@ -242,6 +244,19 @@ describe('cilësimet', () => {
     expect(screen.getByRole('link', { name: 'Background, Solid' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^Reminders/ })).toHaveTextContent('Workouts, meals, supplements, water, measurements')
     expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument()
+  })
+
+  it('Mëso: çelësi "A e dije?" i ndezur; fikja ruhet te cilësimet që sinkronizohen (user_settings.learn_facts)', async () => {
+    await renderSettings()
+    const learn = await screen.findByRole('region', { name: 'Mëso' })
+    const toggle = within(learn).getByRole('switch', { name: /^A e dije\?/ })
+    expect(toggle).toBeChecked()
+    expect(learn).toHaveTextContent('Një fakt në ditë te Sot, gjatë pushimit dhe pas ushqimit.')
+    await userEvent.click(toggle)
+    expect(toggle).not.toBeChecked()
+    await waitFor(async () => expect((await data.store.all('user_settings'))[0].learn_facts).toBe(false))
+    await userEvent.click(toggle)
+    await waitFor(async () => expect((await data.store.all('user_settings'))[0].learn_facts).toBe(true))
   })
 
   it('rikujtuesit e fikur dalin te rreshti', async () => {
