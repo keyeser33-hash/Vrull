@@ -1,0 +1,9 @@
+Sot i ri: kalorit, proteina dhe uji në krye; një prekje te uji shton 250 ml
+Vija e ditës: prek një vakt, rrëshqit për orën, mbaje shtypur për ta lëvizur vetëm sot
+Java me tri pika nën çdo datë dhe fleta e çdo dite
+"Si ndihesh?" si story, me gatishmërinë në fund
+Seanca: të gjitha setet në një tabelë, "Zhbëj" pas çdo seti, çdo set ndryshohet
+"Kontrollo setet" para "Mbyll stërvitjen"
+Lëvizja e ushtrimit me dy foto dhe videoja brenda app-it
+Udhëzuesi i plotë te faqja e ushtrimit, me burimet
+Mëso: "A e dije?", kuizi i së dielës dhe faqja Mëso te Progresi

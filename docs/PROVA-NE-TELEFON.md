@@ -50,3 +50,18 @@ Rreth 10 minuta, një herë pas çdo versioni që ndryshon pjesën native (0.20.
 
 - [ ] Ushqimi › Objektivat: zgjidh "Plani i Jimit"; Plani im tregon "Si te PDF-ja", 3 vezë te mëngjesi 2 dhe salmon 227 g te darka.
 - [ ] Me stërvitje në 18:00, vakti pas stërvitjes del rreth 19:00, dhe darka 1 orë më pas.
+
+## 7. Sot i ri, seanca e re dhe Mëso (0.27.0, 6 min)
+
+Para instalimit: migrimi `20261116090000_learn_events.sql` te Supabase › SQL Editor (pa të, Cilësimet dhe "A e dije?" nuk sinkronizohen).
+
+- [ ] Sot: tre matësit në krye; prekja e ujit e rrit numrin menjëherë dhe "Zhbëj" e kthen; shtypja e gjatë hap 250, 330, 500 ml.
+- [ ] Vija e ditës: prekja e një pike hap vaktin; rrëshqitja e gishtit tregon flluskën pa lëvizur faqen; shtypja e gjatë mbi darkën e lëviz dhe thotë "për sot"; nesër darka është në orën e zakonshme.
+- [ ] Rripi i javës: prekja e një date të kaluar hap fletën me seancën dhe ushqimin; e nesërmja tregon stërvitjen e planifikuar.
+- [ ] "Si ndihesh?": 4 pyetje si story, pastaj gatishmëria; rrethi bëhet "Gati N%". Rikuptuesi i mëngjesit hap story-n.
+- [ ] Seanca: tabela me setet, "Ruaj setin" → rreshti i ruajtur dhe "Zhbëj" menjëherë; "Zhbëj" ndal pushimin dhe njoftimin e tij; prekja e një seti të kaluar e ndryshon (edhe te ushtrimi i mëparshëm nga lista).
+- [ ] Gjatë pushimit: tabela poshtë unazës; karta "A e dije?" nuk e mbulon "Ruaj setin".
+- [ ] "Mbyll stërvitjen" kalon nga "Kontrollo setet".
+- [ ] Faqja e Bench Press: lëvizja me dy foto, "Shiko videon" luan brenda app-it, udhëzuesi me "Burimi" poshtë çdo seksioni.
+- [ ] Mëso: "A e dije?" te Sot hap story-n me burimin; të dielën pas 20:00 rrethi "Kuizi"; Progresi › Mëso tregon faktet e para.
+- [ ] Cilësimet › Mëso: çelësi "A e dije?" i fik kartat.
