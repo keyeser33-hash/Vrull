@@ -105,6 +105,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      # Një provë që bie këtu ndal publikimin (0.27.0, nisja 43832807377): ndreqet prova dhe lëshimi niset
+      # sërish me një push që prek këtë skedar ose package.json, jo me rerun të commit-it të vjetër.
       - run: npm test
       - run: npm run build
       - run: npx cap sync android

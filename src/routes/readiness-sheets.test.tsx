@@ -229,6 +229,10 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await renderCard()
     await userEvent.click(await screen.findByRole('button', { name: /^Gati \d+%/ }))
     const story = await screen.findByRole('dialog')
+    // Shikuesi hapet menjëherë me faqe pritjeje (të gjitha "të hapura", ku shigjetat nuk lëvizin) dhe faqet e
+    // vërteta vijnë pas leximit: shigjetat shtypen kur gatishmëria është aty (te puna e APK-së së 0.27.0 dhe
+    // lokalisht rreth gjysma e herëve, ← shtypej mbi faqet e pritjes dhe nuk bënte gjë).
+    await within(story).findByText(/nga çfarë del/i)
     for (let step = 0; step < 4; step++) fireEvent.keyDown(story, { key: 'ArrowLeft' })
     expect(await heading('Si është gjendja jote sot?')).toBeInTheDocument()
     expect(screen.getByRole('button', { ...level('Normale', 3), pressed: true })).toBeInTheDocument()
