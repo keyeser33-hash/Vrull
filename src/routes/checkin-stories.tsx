@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { BodyFigure } from '@/components/body/body-figure'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icons'
@@ -7,7 +7,7 @@ import { type StoryPage, StoryViewer } from '@/components/ui/story-viewer'
 import { store, useLocalQuery } from '@/data/app-data'
 import { readCheckInDraft, saveCheckInAnswers } from '@/data/checkin-draft'
 import { chooseLighter, keepUsual, postponeWorkout } from '@/data/day-choice'
-import { type CheckInAnswers, type DailyState, readinessOfState, skipCheckIn } from '@/data/daily-state'
+import { type CheckInAnswers, type DailyState, readDailyState, readinessOfState, skipCheckIn } from '@/data/daily-state'
 import { readProfile } from '@/data/profile'
 import { checkInContext, readinessView } from '@/data/readiness-view'
 import type { Readiness } from '@/readiness/readiness'
@@ -31,8 +31,6 @@ import { costText, whyText } from './readiness-suggestion-text'
 interface Loaded {
   state: DailyState | null
   draft: Draft
-  sleepTime: string
-  wakeTime: string
 }
 
 const READY = QUESTIONS.length
@@ -48,15 +46,25 @@ export interface CheckInStoriesProps {
 }
 
 export function CheckInStories(props: CheckInStoriesProps) {
-  const [first, setFirst] = useState<Loaded | null>(null)
-  const loaded = useLocalQuery(async (): Promise<Loaded> => {
-    const [rv, draft, profile] = await Promise.all([readinessView(store, props.view.date), readCheckInDraft(store, props.view.date), readProfile(store)])
-    return { state: rv.state, draft, sleepTime: profile.sleepTime, wakeTime: profile.wakeTime }
+  const { t, fmt, lang } = useI18n()
+  const [loaded, setLoaded] = useState<Loaded | null>(null)
+  // Një lexim i vetëm (gjendja e ditës dhe skica): pas çdo përgjigjeje ekrani mban përgjigjet e veta, ndaj s'rilexohet.
+  // Gjatë leximit shikuesi del menjëherë, me shiritat dhe "×", dhe pyetja vjen kur leximi mbaron.
+  useEffect(() => {
+    let cancelled = false
+    const empty: Loaded = { state: null, draft: {} }
+    void Promise.all([readDailyState(store, props.view.date), readCheckInDraft(store, props.view.date)]).then(
+      ([state, draft]) => !cancelled && setLoaded({ state, draft }),
+      () => !cancelled && setLoaded(empty),
+    )
+    return () => {
+      cancelled = true
+    }
   }, [props.view.date])
-  // Vetëm leximi i parë: pas çdo përgjigjeje baza rilexohet, por ekrani mban përgjigjet e veta.
-  if (loaded && !first) setFirst(loaded)
-  if (!first) return null
-  return <Flow {...props} loaded={first} />
+  if (loaded) return <Flow {...props} loaded={loaded} />
+  const date = capitalize(fmt.date(new Date(`${props.view.date}T12:00:00`)), lang)
+  const waiting: StoryPage[] = [...QUESTIONS, 'ready'].map((key) => ({ key, label: t('checkin.title'), open: true, children: null }))
+  return <StoryViewer title={t('checkin.title')} subtitle={date} pages={waiting} index={0} onIndex={() => undefined} onClose={() => props.onClose({ ready: false })} />
 }
 
 function Flow({ view, start, onClose, loaded }: CheckInStoriesProps & { loaded: Loaded }) {
@@ -69,6 +77,7 @@ function Flow({ view, start, onClose, loaded }: CheckInStoriesProps & { loaded: 
   const done = completeAnswers(answers)
   const suggestion = useSuggestion(view)
   const stored = useLocalQuery(() => readinessView(store, view.date), [view.date])
+  const profile = useLocalQuery(() => readProfile(store), [])
 
   const persist = (next: Draft) => {
     queue.current = queue.current
@@ -139,7 +148,7 @@ function Flow({ view, start, onClose, loaded }: CheckInStoriesProps & { loaded: 
       key: 'sleep',
       label: t('checkin.sleep.title'),
       open: answers.sleepMinutes === undefined || answers.sleepQuality === undefined,
-      children: <Sleep initial={answers} loaded={loaded} failed={failed} onNext={(patch) => answer(patch)} />,
+      children: <Sleep key={profile ? 'profile' : 'wait'} initial={answers} profile={profile} failed={failed} onNext={(patch) => answer(patch)} />,
     },
     {
       key: 'soreness',
@@ -179,7 +188,7 @@ function Frame({ heading, failed, children, footer }: { heading: string; failed:
   const { t } = useI18n()
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pt-2">
+      <div className="flex flex-1 flex-col gap-3 px-4 pt-2">
         <h1 className="m-0 font-display text-[40px] leading-[0.95] font-extrabold uppercase">{heading}</h1>
         {failed ? (
           <p role="alert" className="text-sm text-danger">
@@ -271,14 +280,14 @@ function NextButton({ onClick }: { onClick: () => void }) {
 }
 
 /** Gjumi: orët me hap 0,5 dhe cilësia; "Tjetra" i ruan të dyja. */
-function Sleep({ initial, loaded, failed, onNext }: { initial: Draft; loaded: Loaded; failed: boolean; onNext: (patch: Draft) => void }) {
+function Sleep({ initial, profile, failed, onNext }: { initial: Draft; profile: { sleepTime: string; wakeTime: string } | undefined; failed: boolean; onNext: (patch: Draft) => void }) {
   const { t, fmt } = useI18n()
-  const [minutes, setMinutes] = useState(initial.sleepMinutes ?? profileSleepMinutes(loaded.sleepTime, loaded.wakeTime))
+  const [minutes, setMinutes] = useState(initial.sleepMinutes ?? (profile ? profileSleepMinutes(profile.sleepTime, profile.wakeTime) : 420))
   const [quality, setQuality] = useState<number>(initial.sleepQuality ?? 3)
   const hours = t('checkin.sleep.hours', { count: minutes / 60 })
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col gap-7 px-4 pt-2">
+      <div className="flex flex-1 flex-col gap-7 px-4 pt-2">
         <h1 className="m-0 font-display text-[40px] leading-[0.95] font-extrabold uppercase">{t('sot.q.sleep')}</h1>
         {failed ? (
           <p role="alert" className="text-sm text-danger">
@@ -354,7 +363,7 @@ function Soreness({ initial, failed, onNext }: { initial: Draft; failed: boolean
   const sore = level !== undefined && level > 0
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pt-2">
+      <div className="flex flex-1 flex-col gap-3 px-4 pt-2">
         <h1 className="m-0 font-display text-[40px] leading-[0.95] font-extrabold uppercase">{t('sot.q.soreness')}</h1>
         {failed ? (
           <p role="alert" className="text-sm text-danger">
@@ -449,9 +458,9 @@ function Ready({
   const cost = suggestion?.kind === 'suggest' ? costText(i18n, suggestion.cost) : ''
   return (
     <>
-      <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 pt-2">
+      <div className="flex flex-1 flex-col gap-3 px-4 pt-2">
         <section aria-label={t('readiness.sheet.aria', { percent, level })} className="flex flex-col gap-2">
-          <span aria-hidden className="font-display text-[140px] leading-[0.85] font-extrabold -tracking-[0.02em] tabular-nums">
+          <span aria-hidden className="font-display text-[112px] leading-[0.85] font-extrabold -tracking-[0.02em] tabular-nums">
             {percent}%
           </span>
           <span aria-hidden className="flex items-center gap-2 text-[17px] leading-[1.3]">
@@ -472,7 +481,7 @@ function Ready({
           </h2>
           <ul className="m-0 flex list-none flex-col p-0">
             {readiness.parts.map((part) => (
-              <li key={part.key} className="flex flex-col gap-2 border-t border-border py-2.5">
+              <li key={part.key} className="flex flex-col gap-1.5 border-t border-border py-2">
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="min-w-0 text-[15px] leading-[1.3] font-semibold">
                     {t(PART[part.key])} <span className="text-[13px] font-normal text-muted-foreground">· {partValue(i18n, part, view, state)}</span>
