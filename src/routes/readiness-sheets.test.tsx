@@ -63,7 +63,8 @@ async function stored(date = '2026-11-08') {
 
 const level = (label: string, n: number) => ({ name: `${label}, niveli ${n} nga 5` })
 const close = () => userEvent.click(screen.getByRole('button', { name: /^(Mbyll|Close)$/ }))
-const heading = (name: string) => screen.getByRole('heading', { name })
+// Pyetja del pas leximit të gjendjes (shikuesi hapet menjëherë me shiritat): pritet, jo lexohet në çast.
+const heading = (name: string) => screen.findByRole('heading', { name })
 
 /** Përgjigjet e katërta me ANSWERS-in e provave (gjendja Normale, energjia E ulët, 6 orë Normal, dhimbje Mesatare te Krahët). */
 async function fillAll() {
@@ -94,7 +95,7 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await renderCard()
     await userEvent.click(await screen.findByRole('button', { name: 'Si ndihesh?, e re' }))
     const story = await screen.findByRole('dialog', { name: 'Si ndihesh sot?' })
-    expect(heading('Si është gjendja jote sot?')).toBeInTheDocument()
+    expect(await heading('Si është gjendja jote sot?')).toBeInTheDocument()
     expect(within(story).getByRole('progressbar')).toHaveAttribute('aria-valuetext', 'Story 1 nga 5: Gjendja')
     expect(within(story).getByText('1 / 4')).toBeInTheDocument()
     expect(within(story).getAllByRole('button').filter((button) => /niveli/.test(button.getAttribute('aria-label') ?? ''))).toHaveLength(5)
@@ -149,10 +150,10 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Si ndihesh?, e re' }))
     await userEvent.click(await screen.findByRole('button', level('E mirë', 4)))
     // Menjëherë, pa waitFor: pyetja tjetër është në ekran dhe shiriti i dytë.
-    expect(heading('Sa energji ke?')).toBeInTheDocument()
+    expect(await heading('Sa energji ke?')).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuetext', 'Story 2 nga 5: Energjia')
     await userEvent.click(screen.getByRole('button', level('Normale', 3)))
-    expect(heading('Si fjete?')).toBeInTheDocument()
+    expect(await heading('Si fjete?')).toBeInTheDocument()
     // Shkrimet e vonuara mbarojnë para provës tjetër (ekrani i provës lexon store-in e provës së radhës).
     const { readCheckInDraft } = await import('@/data/checkin-draft')
     await waitFor(async () => expect(await readCheckInDraft(store, '2026-11-08')).toEqual({ mood: 4, energy: 3 }), { timeout: 20_000 })
@@ -165,7 +166,7 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Si ndihesh?, e re' }))
     await userEvent.click(await screen.findByRole('button', level('E mirë', 4)))
     await userEvent.click(screen.getByRole('button', level('Shumë e lartë', 5)))
-    expect(heading('Si fjete?')).toBeInTheDocument()
+    expect(await heading('Si fjete?')).toBeInTheDocument()
     await close()
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     expect(await stored()).toBeNull()
@@ -177,7 +178,7 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuetext', 'Story 3 nga 5: Gjumi')
     // Butoni mbrapa kthen te pyetja e mëparshme me përgjigjen e ruajtur.
     await userEvent.click(screen.getByRole('button', { name: 'Story i mëparshëm' }))
-    expect(heading('Sa energji ke?')).toBeInTheDocument()
+    expect(await heading('Sa energji ke?')).toBeInTheDocument()
     expect(screen.getByRole('button', { ...level('Shumë e lartë', 5), pressed: true })).toBeInTheDocument()
   })
 
@@ -192,7 +193,7 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     expect(screen.getByText('6,5 orë')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Mirë' }))
     await userEvent.click(screen.getByRole('button', { name: 'Tjetra' }))
-    expect(heading('A të dhemb diçka?')).toBeInTheDocument()
+    expect(await heading('A të dhemb diçka?')).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: 'Grupet me dhimbje' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', level('Asnjë', 1)))
     expect(await screen.findByText(/^\d+%$/)).toBeInTheDocument()
@@ -229,10 +230,10 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await userEvent.click(await screen.findByRole('button', { name: /^Gati \d+%/ }))
     const story = await screen.findByRole('dialog')
     for (let step = 0; step < 4; step++) fireEvent.keyDown(story, { key: 'ArrowLeft' })
-    expect(heading('Si është gjendja jote sot?')).toBeInTheDocument()
+    expect(await heading('Si është gjendja jote sot?')).toBeInTheDocument()
     expect(screen.getByRole('button', { ...level('Normale', 3), pressed: true })).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', level('Shkëlqyer', 5)))
-    expect(heading('Sa energji ke?')).toBeInTheDocument()
+    expect(await heading('Sa energji ke?')).toBeInTheDocument()
     await waitFor(async () => expect(await stored()).toMatchObject({ mood: 5, energy: 2, soreGroups: ['gjoksi'] }))
   })
 
@@ -263,9 +264,9 @@ describe('rrathët "Si ndihesh?" dhe "Gati" dhe story-t e tyre', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'How are you?, new' }))
     expect(await screen.findByRole('dialog', { name: 'How are you feeling today?' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Normal, level 3 of 5' }))
-    expect(heading('How much energy do you have?')).toBeInTheDocument()
+    expect(await heading('How much energy do you have?')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Low, level 2 of 5' }))
-    expect(heading('How did you sleep?')).toBeInTheDocument()
+    expect(await heading('How did you sleep?')).toBeInTheDocument()
     expect(screen.getByText('6 hours')).toBeInTheDocument()
     expect(screen.getByText('from your bedtime and wake-up time')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))

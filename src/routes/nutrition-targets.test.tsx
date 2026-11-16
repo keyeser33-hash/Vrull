@@ -115,7 +115,7 @@ describe('Objektivat', () => {
     expect(await screen.findByLabelText(/^Viti i lindjes/)).toHaveAttribute('placeholder', 'p.sh. 1996')
     expect(screen.getByLabelText(/^Viti i lindjes/)).toHaveValue('')
     act(() => language.set('en'))
-    expect(screen.getByLabelText(/^Year of birth/)).toHaveAttribute('placeholder', 'e.g. 1996')
+    expect(await screen.findByLabelText(/^Year of birth/)).toHaveAttribute('placeholder', 'e.g. 1996')
   })
 
   it('"Plani i Jimit": totalet e PDF-së me burimin, pa kalkulator; "Të miat" rikthen të dhënat', async () => {
