@@ -18,5 +18,13 @@
     "ciqual": 3049,
     "cofid": 2611,
     "livsmedelsverket": 2409
+  },
+  "sourceVersions": {
+    "usda_foundation": "2026-04-30",
+    "usda_sr_legacy": "2018-04",
+    "usda_fndds": "2024-10-31",
+    "ciqual": "2025-11-03",
+    "cofid": "2021-03-19",
+    "livsmedelsverket": "2026-06-29"
   }
 }

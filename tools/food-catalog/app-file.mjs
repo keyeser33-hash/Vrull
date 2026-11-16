@@ -6,8 +6,8 @@
 // Dekoduesi te telefoni: `src/catalog/decode.ts`; testi i rrethit (kodim → dekodim) është te `src/catalog/decode.test.ts`.
 //
 // Përdorimi: node tools/food-catalog/app-file.mjs <catalog.jsonl> <dosja e daljes>   (p.sh. src/catalog/data)
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { SOURCE_LICENSES } from './check.mjs'
@@ -101,8 +101,15 @@ export function buildAppFiles(rows) {
 
 const sizes = (text) => ({ bytes: Buffer.byteLength(text), gzipBytes: gzipSync(text).length })
 
-/** Shkruan foods-common.json, foods-rest.json dhe foods-meta.json; kthen metën me madhësitë. */
-export function writeAppFiles(rows, outDir) {
+/** Versioni i të dhënave të çdo burimi nga `summary.json` i ndërtimit (p.sh. { usda_foundation: '2026-04-30' }); bosh pa të. */
+export function sourceVersions(summaryPath) {
+  if (!summaryPath || !existsSync(summaryPath)) return {}
+  const summary = JSON.parse(readFileSync(summaryPath, 'utf8'))
+  return Object.fromEntries(SOURCES.filter((source) => summary.bySource?.[source]?.version).map((source) => [source, summary.bySource[source].version]))
+}
+
+/** Shkruan foods-common.json, foods-rest.json dhe foods-meta.json; kthen metën me madhësitë. `summaryPath`: summary.json i ndërtimit (versionet e burimeve). */
+export function writeAppFiles(rows, outDir, summaryPath) {
   const built = buildAppFiles(rows)
   const commonText = JSON.stringify(built.common)
   const restText = JSON.stringify(built.rest)
@@ -112,6 +119,7 @@ export function writeAppFiles(rows, outDir) {
     common: { count: built.common.count, ...sizes(commonText) },
     rest: { count: built.rest.count, ...sizes(restText) },
     bySource: Object.fromEntries(SOURCES.map((source) => [source, rows.filter((row) => row.source === source).length])),
+    sourceVersions: sourceVersions(summaryPath),
   }
   mkdirSync(outDir, { recursive: true })
   writeFileSync(join(outDir, 'foods-common.json'), commonText)
@@ -127,7 +135,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(2)
   }
   const rows = readFileSync(input, 'utf8').trim().split('\n').map((line) => JSON.parse(line))
-  const meta = writeAppFiles(rows, outDir)
+  const meta = writeAppFiles(rows, outDir, join(dirname(input), 'summary.json'))
   const kb = (bytes) => `${(bytes / 1024).toFixed(0)} kB`
   console.log(`Versioni ${meta.version}, ${meta.total} rreshta`)
   console.log(`  të zakonshmet: ${meta.common.count} rreshta, ${kb(meta.common.bytes)} (gzip ${kb(meta.common.gzipBytes)})`)

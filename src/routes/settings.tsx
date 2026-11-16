@@ -34,6 +34,7 @@ import { readTheme } from '@/lib/theme'
 import type { ReminderToggles } from '@/reminders/plan'
 import { UpdateSheet } from './app-update'
 import { AiUsageGroup } from './settings-ai'
+import { SourcesSheet } from './settings-sources'
 import { versionRowDetail } from './update-format'
 
 // Cilësimet (bordi "Cilësimet", V2-E1-05): Profili, Pamja, Mëso (§0.3e), Njoftimet, AI (V2-E1-11), Sinkronizimi,
@@ -291,33 +292,6 @@ function SignOutSheet({ onClose }: { onClose: () => void }) {
           {t('common.signOut')}
         </Button>
       </div>
-    </Sheet>
-  )
-}
-
-// Të dhënat dhe asetet nga të tjerët, me atribuimin që kërkon licenca e tyre (SPEC §11, §9).
-const SOURCES = [
-  { id: 'program', name: 'Shortcut to Size' },
-  { id: 'anatomy', name: 'BodyParts3D' },
-  { id: 'exercises', name: 'free-exercise-db' },
-  { id: 'off', name: 'Open Food Facts' },
-  { id: 'usda', name: 'USDA FoodData Central' },
-  { id: 'fonts', name: 'Barlow, Barlow Condensed' },
-] as const
-
-function SourcesSheet({ onClose }: { onClose: () => void }) {
-  const { t } = useI18n()
-  return (
-    <Sheet title={t('settings.sources')} onClose={onClose}>
-      <ul className="flex flex-col">
-        {SOURCES.map((source) => (
-          <li key={source.id} className="flex flex-col gap-1 border-t border-border py-3 first:border-t-0 first:pt-0">
-            <span className="type-body-strong">{source.name}</span>
-            <span className="type-body">{t(`sources.${source.id}.use`)}</span>
-            <span className="type-caption text-muted-foreground">{t(`sources.${source.id}.license`)}</span>
-          </li>
-        ))}
-      </ul>
     </Sheet>
   )
 }

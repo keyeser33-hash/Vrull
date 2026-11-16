@@ -1,8 +1,8 @@
 // @vitest-environment node
-import { mkdtempSync, readFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildAppFiles, encodeRow, FIELDS, SOURCES, writeAppFiles } from './app-file.mjs'
+import { buildAppFiles, encodeRow, FIELDS, SOURCES, sourceVersions, writeAppFiles } from './app-file.mjs'
 
 const row = (overrides = {}) => ({
   id: 'usda-fdc-171287',
@@ -67,8 +67,18 @@ describe('skedari i app-it', () => {
     const meta = writeAppFiles([row(), common({ id: 'usda-fdc-9', source_id: '9' })], dir)
     expect(meta).toMatchObject({ version: 1, total: 2, common: { count: 1 }, rest: { count: 1 } })
     expect(meta.common.gzipBytes).toBeGreaterThan(0)
+    expect(meta.sourceVersions).toEqual({})
     expect(JSON.parse(readFileSync(join(dir, 'foods-meta.json'), 'utf8'))).toEqual(meta)
     expect(JSON.parse(readFileSync(join(dir, 'foods-common.json'), 'utf8')).part).toBe('common')
     expect(JSON.parse(readFileSync(join(dir, 'foods-rest.json'), 'utf8')).part).toBe('rest')
+  })
+
+  it('versionet e burimeve vijnë nga summary.json i ndërtimit', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'food-app-'))
+    const summary = join(dir, 'summary.json')
+    writeFileSync(summary, JSON.stringify({ bySource: { usda_sr_legacy: { rows: 1, version: '2018-04' }, ciqual: { rows: 1, version: '2025-11-03' }, cofid: { rows: 1 } } }))
+    expect(sourceVersions(summary)).toEqual({ usda_sr_legacy: '2018-04', ciqual: '2025-11-03' })
+    expect(sourceVersions(join(dir, 'mungon.json'))).toEqual({})
+    expect(writeAppFiles([row()], dir, summary).sourceVersions).toEqual({ usda_sr_legacy: '2018-04', ciqual: '2025-11-03' })
   })
 })

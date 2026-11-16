@@ -24,7 +24,7 @@ const built = buildAppFiles([row(1, { name_en: 'Egg', name_sq: 'Vezë', name_sq_
 
 function files(rest: CatalogFiles['rest']): CatalogFiles {
   return {
-    meta: { version: 1, total: 2, common: { count: 1, bytes: 0, gzipBytes: 0 }, rest: { count: 1, bytes: 0, gzipBytes: 0 }, bySource: {} as never },
+    meta: { version: 1, total: 2, common: { count: 1, bytes: 0, gzipBytes: 0 }, rest: { count: 1, bytes: 0, gzipBytes: 0 }, bySource: {} as never, sourceVersions: {} },
     common: async () => built.common as never,
     rest,
   }

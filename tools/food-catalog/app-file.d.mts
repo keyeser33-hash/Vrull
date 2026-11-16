@@ -12,4 +12,5 @@ export function buildAppFiles(rows: Record<string, unknown>[]): {
   version: number
   total: number
 }
-export function writeAppFiles(rows: Record<string, unknown>[], outDir: string): Record<string, unknown>
+export function sourceVersions(summaryPath?: string): Record<string, string>
+export function writeAppFiles(rows: Record<string, unknown>[], outDir: string, summaryPath?: string): Record<string, unknown>

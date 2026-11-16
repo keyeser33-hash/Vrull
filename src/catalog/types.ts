@@ -57,4 +57,6 @@ export interface CatalogMeta {
   common: { count: number; bytes: number; gzipBytes: number }
   rest: { count: number; bytes: number; gzipBytes: number }
   bySource: Record<CatalogSource, number>
+  /** Versioni i të dhënave të çdo burimi (p.sh. "2018-04"), nga summary.json i ndërtimit. */
+  sourceVersions: Partial<Record<CatalogSource, string>>
 }

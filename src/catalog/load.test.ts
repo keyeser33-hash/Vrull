@@ -27,7 +27,7 @@ function files(version = 1) {
   const built = buildAppFiles(rows.map((item) => ({ ...item, list_version: version })))
   const calls = { common: 0, rest: 0 }
   const source: CatalogFiles = {
-    meta: { version, total: rows.length, common: { count: 1, bytes: 0, gzipBytes: 0 }, rest: { count: 2500, bytes: 0, gzipBytes: 0 }, bySource: {} as never },
+    meta: { version, total: rows.length, common: { count: 1, bytes: 0, gzipBytes: 0 }, rest: { count: 2500, bytes: 0, gzipBytes: 0 }, bySource: {} as never, sourceVersions: {} },
     common: async () => (calls.common++, built.common as CatalogFile),
     rest: async () => (calls.rest++, built.rest as CatalogFile),
   }
