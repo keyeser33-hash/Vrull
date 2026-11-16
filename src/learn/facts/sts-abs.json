@@ -1,0 +1,310 @@
+{
+  "group": "sts-abs",
+  "facts": [
+    {
+      "id": "crunch-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Crunch"
+      },
+      "text": {
+        "sq": "Në një studim të vogël të porositur nga ACE, me 14 të rinj, asnjë nga ushtrimet dhe pajisjet e provuara nuk e aktivizoi rectus abdominis më shumë se crunch-i klasik (te obliku i jashtëm, gjashtë e kaluan). Plank-u dhe side plank-u e aktivizuan më pak.",
+        "en": "In a small ACE-commissioned study of 14 young adults, none of the exercises and devices tested activated the rectus abdominis more than the classic crunch (for the external oblique, six did). The plank and side plank activated it less."
+      },
+      "more": {
+        "sq": "Crunch-i klasik arriti mesatarisht 68,4% të kontraktimit maksimal vullnetar. Porcari tha se studime të tjera e kanë dhënë ndryshe dhe se këtu crunch-i u bë me kujdes dhe saktë. Është një rezultat i vetëm.",
+        "en": "The classic crunch averaged 68.4% of maximal voluntary contraction. Porcari said other studies have found otherwise, and that here the crunch was done very deliberately and correctly. It is a single result."
+      },
+      "source": {
+        "label": "Stenger dhe kolegët, 2014",
+        "title": "Abs, abs, abs (ACE ProSource, prill 2014)",
+        "url": "https://www.acefitness.org/continuing-education/prosource/april-2014/3764/abs-abs-abs/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi i ACE-së për rectus abdominis te crunch-i klasik krahasuar me ushtrimet e tjera?",
+          "en": "What did the ACE study find for the rectus abdominis in the classic crunch compared with the other exercises?"
+        },
+        "options": [
+          {
+            "sq": "Asnjë ushtrim nuk e kaloi në rectus abdominis",
+            "en": "No exercise beat it for the rectus abdominis"
+          },
+          {
+            "sq": "Plank-u e aktivizoi rectus abdominis më shumë",
+            "en": "The plank activated the rectus abdominis more"
+          },
+          {
+            "sq": "Rrota e barkut e kaloi në pjesën e sipërme të barkut",
+            "en": "The ab wheel beat it in the upper abs"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "crunch-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Crunch"
+      },
+      "text": {
+        "sq": "Në një studim me 24 të rritur 18–40 vjeç, 6 javë me 7 ushtrime për barkun (jo vetëm crunch), 5 ditë në javë, nuk e ulën yndyrën e barkut as perimetrin e barkut. Pas provës, grupi i ushtrimeve bëri më shumë curl-up.",
+        "en": "In a study of 24 adults aged 18–40, 6 weeks of 7 abdominal exercises (not just the crunch), 5 days a week, did not reduce abdominal fat or abdominal circumference. After the programme, the exercise group did more curl-ups."
+      },
+      "more": {
+        "sq": "Të gjithë mbanin dietë izokalorike. Në testin pas stërvitjes, grupi i ushtrimeve bëri 47 curl-up, grupi pa ushtrime 32.",
+        "en": "Everyone kept an isocaloric diet. In the post-training test, the exercise group managed 47 curl-ups, the control group 32."
+      },
+      "source": {
+        "label": "Vispute dhe kolegët, 2011",
+        "title": "The effect of abdominal exercise on abdominal fat (Journal of Strength and Conditioning Research)",
+        "url": "https://doi.org/10.1519/jsc.0b013e3181fb4a46",
+        "year": 2011,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë ndryshoi pas 6 javësh ushtrime vetëm për barkun në studimin me 24 të rritur?",
+          "en": "What changed after 6 weeks of abdominal-only exercise in the study of 24 adults?"
+        },
+        "options": [
+          {
+            "sq": "Yndyra e barkut ra dukshëm",
+            "en": "Abdominal fat dropped noticeably"
+          },
+          {
+            "sq": "Perimetri i barkut u ngushtua",
+            "en": "Abdominal circumference narrowed"
+          },
+          {
+            "sq": "Qëndrueshmëria e barkut u rrit, yndyra jo",
+            "en": "Abdominal endurance rose, fat did not"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "weighted-crunch-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Weighted Crunch"
+      },
+      "text": {
+        "sq": "Në një studim me 13 persona, në përgjithësi muskujt e barkut u aktivizuan më shumë me ngarkesën maksimale në crunch (1RM) se me ngarkesa më të lehta, por në përgjithësi 20% dhe 40% e 1RM nuk dalloheshin.",
+        "en": "In a study of 13 people, the abdominal muscles were in general activated more at the maximum crunch load (1RM) than at lighter loads, but in general 20% and 40% of 1RM did not differ."
+      },
+      "more": {
+        "sq": "Autorët e përfundojnë se për të ecur në forcën e barkut ngarkesa duhet të ndryshojë me më shumë se 20% të 1RM. Ishte një studim i vogël me të rinj aktivë e të shëndetshëm, prandaj lexoje si një rezultat të vetëm.",
+        "en": "The authors conclude that to progress abdominal strength, the load should change by more than 20% of 1RM. It was a small study of young, healthy, active adults, so read it as a single result."
+      },
+      "source": {
+        "label": "Moraes dhe kolegët, 2009",
+        "title": "EMG activation of abdominal muscles in the crunch exercise performed with different external loads (Physical Therapy in Sport)",
+        "url": "https://doi.org/10.1016/j.ptsp.2009.01.001",
+        "year": 2009,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Me cilën ngarkesë të crunch-it me peshë muskujt e barkut u aktivizuan më shumë në studimin me 13 persona?",
+          "en": "At which load of the weighted crunch were the abdominal muscles most activated in the study of 13 people?"
+        },
+        "options": [
+          {
+            "sq": "20% e 1RM",
+            "en": "20% of 1RM"
+          },
+          {
+            "sq": "40% e 1RM",
+            "en": "40% of 1RM"
+          },
+          {
+            "sq": "Ngarkesa maksimale (1RM)",
+            "en": "The maximum load (1RM)"
+          },
+          {
+            "sq": "60% e 1RM",
+            "en": "60% of 1RM"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "hanging-leg-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Hanging Leg Raise"
+      },
+      "text": {
+        "sq": "Në një studim me 21 burra e gra, ngritja e gjunjëve në varje me rripa (hanging knee-up, jo ngritje e këmbëve të shtrira) ishte mes ushtrimeve që aktivizuan më shumë rectus abdominis, në pjesën e sipërme dhe të poshtme, dhe të dyja obliket.",
+        "en": "In a study of 21 men and women, the hanging knee-up with straps (not a straight-leg raise) was among the exercises that activated the rectus abdominis, upper and lower portions, and both obliques the most."
+      },
+      "more": {
+        "sq": "Rectus femoris, fleksori i ijës, ishte më aktiv te Power Wheel, reverse crunch i pjerrët dhe bent-knee sit-up.",
+        "en": "The rectus femoris, a hip flexor, was most active in the Power Wheel, the inclined reverse crunch and the bent-knee sit-up."
+      },
+      "source": {
+        "label": "Escamilla dhe kolegët, 2006",
+        "title": "Electromyographic analysis of traditional and nontraditional abdominal exercises: implications for rehabilitation and training (Physical Therapy)",
+        "url": "https://doi.org/10.1093/ptj/86.5.656",
+        "year": 2006,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili variant në varje me rripa doli mes më aktivëve për barkun në studimin me 21 persona?",
+          "en": "Which hanging variation with straps was among the most active for the abdominals in the study of 21 people?"
+        },
+        "options": [
+          {
+            "sq": "Ngritja e këmbëve të shtrira",
+            "en": "The straight-leg raise"
+          },
+          {
+            "sq": "Përdredhja e trupit",
+            "en": "The trunk twist"
+          },
+          {
+            "sq": "Ngritja e gjunjëve",
+            "en": "The knee-up"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "plank-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Plank"
+      },
+      "text": {
+        "sq": "Në një studim me 30 persona, plank-u mbi bërryla dhe majat e këmbëve dha aktivizim nën 45% të kontraktimit maksimal në muskujt e matur, prandaj, sipas autorëve, mund të jetë më i dobishëm për qëndrueshmëri e stabilizim.",
+        "en": "In a study of 30 people, the plank on the elbows and toes gave activation below 45% of maximal contraction in the muscles measured, so, according to the authors, it may be more useful for endurance and stabilisation."
+      },
+      "more": {
+        "sq": "Autorët e përdorën 45% si prag: mbi të, ushtrimi mund të forcojë muskulin. Matja u bë me EMG sipërfaqësor te 19 burra dhe 11 gra të shëndetshëm.",
+        "en": "The authors used 45% as a threshold: above it, an exercise may strengthen the muscle. The measurement was surface EMG in 19 healthy men and 11 healthy women."
+      },
+      "source": {
+        "label": "Ekstrom dhe kolegët, 2007",
+        "title": "Electromyographic analysis of core trunk, hip, and thigh muscles during 9 rehabilitation exercises (JOSPT)",
+        "url": "https://doi.org/10.2519/jospt.2007.2471",
+        "year": 2007,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Për çfarë, sipas autorëve, mund të jetë më i dobishëm plank-u mbi bërryla në studimin me 30 persona?",
+          "en": "What, according to the authors, may the plank on the elbows be more useful for in the study of 30 people?"
+        },
+        "options": [
+          {
+            "sq": "Më shumë për forcë maksimale",
+            "en": "More for maximal strength"
+          },
+          {
+            "sq": "Më shumë për qëndrueshmëri e stabilizim",
+            "en": "More for endurance and stabilisation"
+          },
+          {
+            "sq": "Më shumë për rritjen e gluteus medius",
+            "en": "More for growing the gluteus medius"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "side-plank-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Side Plank"
+      },
+      "text": {
+        "sq": "Në një studim me 30 persona, side plank-u (side bridge) ishte mes pak ushtrimeve që autorët i vlerësuan të përshtatshme për forcimin e muskujve obliku i jashtëm dhe gluteus medius.",
+        "en": "In a study of 30 people, the side plank (side bridge) was among the few exercises the authors rated suitable for strengthening the external oblique and the gluteus medius."
+      },
+      "more": {
+        "sq": "Përveç side bridge, vetëm lateral step-up dhe lunge (për VMO) dhe quadruped (për gluteus maximus) u përmendën për forcim. Të tjerat dhanë nën 45% të kontraktimit maksimal dhe mund të jenë më të dobishme për qëndrueshmëri ose stabilizim.",
+        "en": "Besides the side bridge, only the lateral step-up and lunge (for the VMO) and the quadruped (for the gluteus maximus) were named for strengthening. The others gave below 45% of maximal contraction and may be more useful for endurance or stabilisation."
+      },
+      "source": {
+        "label": "Ekstrom dhe kolegët, 2007",
+        "title": "Electromyographic analysis of core trunk, hip, and thigh muscles during 9 rehabilitation exercises (JOSPT)",
+        "url": "https://doi.org/10.2519/jospt.2007.2471",
+        "year": 2007,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cilët dy muskuj, sipas studimit me 30 persona, i forcon side plank-u?",
+          "en": "Which two muscles, according to the study of 30 people, does the side plank strengthen?"
+        },
+        "options": [
+          {
+            "sq": "Rectus abdominis dhe kuadriceps",
+            "en": "Rectus abdominis and quadriceps"
+          },
+          {
+            "sq": "Obliku i jashtëm dhe gluteus medius",
+            "en": "External oblique and gluteus medius"
+          },
+          {
+            "sq": "Hamstringët dhe gluteus maximus",
+            "en": "Hamstrings and gluteus maximus"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "oblique-crunch-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Oblique Crunch"
+      },
+      "text": {
+        "sq": "Studimi i ACE-së nuk testoi oblique crunch. Gjashtë ushtrime të tjera (si captain's chair crunch dhe Ab Wheel) e aktivizuan obliken e jashtme më shumë se crunch-i; studiuesi tha se përdredhja ose paqëndrueshmëria e trungut i fut obliket në punë.",
+        "en": "The ACE study did not test the oblique crunch. Six other exercises (such as the captain's chair crunch and Ab Wheel) activated the external oblique more than the crunch; the researcher said twisting or instability of the trunk brings the obliques into play."
+      },
+      "more": {
+        "sq": "Crunch-i klasik shkon drejt lart e prapa. Studiuesit e lidhën aktivizimin më të lartë me pajisjet që lëvizin lirshëm dhe kërkojnë ekuilibër; të tjerat ishin decline bench curl-up dhe captain's chair.",
+        "en": "The classic crunch goes straight up and back. The researchers linked the higher activation to free-moving devices that demand balance; the others were the decline bench curl-up and captain's chair."
+      },
+      "source": {
+        "label": "Stenger dhe kolegët, 2014",
+        "title": "Abs, abs, abs (ACE ProSource, prill 2014)",
+        "url": "https://www.acefitness.org/continuing-education/prosource/april-2014/3764/abs-abs-abs/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sipas studiuesit të ACE-së, çfarë i fut obliket në punë më shumë se crunch-i drejt lart?",
+          "en": "According to the ACE researcher, what brings the obliques into play more than a straight crunch?"
+        },
+        "options": [
+          {
+            "sq": "Mbajtja e frymës",
+            "en": "Holding the breath"
+          },
+          {
+            "sq": "Ngritja e kokës më lart",
+            "en": "Lifting the head higher"
+          },
+          {
+            "sq": "Përdredhja ose paqëndrueshmëria e trungut",
+            "en": "Twisting or instability of the trunk"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,478 @@
+{
+  "group": "foods",
+  "facts": [
+    {
+      "id": "egg-1",
+      "topic": {
+        "kind": "food",
+        "food": "egg"
+      },
+      "text": {
+        "sq": "Në një studim me 10 burra që stërviteshin me pesha, vezët e plota pas stërvitjes e nxitën sintezën e proteinës së muskujve më shumë se e bardha e vezës, me të njëjtën sasi proteine (18 g).",
+        "en": "In a study of 10 resistance-trained men, whole eggs after a workout stimulated muscle protein synthesis more than egg whites, with the same amount of protein (18 g)."
+      },
+      "more": {
+        "sq": "Veza e plotë kishte edhe 17 g yndyrë, e bardha asnjë. Studimi ishte i vogël dhe mati sintezën e proteinës së muskujve pas një stërvitjeje, jo rritjen e muskujve me kalimin e kohës.",
+        "en": "The whole eggs also had 17 g of fat; the whites had none. The study was small and measured muscle protein synthesis after one workout, not muscle growth over time."
+      },
+      "source": {
+        "label": "van Vliet dhe kolegët, 2017",
+        "title": "Consumption of whole eggs promotes greater stimulation of postexercise muscle protein synthesis than consumption of isonitrogenous amounts of egg whites in young men",
+        "url": "https://doi.org/10.3945/ajcn.117.159855",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë e nxiti më shumë sintezën e proteinës së muskujve pas stërvitjes, me 18 g proteinë secila?",
+          "en": "Which stimulated muscle protein synthesis more after training, with 18 g of protein each?"
+        },
+        "options": [
+          {
+            "sq": "Vezët e plota",
+            "en": "Whole eggs"
+          },
+          {
+            "sq": "E bardha e vezës",
+            "en": "Egg whites"
+          },
+          {
+            "sq": "Njësoj të dyja",
+            "en": "Both the same"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "egg-white-1",
+      "topic": {
+        "kind": "food",
+        "food": "egg_white"
+      },
+      "text": {
+        "sq": "Leucina nga e bardha e vezës hyri në gjak më shpejt se nga veza e plotë, me 18 g proteinë secila. Pas 5 orësh pjesa e leucinës që arriti në gjak ishte e ngjashme: 66% me të bardha, 68% me vezë të plota.",
+        "en": "Leucine from egg whites entered the blood faster than from whole eggs, with 18 g of protein each. After 5 hours the share of leucine that reached the blood was similar: 66% with whites, 68% with whole eggs."
+      },
+      "more": {
+        "sq": "Edhe bilanci neto i leucinës në trup nuk ndryshonte mes të dyjave. Studimi ishte me 10 burra që stërviteshin me pesha.",
+        "en": "Whole-body net leucine balance did not differ between the two either. The study involved 10 resistance-trained men."
+      },
+      "source": {
+        "label": "van Vliet dhe kolegët, 2017",
+        "title": "Consumption of whole eggs promotes greater stimulation of postexercise muscle protein synthesis than consumption of isonitrogenous amounts of egg whites in young men",
+        "url": "https://doi.org/10.3945/ajcn.117.159855",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi për leucinën nga e bardha e vezës krahasuar me vezën e plotë?",
+          "en": "What did the study find about leucine from egg whites compared with whole eggs?"
+        },
+        "options": [
+          {
+            "sq": "Hyri në gjak më shpejt",
+            "en": "It entered the blood faster"
+          },
+          {
+            "sq": "Hyri në gjak më ngadalë",
+            "en": "It entered the blood more slowly"
+          },
+          {
+            "sq": "Hyri njësoj shpejt",
+            "en": "It entered at the same speed"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "oatmeal-1",
+      "topic": {
+        "kind": "food",
+        "food": "oatmeal"
+      },
+      "text": {
+        "sq": "Një meta-analizë e 28 provave të rastësuara gjeti se të paktën 3 g beta-glukan tërshëre në ditë ul kolesterolin LDL me 0,25 mmol/l në krahasim me dietën e kontrollit.",
+        "en": "A meta-analysis of 28 randomised trials found that at least 3 g of oat beta-glucan a day lowered LDL cholesterol by 0.25 mmol/l compared with a control diet."
+      },
+      "more": {
+        "sq": "Beta-glukani është fibra e tretshme e tërshërës. Kolesteroli total ra me 0,30 mmol/l. Agjencitë ushqimore e kanë miratuar këtë pohim shëndetësor, dhe 3 g në ditë është pragu i tij.",
+        "en": "Beta-glucan is the soluble fibre in oats. Total cholesterol fell by 0.30 mmol/l. Food agencies have approved a health claim on this, and 3 g a day is its threshold."
+      },
+      "source": {
+        "label": "Whitehead dhe kolegët, 2014",
+        "title": "Cholesterol-lowering effects of oat β-glucan: a meta-analysis of randomized controlled trials",
+        "url": "https://doi.org/10.3945/ajcn.114.086108",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Mbi çfarë doze beta-glukani tërshëre në ditë bazohen pohimet shëndetësore për uljen e kolesterolit?",
+          "en": "What daily dose of oat beta-glucan are the cholesterol-lowering health claims based on?"
+        },
+        "options": [
+          {
+            "sq": "1 g",
+            "en": "1 g"
+          },
+          {
+            "sq": "3 g",
+            "en": "3 g"
+          },
+          {
+            "sq": "10 g",
+            "en": "10 g"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "wheat-bread-1",
+      "topic": {
+        "kind": "food",
+        "food": "wheat_bread"
+      },
+      "text": {
+        "sq": "Një meta-analizë e studimeve vëzhguese lidhi çdo 90 g drithëra integrale në ditë (rreth dy fetë bukë integrale dhe një tas drithëra) me 17% më pak rrezik vdekjeje nga çdo shkak.",
+        "en": "A meta-analysis of observational studies linked every 90 g of whole grains a day (about two slices of whole-grain bread and a bowl of cereal) with a 17% lower risk of death from any cause."
+      },
+      "more": {
+        "sq": "Për drithërat integrale, rreziku i sëmundjeve kardiovaskulare ishte 22% më i ulët dhe ai i vdekjes nga kanceri 15% më i ulët. Janë studime vëzhguese, që tregojnë lidhje dhe jo shkak.",
+        "en": "For whole grains, the risk of cardiovascular disease was 22% lower and that of death from cancer 15% lower. These are observational studies, which show an association, not a cause."
+      },
+      "source": {
+        "label": "Aune dhe kolegët, 2016",
+        "title": "Whole grain consumption and risk of cardiovascular disease, cancer, and all cause and cause specific mortality: systematic review and dose-response meta-analysis of prospective studies",
+        "url": "https://doi.org/10.1136/bmj.i2716",
+        "year": 2016,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Me sa ishte më i ulët rreziku i vdekjes nga çdo shkak për çdo 90 g drithëra integrale në ditë?",
+          "en": "By how much was the risk of death from any cause lower for every 90 g of whole grains a day?"
+        },
+        "options": [
+          {
+            "sq": "5%",
+            "en": "5%"
+          },
+          {
+            "sq": "17%",
+            "en": "17%"
+          },
+          {
+            "sq": "40%",
+            "en": "40%"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "whey-2",
+      "topic": {
+        "kind": "food",
+        "food": "protein"
+      },
+      "text": {
+        "sq": "Kazeina përbën rreth 80% të proteinës së qumështit. Ndryshe nga whey-u, ajo koagulohet në sistemin tretës dhe tretet më ngadalë.",
+        "en": "Casein makes up about 80% of milk protein. Unlike whey, it coagulates in the gut and is digested more slowly."
+      },
+      "more": {
+        "sq": "Whey është i tretshëm në ujë dhe tretet shpejt. Kazeina përmban edhe peptide me veti opioide që ngadalësojnë lëvizjen e stomakut. Pozicioni i ISSN thotë se 30–40 g kazeinë para gjumit rrisin sintezën e proteinës së muskujve gjatë natës.",
+        "en": "Whey is water soluble and digests quickly. Casein also contains peptides with opioid properties that slow the movement of the stomach. The ISSN position says 30–40 g of casein before sleep increases overnight muscle protein synthesis."
+      },
+      "source": {
+        "label": "Jäger dhe kolegët, 2017",
+        "title": "International Society of Sports Nutrition Position Stand: protein and exercise",
+        "url": "https://doi.org/10.1186/s12970-017-0177-8",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cila proteinë e qumështit koagulohet në sistemin tretës dhe tretet më ngadalë se whey-u?",
+          "en": "Which milk protein coagulates in the gut and digests more slowly than whey?"
+        },
+        "options": [
+          {
+            "sq": "Whey",
+            "en": "Whey"
+          },
+          {
+            "sq": "Kolagjeni",
+            "en": "Collagen"
+          },
+          {
+            "sq": "Kazeina",
+            "en": "Casein"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "tuna-1",
+      "topic": {
+        "kind": "food",
+        "food": "tuna"
+      },
+      "text": {
+        "sq": "Të dhënat e FDA-së japin mesatarisht 0,350 ppm merkur te toni albacore në kanaçe dhe 0,126 ppm te toni light në kanaçe, raporti i mesatareve është rreth 2,8.",
+        "en": "FDA data give an average of 0.350 ppm mercury in canned albacore tuna and 0.126 ppm in canned light tuna, a ratio of the averages of about 2.8."
+      },
+      "more": {
+        "sq": "Mesataret vijnë nga 451 mostra albacore dhe 545 mostra light të marra mes 1991 dhe 2010.",
+        "en": "The averages come from 451 albacore and 545 light samples taken between 1991 and 2010."
+      },
+      "source": {
+        "label": "FDA, 2022",
+        "title": "Mercury Levels in Commercial Fish and Shellfish (1990-2012)",
+        "url": "https://www.fda.gov/food/environmental-contaminants-food/mercury-levels-commercial-fish-and-shellfish-1990-2012",
+        "year": 2022,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ton në kanaçe ka mesatarisht më shumë merkur sipas FDA-së?",
+          "en": "Which canned tuna has more mercury on average, according to FDA?"
+        },
+        "options": [
+          {
+            "sq": "Toni light",
+            "en": "Light tuna"
+          },
+          {
+            "sq": "Albacore",
+            "en": "Albacore"
+          },
+          {
+            "sq": "Njësoj",
+            "en": "The same"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "salmon-1",
+      "topic": {
+        "kind": "food",
+        "food": "salmon"
+      },
+      "text": {
+        "sq": "Salmoni i Atlantikut nga ferma ka mesatarisht 1,16 g EPA dhe DHA (omega-3) për 100 g. Për 227 g, llogaritur nga 1,16 g për 100 g, del rreth 2,6 g; rekomandimi më i ulët i EFSA-s është 1,75 g EPA dhe DHA në javë.",
+        "en": "Farmed Atlantic salmon has on average 1.16 g of EPA and DHA (omega-3) per 100 g. For 227 g, calculated from 1.16 g per 100 g, that is about 2.6 g; the lower EFSA recommendation is 1.75 g of EPA and DHA a week."
+      },
+      "more": {
+        "sq": "Salmoni i egër ka sasi të ngjashme (1,23 g për 100 g). Te salmoni i fermave sasia ka rënë: rreth 2,80 g për 100 g në 2005, pasi ushqimi i peshkut përmban më shumë vajra bimorë.",
+        "en": "Wild salmon has a similar amount (1.23 g per 100 g). In farmed salmon the amount has fallen: about 2.80 g per 100 g in 2005, as fish feed contains more plant oils."
+      },
+      "source": {
+        "label": "Sprague dhe kolegët, 2026",
+        "title": "Evaluating the adequacy of current dietary guidelines for seafood as a source of long-chain omega-3 fatty acids",
+        "url": "https://doi.org/10.1038/s41598-026-41320-w",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa EPA dhe DHA ka mesatarisht 100 g salmon i Atlantikut nga ferma, sipas studimit?",
+          "en": "How much EPA and DHA does 100 g of farmed Atlantic salmon contain on average, according to the study?"
+        },
+        "options": [
+          {
+            "sq": "0,4 g",
+            "en": "0.4 g"
+          },
+          {
+            "sq": "3,0 g",
+            "en": "3.0 g"
+          },
+          {
+            "sq": "1,16 g",
+            "en": "1.16 g"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "olive-oil-1",
+      "topic": {
+        "kind": "food",
+        "food": "olive_oil"
+      },
+      "text": {
+        "sq": "Në dy kohorte amerikane me 92 383 të rritur dhe 28 vjet ndjekje, ata që hanin mbi 7 g vaj ulliri në ditë kishin 19% më pak rrezik vdekjeje nga sëmundjet kardiovaskulare se ata që e hanin rrallë ose kurrë.",
+        "en": "In two US cohorts of 92,383 adults followed for 28 years, those who ate more than 7 g of olive oil a day had a 19% lower risk of dying from cardiovascular disease than those who rarely or never did."
+      },
+      "more": {
+        "sq": "Të 7 g janë rreth gjysmë luge gjelle. Është studim vëzhgues, që tregon lidhje dhe jo shkak. Zëvendësimi i 10 g në ditë margarinë, gjalpë, majonezë ose yndyrë qumështi me vaj ulliri lidhej me 8% deri 34% më pak rrezik vdekjeje. Krahasuar me vajrat e tjerë bimorë së bashku, nuk u pa lidhje e rëndësishme.",
+        "en": "7 g is about half a tablespoon. It is an observational study, which shows an association, not a cause. Replacing 10 g a day of margarine, butter, mayonnaise or dairy fat with olive oil was linked to 8% to 34% lower risk of death. Compared with other vegetable oils combined, no significant association was seen."
+      },
+      "source": {
+        "label": "Guasch-Ferré dhe kolegët, 2022",
+        "title": "Consumption of Olive Oil and Risk of Total and Cause-Specific Mortality Among U.S. Adults",
+        "url": "https://doi.org/10.1016/j.jacc.2021.10.041",
+        "year": 2022,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Me sa ishte më i ulët rreziku i vdekjes nga sëmundjet kardiovaskulare për ata që hanin mbi 7 g vaj ulliri në ditë?",
+          "en": "By how much was the risk of dying from cardiovascular disease lower for those who ate over 7 g of olive oil a day?"
+        },
+        "options": [
+          {
+            "sq": "3%",
+            "en": "3%"
+          },
+          {
+            "sq": "40%",
+            "en": "40%"
+          },
+          {
+            "sq": "19%",
+            "en": "19%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "pineapple-1",
+      "topic": {
+        "kind": "food",
+        "food": "pineapple"
+      },
+      "text": {
+        "sq": "Bromelaina është enzima e ananasit që tret proteinat. Gjendet te fruti, por më shumë te kërcelli. Shumica e provave për përfitime vijnë nga eksperimente në qeliza dhe kafshë, me pak prova klinike.",
+        "en": "Bromelain is the protein-digesting enzyme of pineapple. It is found in the fruit, but more in the stem. Most evidence of benefit comes from cell and animal experiments, with limited clinical evidence."
+      },
+      "more": {
+        "sq": "Rishikimi kritik i vitit 2026 shton se duhen ende studime klinike të mirë-dizajnuara për dozën optimale, sigurinë afatgjatë dhe efikasitetin.",
+        "en": "The 2026 critical review adds that well-designed clinical studies are still needed on optimal dose, long-term safety and efficacy."
+      },
+      "source": {
+        "label": "Sanlier dhe kolegët, 2026",
+        "title": "Potential health benefits of bromelain: a critical review of the current literature",
+        "url": "https://doi.org/10.3389/fnut.2026.1744666",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Ku ka më shumë bromelainë te ananasi?",
+          "en": "Where does pineapple contain more bromelain?"
+        },
+        "options": [
+          {
+            "sq": "Te fruti i ëmbël",
+            "en": "In the sweet fruit"
+          },
+          {
+            "sq": "Njësoj në të dyja",
+            "en": "The same in both"
+          },
+          {
+            "sq": "Te kërcelli",
+            "en": "In the stem"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "whey-1",
+      "topic": {
+        "kind": "food",
+        "food": "protein"
+      },
+      "text": {
+        "sq": "Whey ka rreth 11% leucinë dhe kazeina rreth 9,3%, mes sasive më të larta që gjenden te burimet e proteinës. Veza ka rreth 8,6% dhe mishi rreth 8%.",
+        "en": "Whey has about 11% leucine and casein about 9.3%, among the highest amounts found in protein sources. Egg has about 8.6% and meat about 8%."
+      },
+      "more": {
+        "sq": "Proteinat bimore kanë përgjithësisht më pak leucinë. Whey është i tretshëm në ujë dhe tretet shpejt.",
+        "en": "Plant proteins generally have less leucine. Whey is water soluble and digests quickly."
+      },
+      "source": {
+        "label": "Jäger dhe kolegët, 2017",
+        "title": "International Society of Sports Nutrition Position Stand: protein and exercise",
+        "url": "https://doi.org/10.1186/s12970-017-0177-8",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa për qind leucinë ka whey, sipas ISSN?",
+          "en": "What percentage of leucine does whey contain, according to ISSN?"
+        },
+        "options": [
+          {
+            "sq": "3%",
+            "en": "3%"
+          },
+          {
+            "sq": "11%",
+            "en": "11%"
+          },
+          {
+            "sq": "25%",
+            "en": "25%"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "gummies-1",
+      "topic": {
+        "kind": "food",
+        "food": "gummies"
+      },
+      "text": {
+        "sq": "Koha e karbohidrateve pas stërvitjes ka rëndësi kryesisht në dy raste: kur duhet rikthim i shpejtë i glikogjenit dhe kur ha pak karbohidrate gjatë ditës.",
+        "en": "The timing of carbohydrate after training matters mainly in two cases: when quick glycogen recovery is needed and when you eat few carbohydrates during the day."
+      },
+      "more": {
+        "sq": "Burimi e lidh rikthimin e shpejtë me më pak se 4 orë pushim mes stërvitjeve. Një studim i hershëm me çiklistë gjeti se glikogjeni u rikthye 50% më shpejt kur karbohidratet jepeshin brenda 30 minutave dhe jo 2 orë më vonë. Ishte stërvitje qëndrueshmërie, jo me pesha.",
+        "en": "The source links quick recovery to less than 4 hours of rest between sessions. An early study with cyclists found glycogen was restored 50% faster when carbohydrate was given within 30 minutes rather than 2 hours later. It was endurance exercise, not weights."
+      },
+      "source": {
+        "label": "Kerksick dhe kolegët, 2017",
+        "title": "International society of sports nutrition position stand: nutrient timing",
+        "url": "https://doi.org/10.1186/s12970-017-0189-4",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Kur ka më shumë rëndësi koha e karbohidrateve pas stërvitjes, sipas ISSN?",
+          "en": "When does the timing of carbohydrate after training matter most, according to ISSN?"
+        },
+        "options": [
+          {
+            "sq": "Gjithmonë, në çdo rast",
+            "en": "Always, in every case"
+          },
+          {
+            "sq": "Vetëm në mëngjes",
+            "en": "Only in the morning"
+          },
+          {
+            "sq": "Kur glikogjeni duhet rikthyer shpejt ose karbohidratet janë pak",
+            "en": "When glycogen must be restored quickly or carbohydrate is low"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

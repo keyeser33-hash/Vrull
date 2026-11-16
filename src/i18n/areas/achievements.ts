@@ -26,6 +26,7 @@ export const sq = {
   'achievements.sheet.earnedToday': 'Fituar sot',
   'achievements.sheet.earnedOn': 'Fituar më {date}',
   'achievements.sheet.streak': 'Vargu tani: {current} nga {target} javë',
+  'achievements.sheet.quizStreak': 'Vargu i kuizit tani: {current} nga {target} javë',
   'achievements.sheet.best': 'Më e mira deri tani: {current} nga {target} ditë',
   'achievements.sheet.how': 'Si fitohet',
   'achievements.sheet.weeks': 'Javët e vargut',
@@ -35,7 +36,7 @@ export const sq = {
   'achievements.sheet.nearest': 'Më afër tani',
   'achievements.sheet.close': 'Mbyll',
 
-  // Dhjetë arritjet: emri, rregulli i shkurtër te pllaka, rregulli i plotë te fleta, shenja.
+  // Njëmbëdhjetë arritjet: emri, rregulli i shkurtër te pllaka, rregulli i plotë te fleta, shenja.
   'achievements.first_session.name': 'Seanca e parë',
   'achievements.first_session.rule': 'Seanca e parë e mbyllur',
   'achievements.first_session.how': 'Mbyll seancën e parë të programit. Një seancë e kapërcyer nuk numërohet.',
@@ -68,6 +69,9 @@ export const sq = {
   'achievements.programme.rule': { one: 'Java e vetme e {programme}', other: '{count} javët e {programme}' },
   'achievements.programme.ruleAny': 'Të gjitha javët e programit',
   'achievements.programme.how': 'Bëj çdo stërvitje të çdo jave të programit. Një javë numërohet kur ka të gjitha stërvitjet e saj.',
+  'achievements.quiz_4.name': 'Kuizi 4 javë',
+  'achievements.quiz_4.rule': '4 kuize të javës rresht',
+  'achievements.quiz_4.how': 'Mbyll kuizin e së dielës 4 javë rresht. Një javë pa kuiz, me më pak se 5 fakte, nuk e ndërpret vargun.',
 
   // Mbyllja e seancës: java dhe arritja.
   'achievements.close.ofWorkouts': { one: 'nga {count} stërvitje', other: 'nga {count} stërvitje' },
@@ -103,6 +107,7 @@ export const en: TranslationOf<typeof sq> = {
   'achievements.sheet.earnedToday': 'Earned today',
   'achievements.sheet.earnedOn': 'Earned on {date}',
   'achievements.sheet.streak': 'Current streak: {current} of {target} weeks',
+  'achievements.sheet.quizStreak': 'Current quiz streak: {current} of {target} weeks',
   'achievements.sheet.best': 'Best so far: {current} of {target} days',
   'achievements.sheet.how': 'How to earn it',
   'achievements.sheet.weeks': 'Streak weeks',
@@ -144,6 +149,9 @@ export const en: TranslationOf<typeof sq> = {
   'achievements.programme.rule': { one: 'The only week of {programme}', other: 'All {count} weeks of {programme}' },
   'achievements.programme.ruleAny': 'Every week of the programme',
   'achievements.programme.how': 'Do every workout of every week of the programme. A week counts once all its workouts are done.',
+  'achievements.quiz_4.name': 'Quiz 4 weeks',
+  'achievements.quiz_4.rule': '4 weekly quizzes in a row',
+  'achievements.quiz_4.how': 'Finish the Sunday quiz 4 weeks in a row. A week without a quiz, with fewer than 5 facts, doesn’t break the streak.',
 
   'achievements.close.ofWorkouts': { one: 'of {count} workout', other: 'of {count} workouts' },
   'achievements.close.segments': '{done} of {target} workouts',

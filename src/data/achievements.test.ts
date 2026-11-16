@@ -157,12 +157,12 @@ describe('dhënia e arritjeve', () => {
 })
 
 describe('listat për ekranet', () => {
-  it('Progresi › Arritjet: 3 nga 10, të fituarat e para, progresi i të tjerave', async () => {
+  it('Progresi › Arritjet: 3 nga 11, të fituarat e para, progresi i të tjerave', async () => {
     const context = await weekZero()
     await train(context, '2026-11-09', [{ weightKg: 60, reps: 13 }])
     context.setClock(at('2026-11-12', '09:00'))
     const view = await achievementsView(context.store)
-    expect(view).toMatchObject({ today: '2026-11-12', earned: 3, total: 10, programmeName: 'Shortcut to Size' })
+    expect(view).toMatchObject({ today: '2026-11-12', earned: 3, total: 11, programmeName: 'Shortcut to Size' })
     expect(view.achievements.map((entry) => [entry.key, entry.earnedOn, entry.isNew])).toEqual([
       ['first_record', '2026-11-09', true],
       ['full_week', '2026-11-07', true],
@@ -174,6 +174,7 @@ describe('listat për ekranet', () => {
       ['food_7', null, false],
       ['water_7', null, false],
       ['programme', null, false],
+      ['quiz_4', null, false],
     ])
     const progress = Object.fromEntries(view.achievements.map((entry) => [entry.key, entry.progress]))
     expect(progress).toMatchObject({
@@ -185,6 +186,7 @@ describe('listat për ekranet', () => {
       water_7: { current: 5, target: 7 },
       programme: { current: 1, target: 13 },
       full_week: { current: 3, target: 3 },
+      quiz_4: { current: 0, target: 4 },
     })
     expect(view.achievements.find((entry) => entry.key === 'streak_4')?.weeks).toEqual([{ monday: '2026-11-02', done: 4, target: 4, spare: false }])
   })

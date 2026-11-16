@@ -1,0 +1,263 @@
+{
+  "group": "sts-hinge",
+  "facts": [
+    {
+      "id": "romanian-deadlift-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Romanian Deadlift"
+      },
+      "text": {
+        "sq": "Në një studim me 32 të rinj, pas 6 javësh me RDL ose Nordic, fashikujt e kokës së gjatë të biceps femoris-it u zgjatën mesatarisht 0,80 cm (9%), pa dallim mes dy grupeve.",
+        "en": "In a study of 32 young adults, after 6 weeks of RDL or Nordic, the long-head fascicles of the biceps femoris lengthened by 0.80 cm (9%) on average, with no difference between the two groups."
+      },
+      "more": {
+        "sq": "Pas 2 javësh pa stërvitje gjatësia e fashikullit u kthye në nivelin fillestar. Autorët thonë se të dy ushtrimet ofrojnë zgjedhje për përshtatje që lidhen me parandalimin e dëmtimeve të kofshëve të pasme.",
+        "en": "After 2 weeks without training the fascicle length returned to baseline. The authors say both exercises offer a choice for adaptations relevant to preventing hamstring injuries."
+      },
+      "source": {
+        "label": "Crawford dhe kolegët, 2025",
+        "title": "Hamstrings Muscle Architecture and Morphology Following 6 wk of an Eccentrically Biased Romanian Deadlift or Nordic Hamstring Exercise Intervention (Medicine & Science in Sports & Exercise)",
+        "url": "https://europepmc.org/article/PMC/PMC13588141",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa u zgjatën mesatarisht fashikujt e biceps femoris-it pas 6 javësh me RDL ose Nordic, sipas studimit me 32 të rinj?",
+          "en": "By how much did the biceps femoris fascicles lengthen on average after 6 weeks of RDL or Nordic, according to the study of 32 young adults?"
+        },
+        "options": [
+          {
+            "sq": "0,2 cm (2%)",
+            "en": "0.2 cm (2%)"
+          },
+          {
+            "sq": "0,80 cm (9%)",
+            "en": "0.80 cm (9%)"
+          },
+          {
+            "sq": "2,0 cm (25%)",
+            "en": "2.0 cm (25%)"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "lying-leg-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Lying Leg Curl"
+      },
+      "text": {
+        "sq": "Pas 12 javësh me curl të shtrirë, një seancë e rëndë ekscentrike e rriti shenjën e dëmtimit muskulor (T2 në MRI) te semitendinosus vetëm +6% pas 72 orësh, kundrejt +52% te këmbët e pastërvitura.",
+        "en": "After 12 weeks of prone leg curls, one heavy eccentric session raised the muscle-damage marker (T2 on MRI) in the semitendinosus by only +6% at 72 hours, versus +52% in untrained legs."
+      },
+      "more": {
+        "sq": "Me curl të ulur ishte +4%, dhe dallimi mes dy llojeve nuk ishte i rëndësishëm. Kështu, të dy e mbrojnë kofshën e pasme në mënyrë të ngjashme nga dëmtimi pas ushtrimit ekscentrik.",
+        "en": "With the seated curl it was +4%, and the difference between the two types was not significant. So both protect the hamstrings similarly against damage after eccentric exercise."
+      },
+      "source": {
+        "label": "Maeo dhe kolegët, 2021",
+        "title": "Greater Hamstrings Muscle Hypertrophy but Similar Damage Protection after Training at Long versus Short Muscle Lengths (Medicine & Science in Sports & Exercise)",
+        "url": "https://europepmc.org/article/MED/33009197",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Pas curl-it të shtrirë 12-javor, sa u rrit shenja e dëmtimit (T2) te semitendinosus 72 orë pas seancës ekscentrike të rëndë?",
+          "en": "After 12 weeks of prone leg curls, how much did the damage marker (T2) in the semitendinosus rise 72 hours after the heavy eccentric session?"
+        },
+        "options": [
+          {
+            "sq": "+52%",
+            "en": "+52%"
+          },
+          {
+            "sq": "+28%",
+            "en": "+28%"
+          },
+          {
+            "sq": "+6%",
+            "en": "+6%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "seated-leg-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Seated Leg Curl"
+      },
+      "text": {
+        "sq": "Në një studim me 20 të rritur, 12 javë curl i ulur në një këmbë dhe i shtrirë në tjetrën: vëllimi i kofshëve të pasme u rrit +14% me të ulurin kundrejt +9% me të shtririn.",
+        "en": "In a study of 20 adults, 12 weeks of seated curls on one leg and prone curls on the other: hamstring volume rose +14% with the seated curl versus +9% with the prone curl."
+      },
+      "more": {
+        "sq": "Diferenca erdhi te muskujt dy-nyjorë (+8%–24% kundrejt +4%–19%), jo te njënyjori (+10% kundrejt +9%). Autorët sugjerojnë se stërvitja në gjatësi më të madhe të muskulit nxit rritjen.",
+        "en": "The gap came from the two-joint muscles (+8%–24% versus +4%–19%), not the single-joint one (+10% versus +9%). The authors suggest that training at longer muscle lengths promotes growth."
+      },
+      "source": {
+        "label": "Maeo dhe kolegët, 2021",
+        "title": "Greater Hamstrings Muscle Hypertrophy but Similar Damage Protection after Training at Long versus Short Muscle Lengths (Medicine & Science in Sports & Exercise)",
+        "url": "https://europepmc.org/article/MED/33009197",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa u rrit vëllimi i kofshëve të pasme pas 12 javësh curl i ulur, në studimin me 20 të rritur?",
+          "en": "By how much did hamstring volume rise after 12 weeks of seated curls in the study of 20 adults?"
+        },
+        "options": [
+          {
+            "sq": "+9%",
+            "en": "+9%"
+          },
+          {
+            "sq": "+24%",
+            "en": "+24%"
+          },
+          {
+            "sq": "+14%",
+            "en": "+14%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "hip-thrust-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Hip Thrust"
+      },
+      "text": {
+        "sq": "Në një studim me 34 të rinj të pastërvitur, 9 javë hip thrust ose squat (me të njëjtin numër setesh) rritën gluteus-et njësoj. Squat-i rriti më shumë kuadricepsin dhe aduktorët.",
+        "en": "In a study of 34 untrained young adults, 9 weeks of hip thrust or squat (with the same number of sets) grew the glutes similarly. The squat grew the quadriceps and adductors more."
+      },
+      "more": {
+        "sq": "Rritja u mat me MRI. Forca u rrit sipas ushtrimit të stërvitur, por deadlift-i u përmirësua njësoj në të dy grupet.",
+        "en": "Growth was measured with MRI. Strength rose according to the exercise trained, but the deadlift improved similarly in both groups."
+      },
+      "source": {
+        "label": "Plotkin dhe kolegët, 2023",
+        "title": "Hip thrust and back squat training elicit similar gluteus muscle hypertrophy and transfer similarly to the deadlift (Frontiers in Physiology)",
+        "url": "https://europepmc.org/article/PMC/PMC10593473",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi me 34 të rinj për rritjen e gluteus-eve pas 9 javësh hip thrust kundrejt squat?",
+          "en": "What did the study of 34 young adults find about glute growth after 9 weeks of hip thrust versus squat?"
+        },
+        "options": [
+          {
+            "sq": "Hip thrust-i i rriti shumë më tepër",
+            "en": "The hip thrust grew them much more"
+          },
+          {
+            "sq": "Squat-i i rriti shumë më tepër",
+            "en": "The squat grew them much more"
+          },
+          {
+            "sq": "U rritën njësoj me të dyja",
+            "en": "They grew similarly with both"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "hip-thrust-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Hip Thrust"
+      },
+      "text": {
+        "sq": "Në setin e parë, EMG-ja e gluteus-eve ishte më e lartë në hip thrust se në squat, por kjo nuk e parashikoi vazhdimisht rritjen e tyre pas 9 javësh në atë studim.",
+        "en": "In the first set, glute EMG was higher in the hip thrust than in the squat, but it did not consistently predict their growth after 9 weeks in that study."
+      },
+      "more": {
+        "sq": "Individët ose zonat me EMG më të lartë nuk u rritën vazhdimisht më shumë. Autorët e marrin këtë si shenjë se EMG-ja e një seti nuk tregon sa do të rritet muskuli.",
+        "en": "Individuals or regions with higher EMG did not consistently grow more. The authors take this to mean that one set of EMG does not show how much a muscle will grow."
+      },
+      "source": {
+        "label": "Plotkin dhe kolegët, 2023",
+        "title": "Hip thrust and back squat training elicit similar gluteus muscle hypertrophy and transfer similarly to the deadlift (Frontiers in Physiology)",
+        "url": "https://europepmc.org/article/PMC/PMC10593473",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë tregoi EMG-ja e gluteus-eve në setin e parë të hip thrust kundrejt squat dhe a e parashikoi rritjen?",
+          "en": "What did glute EMG show in the first set of hip thrust versus squat, and did it predict growth?"
+        },
+        "options": [
+          {
+            "sq": "Më e ulët në hip thrust, e parashikoi rritjen",
+            "en": "Lower in the hip thrust, and it predicted growth"
+          },
+          {
+            "sq": "Më e lartë në hip thrust, nuk e parashikoi vazhdimisht",
+            "en": "Higher in the hip thrust, and it did not consistently predict growth"
+          },
+          {
+            "sq": "E njëjtë, nuk e parashikoi rritjen",
+            "en": "The same, and it did not predict growth"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "weighted-hip-thrust-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Weighted Hip Thrust"
+      },
+      "text": {
+        "sq": "Në një studim me 19 burra të stërvitur, hip thrust me shufër (70% e 1RM-së) e ngarkoi ijën më shumë se gjurin. Por ngarkesa e ijës ulej gjatë ngritjes, jo e qëndrueshme.",
+        "en": "In a study of 19 trained men, the barbell hip thrust (70% of 1RM) loaded the hip more than the knee. But the hip load fell during the lift rather than staying constant."
+      },
+      "more": {
+        "sq": "Momenti i shtrirjes së ijës arriti minimumin pranë shtrirjes së plotë, kundër asaj që besohej. Autorët thonë se kjo ndihmon të shpjegohet pse provat për epërsinë e hip thrust mbi ushtrimet vertikale janë të përziera.",
+        "en": "The hip extension moment reached its minimum near full extension, against what was believed. The authors say this helps explain why the evidence for hip thrust superiority over vertical exercises is mixed."
+      },
+      "source": {
+        "label": "Brazil dhe kolegët, 2021",
+        "title": "A comprehensive biomechanical analysis of the barbell hip thrust (PLOS ONE)",
+        "url": "https://europepmc.org/article/PMC/PMC8006986",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Si ndryshoi momenti i shtrirjes së ijës gjatë ngritjes në hip thrust me shufër, në studimin me 19 burra?",
+          "en": "How did the hip extension moment change during the lift in the barbell hip thrust, in the study of 19 men?"
+        },
+        "options": [
+          {
+            "sq": "U rrit drejt shtrirjes së plotë",
+            "en": "It rose towards full extension"
+          },
+          {
+            "sq": "Mbeti i njëjtë gjatë gjithë ngritjes",
+            "en": "It stayed constant throughout the lift"
+          },
+          {
+            "sq": "U ul pranë shtrirjes së plotë",
+            "en": "It fell near full extension"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

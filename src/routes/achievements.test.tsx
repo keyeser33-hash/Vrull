@@ -86,7 +86,7 @@ describe('Progresi › Arritjet', () => {
     vi.setSystemTime(at('2026-11-12', '09:00'))
   })
 
-  it('3 nga 10: të fituarat e para me datën, të tjerat me rregullin dhe progresin; tab-et e Progresit', async () => {
+  it('3 nga 11: të fituarat e para me datën, të tjerat me rregullin dhe progresin; tab-et e Progresit', async () => {
     await seed()
     data.clock = at('2026-11-12', '09:00')
     await renderAt('/progresi/arritjet')
@@ -103,7 +103,7 @@ describe('Progresi › Arritjet', () => {
       ['Historiku', '/progresi/historiku', 'false'],
       ['Arritjet', '/progresi/arritjet', 'true'],
     ])
-    expect(screen.getByText('nga 10 të fituara').previousSibling).toHaveTextContent('3')
+    expect(screen.getByText('nga 11 të fituara').previousSibling).toHaveTextContent('3')
     expect(list.map((tile) => tile.textContent)).toEqual([
       'E reRekordi i parëe1RM e re për herë të parë · 9 nëntor',
       'E reJava e plotëTë tre qëllimet në një javë · 7 nëntor',
@@ -115,11 +115,12 @@ describe('Progresi › Arritjet', () => {
       'Ushqimi 7 nga 7Çdo ditë e javës e regjistruar · më e mira 5',
       'Uji 7 nga 7Objektivi i ujit çdo ditë · më e mira 5',
       'Programi i plotë13 javët e Shortcut to Size · 1 nga 13',
+      'Kuizi 4 javë4 kuize të javës rresht · edhe 4',
     ])
     // Ikona në vend të shkurtimeve (V2-E3-30): çdo pllakë ka një ikonë dhe asnjë dy nuk e ndajnë.
     const icons = list.map((tile) => tile.querySelector('svg')?.innerHTML ?? '')
     expect(icons.every(Boolean)).toBe(true)
-    expect(new Set(icons).size).toBe(10)
+    expect(new Set(icons).size).toBe(11)
     // Arritjet u ruajtën me hapjen e faqes.
     expect((await data.store.all('achievements')).map((row) => row.key).sort()).toEqual(['first_record', 'first_session', 'full_week'])
   })
@@ -162,7 +163,7 @@ describe('Progresi › Arritjet', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Progress' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Achievements', selected: true })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Summary' })).toBeInTheDocument()
-    expect(screen.getByText('of 10 earned')).toBeInTheDocument()
+    expect(screen.getByText('of 11 earned')).toBeInTheDocument()
     expect(screen.getByText('Each is earned once')).toBeInTheDocument()
     expect(list.map((tile) => tile.textContent)).toEqual([
       'NewFirst personal bestA new e1RM for the first time · 9 November',
@@ -175,6 +176,7 @@ describe('Progresi › Arritjet', () => {
       'Food 7 of 7Every day of the week logged · best 5',
       'Water 7 of 7Water target every day · best 5',
       'Programme completeAll 13 weeks of Shortcut to Size · 1 of 13',
+      'Quiz 4 weeks4 weekly quizzes in a row · 4 to go',
     ])
     await user.click(list[7])
     const sheet = screen.getByRole('dialog', { name: 'Food 7 of 7' })

@@ -155,6 +155,8 @@ async function computeStates(store: LocalStore, saved: Map<string, string>) {
     activeProgrammeId: activeId,
     food,
     water,
+    quizWeeks: [],
+    quizOpenMonday: null,
   })
   const programmeName = activeId ? (programs.find((program) => program.id === activeId)?.name as string | undefined) ?? null : null
   return { today, states, programmeName }

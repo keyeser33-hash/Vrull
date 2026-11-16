@@ -78,6 +78,8 @@ function input(sessions: AchievementSession[], extra: Partial<AchievementInput> 
     activeProgrammeId: 'sts',
     food: [],
     water: [],
+    quizWeeks: [],
+    quizOpenMonday: null,
     ...extra,
   }
 }
@@ -88,10 +90,10 @@ const state = (states: AchievementState[], key: AchievementKey) => states.find((
 const intake = (monday: string, amounts: number[]): IntakeDay[] => amounts.map((amount, index) => ({ date: shiftDate(monday, index), amount, target: 100 }))
 
 describe('arritjet pa histori', () => {
-  it('dhjetë arritjet, asnjë e fituar, me objektivat e progresit', () => {
+  it('njëmbëdhjetë arritjet, asnjë e fituar, me objektivat e progresit', () => {
     const states = achievementStates(input([]))
     expect(states.map((entry) => entry.key)).toEqual([...ACHIEVEMENT_KEYS])
-    expect(ACHIEVEMENT_KEYS).toHaveLength(10)
+    expect(ACHIEVEMENT_KEYS).toHaveLength(11)
     for (const key of ACHIEVEMENT_KEYS) expect(key).toMatch(/^[a-z0-9_]{1,40}$/)
     expect(states.every((entry) => entry.met === null)).toBe(true)
     expect(Object.fromEntries(states.map((entry) => [entry.key, [entry.progress.current, entry.progress.target]]))).toEqual({
@@ -105,6 +107,7 @@ describe('arritjet pa histori', () => {
       food_7: [0, 7],
       water_7: [0, 7],
       programme: [0, 13],
+      quiz_4: [0, 4],
     })
   })
 
@@ -112,6 +115,20 @@ describe('arritjet pa histori', () => {
     const states = achievementStates(input([], { programmes: [], activeProgrammeId: null, pointer: null }))
     expect(state(states, 'phase_1').progress).toEqual({ current: 0, target: 0 })
     expect(state(states, 'programme').progress).toEqual({ current: 0, target: 0 })
+  })
+})
+
+describe('kuizi 4 javë (§0.3e)', () => {
+  const week = (monday: string, doneOn: string | null, available = true) => ({ monday, doneOn, available })
+
+  it('data është dita kur u mbyll kuizi i katërt rresht, pa seancë', () => {
+    const quizWeeks = [week(W1, '2026-11-08'), week(W2, null, false), week(W3, '2026-11-23'), week(W4, '2026-11-29'), week('2026-11-30', '2026-12-06')]
+    expect(state(achievementStates(input([], { quizWeeks })), 'quiz_4')).toEqual({ key: 'quiz_4', met: { date: '2026-12-06', sessionId: null }, progress: { current: 4, target: 4 } })
+  })
+
+  it('pa 4 rresht: progresi është vargu i tanishëm, me javën e hapur pa kuiz ende', () => {
+    const quizWeeks = [week(W1, '2026-11-08'), week(W2, '2026-11-16'), week(W3, null)]
+    expect(state(achievementStates(input([], { quizWeeks, quizOpenMonday: W3 })), 'quiz_4')).toEqual({ key: 'quiz_4', met: null, progress: { current: 2, target: 4 } })
   })
 })
 
@@ -319,6 +336,7 @@ describe('radha, "E re" dhe më e afërta', () => {
       'food_7',
       'water_7',
       'programme',
+      'quiz_4',
     ])
   })
 

@@ -1,0 +1,451 @@
+{
+  "group": "sts-legs",
+  "facts": [
+    {
+      "id": "squat-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Squat"
+      },
+      "text": {
+        "sq": "Në një studim me 17 burra, squat-i i plotë dhe gjysmë-squat-i e rritën kuadricepsin njësoj (rreth 5%), por gluteus maximus u rrit 6,7% me squat të plotë dhe vetëm 2,2% me gjysmë-squat.",
+        "en": "In a study of 17 men, full squats and half squats grew the quadriceps equally (about 5%), but the gluteus maximus grew 6.7% with full squats and only 2.2% with half squats."
+      },
+      "more": {
+        "sq": "Pas 10 javësh stërvitje, dy herë në javë, edhe adduktorët u rritën më shumë me squat të plotë (6,2% kundrejt 2,7%). Është një studim i vogël, prandaj lexoje si një rezultat të vetëm.",
+        "en": "After 10 weeks of training twice a week, the adductors also grew more with full squats (6.2% versus 2.7%). It is a small study, so read it as a single result."
+      },
+      "source": {
+        "label": "Kubo dhe kolegët, 2019",
+        "title": "Effects of squat training with different depths on lower limb muscle volumes (European Journal of Applied Physiology)",
+        "url": "https://doi.org/10.1007/s00421-019-04181-y",
+        "year": 2019,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë u rrit më shumë me squat të plotë se me gjysmë-squat në studimin me 17 burra?",
+          "en": "What grew more with full squats than with half squats in the study of 17 men?"
+        },
+        "options": [
+          {
+            "sq": "Kuadriceps",
+            "en": "Quadriceps"
+          },
+          {
+            "sq": "Gluteus maximus dhe adduktorët",
+            "en": "Gluteus maximus and adductors"
+          },
+          {
+            "sq": "Hamstringët",
+            "en": "Hamstrings"
+          },
+          {
+            "sq": "Rectus femoris",
+            "en": "Rectus femoris"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "front-squat-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Front Squat"
+      },
+      "text": {
+        "sq": "Në një studim me 15 persona të stërvitur, front squat-i dha forca shtypëse më të ulëta në gju dhe moment më të ulët të shtrirësve të gjurit se back squat-i, me aktivizim të ngjashëm të muskujve.",
+        "en": "In a study of 15 trained people, the front squat produced lower compressive forces and lower knee extensor moments than the back squat, with similar muscle activation."
+      },
+      "more": {
+        "sq": "Autorët prisnin që front squat-i të aktivizonte më pak shtrirësit e shpinës, por pozicioni i shufrës nuk e ndryshoi aktivizimin. Ata thonë se front squat-i mund të ndihmojë persona me probleme të gjurit, si ç'këputja e meniskut.",
+        "en": "The authors expected the front squat to activate the back extensors less, but bar position did not change activation. They say the front squat may suit people with knee problems, such as a meniscus tear."
+      },
+      "source": {
+        "label": "Gullett dhe kolegët, 2009",
+        "title": "A biomechanical comparison of back and front squats in healthy trained individuals (Journal of Strength and Conditioning Research)",
+        "url": "https://doi.org/10.1519/jsc.0b013e31818546bb",
+        "year": 2009,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë ishte më e ulët me front squat se me back squat në këtë studim?",
+          "en": "What was lower with the front squat than with the back squat in this study?"
+        },
+        "options": [
+          {
+            "sq": "Aktivizimi i muskujve",
+            "en": "Muscle activation"
+          },
+          {
+            "sq": "Forca shtypëse në gju",
+            "en": "Compressive force at the knee"
+          },
+          {
+            "sq": "Forca prerëse në gju",
+            "en": "Shear force at the knee"
+          },
+          {
+            "sq": "Koha e uljes",
+            "en": "Time spent descending"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "leg-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Leg Press"
+      },
+      "text": {
+        "sq": "Në një studim me 10 lifterë me përvojë, squat-i aktivizoi kuadricepsin dhe hamstringët më shumë se leg press-i dhe dha në përgjithësi forca shtypëse më të mëdha në gju.",
+        "en": "In a study of 10 experienced lifters, the squat activated the quadriceps and hamstrings more than the leg press and generally produced greater compressive forces at the knee."
+      },
+      "more": {
+        "sq": "Të gjitha forcat në gju u rritën me përkuljen e gjurit. Autorët thonë se squat-i mund të jetë më efektiv për zhvillimin e muskujve, por duhet përdorur me kujdes nga ata me probleme te ligamenti i pasmë kryqëzor ose te kapaku i gjurit.",
+        "en": "All forces at the knee rose as the knee bent further. The authors say the squat may be more effective for muscle development, but should be used cautiously by people with posterior cruciate ligament or kneecap problems."
+      },
+      "source": {
+        "label": "Escamilla dhe kolegët, 2001",
+        "title": "Effects of technique variations on knee biomechanics during the squat and leg press (Medicine and Science in Sports and Exercise)",
+        "url": "https://doi.org/10.1097/00005768-200109000-00020",
+        "year": 2001,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sipas studimit me 10 lifterë, cili ushtrim dha forca shtypëse më të mëdha në gju?",
+          "en": "In the study of 10 lifters, which exercise produced greater compressive forces at the knee?"
+        },
+        "options": [
+          {
+            "sq": "Leg press me këmbët lart",
+            "en": "Leg press with the feet high"
+          },
+          {
+            "sq": "Leg press me këmbët poshtë",
+            "en": "Leg press with the feet low"
+          },
+          {
+            "sq": "Squat-i",
+            "en": "The squat"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "leg-press-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Leg Press"
+      },
+      "text": {
+        "sq": "Në një studim me 23 persona që stërvitnin prej vitesh, leg press-i me një këmbë me përkulje të gjurit deri në 100° ose deri në 154° e rriti kuadricepsin në mënyrë të ngjashme pas 8 javësh.",
+        "en": "In a study of 23 people with years of training, one-leg leg presses with the knee bent to 100° or to 154° grew the quadriceps similarly after 8 weeks."
+      },
+      "more": {
+        "sq": "Çdo pjesëmarrës përdori një gjatësi lëvizjeje me secilën këmbë, katër sete deri në dështim dy herë në javë. Trashësia e muskulit u rrit 1,08 deri 1,91 mm në të dyja kushtet.",
+        "en": "Each participant used one range of motion per leg, four sets to failure twice a week. Muscle thickness rose by 1.08 to 1.91 mm in both conditions."
+      },
+      "source": {
+        "label": "Larsen dhe kolegët, 2025",
+        "title": "Knee flexion range of motion does not influence muscle hypertrophy of the quadriceps femoris during leg press training in resistance-trained individuals (Journal of Sports Sciences)",
+        "url": "https://doi.org/10.1080/02640414.2025.2481534",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi me 23 persona për dy gjatësitë e lëvizjes te leg press-i?",
+          "en": "What did the study of 23 people find about the two ranges of motion in the leg press?"
+        },
+        "options": [
+          {
+            "sq": "Rritje e ngjashme e kuadricepsit",
+            "en": "Similar quadriceps growth"
+          },
+          {
+            "sq": "Rritje më e madhe me lëvizjen e plotë",
+            "en": "More growth with the full range"
+          },
+          {
+            "sq": "Rritje më e madhe me lëvizjen e shkurtër",
+            "en": "More growth with the shorter range"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "one-leg-leg-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "One-Leg Leg Press"
+      },
+      "text": {
+        "sq": "Një meta-analizë e 9 studimeve për stërvitjen me një këmbë ose një krah në përgjithësi (jo vetëm leg press) nuk gjeti dallim në rritjen e muskulit kundrejt stërvitjes me dy gjymtyrë; forca ndjek specifikën.",
+        "en": "A meta-analysis of 9 studies of one-leg or one-arm training in general (not only the leg press) found no difference in muscle growth versus training both limbs; strength follows specificity."
+      },
+      "more": {
+        "sq": "Stërvitja me dy gjymtyrë e rriti më shumë forcën me dy gjymtyrë, ndërsa ajo me një gjymtyrë e rriti më shumë forcën me një gjymtyrë. Autorët theksojnë se literatura është e kufizuar.",
+        "en": "Training with both limbs raised two-limb strength more, while one-limb training raised one-limb strength more. The authors stress that the literature is limited."
+      },
+      "source": {
+        "label": "Kassiano dhe kolegët, 2025",
+        "title": "Comparison of Muscle Growth and Dynamic Strength Adaptations Induced by Unilateral and Bilateral Resistance Training: A Systematic Review and Meta-analysis (Sports Medicine)",
+        "url": "https://doi.org/10.1007/s40279-024-02169-z",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti meta-analiza e 9 studimeve për rritjen e muskulit me stërvitje me një gjymtyrë kundrejt dy, në përgjithësi?",
+          "en": "What did the 9-study meta-analysis find about muscle growth with one-limb versus two-limb training in general?"
+        },
+        "options": [
+          {
+            "sq": "Një gjymtyrë rriti muskulin më shumë",
+            "en": "One limb grew more muscle"
+          },
+          {
+            "sq": "Dy gjymtyrë rritën muskulin më shumë",
+            "en": "Two limbs grew more muscle"
+          },
+          {
+            "sq": "Nuk gjeti dallim",
+            "en": "It found no difference"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "leg-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Leg Extension"
+      },
+      "text": {
+        "sq": "Te 63 gra të pastërvitura, leg extension rriti trashësinë e rectus femoris në pjesën distale 17,5%, kundrejt 7,9% me squat në Smith machine; ky squat rriti më shumë vastus lateralis distal (18,2% kundrejt 11,2%).",
+        "en": "In 63 untrained women, the leg extension raised distal rectus femoris thickness 17.5%, versus 7.9% with the Smith machine squat; that squat raised distal vastus lateralis more (18.2% versus 11.2%)."
+      },
+      "more": {
+        "sq": "Studimi zgjati 8 javë, me 3 sete dy herë në javë. Forca në leg extension u rrit njësoj me të dyja ushtrimet, ndërsa forca në squat u rrit më shumë me squat.",
+        "en": "The study lasted 8 weeks, with 3 sets twice a week. Leg extension strength rose similarly with both exercises, while squat strength rose more with squats."
+      },
+      "source": {
+        "label": "Kassiano dhe kolegët, 2026",
+        "title": "Comparison of Muscle Hypertrophy and Strength Adaptations Induced by Back Squat and Leg Extension Resistance Exercises (Journal of Strength and Conditioning Research)",
+        "url": "https://doi.org/10.1519/jsc.0000000000005338",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili muskul i kofshës u rrit më shumë me leg extension se me squat te 63 gratë?",
+          "en": "Which thigh muscle grew more with the leg extension than with the squat in the 63 women?"
+        },
+        "options": [
+          {
+            "sq": "Rectus femoris",
+            "en": "Rectus femoris"
+          },
+          {
+            "sq": "Vastus lateralis",
+            "en": "Vastus lateralis"
+          },
+          {
+            "sq": "Biceps femoris",
+            "en": "Biceps femoris"
+          },
+          {
+            "sq": "Gluteus maximus",
+            "en": "Gluteus maximus"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "leg-extension-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Leg Extension"
+      },
+      "text": {
+        "sq": "Te 22 burra të pastërvitur, leg extension me ijën më pak të përkulur (40° në vend të 90°) e rriti më shumë rectus femoris; te vastus lateralis nuk pati dallim.",
+        "en": "In 22 untrained men, the leg extension with the hip less flexed (40° rather than 90°) grew the rectus femoris more; there was no difference in the vastus lateralis."
+      },
+      "more": {
+        "sq": "Studimi zgjati 10 javë dhe secila këmbë stërvitej me një kënd tjetër. Trashësia e muskulit u mat me ultratinguj te rectus femoris dhe vastus lateralis.",
+        "en": "The study lasted 10 weeks and each leg trained at a different angle. Muscle thickness was measured by ultrasound in the rectus femoris and vastus lateralis."
+      },
+      "source": {
+        "label": "Larsen dhe kolegët, 2025",
+        "title": "The effects of hip flexion angle on quadriceps femoris muscle hypertrophy in the leg extension exercise (Journal of Sports Sciences)",
+        "url": "https://doi.org/10.1080/02640414.2024.2444713",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë e rriti më shumë rectus femoris te leg extension në studimin me 22 burra?",
+          "en": "What grew the rectus femoris more in the leg extension study of 22 men?"
+        },
+        "options": [
+          {
+            "sq": "Ija e përkulur 90°",
+            "en": "Hip flexed to 90°"
+          },
+          {
+            "sq": "Ija më pak e përkulur, 40°",
+            "en": "Hip less flexed, 40°"
+          },
+          {
+            "sq": "Më shumë sete",
+            "en": "More sets"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "standing-calf-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Standing Calf Raise"
+      },
+      "text": {
+        "sq": "Në një studim 12-javor me 14 të rritur, ngritja e pulpave në këmbë me gjunjë të shtrirë e rriti gastrocnemius lateral 12,4% dhe medial 9,2%.",
+        "en": "In a 12-week study of 14 adults, standing calf raises with the knees straight grew the lateral gastrocnemius 12.4% and the medial gastrocnemius 9.2%."
+      },
+      "more": {
+        "sq": "I gjithë triceps surae u rrit 5,6% në këmbë. Autorët e nisin nga fakti se ky grup muskulor rritet më vështirë se të tjerët, prandaj zgjedhja e ushtrimit ka rëndësi.",
+        "en": "The whole triceps surae grew 5.6% standing. The authors start from the point that this muscle group is harder to grow than others, so exercise choice matters."
+      },
+      "source": {
+        "label": "Kinoshita dhe kolegët, 2023",
+        "title": "Triceps surae muscle hypertrophy is greater after standing versus seated calf-raise training (Frontiers in Physiology)",
+        "url": "https://doi.org/10.3389/fphys.2023.1272106",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa u rrit gastrocnemius lateral me ngritjen e pulpave në këmbë në studimin me 14 të rritur?",
+          "en": "How much did the lateral gastrocnemius grow with standing calf raises in the study of 14 adults?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 2%",
+            "en": "About 2%"
+          },
+          {
+            "sq": "Rreth 5%",
+            "en": "About 5%"
+          },
+          {
+            "sq": "Rreth 12%",
+            "en": "About 12%"
+          },
+          {
+            "sq": "Rreth 25%",
+            "en": "About 25%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "leg-press-calf-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Leg Press Calf Raise"
+      },
+      "text": {
+        "sq": "Te 42 gra, ngritja e pulpave në makinën e leg press-it vetëm në pjesën e shtrirë të lëvizjes e rriti gastrocnemius lateral 14,9%, kundrejt 6,2% në gjysmën e sipërme.",
+        "en": "In 42 women, calf raises on a leg press machine in only the stretched part of the range grew the lateral gastrocnemius 14.9%, versus 6.2% in the upper half."
+      },
+      "more": {
+        "sq": "Studimi zgjati 8 javë, me 3 seanca në javë dhe 15 deri 20 përsëritje. Lëvizja e plotë dha 7,3%, por dallimi me pjesën e shtrirë nuk ishte i rëndësishëm statistikisht.",
+        "en": "The study lasted 8 weeks, with 3 sessions a week and 15 to 20 repetitions. The full range gave 7.3%, but its difference from the stretched part was not statistically significant."
+      },
+      "source": {
+        "label": "Kassiano dhe kolegët, 2023",
+        "title": "Greater Gastrocnemius Muscle Hypertrophy After Partial Range of Motion Training Performed at Long Muscle Lengths (Journal of Strength and Conditioning Research)",
+        "url": "https://doi.org/10.1519/jsc.0000000000004460",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cila pjesë e lëvizjes e rriti më shumë gastrocnemius lateral te 42 gratë në makinën e leg press-it?",
+          "en": "Which part of the range grew the lateral gastrocnemius most in the 42 women on the leg press machine?"
+        },
+        "options": [
+          {
+            "sq": "Pjesa e shtrirë, poshtë",
+            "en": "The stretched part, at the bottom"
+          },
+          {
+            "sq": "Pjesa e sipërme, e shkurtuar",
+            "en": "The upper, shortened part"
+          },
+          {
+            "sq": "Të gjitha njësoj",
+            "en": "All equally"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "seated-calf-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Seated Calf Raise"
+      },
+      "text": {
+        "sq": "Në një studim 12-javor me 14 të rritur, ngritja e pulpave ulur (gjuri 90°) e rriti soleusin 2,9%, njësoj si në këmbë (2,1%), ndërsa gastrocnemius pothuajse aspak.",
+        "en": "In a 12-week study of 14 adults, seated calf raises (knee at 90°) grew the soleus 2.9%, as much as standing (2.1%), while the gastrocnemius barely grew."
+      },
+      "more": {
+        "sq": "Dallimi i soleusit mes dy pozicioneve nuk ishte i rëndësishëm statistikisht. Çdo person stërvitej një këmbë ulur dhe tjetrën në këmbë, 5 sete me 10 përsëritje, dy herë në javë.",
+        "en": "The soleus difference between the two positions was not statistically significant. Each person trained one leg seated and the other standing, 5 sets of 10 repetitions, twice a week."
+      },
+      "source": {
+        "label": "Kinoshita dhe kolegët, 2023",
+        "title": "Triceps surae muscle hypertrophy is greater after standing versus seated calf-raise training (Frontiers in Physiology)",
+        "url": "https://doi.org/10.3389/fphys.2023.1272106",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Si u rrit soleusi me ngritjen e pulpave ulur krahasuar me atë në këmbë në studimin me 14 të rritur?",
+          "en": "How did the soleus grow with seated calf raises compared with standing in the study of 14 adults?"
+        },
+        "options": [
+          {
+            "sq": "Shumë më pak",
+            "en": "Far less"
+          },
+          {
+            "sq": "Njësoj",
+            "en": "About the same"
+          },
+          {
+            "sq": "Shumë më shumë",
+            "en": "Far more"
+          }
+        ],
+        "correct": 1
+      }
+    }
+  ]
+}

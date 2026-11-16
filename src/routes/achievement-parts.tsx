@@ -28,6 +28,7 @@ const ICON_OF: Record<Listed['key'], IconName> = {
   food_7: 'pjata',
   water_7: 'gota',
   programme: 'flamuri',
+  quiz_4: 'pyetje',
 }
 
 /**

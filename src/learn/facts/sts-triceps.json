@@ -1,0 +1,306 @@
+{
+  "group": "sts-triceps",
+  "facts": [
+    {
+      "id": "triceps-pressdown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Triceps Pressdown"
+      },
+      "text": {
+        "sq": "Në një studim të financuar nga ACE me 15 gra, te pressdown-i me shufër koka e gjatë e tricepsit u aktivizua në 75% të triangle push-up-it, kurse koka anësore vetëm në 59%. Dallim të ngjashëm dha pressdown-i me litar.",
+        "en": "In an ACE-funded study of 15 women, the bar pressdown activated the long head of the triceps at 75% of the triangle push-up but the lateral head at only 59%. The rope pressdown showed a similar gap."
+      },
+      "more": {
+        "sq": "Studimi mati aktivitetin elektrik (EMG) vetëm te koka e gjatë dhe ajo anësore, në tetë ushtrime. Me litar vlerat ishin 81% për kokën e gjatë dhe 67% për atë anësore. Pjesëmarrëset ishin gra 20–24 vjeç me përvojë në pesha.",
+        "en": "The study measured electrical activity (EMG) only in the long and lateral heads, across eight exercises. With the rope the values were 81% for the long head and 67% for the lateral head. The participants were women aged 20 to 24 with weight-training experience."
+      },
+      "source": {
+        "label": "ACE, 2011",
+        "title": "ACE-sponsored Research: Best Triceps Exercises (Boehler, Porcari dhe kolegët, Universiteti i Wisconsin–La Crosse)",
+        "url": "https://www.acefitness.org/certifiednewsarticle/1562/ace-sponsored-research-best-triceps-exercises/",
+        "year": 2011,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në studimin e financuar nga ACE, cila kokë e tricepsit u aktivizua më shumë te pressdown-i me shufër?",
+          "en": "In the ACE-funded study, which head of the triceps was activated more in the bar pressdown?"
+        },
+        "options": [
+          {
+            "sq": "Koka anësore",
+            "en": "The lateral head"
+          },
+          {
+            "sq": "Koka e gjatë",
+            "en": "The long head"
+          },
+          {
+            "sq": "Të dyja njësoj",
+            "en": "Both equally"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "triceps-pressdown-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Triceps Pressdown"
+      },
+      "text": {
+        "sq": "Në një studim 6-javor me nëntë gra fillestare, secila e stërviti një krah me pressdown me kabllo dhe tjetrin me zgjatje mbi kokë. Forca maksimale (1RM) u rrit 40,1% me pressdown dhe 44,5% me zgjatjen mbi kokë.",
+        "en": "In a 6-week study of nine novice women, each trained one arm with the cable pressdown and the other with the overhead extension. Maximal strength (1RM) rose 40.1% with the pressdown and 44.5% with the overhead extension."
+      },
+      "more": {
+        "sq": "Dallimi mes dy ushtrimeve nuk ishte domethënës statistikisht. Edhe trashësia e tricepsit u rrit në mënyrë të ngjashme (rreth 11% kundrejt 14% në mesin e krahut të sipërm). Studimi ishte i vogël dhe i shkurtër.",
+        "en": "The difference between the two exercises was not statistically significant. Triceps thickness also rose similarly (about 11% versus 14% at mid upper arm). The study was small and short."
+      },
+      "source": {
+        "label": "Stasinaki dhe kolegët, 2018",
+        "title": "Triceps Brachii Muscle Strength and Architectural Adaptations with Resistance Training Exercises at Short or Long Fascicle Length",
+        "url": "https://www.mdpi.com/2411-5142/3/2/28/html",
+        "year": 2018,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa u rrit forca maksimale me pressdown me kabllo pas 6 javësh në studimin me nëntë gra fillestare?",
+          "en": "How much did maximal strength rise with the cable pressdown after 6 weeks in the study of nine novice women?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 15%",
+            "en": "About 15%"
+          },
+          {
+            "sq": "Rreth 80%",
+            "en": "About 80%"
+          },
+          {
+            "sq": "Rreth 40%",
+            "en": "About 40%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "lying-triceps-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Lying Triceps Extension"
+      },
+      "text": {
+        "sq": "Në një studim me 44 burra të stërvitur, një ushtrim zgjatjeje të bërrylit në intervalin 45°–90° e rriti sipërfaqen e tricepsit 48,7% në 8 javë, kundrejt 28,2% me intervalin 0°–120°. Të dyja grupet u rritën, por intervali i shkurtër më shumë.",
+        "en": "In a study of 44 trained men, an elbow extension exercise over 45°–90° grew the cross-sectional area of the triceps by 48.7% in 8 weeks, versus 28.2% over 0°–120°. Both groups grew, but the shorter range grew more."
+      },
+      "more": {
+        "sq": "Të dyja grupet stërviteshin 3 herë në javë, me set prej 8 përsëritjesh maksimale. Autorët mendojnë se roli i takon mungesës së oksigjenit në muskul gjatë ushtrimit. Një rishikim i vitit 2026 e përshkruan ushtrimin si lying extension me shufër. Është rezultat i një studimi të vetëm.",
+        "en": "Both groups trained 3 times a week, with sets of 8 repetitions at their 8-rep maximum. The authors suggest that low oxygen in the muscle during exercise may play a part. A 2026 review describes the exercise as a barbell lying extension. This is the result of a single study."
+      },
+      "source": {
+        "label": "Goto dhe kolegët, 2019",
+        "title": "Partial Range of Motion Exercise Is Effective for Facilitating Muscle Hypertrophy and Function Through Sustained Intramuscular Hypoxia in Young Trained Men",
+        "url": "https://europepmc.org/article/MED/31034463",
+        "year": 2019,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në studimin me 44 burra të stërvitur, cili interval i bërrylit e rriti më shumë sipërfaqen e tricepsit?",
+          "en": "In the study of 44 trained men, which elbow range grew the cross-sectional area of the triceps more?"
+        },
+        "options": [
+          {
+            "sq": "0°–120°",
+            "en": "0°–120°"
+          },
+          {
+            "sq": "Njësoj në të dyja",
+            "en": "The same in both"
+          },
+          {
+            "sq": "45°–90°",
+            "en": "45°–90°"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "cable-lying-triceps-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Cable Lying Triceps Extension"
+      },
+      "text": {
+        "sq": "Tricepsi ka tri koka: të gjatë, anësore dhe mediale. Në 8 bërryla kadaverikë, koka mediale kishte në çdo rast një ngjitje të veçantë te olekrani (maja e bërrylit), më të thellë se ngjitja e përbashkët e dy të tjerave.",
+        "en": "The triceps has three heads: long, lateral and medial. In 8 cadaveric elbows, the medial head always had a separate insertion at the olecranon (the point of the elbow), deeper than the common insertion of the other two."
+      },
+      "more": {
+        "sq": "Muskuli i kokës mediale zbret më poshtë se dy të tjerat. Analiza histologjike tregoi se tendinet bashkohen pranë olekranit. Autorët shënojnë se këputja e ngjitjes së thellë mund ta dobësojë shtrirjen kur bërryli është i përkulur mbi 90°.",
+        "en": "The muscle of the medial head extends further down than the other two. Histology showed that the tendons merge near the olecranon. The authors note that rupture of the deep insertion can weaken extension when the elbow is flexed beyond 90°."
+      },
+      "source": {
+        "label": "Madsen dhe kolegët, 2006",
+        "title": "Surgical anatomy of the triceps brachii tendon: anatomical study and clinical correlation",
+        "url": "https://europepmc.org/article/MED/16735585",
+        "year": 2006,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në studimin me 8 bërryla kadaverikë, cila kokë e tricepsit kishte ngjitje të veçantë e më të thellë te olekrani?",
+          "en": "In the study of 8 cadaveric elbows, which head of the triceps had a separate, deeper insertion at the olecranon?"
+        },
+        "options": [
+          {
+            "sq": "Koka e gjatë",
+            "en": "The long head"
+          },
+          {
+            "sq": "Koka anësore",
+            "en": "The lateral head"
+          },
+          {
+            "sq": "Koka mediale",
+            "en": "The medial head"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "cable-overhead-triceps-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Cable Overhead Triceps Extension"
+      },
+      "text": {
+        "sq": "Në një studim 12-javor me 21 të rritur, secili stërviti një krah me zgjatje bërryli me krahun mbi kokë dhe tjetrin me krahun neutral. Vëllimi i kokës së gjatë u rrit 28,5% mbi kokë, kundrejt 19,6% në pozicionin neutral.",
+        "en": "In a 12-week study of 21 adults, each trained one arm with elbow extensions with the arm overhead and the other with the arm neutral. The long head grew 28.5% in volume overhead, versus 19.6% in the neutral position."
+      },
+      "more": {
+        "sq": "Koka e gjatë kalon mbi dy nyje, shpatullën dhe bërrylin, dhe zgjatet më shumë kur krahu është mbi kokë. Vëllimi u mat me rezonancë magnetike (MRI) dhe stërvitja u bë me kabllo.",
+        "en": "The long head crosses two joints, the shoulder and the elbow, and is lengthened more when the arm is overhead. Volume was measured with magnetic resonance imaging (MRI) and the training was done on a cable machine."
+      },
+      "source": {
+        "label": "Maeo dhe kolegët, 2023",
+        "title": "Triceps brachii hypertrophy is substantially greater after elbow extension training performed in the overhead versus neutral arm position",
+        "url": "https://europepmc.org/article/MED/35819335",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në studimin 12-javor, sa u rrit vëllimi i kokës së gjatë të tricepsit me krahun mbi kokë?",
+          "en": "In the 12-week study, how much did the volume of the long head of the triceps grow with the arm overhead?"
+        },
+        "options": [
+          {
+            "sq": "19,6%",
+            "en": "19.6%"
+          },
+          {
+            "sq": "28,5%",
+            "en": "28.5%"
+          },
+          {
+            "sq": "14,6%",
+            "en": "14.6%"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "dumbbell-overhead-triceps-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Overhead Triceps Extension"
+      },
+      "text": {
+        "sq": "Në një studim me 10 të rritur, kur krahu ishte pranë trupit, koka e gjatë e tricepsit dha forcën më të lartë. Me krahun e ngritur në 90° ose më lart, forcën më të lartë e dha koka mediale.",
+        "en": "In a study of 10 adults, with the arm by the side the long head of the triceps produced the highest force. With the arm raised to 90° or more, the medial head produced the highest force."
+      },
+      "more": {
+        "sq": "Pjesëmarrësit bënë zgjatje bërryli në pesë kënde të shpatullës (0°, 45°, 90°, 135° dhe 180°). Forca u llogarit me një model kompjuterik (OpenSim) dhe aktiviteti u mat me EMG. Autorët thonë se nga 90° e lart koka mediale merr përsipër.",
+        "en": "Participants did elbow extensions at five shoulder angles (0°, 45°, 90°, 135° and 180°). Force was calculated with a computer model (OpenSim) and activity was measured with EMG. The authors say the medial head takes over from 90° upwards."
+      },
+      "source": {
+        "label": "Kholinne dhe kolegët, 2018",
+        "title": "The different role of each head of the triceps brachii muscle in elbow extension",
+        "url": "https://europepmc.org/article/MED/29503079",
+        "year": 2018,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në studim, cila kokë e tricepsit dha forcën më të lartë kur krahu ishte ngritur në 90° ose më lart?",
+          "en": "In the study, which head of the triceps produced the highest force when the arm was raised to 90° or more?"
+        },
+        "options": [
+          {
+            "sq": "Koka mediale",
+            "en": "The medial head"
+          },
+          {
+            "sq": "Koka e gjatë",
+            "en": "The long head"
+          },
+          {
+            "sq": "Koka anësore",
+            "en": "The lateral head"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "cable-triceps-extension-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Cable Triceps Extension"
+      },
+      "text": {
+        "sq": "Në studimin 12-javor me 21 të rritur, me krahun mbi kokë pesha e përdorur ishte 34–39% më e ulët se me krahun neutral. Forca maksimale u rrit njësoj në të dyja krahët (62–71%), kurse tricepsi u rrit më shumë mbi kokë.",
+        "en": "In the 12-week study of 21 adults, the load used with the arm overhead was 34–39% lower than with the arm neutral. Maximal strength rose equally in both arms (62–71%), while the triceps grew more overhead."
+      },
+      "more": {
+        "sq": "Secili krah bëri 5 sete me 10 përsëritje, 2 herë në javë, me 70% të 1RM të ushtrimit të vet. Autorët e shohin peshën më të vogël si stres mekanik më të ulët për muskujt dhe nyjet.",
+        "en": "Each arm did 5 sets of 10 repetitions, twice a week, at 70% of the 1RM of its own exercise. The authors see the lower load as lower mechanical stress on the muscles and joints."
+      },
+      "source": {
+        "label": "Maeo dhe kolegët, 2023",
+        "title": "Triceps brachii hypertrophy is substantially greater after elbow extension training performed in the overhead versus neutral arm position",
+        "url": "https://europepmc.org/article/MED/35819335",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa më e ulët ishte pesha me krahun mbi kokë krahasuar me krahun neutral në studimin 12-javor?",
+          "en": "How much lower was the load with the arm overhead compared with the neutral arm in the 12-week study?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 60%",
+            "en": "About 60%"
+          },
+          {
+            "sq": "Rreth 5%",
+            "en": "About 5%"
+          },
+          {
+            "sq": "Rreth 35%",
+            "en": "About 35%"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

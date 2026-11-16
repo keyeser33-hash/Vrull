@@ -1,0 +1,400 @@
+{
+  "group": "sts-back",
+  "facts": [
+    {
+      "id": "dumbbell-bent-over-row-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Bent-Over Row"
+      },
+      "text": {
+        "sq": "Muskuli kryesor i këtij ushtrimi, latissimus dorsi, është muskuli më i madh i trungut të sipërm. Fillon te vertebrat e poshtme të kraharorit, kreshta e legenit dhe brinjët e poshtme, dhe mbaron te kocka e krahut.",
+        "en": "The main muscle worked in this exercise, the latissimus dorsi, is the largest muscle of the upper trunk. It starts at the lower thoracic vertebrae, the iliac crest and the lower ribs, and ends on the upper arm bone."
+      },
+      "more": {
+        "sq": "Tendoni i tij përdridhet rreth 180° përpara se të ngjitet te kocka e krahut. Sipas të njëjtit rishikim, vëllimi mesatar i muskulit është rreth 262 cm³ dhe pesha rreth 170 g.",
+        "en": "Its tendon twists by about 180° before it attaches to the upper arm bone. According to the same review, the average muscle volume is about 262 cm³ and its weight about 170 g."
+      },
+      "source": {
+        "label": "Hovsepian dhe kolegët, 2026",
+        "title": "Surgical anatomy, biomechanics and clinical outcomes of latissimus dorsi transfer for irreparable rotator cuff tears: a review (Journal of Orthopaedic Surgery and Research)",
+        "url": "https://doi.org/10.1186/s13018-026-07200-9",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili është muskuli më i madh i trungut të sipërm, sipas një rishikimi të vitit 2026?",
+          "en": "According to a 2026 review, which is the largest muscle of the upper trunk?"
+        },
+        "options": [
+          {
+            "sq": "Pectoralis major",
+            "en": "Pectoralis major"
+          },
+          {
+            "sq": "Latissimus dorsi",
+            "en": "Latissimus dorsi"
+          },
+          {
+            "sq": "Trapezi",
+            "en": "Trapezius"
+          },
+          {
+            "sq": "Deltoidi",
+            "en": "Deltoid"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "seated-cable-row-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Seated Cable Row"
+      },
+      "text": {
+        "sq": "Në një studim me 14 burra të stërvitur, rreshti i ulur në makinë me pesha (jo me kabllo) me kockat e shpatullave të fiksuara dha më shumë aktivizim të latissimus dorsi gjatë kthimit të peshës sesa me shpatullat të lira.",
+        "en": "In a study of 14 trained men, the seated row on a weight-stack machine (not a cable) with the shoulder blades held fixed gave more latissimus dorsi activation while the weight was returning than with the shoulder blades free."
+      },
+      "more": {
+        "sq": "Gjatë tërheqjes nuk u pa dallim te latissimus dorsi. Autorët e përmbledhin se fiksimi ndryshon ndarjen e aktivizimit mes muskujve të pjesës së sipërme të shpinës, jo nivelin e përgjithshëm të tij.",
+        "en": "No difference in the latissimus dorsi was seen during the pull. The authors sum up that fixing the shoulder blades changes how activation is shared among the upper-back muscles, not its overall level."
+      },
+      "source": {
+        "label": "Padovan dhe kolegët, 2025",
+        "title": "High-Density Surface Electromyography Excitation of Prime Movers Across Scapular Positions in the Seated Row (Journal of Functional Morphology and Kinesiology)",
+        "url": "https://doi.org/10.3390/jfmk11010006",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Gjatë kthimit të peshës, çfarë ndodhi te latissimus dorsi kur shpatullat ishin të fiksuara?",
+          "en": "While the weight was returning, what happened to the latissimus dorsi when the shoulder blades were fixed?"
+        },
+        "options": [
+          {
+            "sq": "Aktivizim më i vogël",
+            "en": "Less activation"
+          },
+          {
+            "sq": "Nuk pati dallim",
+            "en": "No difference"
+          },
+          {
+            "sq": "Aktivizim më i madh",
+            "en": "More activation"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "wide-grip-pulldown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Wide-Grip Pulldown"
+      },
+      "text": {
+        "sq": "Në një studim me 40 burra me të paktën 5 vjet stërvitje, shtatë variante të pulldown-it me kapje dhe pjerrësi të ndryshme nuk dhanë dallim të rëndësishëm në aktivizimin e latissimus dorsi.",
+        "en": "In a study of 40 men with at least 5 years of training, seven pulldown variants with different grips and trunk lean gave no significant difference in latissimus dorsi activation."
+      },
+      "more": {
+        "sq": "Dallimi i vetëm u pa te deltoidi i pasmë, me kapje të gjerë dhe trupin të pjerrët 30°. Autorët e quajnë rezultatin sfidë për supozimin se një kapje e caktuar e gjuan këtë muskul dhe flasin për zgjedhje të individualizuar.",
+        "en": "The only difference was in the posterior deltoid, with a wide grip and the trunk inclined at 30°. The authors say the result challenges the assumption that a particular grip targets this muscle, and call for individualised choices."
+      },
+      "source": {
+        "label": "Buonsenso dhe kolegët, 2025",
+        "title": "Electromyographic Analysis of Back Muscle Activation During Lat Pulldown Exercise: Effects of Grip Variations and Forearm Orientation (Journal of Functional Morphology and Kinesiology)",
+        "url": "https://doi.org/10.3390/jfmk10030345",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi me 40 burra për latissimus dorsi mes shtatë varianteve të pulldown-it?",
+          "en": "What did the study of 40 men find for the latissimus dorsi across the seven pulldown variants?"
+        },
+        "options": [
+          {
+            "sq": "Kapja e gjerë dha më shumë",
+            "en": "The wide grip gave more"
+          },
+          {
+            "sq": "Kapja e ngushtë dha më shumë",
+            "en": "The narrow grip gave more"
+          },
+          {
+            "sq": "Asnjë dallim i rëndësishëm",
+            "en": "No significant difference"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "wide-grip-pulldown-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Wide-Grip Pulldown"
+      },
+      "text": {
+        "sq": "Në një provë me 15 burra, me kapje të gjerë (2 herë distanca mes shpatullave) ngritën 77,3 kg në 6 përsëritje maksimale, kundrejt 80,3 kg me kapje të ngushtë (1 herë distanca).",
+        "en": "In a trial of 15 men, a wide grip (2 times the shoulder-to-shoulder distance) allowed 77.3 kg for 6 repetition maximum, against 80.3 kg with a narrow grip (the same width as the shoulders)."
+      },
+      "more": {
+        "sq": "Aktivizimi i latissimus dorsi ishte i ngjashëm mes kapjeve kur u analizua gjithë lëvizja. Vetëm në fazën e kthimit të peshës kapja e gjerë dha më shumë se e ngushta.",
+        "en": "Latissimus dorsi activation was similar between grips when the whole movement was analysed. Only in the phase where the weight returns did the wide grip give more than the narrow one."
+      },
+      "source": {
+        "label": "Andersen dhe kolegët, 2014",
+        "title": "Effects of grip width on muscle strength and activation in the lat pull-down (Journal of Strength and Conditioning Research)",
+        "url": "https://doi.org/10.1519/JSC.0000000000000232",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Me cilën kapje ngritën më pak peshë në 6 përsëritje maksimale në provën me 15 burra?",
+          "en": "With which grip did the 15 men lift the least weight for 6 repetition maximum?"
+        },
+        "options": [
+          {
+            "sq": "Kapja e ngushtë",
+            "en": "Narrow grip"
+          },
+          {
+            "sq": "Kapja mesatare",
+            "en": "Medium grip"
+          },
+          {
+            "sq": "Kapja e gjerë",
+            "en": "Wide grip"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "behind-neck-pulldown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Behind-Neck Pulldown"
+      },
+      "text": {
+        "sq": "Një rishikim i vitit 2026 vëren se studimet e EMG që krahasuan tërheqjen pas qafës me atë përpara nuk matën lëndime. Shqetësimi për qafën dhe shpatullën vjen nga pozicioni ekstrem i lëvizjes.",
+        "en": "A 2026 review notes that the EMG studies comparing the behind-the-neck pull with the front pull did not measure injuries. The worry about the neck and shoulder comes from the extreme position of the movement."
+      },
+      "more": {
+        "sq": "Rishikimi e quan variantin e përparmë zgjedhje të arsyeshme për shumicën, mbi baza biomekanike. Ai thekson se mungon prova e drejtpërdrejtë që një variant është më i sigurt.",
+        "en": "The review calls the front version a reasonable default for most people, on biomechanical grounds. It stresses that direct evidence that one version is safer is lacking."
+      },
+      "source": {
+        "label": "Di Fonza dhe kolegët, 2026",
+        "title": "Electromyographic Analysis of Latissimus Dorsi Activation During Common Resistance Training Exercises: A Narrative Review (Journal of Functional Morphology and Kinesiology)",
+        "url": "https://doi.org/10.3390/jfmk11030315",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë thotë rishikimi i 2026 për lëndimet te tërheqja pas qafës në studimet e EMG?",
+          "en": "What does the 2026 review say about injuries in the EMG studies of the behind-the-neck pull?"
+        },
+        "options": [
+          {
+            "sq": "Provuan se e lëndon qafën",
+            "en": "They proved it injures the neck"
+          },
+          {
+            "sq": "Nuk matën lëndime",
+            "en": "They did not measure injuries"
+          },
+          {
+            "sq": "Provuan se është po aq e sigurt",
+            "en": "They proved it is equally safe"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "behind-neck-pulldown-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Behind-Neck Pulldown"
+      },
+      "text": {
+        "sq": "Në një studim me 14 burra të stërvitur, tërheqja përpara dha më shumë aktivizim të latissimus dorsi kur shufra zbriste, ndërsa ajo pas qafës dha më shumë kur shufra ngjitej.",
+        "en": "In a study of 14 trained men, the front pull gave more latissimus dorsi activation while the bar came down, while the behind-the-neck pull gave more while the bar went back up."
+      },
+      "more": {
+        "sq": "Në përgjithësi varianti i përparmë dha më shumë aktivizim te muskujt kryesorë. Të dyja variantet ndryshuan edhe në vendin ku aktivizohej muskuli.",
+        "en": "Overall the front version gave more activation in the prime movers. The two versions also differed in where in the muscle the activity was located."
+      },
+      "source": {
+        "label": "Padovan dhe kolegët, 2024",
+        "title": "High-Density Electromyography Excitation in Front vs. Back Lat Pull-Down Prime Movers (Journal of Human Kinetics)",
+        "url": "https://doi.org/10.5114/jhk/185211",
+        "year": 2024,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Kur dha më shumë aktivizim të latissimus dorsi tërheqja pas qafës në studimin me 14 burra?",
+          "en": "When did the behind-the-neck pull give more latissimus dorsi activation in the study of 14 men?"
+        },
+        "options": [
+          {
+            "sq": "Kur shufra ngjitej",
+            "en": "When the bar went back up"
+          },
+          {
+            "sq": "Kur shufra zbriste",
+            "en": "When the bar came down"
+          },
+          {
+            "sq": "Në të dyja fazat njësoj",
+            "en": "Equally in both phases"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "reverse-grip-pulldown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Reverse-Grip Pulldown"
+      },
+      "text": {
+        "sq": "Në një provë me 10 burra, kapja e kthyer (pëllëmbët nga ti) dha më pak aktivizim të latissimus dorsi sesa kapja e gjerë përpara, si kur shufra zbriste, ashtu edhe kur ngjitej.",
+        "en": "In a trial of 10 men, the reverse grip (palms facing you) gave less latissimus dorsi activation than the wide front grip, both when the bar came down and when it went back up."
+      },
+      "more": {
+        "sq": "Kapja e ngushtë dhe ajo e gjerë pas qafës dhanë gjithashtu më pak se kapja e gjerë përpara. Është një provë e vogël dhe mat aktivitetin elektrik të muskulit në një seancë, jo rritjen e tij me kohën.",
+        "en": "The close grip and the wide grip behind the neck also gave less than the wide front grip. It is a small trial and it measures the muscle’s electrical activity in one session, not its growth over time."
+      },
+      "source": {
+        "label": "Signorile dhe kolegët, 2002",
+        "title": "A comparative electromyographical investigation of muscle utilization patterns using various hand positions during the lat pull-down (Journal of Strength and Conditioning Research)",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/12423182/",
+        "year": 2002,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Krahasuar me kapjen e gjerë përpara, çfarë aktivizimi të latissimus dorsi dha kapja e kthyer në provën me 10 burra?",
+          "en": "Compared with the wide front grip, what latissimus dorsi activation did the reverse grip give in the trial of 10 men?"
+        },
+        "options": [
+          {
+            "sq": "Më të ulët",
+            "en": "Lower"
+          },
+          {
+            "sq": "Më të lartë",
+            "en": "Higher"
+          },
+          {
+            "sq": "Po aq",
+            "en": "The same"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "standing-pulldown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Standing Pulldown"
+      },
+      "text": {
+        "sq": "Muskuli kryesor i këtij ushtrimi, latissimus dorsi, e rrotullon krahun nga brenda, e afron te trupi dhe e shtyn pas. Forcën rrotulluese më të madhe e ka kur krahu është ngritur midis 30° dhe 50°.",
+        "en": "The main muscle worked in this exercise, the latissimus dorsi, turns the upper arm inwards, brings it towards the body and pushes it back. It has its greatest turning force when the arm is raised between 30° and 50°."
+      },
+      "more": {
+        "sq": "Ndihmesa e tij te ngritja e krahut anash është minimale. Këto të dhëna vijnë nga një rishikim kirurgjik i anatomisë së muskulit.",
+        "en": "Its contribution to lifting the arm out to the side is minimal. These data come from a surgical review of the muscle’s anatomy."
+      },
+      "source": {
+        "label": "Hovsepian dhe kolegët, 2026",
+        "title": "Surgical anatomy, biomechanics and clinical outcomes of latissimus dorsi transfer for irreparable rotator cuff tears: a review (Journal of Orthopaedic Surgery and Research)",
+        "url": "https://doi.org/10.1186/s13018-026-07200-9",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në cilin interval të ngritjes së krahut ka latissimus dorsi forcën rrotulluese më të madhe?",
+          "en": "In which range of arm elevation does the latissimus dorsi have its greatest turning force?"
+        },
+        "options": [
+          {
+            "sq": "10° deri 20°",
+            "en": "10° to 20°"
+          },
+          {
+            "sq": "30° deri 50°",
+            "en": "30° to 50°"
+          },
+          {
+            "sq": "80° deri 100°",
+            "en": "80° to 100°"
+          },
+          {
+            "sq": "Mbi 120°",
+            "en": "Over 120°"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "straight-arm-pulldown-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Straight-Arm Pulldown"
+      },
+      "text": {
+        "sq": "Në një studim me 20 të rritur aktivë, Straight-Arm Pulldown dha më shumë aktivizim të latissimus dorsi sesa pullover-i me shufër. Pullover-i dha më shumë te gjoksi dhe barku.",
+        "en": "In a study of 20 active adults, the Straight-Arm Pulldown gave more latissimus dorsi activation than the barbell pullover. The pullover gave more in the chest and abdomen."
+      },
+      "more": {
+        "sq": "Pesha ishte 30% e peshës së trupit, tetë përsëritje, me kapje 100% dhe 150% të distancës mes shpatullave. Autorët thonë se Straight-Arm Pulldown mund të jetë zgjedhje më e mirë për latissimus dorsi.",
+        "en": "The load was 30% of body mass for eight repetitions, with grips at 100% and 150% of shoulder-to-shoulder width. The authors say the Straight-Arm Pulldown may be a better choice for the latissimus dorsi."
+      },
+      "source": {
+        "label": "Muyor dhe kolegët, 2022",
+        "title": "Comparison of Electromyographic Activity during Barbell Pullover and Straight Arm Pulldown Exercises (Applied Sciences)",
+        "url": "https://doi.org/10.3390/app122111138",
+        "year": 2022,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim dha më shumë aktivizim të latissimus dorsi në studimin me 20 të rritur?",
+          "en": "Which exercise gave more latissimus dorsi activation in the study of 20 adults?"
+        },
+        "options": [
+          {
+            "sq": "Pullover-i me shufër",
+            "en": "The barbell pullover"
+          },
+          {
+            "sq": "Straight-Arm Pulldown",
+            "en": "The Straight-Arm Pulldown"
+          },
+          {
+            "sq": "Të dyja njësoj",
+            "en": "Both equally"
+          }
+        ],
+        "correct": 1
+      }
+    }
+  ]
+}

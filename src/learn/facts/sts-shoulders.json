@@ -1,0 +1,515 @@
+{
+  "group": "sts-shoulders",
+  "facts": [
+    {
+      "id": "dumbbell-shoulder-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Shoulder Press"
+      },
+      "text": {
+        "sq": "Në një studim të ACE me 16 burra të shëndetshëm që testoi 10 ushtrime, shtytja me halltera dha aktivizimin më të lartë të deltoidit të përparmë, shumë më të lartë se çdo ushtrim tjetër.",
+        "en": "In an ACE study of 16 healthy men that tested 10 exercises, the dumbbell shoulder press gave the highest front deltoid activation, significantly higher than any other exercise."
+      },
+      "more": {
+        "sq": "Studiuesit thonë se asnjë ushtrim i vetëm nuk i aktivizon maksimalisht tri pjesët e deltoidit njëkohësisht, prandaj shpatullat kërkojnë më shumë se një ushtrim.",
+        "en": "The researchers say no single exercise maximally activates all three heads of the deltoid at the same time, so the shoulders need more than one exercise."
+      },
+      "source": {
+        "label": "Sweeney, Porcari dhe kolegët (ACE), 2014",
+        "title": "Dynamite Delts: ACE Research Identifies Top Shoulder Exercises",
+        "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim dha aktivizimin më të lartë të deltoidit të përparmë në studimin e ACE me 10 ushtrime?",
+          "en": "Which exercise gave the highest front deltoid activation in the ACE study of 10 exercises?"
+        },
+        "options": [
+          {
+            "sq": "Dumbbell front raise",
+            "en": "Dumbbell front raise"
+          },
+          {
+            "sq": "Dumbbell shoulder press",
+            "en": "Dumbbell shoulder press"
+          },
+          {
+            "sq": "Barbell upright row",
+            "en": "Barbell upright row"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "dumbbell-lateral-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Lateral Raise"
+      },
+      "text": {
+        "sq": "Te ngritja anash me hallterë, ngarkesa është më e vogël kur deltoidi anësor është i shtrirë. Një kabllo e përshtatur, me makarën në lartësinë e dorës, e kthen këtë profil.",
+        "en": "In the dumbbell lateral raise, the load is smaller when the lateral deltoid is lengthened. An adapted cable, with the pulley at hand height, reverses this profile."
+      },
+      "more": {
+        "sq": "Studiuesit e quajnë profilin e hallterës \"ngjitës\" dhe atë të kabllit të përshtatur \"zbritës\". Ata supozuan se deltoidi anësor mund të përfitojë më shumë kur ngarkohet i shtrirë.",
+        "en": "The researchers call the dumbbell profile \"ascending\" and the adapted cable profile \"descending\". They speculated that the lateral deltoid may benefit more when it is loaded in a lengthened position."
+      },
+      "source": {
+        "label": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025",
+        "title": "Dumbbell versus cable lateral raises for lateral deltoid hypertrophy: an experimental study",
+        "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1611468/full",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Kur është ngarkesa më e vogël te ngritja anash me hallterë?",
+          "en": "When is the load smallest in the dumbbell lateral raise?"
+        },
+        "options": [
+          {
+            "sq": "Kur krahu është paralel me dyshemenë",
+            "en": "When your arm is parallel to the floor"
+          },
+          {
+            "sq": "Gjysmë rrugës lart",
+            "en": "Halfway up"
+          },
+          {
+            "sq": "Kur deltoidi anësor është i shtrirë",
+            "en": "When the lateral deltoid is lengthened"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "dumbbell-lateral-raise-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Lateral Raise"
+      },
+      "text": {
+        "sq": "Për deltoidin e mesit, studimi i ACE vlerësoi në krye rreshtin 45° në pjerrësi (45-degree incline row) dhe ngritjen anash me krah të përkulur (bent-arm lateral raise), jo ngritjen me krah të drejtë.",
+        "en": "For the middle deltoid, the ACE study ranked the 45-degree incline row and the bent-arm lateral raise on top, not the straight-arm lateral raise."
+      },
+      "more": {
+        "sq": "Studimi mati aktivizimin me elektromiografi te 16 burra të shëndetshëm 18–30 vjeç. Hulumtuesit e ACE thonë se asnjë ushtrim i vetëm nuk është më i miri për shpatullat.",
+        "en": "The study measured activation with electromyography in 16 healthy men aged 18 to 30. The ACE researchers say no single exercise is the best one for the shoulders."
+      },
+      "source": {
+        "label": "Sweeney, Porcari dhe kolegët (ACE), 2014",
+        "title": "Dynamite Delts: ACE Research Identifies Top Shoulder Exercises",
+        "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cilët dy ushtrime dolën në krye për deltoidin e mesit në studimin e ACE?",
+          "en": "Which two exercises came out on top for the middle deltoid in the ACE study?"
+        },
+        "options": [
+          {
+            "sq": "Dumbbell shoulder press dhe dips",
+            "en": "Dumbbell shoulder press and dips"
+          },
+          {
+            "sq": "Barbell upright row dhe push-up",
+            "en": "Barbell upright row and push-up"
+          },
+          {
+            "sq": "45-degree incline row dhe bent-arm lateral raise",
+            "en": "45-degree incline row and bent-arm lateral raise"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "one-arm-cable-lateral-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "One-Arm Cable Lateral Raise"
+      },
+      "text": {
+        "sq": "Në 8 javë, 24 persona me përvojë bënë ngritje anash: një krah me kabllo, tjetrin me hallterë, deri në dështim, dy herë në javë (4 sete për krah në javën e parë, 5 më pas). Deltoidi anësor u trashur 3,3–4,6 % dhe variantet dolën me efektivitet të ngjashëm.",
+        "en": "Over 8 weeks, 24 experienced lifters did lateral raises: one arm with a cable, the other with a dumbbell, to failure, twice a week (4 sets per arm in week 1, 5 after). The lateral deltoid thickened by 3.3% to 4.6% and the versions had similar effectiveness."
+      },
+      "more": {
+        "sq": "Trashësia u mat me ultratinguj. Studiuesit prisnin që kablli, që ngarkon më shumë muskulin e shtrirë, të jepte më shumë rritje, por rritja doli e ngjashme.",
+        "en": "Thickness was measured with ultrasound. The researchers expected the cable, which loads the lengthened muscle more, to give more growth, but the growth was similar."
+      },
+      "source": {
+        "label": "Larsen, Wolf, Schoenfeld dhe kolegët, 2025",
+        "title": "Dumbbell versus cable lateral raises for lateral deltoid hypertrophy: an experimental study",
+        "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1611468/full",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi 8-javor me ngritje anash me kabllo dhe me hallterë?",
+          "en": "What did the 8-week study of cable and dumbbell lateral raises find?"
+        },
+        "options": [
+          {
+            "sq": "Kablli dha rritje shumë më të madhe",
+            "en": "The cable gave much more growth"
+          },
+          {
+            "sq": "Rritje e ngjashme me të dy variantet",
+            "en": "Similar growth with both versions"
+          },
+          {
+            "sq": "Hallterat dhanë rritje shumë më të madhe",
+            "en": "The dumbbells gave much more growth"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "one-arm-cable-front-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "One-Arm Cable Front Raise"
+      },
+      "text": {
+        "sq": "Hulumtuesja kryesore e studimit të ACE, Samantha Sweeney, thotë se ngritjet përpara, shtytjet dhe ngritjet anash së bashku e dyfishojnë deltoidin e përparmë, e prekin atë të mesit dhe e harrojnë të pasmin.",
+        "en": "Samantha Sweeney, lead researcher of the ACE study, says front raises, shoulder presses and lateral raises together double up on the front deltoid, hit the middle one and neglect the rear one."
+      },
+      "more": {
+        "sq": "Ajo shton se shpatullat kërkojnë më shumë se një ushtrim dhe se duhet ditur cilën pjesë të deltoidit synon secili.",
+        "en": "She adds that the shoulders need more than one exercise and that you need to know which part of the deltoid each one targets."
+      },
+      "source": {
+        "label": "Sweeney, Porcari dhe kolegët (ACE), 2014",
+        "title": "Dynamite Delts: ACE Research Identifies Top Shoulder Exercises",
+        "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cilën pjesë të deltoidit e dyfishon një program me ngritje përpara, shtytje dhe ngritje anash, sipas Sweeney?",
+          "en": "According to Sweeney, which part of the deltoid does a programme of front raises, presses and lateral raises double up on?"
+        },
+        "options": [
+          {
+            "sq": "Deltoidin e përparmë",
+            "en": "The front deltoid"
+          },
+          {
+            "sq": "Deltoidin e mesit",
+            "en": "The middle deltoid"
+          },
+          {
+            "sq": "Deltoidin e pasmë",
+            "en": "The rear deltoid"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "high-cable-rear-delt-fly-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "High Cable Rear Delt Fly"
+      },
+      "text": {
+        "sq": "Studimi nuk mati fly me kabllo, por reverse pec deck: te 12 burra me të paktën një vit përvojë, ai aktivizoi deltoidin e pasmë më shumë se rreshti ulur dhe lat pulldown-i i pjerrët.",
+        "en": "The study did not test a cable fly but the reverse pec deck: in 12 men with at least a year of experience, it activated the rear deltoid more than the seated row and the inclined lat pulldown."
+      },
+      "more": {
+        "sq": "Për deltoidin e mesit, reverse pec deck dhe rreshti ulur dolën më mirë se lat pulldown-i. Për deltoidin e përparmë nuk pati dallim mes tri ushtrimeve.",
+        "en": "For the middle deltoid, the reverse pec deck and the seated row beat the lat pulldown. For the front deltoid there was no difference between the three exercises."
+      },
+      "source": {
+        "label": "Franke, Botton dhe kolegët, 2015",
+        "title": "Analysis of anterior, middle and posterior deltoid activation during single and multijoint exercises",
+        "url": "https://europepmc.org/article/MED/24947920",
+        "year": 2015,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim aktivizoi më shumë deltoidin e pasmë te studimi me 12 burra?",
+          "en": "Which exercise activated the rear deltoid most in the study of 12 men?"
+        },
+        "options": [
+          {
+            "sq": "Reverse pec deck",
+            "en": "Reverse pec deck"
+          },
+          {
+            "sq": "Seated row",
+            "en": "Seated row"
+          },
+          {
+            "sq": "Inclined lat pulldown",
+            "en": "Inclined lat pulldown"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "bent-over-lateral-raise-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Bent-Over Lateral Raise"
+      },
+      "text": {
+        "sq": "Samantha Sweeney, hulumtuese e studimit të ACE, thotë se deltoidi i pasmë është zakonisht muskuli më i dobët i shpatullës. Kjo është deklaratë e saj, jo një rezultat i matur te studimi.",
+        "en": "Samantha Sweeney, a researcher on the ACE study, says the rear deltoid is typically the weakest of the shoulder muscles. This is her statement, not a result measured in the study."
+      },
+      "more": null,
+      "source": {
+        "label": "Sweeney, Porcari dhe kolegët (ACE), 2014",
+        "title": "Dynamite Delts: ACE Research Identifies Top Shoulder Exercises",
+        "url": "https://www.acefitness.org/continuing-education/prosource/september-2014/4972/dynamite-delts-ace-research-identifies-top-shoulder-exercises/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili është zakonisht muskuli më i dobët i shpatullës, sipas studiueses së ACE?",
+          "en": "Which is typically the weakest shoulder muscle, according to the ACE researcher?"
+        },
+        "options": [
+          {
+            "sq": "Deltoidi i mesit",
+            "en": "The middle deltoid"
+          },
+          {
+            "sq": "Deltoidi i përparmë",
+            "en": "The front deltoid"
+          },
+          {
+            "sq": "Deltoidi i pasmë",
+            "en": "The rear deltoid"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "smith-machine-upright-row-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Smith Machine Upright Row"
+      },
+      "text": {
+        "sq": "Studimi nuk testoi Smith machine, por rreshtin vertikal në përgjithësi: te 77 burra, ata me pesha (46) kishin më shpesh shenja ngushtimi të hapësirës së shpatullës (impingement) se ata pa (31). Shenjat lidheshin me rreshtat mbi 90°; lidhje, jo shkak.",
+        "en": "The study did not test the Smith machine but the upright row in general: in 77 men, those who lifted weights (46) showed signs of shoulder impingement more often than those who did not (31). The signs were linked to rows above 90°; an association, not a cause."
+      },
+      "more": {
+        "sq": "Sipas autorëve, shmangia e ngritjeve anash dhe e rreshtave vertikalë mbi 90°, bashkë me forcimin e rrotulluesve të jashtëm, mund të shërbejë për t'i zbutur këto shenja.",
+        "en": "According to the authors, avoiding lateral raises and upright rows above 90°, together with strengthening the external rotators, may serve to mitigate these signs."
+      },
+      "source": {
+        "label": "Kolber, Cheatham, Salamh dhe Hanney, 2014",
+        "title": "Characteristics of shoulder impingement in the recreational weight-training population",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/24077379/",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Mbi cilin kënd u lidhën rreshtat vertikalë me shenja ngushtimi të hapësirës së shpatullës?",
+          "en": "Above which angle were upright rows linked to shoulder impingement signs?"
+        },
+        "options": [
+          {
+            "sq": "45°",
+            "en": "45°"
+          },
+          {
+            "sq": "90°",
+            "en": "90°"
+          },
+          {
+            "sq": "120°",
+            "en": "120°"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "dumbbell-upright-row-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Upright Row"
+      },
+      "text": {
+        "sq": "Te 16 burra që stërviteshin me pesha, kapja e gjerë (200 % e gjerësisë së shpatullave) te rreshti vertikal ngriti aktivizimin e deltoidit dhe trapezit. Bicepsi punoi më pak, por në fazën e uljes.",
+        "en": "In 16 weight-trained men, a wide grip (200% of shoulder width) in the upright row raised deltoid and trapezius activity. The biceps worked less, but in the lowering phase."
+      },
+      "more": {
+        "sq": "Çdo kapje u provua me të njëjtën peshë, 85 % e 1RM-it të matur me kapje në gjerësinë e shpatullave. Autorët përfundojnë se kush dëshiron ta shtojë përfshirjen e deltoidit dhe trapezit duhet të përdorë kapje të gjerë.",
+        "en": "Every grip was tested with the same load, 85% of the 1RM measured with a shoulder-width grip. The authors conclude that anyone who wants to maximise deltoid and trapezius involvement should use a wide grip."
+      },
+      "source": {
+        "label": "McAllister dhe kolegët, 2013",
+        "title": "Effect of grip width on electromyographic activity during the upright row",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/22362088/",
+        "year": 2013,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë ndodhi me bicepsin në fazën e uljes kur kapja në rreshtin vertikal u bë më e gjerë?",
+          "en": "What happened to the biceps in the lowering phase as the upright row grip got wider?"
+        },
+        "options": [
+          {
+            "sq": "Punoi më shumë",
+            "en": "It worked more"
+          },
+          {
+            "sq": "Nuk ndryshoi",
+            "en": "It did not change"
+          },
+          {
+            "sq": "Punoi më pak",
+            "en": "It worked less"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "dumbbell-shrug-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Shrug"
+      },
+      "text": {
+        "sq": "Trapezi është më shumë muskul i shpinës se i shpatullës. Shrug-u synon kryesisht fijet e sipërme; fijet e mesme i tërheqin shpatullat pas dhe ato të poshtmet ndihmojnë t'i tërheqin poshtë.",
+        "en": "The trapezius is more of a back muscle than a shoulder muscle. The shrug mainly targets the upper fibres; the middle fibres pull your shoulder blades back and the lower ones help pull them down."
+      },
+      "more": null,
+      "source": {
+        "label": "Jim Stoppani, PhD, 2026",
+        "title": "How to Do Shrugs for Bigger Traps",
+        "url": "https://www.jimstoppani.com/training/how-to-do-shrugs-for-bigger-traps",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cilën pjesë të trapezit synon kryesisht shrug-u, sipas Stoppanit?",
+          "en": "Which part of the trapezius does the shrug mainly target, according to Stoppani?"
+        },
+        "options": [
+          {
+            "sq": "Fijet e mesme",
+            "en": "The middle fibres"
+          },
+          {
+            "sq": "Fijet e sipërme",
+            "en": "The upper fibres"
+          },
+          {
+            "sq": "Fijet e poshtme",
+            "en": "The lower fibres"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "barbell-shrug-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Barbell Shrug"
+      },
+      "text": {
+        "sq": "Matja u bë te power clean, jo te shrug-u me shufër: te 20 burra të stërvitur, ngritja e shpatullave në fazën e dytë të tërheqjes ishte më e madhe me 50 % të 1RM se me 90 %.",
+        "en": "This was measured in the power clean, not the barbell shrug: in 20 trained men, the shrug range in the second pull was larger at 50% of 1RM than at 90%."
+      },
+      "more": {
+        "sq": "Në të njëjtën fazë, aktiviteti i pjesës së sipërme të trapezit ishte më i lartë me 50 % se me 70 ose 90 %. Autorët thonë se trapezi ngre lopatën (shoulder blade) dhe ndihmon në tërheqjen e shufrës.",
+        "en": "In the same phase, upper trapezius activity was higher at 50% than at 70% or 90%. The authors say the trapezius elevates the shoulder blade and helps pull the barbell."
+      },
+      "source": {
+        "label": "Nagao dhe Ishii, 2021",
+        "title": "Characteristics of the Shrug Motion and Trapezius Muscle Activity During the Power Clean",
+        "url": "https://doi.org/10.1519/jsc.0000000000003355",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Si u ndryshua ngritja e shpatullave kur pesha në power clean u rrit nga 50 në 90 % të 1RM?",
+          "en": "How did the shrug range change as the power clean load rose from 50 to 90% of 1RM?"
+        },
+        "options": [
+          {
+            "sq": "U rrit",
+            "en": "It increased"
+          },
+          {
+            "sq": "Nuk u ndryshua",
+            "en": "It did not change"
+          },
+          {
+            "sq": "U zvogëlua",
+            "en": "It decreased"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "one-arm-smith-machine-shrug-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "One-Arm Smith Machine Shrug"
+      },
+      "text": {
+        "sq": "Studimi nuk e tha nëse shrug-u u bë në Smith machine: te 30 persona të shëndetshëm që bënë 10 ushtrime, shrug-u me një krah dha aktivizimin më të lartë të trapezit të sipërm.",
+        "en": "The study did not say whether the shrug was done on a Smith machine: in 30 healthy people doing 10 exercises, the one-arm shrug gave the highest upper trapezius activation."
+      },
+      "more": {
+        "sq": "Për trapezin e mesëm dolën në krye ngritja horizontale prapa me rrotullim të jashtëm dhe ngritja e krahut mbi kokë shtrirë përmbys; për të poshtmin, ngritja mbi kokë shtrirë përmbys.",
+        "en": "For the middle trapezius the top exercises were horizontal extension with external rotation and the overhead arm raise lying face down; for the lower trapezius, the face-down overhead raise."
+      },
+      "source": {
+        "label": "Ekstrom, Donatelli dhe Soderberg, 2003",
+        "title": "Surface electromyographic analysis of exercises for the trapezius and serratus anterior muscles",
+        "url": "https://doi.org/10.2519/jospt.2003.33.5.247",
+        "year": 2003,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim dha aktivizimin më të lartë të pjesës së sipërme të trapezit te 30 personat?",
+          "en": "Which exercise gave the highest upper trapezius activation in the 30 people?"
+        },
+        "options": [
+          {
+            "sq": "Ngritja e krahut mbi kokë shtrirë përmbys",
+            "en": "The overhead arm raise lying face down"
+          },
+          {
+            "sq": "Shtytja me halltera",
+            "en": "The dumbbell shoulder press"
+          },
+          {
+            "sq": "Shrug-u me një krah",
+            "en": "The one-sided shrug"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

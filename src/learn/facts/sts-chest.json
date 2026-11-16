@@ -1,0 +1,400 @@
+{
+  "group": "sts-chest",
+  "facts": [
+    {
+      "id": "bench-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Bench Press"
+      },
+      "text": {
+        "sq": "Në garat e para të bench press-it shufra shpesh nuk merrej nga rafti: lifteri e sillte në pozicion me një pullover nga dyshemeja, ose ia jepnin në duar.",
+        "en": "In early bench press contests the bar often did not come off a rack: the lifter pulled it into position with a pullover from the floor, or it was handed to him."
+      },
+      "more": {
+        "sq": "Roark pyet kur u shtuan mbajtëset te stolat. Një stol i York Barbell Company u prezantua te revista Strength & Health në shkurt 1953, me çmim 29,95 dollarë. Stoli që përdori Marilyn Monroe në 1952 ishte i sheshtë, pa jastëk dhe pa mbajtëse.",
+        "en": "Roark asks when uprights were attached to benches. A bench from the York Barbell Company was introduced in Strength & Health in February 1953 at a price of $29.95. The bench Marilyn Monroe used in 1952 was flat, unpadded and had no uprights."
+      },
+      "source": {
+        "label": "Roark, Iron Game History, 1990",
+        "title": "The Roark Report: The Value of Accuracy (Iron Game History, vol. 1, no. 1)",
+        "url": "https://www.starkcenter.org/igh/igh-v1/igh-v1-n1/igh0101i.pdf",
+        "year": 1990,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Si e sillnin shpesh shufrën në pozicion në garat e para të bench press-it?",
+          "en": "How was the bar often brought into position in early bench press contests?"
+        },
+        "options": [
+          {
+            "sq": "Nga një raft me mbajtëse të rregullueshme",
+            "en": "From an adjustable rack with uprights"
+          },
+          {
+            "sq": "Me një pullover nga dyshemeja ose ia jepnin në duar",
+            "en": "With a pullover from the floor, or it was handed to the lifter"
+          },
+          {
+            "sq": "Lifteri e ngrinte nga gjunjët me një ngritje të shpejtë",
+            "en": "The lifter swung it up from the knees"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "bench-press-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Bench Press"
+      },
+      "text": {
+        "sq": "Në një studim të financuar nga ACE me 14 burra, gjoksi u aktivizua më shumë te bench press-i me shufër, por pec deck dhe cable crossover nuk dalloheshin statistikisht prej tij; shtatë ushtrimet e tjera dolën më të ulëta (EMG).",
+        "en": "In a study funded by ACE with 14 men, the chest was activated more in the barbell bench press, but the pec deck and cable crossover were not statistically different from it; the other seven exercises came out lower (EMG)."
+      },
+      "more": {
+        "sq": "Ushtrimet me peshë u bënë me 80% të 1RM-së, pesë përsëritje secili. Pec deck (98%) dhe cable crossover (93%) dhanë pothuaj të njëjtën vlerë; push-up-et dhanë 61–63%, pa peshë shtesë.",
+        "en": "The weighted exercises were done at 80% of 1RM, five repetitions each. The pec deck (98%) and cable crossover (93%) came close; push-ups gave 61–63%, with no added weight."
+      },
+      "source": {
+        "label": "ACE, 2012",
+        "title": "ACE-Sponsored Research: Top 3 Most Effective Chest Exercises (Schanke, Porcari, Felix, Hendrix, Foster; ACE Certified News, October 2012)",
+        "url": "https://www.acefitness.org/certifiednewsarticle/2884",
+        "year": 2012,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim dha aktivizimin më të lartë të gjoksit midis nëntë të provuarave në studimin e ACE?",
+          "en": "Which exercise gave the highest chest activation of the nine tested in the ACE study?"
+        },
+        "options": [
+          {
+            "sq": "Dips",
+            "en": "Dips"
+          },
+          {
+            "sq": "Presa e gjoksit në makinë",
+            "en": "Seated chest press machine"
+          },
+          {
+            "sq": "Bench press me shufër",
+            "en": "Barbell bench press"
+          },
+          {
+            "sq": "Push-up standard",
+            "en": "Standard push-up"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "incline-bench-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Incline Bench Press"
+      },
+      "text": {
+        "sq": "Në një studim 8-javor me 47 burra të patrajnuar, vetëm në një nga tri pikat e matura gjoksi u trash më shumë me presën e pjerrët (44°) se me të sheshtën: diferenca mesatare 0,62 cm.",
+        "en": "In an 8-week study of 47 untrained men, the chest thickened more with the incline press (44°) than with the flat press at only one of three measured sites: a mean difference of 0.62 cm."
+      },
+      "more": {
+        "sq": "Pika ishte hapësira e dytë ndërbrinjore. Forca izometrike u rrit rreth 10–11 kg dhe nuk dalloi mes grupeve; stërvitja ishte një herë në javë.",
+        "en": "The site was the second intercostal space. Isometric strength rose by about 10–11 kg and did not differ between groups; training was once a week."
+      },
+      "source": {
+        "label": "Chaves dhe kolegët, 2020",
+        "title": "Effects of Horizontal and Incline Bench Press on Neuromuscular Adaptations in Untrained Young Men (International Journal of Exercise Science 13(6))",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7449336/",
+        "year": 2020,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti studimi 8-javor me 47 burra të patrajnuar për presën e pjerrët (44°) dhe të sheshtën?",
+          "en": "What did the 8-week study of 47 untrained men find for the incline (44°) and flat press?"
+        },
+        "options": [
+          {
+            "sq": "Presa e sheshtë trashi më shumë gjoksin në të tri pikat",
+            "en": "The flat press thickened the chest more at all three sites"
+          },
+          {
+            "sq": "Presa e pjerrët dha dukshëm më shumë forcë izometrike",
+            "en": "The incline press gave clearly more isometric strength"
+          },
+          {
+            "sq": "Presa e pjerrët trashi më shumë gjoksin në një nga tri pikat",
+            "en": "The incline press thickened the chest more at one of three sites"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "incline-dumbbell-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Incline Dumbbell Press"
+      },
+      "text": {
+        "sq": "Në një studim me 12 burra të stërvitur, 1RM në presën e gjoksit me shtanga ishte 17% më e ulët se me shufër dhe 14% më e ulët se në Smith machine. Abstrakti nuk thotë se stoli ishte i pjerrët.",
+        "en": "In a study of 12 trained men, the 1RM in the dumbbell chest press was 17% lower than with a barbell and 14% lower than on a Smith machine. The abstract does not say the bench was inclined."
+      },
+      "more": {
+        "sq": "Aktiviteti i gjoksit dhe i shpatullës së përparme nuk dalloi mes tri ushtrimeve. Biceps-i u aktivizua më shumë me shtanga, ndërsa triceps-i më pak se me shufër dhe se në Smith machine.",
+        "en": "Activity in the chest and front shoulder did not differ between the three exercises. The biceps were more active with dumbbells, while the triceps were less active than with the barbell or the Smith machine."
+      },
+      "source": {
+        "label": "Saeterbakken dhe kolegët, 2011",
+        "title": "A comparison of muscle activity and 1-RM strength of three chest-press exercises with different stability requirements (Journal of Sports Sciences 29(5))",
+        "url": "https://doi.org/10.1080/02640414.2010.543916",
+        "year": 2011,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa më e ulët ishte 1RM me shtanga se me shufër në studimin me 12 burra të stërvitur?",
+          "en": "How much lower was the 1RM with dumbbells than with a barbell in the study of 12 trained men?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 3%",
+            "en": "About 3%"
+          },
+          {
+            "sq": "Rreth 17%",
+            "en": "About 17%"
+          },
+          {
+            "sq": "Rreth 35%",
+            "en": "About 35%"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "reverse-grip-incline-dumbbell-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Reverse-Grip Incline Dumbbell Press"
+      },
+      "text": {
+        "sq": "Në një studim me 12 burra, me bench press me shufër në stol të sheshtë, kapja e kundërt (supinuar) rriti aktivitetin e kokës klavikulare të gjoksit dhe të biceps-it.",
+        "en": "In a study of 12 men doing a barbell bench press on a flat bench, a reverse (supinated) grip raised activity in the clavicular head of the chest and in the biceps."
+      },
+      "more": {
+        "sq": "Matja u bë gjatë një mbajtjeje izometrike me shufër në stol të sheshtë, jo me shtanga në stol të pjerrët.",
+        "en": "The measurement was taken during an isometric hold with a bar on a flat bench, not with dumbbells on an incline."
+      },
+      "source": {
+        "label": "Lehman, 2005",
+        "title": "The influence of grip width and forearm pronation/supination on upper-body myoelectric activity during the flat bench press (Journal of Strength and Conditioning Research 19(3))",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/16095407/",
+        "year": 2005,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili muskul, përveç kokës klavikulare të gjoksit, u aktivizua më shumë me kapje të kundërt?",
+          "en": "Which muscle, besides the clavicular head of the chest, was more active with a reverse grip?"
+        },
+        "options": [
+          {
+            "sq": "Biceps-i",
+            "en": "The biceps"
+          },
+          {
+            "sq": "Triceps-i",
+            "en": "The triceps"
+          },
+          {
+            "sq": "Deltoidi i pasmë",
+            "en": "The rear deltoid"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "incline-dumbbell-flye-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Incline Dumbbell Flye"
+      },
+      "text": {
+        "sq": "Në studimin e ACE me 14 burra, flyes të pjerrëta me shtanga e aktivizuan gjoksin 69% të vlerës së bench press-it me shufër, me 80% të 1RM-së.",
+        "en": "In the ACE study of 14 men, incline dumbbell flyes activated the chest 69% as much as the barbell bench press, at 80% of 1RM."
+      },
+      "more": {
+        "sq": "Dallimi ishte statistikisht i rëndësishëm (p < 0,05). Bench press-i, pec deck dhe cable crossover nuk dalloheshin mes tyre.",
+        "en": "The difference was statistically significant (p < 0.05). The bench press, pec deck and cable crossover did not differ from one another."
+      },
+      "source": {
+        "label": "ACE, 2012",
+        "title": "ACE-Sponsored Research: Top 3 Most Effective Chest Exercises (Schanke, Porcari, Felix, Hendrix, Foster; ACE Certified News, October 2012)",
+        "url": "https://www.acefitness.org/certifiednewsarticle/2884",
+        "year": 2012,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa për qind të aktivizimit të bench press-it dhanë flyes të pjerrëta me shtanga në studimin e ACE?",
+          "en": "What percentage of the bench press activation did incline dumbbell flyes give in the ACE study?"
+        },
+        "options": [
+          {
+            "sq": "69%",
+            "en": "69%"
+          },
+          {
+            "sq": "93%",
+            "en": "93%"
+          },
+          {
+            "sq": "98%",
+            "en": "98%"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "dumbbell-flye-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Flye"
+      },
+      "text": {
+        "sq": "Në një studim me 17 burra të stërvitur, pesha totale për 6 përsëritje maksimale ishte rreth 40,5 kg te flyes me shtanga dhe 88,5 kg te bench press-i me shufër. Biceps-i u aktivizua 76% më shumë te flyes.",
+        "en": "In a study of 17 trained men, the total load for 6 maximum repetitions was about 40.5 kg in dumbbell flyes and 88.5 kg in the barbell bench press. The biceps were 76% more active in flyes."
+      },
+      "more": {
+        "sq": "Gjoksi, shpatulla e përparme dhe triceps-i u aktivizuan më shumë te bench press-i (8–81% sipas fazës së lëvizjes). Autorët thonë se të dyja mund të hyjnë në program, por bench press-i duhet theksuar.",
+        "en": "The chest, front shoulder and triceps were more active in the bench press (8–81% depending on the phase of the lift). The authors say both can go in a programme, but the bench press should be emphasised."
+      },
+      "source": {
+        "label": "Solstad dhe kolegët, 2020",
+        "title": "A Comparison of Muscle Activation between Barbell Bench Press and Dumbbell Flyes in Resistance-Trained Males (Journal of Sports Science and Medicine 19(4))",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7675616/",
+        "year": 2020,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili muskul u aktivizua më shumë te flyes me shtanga se te bench press-i në studimin me 17 burra?",
+          "en": "Which muscle was more active in dumbbell flyes than in the bench press in the study of 17 men?"
+        },
+        "options": [
+          {
+            "sq": "Triceps-i",
+            "en": "The triceps"
+          },
+          {
+            "sq": "Deltoidi i përparmë",
+            "en": "The front deltoid"
+          },
+          {
+            "sq": "Biceps-i",
+            "en": "The biceps"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "cable-crossover-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Cable Crossover"
+      },
+      "text": {
+        "sq": "Në studimin e ACE me 14 burra, cable crossover me trup të përkulur përpara dha 93% të aktivizimit të gjoksit që dha bench press-i me shufër, dallim jo i rëndësishëm statistikisht.",
+        "en": "In the ACE study of 14 men, the bent-forward cable crossover gave 93% of the chest activation of the barbell bench press, a difference that was not statistically significant."
+      },
+      "more": {
+        "sq": "Vlerësimi i përpjekjes ishte 5,1 kundrejt 6,5 te bench press-i. John Porcari, PhD, një nga autorët, thotë se bench press-i, pec deck dhe cable crossover mund të përdoren të këmbyeshme.",
+        "en": "The rating of perceived exertion was 5.1 against 6.5 for the bench press. John Porcari, PhD, one of the authors, says the bench press, pec deck and cable crossover can be used interchangeably."
+      },
+      "source": {
+        "label": "ACE, 2012",
+        "title": "ACE-Sponsored Research: Top 3 Most Effective Chest Exercises (Schanke, Porcari, Felix, Hendrix, Foster; ACE Certified News, October 2012)",
+        "url": "https://www.acefitness.org/certifiednewsarticle/2884",
+        "year": 2012,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili ushtrim dha pothuaj aktivizimin e njëjtë të gjoksit me bench press-in me shufër në studimin e ACE?",
+          "en": "Which exercise gave almost the same chest activation as the barbell bench press in the ACE study?"
+        },
+        "options": [
+          {
+            "sq": "Dips",
+            "en": "Dips"
+          },
+          {
+            "sq": "Cable crossover me trup të përkulur",
+            "en": "Bent-forward cable crossover"
+          },
+          {
+            "sq": "Push-up standard",
+            "en": "Standard push-up"
+          },
+          {
+            "sq": "Flyes të pjerrëta me shtanga",
+            "en": "Incline dumbbell flyes"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "close-grip-bench-press-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Close-Grip Bench Press"
+      },
+      "text": {
+        "sq": "Në një studim me 28 burra, grupi i stërvitur (15) ngriti rreth 7% më pak peshë për 6 përsëritje maksimale me kapje të ngushtë se me kapje të mesme ose të gjerë.",
+        "en": "In a study of 28 men, the trained group (15) lifted about 7% less for 6 maximum repetitions with a narrow grip than with a medium or wide grip."
+      },
+      "more": {
+        "sq": "Kapja e ngushtë ishte sa distanca mes sqetullave. Te burrat e patrajnuar ulja ishte 8,4% kundrejt kapjes së mesme dhe 6,6% kundrejt të gjerës. Kapja e gjerë dha më pak aktivitet te triceps-i se e mesmja dhe e ngushta.",
+        "en": "The narrow grip was the distance between the armpits. In the novice men the drop was 8.4% against the medium grip and 6.6% against the wide one. The wide grip gave less triceps activity than the medium and narrow grips."
+      },
+      "source": {
+        "label": "Saeterbakken dhe kolegët, 2021",
+        "title": "The Effect of Grip Width on Muscle Strength and Electromyographic Activity in Bench Press among Novice- and Resistance-Trained Men (International Journal of Environmental Research and Public Health 18(12))",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8296276/",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa më pak peshë ngritën burrat e stërvitur me kapje të ngushtë për 6 përsëritje maksimale?",
+          "en": "How much less did the trained men lift with a narrow grip for 6 maximum repetitions?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 20%",
+            "en": "About 20%"
+          },
+          {
+            "sq": "Rreth 2%",
+            "en": "About 2%"
+          },
+          {
+            "sq": "Rreth 7%",
+            "en": "About 7%"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

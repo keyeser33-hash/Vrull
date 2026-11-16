@@ -28,7 +28,7 @@ export function achievementStatus({ t, fmt }: Pick<I18n, 't' | 'fmt'>, achieveme
   const { key, earnedOn, progress } = achievement
   if (earnedOn) return earnedOn === today ? t('achievements.earnedToday') : fmt.date(atNoon(earnedOn), { weekday: false })
   if (progress.target <= 0) return null
-  if (key === 'streak_4') return t('achievements.left', { count: progress.target - progress.current })
+  if (key === 'streak_4' || key === 'quiz_4') return t('achievements.left', { count: progress.target - progress.current })
   if (key === 'food_7' || key === 'water_7') return t('achievements.best', { count: progress.current })
   return t('achievements.progress', { current: progress.current, target: progress.target })
 }
@@ -39,6 +39,7 @@ export function achievementSheetStatus({ t, fmt }: Pick<I18n, 't' | 'fmt'>, achi
   if (earnedOn) return earnedOn === today ? t('achievements.sheet.earnedToday') : t('achievements.sheet.earnedOn', { date: fmt.date(atNoon(earnedOn), { weekday: false }) })
   if (progress.target <= 0) return null
   if (key === 'streak_4') return t('achievements.sheet.streak', { current: progress.current, target: progress.target })
+  if (key === 'quiz_4') return t('achievements.sheet.quizStreak', { current: progress.current, target: progress.target })
   if (key === 'food_7' || key === 'water_7') return t('achievements.sheet.best', { current: progress.current, target: progress.target })
   return t('achievements.progress', { current: progress.current, target: progress.target })
 }

@@ -1,0 +1,396 @@
+{
+  "group": "sts-biceps",
+  "facts": [
+    {
+      "id": "barbell-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Barbell Curl"
+      },
+      "text": {
+        "sq": "Te një studim me 10 kulturistë garues, me curl me kabllo, aktivizimi EMG i bicepsit gjatë fazës së ngritjes ishte më i lartë me pëllëmbët lart se me kapjen pronate (+19% në nRMS) dhe me atë neutrale (+12%).",
+        "en": "In a study of 10 competitive bodybuilders doing cable curls, biceps EMG activation during the lifting phase was higher with palms up than with an overhand grip (+19% in nRMS) or a neutral grip (+12%)."
+      },
+      "more": {
+        "sq": "Çdo kapje u provua me sete prej 6 përsëritjesh me një peshë 8RM, në kullë me kabllo: shufër për kapjet lart dhe poshtë, litar për atë neutrale. Me pëllëmbët lart u aktivizua pak më shumë edhe brachioradialis, një muskul i parakrahut (+5% ndaj pronates, +6% ndaj neutrales), ndërsa shpatulla e përparme u aktivizua më pak.",
+        "en": "Each grip was tested in sets of 6 reps with an 8RM load on a cable tower: a bar for the palms-up and palms-down grips, a rope for the neutral one. The brachioradialis, a forearm muscle, was also slightly more active with palms up (+5% versus overhand, +6% versus neutral), while the front shoulder was less active."
+      },
+      "source": {
+        "label": "Coratella dhe kolegët, 2023",
+        "title": "Biceps Brachii and Brachioradialis Excitation in Biceps Curl Exercise: Different Handgrips, Different Synergy (Sports)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10054060/",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te një studim me curl me kabllo, me cilën kapje u aktivizua bicepsi më shumë gjatë fazës së ngritjes?",
+          "en": "In a cable curl study, with which grip was the biceps most active during the lifting phase?"
+        },
+        "options": [
+          {
+            "sq": "Pëllëmbët poshtë (pronate)",
+            "en": "Palms down (overhand)"
+          },
+          {
+            "sq": "Kapja neutrale (si çekiç)",
+            "en": "Neutral grip (hammer)"
+          },
+          {
+            "sq": "Pëllëmbët lart (supinate)",
+            "en": "Palms up (underhand)"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "preacher-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Preacher Curl"
+      },
+      "text": {
+        "sq": "Në një provë me 63 gra të reja, secili grup fitoi më shumë forcë te ushtrimi që stërvitej: preacher curl-i dha 1,88 kg më shumë në 3RM-në e tij, incline curl-i 0,86 kg më shumë në 3RM-në e tij.",
+        "en": "In a trial of 63 young women, each group gained more strength in the exercise it trained: the preacher curl gave 1.88 kg more on its own 3RM, the incline curl 0.86 kg more on its own."
+      },
+      "more": {
+        "sq": "Të dy grupet stërvitën dy herë në javë për 8 javë. Autorët thonë se fitimet e forcës duket se ndjekin parimin e specifikës: forca rritet më shumë te ushtrimi që stërvitet.",
+        "en": "Both groups trained twice a week for 8 weeks. The authors say strength gains appear to follow the principle of specificity: strength rises most in the exercise you train."
+      },
+      "source": {
+        "label": "Kassiano dhe kolegët, 2025",
+        "title": "Distinct muscle growth and strength adaptations after preacher and incline biceps curls (International Journal of Sports Medicine)",
+        "url": "https://doi.org/10.1055/a-2517-0509",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te prova me 63 gra, ku u rrit më shumë forca e secilit grup?",
+          "en": "In the trial of 63 women, where did each group gain more strength?"
+        },
+        "options": [
+          {
+            "sq": "Njësoj te të dy ushtrimet",
+            "en": "Equally in both exercises"
+          },
+          {
+            "sq": "Te ushtrimi që nuk stërvitën",
+            "en": "In the exercise they did not train"
+          },
+          {
+            "sq": "Te ushtrimi që stërvitën",
+            "en": "In the exercise they trained"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "preacher-curl-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Preacher Curl"
+      },
+      "text": {
+        "sq": "Në një studim 8-javor me 19 gra të patrajnuara, preacher curl-i me dumbbell nga krahu i shtrirë deri në 68° rriti më shumë bicepsin në 70% të gjatësisë së tij dhe 1RM-në se pjesa nga 68° në 135°.",
+        "en": "In an 8-week study of 19 untrained women, the dumbbell preacher curl trained from a straight arm to 68° raised biceps size at 70% of its length and 1RM more than the 68° to 135° part."
+      },
+      "more": {
+        "sq": "Çdo grua stërviti një krah në secilën pjesë, tri herë në javë. Në 50% të gjatësisë së bicepsit nuk pati dallim të dukshëm. Rezultati vlen për gra të reja të patrajnuara.",
+        "en": "Each woman trained one arm in each part, three times a week. At 50% of biceps length there was no clear difference. The result applies to untrained young women."
+      },
+      "source": {
+        "label": "Pedrosa dhe kolegët, 2023",
+        "title": "Training in the Initial Range of Motion Promotes Greater Muscle Adaptations Than at Final in the Arm Curl (Sports)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9960616",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te studimi me 19 gra, cila pjesë e preacher curl-it dha më shumë rritje te bicepsi në 70% të gjatësisë?",
+          "en": "In the study of 19 women, which part of the preacher curl gave more biceps growth at 70% of its length?"
+        },
+        "options": [
+          {
+            "sq": "Pjesa e fundit, nga 68° në 135°",
+            "en": "The final part, 68° to 135°"
+          },
+          {
+            "sq": "Pjesa e parë, nga krahu i shtrirë deri në 68°",
+            "en": "The initial part, from a straight arm to 68°"
+          },
+          {
+            "sq": "Të dyja njësoj",
+            "en": "Both equally"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "dumbbell-incline-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Incline Curl"
+      },
+      "text": {
+        "sq": "Në një provë me 63 gra të reja, 8 javë, incline biceps curl-i rriti më shumë trashësinë e fleksorëve të bërrylit afër shpatullës (0,08 cm më shumë), kurse preacher curl-i afër bërrylit (0,10 cm më shumë).",
+        "en": "In an 8-week trial of 63 young women, the incline biceps curl raised elbow flexor thickness more near the shoulder (0.08 cm more), while the preacher curl did so near the elbow (0.10 cm more)."
+      },
+      "more": {
+        "sq": "Burimi nuk e thotë se ushtrimet u bënë me dumbbell. Dallimet janë të vogla, rreth 0,8 dhe 1 mm. Autorët konkludojnë se ka dallime rajonale në rritjen e muskulit mes dy ushtrimeve.",
+        "en": "The source does not say the exercises were done with dumbbells. The differences are small, about 0.8 and 1 mm. The authors conclude that the two exercises produce regional differences in muscle growth."
+      },
+      "source": {
+        "label": "Kassiano dhe kolegët, 2025",
+        "title": "Distinct muscle growth and strength adaptations after preacher and incline biceps curls (International Journal of Sports Medicine)",
+        "url": "https://doi.org/10.1055/a-2517-0509",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te prova me 63 gra, ku e rriti më shumë trashësinë e krahut incline curl-i?",
+          "en": "In the trial of 63 women, where did the incline curl raise arm thickness more?"
+        },
+        "options": [
+          {
+            "sq": "Afër bërrylit",
+            "en": "Near the elbow"
+          },
+          {
+            "sq": "Në mes të krahut",
+            "en": "In the middle of the arm"
+          },
+          {
+            "sq": "Afër shpatullës",
+            "en": "Near the shoulder"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "incline-cable-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Incline Cable Curl"
+      },
+      "text": {
+        "sq": "Një studim me 15 burra, 10 javë, krahasoi dy curl me kabllo me një krah (shpatulla përpara, preacher, dhe krahu pas trupit, Bayesian), jo incline curl. Trashësia e bicepsit u rrit 6–9% dhe ajo e brachialis, një fleksor tjetër i bërrylit, 8–10%, në të dyja.",
+        "en": "A 10-week study of 15 men compared two one-arm cable curls (shoulder forward, preacher, and arm behind the body, Bayesian), not an incline curl. Biceps thickness rose 6–9% and that of the brachialis, another elbow flexor, 8–10%, in both."
+      },
+      "more": {
+        "sq": "Çdo burrë stërviti një krah në secilën formë, dy herë në javë, me 3–5 sete 8–12RM. Brachialis u rrit sa bicepsi: dallimi mes dy muskujve nuk doli i rëndësishëm, as dallimi mes dy formave.",
+        "en": "Each man trained one arm in each form, twice a week, with 3–5 sets of 8–12RM. The brachialis grew as much as the biceps: the difference between the two muscles was not significant, nor was the difference between the two forms."
+      },
+      "source": {
+        "label": "Attarieh dhe kolegët, 2025",
+        "title": "Comparison Between Shoulder Flexed and Extended Positions in Elbow Flexion Resistance Training on Regional Hypertrophy and Maximum Strength: Preacher versus Bayesian Cable Curls (European Journal of Sport Science)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11906226/",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te studimi me 15 burra, çfarë ndodhi me brachialis pas 10 javësh curl me kabllo?",
+          "en": "In the study of 15 men, what happened to the brachialis after 10 weeks of cable curls?"
+        },
+        "options": [
+          {
+            "sq": "Nuk u rrit fare",
+            "en": "It did not grow at all"
+          },
+          {
+            "sq": "Trashësia u rrit rreth 8–10%",
+            "en": "Its thickness rose about 8–10%"
+          },
+          {
+            "sq": "U rrit vetëm me krahun pas trupit",
+            "en": "It grew only with the arm behind the body"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "one-arm-high-cable-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "One-Arm High Cable Curl"
+      },
+      "text": {
+        "sq": "Bicepsi ka dy koka në lidhjen e sipërme, të shkurtrën dhe të gjatën, dhe kalon mbi bërryl. Kur bërryli është i përkulur, është supinatori më i fuqishëm i parakrahut, domethënë e kthen parakrahun me pëllëmbën lart.",
+        "en": "The biceps has two heads at its upper attachment, a short and a long one, and crosses the elbow. With the elbow bent, it is the forearm’s most powerful supinator, meaning it turns the forearm palm up."
+      },
+      "more": {
+        "sq": "Koka e shkurtër quhet edhe caput breve dhe e gjata caput longum. Është muskuli që punon edhe te ky ushtrim: curl-i me kabllo e ngre dorezën duke e përkulur bërrylin.",
+        "en": "The short head is also called caput breve and the long head caput longum. It is the muscle at work in this exercise too: the cable curl raises the handle by bending the elbow."
+      },
+      "source": {
+        "label": "NIH StatPearls, 2024",
+        "title": "Anatomy, Shoulder and Upper Limb, Biceps Muscle (Tiwana, Charlick, Varacallo)",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK519538/",
+        "year": 2024,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë lëvizjeje të parakrahut e bën bicepsi më fuqishëm kur bërryli është i përkulur?",
+          "en": "Which forearm movement is the biceps strongest at when the elbow is bent?"
+        },
+        "options": [
+          {
+            "sq": "Kthimin me pëllëmbën poshtë (pronim)",
+            "en": "Turning the palm down (pronation)"
+          },
+          {
+            "sq": "Kthimin me pëllëmbën lart (supinim)",
+            "en": "Turning the palm up (supination)"
+          },
+          {
+            "sq": "Përkuljen e kyçit të dorës",
+            "en": "Bending the wrist"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "behind-back-cable-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Behind-Back Cable Curl"
+      },
+      "text": {
+        "sq": "Një studim me 30 burra të patrajnuar (24 e mbaruan) krahasoi, me kabllo, curl-in me shpatullën neutrale dhe me krahun sa më pas trupit. Pas 10 javësh të dy krahët u trashësuan rreth 7–9%, pa dallim kuptimplotë.",
+        "en": "A study of 30 untrained men (24 finished) compared cable curls with a neutral shoulder and with the arm as far behind the body as possible. After 10 weeks both arms thickened about 7–9%, with no meaningful difference."
+      },
+      "more": {
+        "sq": "Profili i rezistencës dhe shtrirja e bërrylit u përputhën mes krahëve, ndaj ndryshonte vetëm këndi i shpatullës. Autorët përfunduan se, kur këto dhe përpjekja përputhen, ndryshimi i këndit të shpatullës vetëm nuk duket të sjellë dallim kuptimplotë në hipertrofi.",
+        "en": "The resistance profile and elbow range were matched between arms, so only the shoulder angle differed. The authors concluded that when these and effort are matched, changing the shoulder angle alone does not seem to make a meaningful difference to hypertrophy."
+      },
+      "source": {
+        "label": "Larsen dhe kolegët, 2026",
+        "title": "The effects of shoulder extension angle on elbow flexor hypertrophy in the cable curl exercise (Frontiers in Physiology)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13076143/",
+        "year": 2026,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te studimi me 30 burra, çfarë gjeti krahasimi i curl-it me krahun pas trupit me atë me shpatullën neutrale?",
+          "en": "In the study of 30 men, what did comparing the arm-behind-body curl with the neutral-shoulder curl find?"
+        },
+        "options": [
+          {
+            "sq": "Krahu pas trupit u rrit shumë më shumë",
+            "en": "The arm-behind-body side grew far more"
+          },
+          {
+            "sq": "Krahu me shpatullën neutrale u rrit shumë më shumë",
+            "en": "The neutral-shoulder side grew far more"
+          },
+          {
+            "sq": "Rritje e ngjashme te të dy krahët",
+            "en": "Similar growth in both arms"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "behind-back-cable-curl-2",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Behind-Back Cable Curl"
+      },
+      "text": {
+        "sq": "Te një studim EMG me 11 vullnetarë me 80% të 1RM-së, curl-i me dumbbell dha aktivizim më të lartë të bicepsit (111% e MVC) se curl-i Bayesian me kabllo, me krahun pas trupit (93%).",
+        "en": "In an EMG study of 11 volunteers at 80% of 1RM, the dumbbell curl gave higher biceps activation (111% of MVC) than the Bayesian cable curl, with the arm behind the body (93%)."
+      },
+      "more": {
+        "sq": "Studimi është eksplorues, me 11 vullnetarë. Autorët e shpjegojnë dallimin me kërkesën mekanike dhe neuromuskulare më të lartë të curl-it konvencional. Aktivizimi më i lartë nuk provon rritje më të madhe të muskulit.",
+        "en": "The study is exploratory, with 11 volunteers. The authors explain the gap by the higher mechanical and neuromuscular demand of the conventional curl. Higher activation does not prove greater muscle growth."
+      },
+      "source": {
+        "label": "Parpa dhe kolegët, 2025",
+        "title": "An Exploratory Study of Biceps Brachii Electromyographic Activity During Traditional Dumbbell Versus Bayesian Cable Curls (Muscles)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12550948/",
+        "year": 2025,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te studimi EMG me 11 vullnetarë, cili curl dha aktivizim më të lartë të bicepsit?",
+          "en": "In the EMG study of 11 volunteers, which curl gave higher biceps activation?"
+        },
+        "options": [
+          {
+            "sq": "Curl-i Bayesian me kabllo",
+            "en": "The Bayesian cable curl"
+          },
+          {
+            "sq": "Curl-i me dumbbell",
+            "en": "The dumbbell curl"
+          },
+          {
+            "sq": "Njësoj te të dy",
+            "en": "The same in both"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "dumbbell-concentration-curl-1",
+      "topic": {
+        "kind": "exercise",
+        "exercise": "Dumbbell Concentration Curl"
+      },
+      "text": {
+        "sq": "Te studimi i ACE-s me 16 vullnetarë (8 burra, 8 gra) me 70% të 1RM-së, concentration curl-i dha aktivizimin më të lartë të bicepsit mes ushtrimeve të krahasuara.",
+        "en": "In the ACE study of 16 volunteers (8 men, 8 women) at 70% of 1RM, the concentration curl gave the highest biceps activation among the exercises compared."
+      },
+      "more": {
+        "sq": "Studimi u bë në Universitetin e Wisconsin–La Crosse, ku John Porcari, PhD, është mes autorëve. Artikulli thotë se te concentration curl-i bicepsi izolohet pothuajse plotësisht.",
+        "en": "The study was done at the University of Wisconsin–La Crosse, where John Porcari, PhD, is among the authors. The article says the concentration curl pretty much totally isolates the biceps."
+      },
+      "source": {
+        "label": "ACE, 2014",
+        "title": "ACE Study Reveals Best Biceps Exercises (ACE ProSource, Young, Porcari, Camic, Kovacs, Foster)",
+        "url": "https://www.acefitness.org/prosourcearticle/4933/ace-study-reveals-best-biceps-exercises",
+        "year": 2014,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Te studimi i ACE-s me 16 vullnetarë, cili ushtrim dha aktivizimin më të lartë të bicepsit?",
+          "en": "In the ACE study of 16 volunteers, which exercise gave the highest biceps activation?"
+        },
+        "options": [
+          {
+            "sq": "Barbell curl",
+            "en": "Barbell curl"
+          },
+          {
+            "sq": "Incline curl",
+            "en": "Incline curl"
+          },
+          {
+            "sq": "Concentration curl",
+            "en": "Concentration curl"
+          },
+          {
+            "sq": "Preacher curl",
+            "en": "Preacher curl"
+          }
+        ],
+        "correct": 2
+      }
+    }
+  ]
+}

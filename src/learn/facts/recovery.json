@@ -1,0 +1,865 @@
+{
+  "group": "recovery",
+  "facts": [
+    {
+      "id": "rest-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "rest"
+      },
+      "text": {
+        "sq": "Një rishikim i 23 studimeve (491 pjesëmarrës) gjeti se për forcën maksimale te të stërvitur duket se duhet pushim mbi 2 minuta mes seteve; te fillestarët mjaftojnë 60–120 s.",
+        "en": "A review of 23 studies (491 participants) found that trained people seem to need rests of over 2 minutes between sets for maximum strength gains; for beginners, 60–120 s is enough."
+      },
+      "more": {
+        "sq": "Rishikimi gjeti edhe se shtim i fortë force arrihet me pushim nën 60 s; pushimi i gjatë duhet vetëm për maksimumin te të stërvitur. Të 23 studimet u vlerësuan me cilësi të mirë ose mesatare.",
+        "en": "The review also found that robust strength gains can be achieved with rests under 60 s; longer rests are needed only to maximise gains in trained people. All 23 studies were rated as good to moderate quality."
+      },
+      "source": {
+        "label": "Grgic dhe kolegët, 2018",
+        "title": "Effects of Rest Interval Duration in Resistance Training on Measures of Muscular Strength: A Systematic Review",
+        "url": "https://doi.org/10.1007/s40279-017-0788-x",
+        "year": 2018,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa pushim mes seteve duket se duhet për forcën maksimale te të stërvitur, sipas këtij rishikimi?",
+          "en": "According to this review, how much rest between sets seems to be needed for maximum strength in trained people?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 30 s",
+            "en": "About 30 s"
+          },
+          {
+            "sq": "Mbi 2 minuta",
+            "en": "Over 2 minutes"
+          },
+          {
+            "sq": "Pa pushim",
+            "en": "No rest"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "rest-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "rest"
+      },
+      "text": {
+        "sq": "Një meta-analizë e 9 studimeve gjeti një përfitim të vogël për rritjen e muskulit kur pushimi mes seteve është mbi 60 s; mbi 90 s nuk u pa dallim i dukshëm.",
+        "en": "A meta-analysis of 9 studies found a small benefit for muscle growth when rest between sets is longer than 60 s; beyond 90 s no appreciable difference was seen."
+      },
+      "more": {
+        "sq": "Autorët mendojnë se përfitimi mund të vijë nga vëllimi më i madh i ngarkesës kur pushon më gjatë. Rezultatet ndryshonin shumë mes studimeve, me heterogjenitet të madh.",
+        "en": "The authors suggest the benefit may be mediated by a greater volume load when resting longer. Results varied a lot between studies, with substantial heterogeneity."
+      },
+      "source": {
+        "label": "Singer dhe kolegët, 2024",
+        "title": "Give it a rest: a systematic review with Bayesian meta-analysis on the effect of inter-set rest interval duration on muscle hypertrophy",
+        "url": "https://doi.org/10.3389/fspor.2024.1429789",
+        "year": 2024,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Mbi cilën kohë pushimi mes seteve meta-analiza nuk gjeti më dallim të dukshëm për rritjen e muskulit?",
+          "en": "Beyond what rest time between sets did the meta-analysis find no appreciable difference in muscle growth?"
+        },
+        "options": [
+          {
+            "sq": "15 s",
+            "en": "15 s"
+          },
+          {
+            "sq": "90 s",
+            "en": "90 s"
+          },
+          {
+            "sq": "45 s",
+            "en": "45 s"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "sleep-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "sleep"
+      },
+      "text": {
+        "sq": "Konsensusi i Akademisë Amerikane të Mjekësisë së Gjumit dhe i Shoqërisë së Kërkimit të Gjumit: të rriturit duhet të flenë 7 orë ose më shumë çdo natë, rregullisht.",
+        "en": "The joint consensus of the American Academy of Sleep Medicine and the Sleep Research Society: adults should sleep 7 or more hours a night on a regular basis."
+      },
+      "more": {
+        "sq": "Të flesh rregullisht më pak se 7 orë lidhet me pasoja shëndetësore negative, si shtimi i peshës, diabeti, sëmundjet e zemrës dhe depresioni, dhe me performancë më të dobët e më shumë gabime.",
+        "en": "Regularly sleeping less than 7 hours is associated with adverse health outcomes such as weight gain, diabetes, heart disease and depression, and with poorer performance and more errors."
+      },
+      "source": {
+        "label": "AASM dhe SRS, 2015",
+        "title": "Recommended Amount of Sleep for a Healthy Adult: A Joint Consensus Statement of the American Academy of Sleep Medicine and Sleep Research Society",
+        "url": "https://www.aasm.org/resources/pdf/adultsleepdurationconsensus.pdf",
+        "year": 2015,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa orë gjumë në natë rekomandon konsensusi për të rriturit?",
+          "en": "How many hours of sleep a night does the consensus recommend for adults?"
+        },
+        "options": [
+          {
+            "sq": "6 orë saktësisht",
+            "en": "Exactly 6 hours"
+          },
+          {
+            "sq": "9 orë saktësisht",
+            "en": "Exactly 9 hours"
+          },
+          {
+            "sq": "7 orë ose më shumë",
+            "en": "7 or more hours"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "sleep-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "sleep"
+      },
+      "text": {
+        "sq": "Një rishikim i 17 studimeve: mungesa e plotë e gjumit pak e ndryshoi forcën, por disa net rresht me gjumë të shkurtuar mund ta ulin forcën në lëvizjet me shumë nyje, jo në ato me një nyje.",
+        "en": "A review of 17 studies: total sleep deprivation had little effect on muscle strength, but consecutive nights of shortened sleep could reduce force in multi-joint movements, though not in single-joint ones."
+      },
+      "more": {
+        "sq": "Autorët i vlerësuan studimet me cilësi mesatare ose të dobët. Ata shkruajnë se forca maksimale në lëvizjet e përbëra bie kur nuk ka masa për të shtuar motivimin, si stërvitja në grup ose kafeina.",
+        "en": "The authors rated the studies as moderate or weak in quality. They write that maximal strength in compound movements is impaired when nothing is done to increase motivation, such as training in a group or taking caffeine."
+      },
+      "source": {
+        "label": "Knowles dhe kolegët, 2018",
+        "title": "Inadequate sleep and muscle strength: Implications for resistance training",
+        "url": "https://doi.org/10.1016/j.jsams.2018.01.012",
+        "year": 2018,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në cilat lëvizje gjeti rishikimi rënie force pas disa netësh me gjumë të shkurtuar?",
+          "en": "In which movements did the review find reduced force after several nights of shortened sleep?"
+        },
+        "options": [
+          {
+            "sq": "Në ato me shumë nyje",
+            "en": "In multi-joint movements"
+          },
+          {
+            "sq": "Vetëm në ato me një nyje",
+            "en": "Only in single-joint movements"
+          },
+          {
+            "sq": "Askund",
+            "en": "Nowhere"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "protein-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "protein"
+      },
+      "text": {
+        "sq": "Meta-analizë e 49 studimeve (1863 pjesëmarrës) me stërvitje me pesha dhe proteinë shtesë: përtej rreth 1,6 g proteinë për kg peshë në ditë gjithsej, shtimi i masës pa dhjamë nuk u dallua më qartë.",
+        "en": "A meta-analysis of 49 studies (1,863 participants) of resistance training with protein supplements: beyond about 1.6 g of total protein per kg of body weight a day, the gain in fat-free mass was no longer clearly distinguishable."
+      },
+      "more": {
+        "sq": "Pika e thyerjes (1,62 g/kg në ditë) doli nga një analizë më e vogël (42 grupe, 723 persona) dhe nuk ishte statistikisht e rëndësishme (p = 0,079); intervali i besimit 95% shkonte nga 1,03 deri 2,20. Ndaj autorët thonë se ~2,2 g/kg në ditë mund të jetë zgjedhje e matur.",
+        "en": "The break point (1.62 g/kg a day) came from a smaller analysis (42 study arms, 723 people) and was not statistically significant (p = 0.079); its 95% confidence interval ran from 1.03 to 2.20. So the authors say ~2.2 g/kg a day may be a prudent recommendation."
+      },
+      "source": {
+        "label": "Morton dhe kolegët, 2018",
+        "title": "A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength in healthy adults",
+        "url": "https://doi.org/10.1136/bjsports-2017-097608",
+        "year": 2018,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Rreth cilës sasi totale proteine në ditë e vendosi pragu meta-analiza e Morton, përtej të cilit shtimi nuk dallohej më qartë?",
+          "en": "Around what total daily protein intake did the Morton meta-analysis place its break point, beyond which the gain was no longer clearly distinguishable?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 3,0 g/kg",
+            "en": "About 3.0 g/kg"
+          },
+          {
+            "sq": "Rreth 0,8 g/kg",
+            "en": "About 0.8 g/kg"
+          },
+          {
+            "sq": "Rreth 1,6 g/kg",
+            "en": "About 1.6 g/kg"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "protein-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "protein"
+      },
+      "text": {
+        "sq": "ISSN: rekomandimi i përgjithshëm është rreth 0,25 g proteinë për kg peshë (20–40 g) për dozë, në mënyrë ideale çdo 3–4 orë gjatë ditës.",
+        "en": "ISSN: the general recommendation is about 0.25 g of protein per kg of body weight (20–40 g) per dose, ideally every 3–4 hours across the day."
+      },
+      "more": {
+        "sq": "Për të ndërtuar muskul, ISSN e quan të mjaftueshme 1,4–2,0 g proteinë për kg peshë në ditë për pjesën më të madhe të atyre që stërvitën. Rekomandimet për dozën për vakt janë të përziera dhe varen nga mosha dhe stërvitja e fundit.",
+        "en": "For building muscle, ISSN considers 1.4–2.0 g of protein per kg of body weight a day sufficient for most people who exercise. Recommendations for the dose per serving are mixed and depend on age and recent training."
+      },
+      "source": {
+        "label": "ISSN, 2017",
+        "title": "International Society of Sports Nutrition Position Stand: protein and exercise",
+        "url": "https://doi.org/10.1186/s12970-017-0177-8",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çdo sa orë e rekomandon ISSN në mënyrë ideale dozat e proteinës gjatë ditës?",
+          "en": "How often does ISSN ideally recommend spreading protein doses across the day?"
+        },
+        "options": [
+          {
+            "sq": "Çdo 1 orë",
+            "en": "Every hour"
+          },
+          {
+            "sq": "Çdo 3–4 orë",
+            "en": "Every 3–4 hours"
+          },
+          {
+            "sq": "Vetëm një herë, pas stërvitjes",
+            "en": "Only once, after training"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "hydration-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "hydration"
+      },
+      "text": {
+        "sq": "ACSM: gjatë stërvitjes synimi është të mos humbasësh mbi 2% të peshës trupore si ujë; djersitja ndryshon shumë nga personi, ndaj matet duke u peshuar para dhe pas.",
+        "en": "ACSM: during exercise, the goal is not to lose more than 2% of body weight as water; sweat rates vary a lot between people, so they are estimated by weighing yourself before and after."
+      },
+      "more": {
+        "sq": "Pas stërvitjes qëllimi është të zëvendësohet deficiti i lëngjeve dhe i elektroliteve. Pijet me elektrolite dhe karbohidrate mund të japin përfitim ndaj ujit vetëm në disa rrethana.",
+        "en": "After exercise, the goal is to replace any fluid and electrolyte deficit. Drinks with electrolytes and carbohydrates can provide benefits over water alone only under certain circumstances."
+      },
+      "source": {
+        "label": "ACSM, 2007",
+        "title": "American College of Sports Medicine position stand. Exercise and fluid replacement",
+        "url": "https://doi.org/10.1249/mss.0b013e31802ca597",
+        "year": 2007,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Mbi çfarë humbjeje të peshës trupore nga uji flet ACSM për dehidrim të tepërt gjatë stërvitjes?",
+          "en": "Above what body weight loss from water does ACSM speak of excessive dehydration during exercise?"
+        },
+        "options": [
+          {
+            "sq": "2%",
+            "en": "2%"
+          },
+          {
+            "sq": "5%",
+            "en": "5%"
+          },
+          {
+            "sq": "10%",
+            "en": "10%"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "warmup-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "warmup"
+      },
+      "text": {
+        "sq": "Një meta-analizë e 32 studimeve gjeti se ngrohja para aktivitetit përmirësoi performancën në 79% të kritereve të matura.",
+        "en": "A meta-analysis of 32 studies found that warming up improved performance in 79% of the criteria examined."
+      },
+      "more": {
+        "sq": "Studimet ishin me cilësi të lartë (6,5–9 nga 10), por pak prej tyre ishin prova të rastësuara me kontroll. Autorët shtojnë se ka pak prova që ngrohja i dëmton ata që stërvitën.",
+        "en": "The studies were of high quality (6.5–9 out of 10), but few were well-conducted randomised controlled trials. The authors add that there is little evidence that warming up is detrimental to participants."
+      },
+      "source": {
+        "label": "Fradkin dhe kolegët, 2010",
+        "title": "Effects of warming-up on physical performance: a systematic review with meta-analysis",
+        "url": "https://doi.org/10.1519/jsc.0b013e3181c643a0",
+        "year": 2010,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Në sa përqind të kritereve ngrohja përmirësoi performancën sipas meta-analizës së 32 studimeve?",
+          "en": "In what percentage of criteria did warming up improve performance in the meta-analysis of 32 studies?"
+        },
+        "options": [
+          {
+            "sq": "50%",
+            "en": "50%"
+          },
+          {
+            "sq": "79%",
+            "en": "79%"
+          },
+          {
+            "sq": "95%",
+            "en": "95%"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "warmup-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "warmup"
+      },
+      "text": {
+        "sq": "Një rishikim i 5 provave të rastësuara: 3 gjetën më pak lëndime pas ngrohjes, 2 jo. Prova nuk mjafton as për ta mbështetur, as për ta hequr ngrohjen, por pesha e provave anon nga ulja e rrezikut.",
+        "en": "A review of 5 randomised trials: 3 found fewer injuries after warming up, 2 did not. The evidence is insufficient to endorse or discontinue routine warm-up, but its weight favours a decreased risk of injury."
+      },
+      "more": {
+        "sq": "Të 5 studimet ishin me cilësi të lartë. Autorët thonë se duhen prova të rastësuara të mirëkryera për ta vendosur çështjen.",
+        "en": "All 5 studies were of high quality. The authors say further well-conducted randomised controlled trials are needed to settle the question."
+      },
+      "source": {
+        "label": "Fradkin dhe kolegët, 2006",
+        "title": "Does warming up prevent injury in sport? The evidence from randomised controlled trials?",
+        "url": "https://doi.org/10.1016/j.jsams.2006.03.026",
+        "year": 2006,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa nga 5 provat e rastësuara gjetën se ngrohja ul ndjeshëm lëndimet?",
+          "en": "How many of the 5 randomised trials found that warming up significantly reduces injuries?"
+        },
+        "options": [
+          {
+            "sq": "Të 5",
+            "en": "All 5"
+          },
+          {
+            "sq": "3",
+            "en": "3"
+          },
+          {
+            "sq": "Asnjë",
+            "en": "None"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "progression-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "progression"
+      },
+      "text": {
+        "sq": "ACSM: kur mund ta bësh peshën aktuale me 1–2 përsëritje mbi objektivin, rritja e ngarkesës me 2–10% është e rekomanduar.",
+        "en": "ACSM: when you can do your current load for 1–2 repetitions over the target, increasing the load by 2–10% is recommended."
+      },
+      "more": {
+        "sq": "Për fillestarët ACSM rekomandon ngarkesa që përputhen me 8–12 përsëritje maksimale (8–12 RM) dhe 2–3 stërvitje në javë. Rekomandimet varen nga qëllimet dhe aftësitë e personit.",
+        "en": "For novices, ACSM recommends loads that correspond to 8–12 repetition maximum (8–12 RM) and 2–3 training days a week. The recommendations depend on the person's goals and physical capacity."
+      },
+      "source": {
+        "label": "ACSM, 2009",
+        "title": "American College of Sports Medicine position stand. Progression models in resistance training for healthy adults",
+        "url": "https://doi.org/10.1249/mss.0b013e3181915670",
+        "year": 2009,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sipas ACSM, me sa rritet ngarkesa kur bën 1–2 përsëritje mbi objektivin?",
+          "en": "According to ACSM, by how much should the load rise when you do 1–2 repetitions over the target?"
+        },
+        "options": [
+          {
+            "sq": "15–25%",
+            "en": "15–25%"
+          },
+          {
+            "sq": "0,5–1%",
+            "en": "0.5–1%"
+          },
+          {
+            "sq": "2–10%",
+            "en": "2–10%"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "effort-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "effort"
+      },
+      "text": {
+        "sq": "Meta-analizë e 15 studimeve: nuk ka prova që stërvitja deri në dështim muskulor të plotë e rrit muskulin më shumë se ajo që ndalon para tij.",
+        "en": "A meta-analysis of 15 studies: there is no evidence that training to momentary muscular failure builds more muscle than training that stops short of it."
+      },
+      "more": {
+        "sq": "Kur dështimi i setit u përkufizua më gjerë, u pa një avantazh i parëndësishëm (madhësia e efektit 0,19). Për dështimin e plotë muskulor, efekti ishte 0,12 me interval besimi nga -0,13 deri 0,37, pra pa dallim të prerë.",
+        "en": "When set failure was defined more broadly, a trivial advantage was seen (effect size 0.19). For momentary muscular failure, the effect was 0.12 with a confidence interval of -0.13 to 0.37, so no clear difference."
+      },
+      "source": {
+        "label": "Refalo dhe kolegët, 2023",
+        "title": "Influence of Resistance Training Proximity-to-Failure on Skeletal Muscle Hypertrophy: A Systematic Review with Meta-analysis",
+        "url": "https://doi.org/10.1007/s40279-022-01784-y",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti meta-analiza për stërvitjen deri në dështim të plotë, krahasuar me ndalimin para tij?",
+          "en": "What did the meta-analysis find for training to momentary failure compared with stopping short of it?"
+        },
+        "options": [
+          {
+            "sq": "Rritje shumë më e madhe e muskulit",
+            "en": "Much greater muscle growth"
+          },
+          {
+            "sq": "Asnjë provë se është më e mirë",
+            "en": "No evidence that it is better"
+          },
+          {
+            "sq": "Rritje më e vogël e muskulit",
+            "en": "Smaller muscle growth"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "soreness-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "soreness"
+      },
+      "text": {
+        "sq": "Rishikim për dhimbjen muskulore të vonuar (DOMS): shtrirja nuk dha efekt, ndërsa ushtrimi është mënyra më efektive për ta zbutur, por vetëm përkohësisht.",
+        "en": "A review of delayed onset muscle soreness (DOMS): stretching showed no effect, while exercise is the most effective way to ease it, but only temporarily."
+      },
+      "more": {
+        "sq": "DOMS shfaqet më shpesh kur kthehesh në stërvitje pas një pushimi ose kur provon aktivitete të reja; ushtrimet ekscentrike shkaktojnë mikrodëmtime më shpesh dhe më rëndë. Autorët rekomandojnë futjen graduale të ushtrimeve të reja brenda 1–2 javëve.",
+        "en": "DOMS is most common when returning to training after a break or when trying new activities; eccentric exercise causes micro-injury more often and more severely. The authors recommend introducing new exercises gradually over 1–2 weeks."
+      },
+      "source": {
+        "label": "Cheung dhe kolegët, 2003",
+        "title": "Delayed onset muscle soreness: treatment strategies and performance factors",
+        "url": "https://doi.org/10.2165/00007256-200333020-00005",
+        "year": 2003,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sipas rishikimit, cila është mënyra më efektive për ta zbutur dhimbjen gjatë DOMS, edhe pse përkohësisht?",
+          "en": "According to the review, what is the most effective way to ease pain during DOMS, even if only temporarily?"
+        },
+        "options": [
+          {
+            "sq": "Shtrirja",
+            "en": "Stretching"
+          },
+          {
+            "sq": "Ultratingulli",
+            "en": "Ultrasound"
+          },
+          {
+            "sq": "Ushtrimi",
+            "en": "Exercise"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "soreness-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "soreness"
+      },
+      "text": {
+        "sq": "Meta-analizë e 20 studimeve: pas seancës së dytë me ushtrime me shumë nyje, dhimbja muskulore (DOMS) ishte dukshëm më e vogël se pas të parës, në 24 dhe 48 orë.",
+        "en": "A meta-analysis of 20 studies: after the second bout of multi-joint exercise, muscle soreness (DOMS) was significantly lower than after the first, at 24 and 48 hours."
+      },
+      "more": {
+        "sq": "Edhe forca dhe kërcimi vertikal ranë më pak pas seancës së dytë. Autorët e shpjegojnë me efektin e provës së përsëritur: një seancë e mëparshme mund të mbrojë nga dëmtimi i muskulit në seancat e mëpasshme.",
+        "en": "Strength and vertical jump also dropped less after the second bout. The authors explain this with the repeated bout effect: a single earlier bout may protect against muscle damage in later bouts."
+      },
+      "source": {
+        "label": "Doma dhe kolegët, 2023",
+        "title": "The Repeated Bout Effect of Multiarticular Exercises on Muscle Damage Markers and Physical Performances: A Systematic Review and Meta-Analyses",
+        "url": "https://doi.org/10.1519/jsc.0000000000004628",
+        "year": 2023,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Çfarë gjeti meta-analiza për dhimbjen DOMS pas seancës së dytë krahasuar me të parën?",
+          "en": "What did the meta-analysis find for DOMS after the second bout compared with the first?"
+        },
+        "options": [
+          {
+            "sq": "Ishte e njëjtë",
+            "en": "It was the same"
+          },
+          {
+            "sq": "Ishte më e vogël",
+            "en": "It was lower"
+          },
+          {
+            "sq": "Ishte më e madhe",
+            "en": "It was higher"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "volume-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "volume"
+      },
+      "text": {
+        "sq": "Meta-regresioni i 15 studimeve: çdo set shtesë në javë për një muskul shoqërohej me rreth 0,37 pikë përqindjeje më shumë rritje të përmasave të muskulit.",
+        "en": "A meta-regression of 15 studies: each additional weekly set per muscle was associated with about 0.37 percentage points more gain in muscle size."
+      },
+      "more": {
+        "sq": "Autorët e quajnë lidhjen graduale doze-përgjigje: më shumë vëllim, më shumë rritje. Kur setet u ndanë në nën 5, 5–9 dhe 10+ në javë, efekti ishte vetëm një prirje (P = 0,074).",
+        "en": "The authors describe a graded dose-response relationship: more volume, more growth. When weekly sets were split into under 5, 5–9 and 10+, the effect was only a trend (P = 0.074)."
+      },
+      "source": {
+        "label": "Schoenfeld dhe kolegët, 2017",
+        "title": "Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis",
+        "url": "https://doi.org/10.1080/02640414.2016.1210197",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa rritje shtesë të muskulit shoqëronte çdo set shtesë javor sipas meta-regresionit?",
+          "en": "How much extra muscle gain was associated with each additional weekly set in the meta-regression?"
+        },
+        "options": [
+          {
+            "sq": "Rreth 0,04 pikë përqindjeje",
+            "en": "About 0.04 percentage points"
+          },
+          {
+            "sq": "Rreth 0,37 pikë përqindjeje",
+            "en": "About 0.37 percentage points"
+          },
+          {
+            "sq": "Rreth 3,7 pikë përqindjeje",
+            "en": "About 3.7 percentage points"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "frequency-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "frequency"
+      },
+      "text": {
+        "sq": "Meta-analizë e 25 studimeve: kur vëllimi javor është i barabartë, të stërvitësh një muskul më shpesh ose më rrallë nuk ndryshon dukshëm rritjen e tij.",
+        "en": "A meta-analysis of 25 studies: when weekly volume is equated, training a muscle more or less often does not meaningfully change its growth."
+      },
+      "more": {
+        "sq": "Autorët përfundojnë se, për të njëjtin vëllim, frekuencën javore për çdo muskul mund ta zgjedhësh sipas preferencës. Kur vëllimi nuk ishte i barabartë, frekuencat më të larta dhanë një avantazh të vogël.",
+        "en": "The authors conclude that, for a given volume, you can choose the weekly frequency per muscle group based on personal preference. When volume was not equated, higher frequencies gave a modest advantage."
+      },
+      "source": {
+        "label": "Schoenfeld dhe kolegët, 2019",
+        "title": "How many times per week should a muscle be trained to maximize muscle hypertrophy? A systematic review and meta-analysis of studies examining the effects of resistance training frequency",
+        "url": "https://doi.org/10.1080/02640414.2018.1555906",
+        "year": 2019,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Kur vëllimi javor është i barabartë, çfarë gjeti meta-analiza për frekuencën e stërvitjes së një muskuli?",
+          "en": "When weekly volume is equal, what did the meta-analysis find about how often a muscle is trained?"
+        },
+        "options": [
+          {
+            "sq": "Një herë në javë është më mirë",
+            "en": "Once a week is better"
+          },
+          {
+            "sq": "Më shpesh është shumë më mirë",
+            "en": "Training more often is much better"
+          },
+          {
+            "sq": "Pa dallim të rëndësishëm",
+            "en": "No meaningful difference"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "tempo-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "tempo"
+      },
+      "text": {
+        "sq": "Meta-analizë e 8 studimeve: rritja e muskulit ishte e ngjashme kur një përsëritje zgjaste nga 0,5 deri në 8 s.",
+        "en": "A meta-analysis of 8 studies: muscle growth was similar when a repetition lasted anywhere from 0.5 to 8 s."
+      },
+      "more": {
+        "sq": "Përsëritjet shumë të ngadalta, mbi 10 s secila, dukeshin më të dobëta, por autorët thonë se pak studime të kontrolluara e bëjnë të vështirë një përfundim të prerë. Studimet kërkonin stërvitje deri në dështim të setit.",
+        "en": "Very slow repetitions, over 10 s each, looked inferior, but the authors say the lack of controlled studies makes a definitive conclusion difficult. The studies required training to set failure."
+      },
+      "source": {
+        "label": "Schoenfeld dhe kolegët, 2015",
+        "title": "Effect of repetition duration during resistance training on muscle hypertrophy: a systematic review and meta-analysis",
+        "url": "https://doi.org/10.1007/s40279-015-0304-0",
+        "year": 2015,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili interval kohëzgjatjeje të një përsëritjeje dha rritje të ngjashme të muskulit sipas meta-analizës?",
+          "en": "Which repetition duration range gave similar muscle growth according to the meta-analysis?"
+        },
+        "options": [
+          {
+            "sq": "Vetëm 0,5–2 s",
+            "en": "Only 0.5–2 s"
+          },
+          {
+            "sq": "0,5–8 s",
+            "en": "0.5–8 s"
+          },
+          {
+            "sq": "2–20 s",
+            "en": "2–20 s"
+          }
+        ],
+        "correct": 1
+      }
+    },
+    {
+      "id": "creatine-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "creatine"
+      },
+      "text": {
+        "sq": "ISSN: pa ngarkim, 3–5 g kreatinë monohidrat në ditë e rrit rezervën e kreatinës në muskul brenda 3–4 javësh; efektet e hershme në performancë mbështeten më pak.",
+        "en": "ISSN: without a loading phase, 3–5 g of creatine monohydrate a day raises muscle creatine stores over 3–4 weeks; the early performance effects are less supported."
+      },
+      "more": {
+        "sq": "Rruga më e shpejtë mund të jetë ngarkimi me rreth 0,3 g/kg në ditë për 5–7 ditë, pastaj 3–5 g në ditë për ta mbajtur. Një protokoll tjetër është 3 g në ditë për 28 ditë.",
+        "en": "The quickest route may be loading with about 0.3 g/kg a day for 5–7 days, then 3–5 g a day to maintain. Another protocol is 3 g a day for 28 days."
+      },
+      "source": {
+        "label": "Kreider dhe kolegët, 2017",
+        "title": "International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation in exercise, sport, and medicine",
+        "url": "https://doi.org/10.1186/s12970-017-0173-z",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Me 3–5 g kreatinë në ditë pa ngarkim, brenda sa kohe rritet rezerva në muskul sipas ISSN?",
+          "en": "With 3–5 g of creatine a day and no loading, over how long do muscle stores rise according to ISSN?"
+        },
+        "options": [
+          {
+            "sq": "Brenda 3–4 ditësh",
+            "en": "Within 3–4 days"
+          },
+          {
+            "sq": "Brenda 6 muajsh",
+            "en": "Within 6 months"
+          },
+          {
+            "sq": "Brenda 3–4 javësh",
+            "en": "Within 3–4 weeks"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "creatine-2",
+      "topic": {
+        "kind": "recovery",
+        "theme": "creatine"
+      },
+      "text": {
+        "sq": "Sipas ISSN, i vetmi efekt anësor që raportohet vazhdimisht nga kreatina në literaturë është shtimi i peshës.",
+        "en": "According to ISSN, the only consistently reported side effect of creatine in the literature is weight gain."
+      },
+      "more": {
+        "sq": "Pozicioni i ISSN nuk gjen prova bindëse për dëm te njerëzit e shëndetshëm në dozat e studiuara, si në përdorimin afatshkurtër ashtu edhe në atë afatgjatë. Autorët shtojnë se marrja e zakonshme e rreth 3 g kreatinë në ditë nga dieta, gjatë gjithë jetës, mund të sjellë përfitime shëndetësore.",
+        "en": "The ISSN position stand finds no compelling evidence of harm in healthy people at the doses studied, in either short- or long-term use. The authors add that habitually ingesting about 3 g of creatine a day from the diet throughout life may provide significant health benefits."
+      },
+      "source": {
+        "label": "Kreider dhe kolegët, 2017",
+        "title": "International Society of Sports Nutrition position stand: safety and efficacy of creatine supplementation in exercise, sport, and medicine",
+        "url": "https://doi.org/10.1186/s12970-017-0173-z",
+        "year": 2017,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Cili është i vetmi efekt anësor që raportohet vazhdimisht për kreatinën sipas ISSN?",
+          "en": "What is the only consistently reported side effect of creatine according to ISSN?"
+        },
+        "options": [
+          {
+            "sq": "Shtim i peshës",
+            "en": "Weight gain"
+          },
+          {
+            "sq": "Dhimbje koke",
+            "en": "Headaches"
+          },
+          {
+            "sq": "Dëmtim i veshkave",
+            "en": "Kidney damage"
+          }
+        ],
+        "correct": 0
+      }
+    },
+    {
+      "id": "caffeine-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "caffeine"
+      },
+      "text": {
+        "sq": "ISSN: kafeina e përmirëson vazhdimisht performancën në doza 3–6 mg për kg peshë, zakonisht e marrë rreth 60 minuta para stërvitjes; dozat shumë të larta (9 mg/kg) lidhen me më shumë efekte anësore.",
+        "en": "ISSN: caffeine consistently improves performance at doses of 3–6 mg per kg of body weight, most commonly taken about 60 minutes before exercise; very high doses (9 mg/kg) are associated with more side effects."
+      },
+      "more": {
+        "sq": "Doza minimale efektive mund të jetë edhe vetëm 2 mg/kg. Përgjigja ndryshon nga personi, përfshirë efektet te gjumi dhe ankthi, dhe sasia e kafeinës që merr zakonisht mund të luajë rol.",
+        "en": "The minimum effective dose may be as low as 2 mg/kg. Response differs between individuals, including effects on sleep and anxiety, and habitual caffeine intake may also play a role."
+      },
+      "source": {
+        "label": "Guest dhe kolegët, 2021",
+        "title": "International society of sports nutrition position stand: caffeine and exercise performance",
+        "url": "https://doi.org/10.1186/s12970-020-00383-4",
+        "year": 2021,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Sa kohë para stërvitjes merret më shpesh kafeina sipas ISSN?",
+          "en": "How long before exercise is caffeine most commonly taken according to ISSN?"
+        },
+        "options": [
+          {
+            "sq": "5 minuta",
+            "en": "5 minutes"
+          },
+          {
+            "sq": "4 orë",
+            "en": "4 hours"
+          },
+          {
+            "sq": "60 minuta",
+            "en": "60 minutes"
+          }
+        ],
+        "correct": 2
+      }
+    },
+    {
+      "id": "recovery-1",
+      "topic": {
+        "kind": "recovery",
+        "theme": "recovery"
+      },
+      "text": {
+        "sq": "Në një studim me 8 persona të pastërvitur, sinteza e proteinës në muskul ishte 112% mbi pushimin 3 orë pas stërvitjes me pesha, 65% pas 24 orësh dhe 34% pas 48 orësh.",
+        "en": "In a study of 8 untrained people, muscle protein synthesis was 112% above rest 3 hours after resistance exercise, 65% after 24 hours and 34% after 48 hours."
+      },
+      "more": {
+        "sq": "Zbërthimi i proteinës u rrit deri në 24 orë dhe u kthye në nivelin e pushimit nga ora 48. Bilanci neto i proteinës mbeti i rritur deri në 48 orë. Pjesëmarrësit ishin 4 burra dhe 4 gra, të matur pa ngrënë.",
+        "en": "Protein breakdown was raised up to 24 hours and returned to resting levels by 48 hours. Net protein balance stayed increased up to 48 hours. Participants were 4 men and 4 women, measured in the fasted state."
+      },
+      "source": {
+        "label": "Phillips dhe kolegët, 1997",
+        "title": "Mixed muscle protein synthesis and breakdown after resistance exercise in humans",
+        "url": "https://doi.org/10.1152/ajpendo.1997.273.1.e99",
+        "year": 1997,
+        "checked": "2026-11-16"
+      },
+      "quiz": {
+        "question": {
+          "sq": "Gjatë sa orëve të matura pas stërvitjes me pesha ishte e rritur sinteza e proteinës në muskul në këtë studim?",
+          "en": "Over how many measured hours after resistance exercise was muscle protein synthesis raised in this study?"
+        },
+        "options": [
+          {
+            "sq": "Deri në 48 orë",
+            "en": "Up to 48 hours"
+          },
+          {
+            "sq": "Deri në 6 orë",
+            "en": "Up to 6 hours"
+          },
+          {
+            "sq": "Vetëm 1 orë",
+            "en": "Only 1 hour"
+          }
+        ],
+        "correct": 0
+      }
+    }
+  ]
+}

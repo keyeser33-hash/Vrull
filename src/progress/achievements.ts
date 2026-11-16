@@ -1,3 +1,4 @@
+import { quizAchievement, type QuizWeek } from '@/learn/quiz'
 import { shiftDate } from '@/lib/calendar'
 import type { MissedInput } from '@/program/missed-day'
 import {
@@ -17,14 +18,15 @@ import {
   weekDates,
 } from './weekly-goals'
 
-// Arritjet (V43, SPEC §0.3c, V2-E2-21), pa UI dhe pa bazë: dhjetë shenja me rregull të qartë, secila
+// Arritjet (V43, SPEC §0.3c, V2-E2-21), pa UI dhe pa bazë: njëmbëdhjetë shenja me rregull të qartë, secila
 // jepet një herë. Për çdo arritje: kur u plotësua rregulli për herë të parë sipas historisë (data e
 // ngjarjes, jo "sot", që rillogaritja të japë gjithmonë të njëjtën datë) dhe sa mungon. Qëllimet e javës,
 // dita rezervë dhe vargu vijnë nga `weekly-goals.ts`; rekordet nga `sessionRecords` (vetëm me një e1RM të
-// mëparshme, `e1rmRecord`). Ruajtja (një herë, pa ndryshuar datën) është te `data/achievements.ts`.
+// mëparshme, `e1rmRecord`); "Kuizi 4 javë" (§0.3e) nga javët e kuizit (`learn/quiz.ts`). Ruajtja (një herë, pa
+// ndryshuar datën) është te `data/achievements.ts`.
 
 /** Çelësat e arritjeve, me radhën e SPEC-ut (forma e kolonës `key`: ^[a-z0-9_]{1,40}$). */
-export const ACHIEVEMENT_KEYS = ['first_session', 'first_record', 'full_week', 'streak_4', 'records_10', 'phase_1', 'sessions_25', 'food_7', 'water_7', 'programme'] as const
+export const ACHIEVEMENT_KEYS = ['first_session', 'first_record', 'full_week', 'streak_4', 'records_10', 'phase_1', 'sessions_25', 'food_7', 'water_7', 'programme', 'quiz_4'] as const
 
 export type AchievementKey = (typeof ACHIEVEMENT_KEYS)[number]
 
@@ -76,6 +78,10 @@ export interface AchievementInput {
   food: readonly IntakeDay[]
   /** Ditët me ujë: mililitrat dhe objektivi i ditës. */
   water: readonly IntakeDay[]
+  /** Javët e kuizit me radhë (§0.3e): kur u mbyll dhe nëse ishte i mundshëm. */
+  quizWeeks: readonly QuizWeek[]
+  /** Java e kuizit të hapur tani (e diela 20:00 deri të hënën); null jashtë saj. */
+  quizOpenMonday: string | null
 }
 
 export interface AchievementProgress {
@@ -244,7 +250,7 @@ function acrossProgrammes(results: { id: string; result: ProgrammeResult['phase'
 
 // --- Të gjitha ---
 
-/** Gjendja e dhjetë arritjeve sipas historisë, me radhën e `ACHIEVEMENT_KEYS`. */
+/** Gjendja e njëmbëdhjetë arritjeve sipas historisë, me radhën e `ACHIEVEMENT_KEYS`. */
 export function achievementStates(input: AchievementInput): AchievementState[] {
   const { today } = input
   const completed = input.sessions.filter((entry) => entry.status === 'completed').sort((a, b) => completedOrder(a).localeCompare(completedOrder(b)))
@@ -304,6 +310,7 @@ export function achievementStates(input: AchievementInput): AchievementState[] {
   }
   const foodWeek = allWeek(input.food, FOOD_SHARE, today)
   const waterWeek = allWeek(input.water, WATER_SHARE, today)
+  const quiz = quizAchievement(input.quizWeeks, input.quizOpenMonday)
   const states: Record<AchievementKey, AchievementState> = {
     first_session: byCount('first_session', completed, 1),
     first_record: byCount('first_record', records, 1),
@@ -315,6 +322,7 @@ export function achievementStates(input: AchievementInput): AchievementState[] {
     food_7: { key: 'food_7', ...foodWeek },
     water_7: { key: 'water_7', ...waterWeek },
     programme: { key: 'programme', ...programme },
+    quiz_4: { key: 'quiz_4', met: quiz.met ? { date: quiz.met.date, sessionId: null } : null, progress: quiz.progress },
   }
   return ACHIEVEMENT_KEYS.map((key) => states[key])
 }
