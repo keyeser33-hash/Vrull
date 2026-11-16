@@ -1,6 +1,9 @@
 import type { ExternalFood } from '@/nutrition/off'
 import type { LocalStore } from './store'
 import type { LocalRow } from './tables'
+import { catalogSavedName, type CatalogLanguage } from '@/catalog/names'
+import { commonPortion } from '@/catalog/search'
+import type { CatalogFood } from '@/catalog/types'
 import { numberOrNull } from '@/lib/number'
 
 // Ushqimet e përdoruesit (SPEC §9, TH-15): të krijuara me dorë, nga Open Food Facts ose USDA, dhe
@@ -9,8 +12,8 @@ import { numberOrNull } from '@/lib/number'
 
 export interface Food {
   id: string
-  source: 'off' | 'usda' | 'custom' | 'template'
-  /** `jim:<çelësi>` për shabllonin, kodi i produktit për Open Food Facts dhe USDA; null për të tuat. */
+  source: 'off' | 'usda' | 'custom' | 'template' | 'catalog'
+  /** `jim:<çelësi>` për shabllonin, kodi i produktit për Open Food Facts dhe USDA, ID e Listës së Vrullit ("ciqual-22000") për `catalog`; null për të tuat. */
   sourceId: string | null
   name: string
   brand: string | null
@@ -123,6 +126,30 @@ export async function saveExternalFood(store: LocalStore, food: ExternalFood): P
     fiber_g: food.fiberG,
     serving_g: food.servingG,
     serving_label: food.servingLabel,
+  })
+  return row.id
+}
+
+/**
+ * Një ushqim i Listës së Vrullit që shtohet (te shporta ose te sasia): ruhet te ushqimet e përdoruesit një herë, sipas ID-së së listës,
+ * me porcionin e zakonshëm të burimit (V59). Emri ruhet në gjuhën e atij çasti.
+ */
+export async function saveCatalogFood(store: LocalStore, food: CatalogFood, language: CatalogLanguage): Promise<string> {
+  const [existing] = await store.where('foods', '[source+source_id]', ['catalog', food.id])
+  const portion = commonPortion(food)
+  const row = await store.put('foods', {
+    id: existing?.id,
+    source: 'catalog',
+    source_id: food.id,
+    name: catalogSavedName(language, food),
+    brand: null,
+    kcal: food.kcal,
+    protein_g: food.proteinG,
+    carbs_g: food.carbsG,
+    fat_g: food.fatG,
+    fiber_g: food.fiberG,
+    serving_g: portion.label ? portion.grams : null,
+    serving_label: portion.label,
   })
   return row.id
 }

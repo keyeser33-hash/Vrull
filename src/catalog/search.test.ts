@@ -1,0 +1,112 @@
+import { buildIndex, commonPortion, normalize, searchCatalog } from './search'
+import type { CatalogFood } from './types'
+
+const food = (overrides: Partial<CatalogFood> & { id: string; nameEn: string }): CatalogFood => ({
+  nameSq: null,
+  nameSqChecked: false,
+  group: 'G',
+  source: 'usda_sr_legacy',
+  license: 'CC0-1.0',
+  kcal: 100,
+  proteinG: 5,
+  carbsG: 10,
+  fatG: 2,
+  fiberG: null,
+  portions: [],
+  alsoIn: [],
+  commonRank: null,
+  ...overrides,
+})
+
+const egg = food({ id: 'usda-fdc-1', nameEn: 'Egg, whole, raw, fresh', nameSq: 'Vezë', commonRank: 3 })
+const eggBoiled = food({ id: 'usda-fdc-2', nameEn: 'Egg, whole, cooked, hard-boiled', nameSq: 'Vezë e zier', commonRank: 4 })
+const eggWhiteFrench = food({ id: 'ciqual-1', source: 'ciqual', nameEn: 'Egg white, raw' })
+const eggnog = food({ id: 'usda-fdc-3', nameEn: 'Eggnog' })
+const cheese = food({ id: 'usda-fdc-4', nameEn: 'Cheese, feta', nameSq: 'Djathë i bardhë', commonRank: 10 })
+const cheddar = food({ id: 'usda-fdc-5', nameEn: 'Cheese, cheddar', nameSq: 'Djathë çedar', commonRank: 11 })
+const chicken = food({ id: 'usda-fdc-6', nameEn: 'Chicken, breast, raw', nameSq: 'Gjoks pule', commonRank: 1 })
+const chickpeas = food({ id: 'usda-fdc-7', nameEn: 'Chickpeas, cooked', nameSq: 'Qiqra e gatuar', commonRank: 50 })
+const yoghurt = food({ id: 'usda-fdc-8', nameEn: 'Yogurt, plain, whole milk', nameSq: 'Kos', commonRank: 5 })
+const kosher = food({ id: 'usda-fdc-9', nameEn: 'Kosher salt' })
+const oats = food({ id: 'usda-fdc-10', nameEn: 'Oats', nameSq: 'Tërshërë', commonRank: 7 })
+const oatsFndds = food({ id: 'usda-fdc-11', source: 'usda_fndds', nameEn: 'Oatmeal, cooked, made with water' })
+const all = [eggnog, eggWhiteFrench, kosher, chickpeas, oatsFndds, cheddar, cheese, egg, eggBoiled, chicken, yoghurt, oats]
+const index = buildIndex(all)
+const ids = (query: string, options?: Parameters<typeof searchCatalog>[2]) => searchCatalog(index, query, options).map((item) => item.id)
+
+describe('normalizimi', () => {
+  it('heq diakritikat dhe shkronjat e mëdha: ë, ç, é', () => {
+    expect(normalize('Vezë')).toBe('veze')
+    expect(normalize('DJATHË')).toBe('djathe')
+    expect(normalize('Çedar')).toBe('cedar')
+    expect(normalize('Crème brûlée')).toBe('creme brulee')
+  })
+
+  it('shenjat e pikësimit bëhen hapësira dhe hapësirat e shumta një', () => {
+    expect(normalize('  Egg,  whole -raw ')).toBe('egg whole raw')
+  })
+})
+
+describe('kërkimi', () => {
+  it('"veze" gjen "Vezë" dhe "djath" gjen "Djathë", pa diakritika dhe me fjalë të pjesshme', () => {
+    expect(ids('veze')).toContain(egg.id)
+    expect(ids('vezë')).toContain(egg.id)
+    expect(ids('djath')).toEqual([cheese.id, cheddar.id])
+  })
+
+  it('gjen edhe me emrin anglisht', () => {
+    expect(ids('chicken')).toEqual([chicken.id])
+    expect(ids('oats')[0]).toBe(oats.id)
+    expect(ids('chick')).toEqual([chicken.id, chickpeas.id])
+  })
+
+  it('çdo fjalë e kërkesës duhet të gjendet, në çdo radhë', () => {
+    expect(ids('veze zier')).toEqual([eggBoiled.id])
+    expect(ids('zier veze')).toEqual([eggBoiled.id])
+    expect(ids('cheese feta')).toEqual([cheese.id])
+    expect(ids('veze banane')).toEqual([])
+  })
+
+  it('të zakonshmet para të tjerave, sipas radhës; pastaj fillimi i emrit', () => {
+    expect(ids('egg')).toEqual([egg.id, eggBoiled.id, eggnog.id, eggWhiteFrench.id])
+    // "Kos" i zakonshëm para "Kosher salt" (që e ka "kos" vetëm si fillim të fjalës pa qenë i zakonshëm).
+    expect(ids('kos')).toEqual([yoghurt.id, kosher.id])
+  })
+
+  it('një fjalë që fillon me kërkesën shkon para asaj që e ka brenda', () => {
+    const inside = food({ id: 'usda-fdc-20', nameEn: 'Pork sausage' })
+    const starts = food({ id: 'usda-fdc-21', nameEn: 'Sausage, pork' })
+    const other = buildIndex([inside, starts])
+    expect(searchCatalog(other, 'sausage').map((item) => item.id)).toEqual([starts.id, inside.id])
+    expect(searchCatalog(other, 'ausage')).toHaveLength(2)
+  })
+
+  it('pa kërkim ose me hapësira nuk kthen asgjë; kufiri i rezultateve respektohet', () => {
+    expect(ids('')).toEqual([])
+    expect(ids('   ')).toEqual([])
+    expect(ids('e', { limit: 2 })).toHaveLength(2)
+  })
+
+  it('hiq ushqimet që përdoruesi i ka tashmë (id të përjashtuara)', () => {
+    expect(ids('veze', { exclude: new Set([egg.id]) })).toEqual([eggBoiled.id])
+  })
+
+  it('burimi i preferuar para te njëjtat emra të mbetur (USDA para FNDDS)', () => {
+    expect(ids('oat')).toEqual([oats.id, oatsFndds.id])
+  })
+})
+
+describe('porcioni i zakonshëm', () => {
+  const portions = (...items: [string, number][]) => items.map(([label, grams]) => ({ label, grams }))
+
+  it('i pari me një njësi; pa porcione 100 g', () => {
+    expect(commonPortion(food({ id: 'usda-fdc-30', nameEn: 'x', portions: portions(['1 large', 50], ['1 cup', 243]) }))).toEqual({ label: '1 large', grams: 50 })
+    expect(commonPortion(food({ id: 'usda-fdc-31', nameEn: 'x' }))).toEqual({ label: null, grams: 100 })
+  })
+
+  it('"2 tablespoon", etiketat e gjata dhe gramët e pavlefshme anashkalohen', () => {
+    const skipped = portions(['2 tablespoon', 33.9], ['1 cup (4.86 large eggs)', 243], ['1 bad', 0], ['1 tub', 5000], ['1 slice', 30])
+    expect(commonPortion(food({ id: 'usda-fdc-32', nameEn: 'x', portions: skipped }))).toEqual({ label: '1 slice', grams: 30 })
+    expect(commonPortion(food({ id: 'usda-fdc-33', nameEn: 'x', portions: portions(['2 tablespoon', 33.9]) }))).toEqual({ label: null, grams: 100 })
+  })
+})

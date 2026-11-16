@@ -7,9 +7,9 @@ import { language } from '@/i18n'
 import type { ExternalFood } from '@/nutrition/off'
 
 // Shto ushqim (V59, SPEC §0.3h, V2-E3-28b) me store të vërtetë, të mërkurën 18 nëntor në 12:30 (ditë pushimi, 80 kg, ngrihet
-// 07:00; dreka në 13:00). Open Food Facts dhe USDA zëvendësohen me përgjigje të njohura; shporta ruhet në localStorage.
+// 07:00; dreka në 13:00). Open Food Facts zëvendësohet me përgjigje të njohura; Lista e Vrullit është e vërteta (skedarët e app-it); shporta ruhet në localStorage.
 const data = vi.hoisted(() => ({ store: null as unknown as LocalStore, db: null as unknown as LocalDatabase }))
-const off = vi.hoisted(() => ({ search: vi.fn(), product: vi.fn(), usda: vi.fn().mockResolvedValue([]) }))
+const off = vi.hoisted(() => ({ search: vi.fn(), product: vi.fn() }))
 vi.mock('@/nutrition/off', async (original) => ({ ...(await original<object>()), offSearch: off.search, offProduct: off.product }))
 const scanner = vi.hoisted(() => ({ native: false, scan: vi.fn() }))
 vi.mock('@/lib/barcode-native', () => ({ canScanBarcode: () => scanner.native, scanBarcode: scanner.scan }))
@@ -22,7 +22,7 @@ vi.mock('@/data/app-data', async () => {
   data.db = db
   return {
     store,
-    searchUsda: off.usda,
+    db,
     useLocalQuery: (await import('@/test/local-query')).useLocalQueryFor(store),
   }
 })
@@ -97,7 +97,6 @@ describe('Shto ushqim', () => {
     await Promise.all([data.db.foods.clear(), data.db.diary_entries.clear()])
     off.search.mockReset()
     off.product.mockReset()
-    off.usda.mockReset().mockResolvedValue([])
   })
   afterEach(() => language.set('sq'))
 
@@ -138,11 +137,10 @@ describe('Shto ushqim', () => {
     expect(within(plan).getByRole('button', { name: 'Shto Ton albacore në ujë në shportë' })).toBeInTheDocument()
   })
 
-  it('kërkimi pa shkrim nuk thërret asnjë burim të jashtëm (as USDA, as Open Food Facts)', async () => {
+  it('kërkimi pa shkrim nuk thërret asnjë burim të jashtëm (as Open Food Facts)', async () => {
     await renderPage()
     expect(await screen.findByRole('group', { name: 'Mjetet' })).toBeInTheDocument()
     expect(off.search).not.toHaveBeenCalled()
-    expect(off.usda).not.toHaveBeenCalled()
   })
 
   it('"+ Të gjitha" te Si dje; shtimi te vakti regjistron çdo artikull, zbraz shportën dhe kthen te Ushqimi me njoftimin', async () => {
@@ -249,10 +247,9 @@ describe('Shto ushqim', () => {
     expect(await todayEntries()).toEqual([])
   })
 
-  it('me shkrim: të tuat në telefon, USDA pas pushimit; Open Food Facts nuk thirret gjatë shkrimit, vetëm me prekje', async () => {
+  it('me shkrim: të tuat në telefon, pastaj Lista e Vrullit; Open Food Facts nuk thirret gjatë shkrimit, vetëm me prekje', async () => {
     const user = userEvent.setup()
     await seed()
-    off.usda.mockResolvedValue([{ ...NUTELLA, source: 'usda', sourceId: '171477', name: 'Hazelnuts, raw', brand: null, servingG: null, servingLabel: null }])
     off.search.mockResolvedValue([NUTELLA])
     await renderPage()
     const field = await screen.findByLabelText('Kërko ushqimin')
@@ -260,11 +257,11 @@ describe('Shto ushqim', () => {
     expect(await screen.findByRole('region', { name: 'Të tuat' })).toHaveTextContent('Gjoks pule')
     expect(screen.getByText('Punon pa internet')).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: 'Mjetet' })).not.toBeInTheDocument()
-    const usda = await screen.findByRole('region', { name: 'USDA · ushqime të përgjithshme' })
-    expect(off.usda).toHaveBeenLastCalledWith('gjoks')
-    expect(usda).toHaveTextContent('Hazelnuts, raw')
-    expect(off.usda).toHaveBeenCalledTimes(1)
-    // Pas një pushimi të gjatë dhe pas shkrimit, Open Food Facts nuk është thirrur kurrë.
+    const list = await screen.findByRole('region', { name: 'Lista e Vrullit' })
+    expect(list).toHaveTextContent('Gjoks pule pa lëkurë, i pagatuar')
+    // Të tuat para Listës së Vrullit.
+    expect(screen.getByRole('region', { name: 'Të tuat' }).compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    // Pa asnjë thirrje Open Food Facts gjatë shkrimit.
     expect(off.search).not.toHaveBeenCalled()
 
     await user.click(screen.getByRole('button', { name: /Kërko “gjoks” te produktet e paketuara/ }))
@@ -282,6 +279,63 @@ describe('Shto ushqim', () => {
     await user.click(screen.getByRole('button', { name: 'Fshi kërkimin' }))
     expect(field).toHaveValue('')
     expect(await screen.findByRole('group', { name: 'Mjetet' })).toBeInTheDocument()
+  })
+
+  it('Lista e Vrullit: "veze" dhe "vezë" gjejnë vezën me emrin anglisht krahas, burimin dhe porcionin; "+" e ruan te ushqimet e tua', async () => {
+    const user = userEvent.setup()
+    const fetched = vi.spyOn(globalThis, 'fetch')
+    await renderPage()
+    const field = await screen.findByLabelText('Kërko ushqimin')
+    await user.type(field, 'veze')
+    const list = await screen.findByRole('region', { name: 'Lista e Vrullit' })
+    const egg = (await within(list).findAllByRole('listitem'))[0]
+    expect(egg).toHaveTextContent('Vezë')
+    expect(egg).toHaveTextContent('Egg, whole, raw, fresh')
+    expect(egg).toHaveTextContent('USDA')
+    expect(egg).toHaveTextContent('1 large · 72 kcal · 6 g P')
+    await user.clear(field)
+    await user.type(field, 'vezë')
+    expect((await within(await screen.findByRole('region', { name: 'Lista e Vrullit' })).findAllByRole('listitem'))[0]).toHaveTextContent('Vezë')
+
+    await user.click(within(screen.getByRole('region', { name: 'Lista e Vrullit' })).getAllByRole('button', { name: /^Shto Vezë/ })[0])
+    expect(await basketRegion()).toHaveTextContent('Vezë · 1')
+    const saved = (await data.store.all('foods')).filter((row) => row.source === 'catalog')
+    expect(saved).toHaveLength(1)
+    expect(saved[0]).toMatchObject({ source_id: 'usda-fdc-171287', name: 'Vezë', serving_g: 50, serving_label: '1 large' })
+    // Asnjë kërkesë rrjeti për listën, as për Open Food Facts.
+    expect(fetched).not.toHaveBeenCalled()
+    expect(off.search).not.toHaveBeenCalled()
+    fetched.mockRestore()
+  })
+
+  it('Lista e Vrullit në anglisht: emri i burimit, pa emër shqip krahas, burimi i shkurtër', async () => {
+    const user = userEvent.setup()
+    language.set('en')
+    await renderPage()
+    await user.type(await screen.findByLabelText('Search for a food'), 'chicken')
+    const list = await screen.findByRole('region', { name: 'Vrull food list' })
+    const row = (await within(list).findAllByRole('listitem'))[0]
+    expect(row).toHaveTextContent(/^Chicken/)
+    expect(row).toHaveTextContent('USDA')
+    expect(list).not.toHaveTextContent('Gjoks pule')
+  })
+
+  it('një ushqim i listës që e ke tashmë te të tuat nuk del dy herë', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    const field = await screen.findByLabelText('Kërko ushqimin')
+    await user.type(field, 'veze')
+    const list = await screen.findByRole('region', { name: 'Lista e Vrullit' })
+    await user.click((await within(list).findAllByRole('button', { name: /^Shto Vezë/ }))[0])
+    await basketRegion()
+    await user.clear(field)
+    await user.type(field, 'veze')
+    const mine = await screen.findByRole('region', { name: 'Të tuat' })
+    expect(mine).toHaveTextContent('Vezë')
+    expect(mine).toHaveTextContent('USDA')
+    const rest = screen.getByRole('region', { name: 'Lista e Vrullit' })
+    expect(within(rest).queryByRole('button', { name: /^Shto Vezë, / })).not.toBeInTheDocument()
+    expect(within(rest).queryAllByRole('button', { name: /^Shto Vezë$/ })).toHaveLength(0)
   })
 
   it('Open Food Facts pa internet ose me gabim: thuhet me fjalë; pa rezultate: thuhet', async () => {

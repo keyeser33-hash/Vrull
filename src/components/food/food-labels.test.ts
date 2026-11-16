@@ -27,6 +27,10 @@ describe('etiketat e ushqimit', () => {
     expect(sourceKey({ source: 'usda', sourceId: '171477' })).toBe('foodsearch.source.usda')
     expect(sourceKey({ source: 'off', sourceId: '3017620422003' })).toBe('foodsearch.source.product')
     expect(sourceKey({ source: 'custom', sourceId: null })).toBe('foodsearch.source.mine')
+    expect(sourceKey({ source: 'catalog', sourceId: 'usda-fdc-171287' })).toBe('foodsearch.source.usda')
+    expect(sourceKey({ source: 'catalog', sourceId: 'ciqual-22000' })).toBe('foodsearch.source.ciqual')
+    expect(sourceKey({ source: 'catalog', sourceId: 'cofid-13-520' })).toBe('foodsearch.source.cofid')
+    expect(sourceKey({ source: 'catalog', sourceId: 'livsmedelsverket-4612' })).toBe('foodsearch.source.livsmedelsverket')
   })
 
   it('portionLabel: njësia me numër, gramët, ose porcioni i makrove të shpejta; në të dyja gjuhët', () => {

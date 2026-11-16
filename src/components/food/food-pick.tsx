@@ -32,6 +32,7 @@ export function PickSection({ title, onAddAll, addAllLabel, children }: { title:
 
 export function PickRow({
   name,
+  aside,
   tag,
   detail,
   size = 'md',
@@ -44,6 +45,8 @@ export function PickRow({
   addLabel,
 }: {
   name: string
+  /** Emri anglisht krahas emrit shqip të pakontrolluar (Lista e Vrullit, SPEC §0.3h). */
+  aside?: string
   tag?: string
   detail: string
   size?: 'md' | 'lg'
@@ -80,6 +83,7 @@ export function PickRow({
           <span className="truncate type-body-strong">{name}</span>
           {tag ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{tag}</span> : null}
         </span>
+        {aside ? <span lang="en" className="truncate text-[13px] leading-[18px] text-muted-foreground">{aside}</span> : null}
         <span className="text-[13px] leading-[18px] text-muted-foreground tabular-nums">{detail}</span>
       </span>
     </>

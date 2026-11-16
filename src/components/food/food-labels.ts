@@ -1,3 +1,4 @@
+import { sourceLabelOfId } from '@/catalog/names'
 import { isQuickFood } from '@/data/quick-food'
 import { isSupplementSource } from '@/data/supplements'
 import type { BasketItem } from '@/data/basket'
@@ -9,12 +10,23 @@ import { gramsText } from '@/routes/nutrition-format'
 
 type Texts = Pick<I18n, 't' | 'fmt'>
 
+const CATALOG_SOURCE_KEYS = {
+  usda: 'foodsearch.source.usda',
+  ciqual: 'foodsearch.source.ciqual',
+  cofid: 'foodsearch.source.cofid',
+  livsmedelsverket: 'foodsearch.source.livsmedelsverket',
+} as const
+
+/** Burimi i shkurtër i një rreshti të Listës së Vrullit ("USDA", "Ciqual", "CoFID", "Livsmedelsverket"). */
+export const catalogSourceKey = (label: keyof typeof CATALOG_SOURCE_KEYS): MessageKey => CATALOG_SOURCE_KEYS[label]
+
 /** Burimi i shkurtër pranë emrit: Plani im, USDA, Produkt (Open Food Facts), Makro, suplementi, ose "I yti". */
 export function sourceKey(food: { source: string | null; sourceId: string | null }): MessageKey {
   const id = food.sourceId
   if (food.source === 'template' || id?.startsWith('jim:') || id?.startsWith('pdf:')) return 'foodsearch.source.plan'
   if (isQuickFood(id)) return 'foodsearch.source.quick'
   if (isSupplementSource(id)) return 'foodsearch.source.supplement'
+  if (food.source === 'catalog') return catalogSourceKey(sourceLabelOfId(id ?? '') ?? 'usda')
   if (food.source === 'usda') return 'foodsearch.source.usda'
   if (food.source === 'off') return 'foodsearch.source.product'
   return 'foodsearch.source.mine'

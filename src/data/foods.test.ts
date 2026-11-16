@@ -1,5 +1,6 @@
 import { createDatabase } from './db'
-import { createCustomFood, recentFoods, saveExternalFood, searchFoods } from './foods'
+import type { CatalogFood } from '@/catalog/types'
+import { createCustomFood, foodById, recentFoods, saveCatalogFood, saveExternalFood, searchFoods } from './foods'
 import { logFood, logTemplateMeal, nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
 import { createLocalStore } from './store'
@@ -81,5 +82,33 @@ describe('ushqimet', () => {
     expect((await searchFoods(store, 'buke', shown)).map((food) => food.name)).toEqual(['Bukë integrale'])
     // Fillimi i emrit që shihet del i pari; pastaj sipas emrit që shihet.
     expect((await searchFoods(store, 'l', shown)).map(shown)).toEqual(['Light mayonnaise', 'Apple', 'Ton albacore në ujë', 'Wholemeal bread'])
+  })
+
+  it('ushqimi i Listës së Vrullit ruhet një herë me porcionin e burimit dhe emrin e gjuhës', async () => {
+    const store = await setup()
+    const egg: CatalogFood = {
+      id: 'usda-fdc-171287',
+      nameEn: 'Egg, whole, raw, fresh',
+      nameSq: 'Vezë',
+      nameSqChecked: false,
+      group: 'Dairy and Egg Products',
+      source: 'usda_sr_legacy',
+      license: 'CC0-1.0',
+      kcal: 143,
+      proteinG: 12.6,
+      carbsG: 0.7,
+      fatG: 9.5,
+      fiberG: 0,
+      portions: [{ label: '2 tablespoon', grams: 30 }, { label: '1 large', grams: 50 }],
+      alsoIn: [],
+      commonRank: 3,
+    }
+    const id = await saveCatalogFood(store, egg, 'sq')
+    expect(await saveCatalogFood(store, egg, 'en')).toBe(id)
+    const rows = (await store.all('foods')).filter((row) => row.source === 'catalog')
+    expect(rows).toHaveLength(1)
+    expect(await foodById(store, id)).toMatchObject({ source: 'catalog', sourceId: 'usda-fdc-171287', name: 'Egg, whole, raw, fresh', kcal: 143, proteinG: 12.6, servingG: 50, servingLabel: '1 large' })
+    const noPortion = await saveCatalogFood(store, { ...egg, id: 'ciqual-22000', portions: [], nameSq: null }, 'sq')
+    expect(await foodById(store, noPortion)).toMatchObject({ name: 'Egg, whole, raw, fresh', servingG: null, servingLabel: null })
   })
 })

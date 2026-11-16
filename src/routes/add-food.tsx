@@ -5,7 +5,7 @@ import { BarcodeSheet } from '@/components/food/barcode-sheet'
 import { BasketBar } from '@/components/food/basket-bar'
 import { BasketSheet } from '@/components/food/basket-sheet'
 import { CustomFoodSheet } from '@/components/food/custom-food-sheet'
-import { portionLabel, sourceKey } from '@/components/food/food-labels'
+import { catalogSourceKey, portionLabel, sourceKey } from '@/components/food/food-labels'
 import { PickRow, PickSection } from '@/components/food/food-pick'
 import { logWithUndo } from '@/components/food/meal-actions'
 import { MealChip, MealPicker } from '@/components/food/meal-chip'
@@ -15,9 +15,13 @@ import { Sheet } from '@/components/layout/sheet'
 import { BackButton } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
 import { Icon, type IconName } from '@/components/ui/icons'
-import { searchUsda, store, useLocalQuery } from '@/data/app-data'
+import { catalogNames, sourceLabelOf } from '@/catalog/names'
+import { commonPortion, searchCatalog } from '@/catalog/search'
+import type { CatalogFood } from '@/catalog/types'
+import { useCatalog } from '@/catalog/use-catalog'
+import { store, useLocalQuery } from '@/data/app-data'
 import { type BasketItem, basketItemFromFood, basketItemFromPortion, itemMacros, logBasket } from '@/data/basket'
-import { type Food, foodById, foodsById, saveExternalFood, searchFoods } from '@/data/foods'
+import { type Food, foodById, foodsById, saveCatalogFood, saveExternalFood, searchFoods } from '@/data/foods'
 import { currentFoodDate, nutritionDay, planFoodId, type TemplateLine } from '@/data/nutrition'
 import { favoriteFoods, type Portion, recentPortions, yesterdayMeal } from '@/data/quick-food'
 import { mealPowder } from '@/data/supplements'
@@ -28,45 +32,16 @@ import { macrosFor } from '@/nutrition/jim'
 import type { MealKey } from '@/nutrition/meals'
 import { type ExternalFood, offSearch } from '@/nutrition/off'
 import { QuickMacrosSheet } from './meal-quick'
-import { kcalText } from './nutrition-format'
+import { gramsText, kcalText } from './nutrition-format'
 
 // Shto ushqim (V59, SPEC §0.3h, V2-E3-28b; bordet "Ushqimi · Kërko", "Sasia", "Shporta"): kreu me kërkimin, barkodin dhe
 // çipin e vaktit; pa shkrim mjetet (Barkodi, Foto, Makrot, Ushqim i ri) dhe Si dje, Plani im, të preferuarat, të fundit,
-// secili me "+" te shporta; me shkrim ushqimet e tua (në telefon), USDA pas pushimit dhe Open Food Facts vetëm me prekjen
-// "Kërko te produktet e paketuara" (kufi 10 kërkime në minutë, jo gjatë shkrimit). Fletat hapen me `?ndrysho=` (sasia
+// secili me "+" te shporta; me shkrim ushqimet e tua (në telefon), Lista e Vrullit (në telefon, pa internet, `src/catalog`) dhe Open Food
+// Facts vetëm me prekjen "Kërko te produktet e paketuara" (kufi 10 kërkime në minutë, jo gjatë shkrimit). Fletat hapen me `?ndrysho=` (sasia
 // `&ushqimi=`, `&redakto=1` nga rishikimi), që butoni mbrapa i Android-it t'i mbyllë; `?barkod=1` hap barkodin, `?q=` mbush kërkimin.
 // Shporta ruhet në telefon; shtimi regjistron çdo artikull dhe kthen te Ushqimi me njoftimin "U shtua te <vakti>" (`location.state`).
 
 type Remote = { state: 'idle' } | { state: 'loading' } | { state: 'done'; foods: ExternalFood[] } | { state: 'offline' } | { state: 'error' }
-
-/** USDA pas pushimit të shkrimit; pa internet ose me gabim thuhet qartë. Open Food Facts nuk kalon këtu (V59). */
-function useUsdaSearch(query: string): Remote {
-  const [remote, setRemote] = useState<Remote>({ state: 'idle' })
-  const trimmed = query.trim()
-  useEffect(() => {
-    if (trimmed.length < 3) return
-    const controller = new AbortController()
-    const timer = setTimeout(() => {
-      if (!navigator.onLine) {
-        setRemote({ state: 'offline' })
-        return
-      }
-      setRemote({ state: 'loading' })
-      searchUsda(trimmed)
-        .then((foods) => {
-          if (!controller.signal.aborted) setRemote({ state: 'done', foods })
-        })
-        .catch(() => {
-          if (!controller.signal.aborted) setRemote({ state: navigator.onLine ? 'error' : 'offline' })
-        })
-    }, 450)
-    return () => {
-      clearTimeout(timer)
-      controller.abort()
-    }
-  }, [trimmed])
-  return trimmed.length < 3 ? { state: 'idle' } : remote
-}
 
 /** Open Food Facts: një kërkim për çdo prekje; një tekst tjetër e kthen në gjendjen e parë (rezultati mban tekstin e vet). */
 function usePackagedSearch(query: string) {
@@ -140,7 +115,9 @@ export function AddFoodPage() {
   const trimmed = query.trim()
   const searching = trimmed.length > 0
   const local = useLocalQuery(() => searchFoods(store, query, (food) => foodName(t, food)), [query, lang])
-  const usda = useUsdaSearch(query)
+  const catalog = useCatalog()
+  const ownCatalogIds = useMemo(() => new Set((local ?? []).filter((food) => food.source === 'catalog').map((food) => food.sourceId ?? '')), [local])
+  const listed = useMemo(() => (catalog.index && searching ? searchCatalog(catalog.index, query, { exclude: ownCatalogIds }) : []), [catalog.index, query, searching, ownCatalogIds])
   const packaged = usePackagedSearch(query)
 
   useEffect(() => {
@@ -254,6 +231,31 @@ export function AddFoodPage() {
     )
   }
 
+  /** Një rresht i Listës së Vrullit: porcioni i zakonshëm i burimit; ruhet te ushqimet e tua kur shtohet ose hapet. */
+  const catalogRow = (food: CatalogFood) => {
+    const portion = commonPortion(food)
+    const macros = macrosFor({ kcal: food.kcal, proteinG: food.proteinG, carbsG: food.carbsG, fatG: food.fatG }, portion.grams)
+    const names = catalogNames(lang, food)
+    return (
+      <PickRow
+        key={food.id}
+        name={names.name}
+        aside={names.aside ?? undefined}
+        tag={t(catalogSourceKey(sourceLabelOf(food.source)))}
+        detail={rowDetail(portion.label ?? gramsText(i18n, portion.grams), macros.kcal, macros.proteinG)}
+        size="lg"
+        basket={basket}
+        match={(item) => item.source === 'catalog' && item.sourceId === food.id}
+        unit={portion.grams}
+        resolve={async () => {
+          const saved = await foodById(store, await saveCatalogFood(store, food, lang))
+          return saved ? basketItemFromFood(saved) : null
+        }}
+        onOpen={(id) => open('sasia', { ushqimi: id })}
+      />
+    )
+  }
+
   const mealLabel = mealName(t, meal)
   const tools: { key: string; icon: IconName; text: string; disabled?: boolean; onClick: () => void }[] = [
     { key: 'barcode', icon: 'barkodi-vija', text: t('foodsearch.tool.barcode'), onClick: () => open('barkodi') },
@@ -315,8 +317,14 @@ export function AddFoodPage() {
           ) : (
             <p className="type-caption text-muted-foreground">{t('foodsearch.noMine', { query: trimmed })}</p>
           )}
-          {usda.state === 'done' && usda.foods.length > 0 ? <PickSection title={t('foodsearch.usda')}>{usda.foods.map(externalRow)}</PickSection> : null}
-          {usda.state === 'error' ? <p className="type-caption text-muted-foreground">{t('foodsearch.usdaError')}</p> : null}
+          {listed.length > 0 ? <PickSection title={t('foodsearch.catalog')}>{listed.map(catalogRow)}</PickSection> : null}
+          {listed.length === 0 && catalog.complete ? <p className="type-caption text-muted-foreground">{t('foodsearch.noCatalog', { query: trimmed })}</p> : null}
+          {!catalog.complete && !catalog.failed ? (
+            <p role="status" className="type-caption text-muted-foreground">
+              {t('foodsearch.catalogLoading')}
+            </p>
+          ) : null}
+          {catalog.failed ? <p className="type-caption text-muted-foreground">{t('foodsearch.catalogFailed')}</p> : null}
           {packaged.remote.state === 'done' && packaged.remote.foods.length > 0 ? (
             <PickSection title={t('foodsearch.packaged.results')}>{packaged.remote.foods.map(externalRow)}</PickSection>
           ) : (
