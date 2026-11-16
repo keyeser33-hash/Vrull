@@ -34,6 +34,15 @@ export interface ExerciseMotionProps {
   slider?: boolean
   /** Mbi foto (p.sh. shigjeta mbrapa te faqja e ushtrimit). */
   overlay?: ReactNode
+  /**
+   * `side` (seanca, bordi "Seanca · seti 1"): foto majtas, me `action` poshtë saj; djathtas tempo dhe
+   * `aside` (sinjalet). Pa rreshtin e tempos, pa "Zgjero".
+   */
+  layout?: 'stack' | 'side'
+  aside?: ReactNode
+  /** E palosur nga prindi (p.sh. butoni te titulli i seancës); pa të e mban vetë. */
+  folded?: boolean
+  onFoldedChange?: (folded: boolean) => void
   /** Foto del gjerë sa kutia, me këtë lartësi (parazgjedhja 3:2). */
   stageClassName?: string
   className?: string
@@ -52,12 +61,18 @@ export function ExerciseMotion({
   action,
   slider = false,
   overlay,
+  layout = 'stack',
+  aside,
+  folded: foldedProp,
+  onFoldedChange,
   stageClassName,
   className,
 }: ExerciseMotionProps) {
   const { t } = useI18n()
   const reduced = useReducedMotion()
-  const [folded, setFolded] = useState(foldable && defaultFolded)
+  const [foldedInner, setFoldedInner] = useState(foldable && defaultFolded)
+  const folded = foldedProp ?? foldedInner
+  const setFolded = (value: boolean) => (onFoldedChange ? onFoldedChange(value) : setFoldedInner(value))
   const [paused, setPaused] = useState(false)
   const [side, setSide] = useState<'start' | 'end'>('start')
   const start = useExercisePhoto(libraryId)
@@ -189,72 +204,102 @@ export function ExerciseMotion({
     )
   }
 
+  const stageElement = (
+    <div
+      ref={stage}
+      role={animating ? 'button' : undefined}
+      tabIndex={animating ? 0 : undefined}
+      aria-label={animating ? (paused ? t('programme.motion.play') : t('programme.motion.pause')) : undefined}
+      onPointerDown={down}
+      onPointerMove={move}
+      onPointerUp={up}
+      onPointerCancel={cancel}
+      onKeyDown={key}
+      data-motion-stage
+      className={cn(
+        'relative aspect-[3/2] w-full touch-pan-y overflow-hidden bg-surface-2 select-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground',
+        stageClassName,
+      )}
+    >
+      {start.status === 'ready' ? (
+        <img src={start.src} alt={t('programme.motion.startAlt', { name })} draggable={false} className="absolute inset-0 size-full object-cover grayscale" />
+      ) : (
+        <span aria-hidden className="absolute inset-0 flex items-center justify-center text-muted-foreground">
+          <Icon name="programi" size={18} />
+        </span>
+      )}
+      {hasEnd ? (
+        <img
+          ref={endImg}
+          src={end.src}
+          alt={t('programme.motion.endAlt', { name })}
+          draggable={false}
+          style={{ opacity: side === 'end' && reduced ? 1 : 0 }}
+          className="absolute inset-0 size-full object-cover opacity-0 grayscale motion-safe:will-change-[opacity]"
+        />
+      ) : null}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-background to-transparent" />
+      {animating && paused ? (
+        <span aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="flex size-14 items-center justify-center rounded-pill bg-background/70 text-foreground backdrop-blur-sm">
+            <Icon name="luaj" size={26} />
+          </span>
+        </span>
+      ) : null}
+      {overlay}
+    </div>
+  )
+
+  const reducedSwitch = (padding: string) =>
+    reduced && hasEnd ? (
+      <div className={cn('flex flex-col gap-2', padding)}>
+        <p className="type-caption text-muted-foreground">{t('programme.motion.reduced')}</p>
+        <div role="group" aria-label={t('programme.motion.switch')} className="grid grid-cols-2 gap-1 rounded-md bg-surface-2 p-1">
+          {(['start', 'end'] as const).map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={side === value}
+              onClick={() => setSide(value)}
+              className={cn(
+                'min-h-touch rounded-sm type-body-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+                side === value ? 'bg-surface text-foreground' : 'text-muted-foreground',
+              )}
+            >
+              {t(value === 'start' ? 'programme.motion.start' : 'programme.motion.end')}
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null
+
+  if (layout === 'side') {
+    return (
+      <section aria-label={t('programme.motion.title')} className={cn('grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-2', className)}>
+        <div className="flex min-w-0 flex-col gap-2">
+          {stageElement}
+          {action}
+        </div>
+        <div className="flex min-w-0 flex-col gap-2.5">
+          {showTempo ? (
+            <p className="flex items-center gap-1.5 text-sm leading-[1.35] font-semibold">
+              <Icon name="metronomi" size={16} className="shrink-0 text-muted-foreground" />
+              <span className="sr-only">{t('programme.motion.tempo')}</span>
+              {tempoText}
+            </p>
+          ) : null}
+          {aside}
+        </div>
+        {reducedSwitch('col-span-2')}
+      </section>
+    )
+  }
+
   return (
     <section aria-label={t('programme.motion.title')} className={cn('flex flex-col', className)}>
-      <div
-        ref={stage}
-        role={animating ? 'button' : undefined}
-        tabIndex={animating ? 0 : undefined}
-        aria-label={animating ? (paused ? t('programme.motion.play') : t('programme.motion.pause')) : undefined}
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={cancel}
-        onKeyDown={key}
-        className={cn(
-          'relative aspect-[3/2] w-full touch-pan-y overflow-hidden bg-surface-2 select-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground',
-          stageClassName,
-        )}
-      >
-        {start.status === 'ready' ? (
-          <img src={start.src} alt={t('programme.motion.startAlt', { name })} draggable={false} className="absolute inset-0 size-full object-cover grayscale" />
-        ) : (
-          <span aria-hidden className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-            <Icon name="programi" size={18} />
-          </span>
-        )}
-        {hasEnd ? (
-          <img
-            ref={endImg}
-            src={end.src}
-            alt={t('programme.motion.endAlt', { name })}
-            draggable={false}
-            style={{ opacity: side === 'end' && reduced ? 1 : 0 }}
-            className="absolute inset-0 size-full object-cover opacity-0 grayscale motion-safe:will-change-[opacity]"
-          />
-        ) : null}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-background to-transparent" />
-        {animating && paused ? (
-          <span aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <span className="flex size-14 items-center justify-center rounded-pill bg-background/70 text-foreground backdrop-blur-sm">
-              <Icon name="luaj" size={26} />
-            </span>
-          </span>
-        ) : null}
-        {overlay}
-      </div>
+      {stageElement}
 
-      {reduced && hasEnd ? (
-        <div className="flex flex-col gap-2 px-4 pt-3">
-          <p className="type-caption text-muted-foreground">{t('programme.motion.reduced')}</p>
-          <div role="group" aria-label={t('programme.motion.switch')} className="grid grid-cols-2 gap-1 rounded-md bg-surface-2 p-1">
-            {(['start', 'end'] as const).map((value) => (
-              <button
-                key={value}
-                type="button"
-                aria-pressed={side === value}
-                onClick={() => setSide(value)}
-                className={cn(
-                  'min-h-touch rounded-sm type-body-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
-                  side === value ? 'bg-surface text-foreground' : 'text-muted-foreground',
-                )}
-              >
-                {t(value === 'start' ? 'programme.motion.start' : 'programme.motion.end')}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {reducedSwitch('px-4 pt-3')}
 
       {slider && animating ? (
         <div className="px-4 pt-3">

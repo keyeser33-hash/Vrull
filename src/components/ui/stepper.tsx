@@ -27,6 +27,10 @@ export interface StepperProps {
   live?: Part | null
   canLowerWeight?: boolean
   canLowerReps?: boolean
+  /** `card`: numrat 72 px, për rreshtin aktiv të tabelës së seteve (V58), ku 112 px nuk hyn në 390 px. */
+  size?: 'hero' | 'card'
+  /** Teksti poshtë përsëritjeve në vend të "përsëritje" ("përsëritje · synimi 6–8"). */
+  repsCaption?: string
   className?: string
 }
 
@@ -42,6 +46,8 @@ export function Stepper({
   live,
   canLowerWeight = true,
   canLowerReps = true,
+  size = 'hero',
+  repsCaption,
   className,
 }: StepperProps) {
   const { t, fmt } = useI18n()
@@ -57,30 +63,38 @@ export function Stepper({
 
   return (
     <div role="group" aria-label={label ? t('ui.stepper.labelled', { label, summary }) : summary} className={cn('flex flex-col gap-3.5', className)}>
-      <div className="flex items-end justify-center gap-4">
-        <BigNumber text={fmt.number(weight)} unit="kg" live={current === 'weight'} onEdit={onEditWeight} editLabel={t('ui.stepper.editWeight', { weight })} />
-        <span aria-hidden className="pb-[26px] font-display text-[56px] leading-none font-bold text-subtle">
+      <div className={cn('flex items-end justify-center', size === 'card' ? 'gap-3' : 'gap-4')}>
+        <BigNumber
+          text={fmt.number(weight)}
+          unit="kg"
+          size={size}
+          live={current === 'weight'}
+          onEdit={onEditWeight}
+          editLabel={t('ui.stepper.editWeight', { weight })}
+        />
+        <span aria-hidden className={cn('font-display leading-none font-bold text-subtle', size === 'card' ? 'pb-[30px] text-[36px]' : 'pb-[26px] text-[56px]')}>
           ×
         </span>
         <BigNumber
           text={fmt.number(reps)}
-          unit={t('ui.stepper.repsUnit', { count: reps })}
+          unit={repsCaption ?? t('ui.stepper.repsUnit', { count: reps })}
+          size={size}
           live={current === 'reps'}
           onEdit={onEditReps}
           editLabel={t('ui.stepper.editReps', { reps })}
         />
       </div>
       <div className="grid grid-cols-4 gap-2">
-        <StepKey label={t('ui.stepper.lowerWeight', { step: weightStep })} disabled={!canLowerWeight} onClick={() => press('weight', -1)}>
+        <StepKey ground={size === 'card' ? 'card' : 'page'} label={t('ui.stepper.lowerWeight', { step: weightStep })} disabled={!canLowerWeight} onClick={() => press('weight', -1)}>
           −{step}
         </StepKey>
-        <StepKey label={t('ui.stepper.raiseWeight', { step: weightStep })} onClick={() => press('weight', 1)}>
+        <StepKey ground={size === 'card' ? 'card' : 'page'} label={t('ui.stepper.raiseWeight', { step: weightStep })} onClick={() => press('weight', 1)}>
           +{step}
         </StepKey>
-        <StepKey label={t('ui.stepper.lowerReps')} disabled={!canLowerReps} onClick={() => press('reps', -1)}>
+        <StepKey ground={size === 'card' ? 'card' : 'page'} label={t('ui.stepper.lowerReps')} disabled={!canLowerReps} onClick={() => press('reps', -1)}>
           −1
         </StepKey>
-        <StepKey label={t('ui.stepper.raiseReps')} onClick={() => press('reps', 1)}>
+        <StepKey ground={size === 'card' ? 'card' : 'page'} label={t('ui.stepper.raiseReps')} onClick={() => press('reps', 1)}>
           +1
         </StepKey>
       </div>
@@ -88,10 +102,25 @@ export function Stepper({
   )
 }
 
-function BigNumber({ text, unit, live, onEdit, editLabel }: { text: string; unit: string; live: boolean; onEdit?: () => void; editLabel: string }) {
-  const number = <span className={cn('type-display-hero', live ? 'text-ember-text' : 'text-foreground')}>{text}</span>
+function BigNumber({
+  text,
+  unit,
+  size,
+  live,
+  onEdit,
+  editLabel,
+}: {
+  text: string
+  unit: string
+  size: 'hero' | 'card'
+  live: boolean
+  onEdit?: () => void
+  editLabel: string
+}) {
+  const look = size === 'card' ? 'font-display text-[72px] leading-[0.85] font-extrabold tabular-nums' : 'type-display-hero'
+  const number = <span className={cn(look, live ? 'text-ember-text' : 'text-foreground')}>{text}</span>
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex min-w-0 flex-col items-center gap-1">
       {onEdit ? (
         <button type="button" aria-label={editLabel} onClick={onEdit} className="min-h-touch rounded-md">
           {number}
@@ -99,18 +128,18 @@ function BigNumber({ text, unit, live, onEdit, editLabel }: { text: string; unit
       ) : (
         <span aria-hidden>{number}</span>
       )}
-      <span aria-hidden className="type-body text-muted-foreground">
+      <span aria-hidden className={cn('text-muted-foreground', size === 'card' ? 'type-caption text-center' : 'type-body')}>
         {unit}
       </span>
     </div>
   )
 }
 
-function StepKey({ label, disabled, onClick, children }: { label: string; disabled?: boolean; onClick: () => void; children: ReactNode }) {
+function StepKey({ label, disabled, ground, onClick, children }: { label: string; disabled?: boolean; ground: 'page' | 'card'; onClick: () => void; children: ReactNode }) {
   return (
     <Button
       variant="secondary"
-      ground="page"
+      ground={ground}
       size="lg"
       aria-label={label}
       disabled={disabled}

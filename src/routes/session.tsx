@@ -1,20 +1,22 @@
 import { type ReactNode, useEffect, useId, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { ExerciseVideoSheet } from '@/components/ui/exercise-video'
 import { Icon } from '@/components/ui/icons'
 import { RirPicker } from '@/components/ui/rir-picker'
 import { Stepper } from '@/components/ui/stepper'
 import { store, useLocalQuery } from '@/data/app-data'
-import { finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
+import { type ExerciseRecord, finishWorkout, saveSet, type SetRecord, trainingHistory, type TrainingHistory, trainingSnapshot, type TrainingSnapshot } from '@/data/training'
 import { type WorkoutWeight, workoutWeights } from '@/data/week-weights'
-import { programWeekLabel } from '@/i18n/domain'
+import type { I18n } from '@/i18n'
 import { useI18n } from '@/i18n/use-i18n'
 import { dropWeight, type HistorySet, type Reference, reference, type WeightBasis, weightStep } from '@/program/loads'
+import { chosenVideo } from '@/program/exercise-videos'
 import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
+import { type SetRow, setTable } from '@/program/set-table'
 import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
-import { cn } from '@/lib/cn'
 import { restFinishedInApp } from '@/lib/rest-alarm'
 import { openedSet, sessionView } from '@/lib/session-notification'
 import { useRestTimer } from '@/lib/use-rest-timer'
@@ -22,12 +24,16 @@ import { ExerciseMusclesSheet } from './exercise-muscles'
 import { FormVideoScreen, type FormVideoTarget } from './form-video'
 import { type BeatContext, BodyBeatScreen, MusicButton, MusicConnectScreen, TapSheet } from './music'
 import { useSessionBeat } from './music-beat'
-import { editable, elapsedText, loadText, rangeText, setValue, spokenDuration, targetText } from './session-format'
+import { editable, elapsedText, loadText, previousText, rangeText, setValue, spokenDuration, targetText } from './session-format'
 import { type BannerRecord, RecordBanner } from './session-banner'
 import { recordPulse, savePulse } from './session-motion'
+import { SessionGuide } from './session-guide'
+import { useSessionGuide } from './session-guide-hook'
+import { type KeypadChip, KeypadSheet } from './session-keypad'
 import { SessionLighter } from './session-lighter'
-import { SavedSets, SetChips } from './session-sets'
-import { ChangeExerciseSheet, ExerciseListSheet, NumberSheet } from './session-sheets'
+import { SavedSets } from './session-sets'
+import { ChangeExerciseSheet, ExerciseListSheet } from './session-sheets'
+import { SetTable } from './session-table'
 import { EditSetSheet } from './set-edit-sheet'
 import { clock } from './training-format'
 
@@ -173,7 +179,10 @@ function ActiveSession({
       : lastSet
         ? { exercise: exercises[lastSet.exerciseId]?.name ?? '', set: lastSet.setNumber, sets: lastSlot?.sets ?? lastSet.setNumber }
         : null
-  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video' | 'ritmi' | 'lidh-muziken') => setParams({ [name]: '1' })
+  const openSheet = (name: 'lista' | 'ndrysho' | 'muskujt' | 'video' | 'videoja' | 'ritmi' | 'lidh-muziken') => setParams({ [name]: '1' })
+  // Lëvizja dhe sinjalet: të hapura te seti i parë i ushtrimit, të palosura pas tij, derisa përdoruesi të zgjedhë.
+  const [foldedSlots, setFoldedSlots] = useState<Record<string, boolean>>({})
+  const demo = exercise ? chosenVideo(exercise, exercise.videoUrl) : null
   const closeSheet = () => navigate(-1)
   const finish = () => {
     setBusy(true)
@@ -229,6 +238,7 @@ function ActiveSession({
       {params.has('ndrysho') && slot ? <ChangeExerciseSheet plan={plan} slot={slot} exerciseName={exercise?.name ?? ''} onClose={closeSheet} /> : null}
       {params.has('muskujt') && exercise ? <ExerciseMusclesSheet exercise={exercise} onClose={closeSheet} /> : null}
       {params.has('video') && videoTarget ? <FormVideoScreen target={videoTarget} onClose={closeSheet} /> : null}
+      {params.has('videoja') && demo && exercise ? <ExerciseVideoSheet chosen={demo} name={exercise.name} onClose={closeSheet} /> : null}
       {params.has('ritmi') && beatContext ? (
         <BodyBeatScreen
           beat={beat}
@@ -304,7 +314,6 @@ function ActiveSession({
   const fromNotification = opened !== null && !segment && opened.slotId === slot.slotId && opened.setNumber === setNumber
   const defaults: SetValues = fromNotification ? { ...proposed, ...opened.values } : proposed
   const technique: Technique = isLastSet && !segment ? slot.technique : { type: 'none' }
-  const next = progress.next === null ? null : progress.slots[progress.next].slot
 
   async function save(values: SetValues) {
     if (!slot) return
@@ -360,26 +369,44 @@ function ActiveSession({
     }
   }
 
+  const previous = segment ? null : reference(history.sets, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })
+  const rows = setTable({
+    slot,
+    sets: session.sets,
+    active: setNumber,
+    segment: Boolean(segment),
+    weekWeightKg: week?.weightKg ?? null,
+    history: history.sets,
+    at: { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, sessionId: session.id },
+  })
+  const folded = foldedSlots[slot.slotId] ?? (current.done > 0 || segment !== null)
+
   return frame(
     <SetView
       key={`${slot.slotId}:${setNumber}:${segment ? 'segment' : 'set'}:${slot.exerciseId}${fromNotification ? `:${location.key}` : ''}${lastInSlot ? '' : `:${week?.weightKg ?? ''}:${slot.sets}`}`}
-      exerciseId={slot.exerciseId}
+      exercise={exercise}
       exerciseName={exercise?.name ?? ''}
       tracking={segment && tracking !== 'weight_reps' ? 'bodyweight_reps' : tracking}
       target={slot.target}
       setNumber={setNumber}
       sets={slot.sets}
-      technique={slot.technique}
+      restSeconds={slot.restSeconds}
       segment={segment ? segment.set.technique : null}
       defaults={defaults}
       step={step}
-      previous={segment ? null : reference(history.sets, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })}
+      previous={previous}
       basis={week?.proposal.basis ?? null}
       weekKg={week?.weekKg ?? null}
+      weekWeightKg={week?.weightKg ?? null}
       history={history.sets}
-      dropTo={slot.technique.type === 'drop_set' ? drop(defaults.weightKg) : null}
-      next={next ? { name: exercises[next.exerciseId]?.name ?? '', sets: next.sets } : null}
-      chips={<SetChips slot={slot} sets={session.sets.filter((set) => set.slotId === slot.slotId)} current={setNumber} records={records} onEdit={openEdit} />}
+      rows={rows}
+      records={records}
+      dropTo={slot.technique.type === 'drop_set' ? drop(lastInSlot?.weightKg ?? defaults.weightKg) : null}
+      restPauseSeconds={slot.technique.type === 'rest_pause' ? (slot.technique.restSeconds ?? 15) : null}
+      folded={folded}
+      onFold={(value) => setFoldedSlots((current) => ({ ...current, [slot.slotId]: value }))}
+      onVideo={() => openSheet('videoja')}
+      onEdit={openEdit}
       busy={busy || waiting}
       onSave={(values) => void save(values)}
       onSkipSegment={
@@ -424,7 +451,7 @@ function SessionFrame({
 }) {
   const { t } = useI18n()
   return (
-    <div className="flex min-h-dvh flex-col bg-background pt-[var(--safe-top)] pb-[var(--safe-bottom)]">
+    <div className="flex min-h-dvh flex-col bg-background pt-[var(--safe-top)]">
       <div aria-hidden className="fixed inset-x-0 top-0 z-30 h-[var(--safe-top)] bg-background" />
       <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col">
         <SessionBar progress={progress} />
@@ -485,41 +512,50 @@ function SessionBar({ progress }: { progress: SessionProgress }) {
   )
 }
 
-/** Fundi i ekranit: veprimi kryesor ("Ruaj setin", "Mbyll stërvitjen"); `main` sipër ka `flex-1`. */
+/**
+ * Fundi i ekranit: veprimi kryesor ("Ruaj setin", "Mbyll stërvitjen"), ngjitur poshtë që të duket edhe kur
+ * tabela e seteve është e gjatë; `main` sipër ka `flex-1`.
+ */
 function SessionFooter({ children }: { children: ReactNode }) {
-  return <div className="flex shrink-0 flex-col gap-2 px-4 pt-2.5 pb-5">{children}</div>
+  return <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-2 border-t border-border bg-background px-4 pt-2.5 pb-[calc(var(--safe-bottom)+20px)]">{children}</div>
 }
 
 function SetView({
-  exerciseId,
+  exercise,
   exerciseName,
   tracking,
   target,
   setNumber,
   sets,
-  technique,
+  restSeconds,
   segment,
   defaults,
   step,
   previous,
   basis,
   weekKg,
+  weekWeightKg,
   history,
+  rows,
+  records,
   dropTo,
-  next,
-  chips,
+  restPauseSeconds,
+  folded,
+  onFold,
+  onVideo,
+  onEdit,
   busy,
   onSave,
   onSkipSegment,
 }: {
-  exerciseId: string
+  exercise: ExerciseRecord | undefined
   exerciseName: string
   tracking: Tracking
   target: Target
   setNumber: number
   sets: number
-  /** Teknika e setit të fundit të slotit. */
-  technique: Technique
+  /** Pushimi pas setit (receta e slotit), te nëntitulli. */
+  restSeconds: number
   /** Segmenti që po regjistrohet, ose null për një set të zakonshëm. */
   segment: Technique['type'] | null
   defaults: SetValues
@@ -528,11 +564,18 @@ function SetView({
   basis: WeightBasis | null
   /** Pesha e javës kur e ka ulur "Mirë se u ktheve" ose seanca më e lehtë: "ishte 25 kg". */
   weekKg: number | null
+  /** Pesha e javës e slotit, për çipin te tastiera. */
+  weekWeightKg: number | null
   history: HistorySet[]
+  /** Rreshtat e tabelës së seteve (`setTable`). */
+  rows: SetRow<SetRecord>[]
+  records: ReadonlyMap<string, unknown>
   dropTo: number | null
-  next: { name: string; sets: number } | null
-  /** Çipat e seteve të ushtrimit (0.23). */
-  chips: ReactNode
+  restPauseSeconds: number | null
+  folded: boolean
+  onFold: (folded: boolean) => void
+  onVideo: () => void
+  onEdit: (set: SetRecord) => void
   busy: boolean
   onSave: (values: SetValues) => void
   onSkipSegment?: () => void
@@ -552,64 +595,75 @@ function SetView({
   const editing = params.get('shkruaj')
   const edit = (field: 'pesha' | 'perseritjet' | 'sekondat') => setParams({ shkruaj: field })
   const clamp = (value: number, max = 999) => Math.min(max, Math.max(0, Math.round(value * 100) / 100))
+  const guide = useSessionGuide(exercise)
 
   const subtitle = segment
     ? t(segment === 'drop_set' ? 'session.segment.dropSet' : 'session.segment.restPause', { set: setNumber, sets })
     : t('session.setOf', { set: setNumber, sets, target: targetText(target, texts) })
   const range = rangeText(target, fmt)
   const bounds = target.kind === 'reps' ? { min: target.min, max: target.max } : target.kind === 'timed' ? null : { min: target.reps, max: target.reps }
-  const hint = !segment && tracking === 'weight_reps' && bounds ? recordHint(history, { exerciseId, weightKg, ...bounds }) : null
+  const hint = !segment && tracking === 'weight_reps' && bounds ? recordHint(history, { exerciseId: exercise?.id ?? '', weightKg, ...bounds }) : null
+  const keypadFor = t('session.keypad.for', { exercise: exerciseName, set: setNumber })
+
+  const card = (
+    <div className="flex flex-col gap-3 rounded-lg border-2 border-ember-text bg-surface p-3">
+      <ActiveHeader setNumber={setNumber} segment={segment} previous={segment ? null : previous} weightKg={timed ? null : weightKg} tracking={tracking} />
+      {timed ? (
+        <SecondsStepper setNumber={setNumber} seconds={seconds} onChange={(value) => setSeconds(clamp(value))} onEdit={() => edit('sekondat')} />
+      ) : (
+        <Stepper
+          size="card"
+          weight={weightKg}
+          reps={reps}
+          weightStep={step}
+          label={t('session.setLabel', { set: setNumber })}
+          repsCaption={range && !segment ? t('session.table.repsTarget', { range }) : undefined}
+          canLowerWeight={weightKg > 0}
+          canLowerReps={reps > 1}
+          onWeightStep={(direction) => setWeight((value) => clamp(value + direction * step))}
+          onRepsStep={(direction) => setReps((value) => clamp(value + direction))}
+          onEditWeight={() => edit('pesha')}
+          onEditReps={() => edit('perseritjet')}
+        />
+      )}
+      {!timed && weekKg !== null && weekKg !== weightKg ? (
+        <p className="-mt-2 w-[calc(50%-6px)] text-center type-caption text-muted-foreground tabular-nums">{t('lighter.was', { weight: fmt.unit(weekKg, 'kg') })}</p>
+      ) : null}
+      {tracking === 'bodyweight_reps' && !segment ? <p className="type-caption text-muted-foreground">{t('session.extraWeight')}</p> : null}
+      {rir === null || segment ? null : <RirPicker ground="card" value={rir} onChange={setRir} />}
+      {segment ? null : <SetHints previous={previous} basis={basis} range={range} hint={hint} />}
+    </div>
+  )
 
   return (
     <>
-      <main className="flex flex-1 flex-col gap-3.5 px-4 pt-1">
+      <main className="flex flex-1 flex-col gap-3 px-4 pt-1">
         <div className="flex flex-col">
-          <h1 className="type-display-l">{exerciseName}</h1>
-          <p className="mt-1.5 type-body text-muted-foreground tabular-nums">{subtitle}</p>
-          {tracking === 'bodyweight_reps' && !segment ? <p className="mt-0.5 type-body text-muted-foreground">{t('session.extraWeight')}</p> : null}
-        </div>
-
-        {chips}
-
-        {timed ? (
-          <SecondsStepper setNumber={setNumber} seconds={seconds} onChange={(value) => setSeconds(clamp(value))} onEdit={() => edit('sekondat')} />
-        ) : (
-          <Stepper
-            className="pt-2.5"
-            weight={weightKg}
-            reps={reps}
-            weightStep={step}
-            label={t('session.setLabel', { set: setNumber })}
-            canLowerWeight={weightKg > 0}
-            canLowerReps={reps > 1}
-            onWeightStep={(direction) => setWeight((value) => clamp(value + direction * step))}
-            onRepsStep={(direction) => setReps((value) => clamp(value + direction))}
-            onEditWeight={() => edit('pesha')}
-            onEditReps={() => edit('perseritjet')}
-          />
-        )}
-
-        {!timed && weekKg !== null && weekKg !== weightKg ? (
-          <p className="-mt-2 w-[calc(50%-12px)] text-center type-caption text-muted-foreground tabular-nums">{t('lighter.was', { weight: fmt.unit(weekKg, 'kg') })}</p>
-        ) : null}
-
-        {rir === null || segment ? null : <RirPicker value={rir} onChange={setRir} />}
-
-        {segment ? null : <TechniqueNote technique={technique} sets={sets} dropTo={dropTo} />}
-
-        {segment ? null : (
-          <div className="flex flex-col divide-y divide-border">
-            <SetRows previous={previous} weightKg={tracking === 'timed' ? null : weightKg} basis={basis} range={range} hint={hint} />
-            {next ? (
-              <section aria-label={t('session.nextExercise')} className="flex min-h-10 items-center justify-between gap-3 py-2 text-sm leading-[1.35]">
-                <span className="shrink-0 text-muted-foreground">{t('session.next')}</span>
-                <span className="min-w-0 truncate text-right">
-                  {next.name} · {t('session.sets', { count: next.sets })}
-                </span>
-              </section>
+          <div className="flex items-start justify-between gap-2">
+            <h1 className="min-w-0 type-display-l">{exerciseName}</h1>
+            {guide.hasMotion ? (
+              <Button
+                variant="secondary"
+                ground="page"
+                size="icon"
+                aria-expanded={!folded}
+                aria-label={t(folded ? 'session.guide.show' : 'session.guide.hide')}
+                onClick={() => onFold(!folded)}
+                className="shrink-0"
+              >
+                <Icon name={folded ? 'chevron-poshte' : 'chevron-lart'} size={20} />
+              </Button>
             ) : null}
           </div>
-        )}
+          <p className="mt-1 type-body text-muted-foreground tabular-nums">
+            <span>{subtitle}</span>
+            {!segment && restSeconds > 0 ? <span> · {t('session.restSeconds', { seconds: restSeconds })}</span> : null}
+          </p>
+        </div>
+
+        {exercise ? <SessionGuide exercise={exercise} folded={folded} onFold={onFold} onVideo={onVideo} /> : null}
+
+        <SetTable rows={rows} tracking={tracking} target={target} records={records} dropTo={dropTo} restPauseSeconds={restPauseSeconds} active={card} onEdit={onEdit} />
       </main>
 
       <SessionFooter>
@@ -635,10 +689,13 @@ function SetView({
       </SessionFooter>
 
       {editing === 'pesha' || editing === 'perseritjet' || editing === 'sekondat' ? (
-        <NumberSheet
-          label={t(editing === 'pesha' ? 'session.edit.weight' : editing === 'sekondat' ? 'session.edit.seconds' : 'session.edit.reps')}
+        <KeypadSheet
+          kind={editing === 'pesha' ? 'weight' : editing === 'sekondat' ? 'seconds' : 'reps'}
+          description={keypadFor}
           value={editing === 'pesha' ? weightKg : editing === 'sekondat' ? seconds : reps}
-          decimals={editing === 'pesha'}
+          step={editing === 'pesha' ? step : editing === 'sekondat' ? 5 : 1}
+          plates={editing === 'pesha' && exercise?.equipment === 'barbell'}
+          chips={keypadChips(editing, previous, weekWeightKg, texts.t)}
           onSave={(value) => {
             if (editing === 'pesha') setWeight(clamp(value))
             else if (editing === 'sekondat') setSeconds(clamp(Math.round(value), 3600))
@@ -652,38 +709,42 @@ function SetView({
   )
 }
 
-/**
- * Rreshtat poshtë setit (bordi "Seanca", 0.23): "Herën e kaluar · 60 × 13 · +2,5 kg" (ose e njëjta javë e
- * bllokut të kaluar), ose si të zgjidhet pesha; pastaj pragu i rekordit (`recordHint`) me kupën.
- */
-function SetRows({
+/** Çipat e tastierës: "Herën e kaluar" dhe "Pesha e javës" për peshën, "Herën e kaluar" për përsëritjet. */
+function keypadChips(field: 'pesha' | 'perseritjet' | 'sekondat', previous: Reference | null, weekWeightKg: number | null, t: I18n['t']): KeypadChip[] {
+  const chips: KeypadChip[] = []
+  if (field === 'pesha') {
+    if (previous?.weightKg) chips.push({ label: t('session.keypad.lastTime'), value: previous.weightKg })
+    if (weekWeightKg) chips.push({ label: t('session.keypad.week'), value: weekWeightKg })
+  } else if (field === 'perseritjet' && previous?.reps) chips.push({ label: t('session.keypad.lastTime'), value: previous.reps })
+  return chips
+}
+
+/** Kreu i kartës aktive: "Seti 3" (ose "Seti 4 · rest-pause") dhe "Herën e kaluar · 60 × 9 · +2,5 kg". */
+function ActiveHeader({
+  setNumber,
+  segment,
   previous,
   weightKg,
-  basis,
-  range,
-  hint,
+  tracking,
 }: {
+  setNumber: number
+  segment: Technique['type'] | null
   previous: Reference | null
   weightKg: number | null
-  basis: WeightBasis | null
-  range: string | null
-  hint: RecordHint | null
+  tracking: Tracking
 }) {
   const { t, fmt } = useI18n()
-  const row = 'flex min-h-10 items-center justify-between gap-3 py-2 text-sm leading-[1.35]'
-  let reference: ReactNode = null
-  if (previous) {
-    const value = previous.weightKg ? `${fmt.number(previous.weightKg)} × ${fmt.number(previous.reps ?? 0)}` : t('session.target.reps', { count: previous.reps ?? 0 })
-    const label =
-      previous.kind === 'last_time'
-        ? t('session.lastTime')
-        : programWeekLabel(t, { blockName: previous.blockName, blockWeeks: previous.blockWeeks, week: previous.week, run: 1 })
-    const diff = weightKg && previous.weightKg ? Math.round((weightKg - previous.weightKg) * 100) / 100 : 0
-    reference = (
-      <div className={row}>
-        <span className="shrink-0 text-muted-foreground">{label}</span>
-        <span className="min-w-0 text-right tabular-nums">
-          {value}
+  const value = previousText(previous, tracking, fmt)
+  const diff = weightKg && previous?.weightKg ? Math.round((weightKg - previous.weightKg) * 100) / 100 : 0
+  const label = segment
+    ? t('session.review.setTag', { set: setNumber, technique: t(segment === 'drop_set' ? 'session.chip.dropSet' : 'session.chip.restPause') })
+    : t('session.setLabel', { set: setNumber })
+  return (
+    <div className="flex items-baseline justify-between gap-2">
+      <span className="shrink-0 type-title">{label}</span>
+      {value ? (
+        <span className="min-w-0 truncate text-right text-[13px] leading-[1.35] text-muted-foreground tabular-nums">
+          {t('session.table.previousValue', { value })}
           {diff !== 0 ? (
             <>
               {' · '}
@@ -694,19 +755,25 @@ function SetRows({
             </>
           ) : null}
         </span>
-      </div>
-    )
-  } else {
-    const text = basis?.kind === 'choose' && range ? t('session.choose', { range }) : basis?.kind === 'needs_one_rm' ? t('session.needsOneRm') : null
-    if (text) reference = <p className={cn(row, 'text-muted-foreground')}>{text}</p>
-  }
-  if (!reference && !hint) return null
+      ) : null}
+    </div>
+  )
+}
+
+/**
+ * Poshtë numrave të setit aktiv: pa referencë, si të zgjidhet pesha; pastaj pragu i rekordit
+ * (`recordHint`) me kupën (0.23, §0.3c).
+ */
+function SetHints({ previous, basis, range, hint }: { previous: Reference | null; basis: WeightBasis | null; range: string | null; hint: RecordHint | null }) {
+  const { t, fmt } = useI18n()
+  const choose = !previous ? (basis?.kind === 'choose' && range ? t('session.choose', { range }) : basis?.kind === 'needs_one_rm' ? t('session.needsOneRm') : null) : null
+  if (!choose && !hint) return null
   const e1rm = hint ? fmt.unit(hint.e1rmKg, 'kg', { maxDigits: 1 }) : ''
   return (
-    <section aria-label={t('session.rows')} className="flex flex-col divide-y divide-border">
-      {reference}
+    <section aria-label={t('session.rows')} className="flex flex-col gap-1 border-t border-border pt-2.5 text-sm leading-[1.35]">
+      {choose ? <p className="text-muted-foreground">{choose}</p> : null}
       {hint ? (
-        <div className={row}>
+        <p className="flex items-center justify-between gap-3">
           <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
             <Icon name="kupa" size={16} className="text-ember-text" />
             {t('session.record.label')}
@@ -714,40 +781,30 @@ function SetRows({
           <span className="min-w-0 text-right tabular-nums">
             {hint.kind === 'reps' ? t('session.record.reps', { count: hint.reps, e1rm }) : t('session.record.any', { e1rm })}
           </span>
-        </div>
+        </p>
       ) : null}
     </section>
   )
-}
-
-/** Teknika e setit të fundit, që në setin e parë: "Seti 4: rest-pause, 15 s pushim". */
-function TechniqueNote({ technique, sets, dropTo }: { technique: Technique; sets: number; dropTo: number | null }) {
-  const { t, fmt } = useI18n()
-  let text: string | null = null
-  if (technique.type === 'rest_pause') text = t('session.technique.restPause', { set: sets, seconds: technique.restSeconds ?? 15 })
-  else if (technique.type === 'drop_set') text = dropTo ? t('session.technique.dropSetTo', { set: sets, weight: fmt.unit(dropTo, 'kg') }) : t('session.technique.dropSet', { set: sets })
-  else if (technique.type === 'to_failure') text = t('session.technique.toFailure', { set: sets })
-  return text ? <p className="type-caption text-muted-foreground">{text}</p> : null
 }
 
 /** Setet me kohë (Plank): një numër i madh me sekondat dhe −5 / +5. */
 function SecondsStepper({ setNumber, seconds, onChange, onEdit }: { setNumber: number; seconds: number; onChange: (value: number) => void; onEdit: () => void }) {
   const { t, fmt } = useI18n()
   return (
-    <div role="group" aria-label={t('session.seconds.summary', { set: setNumber, count: seconds })} className="flex flex-col gap-3.5 pt-2.5">
+    <div role="group" aria-label={t('session.seconds.summary', { set: setNumber, count: seconds })} className="flex flex-col gap-3">
       <div className="flex flex-col items-center gap-1">
         <button type="button" aria-label={t('session.seconds.edit', { seconds })} onClick={onEdit} className="min-h-touch rounded-md">
-          <span className="type-display-hero text-foreground">{fmt.number(seconds)}</span>
+          <span className="font-display text-[72px] leading-[0.85] font-extrabold text-foreground tabular-nums">{fmt.number(seconds)}</span>
         </button>
-        <span aria-hidden className="type-body text-muted-foreground">
+        <span aria-hidden className="type-caption text-muted-foreground">
           {t('session.seconds.unit', { count: seconds })}
         </span>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="secondary" ground="page" size="lg" aria-label={t('session.seconds.lower')} disabled={seconds <= 5} onClick={() => onChange(seconds - 5)} className="px-0 text-xl tabular-nums">
+        <Button variant="secondary" ground="card" size="lg" aria-label={t('session.seconds.lower')} disabled={seconds <= 5} onClick={() => onChange(seconds - 5)} className="px-0 text-xl tabular-nums">
           −{fmt.number(5)}
         </Button>
-        <Button variant="secondary" ground="page" size="lg" aria-label={t('session.seconds.raise')} onClick={() => onChange(seconds + 5)} className="px-0 text-xl tabular-nums">
+        <Button variant="secondary" ground="card" size="lg" aria-label={t('session.seconds.raise')} onClick={() => onChange(seconds + 5)} className="px-0 text-xl tabular-nums">
           +{fmt.number(5)}
         </Button>
       </div>
@@ -785,7 +842,7 @@ function RestView({
   const length = 2 * Math.PI * radius
   const fraction = rest.total > 0 ? rest.remaining / rest.total : 0
   return (
-    <main className="flex flex-1 flex-col gap-3.5 px-4 pt-2 pb-5">
+    <main className="flex flex-1 flex-col gap-3.5 px-4 pt-2 pb-[calc(var(--safe-bottom)+20px)]">
       <h1 className="sr-only">{t('session.rest.label')}</h1>
       <p aria-live="polite" className="sr-only">
         {saved ? t('session.rest.saved', { set: saved.setNumber, value: setValue(saved, texts) }) : null}

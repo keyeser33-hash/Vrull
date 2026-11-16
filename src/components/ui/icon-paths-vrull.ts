@@ -76,4 +76,6 @@ export const VRULL_ICONS = {
   'pika-uji': '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
   kanaca: '<path d="M8 4h8v16H8zM8 8h8"/>',
   shishja: '<path d="M10 3h4v3l2 3v11H8V9l2-3z"/>',
+  // Tastiera numerike e seancës (V58): fshin shifrën e fundit.
+  'fshi-shifren': '<path d="M9 5h10.5A1.5 1.5 0 0 1 21 6.5v11a1.5 1.5 0 0 1-1.5 1.5H9l-6-7z"/><path d="M12 9.5l5 5M17 9.5l-5 5"/>',
 } as const

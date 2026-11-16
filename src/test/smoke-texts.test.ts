@@ -130,7 +130,7 @@ describe('tekstet e provës së Android-it', () => {
   })
 
   it('kap një tekst që app-i nuk e ka, dhe pranon parametrat, njësitë dhe ushtrimet', () => {
-    expect(fromCatalog('Ruaj setin e vjetër që nuk ekziston')).toBe(false)
+    expect(fromCatalog('Ruaj ushtrimin e vjetër që nuk ekziston')).toBe(false)
     expect(fromCatalog('Seti 2 nga 3')).toBe(true)
     expect(fromCatalog('Rrit peshën me 2,5 kg')).toBe(true)
     expect(fromCatalog('85 cm')).toBe(true)

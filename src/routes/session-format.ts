@@ -1,6 +1,7 @@
 import type { SetRecord } from '@/data/training'
 import type { Format, I18n, T } from '@/i18n'
-import type { Target } from '@/program/types'
+import type { Reference } from '@/program/loads'
+import type { Target, Tracking } from '@/program/types'
 
 // Tekstet e seancës sipas gjuhës (V2-E1-07): intervali, receta, vlera e setit dhe kohët. Numrat
 // vijnë nga `fmt` (62,5 / 62.5); fjalët nga katalogu ('session.*').
@@ -92,4 +93,19 @@ export function spokenDuration(totalSeconds: number, t: T): string {
       : [minutes > 0 ? t('session.spoken.minutes', { count: minutes }) : null, seconds % 60 > 0 || minutes === 0 ? t('session.spoken.seconds', { count: seconds % 60 }) : null]
   const [first, second] = parts.filter((part): part is string => part !== null)
   return second ? t('session.spoken.join', { first, second }) : first
+}
+
+/** "62,5 × 9", "9" pa peshë, "60 s"; null pa referencë. */
+export function previousText(previous: Reference | null, tracking: Tracking, fmt: Format): string | null {
+  if (!previous) return null
+  if (tracking === 'timed') return previous.reps === null ? null : fmt.number(previous.reps)
+  if (previous.reps === null) return null
+  return previous.weightKg ? `${fmt.number(previous.weightKg)} × ${fmt.number(previous.reps)}` : fmt.number(previous.reps)
+}
+
+/** Synimi i një seti që vjen: "6–8", "12+", "60 s"; përsëritjet e lira me vizë. */
+export function targetShort(target: Target, fmt: Format) {
+  if (target.kind === 'timed') return fmt.unit(target.seconds, 's')
+  if (target.kind === 'reps' && target.min === 0 && target.max === null) return '–'
+  return rangeText(target, fmt) ?? '–'
 }

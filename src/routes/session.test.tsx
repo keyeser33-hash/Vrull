@@ -78,10 +78,13 @@ async function renderApp(path = '/seanca') {
 }
 
 const setGroup = (name: string) => screen.findByRole('group', { name })
-/** Rreshtat poshtë setit (0.23): herën e kaluar dhe pragu i rekordit. */
+/** Rreshtat poshtë numrave të setit aktiv (0.23): si të zgjidhet pesha dhe pragu i rekordit. */
 const rows = (name = 'Herën e kaluar dhe pragu i rekordit') => screen.getByRole('region', { name })
-/** Çipat e seteve të ushtrimit (0.23), si tekst: "1 · tani9–11". */
-const chips = (name = 'Setet e ushtrimit') => within(screen.getByRole('list', { name })).getAllByRole('listitem').map((item) => item.textContent)
+/** Tabela e seteve (V58): rreshtat e saj; i aktivi është karta me stepper-in. */
+const table = (name = 'Setet e ushtrimit') => within(screen.getByRole('region', { name })).getAllByRole('listitem')
+/** Rreshtat që nuk janë aktivë, si tekst për lexuesin e ekranit ose emri i butonit. */
+const tableText = (name?: string) =>
+  table(name).map((item) => (item.getAttribute('aria-current') ? 'aktiv' : (item.querySelector('button')?.getAttribute('aria-label') ?? item.querySelector('.sr-only')?.textContent)))
 
 /** Ruan çdo set dhe segment me vlerat e propozuara, dhe kapërcen pushimet, deri te "Të gjitha setet u bënë". */
 async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
@@ -132,16 +135,26 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('button', { name: /^Ushtrimet e seancës, 1 nga 9 · \d\d:\d\d$/ })).toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'Progresi i seancës' })).toHaveAttribute('aria-valuetext', '0 nga 30 sete')
     expect(screen.getByText('Seti 1 nga 4 · 9–11 përsëritje')).toBeInTheDocument()
-    // Çipat: i tanishmi me "tani", të tjerët me synimin, i fundit me teknikën.
-    expect(chips()).toEqual(['1 · tani9–11', '29–11', '39–11', '4 · rest-pause9–11'])
-    expect(within(screen.getByRole('list', { name: 'Setet e ushtrimit' })).getAllByRole('listitem')[0]).toHaveAttribute('aria-current', 'step')
-    expect(rows()).toHaveTextContent('Herën e kaluar60 × 13 · +2,5 kg')
+    expect(screen.getByText('· pushim 90 s', { exact: false })).toBeInTheDocument()
+    // Tabela: rreshti aktiv me stepper-in, të tjerët me synimin, i fundit me teknikën.
+    expect(tableText()).toEqual(['aktiv', 'Seti 2: synimi 62,5 × 9–11', 'Seti 3: synimi 62,5 × 9–11', 'Seti 4: synimi 62,5 × 9–11'])
+    expect(table()[3]).toHaveTextContent('rest-pause')
+    expect(table()[3]).toHaveTextContent('Pastaj 15 s pushim dhe vazhdo')
+    expect(table()[1]).toHaveTextContent('60 × 12')
+    expect(within(table()[0]).getByText(/^Herën e kaluar · /)).toHaveTextContent('Herën e kaluar · 60 × 13 · +2,5 kg')
     // Pesha e propozuar e §7: 86,0 / (1 + 11/30) = 62,9 → 62,5; pa RIR te Java 2 e Shortcut to Size.
     expect(await setGroup('Seti 1: 62,5 kg, 9 përsëritje')).toBeInTheDocument()
+    expect(screen.getByText('përsëritje · synimi 9–11')).toBeInTheDocument()
     expect(screen.queryByText('Sa të kishin mbetur (RIR)')).not.toBeInTheDocument()
-    expect(screen.getByText('Seti 4: rest-pause, 15 s pushim')).toBeInTheDocument()
     expect(rows()).toHaveTextContent('Rekord i ri me12 përsëritje · e1RM 87,5 kg')
-    expect(screen.getByRole('region', { name: 'Ushtrimi i radhës' })).toHaveTextContent('PastajIncline Bench Press · 3 sete')
+    // Lëvizja dhe 3 sinjalet e udhëzuesit, të hapura te seti i parë; "Shiko videon" me videon e zgjedhur.
+    expect(within(screen.getByRole('list', { name: 'Sinjalet e formës' })).getAllByRole('listitem').map((item) => item.textContent)).toEqual([
+      '1Këmbët në dysheme, shtyj tokën',
+      '2Tërhiq shpatullat pas',
+      '3Bërrylat rreth 45° nga trupi',
+    ])
+    expect(screen.getByRole('button', { name: 'Fshih lëvizjen dhe sinjalet' })).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('button', { name: /^Shiko videon/ })).toBeInTheDocument()
     // Pa mini-player mbi "Ruaj setin": jashtë telefonit muzika s'ka as ikonë.
     expect(screen.queryByRole('button', { name: /Trupi në ritëm|Lidh muzikën/ })).not.toBeInTheDocument()
     expect(screen.getByRole('status')).toBeEmptyDOMElement()
@@ -175,8 +188,11 @@ describe('seanca (V2-E1-07)', () => {
     expect(await setGroup('Seti 2: 62,5 kg, 12 përsëritje')).toBeInTheDocument()
     expect(rows()).toHaveTextContent('Rekord i ri me13 përsëritje · e1RM 89,6 kg')
     expect(screen.getByRole('progressbar', { name: 'Progresi i seancës' })).toHaveAttribute('aria-valuetext', '1 nga 30 sete')
-    expect(chips()).toEqual(['1 · rekord62,5 × 12', '2 · tani9–11', '39–11', '4 · rest-pause9–11'])
-    expect(screen.getByRole('button', { name: 'Seti 1: 62,5\u00A0kg × 12, rekord. Prek për ta ndryshuar' })).toBeInTheDocument()
+    expect(tableText()).toEqual(['Seti 1: 62,5\u00A0kg × 12, rekord. Prek për ta ndryshuar', 'aktiv', 'Seti 3: synimi 62,5 × 9–11', 'Seti 4: synimi 62,5 × 9–11'])
+    expect(table()[0]).toHaveTextContent('rekord')
+    // Pas setit të parë lëvizja paloset në një rresht; sinjalet nuk dalin derisa të hapet.
+    expect(screen.queryByRole('list', { name: 'Sinjalet e formës' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Shfaq lëvizjen dhe sinjalet' })).toHaveAttribute('aria-expanded', 'false')
 
     // Kur pragu bie nën intervalin, çdo set i tij jep rekord.
     // 70 kg e kalojnë 87,5 me 8 përsëritje, para 9–11: 70 × 9 jep 91.
@@ -211,15 +227,33 @@ describe('seanca (V2-E1-07)', () => {
     await renderApp()
 
     expect(await setGroup('Seti 1: 65 kg, 9 përsëritje')).toBeInTheDocument()
-    expect(rows()).toHaveTextContent('Herën e kaluar60 × 13 · +5 kg')
+    expect(within(table()[0]).getByText(/^Herën e kaluar · /)).toHaveTextContent('Herën e kaluar · 60 × 13 · +5 kg')
 
-    // Prekja e numrit hap tastierën numerike.
+    // Prekja e numrit hap tastierën numerike (bordi "Seanca · tastiera"): shifra e parë zëvendëson vlerën.
     await user.click(screen.getByRole('button', { name: 'Shkruaj përsëritjet, 9' }))
-    const sheet = screen.getByRole('dialog', { name: 'Përsëritjet' })
-    const input = within(sheet).getByRole('textbox', { name: 'Përsëritjet' })
-    await user.clear(input)
-    await user.type(input, '11{enter}')
+    let sheet = screen.getByRole('dialog', { name: 'Përsëritjet' })
+    expect(sheet).toHaveAccessibleDescription('Bench Press · seti 1')
+    expect(within(sheet).getByRole('button', { name: /^Herën e kaluar/, pressed: false })).toHaveTextContent('13')
+    await user.click(within(sheet).getByRole('button', { name: '1' }))
+    await user.click(within(sheet).getByRole('button', { name: '1' }))
+    await user.click(within(sheet).getByRole('button', { name: 'Gati' }))
     expect(await setGroup('Seti 1: 65 kg, 11 përsëritje')).toBeInTheDocument()
+
+    // Pesha: −/+ me hapin e shufrës, disqet për anë, "Pesha e javës" dhe tastiera fizike.
+    await user.click(screen.getByRole('button', { name: 'Shkruaj peshën, 65 kg' }))
+    sheet = screen.getByRole('dialog', { name: 'Pesha' })
+    expect(sheet).toHaveTextContent('Shufra 20 kg')
+    expect(sheet).toHaveTextContent('Për anë: 20 + 2,5')
+    expect(sheet).toHaveTextContent('65 = 20 + 2 × 22,5')
+    expect(within(sheet).getByRole('button', { name: /^Pesha e javës/, pressed: true })).toHaveTextContent('65')
+    await user.click(within(sheet).getByRole('button', { name: 'Ul peshën me 2,5 kg' }))
+    expect(sheet).toHaveTextContent('Për anë: 20 + 1,25')
+    await user.click(within(sheet).getByRole('button', { name: 'Fshi shifrën e fundit' }))
+    await user.keyboard('2,5')
+    expect(sheet).toHaveTextContent('2,5kg')
+    await user.click(within(sheet).getByRole('button', { name: /^Herën e kaluar/ }))
+    await user.keyboard('{Enter}')
+    expect(await setGroup('Seti 1: 60 kg, 11 përsëritje')).toBeInTheDocument()
 
     // Lista e ushtrimeve: pulpat kanë histori pa e1RM (30 përsëritje), ndaj marrin peshën e fundit.
     await user.click(screen.getByRole('button', { name: /^Ushtrimet e seancës/ }))
@@ -232,7 +266,7 @@ describe('seanca (V2-E1-07)', () => {
     await user.click(within(list).getByRole('button', { name: /^Standing Calf Raise/ }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Standing Calf Raise' })).toBeInTheDocument()
     expect(await setGroup('Seti 1: 70 kg, 15 përsëritje')).toBeInTheDocument()
-    expect(rows()).toHaveTextContent('Herën e kaluar70 × 30')
+    expect(within(table()[0]).getByText(/^Herën e kaluar · /)).toHaveTextContent('Herën e kaluar · 70 × 30')
     expect(screen.queryByText('Rekord i ri me')).not.toBeInTheDocument()
   })
 
@@ -329,10 +363,8 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('button', { name: 'Ruaj setin' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Ruaj setin' })).toHaveAccessibleDescription('Shkruaj peshën')
     await user.click(screen.getByRole('button', { name: 'Shkruaj peshën, 0 kg' }))
-    const input = within(screen.getByRole('dialog', { name: 'Pesha, kg' })).getByRole('textbox', { name: 'Pesha, kg' })
-    await user.clear(input)
-    await user.type(input, '47,5')
-    await user.click(within(screen.getByRole('dialog', { name: 'Pesha, kg' })).getByRole('button', { name: 'Ruaj' }))
+    await user.keyboard('47,5')
+    await user.click(within(screen.getByRole('dialog', { name: 'Pesha' })).getByRole('button', { name: 'Gati' }))
     expect(screen.queryByText('Shkruaj peshën')).not.toBeInTheDocument()
     await user.click(await screen.findByRole('button', { name: 'Ruaj setin' }))
     // Seti i parë i ushtrimit nuk është rekord: pa banderolë, pa etiketë.
@@ -368,7 +400,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(await screen.findByText('Seti 1 nga 4 · 6–8 përsëritje')).toBeInTheDocument()
     // 1RM nga 50 × 14 = 73,3; 73,3 / (1 + 8/30) = 57,9 → 57,5 me hapin e shufrës.
     expect(await setGroup('Seti 1: 57,5 kg, 6 përsëritje')).toBeInTheDocument()
-    expect(screen.getByText('Seti 4: drop set te 50 kg')).toBeInTheDocument()
+    expect(screen.getByText('Pastaj 50 kg, pa pushim')).toBeInTheDocument()
     for (const setNumber of [1, 2, 3, 4]) {
       await setGroup(`Seti ${setNumber}: 57,5 kg, 6 përsëritje`)
       await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))
@@ -405,12 +437,15 @@ describe('seanca (V2-E1-07)', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Bench Press' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /^Session exercises, 1 of 9 · \d\d:\d\d$/ })).toBeInTheDocument()
     expect(screen.getByText('Set 1 of 4 · 9–11 reps')).toBeInTheDocument()
-    expect(chips('Sets for this exercise')).toEqual(['1 · now9–11', '29–11', '39–11', '4 · rest-pause9–11'])
-    expect(rows('Last time and personal best')).toHaveTextContent('Last time60 × 13 · +2.5 kg')
+    expect(screen.getByText('· 90 s rest', { exact: false })).toBeInTheDocument()
+    expect(tableText('Sets for this exercise')).toEqual(['aktiv', 'Set 2: target 62.5 × 9–11', 'Set 3: target 62.5 × 9–11', 'Set 4: target 62.5 × 9–11'])
+    expect(within(table('Sets for this exercise')[0]).getByText(/^Last time · /)).toHaveTextContent('Last time · 60 × 13 · +2.5 kg')
     expect(await setGroup('Set 1: 62.5 kg, 9 reps')).toBeInTheDocument()
-    expect(screen.getByText('Set 4: rest-pause, 15 s rest')).toBeInTheDocument()
+    expect(screen.getByText('reps · target 9–11')).toBeInTheDocument()
+    expect(screen.getByText('Then 15 s rest and keep going')).toBeInTheDocument()
     expect(rows('Last time and personal best')).toHaveTextContent('Personal best with12 reps · e1RM 87.5 kg')
-    expect(screen.getByRole('region', { name: 'Next exercise' })).toHaveTextContent('NextIncline Bench Press · 3 sets')
+    expect(within(screen.getByRole('list', { name: 'Form cues' })).getAllByRole('listitem')[2]).toHaveTextContent('Elbows about 45°')
+    expect(screen.getByRole('button', { name: 'Hide the movement and cues' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Muscles worked' })).toBeInTheDocument()
 
     for (let rep = 0; rep < 3; rep++) await user.click(screen.getByRole('button', { name: 'Increase reps' }))
@@ -425,7 +460,7 @@ describe('seanca (V2-E1-07)', () => {
     expect(screen.getByRole('button', { name: 'Take 15 seconds off the rest' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Skip' }))
     expect(await screen.findByRole('button', { name: 'Set 1: 62.5\u00A0kg × 12, personal best. Tap to edit' })).toBeInTheDocument()
-    expect(chips('Sets for this exercise')).toEqual(['1 · record62.5 × 12', '2 · now9–11', '39–11', '4 · rest-pause9–11'])
+    expect(tableText('Sets for this exercise')).toEqual(['Set 1: 62.5\u00A0kg × 12, personal best. Tap to edit', 'aktiv', 'Set 3: target 62.5 × 9–11', 'Set 4: target 62.5 × 9–11'])
 
     await user.click(await screen.findByRole('button', { name: /^Session exercises/ }))
     const list = screen.getByRole('dialog', { name: 'Today’s exercises' })
@@ -471,7 +506,7 @@ describe('seanca (V2-E1-07)', () => {
     await user.click(within(sheet).getByRole('button', { name: 'Ruaj ndryshimin' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     expect(await screen.findByRole('button', { name: 'Seti 1: 60\u00A0kg × 10. Prek për ta ndryshuar' })).toBeInTheDocument()
-    expect(chips()[0]).toBe('160 × 10')
+    expect(table()[0]).not.toHaveTextContent('rekord')
     expect(rows()).toHaveTextContent('Rekord i ri me12 përsëritje · e1RM 87,5 kg')
     const [set1] = (await data.store.where('set_logs', 'session_id', sessionId)).filter((set) => set.set_number === 1)
     expect(set1).toMatchObject({ weight_kg: 60, reps: 10, rir: null })
@@ -486,13 +521,11 @@ describe('seanca (V2-E1-07)', () => {
     expect(await setGroup('Seti 1: 70 kg, 15 përsëritje')).toBeInTheDocument()
     // Java 1: 70 × 30. Sot 75 × 30: pa e1RM (mbi 15 përsëritje), por pesha më e madhe për 30.
     await user.click(screen.getByRole('button', { name: 'Shkruaj peshën, 70 kg' }))
-    const weight = within(screen.getByRole('dialog', { name: 'Pesha, kg' })).getByRole('textbox', { name: 'Pesha, kg' })
-    await user.clear(weight)
-    await user.type(weight, '75{enter}')
+    // Pulpat me makinë: pa disqet e shufrës.
+    expect(screen.getByRole('dialog', { name: 'Pesha' })).not.toHaveTextContent('Shufra')
+    await user.keyboard('75{Enter}')
     await user.click(await screen.findByRole('button', { name: 'Shkruaj përsëritjet, 15' }))
-    const reps = within(screen.getByRole('dialog', { name: 'Përsëritjet' })).getByRole('textbox', { name: 'Përsëritjet' })
-    await user.clear(reps)
-    await user.type(reps, '30{enter}')
+    await user.keyboard('30{Enter}')
     expect(await setGroup('Seti 1: 75 kg, 30 përsëritje')).toBeInTheDocument()
     expect(screen.queryByText('Rekord i ri me')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Ruaj setin' }))

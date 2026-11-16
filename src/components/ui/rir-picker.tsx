@@ -6,7 +6,18 @@ import { cn } from '@/lib/cn'
 
 const VALUES = [0, 1, 2, 3, 4] as const
 
-export function RirPicker({ value, onChange, className }: { value: number | null; onChange: (value: number) => void; className?: string }) {
+export function RirPicker({
+  value,
+  onChange,
+  ground = 'page',
+  className,
+}: {
+  value: number | null
+  onChange: (value: number) => void
+  /** Çipat e pazgjedhur: `surface` mbi faqe, `surface-2` brenda kartës (rreshti aktiv i seancës). */
+  ground?: 'page' | 'card'
+  className?: string
+}) {
   const { t } = useI18n()
   return (
     <fieldset className={cn('m-0 min-w-0 border-0 p-0', className)}>
@@ -24,7 +35,7 @@ export function RirPicker({ value, onChange, className }: { value: number | null
               onClick={() => onChange(option)}
               className={cn(
                 'h-touch rounded-md border font-display text-xl font-bold tabular-nums',
-                selected ? 'border-foreground bg-foreground text-background' : 'border-surface-border bg-surface text-foreground',
+                selected ? 'border-foreground bg-foreground text-background' : cn('border-surface-border text-foreground', ground === 'card' ? 'bg-surface-2' : 'bg-surface'),
               )}
             >
               {last ? `${option}+` : option}
