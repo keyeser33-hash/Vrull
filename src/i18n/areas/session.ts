@@ -46,6 +46,7 @@ export const sq = {
   'session.skipSegment': 'Kapërce segmentin',
   'session.segment.restPause': 'Seti {set} nga {sets} · rest-pause, deri në dështim',
   'session.segment.dropSet': 'Seti {set} nga {sets} · drop set, ul peshën dhe vazhdo',
+  // Njoftimi i seancës kur të gjitha setet janë bërë (lib/session-notification.ts).
   'session.allDone': 'Të gjitha setet u bënë',
   'session.allDoneText': 'Mbyll stërvitjen që treguesi të kalojë te e radha.',
   'session.finish': 'Mbyll stërvitjen',

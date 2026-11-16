@@ -1375,7 +1375,7 @@ try {
     await waitForNotificationTitle(4200, 'Incline Dumbbell Flye · Seti 1 nga 2')
   }, { after: 'njoftimi' })
 
-  // D8. Butoni mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca; "Mbyll stërvitjen" heq njoftimin.
+  // D8. Butoni mbrapa mbyll fletën e ushtrimeve dhe mbetet te seanca; "Kontrollo setet", pastaj "Mbyll stërvitjen" heq njoftimin.
   await section('mbyllja', 'Butoni mbrapa te seanca dhe mbyllja', async () => {
     await goHome(page)
     await openSession(page)
@@ -1387,6 +1387,10 @@ try {
     await clickButtonStarting(page, 'Ushtrimet e seancës, ')
     await clickButton(page, 'Mbyll stërvitjen')
     await clickButton(page, 'Po, mbyll')
+    // 0.41 (V58): "Kontrollo setet" para mbylljes, me setet e çdo ushtrimi; "Mbyll stërvitjen" e mbyll.
+    await waitForHeading(page, 'Kontrollo setet')
+    screenshot('kontrollo-setet')
+    await clickButton(page, 'Mbyll stërvitjen')
     await waitFor(async () => (await page.evaluate('location.pathname')).startsWith('/seanca/mbyllja/'), 'mbyllja e seancës')
     screenshot('mbyllja')
     await waitFor(() => !notification(4200) && !notification(4202), 'njoftimi i seancës i hequr', 15_000)

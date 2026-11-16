@@ -96,7 +96,7 @@ const table = (name = 'Setet e ushtrimit') => within(screen.getByRole('region', 
 const tableText = (name?: string) =>
   table(name).map((item) => (item.getAttribute('aria-current') ? 'aktiv' : (item.querySelector('button')?.getAttribute('aria-label') ?? item.querySelector('.sr-only')?.textContent)))
 
-/** Ruan çdo set dhe segment me vlerat e propozuara, dhe kapërcen pushimet, deri te "Të gjitha setet u bënë". */
+/** Ruan çdo set dhe segment me vlerat e propozuara, dhe kapërcen pushimet, deri te "Kontrollo setet". */
 async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
   const saveName = /^(Ruaj setin|Ruaj segmentin|Log set|Log segment)$/
   let saved = 0
@@ -105,7 +105,7 @@ async function logEverySet(user: ReturnType<typeof userEvent.setup>) {
     // përsëri në çdo provë, sepse seti ri-vizatohet kur leximi i ri sjell setin e ruajtur.
     const next = await waitFor(
       () => {
-        if (screen.queryByRole('heading', { level: 1, name: /^(Të gjitha setet u bënë|All sets done)$/ })) return null
+        if (screen.queryByRole('heading', { level: 1, name: /^(Kontrollo setet|Check your sets)$/ })) return null
         const skip = screen.queryByRole('button', { name: /^(Kapërce|Skip)$/ })
         if (skip) return { button: skip, save: false }
         const button = screen.getByRole('button', { name: saveName })
@@ -323,6 +323,19 @@ describe('seanca (V2-E1-07)', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
 
     await logEverySet(user)
+    // "Kontrollo setet" (bordi "Mbyllja · Kontrollo"): minutat, setet, ushtrimet, rekordi dhe setet e çdo ushtrimi.
+    expect(screen.getByRole('group', { name: '30 sete të ruajtura' })).toHaveTextContent('sete30')
+    expect(screen.getByRole('group', { name: '9 ushtrime' })).toBeInTheDocument()
+    expect(screen.getByText('1 rekord. Prek një set për ta ndryshuar para se ta mbyllësh.')).toBeInTheDocument()
+    const benchCard = screen.getByRole('region', { name: 'Bench Press' })
+    expect(benchCard).toHaveTextContent('1Bench Press4 sete')
+    expect(within(benchCard).getAllByRole('button').map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Seti 1: 62,5\u00A0kg × 12, rekord. Prek për ta ndryshuar',
+      'Seti 2: 62,5\u00A0kg × 12. Prek për ta ndryshuar',
+      'Seti 3: 62,5\u00A0kg × 12. Prek për ta ndryshuar',
+      'Seti 4: 62,5\u00A0kg × 12 + 4. Prek për ta ndryshuar',
+    ])
+    expect(benchCard).toHaveTextContent('Seti 4 · rest-pause62,5 × 12 + 4')
     await user.click(screen.getByRole('button', { name: 'Mbyll stërvitjen' }))
 
     // Mbyllja: rekordi i seancës dhe setet e punës.
@@ -392,6 +405,22 @@ describe('seanca (V2-E1-07)', () => {
     await user.click(within(list).getByRole('button', { name: 'Mbyll stërvitjen' }))
     expect(within(list).getByText('Mbeten 20 sete pa bërë. Stërvitja mbyllet me ato që ke regjistruar.')).toBeInTheDocument()
     await user.click(within(list).getByRole('button', { name: 'Po, mbyll' }))
+    // "Kontrollo setet" para mbylljes: seti i vetëm, ushtrimet pa sete, "Kthehu te seanca" dhe përsëri.
+    expect(await screen.findByRole('heading', { level: 1, name: 'Kontrollo setet' })).toBeInTheDocument()
+    expect(screen.getByText('Prek një set për ta ndryshuar para se ta mbyllësh. Mbeten 20 sete pa bërë.')).toBeInTheDocument()
+    expect(screen.getAllByText('Pa sete')).toHaveLength(8)
+    await user.click(screen.getByRole('button', { name: 'Seti 1: 47,5\u00A0kg × 12. Prek për ta ndryshuar' }))
+    const edit = screen.getByRole('dialog', { name: 'Ndrysho setin 1' })
+    await user.click(within(edit).getByRole('button', { name: 'Rrit peshën me 2,5 kg' }))
+    await user.click(within(edit).getByRole('button', { name: 'Ruaj ndryshimin' }))
+    expect(await screen.findByRole('button', { name: 'Seti 1: 50\u00A0kg × 12. Prek për ta ndryshuar' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Kontrollo setet' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Kthehu te seanca' }))
+    expect(await setGroup('Seti 2: 50 kg, 12 përsëritje')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /^Ushtrimet e seancës/ }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Ushtrimet e sotme' })).getByRole('button', { name: 'Mbyll stërvitjen' }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Ushtrimet e sotme' })).getByRole('button', { name: 'Po, mbyll' }))
+    await user.click(await screen.findByRole('button', { name: 'Mbyll stërvitjen' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Stërvitja 1' })).toBeInTheDocument()
     expect(screen.getByText('Java 0 · Stërvitja 1')).toBeInTheDocument()
     expect(screen.getByRole('group', { name: '1 set pune' })).toBeInTheDocument()
@@ -483,6 +512,10 @@ describe('seanca (V2-E1-07)', () => {
     expect(within(list).getByText('Tap an exercise to see it and edit its sets. 29 sets left.')).toBeInTheDocument()
     await user.click(within(list).getByRole('button', { name: 'Finish workout' }))
     await user.click(within(list).getByRole('button', { name: 'Yes, finish' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Check your sets' })).toBeInTheDocument()
+    expect(screen.getByText('1 personal best. Tap a set to edit it before you finish. 29 sets still to do.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Back to the session' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Finish workout' }))
 
     expect(await screen.findByRole('heading', { level: 1, name: 'New personal best' })).toBeInTheDocument()
     expect(screen.getByText('Phase 1 · Week 2 · Workout 1')).toBeInTheDocument()

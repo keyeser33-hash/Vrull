@@ -5,6 +5,7 @@ import { ExerciseVideoSheet } from '@/components/ui/exercise-video'
 import { ExerciseMotion } from '@/components/ui/exercise-motion'
 import { Icon } from '@/components/ui/icons'
 import { RirPicker } from '@/components/ui/rir-picker'
+import { StatTile } from '@/components/ui/stat-tile'
 import { Stepper } from '@/components/ui/stepper'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
@@ -17,7 +18,7 @@ import { chosenVideo } from '@/program/exercise-videos'
 import { tempoOf } from '@/program/motion'
 import { pendingSegment, segmentDefaults, setDefaults, type SetValues } from '@/program/next-set'
 import { type SetRow, setTable } from '@/program/set-table'
-import { type RecordHint, recordHint, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
+import { type RecordHint, recordHint, sessionBests, sessionSetRecords, setRecord, type SetRecordResult } from '@/progress/records'
 import { type SessionProgress, sessionProgress } from '@/program/session-progress'
 import type { PlannedSlot, SessionPlan, Target, Technique, Tracking } from '@/program/types'
 import { cn } from '@/lib/cn'
@@ -410,7 +411,7 @@ function ActiveSession({
           onSelect={setSelected}
           onClose={closeSheet}
           onChange={() => setParams({ ndrysho: '1' }, { replace: true })}
-          onFinish={finish}
+          onFinish={() => setParams({ kontrollo: '1' }, { replace: true })}
         />
       ) : null}
       {params.has('ndrysho') && slot ? <ChangeExerciseSheet plan={plan} slot={slot} exerciseName={exercise?.name ?? ''} onClose={closeSheet} /> : null}
@@ -464,6 +465,28 @@ function ActiveSession({
       at: { exerciseId: at.exerciseId, blockPosition: plan.blockPosition, week: plan.week, sessionId: session.id },
     })
 
+  // "Kontrollo setet" para "Mbyll stërvitjen" (bordi "Mbyllja · Kontrollo"): nga lista, nga ushtrimi i bërë,
+  // dhe vetë kur të gjitha setet janë bërë.
+  const allDone = progress.current === null && !segment
+  if (params.has('kontrollo') || (allDone && viewing === null && !rest.running)) {
+    const lastIndex = Math.max(0, ...progress.slots.map((entry, index) => (entry.done > 0 ? index : 0)))
+    return frame(
+      <ReviewView
+        progress={progress}
+        sets={sets}
+        exercises={exercises}
+        history={live}
+        sessionId={session.id}
+        minutes={Math.max(0, Math.round(elapsed / 60))}
+        busy={busy}
+        notice={notice}
+        onEdit={openEdit}
+        onFinish={finish}
+        onBack={() => (params.has('kontrollo') ? navigate(-1) : setSelected(plan.slots[lastIndex].slotId))}
+      />,
+    )
+  }
+
   if (rest.running && lastSet && viewing === null) {
     let next: { exercise: string | null; text: string } | null = null
     if (segment) {
@@ -512,22 +535,7 @@ function ActiveSession({
     )
   }
 
-  if (!current || !slot || !defaults) {
-    return frame(
-      <>
-        <main className="flex flex-1 flex-col gap-2 px-4 pt-4">
-          <h1 className="type-display-l">{t('session.allDone')}</h1>
-          <p className="type-body text-muted-foreground">{t('session.allDoneText')}</p>
-        </main>
-        <SessionFooter>
-          {notice}
-          <Button variant="primary" size="xl" disabled={busy} onClick={finish}>
-            {t('session.finish')}
-          </Button>
-        </SessionFooter>
-      </>,
-    )
-  }
+  if (!current || !slot || !defaults) return frame(<main className="flex-1" />)
 
   const previous = segment ? null : reference(live, { exerciseId: slot.exerciseId, blockPosition: plan.blockPosition, week: plan.week, setNumber, sessionId: session.id })
   const rows = rowsFor(slot, active ? setNumber : null)
@@ -568,7 +576,7 @@ function ActiveSession({
       notice={notice}
       continueTo={continueTo}
       onContinue={() => setSelected(null)}
-      onFinish={finish}
+      onReview={() => setParams({ kontrollo: '1' })}
       busy={busy}
       onSave={(values) => save({ slot, setNumber, technique, segment }, values)}
       onSkipSegment={
@@ -713,7 +721,7 @@ function SetView({
   notice,
   continueTo,
   onContinue,
-  onFinish,
+  onReview,
   busy,
   onSave,
   onSkipSegment,
@@ -759,7 +767,8 @@ function SetView({
   /** Te një ushtrim i bërë: ushtrimi ku vazhdon seanca; null kur të gjitha setet janë bërë. */
   continueTo: string | null
   onContinue: () => void
-  onFinish: () => void
+  /** "Kontrollo setet", kur të gjitha setet janë bërë. */
+  onReview: () => void
   busy: boolean
   onSave: (values: SetValues) => void
   onSkipSegment?: () => void
@@ -878,8 +887,8 @@ function SetView({
               {t('session.continueTo', { exercise: continueTo })}
             </Button>
           ) : (
-            <Button variant="primary" size="xl" disabled={busy} onClick={onFinish}>
-              {t('session.finish')}
+            <Button variant="primary" size="xl" disabled={busy} onClick={onReview}>
+              {t('session.review.open')}
             </Button>
           )}
         </SessionFooter>
@@ -1071,6 +1080,126 @@ function SecondsStepper({ setNumber, seconds, onChange, onEdit }: { setNumber: n
         </Button>
       </div>
     </div>
+  )
+}
+
+/**
+ * "Kontrollo setet" (SPEC §0.3g, V58; bordi "Mbyllja · Kontrollo"): para "Mbyll stërvitjen", minutat, setet
+ * dhe ushtrimet, rekordet e seancës (e1RM-ja, si te mbyllja) dhe çdo ushtrim me setet e tij, që preken për
+ * t'u ndryshuar. "Mbyll stërvitjen" e mbyll si më parë; "Kthehu te seanca" kthen te ushtrimi.
+ */
+function ReviewView({
+  progress,
+  sets,
+  exercises,
+  history,
+  sessionId,
+  minutes,
+  busy,
+  notice,
+  onEdit,
+  onFinish,
+  onBack,
+}: {
+  progress: SessionProgress
+  sets: SetRecord[]
+  exercises: TrainingSnapshot['exercises']
+  history: HistorySet[]
+  sessionId: string
+  minutes: number
+  busy: boolean
+  notice: ReactNode
+  onEdit: (set: SetRecord) => void
+  onFinish: () => void
+  onBack: () => void
+}) {
+  const texts = useI18n()
+  const { t, fmt } = texts
+  const bests = sessionBests(history, sessionId)
+  const recordIds = new Set(bests.map((record) => record.setId))
+  const worked = progress.slots.filter((entry) => entry.done > 0).length
+  const remaining = progress.totalSets - progress.doneSets
+  return (
+    <>
+      <main className="flex flex-1 flex-col gap-3 px-4 pt-1 pb-3">
+        <h1 className="type-display-l">{t('session.review.title')}</h1>
+        <div className="grid grid-cols-3 gap-2">
+          <StatTile label={t('session.review.minutes')} value={fmt.number(minutes)} ariaLabel={t('session.review.minutesSpoken', { count: minutes })} />
+          <StatTile label={t('session.review.sets', { count: progress.doneSets })} value={fmt.number(progress.doneSets)} ariaLabel={t('session.review.setsSpoken', { count: progress.doneSets })} />
+          <StatTile label={t('session.review.exercises', { count: worked })} value={fmt.number(worked)} ariaLabel={t('session.review.exercisesSpoken', { count: worked })} />
+        </div>
+        <p className="flex items-start gap-1.5 type-caption text-muted-foreground">
+          {bests.length ? <Icon name="kupa" size={16} className="mt-0.5 shrink-0 text-ember-text" /> : null}
+          <span>
+            {t('session.review.intro', { count: bests.length })}
+            {remaining > 0 ? ` ${t('session.review.remaining', { count: remaining })}` : null}
+          </span>
+        </p>
+        <ol className="flex flex-col gap-2.5">
+          {progress.slots.map((entry, index) => {
+            const name = exercises[entry.slot.exerciseId]?.name ?? ''
+            const mine = sets.filter((set) => set.slotId === entry.slot.slotId).sort((a, b) => a.setNumber - b.setNumber)
+            return (
+              <li key={entry.slot.slotId}>
+                <section aria-label={name} className={cn(surfaceClass, 'flex flex-col overflow-hidden rounded-lg')}>
+                  <div className="flex items-baseline justify-between gap-2 px-3 pt-2.5 pb-1.5">
+                    <h2 className="min-w-0 type-title">
+                      <span className="mr-2 text-muted-foreground tabular-nums">{fmt.number(index + 1)}</span>
+                      {name}
+                    </h2>
+                    <span className="shrink-0 type-caption text-muted-foreground tabular-nums">{mine.length ? t('session.sets', { count: mine.length }) : t('session.review.noSets')}</span>
+                  </div>
+                  {mine.length ? (
+                    <ul className="flex flex-col divide-y divide-border border-t border-border">
+                      {mine.map((set) => {
+                        const record = recordIds.has(set.id)
+                        const technique = set.technique === 'drop_set' ? t('session.chip.dropSet') : set.technique === 'rest_pause' ? t('session.chip.restPause') : null
+                        const label = technique ? t('session.review.setTag', { set: set.setNumber, technique }) : t('session.setLabel', { set: set.setNumber })
+                        const content = (
+                          <>
+                            <span className={cn('flex min-w-0 items-center gap-1.5 text-sm leading-[1.35]', record ? 'font-semibold text-ember-text' : 'text-muted-foreground')}>
+                              <span className="truncate">{label}</span>
+                              {record ? <Icon name="kupa" size={14} className="shrink-0" /> : null}
+                            </span>
+                            <span className="ml-auto font-display text-lg font-bold whitespace-nowrap tabular-nums">{setValue(set, texts)}</span>
+                          </>
+                        )
+                        return (
+                          <li key={set.id}>
+                            {editable(set) ? (
+                              <button
+                                type="button"
+                                aria-label={t(record ? 'session.chip.editRecord' : 'session.chip.edit', { set: set.setNumber, value: setValue(set, texts, { unit: true }) })}
+                                onClick={() => onEdit(set)}
+                                className={cn('flex min-h-touch w-full items-center gap-2 px-3 py-1.5 text-left', record ? 'bg-insight' : null)}
+                              >
+                                {content}
+                                <Icon name="chevron-djathtas" size={16} className="shrink-0 text-muted-foreground" />
+                              </button>
+                            ) : (
+                              <div className={cn('flex min-h-touch items-center gap-2 px-3 py-1.5', record ? 'bg-insight' : null)}>{content}</div>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  ) : null}
+                </section>
+              </li>
+            )
+          })}
+        </ol>
+      </main>
+      <SessionFooter>
+        {notice}
+        <Button variant="primary" size="xl" disabled={busy} onClick={onFinish}>
+          {t('session.finish')}
+        </Button>
+        <Button variant="secondary" ground="page" size="lg" disabled={busy} onClick={onBack}>
+          {t('session.review.back')}
+        </Button>
+      </SessionFooter>
+    </>
   )
 }
 
