@@ -247,7 +247,8 @@ describe('Kutia e AI-së', () => {
     await user.click(await screen.findByRole('button', { name: 'Ndrysho Panetone' }))
     const sheet = screen.getByRole('dialog', { name: 'Panetone' })
     await user.click(within(sheet).getByRole('button', { name: 'Më shumë' }))
-    await user.click(within(sheet).getByRole('button', { name: 'Para gjumit' }))
+    // Çipat e vakteve dalin pasi lexohet dita e ushqimit; nën ngarkesë kjo vjen pas hapjes së fletës.
+    await user.click(await within(sheet).findByRole('button', { name: 'Para gjumit' }))
     await user.click(within(sheet).getByRole('button', { name: 'Gati' }))
     expect(screen.getByRole('region', { name: /^Para gjumit/ })).toHaveTextContent('90 g')
     await user.click(screen.getByRole('button', { name: 'Ndrysho Panetone' }))
