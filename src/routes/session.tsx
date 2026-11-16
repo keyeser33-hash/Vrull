@@ -44,12 +44,14 @@ import { UndoToast } from './session-undo'
 import { EditSetSheet } from './set-edit-sheet'
 import { clock } from './training-format'
 
-// Seanca e stërvitjes në Vrull (V2-E1-07; bordet "Seanca", "Pushimi", "Ushtrimet"; pamja e 0.23, SPEC
-// §0.3c): një ushtrim dhe një set në ekran, me çipat e seteve sipër, numrat e mëdhenj, "Herën e kaluar"
-// dhe pragun e rekordit si rreshta, dhe "Ruaj setin" si veprimin e vetëm me prush. Muzika është ikonë
-// te kreu. Pas setit vjen pushimi si unazë e madhe, me setet e ruajtura poshtë; kur seti jep rekord,
-// banderola zbret mbi pushimin. Seti i fundit me rest-pause ose drop set ka segmentin e vet. Pa tab-bar,
-// jashtë kornizës.
+// Seanca e stërvitjes në Vrull (V2-E1-07; 0.23, SPEC §0.3c; seanca e re 0.41, V58, §0.3g; bordet "0.41 ·
+// Seanca e re"): një ushtrim në ekran, me lëvizjen dhe 3 sinjalet e udhëzuesit, pastaj tabelën e seteve me
+// rreshtin aktiv të madh (stepper-i, "Herën e kaluar", pragu i rekordit) dhe "Ruaj setin" si veprimin e vetëm
+// me prush. Seti del në prekje me "Zhbëj" (6 s), para bazës; çdo set i çdo ushtrimi preket dhe ndryshohet;
+// rrëshqitja anash dhe lista hapin edhe ushtrimet e bëra. Pushimi ka unazën dhe tabelën e ushtrimit, ose
+// lëvizjen e ushtrimit të ri; banderola e rekordit zbret mbi të. "Kontrollo setet" vjen para "Mbyll
+// stërvitjen". Seti i fundit me rest-pause ose drop set ka segmentin e vet. Muzika është ikonë te kreu.
+// Pa tab-bar, jashtë kornizës.
 
 /** Një lexim i vetëm, që seti i ruajtur dhe historia të jenë gjithnjë në të njëjtën gjendje. */
 async function sessionData() {

@@ -12,8 +12,8 @@ import type { HistorySet } from '@/program/loads'
 import { previewEdit } from '@/progress/history'
 
 // Fleta "Ndrysho setin" (V2-E1-15): pesha, përsëritjet dhe RIR-i i një seti të ruajtur, me parapamjen
-// e e1RM-së dhe të rekordit. E hapin seanca e kaluar te historiku dhe, që nga 0.23, çipat dhe rreshtat
-// e seteve te seanca e hapur. Ruajtja shkon te `editSet` (në telefon së pari, pastaj sinkronizimi).
+// e e1RM-së dhe të rekordit. E hapin seanca e kaluar te historiku dhe, që nga 0.41, tabela e seteve te seanca
+// e hapur, pushimi dhe "Kontrollo setet". Ruajtja shkon te `editSet` (në telefon së pari, pastaj sinkronizimi).
 
 const MAX_WEIGHT = 500
 const MAX_REPS = 200
