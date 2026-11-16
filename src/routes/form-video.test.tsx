@@ -155,7 +155,7 @@ describe('videot e formës (V2-E1-13)', () => {
     const user = userEvent.setup()
     const router = await renderAt('/seanca')
 
-    await user.click(await screen.findByRole('button', { name: 'Video e formës' }))
+    await user.click(await screen.findByRole('button', { name: 'Filmo veten' }))
     const dialog = await screen.findByRole('dialog', { name: 'Video e formës' })
     expect(router.state.location.search).toBe('?video=1')
     expect(within(dialog).getByText(`${name} · Seti 1`)).toBeInTheDocument()
@@ -196,7 +196,7 @@ describe('videot e formës (V2-E1-13)', () => {
     expect(screen.getByRole('heading', { level: 1, name })).toBeInTheDocument()
 
     // Përsëri te i njëjti set: videoja e ruajtur është "Sot"; një regjistrim i ri do ta zëvendësonte.
-    await user.click(screen.getByRole('button', { name: 'Video e formës' }))
+    await user.click(screen.getByRole('button', { name: 'Filmo veten' }))
     const again = await screen.findByRole('dialog', { name: 'Video e formës' })
     expect(await within(again).findByRole('button', { name: 'Luaj videon: 8 nëntor · Seti 1' })).toBeInTheDocument()
     expect(within(again).getByText('Regjistruar 0:24')).toBeInTheDocument()
@@ -300,7 +300,7 @@ describe('videot e formës (V2-E1-13)', () => {
     const user = userEvent.setup()
     await renderAt('/seanca')
 
-    await user.click(await screen.findByRole('button', { name: 'Form video' }))
+    await user.click(await screen.findByRole('button', { name: 'Film yourself' }))
     const dialog = await screen.findByRole('dialog', { name: 'Form video' })
     expect(within(dialog).getByText(`${name} · Set 1`)).toBeInTheDocument()
     expect(within(dialog).getByText('Private: only you can see them. Kept on your phone and in the cloud.')).toBeInTheDocument()

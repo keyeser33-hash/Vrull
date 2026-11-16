@@ -1232,7 +1232,7 @@ try {
     info("MediaRecorder.isTypeSupported('video/mp4;codecs=avc1') në WebView-in e emulatorit", report.mp4)
     const cameraGranted = () => /android\.permission\.CAMERA: granted=true/.test(adb('shell', 'dumpsys', 'package', PKG))
     check('kamera: leja CAMERA ende pa dhënë', !cameraGranted())
-    await clickButton(page, 'Video e formës')
+    await clickButton(page, 'Filmo veten')
     await waitFor(() => focusedWindow().includes('permissioncontroller'), 'dritarja e lejes së kamerës', 20_000)
     screenshot('kamera-leja')
     const allow = await waitFor(() => (uiNodes() ?? []).find((node) => /permission_allow_foreground_only_button|permission_allow_button/.test(node.id)), 'butoni "Lejo" i kamerës', 20_000)
@@ -1263,7 +1263,7 @@ try {
     await waitFor(async () => (await readDb(page, ['_video_files']))._video_files[0].uploaded === 1, 'videoja e shënuar si e ngarkuar', 30_000)
     check('video: ngarkohet te form-videos kur kthehet rrjeti', true, report.requests.find((line) => line.startsWith('POST /storage/v1/object/form-videos/')))
     // Home gjatë regjistrimit: regjistrimi ndalet dhe mbahet, kamera rihapet kur app-i kthehet.
-    await clickButton(page, 'Video e formës')
+    await clickButton(page, 'Filmo veten')
     await waitFor(cameraLive, 'kamera përsëri', 30_000)
     await clickButton(page, await recordLabel())
     await sleep(2500)

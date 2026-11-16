@@ -11,6 +11,7 @@ export const sq = {
   'session.progress': 'Progresi i seancës',
   'session.progressValue': '{done} nga {total} sete',
   'session.muscles': 'Muskujt e ushtrimit',
+  'session.filmYourself': 'Filmo veten',
 
   // Seti.
   'session.setLabel': 'Seti {set}',
@@ -151,6 +152,7 @@ export const en: TranslationOf<typeof sq> = {
   'session.progress': 'Session progress',
   'session.progressValue': '{done} of {total} sets',
   'session.muscles': 'Muscles worked',
+  'session.filmYourself': 'Film yourself',
 
   'session.setLabel': 'Set {set}',
   'session.setOf': 'Set {set} of {sets} · {target}',

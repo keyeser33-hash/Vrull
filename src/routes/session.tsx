@@ -445,7 +445,7 @@ function SessionFrame({
           <div className="flex justify-end">
             {music}
             {onVideo ? (
-              <Button variant="ghost" size="icon" aria-label={t('videos.title')} className="rounded-pill" onClick={onVideo}>
+              <Button variant="ghost" size="icon" aria-label={t('session.filmYourself')} className="rounded-pill" onClick={onVideo}>
                 <Icon name="kamera-video" size={22} />
               </Button>
             ) : null}
