@@ -21,5 +21,8 @@ export function youtubeId(url: string): string | null {
   return ID.test(candidate) ? candidate : null
 }
 
-export const embedUrl = (id: string) => `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1`
-export const watchUrl = (id: string) => `https://www.youtube.com/watch?v=${id}`
+/** Sekonda ku nis demonstrimi (`startS`, §0.3g); 0 ose pa të, nga fillimi. */
+const start = (startS: number) => Math.max(0, Math.floor(startS))
+export const embedUrl = (id: string, startS = 0) =>
+  `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1${start(startS) ? `&start=${start(startS)}` : ''}`
+export const watchUrl = (id: string, startS = 0) => `https://www.youtube.com/watch?v=${id}${start(startS) ? `&t=${start(startS)}s` : ''}`

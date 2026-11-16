@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { EXERCISE_VIDEOS, WITHOUT_VIDEO, curatedVideos, mainVideoId } from './exercise-videos'
+import { EXERCISE_VIDEOS, WITHOUT_VIDEO, chosenVideo, curatedVideos, mainVideoId } from './exercise-videos'
 import { SHORTCUT_TO_SIZE } from './shortcut-to-size'
 import { watchUrl, youtubeId } from '@/lib/youtube'
 
@@ -69,5 +69,17 @@ describe('videoja kryesore e ushtrimit', () => {
 
   it('pa video të zgjedhur dhe pa link: null', () => {
     expect(mainVideoId(SIT_UP, null)).toBeNull()
+  })
+})
+
+describe('videoja që luan "Shiko videon"', () => {
+  it('e zgjedhura me sekondën e nisjes; linku i përdoruesit ka përparësi; pa asnjë: null', () => {
+    const chosen = chosenVideo(BENCH, null)
+    expect(chosen).toMatchObject({ id: 'CayG6UYqL8g', startS: 0, mine: false })
+    expect(chosen?.video?.author).toBe('NASM')
+    expect(chosenVideo(BENCH, 'https://youtu.be/dQw4w9WgXcQ')).toEqual({ id: 'dQw4w9WgXcQ', startS: 0, video: null, mine: true })
+    expect(chosenVideo(BENCH, 'jo link')?.id).toBe('CayG6UYqL8g')
+    expect(chosenVideo(SIT_UP, null)).toBeNull()
+    expect(chosenVideo({ libraryId: null, name: 'Machine Crunch' }, null)).toBeNull()
   })
 })

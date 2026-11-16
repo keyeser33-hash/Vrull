@@ -484,3 +484,20 @@ export function curatedVideos(exercise: VideoKey): ExerciseVideos | null {
 export function mainVideoId(exercise: VideoKey, userUrl: string | null): string | null {
   return (userUrl ? youtubeId(userUrl) : null) ?? curatedVideos(exercise)?.main.id ?? null
 }
+
+export interface ChosenVideo {
+  id: string
+  /** Sekonda ku nis demonstrimi; 0 për lidhjen e përdoruesit. */
+  startS: number
+  /** Të dhënat e videos së zgjedhur nga Vrull; null kur luan lidhja e përdoruesit. */
+  video: ExerciseVideo | null
+  mine: boolean
+}
+
+/** Videoja e "Shiko videon" (§0.3g): linku i përdoruesit (§12) zë vendin e të zgjedhurit; null kur s'ka asnjë. */
+export function chosenVideo(exercise: VideoKey, userUrl: string | null): ChosenVideo | null {
+  const mine = userUrl ? youtubeId(userUrl) : null
+  if (mine) return { id: mine, startS: 0, video: null, mine: true }
+  const video = curatedVideos(exercise)?.main
+  return video ? { id: video.id, startS: video.startS, video, mine: false } : null
+}
