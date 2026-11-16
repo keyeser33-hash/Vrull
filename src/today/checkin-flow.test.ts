@@ -1,10 +1,10 @@
 import type { DailyState } from '@/data/daily-state'
-import { answeredQuestions, completeAnswers, draftOf, firstOpenQuestion, QUESTIONS } from './checkin-flow'
+import { answeredQuestions, completeAnswers, type Draft, draftOf, firstOpenQuestion, QUESTIONS } from './checkin-flow'
 
 // Rrjedha e gjendjes së ditës si 4 story + e 5-ta (V57, SPEC §0.3f): cila pyetje ka përgjigje, cila hapet e para, dhe kur
 // përgjigjet mjaftojnë për një rresht të plotë të `daily_states`. Pa UI dhe pa bazë.
 
-const FULL = { mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 0, soreGroups: [] } as const
+const FULL: Draft = { mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 0, soreGroups: [] }
 
 describe('rrjedha e gjendjes së ditës', () => {
   it('katër pyetje, në radhën e bordeve', () => {
@@ -46,7 +46,7 @@ describe('rrjedha e gjendjes së ditës', () => {
   })
 
   it('rreshti i ruajtur ka përparësi mbi skicën e telefonit', () => {
-    const state = { ...FULL, date: '2026-11-08', readiness: 50, recovery: null, soreTrained: false } as DailyState
+    const state = { ...FULL, date: '2026-11-08', readiness: 50, recovery: null, soreTrained: false } as unknown as DailyState
     expect(draftOf(state, { mood: 1 })).toEqual({ mood: 3, energy: 2, sleepMinutes: 360, sleepQuality: 3, soreness: 0, soreGroups: [] })
     expect(draftOf(null, { mood: 1 })).toEqual({ mood: 1 })
   })
