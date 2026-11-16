@@ -306,7 +306,7 @@ function NextWorkoutRow({ view }: { view: TodayView }) {
         <span className="type-display-s">{programDayName(t, plan.dayName)}</span>
         <span className="type-caption text-muted-foreground tabular-nums">
           {pending > 0
-            ? [workout.first ? repsText(workout.first.target) : null, t('today.weightsWaiting', { count: pending })].filter(Boolean).join(' · ')
+            ? [workout.first ? t('today.repsRange', { reps: repsText(workout.first.target) }) : null, t('today.weightsWaiting', { count: pending })].filter(Boolean).join(' · ')
             : `${t('today.exercises', { count: workout.exercises })} · ${t('today.minutes', { minutes: workout.minutes })}`}
         </span>
       </span>
