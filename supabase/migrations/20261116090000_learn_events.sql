@@ -1,5 +1,5 @@
--- 0.40 (V2-E3-34c; SPEC §0.3e, V56, V57, V63): Mëso. Vetëm shtesë: një tabelë e re dhe një kolonë te
--- user_settings me vlerë që vlen për rreshtat ekzistues; app-i 0.39 vazhdon të sinkronizojë pa i njohur.
+-- 0.27 (V2-E3-34c; SPEC §0.3e, V56, V57, V63): Mëso. Vetëm shtesë: një tabelë e re dhe një kolonë te
+-- user_settings me vlerë që vlen për rreshtat ekzistues; app-i 0.26 vazhdon të sinkronizojë pa i njohur.
 --
 -- learn_events: faktet e para dhe kuizet e së dielës, që sinkronizohen.
 --   fact: një rresht për çdo fakt të parë në një vend, një në ditë ushqimi (V46) për secilin vend: Sot (story
