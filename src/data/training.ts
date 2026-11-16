@@ -400,6 +400,11 @@ export async function sessionForNext(store: LocalStore, date: string): Promise<s
 export interface SetInput {
   /** Për të ndryshuar një set të ruajtur (p.sh. për t'i shtuar segmentin e rest-pause). */
   id?: string
+  /**
+   * Id-ja e një seti të ri, kur ekrani e shfaq para se baza ta ruajë (V58, "Zhbëj"); një set që ekziston
+   * për të njëjtin slot dhe numër e mban id-në e vet.
+   */
+  newId?: string
   sessionId: string
   /** slotId null: ushtrim shtesë jashtë stërvitjes (kutia e AI-së, V2-E2-14), i njohur nga ushtrimi. */
   slot: Pick<PlannedSlot, 'exerciseId' | 'position'> & { slotId: string | null }
@@ -428,7 +433,7 @@ export async function saveSet(store: LocalStore, input: SetInput) {
       )
   return toSet(
     await store.put('set_logs', {
-      id: existing?.id ?? input.id,
+      id: existing?.id ?? input.id ?? input.newId,
       session_id: input.sessionId,
       slot_id: input.slot.slotId,
       exercise_id: input.slot.exerciseId,
@@ -450,6 +455,18 @@ export async function saveSet(store: LocalStore, input: SetInput) {
       logged_at: existing?.logged_at ?? input.loggedAt ?? store.now().toISOString(),
     }),
   )
+}
+
+/**
+ * "Zhbëj" te seanca (SPEC §0.3g, V58): heq setin e sapo ruajtur me fshirje të butë, që fshirja të arrijë
+ * edhe në Supabase; pas një segmenti heq vetëm segmentin, dhe seti pret segmentin përsëri. Rekordet,
+ * peshat dhe njoftimi i seancës e rillogarisin vetë nga setet. Një set që s'ekziston nuk prish asgjë.
+ */
+export async function undoSet(store: LocalStore, id: string, { segment = false }: { segment?: boolean } = {}) {
+  const row = await store.get('set_logs', id)
+  if (!row) return
+  if (segment) await store.put('set_logs', { id, segments: null })
+  else await store.remove('set_logs', id)
 }
 
 /** Treguesi kalon përpara; pas stërvitjes së fundit programi shënohet "Përfunduar". */
