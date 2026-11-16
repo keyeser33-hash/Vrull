@@ -6,13 +6,20 @@ import type { LocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06): zgjimi, gjumi, ora e stërvitjes për çdo ditë dhe plani i
 // vakteve. Plani i ri vlen nga dita tjetër: `user_settings.meal_plan` mban edhe planin e mëparshëm
-// për ditët para `from`.
+// për ditët para `from`, dhe orët e një dite të vetme të lëvizura nga ritmi i Sot-it (`day`, V64).
 
 export interface StoredMealPlan extends MealPlan {
   /** Data nga e cila vlen ky plan; null = gjithmonë. */
   from: string | null
   /** Plani para `from`; null = orari i parazgjedhur. */
   previous: MealPlan | null
+  /** Orët e lëvizura nga ritmi i Sot-it, vetëm për atë datë (V64); null = asnjë. */
+  day: MealDay | null
+}
+
+export interface MealDay {
+  date: string
+  times: Partial<Record<MealKey, string>>
 }
 
 export interface ScheduleSettings {
@@ -40,6 +47,14 @@ function cleanPlan(value: unknown): MealPlan | null {
   return { removed, times }
 }
 
+function cleanDay(value: unknown): MealDay | null {
+  if (typeof value !== 'object' || value === null) return null
+  const raw = value as { date?: unknown }
+  if (typeof raw.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw.date)) return null
+  const times = cleanPlan(value)?.times ?? {}
+  return Object.keys(times).length > 0 ? { date: raw.date, times } : null
+}
+
 const isoWeekday = (date: string) => {
   const [year, month, day] = date.split('-').map(Number)
   return ((new Date(year, month - 1, day).getDay() + 6) % 7) + 1
@@ -57,14 +72,14 @@ export async function readSchedule(store: LocalStore): Promise<ScheduleSettings>
   const first = saved[String(days[0])] ?? DEFAULT_PROFILE.trainingTime
   const trainingTimes: Record<number, string> = {}
   for (const day of days) trainingTimes[day] = TIME.test(saved[String(day)] ?? '') ? saved[String(day)] : first
-  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown } | null
+  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown; day?: unknown } | null
   const current = cleanPlan(stored) ?? EMPTY_MEAL_PLAN
   return {
     wakeTime: (row?.wake_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.wakeTime,
     sleepTime: (row?.sleep_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.sleepTime,
     trainingDays: days,
     trainingTimes,
-    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous) },
+    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous), day: cleanDay(stored?.day) },
   }
 }
 
@@ -75,8 +90,9 @@ export function trainingTimeOn(schedule: Pick<ScheduleSettings, 'trainingDays' |
 
 /** Plani i vakteve që vlen për një datë. */
 export function mealPlanOn(plan: StoredMealPlan, date: string): MealPlan {
-  if (plan.from !== null && date < plan.from) return plan.previous ?? EMPTY_MEAL_PLAN
-  return { removed: plan.removed, times: plan.times }
+  const base = plan.from !== null && date < plan.from ? (plan.previous ?? EMPTY_MEAL_PLAN) : { removed: plan.removed, times: plan.times }
+  // Lëvizja e Sot-it (V64) vlen vetëm për datën e saj, mbi planin e asaj dite.
+  return plan.day?.date === date ? { removed: base.removed, times: { ...base.times, ...plan.day.times } } : base
 }
 
 /**
@@ -93,7 +109,7 @@ export async function saveSchedule(
   const current = await readSchedule(store)
   const wanted: MealPlan = { removed: [...next.plan.removed], times: { ...next.plan.times } }
   const unchanged = JSON.stringify(mealPlanOn(current.plan, nextDate(today))) === JSON.stringify(wanted)
-  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn(current.plan, today) }
+  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn({ ...current.plan, day: null }, today), day: current.plan.day }
   const times: Record<string, string> = {}
   for (const day of current.trainingDays) times[String(day)] = next.trainingTimes[day] ?? current.trainingTimes[day]
   await store.put('user_settings', {
@@ -106,22 +122,18 @@ export async function saveSchedule(
 }
 
 /**
- * Lëvizja e vakteve që vijnë nga ritmi i ditës te Sot (V57, V35): orët e reja vlejnë nga data e dhënë (dita e
- * ushqimit e sotme, V46), sepse vaktet që lëvizin nuk kanë ardhur ende; ditët para saj mbeten me planin e
- * mëparshëm. Pjesa e planit që pret nga nesër (Oraret e vakteve) hyn bashkë me të. Zgjimi, gjumi dhe oraret e
- * stërvitjes nuk preken; vaktet e hequra mbeten të hequra.
+ * Lëvizja e vakteve që vijnë nga ritmi i ditës te Sot (V57; V64: vetëm sot): orët e reja vlejnë vetëm për `date`
+ * (dita e ushqimit e sotme, V46), mbi planin e asaj dite; nesër vaktet kthehen te plani. Një lëvizje tjetër po atë
+ * ditë shtohet te e para; një lëvizje në një ditë tjetër e zëvendëson. Ndryshimi i përhershëm bëhet te Oraret (V35).
  */
 export async function moveMealTimes(store: LocalStore, times: Partial<Record<MealKey, string>>, date: string) {
   const row = await settingsRow(store)
   if (!row) return
   const current = await readSchedule(store)
-  const base = mealPlanOn(current.plan, nextDate(date))
-  const wanted: MealPlan = { removed: [...base.removed], times: { ...base.times } }
-  for (const [meal, time] of Object.entries(times)) if (TIME.test(time)) wanted.times[meal as MealKey] = time
-  if (JSON.stringify(mealPlanOn(current.plan, date)) === JSON.stringify(wanted)) return
-  const yesterday = new Date(`${date}T12:00:00`)
-  yesterday.setDate(yesterday.getDate() - 1)
-  const before = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-  const plan: StoredMealPlan = { ...wanted, from: date, previous: mealPlanOn(current.plan, before) }
+  const kept = current.plan.day?.date === date ? current.plan.day.times : {}
+  const wanted: Partial<Record<MealKey, string>> = { ...kept }
+  for (const [meal, time] of Object.entries(times)) if (MEALS.includes(meal as MealKey) && TIME.test(time)) wanted[meal as MealKey] = time
+  if (JSON.stringify(wanted) === JSON.stringify(kept)) return
+  const plan: StoredMealPlan = { ...current.plan, day: { date, times: wanted } }
   await store.put('user_settings', { id: row.id, meal_plan: plan })
 }

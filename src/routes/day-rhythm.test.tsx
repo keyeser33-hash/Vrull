@@ -125,7 +125,7 @@ describe('ritmi i ditës te Sot', () => {
     pointer('pointerDown', area, xOf(dragged.fraction))
     await act(() => new Promise((resolve) => setTimeout(resolve, 480)))
     pointer('pointerMove', area, xOf(targetFraction))
-    expect(await screen.findByText('Lësho për ta ruajtur')).toBeInTheDocument()
+    expect(await screen.findByText('Lësho për ta ruajtur vetëm për sot')).toBeInTheDocument()
     expect(screen.getByText(/→/)).toBeInTheDocument()
     pointer('pointerUp', area, xOf(targetFraction))
     const { todayView } = await import('@/data/today')
@@ -140,7 +140,11 @@ describe('ritmi i ditës te Sot', () => {
     for (const fixed of ['pre_workout', 'post_workout', 'bedtime'] as const) {
       expect(after.find((meal) => meal.meal === fixed)?.time).toBe(before.get(fixed))
     }
-    expect(await screen.findByText(/lëvizi në \d\d:\d\d/)).toBeInTheDocument()
+    expect(await screen.findByText(/lëvizi në \d\d:\d\d për sot$/)).toBeInTheDocument()
+    // Vetëm sot (V64): nesër vakti mbetet në orën e planit.
+    const { mealPlanOn, readSchedule } = await import('@/data/schedule-settings')
+    const plan = (await readSchedule(store)).plan
+    expect(mealPlanOn(plan, '2026-11-09').times[dragged.id as keyof typeof plan.times]).toBeUndefined()
   })
 
   it('një vakt i ngrënë ose stërvitja nuk lëvizin: shtypja e gjatë nuk ndryshon orarin', async () => {
@@ -151,7 +155,7 @@ describe('ritmi i ditës te Sot', () => {
     await act(() => new Promise((resolve) => setTimeout(resolve, 480)))
     pointer('pointerMove', area, xOf(workout.fraction + 0.05))
     pointer('pointerUp', area, xOf(workout.fraction + 0.05))
-    expect(screen.queryByText('Lësho për ta ruajtur')).not.toBeInTheDocument()
+    expect(screen.queryByText('Lësho për ta ruajtur vetëm për sot')).not.toBeInTheDocument()
     const { todayView } = await import('@/data/today')
     expect((await todayView(store)).meals.map((meal) => meal.time)).toEqual(rhythm.points.filter((point) => point.kind === 'meal').map((point) => point.time))
   })
