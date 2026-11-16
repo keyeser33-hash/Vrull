@@ -269,3 +269,44 @@ describe('pamja e Sot nga baza lokale', () => {
     expect(view.week).toHaveLength(7)
   })
 })
+
+describe('peshat e reja që presin vendimin (rreshti i së dielës, §0.3f)', () => {
+  /** Java 0 e bërë e hënë, e martë, e enjte, e premte; e diela 1 nëntor është pushim dhe java 1 nis të hënën. */
+  async function beforeWeekOne() {
+    const context = setup()
+    const profile = { ...PROFILE, trainingDays: [1, 2, 4, 5] }
+    context.setClock(at(24, 10, 9))
+    await completeOnboarding(context.store, profile, () => at(24, 10, 9))
+    for (const day of [26, 27, 29, 30]) await train(context, at(day, 10, 17, 15), [{ weightKg: 50, reps: 14, rir: 2 }])
+    context.setClock(at(1, 11))
+    return context
+  }
+
+  it('të dielën pushim, java e re pret vendimin; pas vendimit rreshti zhduket', async () => {
+    const { store } = await beforeWeekOne()
+    const view = await todayView(store)
+    expect(view.mode).toBe('rest')
+    expect(view.nextDate).toBe('2026-11-02')
+    expect(view.snapshot?.plan).toMatchObject({ blockName: 'Faza 1', week: 1, dayNumber: 1 })
+    expect(view.pendingWeights).toBe(4)
+    const { acceptWeekWeights } = await import('./week-weights')
+    await acceptWeekWeights(store, { blockId: view.snapshot!.plan.blockId, week: 1 })
+    expect((await todayView(store)).pendingWeights).toBe(0)
+  })
+
+  it('"Më vonë" është vendim: asgjë nuk pret më', async () => {
+    const { store } = await beforeWeekOne()
+    const view = await todayView(store)
+    const { postponeWeekWeights } = await import('./week-weights')
+    await postponeWeekWeights(store, { blockId: view.snapshot!.plan.blockId, week: 1 })
+    expect((await todayView(store)).pendingWeights).toBe(0)
+  })
+
+  it('ditën e stërvitjes ose me seancë të hapur: 0, rreshti nuk del', async () => {
+    const context = await beforeWeekOne()
+    context.setClock(at(2, 11, 9))
+    const view = await todayView(context.store)
+    expect(view.mode).toBe('train')
+    expect(view.pendingWeights).toBe(0)
+  })
+})

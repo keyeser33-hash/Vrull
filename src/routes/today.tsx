@@ -288,6 +288,9 @@ function NextWorkoutRow({ view }: { view: TodayView }) {
   const plan = snapshot.plan
   const tomorrow = nextDate === shiftDate(localDate(view.now), 1)
   const sameWeek = !nextDate || mondayOf(nextDate) === mondayOf(localDate(view.now))
+  // Java e re e programit nis me stërvitjen e radhës (bordi "Sot · e diel"): peshat e saj që presin vendimin
+  // dalin në rresht; brenda të njëjtës javë rreshti mbetet si te "Sot · Pushim".
+  const pending = sameWeek ? 0 : view.pendingWeights
   const line = [
     nextDate ? (tomorrow ? t('today.when.tomorrow') : null) : null,
     nextDate ? fmt.date(atNoon(nextDate)) : null,
@@ -302,13 +305,23 @@ function NextWorkoutRow({ view }: { view: TodayView }) {
         <span className="type-caption text-muted-foreground tabular-nums">{capitalize(line)}</span>
         <span className="type-display-s">{programDayName(t, plan.dayName)}</span>
         <span className="type-caption text-muted-foreground tabular-nums">
-          {t('today.exercises', { count: workout.exercises })} · {t('today.minutes', { minutes: workout.minutes })}
+          {pending > 0
+            ? [workout.first ? repsText(workout.first.target) : null, t('today.weightsWaiting', { count: pending })].filter(Boolean).join(' · ')
+            : `${t('today.exercises', { count: workout.exercises })} · ${t('today.minutes', { minutes: workout.minutes })}`}
         </span>
       </span>
       <Icon name="hap" size={20} className="shrink-0 text-muted-foreground" />
     </>
   )
   const className = 'flex min-h-row items-center gap-3 border-t border-border pt-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
+  // Peshat e reja pret vendimin (bordi "Sot · e diel"): i gjithë rreshti hap peshat e javës.
+  if (pending > 0) {
+    return (
+      <Link to="/programi/peshat" className={className}>
+        {body}
+      </Link>
+    )
+  }
   return nextDate ? (
     <button
       type="button"

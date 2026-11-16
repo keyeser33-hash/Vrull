@@ -66,6 +66,14 @@ export function weekToReview(program: Program, pointer: Pointer): WeekRef | null
   return next ? { blockId: next.id, week: 1 } : null
 }
 
+/**
+ * Peshat e reja që presin vendimin (rreshti "N pesha të reja presin vendimin" te Sot): rreshtat pa vendim
+ * që kanë një propozim; po ata që "Prano peshat" do t'i pranonte (`acceptAll`), pa ato që ndryshoi përdoruesi.
+ */
+export function pendingWeights(rows: WeekWeightRow[]): number {
+  return rows.filter((row) => !row.decision && row.proposal.weightKg !== null).length
+}
+
 const changed = (row: WeekWeightRow) => row.decision?.status === 'changed'
 
 /** "Prano të gjitha": propozimi i çdo rreshti me peshë bëhet pesha e javës; ndryshimet e përdoruesit mbeten. */

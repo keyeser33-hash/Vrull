@@ -78,6 +78,7 @@ async function renderToday() {
       { path: '/', element: <TodayPage /> },
       { path: '/seanca', element: <h1>Seanca</h1> },
       { path: '/programet', element: <h1>Programet</h1> },
+      { path: '/programi/peshat', element: <h1>Peshat e javës</h1> },
       { path: '/ushqimi', element: <h1>Ushqimi</h1> },
       { path: '/kutia', element: <h1>Kutia</h1> },
       { path: '/progresi/historiku/:sessionId', element: <h1>Seanca e kaluar</h1> },
@@ -260,6 +261,46 @@ describe('Sot', () => {
     await user.click(screen.getByRole('button', { name: /^Sot, e diel 8/ }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     expect(router.state.location.search).toBe('')
+  })
+
+  it('e diela pushim: java e re pret vendimin, rreshti "N pesha të reja presin vendimin" hap peshat e javës; pas vendimit del rreshti i zakonshëm; edhe në anglisht', async () => {
+    const user = userEvent.setup()
+    const store = await freshStore()
+    const { completeOnboarding } = await import('@/data/profile')
+    const { finishWorkout, saveSet, startWorkout, trainingSnapshot } = await import('@/data/training')
+    data.clock = at(24, 10, 9)
+    await completeOnboarding(store, { ...PROFILE, trainingDays: [1, 2, 4, 5] }, () => data.clock)
+    for (const day of [26, 27, 29, 30]) {
+      data.clock = at(day, 10, 17, 15)
+      const sessionId = await startWorkout(store)
+      const [first] = (await trainingSnapshot(store))!.plan.slots
+      await saveSet(store, { sessionId, slot: first, setNumber: 1, weightKg: 50, reps: 14, rir: 2 })
+      data.clock = at(day, 10, 18, 20)
+      await finishWorkout(store, sessionId)
+    }
+    data.clock = at(1, 11)
+    const router = await renderToday()
+    const row = await screen.findByRole('link', { name: /^Nesër · e hënë, 2 nëntor · Java 1 · Stërvitja 1/ })
+    expect(row).toHaveAttribute('href', '/programi/peshat')
+    expect(row).toHaveTextContent('Gjoks, triceps, pulpa')
+    expect(row).toHaveTextContent('4 pesha të reja presin vendimin')
+    expect(row).not.toHaveTextContent('ushtrime')
+    act(() => language.set('en'))
+    expect(row).toHaveTextContent('4 new weights are waiting for your decision')
+    act(() => language.set('sq'))
+    await user.click(row)
+    expect(await screen.findByRole('heading', { name: 'Peshat e javës' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/programi/peshat')
+
+    // Pas vendimit nuk pret asgjë: rreshti i zakonshëm hap fletën e ditës.
+    cleanup()
+    const { acceptWeekWeights } = await import('@/data/week-weights')
+    const { blockId } = (await trainingSnapshot(store))!.plan
+    await acceptWeekWeights(store, { blockId, week: 1 })
+    await renderToday()
+    const plain = await screen.findByRole('button', { name: /^Nesër · e hënë, 2 nëntor · Java 1 · Stërvitja 1/ })
+    expect(plain).toHaveTextContent('9 ushtrime')
+    expect(plain).not.toHaveTextContent('presin vendimin')
   })
 
   it('seanca e hapur: "Vazhdo stërvitjen" me setet e ruajtura, pa "Kapërce" dhe pa pilulën', async () => {

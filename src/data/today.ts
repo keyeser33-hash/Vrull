@@ -15,7 +15,8 @@ import { readProfile } from './profile'
 import { readSchedule, trainingTimeOn } from './schedule-settings'
 import type { LocalStore } from './store'
 import { trainingHistory, trainingSnapshot, type TrainingSnapshot } from './training'
-import { workoutWeights } from './week-weights'
+import { pendingWeights } from '@/progress/week-weights'
+import { weekWeightsView, workoutWeights } from './week-weights'
 import { type WelcomeBack, welcomeBack } from './welcome-back'
 
 // Ekrani Sot (V2-E1-06, bordi "Sot"): çfarë i duhet nga baza lokale, në një vend. Java kalendarike
@@ -182,6 +183,12 @@ export interface TodayView {
    * `nextDate` nesër) deri në "Ktheje për sot". Nuk vlen pasi seanca ka nisur.
    */
   postponed: boolean
+  /**
+   * Peshat e reja të javës së stërvitjes së radhës që presin vendimin (V23); 0 jashtë ditës së pushimit ose të
+   * bërë, dhe kur java që shqyrtohet nuk është java e stërvitjes së radhës. Rreshti "N pesha të reja presin
+   * vendimin" hap peshat e javës (§0.3f).
+   */
+  pendingWeights: number
 }
 
 /** Një vakt i orarit të ditës së ushqimit, për ritmin e ditës dhe segmentet e proteinës. */
@@ -287,7 +294,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
     welcomeBack: back,
     postponed,
   }
-  if (!snapshot) return { ...base, mode: 'none', workout: null }
+  if (!snapshot) return { ...base, pendingWeights: 0, mode: 'none', workout: null }
 
   const { plan, exercises, session } = snapshot
   const mode: TodayMode = snapshot.completed
@@ -299,7 +306,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
         : trainingToday
           ? 'train'
           : 'rest'
-  if (mode === 'completed') return { ...base, mode, workout: null }
+  if (mode === 'completed') return { ...base, pendingWeights: 0, mode, workout: null }
 
   const primary = [...new Set(plan.slots.flatMap((slot) => exercises[slot.exerciseId]?.primary ?? []))]
   const focus = mainGroup(plan.slots, exercises)
@@ -318,8 +325,12 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
       weekKg: weight?.weekKg ?? null,
     }
   }
+  // Stërvitja e radhës me peshat e javës së vet që presin vendimin: vetëm kur Sot e tregon si rresht (pushim, e bërë).
+  const review = mode === 'rest' || mode === 'done' ? await weekWeightsView(store) : null
+  const awaiting = review && review.week.blockId === plan.blockId && review.week.week === plan.week ? pendingWeights(review.rows) : 0
   return {
     ...base,
+    pendingWeights: awaiting,
     mode,
     workout: {
       theme: dayTheme(exercises[plan.slots[0]?.exerciseId ?? '']?.primary ?? []),

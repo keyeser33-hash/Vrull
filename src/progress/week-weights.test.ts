@@ -1,7 +1,7 @@
 import type { HistorySet } from '@/program/loads'
 import { SHORTCUT_TO_SIZE } from '@/program/shortcut-to-size'
 import type { Program } from '@/program/types'
-import { acceptAll, postpone, weekToReview, weekWeights, type WeekWeightsInput } from './week-weights'
+import { acceptAll, pendingWeights, postpone, weekToReview, weekWeights, type WeekWeightRow, type WeekWeightsInput } from './week-weights'
 
 // Shembujt e kanavacës "Vrull · Ekranet" (SPEC §0.3a): Faza 1, Bench Press dhe Triceps Pressdown.
 const NOW = new Date('2026-11-08T18:00:00.000Z')
@@ -212,5 +212,15 @@ describe('peshat e javës (V23, §7)', () => {
     expect(exercises).toContain('Weighted Crunch')
     expect(exercises).not.toContain('Hanging Leg Raise')
     expect(exercises).not.toContain('Side Plank')
+  })
+})
+
+describe('pendingWeights', () => {
+  const row = (weightKg: number | null, decision: WeekWeightRow['decision'] = null) => ({ proposal: { weightKg, basis: null }, decision }) as WeekWeightRow
+
+  it('rreshtat pa vendim me propozim; pa propozim, pranuar, ndryshuar ose për më vonë nuk numërohen', () => {
+    const decided = { slotId: 's', exerciseId: 'e', weightKg: 60, status: 'accepted' as const }
+    expect(pendingWeights([row(62.5), row(60), row(null), row(62.5, decided), row(62.5, { ...decided, status: 'changed' }), row(62.5, { ...decided, status: 'postponed' })])).toBe(2)
+    expect(pendingWeights([])).toBe(0)
   })
 })
