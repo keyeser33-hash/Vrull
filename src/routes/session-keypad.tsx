@@ -6,7 +6,7 @@ import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { exerciseBar, saveExerciseBar } from '@/data/exercise-bar'
 import { store, useLocalQuery } from '@/data/app-data'
-import { BAR_OPTIONS, platesPerSide } from '@/program/plates'
+import { BAR_KG, BAR_OPTIONS, platesPerSide } from '@/program/plates'
 
 // Tastiera numerike e seancës (bordi "Seanca · tastiera", V58): prekja e numrit të madh hap fletën me
 // numrin, −/+ me hapin e pajisjes, disqet për anë te shufra (20 kg), çipat "Herën e kaluar" dhe "Pesha e
@@ -64,10 +64,10 @@ export function KeypadSheet({
   const [fresh, setFresh] = useState(true)
   const [error, setError] = useState(false)
   // Shufra e ushtrimit (bordi "Seanca · tastiera"): e ruajtur për ushtrimin; zgjedhja ndryshon disqet menjëherë.
-  const savedBar = useLocalQuery(() => (exerciseId ? exerciseBar(store, exerciseId) : Promise.resolve(20)), [exerciseId])
+  const savedBar = useLocalQuery(() => (exerciseId ? exerciseBar(store, exerciseId) : Promise.resolve(BAR_KG)), [exerciseId])
   const [chosenBar, setChosenBar] = useState<number | null>(null)
   const [choosingBar, setChoosingBar] = useState(false)
-  const barKg = chosenBar ?? savedBar ?? 20
+  const barKg = chosenBar ?? savedBar ?? BAR_KG
   const pickBar = (kg: number) => {
     setChosenBar(kg)
     setChoosingBar(false)
@@ -171,7 +171,11 @@ export function KeypadSheet({
               <span className="font-semibold">{barName}</span>
               {split ? (
                 <>
-                  <span className="text-muted-foreground">{split.plates.length ? t('session.keypad.perSide', { plates: split.plates.map((plate) => fmt.number(plate)).join(' + ') }) : t('session.keypad.emptyBar')}</span>
+                  <span className="text-muted-foreground">
+                    {split.plates.length
+                      ? t('session.keypad.perSide', { plates: split.plates.map((plate) => fmt.number(plate)).join(' + ') })
+                      : t(barKg === 0 ? 'session.keypad.noPlates' : 'session.keypad.emptyBar')}
+                  </span>
                   {split.plates.length ? (
                     <span className="text-muted-foreground">
                       {t(barKg === 0 ? 'session.keypad.sumNoBar' : 'session.keypad.sum', { total: fmt.number(parsed), bar: fmt.number(split.barKg), side: fmt.number(split.perSideKg) })}
@@ -179,7 +183,7 @@ export function KeypadSheet({
                   ) : null}
                 </>
               ) : (
-                <span className="text-muted-foreground">{t('session.keypad.noSplit')}</span>
+                <span className="text-muted-foreground">{t(Number.isFinite(parsed) && parsed < barKg ? 'session.keypad.belowBar' : 'session.keypad.noSplit')}</span>
               )}
             </div>
             <Button

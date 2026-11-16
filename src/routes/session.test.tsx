@@ -323,6 +323,19 @@ describe('seanca (V2-E1-07)', () => {
     expect(sheet).toHaveTextContent('Each side: 25 + 5 + 1.25')
     await user.click(within(sheet).getByRole('button', { name: 'Change the bar, No bar' }))
     expect(within(sheet).getByRole('radiogroup', { name: 'Choose the bar' })).toBeInTheDocument()
+
+    // Pesha nën shufër e thotë; pa shufër me 0 kg nuk thotë "Just the bar".
+    await user.click(within(sheet).getByRole('radio', { name: /^20.kg$/ }))
+    await user.click(within(sheet).getByRole('button', { name: '1' }))
+    await user.click(within(sheet).getByRole('button', { name: '5' }))
+    expect(sheet).toHaveTextContent('Lighter than the bar')
+    await user.click(within(sheet).getByRole('button', { name: /^Change the bar, 20.kg bar$/ }))
+    await user.click(within(sheet).getByRole('radio', { name: 'No bar' }))
+    await user.click(within(sheet).getByRole('button', { name: 'Delete the last digit' }))
+    await user.click(within(sheet).getByRole('button', { name: 'Delete the last digit' }))
+    await user.click(within(sheet).getByRole('button', { name: '0' }))
+    expect(sheet).toHaveTextContent('No plates')
+    expect(sheet).not.toHaveTextContent('Just the bar')
   })
 
   it('pranimi: Stërvitja 1 e plotë pa internet, me rest-pause si segmente, mbyllja me rekordin dhe sinkronizimi', async () => {
