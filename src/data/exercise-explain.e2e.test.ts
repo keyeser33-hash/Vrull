@@ -42,12 +42,12 @@ describe.skipIf(!email || !password)('"Shpjegoje më shumë" me AI-në e vërtet
       const request = explainRequest(item, language)
       // Udhëzuesi i paketuar shkon vërtet si kontekst, përndryshe prova do të provonte rastin pa udhëzues.
       if (label !== 'pa udhëzues, shqip') expect(request.guide).not.toBeNull()
-      const started = Date.now()
+      const started = performance.now()
       const { data, error } = await client.functions.invoke('exercise-explain', { body: request })
       const status = error ? ((error as { context?: Response }).context?.status ?? null) : 200
       const body = error ? await (error as { context?: Response }).context?.json().catch(() => null) : data
       const result = explainResultFrom(status, body)
-      console.log(`\n== ${label} (udhëzuesi: ${request.guide ? Object.keys(request.guide).join(', ') : 'asnjë'}) · ${Date.now() - started} ms`)
+      console.log(`\n== ${label} (udhëzuesi: ${request.guide ? Object.keys(request.guide).join(', ') : 'asnjë'}) · ${Math.round(performance.now() - started)} ms`)
       console.log(JSON.stringify(body?.usage ?? body, null, 1))
       if (result.ok) result.paragraphs.forEach((paragraph, index) => console.log(`${index + 1}. ${paragraph}`))
       expect(result).toMatchObject({ ok: true })

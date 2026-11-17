@@ -96,6 +96,7 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Te menuja ▷ e kanavacës, klikimi pa e kaluar miun mbi emër e mbyll menunë pa hapur bordin → kalo miun mbi emër, pastaj kliko.
 - Agjentët e bordeve humbën thirrje te `mcp__claude-artifacts__read_file`: kanavaca pranon një `path` për thirrje, me parashtesën `project/` (`paths` refuzohet) → brief-i i jep shtigjet e plota `project/<emri>.dc.html` dhe e thotë rregullin.
 
+- Prova e AI-së me AI-në e vërtetë (`exercise-explain.e2e.test.ts`) u shty pas vetëm `npm run lint`, dhe CI ra te roja e orës (`Date.now()` për kohën e thirrjes; lista e rojes vetëm ulet) → para çdo push-i me kod ose prova: `npm test` i plotë, edhe kur skedari i ri kapërcehet në CI; koha e një thirrjeje matet me `performance.now()`.
 - Porta 4173 ishte e zënë nga serveri i një agjenti tjetër (`/tmp/live-w`) dhe QA-ja e builder-it pa build-in e vjetër → para QA-së krahaso skriptin që shërben serveri me atë të build-it (`curl -s localhost:4173/ | grep -o 'assets/index-[^"]*'` kundrejt `ls /tmp/live/root/assets`), dhe ndalo serverin e huaj.
 - Bordet e para të Mëso-s u publikuan pa u parë me sy: kuizi dukej si formular, një përgjigje thyhej në dy rreshta, figura e muskujve priste me skaj të fortë dhe e tregonte përgjigjen, dhe një numër dekorativ dilte copa-copa pas përgjigjeve → pas publikimit, orkestruesi i sheh bordet me built-in browser dhe i ndreq para se t'ia tregojë përdoruesit (`docs/agents/ORKESTRIMI.md` › Bordet e dizajnit); një figurë në një pyetje kuizi nuk e theksonte përgjigjen.
 
