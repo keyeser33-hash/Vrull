@@ -37,15 +37,35 @@ describe('shpjegimi i ushtrimit', () => {
     const reply = await runExplain({ month: MONTH, request: REQUEST, usage: usage.store, callClaude: async (request) => ((sent = request as typeof sent), ok()) })
     expect(reply.status).toBe(200)
     expect(reply.body.paragraphs).toEqual(PARAGRAPHS)
-    // 600 × 0,10 + 400 × 0,50 = 260 $ për milion
-    const eur = Math.round((260 / 1e6 / 1.1165) * 1e6) / 1e6
+    // Shqipja me Sonnet 5.5 (Haiku bënte gabime fjalësh në shqip, 17.11.2026): 600 × 2 + 400 × 10 = 5 200 $ për milion
+    const eur = Math.round((5_200 / 1e6 / 1.1165) * 1e6) / 1e6
     expect(reply.body).toMatchObject({ usage: { inputTokens: 600, outputTokens: 400, costEur: eur }, month: { month: MONTH, limitEur: AI_MONTHLY_LIMIT_EUR } })
     expect(usage.live().map((row) => row.eur)).toEqual([eur])
-    expect(sent?.model).toBe('claude-haiku-5-5')
+    expect(sent?.model).toBe('claude-sonnet-5-5')
     const text = sent!.messages[0].content[0].text
     expect(text).toContain('Language: Albanian.')
     expect(text).toContain('Exercise: Bench Press.')
     expect(text).toContain('- Këmbët në dysheme')
+  })
+
+  it('anglishtja me Haiku 5.5: 600 × 0,10 + 400 × 0,50 = 260 $ për milion, rezervimi 0,01 €', async () => {
+    const reserved: number[] = []
+    const usage = memoryUsage()
+    const store: UsageStore = { ...usage.store, reserve: async (month, eur) => (reserved.push(eur), usage.store.reserve(month, eur)) }
+    let sent: ReturnType<typeof buildRequest> | undefined
+    const reply = await runExplain({ month: MONTH, request: { ...REQUEST, language: 'en' }, usage: store, callClaude: async (request) => ((sent = request as typeof sent), ok()) })
+    expect(sent?.model).toBe('claude-haiku-5-5')
+    expect(reply.body).toMatchObject({ usage: { costEur: Math.round((260 / 1e6 / 1.1165) * 1e6) / 1e6 } })
+    expect(reserved).toEqual([0.01])
+  })
+
+  it('shqipja rezervon koston më të keqe të Sonnet-it: 3 000 + 3 000 tokena, 0,04 €', async () => {
+    const reserved: number[] = []
+    const usage = memoryUsage()
+    const store: UsageStore = { ...usage.store, reserve: async (month, eur) => (reserved.push(eur), usage.store.reserve(month, eur)) }
+    await runExplain({ month: MONTH, request: REQUEST, usage: store, callClaude: async () => ok() })
+    expect(reserved).toEqual([0.04])
+    expect((3_000 * 2 + 3_000 * 10) / 1e6 / 1.1165).toBeLessThan(0.04)
   })
 
   it('anglishtja kërkohet me anglishten britanike; pa udhëzues thuhet', () => {

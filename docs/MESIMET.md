@@ -135,6 +135,8 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 - Shpjegimi i AI-së ruhej në telefon sipas ushtrimit dhe gjuhës, dhe mbetej edhe kur udhëzuesi ndryshonte (një fakt i korrigjuar, udhëzuesi që vjen me një valë) → një përgjigje e AI-së e ruajtur ka në çelës shenjën e hyrjes (`explanationKey`).
 - "Më vonë" nuk ruante asgjë për një slot pa peshë të kaluar, dhe rreshti "N pesha të reja presin vendimin" mbetej → një numërues dhe veprimet që e zbrazin (`pendingWeights`, `acceptAll`, `postpone`) provohen bashkë: pas çdo veprimi numëruesi bie në 0.
 
+- Prova me AI-në e vërtetë e "Shpjegoje më shumë" (17.11.2026): provat me të rreme kalonin, por Haiku 5.5 shkruante në shqip fjalë të gabuara ("pëllumbat" për "pëllëmbët"), kalonte nga "ti" te "ju" dhe fliste për veten ("do të mbetem në parime të përgjithshme") → çdo veçori që shkruan tekst shqip provohet me AI-në e vërtetë dhe teksti lexohet i plotë, jo vetëm forma e JSON-it; udhëzimi thotë regjistrin ("ti") dhe fjalët e app-it ("udhëzuesi"); shqipja e gjatë shkon te Sonnet (V66).
+
 ## Mëso (faktet me burim)
 
 - PubMed e refuzon WebFetch-in me reCAPTCHA, dhe një URL e ndërtuar me dorë (API-ja e Europe PMC) kërkon miratimin e përdoruesit, që natën nuk vjen → abstrakti kontrollohet te rezultati i kërkimit (copëza e PubMed-it), te PMC ose te faqja e botuesit që del në kërkim; një fakt që nuk kontrollohet kështu pret ditën, nuk hyn në paketë.

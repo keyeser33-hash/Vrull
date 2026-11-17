@@ -12,7 +12,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.118.0'
 import { limitFrom, monthStart, USD_PER_EUR, type UsageStore } from '../_shared/ai.ts'
 import { runExplain } from './handler.ts'
-import { API_VERSION, MODEL, parseRequest } from './logic.ts'
+import { API_VERSION, modelFor, parseRequest } from './logic.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -63,12 +63,13 @@ Deno.serve(async (req: Request) => {
 
   const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
   const feature = 'explain'
+  const model = modelFor(checked.request.language)
   const touched = () => new Date().toISOString()
   const usage: UsageStore = {
     async reserve(month, eur) {
       const { data, error } = await admin
         .from('ai_usage')
-        .insert({ user_id: userId, month, feature, model: MODEL, input_tokens: 0, output_tokens: 0, cost_usd: Math.round(eur * USD_PER_EUR * 1e6) / 1e6, cost_eur: eur })
+        .insert({ user_id: userId, month, feature, model, input_tokens: 0, output_tokens: 0, cost_usd: Math.round(eur * USD_PER_EUR * 1e6) / 1e6, cost_eur: eur })
         .select('id')
         .single()
       if (error || !data) throw new Error(`rezervimi: ${error?.code ?? 'pa rresht'}`)

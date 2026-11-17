@@ -1,7 +1,7 @@
 // Rrjedha e një shpjegimi pa Deno dhe pa Supabase (V56): kufiri dhe kostoja me `withBudget` (_shared/ai.ts),
 // pastaj paragrafët.
 import { AI_MONTHLY_LIMIT_EUR, type UsageStore, withBudget } from '../_shared/ai.ts'
-import { AI_CALL_RESERVE_EUR, AI_TIMEOUT_MS, buildRequest, type ExplainRequest, interpret, MODEL } from './logic.ts'
+import { AI_TIMEOUT_MS, buildRequest, type ExplainRequest, interpret, modelFor, reserveFor } from './logic.ts'
 
 export type { UsageStore }
 
@@ -28,11 +28,12 @@ export async function runExplain({
   log?: (message: string) => void
 }): Promise<Reply> {
   const body = buildRequest(request)
+  const model = modelFor(request.language)
   const outcome = await withBudget({
     month,
-    model: MODEL,
+    model,
     limitEur,
-    reserveEur: AI_CALL_RESERVE_EUR,
+    reserveEur: reserveFor(model),
     usage,
     call: (signal) => callClaude(body, signal),
     timeoutMs,

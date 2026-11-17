@@ -21,15 +21,24 @@ import {
 
 export type { ExplainRequest } from './shared.ts'
 
-/** Haiku 5.5, si te funksionet e tjera me AI (log-parse, supplement-label). */
-export const MODEL = 'claude-haiku-5-5'
+/**
+ * Modeli sipas gjuhës: anglishtja me Haiku 5.5, si te funksionet e tjera me AI; shqipja me Sonnet 5.5, sepse
+ * prova me AI-në e vërtetë (17.11.2026) nxori me Haiku fjalë të gabuara ("pëllumbat" për "pëllëmbët"). Shpjegimi
+ * ruhet në telefon, pra paguhet një herë për ushtrim dhe gjuhë (rreth 1,5 cent me Sonnet).
+ */
+export const MODELS: Record<ExplainLanguage, string> = { sq: 'claude-sonnet-5-5', en: 'claude-haiku-5-5' }
+export const modelFor = (language: ExplainLanguage) => MODELS[language]
 export const API_VERSION = '2026-10-21'
 /** Gjashtë paragrafë deri në 1 000 shkronja në shqip zënë rreth 2 000 tokena; me rezervë që JSON-i të mos pritet. */
 export const MAX_TOKENS = 3_000
 export const EFFORT = 'low'
 export const AI_TIMEOUT_MS = 30_000
-/** Kostoja më e keqe: ~3 000 tokena hyrje dhe 3 000 dalje, rreth $0,002; me rezervë, si kutia. */
-export const AI_CALL_RESERVE_EUR = 0.01
+/**
+ * Rezervimi është kostoja më e keqe e një thirrjeje: ~3 000 tokena hyrje dhe 3 000 dalje. Haiku 5.5 rreth
+ * $0,002 (0,01 €, si kutia); Sonnet 5.5 rreth $0,036, pra 0,04 €.
+ */
+const RESERVE_EUR: Record<string, number> = { 'claude-haiku-5-5': 0.01, 'claude-sonnet-5-5': 0.04 }
+export const reserveFor = (model: string) => RESERVE_EUR[model] ?? 0.04
 /** Një paragraf nuk kalon këtë gjatësi (rreth 150 fjalë). */
 export const MAX_PARAGRAPH = 1_000
 
@@ -39,10 +48,11 @@ export const INSTRUCTIONS = `You explain one gym exercise in more depth for a be
 
 - Write ${MIN_PARAGRAPHS} to ${MAX_PARAGRAPHS} short paragraphs: why the exercise works, how it should feel, and the mistakes a beginner makes. Plain words, no headings, no lists, no markdown.
 - Rely only on the guide and the muscles you are given. Do not invent studies, sources, authors, organisations, numbers, percentages, tempos or weights that are not in the guide. Never write a citation or a link.
-- If the guide is missing, stay general and short, and say nothing that depends on a source.
+- If the guide is missing, stay general and short, and say nothing that depends on a source. Never say that the guide is missing, and never talk about yourself or the app.
 - Do not give medical advice or diagnose pain. When the guide has a safety section, repeat its advice instead of adding your own.
 - Do not repeat the guide line by line: connect its points and say why they matter.
-- Write in the language the user message names. Keep the exercise name in English.
+- Write in the language the user message names. Refer to the exercise only by its English name; never translate it.
+- In Albanian, write correct standard Albanian, address the reader as "ti" (second person singular), never "ju", and call the guide "udhëzuesi", never "guida". In British English, address the reader as "you".
 - No exclamation marks, no emoji.`
 
 type Schema = Record<string, unknown>
@@ -125,7 +135,7 @@ function userText(request: ExplainRequest): string {
 
 export function buildRequest(request: ExplainRequest) {
   return {
-    model: MODEL,
+    model: modelFor(request.language),
     max_tokens: MAX_TOKENS,
     system: [{ type: 'text' as const, text: INSTRUCTIONS }],
     messages: [{ role: 'user' as const, content: [{ type: 'text' as const, text: userText(request) }] }],
