@@ -13,6 +13,7 @@ import { currentFoodDate, type NutritionDay, nutritionDay, removeDiaryEntry } fr
 import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { shiftDate } from '@/lib/calendar'
+import { cn } from '@/lib/cn'
 import type { MealKey } from '@/nutrition/meals'
 import { JIM_RANGE_KG } from '@/nutrition/targets'
 import { FoodFactCard } from './learn-cards'
@@ -89,6 +90,7 @@ export function NutritionPage() {
       <DayHero day={day} onToast={show} />
       <SupplementStrip day={day} onOpenList={() => open({ suplementet: '1' })} onToast={show} />
       <DayTimeline day={day} now={now} onOpen={(next) => open({ vakti: next })} onToast={show} after={fact && factMeal ? { meal: factMeal, node: <FoodFactCard entry={fact} /> } : null} />
+      {day.isToday ? <CloseDayLink day={day} /> : null}
       <PlanLinks day={day} />
       {/* Vendi i fushës "Çfarë hëngre?" mbi tab-bar-in, që pjesa e fundit të mos mbetet poshtë saj. */}
       <div aria-hidden className="h-[76px] shrink-0" />
@@ -96,6 +98,18 @@ export function NutritionPage() {
       {meal ? <MealSheet day={day} meal={meal} onClose={() => navigate(-1)} onToast={show} /> : null}
       {params.get('suplementet') === '1' ? <SupplementsSheet day={day} onClose={() => navigate(-1)} /> : null}
     </div>
+  )
+}
+
+/** "Mbyll ditën" (V70): hap ekranin me të gjitha vaktet; poshtë thotë sa vakte mbeten pa shënuar. */
+function CloseDayLink({ day }: { day: NutritionDay }) {
+  const { t } = useI18n()
+  const left = day.meals.filter((meal) => meal.status !== 'done' && meal.status !== 'skipped').length
+  return (
+    <Link to="/ushqimi/mbyll" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'h-auto min-h-button w-full flex-col gap-0.5 py-2.5')}>
+      <span>{t('foodday.close.link')}</span>
+      <span className="font-text text-[13px] leading-4 font-medium tracking-normal text-muted-foreground normal-case tabular-nums">{left === 0 ? t('foodday.close.linkDone') : t('foodday.close.linkLeft', { count: left })}</span>
+    </Link>
   )
 }
 

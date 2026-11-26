@@ -199,6 +199,8 @@ export interface TodayMeal {
   minutes: number
   /** Ka regjistrim ushqimi (proteina e shënuar "E mora" nuk e bën vaktin të ngrënë, V39). */
   eaten: boolean
+  /** "E kapërceva" (V71): i mbyllur pa ushqim. */
+  skipped: boolean
   kcal: number
   proteinG: number
 }
@@ -281,7 +283,7 @@ export async function todayView(store: LocalStore): Promise<TodayView> {
       targetProteinG: nutrition.targets ? Math.round(nutrition.targets.proteinG) : null,
       next: nutrition.next ? { meal: nutrition.next.meal, time: nutrition.next.time } : null,
     },
-    meals: nutrition.meals.map((slot) => ({ meal: slot.meal, time: slot.time, minutes: slot.minutes, eaten: slot.status === 'done', kcal: Math.round(slot.totals.kcal), proteinG: Math.round(slot.totals.proteinG) })),
+    meals: nutrition.meals.map((slot) => ({ meal: slot.meal, time: slot.time, minutes: slot.minutes, eaten: slot.status === 'done', skipped: slot.status === 'skipped', kcal: Math.round(slot.totals.kcal), proteinG: Math.round(slot.totals.proteinG) })),
     wakeTime: profile.wakeTime,
     sleepTime: profile.sleepTime,
     nowMinutes: minutesInFoodDay(now, eatingDate),

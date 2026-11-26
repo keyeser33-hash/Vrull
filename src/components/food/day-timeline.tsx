@@ -6,7 +6,7 @@ import { Icon } from '@/components/ui/icons'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type MealSlot, type NutritionDay, logTemplateMeal } from '@/data/nutrition'
-import { readSchedule, trainingTimeOn } from '@/data/schedule-settings'
+import { readSchedule, setMealSkipped, trainingTimeOn } from '@/data/schedule-settings'
 import { trainingSnapshot } from '@/data/training'
 import { foodName, mealName, nameInSentence, portionText, programWeekLabel, supplementName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -45,6 +45,7 @@ const dot = {
   missed: <span className="size-3.5 rounded-pill border-2 border-dashed border-muted-foreground bg-background" />,
   next: <span className="size-3.5 rounded-pill border-[3px] border-ember-text bg-background" />,
   todo: <span className="size-2.5 rounded-pill border-2 border-muted-foreground bg-background" />,
+  skipped: <span className="size-2.5 rounded-pill bg-muted-foreground" />,
   workout: (
     <span className="flex size-[22px] items-center justify-center rounded-pill bg-surface-2 text-muted-foreground">
       <Icon name="programi" size={14} />
@@ -135,6 +136,21 @@ function MealRow({ day, meal, now, onOpen, onToast }: { day: NutritionDay; meal:
     )
   }
   if (meal.status === 'next') return <NextMeal day={day} meal={meal} now={now} onOpen={onOpen} onToast={onToast} />
+  if (meal.status === 'skipped') {
+    return (
+      <Row time={meal.time} marker={dot.skipped}>
+        <span className="flex min-h-14 min-w-0 flex-1 items-center gap-2.5 py-2.5">
+          <button type="button" aria-label={t('foodday.row.skipped', { meal: name, time: meal.time })} onClick={() => onOpen(meal.meal)} className="flex min-h-touch min-w-0 flex-1 flex-col justify-center gap-0.5 text-left">
+            <span className="text-[15px] leading-5 font-medium text-muted-foreground">{name}</span>
+            <span className="truncate text-[13px] leading-[1.35] text-muted-foreground">{t('foodday.skipped')}</span>
+          </button>
+          <Button variant="ghost" className="px-3 text-sm" aria-label={t('foodday.unskipFor', { meal: name })} onClick={() => void setMealSkipped(store, day.date, meal.meal, false)}>
+            {t('foodday.unskip')}
+          </Button>
+        </span>
+      </Row>
+    )
+  }
   const names = meal.template.length > 0 ? planNames(t, lang, meal) : ''
   if (meal.status === 'missed') {
     return (

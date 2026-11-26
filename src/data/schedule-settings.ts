@@ -6,7 +6,8 @@ import type { LocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06): zgjimi, gjumi, ora e stërvitjes për çdo ditë dhe plani i
 // vakteve. Plani i ri vlen nga dita tjetër: `user_settings.meal_plan` mban edhe planin e mëparshëm
-// për ditët para `from`, dhe orët e një dite të vetme të lëvizura nga ritmi i Sot-it (`day`, V64).
+// për ditët para `from`, orët e një dite të vetme të lëvizura nga ritmi i Sot-it (`day`, V64) dhe vaktet e
+// kapërcyera sipas datës (`skipped`, V71).
 
 export interface StoredMealPlan extends MealPlan {
   /** Data nga e cila vlen ky plan; null = gjithmonë. */
@@ -15,6 +16,8 @@ export interface StoredMealPlan extends MealPlan {
   previous: MealPlan | null
   /** Orët e lëvizura nga ritmi i Sot-it, vetëm për atë datë (V64); null = asnjë. */
   day: MealDay | null
+  /** Vaktet e shënuara "E kapërceva" sipas datës së ditës së ushqimit (V71); mbahen ditët e fundit. */
+  skipped: Record<string, MealKey[]>
 }
 
 export interface MealDay {
@@ -55,6 +58,20 @@ function cleanDay(value: unknown): MealDay | null {
   return Object.keys(times).length > 0 ? { date: raw.date, times } : null
 }
 
+/** Sa ditë mbahen vaktet e kapërcyera: mjafton për vargun e ditëve dhe për javët e fundit. */
+export const SKIPPED_DAYS_KEPT = 62
+
+function cleanSkipped(value: unknown): Record<string, MealKey[]> {
+  if (typeof value !== 'object' || value === null) return {}
+  const result: Record<string, MealKey[]> = {}
+  for (const [date, meals] of Object.entries(value)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Array.isArray(meals)) continue
+    const kept = MEALS.filter((meal) => meals.includes(meal))
+    if (kept.length > 0) result[date] = kept
+  }
+  return result
+}
+
 const isoWeekday = (date: string) => {
   const [year, month, day] = date.split('-').map(Number)
   return ((new Date(year, month - 1, day).getDay() + 6) % 7) + 1
@@ -72,14 +89,14 @@ export async function readSchedule(store: LocalStore): Promise<ScheduleSettings>
   const first = saved[String(days[0])] ?? DEFAULT_PROFILE.trainingTime
   const trainingTimes: Record<number, string> = {}
   for (const day of days) trainingTimes[day] = TIME.test(saved[String(day)] ?? '') ? saved[String(day)] : first
-  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown; day?: unknown } | null
+  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown; day?: unknown; skipped?: unknown } | null
   const current = cleanPlan(stored) ?? EMPTY_MEAL_PLAN
   return {
     wakeTime: (row?.wake_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.wakeTime,
     sleepTime: (row?.sleep_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.sleepTime,
     trainingDays: days,
     trainingTimes,
-    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous), day: cleanDay(stored?.day) },
+    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous), day: cleanDay(stored?.day), skipped: cleanSkipped(stored?.skipped) },
   }
 }
 
@@ -109,7 +126,7 @@ export async function saveSchedule(
   const current = await readSchedule(store)
   const wanted: MealPlan = { removed: [...next.plan.removed], times: { ...next.plan.times } }
   const unchanged = JSON.stringify(mealPlanOn(current.plan, nextDate(today))) === JSON.stringify(wanted)
-  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn({ ...current.plan, day: null }, today), day: current.plan.day }
+  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn({ ...current.plan, day: null }, today), day: current.plan.day, skipped: current.plan.skipped }
   const times: Record<string, string> = {}
   for (const day of current.trainingDays) times[String(day)] = next.trainingTimes[day] ?? current.trainingTimes[day]
   await store.put('user_settings', {
@@ -136,4 +153,29 @@ export async function moveMealTimes(store: LocalStore, times: Partial<Record<Mea
   if (JSON.stringify(wanted) === JSON.stringify(kept)) return
   const plan: StoredMealPlan = { ...current.plan, day: { date, times: wanted } }
   await store.put('user_settings', { id: row.id, meal_plan: plan })
+}
+
+/**
+ * "E kapërceva" (V71): vakti i një dite mbyllet pa ushqim, ose hapet sërish me `skipped: false`. Ruhet te
+ * `user_settings.meal_plan.skipped`, pa migrim; ditët më të vjetra se `SKIPPED_DAYS_KEPT` hiqen.
+ */
+export async function setMealSkipped(store: LocalStore, date: string, meal: MealKey, skipped: boolean) {
+  const row = await settingsRow(store)
+  if (!row || !MEALS.includes(meal) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return
+  const current = await readSchedule(store)
+  const before = current.plan.skipped[date] ?? []
+  const after = skipped ? MEALS.filter((key) => key === meal || before.includes(key)) : before.filter((key) => key !== meal)
+  if (JSON.stringify(after) === JSON.stringify(before)) return
+  const all: Record<string, MealKey[]> = { ...current.plan.skipped }
+  if (after.length > 0) all[date] = after
+  else delete all[date]
+  const kept = Object.keys(all).sort().slice(-SKIPPED_DAYS_KEPT)
+  const next: Record<string, MealKey[]> = {}
+  for (const key of kept) next[key] = all[key]
+  await store.put('user_settings', { id: row.id, meal_plan: { ...current.plan, skipped: next } })
+}
+
+/** Vaktet e kapërcyera të një date. */
+export function skippedOn(plan: Pick<StoredMealPlan, 'skipped'>, date: string): MealKey[] {
+  return plan.skipped[date] ?? []
 }

@@ -179,7 +179,7 @@ describe('pamja e Sot nga baza lokale', () => {
       '19:35 dinner',
       '22:30 bedtime',
     ])
-    expect(view.meals[0]).toEqual({ meal: 'breakfast_1', time: '07:00', minutes: 420, eaten: true, kcal: 400, proteinG: 28 })
+    expect(view.meals[0]).toEqual({ meal: 'breakfast_1', time: '07:00', minutes: 420, eaten: true, skipped: false, kcal: 400, proteinG: 28 })
     expect(view.meals.filter((meal) => meal.eaten)).toHaveLength(1)
   })
 

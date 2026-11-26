@@ -7,6 +7,7 @@ import { Icon, type IconName } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
 import { type MealSlot, type NutritionDay, removeDiaryEntry, logTemplateMeal } from '@/data/nutrition'
 import { copyYesterdayMeal, yesterdayMeal } from '@/data/quick-food'
+import { setMealSkipped } from '@/data/schedule-settings'
 import { setSupplementTaken } from '@/data/supplements'
 import { foodName, mealName, portionText } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
@@ -139,6 +140,22 @@ export function MealSheet({ day, meal, onClose, onToast }: { day: NutritionDay; 
           )
         })}
       </div>
+      {/* "E kapërceva" (V71): vakti mbyllet pa ushqim; njoftimi e hap sërish me "Zhbëj". */}
+      {meal.status !== 'done' ? (
+        <Button
+          variant="ghost"
+          className="w-full shrink-0"
+          disabled={busy}
+          onClick={() => {
+            const skip = meal.status !== 'skipped'
+            void setMealSkipped(store, day.date, meal.meal, skip)
+            onClose()
+            if (skip) onToast(t('foodday.skippedToast', { meal: label }), () => setMealSkipped(store, day.date, meal.meal, false))
+          }}
+        >
+          {meal.status === 'skipped' ? t('foodday.unskip') : t('foodday.skip')}
+        </Button>
+      ) : null}
       {photo.input}
       {meal.supplements.length > 0 ? (
         <div className="flex shrink-0 flex-col gap-2">

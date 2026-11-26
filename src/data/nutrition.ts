@@ -8,7 +8,7 @@ import { type DoseUnit, doseForMeal, type Evidence } from '@/nutrition/supplemen
 import { bodyweightForTargets, type DayType, JIM_RANGE_KG, JIM_WEIGHT_KG, type Macros } from '@/nutrition/targets'
 import { readProfile } from './profile'
 import { plannedWorkoutMinutes } from './training'
-import { mealPlanOn, readSchedule, trainingTimeOn } from './schedule-settings'
+import { mealPlanOn, readSchedule, skippedOn, trainingTimeOn } from './schedule-settings'
 import { myPlan, type MyPlanItem } from './my-plan'
 import { isSupplementSource, mealPowder, supplementList } from './supplements'
 import { readTargetsProfile, targetsFor, type TargetsSource } from './targets-profile'
@@ -40,8 +40,8 @@ export interface TemplateLine extends Macros {
   grams: number
 }
 
-/** done: i regjistruar; next: i radhës; todo: më vonë; missed: ora e tij kaloi pa regjistrim. */
-export type MealStatus = 'done' | 'next' | 'todo' | 'missed'
+/** done: i regjistruar; next: i radhës; todo: më vonë; missed: ora e tij kaloi pa regjistrim; skipped: "E kapërceva" (V71). */
+export type MealStatus = 'done' | 'next' | 'todo' | 'missed' | 'skipped'
 
 export interface MealSupplement {
   id: string
@@ -168,6 +168,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
   const today = date === current
   const nowMinutes = minutesInFoodDay(now, date)
   const minutesByMeal = new Map(planned.map((entry) => [entry.meal, entry.minutes]))
+  const skipped = skippedOn(schedule.plan, date)
   const meals: MealSlot[] = planned.map(({ meal, time, minutes }) => {
     const rows = entries.filter((row) => row.meal === meal).sort(byLoggedAt)
     const list = rows.map((row) => {
@@ -194,7 +195,8 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
       time,
       minutes,
       // Proteina e shënuar "E mora" nuk e bën vaktin të ngrënë (V39).
-      status: list.some((entry) => !isSupplementSource(entry.sourceId)) ? 'done' : 'todo',
+      // Një vakt i kapërcyer (V71) mbyllet pa ushqim; një regjistrim i mëvonshëm e bën sërish të ngrënë.
+      status: list.some((entry) => !isSupplementSource(entry.sourceId)) ? 'done' : skipped.includes(meal) ? 'skipped' : 'todo',
       entries: list,
       totals: sumMacros(list),
       template,

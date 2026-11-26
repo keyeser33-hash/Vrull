@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
-import { mealPlanOn, moveMealTimes, readSchedule, saveSchedule, trainingTimeOn } from './schedule-settings'
+import { mealPlanOn, moveMealTimes, readSchedule, saveSchedule, setMealSkipped, SKIPPED_DAYS_KEPT, skippedOn, trainingTimeOn } from './schedule-settings'
 import { createLocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06).
@@ -109,5 +109,46 @@ describe('lëvizja e vakteve nga ritmi i ditës (V57, V64: vetëm sot)', () => {
     const saved = (await readSchedule(store)).plan
     expect(mealPlanOn(saved, '2026-12-07').times).toEqual({ dinner: '19:15' })
     expect(mealPlanOn(saved, '2026-12-08').times).toEqual({ lunch: '14:00' })
+  })
+})
+
+// "E kapërceva" (V71).
+describe('vaktet e kapërcyera', () => {
+  it('vakti i kapërcyer mbyllet pa ushqim dhe nuk është më i radhës as i humbur', async () => {
+    const store = await setup()
+    const before = await nutritionDay(store, '2026-12-08', at('2026-12-08', '18:00'))
+    expect(before.meals.find((meal) => meal.meal === 'lunch')?.status).toBe('missed')
+    await setMealSkipped(store, '2026-12-08', 'lunch', true)
+    await setMealSkipped(store, '2026-12-08', 'snack_pm', true)
+    const day = await nutritionDay(store, '2026-12-08', at('2026-12-08', '18:00'))
+    expect(day.meals.find((meal) => meal.meal === 'lunch')?.status).toBe('skipped')
+    expect(day.meals.find((meal) => meal.meal === 'snack_pm')?.status).toBe('skipped')
+    expect(day.next?.meal).not.toBe('snack_pm')
+    // Vlen vetëm për atë datë.
+    const tomorrow = await nutritionDay(store, '2026-12-09', at('2026-12-09', '18:00'))
+    expect(tomorrow.meals.find((meal) => meal.meal === 'lunch')?.status).toBe('missed')
+  })
+
+  it('hapet sërish, dhe mbijeton ndryshimin e orareve dhe lëvizjen e Sot-it', async () => {
+    const store = await setup()
+    await setMealSkipped(store, '2026-12-08', 'lunch', true)
+    const schedule = await readSchedule(store)
+    await saveSchedule(store, { ...schedule, plan: { removed: ['snack_am'], times: {} } }, '2026-12-08')
+    await moveMealTimes(store, { dinner: '21:15' }, '2026-12-08')
+    expect(skippedOn((await readSchedule(store)).plan, '2026-12-08')).toEqual(['lunch'])
+    await setMealSkipped(store, '2026-12-08', 'lunch', false)
+    expect((await readSchedule(store)).plan.skipped).toEqual({})
+  })
+
+  it('mban vetëm ditët e fundit', async () => {
+    const store = await setup()
+    const day = (index: number) => {
+      const date = new Date(2026, 0, 1 + index)
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    }
+    for (let index = 0; index < SKIPPED_DAYS_KEPT + 3; index += 1) await setMealSkipped(store, day(index), 'dinner', true)
+    const kept = Object.keys((await readSchedule(store)).plan.skipped)
+    expect(kept).toHaveLength(SKIPPED_DAYS_KEPT)
+    expect(kept[0]).toBe(day(3))
   })
 })

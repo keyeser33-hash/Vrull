@@ -137,14 +137,21 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     startedOn: missed.startedOn,
     sessionDates: missed.sessionDates,
     checkedIn,
-    smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes),
+    smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes, schedule.plan.skipped),
   }
 }
 
 /** Rikujtuesit në ditë për vaktet dhe suplementet bashkë (V37); uji ka të vetin, një në ditë. */
 export const MAX_DAILY_REMINDERS = 4
 
-async function smartInput(store: LocalStore, now: Date, settings: ReminderSettings, trainingDays: readonly number[], dayTypes: Record<string, DayType>): Promise<SmartInput> {
+async function smartInput(
+  store: LocalStore,
+  now: Date,
+  settings: ReminderSettings,
+  trainingDays: readonly number[],
+  dayTypes: Record<string, DayType>,
+  skipped: Readonly<Record<string, readonly string[]>>,
+): Promise<SmartInput> {
   // Nga dita e djeshme: vaktet pas mesnate i përkasin asaj.
   const dates = Array.from({ length: 8 }, (_, index) => localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + index - 1)))
   const [diary, supplementLogs, water, weightKg, trainingDay, restDay, supplementFoods] = await Promise.all([
@@ -168,10 +175,14 @@ async function smartInput(store: LocalStore, now: Date, settings: ReminderSettin
     maxDaily: MAX_DAILY_REMINDERS,
     logged: {
       // Proteina e shënuar "E mora" nuk e bën vaktin të regjistruar.
-      meals: diary
-        .flat()
-        .filter((row) => !supplementFoods.has(String(row.food_id)))
-        .map((row) => `${String(row.date)}|${String(row.meal)}`),
+      // Një vakt i kapërcyer (V71) është i mbyllur: nuk vjen rikujtues për të.
+      meals: [
+        ...diary
+          .flat()
+          .filter((row) => !supplementFoods.has(String(row.food_id)))
+          .map((row) => `${String(row.date)}|${String(row.meal)}`),
+        ...Object.entries(skipped).flatMap(([date, meals]) => meals.map((meal) => `${date}|${meal}`)),
+      ],
       supplements: supplementLogs.flat().map((row) => `${String(row.date)}|${String(row.timing)}|${String(row.supplement_id)}`),
       water: Object.fromEntries(
         dates.map((date, index) => [

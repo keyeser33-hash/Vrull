@@ -10,6 +10,8 @@ export interface RhythmMeal {
   time: string
   minutes: number
   eaten: boolean
+  /** I kapërcyer (V71): pika del e mbyllur, si një vakt i ngrënë. */
+  skipped?: boolean
   kcal: number
   proteinG: number
 }
@@ -98,7 +100,7 @@ export function rhythmOf(input: RhythmInput): Rhythm {
       minutes: meal.minutes,
       time: meal.time,
       fraction: fractionOf(meal.minutes),
-      done: meal.eaten,
+      done: meal.eaten || meal.skipped === true,
       past: meal.minutes < nowMinutes,
       kcal: meal.kcal,
       proteinG: meal.proteinG,
