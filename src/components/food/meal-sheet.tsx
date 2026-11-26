@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { Icon, type IconName } from '@/components/ui/icons'
 import { store, useLocalQuery } from '@/data/app-data'
+import { saveMealAsUsual } from '@/data/meal-move'
 import { type MealSlot, type NutritionDay, removeDiaryEntry, logTemplateMeal } from '@/data/nutrition'
 import { copyYesterdayMeal, yesterdayMeal } from '@/data/quick-food'
 import { setMealSkipped } from '@/data/schedule-settings'
@@ -16,6 +17,7 @@ import { gramsText, kcalText, macrosLine } from '@/routes/nutrition-format'
 import { QuickMacrosSheet } from '@/routes/meal-quick'
 import { FoodTile } from './food-tile'
 import { logWithUndo } from './meal-actions'
+import { MoveMealSheet } from './move-meal-sheet'
 import { SupplementChip } from './supplement-chip'
 import { useMealPhoto } from './use-meal-photo'
 
@@ -30,8 +32,10 @@ export function MealSheet({ day, meal, onClose, onToast }: { day: NutritionDay; 
   const { t, fmt } = i18n
   const [macros, setMacros] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [moving, setMoving] = useState(false)
   const photo = useMealPhoto(day.date, meal.meal)
   const yesterday = useLocalQuery(() => yesterdayMeal(store, day.date, meal.meal), [day.date, meal.meal])
+  if (moving) return <MoveMealSheet day={day} meal={meal} onClose={() => setMoving(false)} onMoved={onClose} onToast={onToast} />
   if (macros) return <QuickMacrosSheet date={day.date} meal={meal} onClose={() => setMacros(false)} onSaved={() => setMacros(false)} />
 
   const label = mealName(t, meal.meal)
@@ -155,6 +159,28 @@ export function MealSheet({ day, meal, onClose, onToast }: { day: NutritionDay; 
         >
           {meal.status === 'skipped' ? t('foodday.unskip') : t('foodday.skip')}
         </Button>
+      ) : null}
+      {/* Vakti i ngrënë (V73): shkon te një vakt ose ditë tjetër, ose bëhet plani i këtij vakti. */}
+      {meal.status === 'done' ? (
+        <div className="grid shrink-0 grid-cols-2 gap-2">
+          <Button variant="ghost" disabled={busy} onClick={() => setMoving(true)}>
+            {t('foodday.move.action')}
+          </Button>
+          <Button
+            variant="ghost"
+            disabled={busy}
+            onClick={() => {
+              setBusy(true)
+              void (async () => {
+                const { count, undo } = await saveMealAsUsual(store, day, meal)
+                onClose()
+                onToast(count > 0 ? t('foodday.usual.toast', { meal: label }) : t('foodday.usual.empty'), undo)
+              })().finally(() => setBusy(false))
+            }}
+          >
+            {t('foodday.usual.action')}
+          </Button>
+        </div>
       ) : null}
       {photo.input}
       {meal.supplements.length > 0 ? (

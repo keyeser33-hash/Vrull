@@ -161,6 +161,12 @@ describe('porcioni i zakonshëm', () => {
     expect(commonPortion(food({ id: 'usda-fdc-31', nameEn: 'x' }))).toEqual({ label: null, grams: 100 })
   })
 
+  it('në shqip: porcioni i parë që përkthehet; "1 oz" kapërcehet dhe pa asnjë mbeten 100 g', () => {
+    expect(commonPortion(food({ id: 'usda-fdc-34', nameEn: 'x', portions: portions(['1 oz', 28.35], ['1 cup, chopped', 140]) }), 'sq')).toEqual({ label: '1 filxhan, grirë', grams: 140 })
+    expect(commonPortion(food({ id: 'usda-fdc-35', nameEn: 'x', portions: portions(['1 large', 50]) }), 'sq')).toEqual({ label: '1 copë e madhe', grams: 50 })
+    expect(commonPortion(food({ id: 'usda-fdc-36', nameEn: 'x', portions: portions(['1 oz', 28.35], ['1 rack', 400]) }), 'sq')).toEqual({ label: null, grams: 100 })
+  })
+
   it('"2 tablespoon", etiketat e gjata dhe gramët e pavlefshme anashkalohen', () => {
     const skipped = portions(['2 tablespoon', 33.9], ['1 cup (4.86 large eggs)', 243], ['1 bad', 0], ['1 tub', 5000], ['1 slice', 30])
     expect(commonPortion(food({ id: 'usda-fdc-32', nameEn: 'x', portions: skipped }))).toEqual({ label: '1 slice', grams: 30 })

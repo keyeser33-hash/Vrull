@@ -1,4 +1,5 @@
-import { CATALOG_SOURCES, type CatalogFood, type CatalogPortion } from './types'
+import { portionSq } from './portion-sq'
+import { CATALOG_SOURCES, type CatalogFood } from './types'
 
 // Kërkimi pa internet te Lista e Vrullit (SPEC §0.3h): shqip dhe anglisht, pa diakritika, me fjalë të pjesshme.
 // Logjikë pa UI. Çdo fjalë e kërkesës duhet të jetë në emër (shqip ose anglisht); rendi: të zakonshmet të parat,
@@ -84,6 +85,12 @@ export function searchCatalog(index: CatalogIndex, query: string, options: Searc
 export function commonPortion(food: CatalogFood, language: 'sq' | 'en' = 'en'): { label: string | null; grams: number } {
   // Pjata shqiptare (V65): porcioni është një i vetëm, i recetës, me etiketën në gjuhën e kërkuar ("1 copë" / "1 piece").
   if (food.dish && food.portions[0]?.grams > 0) return { label: food.dish.portion[language], grams: food.portions[0].grams }
-  const portion: CatalogPortion | undefined = food.portions.find((item) => /^1 \S/.test(item.label) && item.label.length <= 20 && item.grams > 0 && item.grams <= 1000)
-  return portion ? { label: portion.label, grams: portion.grams } : { label: null, grams: 100 }
+  const usable = food.portions.filter((item) => /^1 \S/.test(item.label) && item.label.length <= 20 && item.grams > 0 && item.grams <= 1000)
+  if (language === 'en') return usable[0] ? { label: usable[0].label, grams: usable[0].grams } : { label: null, grams: 100 }
+  // Në shqip: porcioni i parë që përkthehet i plotë (`portionSq`); "1 oz" e të ngjashmet kapërcehen, dhe pa asnjë mbeten 100 g.
+  for (const item of usable) {
+    const label = portionSq(item.label)
+    if (label) return { label, grams: item.grams }
+  }
+  return { label: null, grams: 100 }
 }

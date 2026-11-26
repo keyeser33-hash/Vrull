@@ -110,7 +110,7 @@ const savedMacros = (row: LocalRow): Macros => ({
 /** Dita ISO e javës (1 = e hënë ... 7 = e diel) e një date "2026-12-07". */
 const isoWeekday = (date: string) => new Date(`${date}T12:00:00`).getDay() || 7
 
-async function dayTypeFor(store: LocalStore, date: string, trainingDays: number[]): Promise<{ dayType: DayType; manual: boolean; saved?: LocalRow }> {
+export async function dayTypeFor(store: LocalStore, date: string, trainingDays: number[]): Promise<{ dayType: DayType; manual: boolean; saved?: LocalRow }> {
   const [target] = await store.where('nutrition_targets', 'date', date)
   if (target?.is_manual) return { dayType: target.day_type as DayType, manual: true, saved: target }
   const saved = target
@@ -243,7 +243,7 @@ export async function nutritionDay(store: LocalStore, date: string, now: Date): 
 }
 
 /** Objektivat e ditës ruhen (me dorë ose me regjistrimin e parë), që grafiku të mos ndryshojë pas faktit. */
-async function saveTargets(store: LocalStore, date: string, dayType: DayType, manual: boolean) {
+export async function saveTargets(store: LocalStore, date: string, dayType: DayType, manual: boolean) {
   const weightKg = await weightFor(store, date)
   const [existing] = await store.where('nutrition_targets', 'date', date)
   if (existing && !manual && (existing.is_manual || existing.day_type === dayType)) return

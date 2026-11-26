@@ -292,7 +292,7 @@ describe('Shto ushqim', () => {
     expect(egg).toHaveTextContent('Vezë')
     expect(egg).toHaveTextContent('Egg, whole, raw, fresh')
     expect(egg).toHaveTextContent('USDA')
-    expect(egg).toHaveTextContent('1 large · 72 kcal · 6 g P')
+    expect(egg).toHaveTextContent('1 copë e madhe · 72 kcal · 6 g P')
     await user.clear(field)
     await user.type(field, 'vezë')
     expect((await within(await screen.findByRole('region', { name: 'Lista e Vrullit' })).findAllByRole('listitem'))[0]).toHaveTextContent('Vezë')
@@ -301,7 +301,7 @@ describe('Shto ushqim', () => {
     expect(await basketRegion()).toHaveTextContent('Vezë · 1')
     const saved = (await data.store.all('foods')).filter((row) => row.source === 'catalog')
     expect(saved).toHaveLength(1)
-    expect(saved[0]).toMatchObject({ source_id: 'usda-fdc-171287', name: 'Vezë', serving_g: 50, serving_label: '1 large' })
+    expect(saved[0]).toMatchObject({ source_id: 'usda-fdc-171287', name: 'Vezë', serving_g: 50, serving_label: '1 copë e madhe' })
     // Asnjë kërkesë rrjeti për listën, as për Open Food Facts.
     expect(fetched).not.toHaveBeenCalled()
     expect(off.search).not.toHaveBeenCalled()
