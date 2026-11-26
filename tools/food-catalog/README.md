@@ -12,7 +12,7 @@ node tools/food-catalog/build.mjs /tmp/food-src /tmp/food-out [--list-version N]
 node tools/food-catalog/check.mjs /tmp/food-out/catalog.jsonl
 node tools/food-catalog/candidates.mjs "egg whole raw" [--source usda_foundation] [--limit 15] [--catalog /tmp/food-out/catalog-all.jsonl]
 node tools/food-catalog/common-list.mjs /tmp/food-out/catalog-all.jsonl
-node tools/food-catalog/app-file.mjs /tmp/food-out/catalog.jsonl src/catalog/data
+node tools/food-catalog/app-file.mjs /tmp/food-out/catalog.jsonl src/catalog/data   # me pjatat shqiptare; --no-dishes pa to
 npx vitest run tools/food-catalog
 ```
 
@@ -27,6 +27,10 @@ npx vitest run tools/food-catalog
 ## Skedari i app-it (V2-E3-27, vala 5)
 
 `app-file.mjs` nxjerr nga `catalog.jsonl` skedarët që vijnë me app-in te `src/catalog/data/`: `foods-common.json` (të zakonshmet, hyjnë menjëherë në kërkim), `foods-rest.json` (pjesa tjetër, `import()` i vonuar dhe ruhet një herë te Dexie me versionin) dhe `foods-meta.json` (versioni, numrat, madhësitë). Rreshtat janë tuple me fushat e `FIELDS` (bishti bosh shkurtohet); ID del nga `source_id` me parashtesën e burimit dhe licenca nga burimi, të dyja të kontrolluara gjatë kodimit. Dekoduesi: `src/catalog/decode.ts`; versioni i ri i listës kërkon vetëm ndërtimin e skedarëve (telefoni e ruan pjesën tjetër përsëri kur ndryshon versioni). Asgjë nga lista nuk dërgohet në Supabase nga app-i.
+
+## Pjatat shqiptare (V65)
+
+`dishes/*.json` (`{ group, dishes: [] }`, një recetë për pjatë: `ingredients` me `catalog_id`, `as_in_source` dhe `grams`; `cooked_weight_g` ose `null`; `portion`; `estimates`; `source` me `label`, `title`, `url`) dhe provat e burimeve te `docs/research/dishes/*.md`. `dishes.mjs` kontrollon recetat kundrejt Listës (`validateDishes`) dhe i kthen në rreshta: makrot për 100 g = shuma e përbërësve pjesëtuar me `cooked_weight_g` (ose me shumën e gramëve), një shifër pas presjes, njësoj si kontrolli i recetave; burimi `vrull_recipe`, ID `vrull-dish-<id>`, licenca `Vrull-recipe`, `name_sq_checked` true (emrat i miratoi pronari). `app-file.mjs` i shton si të zakonshme me `common_rank` pas më të zakonshmit dhe me fushën `dish` (përbërësit, burimi, vlerësimet, `estimate`, `readers`, porcioni sq/en); një etiketë porcioni që nuk fillon me "1" bëhet "1 porcion (6 japrak)". Testi: `dishes.test.mjs` (makrot kundrejt `check.mjs`, ±0,5).
 
 ## Të zakonshmet (V61)
 

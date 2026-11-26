@@ -1,0 +1,730 @@
+{
+  "group": "brumera",
+  "dishes": [
+    {
+      "id": "byrek-me-spinaq",
+      "name": {
+        "sq": "Byrek me spinaq",
+        "en": "Spinach byrek"
+      },
+      "note": {
+        "sq": "Byrek në tigan me petë të hapura vetë, spinaq, djathë të bardhë dhe vezë.",
+        "en": "Pan-cooked byrek with hand-rolled pastry, spinach, white cheese and egg."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "500 gr miell",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-168462",
+          "as_in_source": "500 gr spinaq",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "250 gr djathë i bardhë",
+          "grams": 250
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "1 vezë",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "2 lugë gjelle vaj",
+          "grams": 27
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "280 ml ujë",
+          "grams": 280
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "vaj për tiganin dhe petët (vlerësim)",
+          "grams": 30
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 136
+      },
+      "estimates": [
+        "Vaj për tiganin dhe petët: 30 g, burimi nuk e thotë",
+        "Ujë i brumit: 280 ml sipas burimit",
+        "Porcioni: byreku ndahet në 12 copa të vogla (burimi nuk jep numrin e copave)",
+        "Spinaqi dhe majdanozi: majdanozi pa sasi, lënë jashtë"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (redaksia), 6.3.2020; receta e zonjës Vjollca",
+        "title": "Byrek me spinaq në tigan (Të gatuajmë me zonjën Vjollca)",
+        "url": "https://shqiptarja.com/lajm/te-gatuajme-me-zonjen-vjollca-pule-me-leng-dhe-byrek-me-spinaq-ne-tigan",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "byrek-me-djathe",
+      "name": {
+        "sq": "Byrek me djathë",
+        "en": "Cheese byrek"
+      },
+      "note": {
+        "sq": "Byrek i pjekur në furrë me petë të hapura vetë, djathë të bardhë, vezë dhe qumësht.",
+        "en": "Oven-baked byrek with hand-rolled pastry, white cheese, eggs and milk."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "500 gr miell",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "1 lgj vaj ulliri (brumi)",
+          "grams": 13.5
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "400 gr djathë",
+          "grams": 400
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "4 vezë",
+          "grams": 200
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "100 ml qumësht",
+          "grams": 103
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "Vaj për spërkatje (vlerësim)",
+          "grams": 40
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "gjalpë i tretur sipër (vlerësim)",
+          "grams": 30
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë sa të marrë (vlerësim 250 g)",
+          "grams": 250
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 192
+      },
+      "estimates": [
+        "Vaj për spërkatje: 40 g, burimi nuk jep sasi",
+        "Gjalpë i tretur sipër: 30 g, burimi nuk jep sasi",
+        "Uji i brumit: 250 g, burimi thotë \"sa të marrë\"",
+        "Porcioni: byreku ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (redaksia), 21.3.2023; receta e zonjës Albana",
+        "title": "Byrek me djathë nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/byrek-me-djathe-nga-zonja-albana-1",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "byrek-me-mish",
+      "name": {
+        "sq": "Byrek me mish",
+        "en": "Minced meat byrek"
+      },
+      "note": {
+        "sq": "Byrek i pjekur me petë të hapura vetë dhe mbushje me mish të grirë, qepë dhe domate.",
+        "en": "Baked byrek with hand-rolled pastry and a minced meat, onion and tomato filling."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "700 gr miell i bardhë",
+          "grams": 700
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "2-3 lugë vaj (brumi)",
+          "grams": 34
+        },
+        {
+          "catalog_id": "usda-fdc-2514744",
+          "as_in_source": "500 gr mish i grirë",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë të mëdha",
+          "grams": 300
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "3-4 lgj vaj ulliri",
+          "grams": 47
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "1 domate e grirë",
+          "grams": 123
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "100 gr gjalpë i tretur ose vaj për petët",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "400 ml ujë i vakët",
+          "grams": 400
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 276
+      },
+      "estimates": [
+        "Mishi i grirë: gjedhi 80% pa yndyrë, burimi nuk thotë përqindjen e yndyrës",
+        "Vaj i brumit: 2-3 lugë, marrë 2,5 lugë = 34 g",
+        "Domatja: 1 e mesme = 123 g",
+        "Gjalpë për petët: gjithë 100 g, pjesë e tij mbetet te furça",
+        "Porcioni: byreku ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (redaksia), 6.6.2025; receta e zonjës Albana",
+        "title": "Byrek me mish të grirë nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/byrek-me-mish-te-grire-nga-zonja-albana",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "byrek-me-presh",
+      "name": {
+        "sq": "Byrek me presh",
+        "en": "Leek byrek"
+      },
+      "note": {
+        "sq": "Byrek me petë të hapura vetë dhe mbushje me presh të kaurdisur e djathë.",
+        "en": "Byrek with hand-rolled pastry and a filling of sautéed leek and cheese."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "5 gota miell (5 x 125 g)",
+          "grams": 625
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "100 gr gjalpë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "1 lç vaj",
+          "grams": 4.5
+        },
+        {
+          "catalog_id": "usda-fdc-169246",
+          "as_in_source": "1 kg presh",
+          "grams": 1000
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "100 gr djathë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri për kaurdisje (vlerësim)",
+          "grams": 40
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "2 gota ujë (2 x 240 g)",
+          "grams": 480
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "vaj për petët dhe tavën (vlerësim)",
+          "grams": 30
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 297
+      },
+      "estimates": [
+        "Vaj ulliri për kaurdisje: 40 g, burimi nuk jep sasi",
+        "Vaj për petët dhe tavën: 30 g, burimi nuk jep sasi",
+        "Gota = 125 g miell dhe 240 g ujë",
+        "Preshi: 1 kg si në burim, pa zbritur pastrimin",
+        "Porcioni: byreku ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (MC), 6.2.2024; receta e zonjës Albana",
+        "title": "Byrek me presh dhe djathë nga zonja Albana",
+        "url": "https://shqiptarja.com/video/byrek-me-presh-dhe-djathe-nga-zonja-albana",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "lakror",
+      "name": {
+        "sq": "Lakror me miell misri dhe hithra",
+        "en": "Cornmeal and nettle lakror"
+      },
+      "note": {
+        "sq": "Lakror tradicional me bazë miell misri, hithra, qepë të njoma, djathë të bardhë dhe kos sipër.",
+        "en": "Traditional lakror with a cornmeal base, nettles, spring onions, white cheese and a yoghurt topping."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-169819",
+          "as_in_source": "500 gr hithra",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170005",
+          "as_in_source": "1 tufë qepë e njomë (vlerësim)",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "2 vezë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-2259793",
+          "as_in_source": "2 gota kos (2 x 245 g)",
+          "grams": 490
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "100 gr djathë i bardhë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-170290",
+          "as_in_source": "3 gota miell misri (3 x 117 g)",
+          "grams": 351
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "Gjalpë/ vaj (vlerësim)",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "400 ml ujë",
+          "grams": 400
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 261
+      },
+      "estimates": [
+        "Gjalpë ose vaj: 50 g, burimi nuk jep sasi",
+        "Qepë të njoma: 1 tufë = 100 g",
+        "Hithrat: rreshti i listës është \"blanched\", i vetmi për hithra",
+        "Gota = 245 g kos dhe 117 g miell misri",
+        "Porcioni: lakrori ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (redaksia), 4.5.2023; receta e zonjës Albana",
+        "title": "Lakror tradicional me miell misri dhe hithra nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/lakror-tradicional-me-miell-misri-dhe-hithra-nga-zonja-albana",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "flija",
+      "name": {
+        "sq": "Flija",
+        "en": "Flija"
+      },
+      "note": {
+        "sq": "Flija në saç nga Kukësi: shtresa brumi dhe përzierje vezësh me qumësht e vaj, e pjekur shtresë pas shtrese.",
+        "en": "Flija from the Kukës area: layers of batter and an egg, milk and oil mixture, cooked layer by layer under a saç."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "2 kg miell",
+          "grams": 2000
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "10 kokrra vezë",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "gjysëm kg vaj ulliri",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "gjysëm kg qumësht",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "gjysëm kg gjalpë",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë të vakët (vlerësim 3000 g)",
+          "grams": 3000
+        }
+      ],
+      "cooked_weight_g": 6300,
+      "portion": {
+        "label": {
+          "sq": "1 fetë",
+          "en": "1 slice"
+        },
+        "grams": 150
+      },
+      "estimates": [
+        "Recetë e lexuesve nga Kukësi, ripostuar nga Shqiptarja.com",
+        "Uji i qullit: 3000 g, burimi thotë vetëm \"ujë të vakët\"",
+        "Pesha e gatshme: 6300 g, humbje rreth 10% nga avullimi në saç (vlerësim, pa burim)",
+        "Porcioni: një fetë e zakonshme 150 g, tepsia jep rreth 42 fetë",
+        "Qumështi dhe vaji jepen në gjysëm kg, mbahen 500 g"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "AgroWeb, recetë e lexuesve (ripostuar nga Shqiptarja.com)",
+        "title": "Flija në Saç, receta e zjarrtë e pasionit shqiptar",
+        "url": "https://shqiptarja.com/lajm/flija-ne-sac-ndash-receta-e-br-zjarrte-e-pasionit-shqipta",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "pispili",
+      "name": {
+        "sq": "Pispili me spinaq dhe presh",
+        "en": "Spinach and leek pispili"
+      },
+      "note": {
+        "sq": "Pite e pjekur me miell misri, spinaq, presh, kos, vezë dhe djathë të bardhë.",
+        "en": "Baked cornmeal pie with spinach, leek, yoghurt, eggs and white cheese."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168462",
+          "as_in_source": "1 kg spinaq dhe presh (gjysma spinaq)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-169246",
+          "as_in_source": "1 kg spinaq dhe presh (gjysma presh)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "3 kokrra vezë",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-170290",
+          "as_in_source": "2 gota miell misri (2 x 117 g)",
+          "grams": 234
+        },
+        {
+          "catalog_id": "usda-fdc-2259793",
+          "as_in_source": "1 gotë kos (245 g)",
+          "grams": 245
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "100 gr djathë të bardhë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "1 fk vaj ulliri (vlerësim 60 g)",
+          "grams": 60
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lgj gjalpë",
+          "grams": 14
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1 gotë ujë",
+          "grams": 240
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1 gotë shëllirë djathi (llogaritur si ujë)",
+          "grams": 240
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 285
+      },
+      "estimates": [
+        "Spinaq dhe presh: 1 kg ndahet 500 g + 500 g",
+        "Vaj ulliri: \"1 fk\" lexuar si filxhan kafeje, 60 g",
+        "Shëllira e djathit: 240 g, llogaritur si ujë",
+        "Gota = 117 g miell misri, 245 g kos, 240 g ujë",
+        "Porcioni: pispili ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (MC), 3.1.2024; receta e zonjës Albana",
+        "title": "Pispili me spinaq dhe presh nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/pispili-me-spinaq-dhe-presh-nga-zonja-albana",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "petulla",
+      "name": {
+        "sq": "Petulla me qumësht",
+        "en": "Milk petulla"
+      },
+      "note": {
+        "sq": "Brumë me maja, qumësht dhe gjalpë, i skuqur në vaj dhe i përzier me sheqer e kanellë.",
+        "en": "Yeast dough with milk and butter, deep-fried and coated in cinnamon sugar."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "600 g miell gruri",
+          "grams": 600
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "250 ml qumësht",
+          "grams": 258
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "80 g gjalpë",
+          "grams": 80
+        },
+        {
+          "catalog_id": "usda-fdc-169655",
+          "as_in_source": "1 pako me sheqer vanilje (vlerësim 8 g)",
+          "grams": 8
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "2 vezë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-175043",
+          "as_in_source": "1 pako maja ose 7 g",
+          "grams": 7
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "vaj i thithur gjatë skuqjes (vlerësim)",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-169655",
+          "as_in_source": "sheqer për spërkatje (vlerësim)",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-171320",
+          "as_in_source": "kanellë për spërkatje (vlerësim)",
+          "grams": 2
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 petull",
+          "en": "1 fritter"
+        },
+        "grams": 49
+      },
+      "estimates": [
+        "Vaj i thithur nga skuqja: 110 g, burimi nuk jep sasi",
+        "Sheqer për spërkatje: 50 g dhe kanellë 2 g, burimi nuk jep sasi",
+        "Sheqer vanilje: 1 pako = 8 g",
+        "Porcioni: rreth 25 petulla nga brumi, 1 petull = 1/25 e shumës (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (redaksia), 22.9.2026; receta e zonjës Mirela Andoni",
+        "title": "Petulla me qumësht si pambuk që nuk thithin asnjë pikë vaj nga zonja Mirela",
+        "url": "https://shqiptarja.com/lajm/petulla-me-qumesht-si-pambuk-qe-nuk-thithin-asnje-pike-vaj-nga-zonja-mirela",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "kacamak",
+      "name": {
+        "sq": "Kaçamak",
+        "en": "Kaçamak"
+      },
+      "note": {
+        "sq": "Kaçamak tradicional me miell misri i zier në ujë dhe i shërbyer me gjalpë të skuqur.",
+        "en": "Traditional cornmeal kaçamak boiled in water and served with browned butter."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170290",
+          "as_in_source": "500 gr miell misri",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "Gjalpë i freskët (vlerësim)",
+          "grams": 40
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1 litër ujë",
+          "grams": 1000
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 257
+      },
+      "estimates": [
+        "Gjalpë: 40 g, burimi thotë \"gjalpë i freskët\" pa sasi",
+        "Uji: 1 litër sipas burimit",
+        "Porcioni: 6 pjata nga kjo sasi (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (MC), 31.1.2024; receta e zonjës Albana",
+        "title": "Kaçamak tradicional, receta e vjetër autentike e stërgjysheve tona",
+        "url": "https://shqiptarja.com/lajm/kacamak-tradicional-receta-e-vjeter-autentike-e-stergjysheve-tona-nga-zonja-albana",
+        "checked": "2026-11-16"
+      }
+    },
+    {
+      "id": "pastice",
+      "name": {
+        "sq": "Pastiçe me beshamel",
+        "en": "Pastiçe with béchamel"
+      },
+      "note": {
+        "sq": "Makarona spageti të pjekura me vezë, qumësht e djathë të bardhë, me beshamel dhe kaçkavall sipër.",
+        "en": "Baked spaghetti with eggs, milk and white cheese, topped with béchamel and kaçkavall."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-169736",
+          "as_in_source": "1 pako makarona spageti (vlerësim 500 g)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "400 ml qumësht",
+          "grams": 412
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "3-4 vezë (mesatarja 3,5 x 50 g)",
+          "grams": 175
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "150 gr djathë të bardhë",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "2 lgj gjalpë",
+          "grams": 28
+        },
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "2 lgj miell",
+          "grams": 16
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "350 ml qumësht (beshameli)",
+          "grams": 360
+        },
+        {
+          "catalog_id": "usda-fdc-2647440",
+          "as_in_source": "200 gr djathë kaçkavall",
+          "grams": 200
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë i thithur nga makaronat gjatë zierjes (vlerësim)",
+          "grams": 300
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 268
+      },
+      "estimates": [
+        "Spageti: \"1 pako\" = 500 g, burimi nuk jep peshën",
+        "Uji i thithur nga makaronat: 300 g, vlerësim",
+        "Vezë: 3-4, marrë 3,5 = 175 g",
+        "Kaçkavalli: rreshti provolone",
+        "Porcioni: pastiça ndahet në 8 copa (supozim)"
+      ],
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (MC), 3.2.2022; receta e zonjës Albana",
+        "title": "Gatime nga zonja Albana, Pastiçe me beshamel",
+        "url": "https://shqiptarja.com/lajm/gatime-nga-zonja-albana-pastice-me-beshamel",
+        "checked": "2026-11-16"
+      }
+    }
+  ]
+}

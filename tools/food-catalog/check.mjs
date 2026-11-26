@@ -13,6 +13,8 @@ export const SOURCE_LICENSES = {
   ciqual: 'etalab-2.0',
   cofid: 'OGL-3.0',
   livsmedelsverket: 'CC-BY-4.0',
+  // Pjatat shqiptare (V65): recetat e Vrullit, makrot nga përbërësit e Listës (tools/food-catalog/dishes.mjs).
+  vrull_recipe: 'Vrull-recipe',
 }
 
 export const KCAL_TOLERANCE = 0.15
@@ -71,7 +73,7 @@ export function checkCatalog(rows) {
       fail(row, 'name_en', 'emri anglisht mungon ose është mbi 200 shenja')
     if (row.name_sq != null && (typeof row.name_sq !== 'string' || row.name_sq.trim() === '' || row.name_sq.length > 200))
       fail(row, 'name_sq', 'emri shqip bosh ose mbi 200 shenja')
-    if (row.name_sq != null && row.name_sq_checked !== false) fail(row, 'name_sq_checked', 'emri shqip i ndërtimit duhet të jetë i pakontrolluar (false)')
+    if (row.source !== 'vrull_recipe' && row.name_sq != null && row.name_sq_checked !== false) fail(row, 'name_sq_checked', 'emri shqip i ndërtimit duhet të jetë i pakontrolluar (false)')
     if (row.common_rank != null && (!Number.isInteger(row.common_rank) || row.common_rank < 1)) fail(row, 'common_rank', `common_rank i pavlefshëm: ${row.common_rank}`)
     if (row.also_in != null && (!Array.isArray(row.also_in) || row.also_in.some((id) => typeof id !== 'string' || !ID_FORMAT.test(id))))
       fail(row, 'also_in', 'also_in duhet të jetë listë ID-sh')

@@ -1,0 +1,788 @@
+{
+  "group": "mish",
+  "dishes": [
+    {
+      "id": "tave-kosi",
+      "name": {
+        "sq": "Tavë kosi",
+        "en": "Baked lamb with yoghurt"
+      },
+      "note": {
+        "sq": "Mish qengji i pjekur me oriz, i mbuluar me kos shtëpie, vezë dhe miell (tavë Elbasani).",
+        "en": "Lamb baked with rice under a homemade yoghurt, egg and flour topping (Elbasan style)."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-172496",
+          "as_in_source": "1 kg mish qengji i freskët (me kocka, zbritur 17%)",
+          "grams": 830
+        },
+        {
+          "catalog_id": "usda-fdc-2259793",
+          "as_in_source": "1 kg kos shtëpie",
+          "grams": 1000
+        },
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "2 lugë miell",
+          "grams": 15.6
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "3 kokrra vezë (medium, 44 g)",
+          "grams": 132
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "pak gjalpë (vlerësim: 1 lugë gjelle)",
+          "grams": 14.2
+        },
+        {
+          "catalog_id": "usda-fdc-2512381",
+          "as_in_source": "2 lugë oriz",
+          "grams": 24.4
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1 gotë ujë (200 g)",
+          "grams": 200
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 554
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Alfapress.al, Receta Alfa, 27.3.2023",
+        "title": "Tavë kosi me mish qengji (Tavë Elbasani)",
+        "url": "https://alfapress.al/receta-alfa/tave-kosi-me-mish-qengji-tave-elbasani-i56315",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Burimi nuk thotë nëse 1 kg mish qengji ka kocka: marrë me kocka, 17% e zbritur",
+        "Vezët medium, 44 g secila",
+        "Gjalpi \"pak\": vlerësim 1 lugë gjelle (14 g)",
+        "Orizi: 2 lugë = 24 g (12,2 g për lugë)",
+        "Uji: 1 gotë = 200 g, siç thotë burimi; mbetet vlerësim sa mbetet pas pjekjes",
+        "Kosi shtëpie marrë si kos i plotë natyral"
+      ]
+    },
+    {
+      "id": "tave-dheu",
+      "name": {
+        "sq": "Tavë dheu",
+        "en": "Clay-pot beef with cottage cheese"
+      },
+      "note": {
+        "sq": "Mish viçi i zier me qepë, spec dhe domate, i përzier me gjizë dhe i pjekur në tavë dheu.",
+        "en": "Stewed beef with onion, pepper and tomato, mixed with cottage cheese and baked in a clay dish."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170810",
+          "as_in_source": "400 gr mish viçi (tul); marrë si gjedh",
+          "grams": 400
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "3 thelpinj hudhra",
+          "grams": 9
+        },
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "1 spec",
+          "grams": 119
+        },
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "1 lugë gjelle miell",
+          "grams": 8
+        },
+        {
+          "catalog_id": "usda-fdc-2685580",
+          "as_in_source": "½ lugë salcë (pastë domateje)",
+          "grams": 8
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "2-3 domate (të pjekura)",
+          "grams": 308
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1/2 gotë ujë i nxehtë",
+          "grams": 120
+        },
+        {
+          "catalog_id": "usda-fdc-2346384",
+          "as_in_source": "200 gr gjizë",
+          "grams": 200
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "Vaj ulliri (pa sasi; vlerësim)",
+          "grams": 20
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lugë çaji gjalp",
+          "grams": 4.7
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 327
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), 8.1.2020",
+        "title": "Të gatuajmë me zonjën Vjollca: Pastiçe me patëllxhanë dhe proshutë dhe tavë dheu",
+        "url": "https://shqiptarja.com/lajm/te-gatuajme-me-zonjen-vjollca-pastice-me-patellxhane-e-proshute-dhe-tave-dheu",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Mishi i viçit marrë si mish gjedhi për zierje",
+        "Vaji i ullirit pa sasi në burim: vlerësim 20 g",
+        "Pasta e domates ½ lugë: vlerësim 8 g",
+        "Domatet: 123 g secila, spec 119 g, qepë 110 g",
+        "Numri i porcioneve (4) është supozim"
+      ]
+    },
+    {
+      "id": "fergese",
+      "name": {
+        "sq": "Fërgesë me mish viçi",
+        "en": "Beef and cottage cheese fërgesë"
+      },
+      "note": {
+        "sq": "Mish viçi i zier me qepë dhe hudhër, i përzier me gjizë dhe i pjekur shkurt në tavë dheu.",
+        "en": "Stewed beef with onion and garlic, mixed with cottage cheese and baked briefly in a clay dish."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170810",
+          "as_in_source": "500 gr mish viçi; marrë si gjedh",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "3 thelpi hudhër",
+          "grams": 9
+        },
+        {
+          "catalog_id": "usda-fdc-2685580",
+          "as_in_source": "1 lugë çaji salcë (pastë domateje)",
+          "grams": 5
+        },
+        {
+          "catalog_id": "usda-fdc-170290",
+          "as_in_source": "2 lugë gjelle miell misri (vetëm te metoda)",
+          "grams": 14.6
+        },
+        {
+          "catalog_id": "usda-fdc-2346384",
+          "as_in_source": "300 gr gjizë",
+          "grams": 300
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj: 1 lugë gjelle për mishin dhe 1 për qepën (dy herë, sipas metodës)",
+          "grams": 27
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lugë gjelle gjalp",
+          "grams": 14.2
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "2 lugë gjelle majdanoz të grirë hollë",
+          "grams": 7.6
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë i ngrohtë sa të mbulojë mishin; zihet 40-45 minuta (vlerësim)",
+          "grams": 200
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 297
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), 29.1.2021",
+        "title": "Fërgesë me mish viçi nga zonja Vjollca",
+        "url": "https://shqiptarja.com/lajm/fergese-me-mish-vici-nga-zonja-vjollca",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Mishi i viçit marrë si mish gjedhi për zierje",
+        "Vaji: dy lugë gjelle (27 g), një për mishin dhe një për qepën",
+        "Uji: sa të mbulojë mishin, 200 g mbeten në gjellë",
+        "Mielli i misrit është vetëm te metoda, jo te lista",
+        "Numri i porcioneve (4) është supozim",
+        "Burimi nuk e quan \"e Tiranës\""
+      ]
+    },
+    {
+      "id": "qofte-te-ferguara",
+      "name": {
+        "sq": "Qofte të fërguara",
+        "en": "Fried meatballs"
+      },
+      "note": {
+        "sq": "Qofte me mish të grirë, bukë, vezë, qepë dhe patate, të skuqura në vaj të nxehtë.",
+        "en": "Minced-meat meatballs with bread, egg, onion and potato, fried in hot oil."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2514743",
+          "as_in_source": "500 g mish i grirë (marrë viç/gjedh 90/10, supozim)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-170026",
+          "as_in_source": "1 patate",
+          "grams": 213
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "1 tufë erëza të freskëta (majdanoz dhe nenexhik; vlerësim)",
+          "grams": 30
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "1 vezë",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-325871",
+          "as_in_source": "100 g bukë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "vaj për tiganisje, vetëm sa thithet (vlerësim)",
+          "grams": 30
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 258
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), receta e Mirela Andonit, 2.10.2026",
+        "title": "Qofte shtëpie nga zonja Mirela",
+        "url": "https://shqiptarja.com/lajm/qofte-shtepie-nga-zonja-mirela",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Mishi i grirë: gjedh 90% pa yndyrë, supozim",
+        "Vaji që thithet gjatë tiganisjes: 30 g, burimi nuk jep sasi",
+        "Tufa e erëzave: 30 g majdanoz",
+        "Numri i porcioneve (4) është supozim"
+      ]
+    },
+    {
+      "id": "qofte-te-pjekura",
+      "name": {
+        "sq": "Qofte të pjekura",
+        "en": "Baked meatballs"
+      },
+      "note": {
+        "sq": "Qofte me mish të grirë, galetë, vezë dhe qepë, të pjekura në furrë.",
+        "en": "Minced-meat meatballs with dry breadcrumbs, egg and onion, baked in the oven."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2514743",
+          "as_in_source": "300 gr mish i grirë (marrë viç/gjedh 90/10, supozim)",
+          "grams": 300
+        },
+        {
+          "catalog_id": "usda-fdc-171287",
+          "as_in_source": "1 kokërr vezë",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "¼ tufë majdanoz i grirë (vlerësim)",
+          "grams": 8
+        },
+        {
+          "catalog_id": "usda-fdc-174928",
+          "as_in_source": "5 lugë gjelle galetë (bukë e thatë)",
+          "grams": 33.8
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë e grirë imët",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "2 thelpinj hudhër",
+          "grams": 6
+        },
+        {
+          "catalog_id": "usda-fdc-2685580",
+          "as_in_source": "1 lç salcë speci ose salcë domate (vlerësim: 1 lugë çaji)",
+          "grams": 5
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë i gazuar: 200 ml te përbërësit, 50-80 ml te metoda (marrë 80)",
+          "grams": 80
+        },
+        {
+          "catalog_id": "usda-fdc-171025",
+          "as_in_source": "vaj për pikim mbi qofte (vlerësim)",
+          "grams": 5
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 199
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), receta e zonjës Albana, 23.2.2026",
+        "title": "Qofte shtëpie në furrë nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/qofte-shtepie-ne-furre-nga-zonja-albana",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Mishi i grirë: gjedh 90% pa yndyrë, supozim",
+        "Uji i gazuar: 80 g sipas metodës (lista thotë 200 ml, metoda 50-80 ml)",
+        "\"1 lç\" salcë lexuar si 1 lugë çaji pastë (5 g)",
+        "Vaji për lyerje 5 g",
+        "Numri i porcioneve (3) është supozim"
+      ]
+    },
+    {
+      "id": "speca-te-mbushura",
+      "name": {
+        "sq": "Speca të mbushura",
+        "en": "Stuffed peppers"
+      },
+      "note": {
+        "sq": "Speca të mbushur me mish të grirë, oriz, karotë dhe domate, të pjekur në furrë pa shtuar ujë.",
+        "en": "Peppers stuffed with minced meat, rice, carrot and tomato, baked without added water."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "1 kg speca (7 copë; pjesa e ngrënshme 81%)",
+          "grams": 813
+        },
+        {
+          "catalog_id": "usda-fdc-2514743",
+          "as_in_source": "500 gr mish të grirë (marrë viç/gjedh 90/10, supozim)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "2-3 domate",
+          "grams": 308
+        },
+        {
+          "catalog_id": "usda-fdc-2512381",
+          "as_in_source": "1 lugë supe oriz për çdo spec (7 lugë)",
+          "grams": 85
+        },
+        {
+          "catalog_id": "usda-fdc-170393",
+          "as_in_source": "2 karrota",
+          "grams": 122
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri: skuqje, lyerje e tavës, spërkatje (vlerësim)",
+          "grams": 60
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 spec i mbushur",
+          "en": "1 stuffed pepper"
+        },
+        "grams": 301
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), 26.5.2020",
+        "title": "Speca të mbushur me mish të grirë dhe oriz nga zonja Vjollca",
+        "url": "https://shqiptarja.com/lajm/speca-te-mbushur-me-mish-te-grire-dhe-oriz-nga-zonja-vjollca",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Numri i specave: 1 kg ≈ 7 copë (6-8)",
+        "Orizi: 1 lugë për spec, 7 lugë = 85 g",
+        "Zbritja për kërcellin dhe farat: 19%, nga rreshti i listës (1 spec i madh 164 g pa mbetje nga 201 g me mbetje)",
+        "Vaji: 60 g (skuqje, lyerje, spërkatje), vlerësim",
+        "Mishi i grirë: gjedh 90% pa yndyrë, supozim",
+        "Domate 123 g, qepë 110 g, karotë 61 g secila"
+      ]
+    },
+    {
+      "id": "musaka",
+      "name": {
+        "sq": "Musaka me patëllxhanë",
+        "en": "Aubergine moussaka"
+      },
+      "note": {
+        "sq": "Patëllxhanë të skuqur ose të pjekur në skarë me mish të grirë në salcë domate, të mbuluar me beshamel.",
+        "en": "Fried or grilled aubergine layered with minced meat in tomato sauce, topped with béchamel."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2685577",
+          "as_in_source": "1.2 kg patëllxhanë (zbritur 10% për kapakun)",
+          "grams": 1080
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "3 qepë mesatare",
+          "grams": 330
+        },
+        {
+          "catalog_id": "usda-fdc-2514743",
+          "as_in_source": "500 gr mish të grirë (marrë viç/gjedh 90/10, supozim)",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "4 kokrra domate mesatare",
+          "grams": 492
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "5 thelpinj hudhër",
+          "grams": 15
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "pak vaj ulliri; patëllxhanët e skuqur thithin rreth 100 g (burimi lejon edhe skarën)",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "150 ml ujë te salca e mishit",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "50 gr gjalp",
+          "grams": 50
+        },
+        {
+          "catalog_id": "usda-fdc-168894",
+          "as_in_source": "2 lugë gjelle miell",
+          "grams": 16
+        },
+        {
+          "catalog_id": "usda-fdc-171265",
+          "as_in_source": "400 ml qumësht",
+          "grams": 412
+        },
+        {
+          "catalog_id": "usda-fdc-172184",
+          "as_in_source": "1 të verdhë veze",
+          "grams": 17
+        },
+        {
+          "catalog_id": "usda-fdc-171247",
+          "as_in_source": "1 lugë gjelle parmixhan",
+          "grams": 5
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 copë",
+          "en": "1 piece"
+        },
+        "grams": 396
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), 17.6.2020",
+        "title": "Musaka me patëllxhan dhe mish nga zonja Vjollca",
+        "url": "https://shqiptarja.com/lajm/musaka-me-patellxhan-dhe-mish-nga-zonja-vjollca",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Patëllxhanët e skuqur: 100 g vaj i thithur (burimi lejon edhe skarën; marrë skuqja)",
+        "Zbritja 10% e patëllxhanit për kapakun",
+        "Mishi i grirë: gjedh 90% pa yndyrë, supozim",
+        "Uji 150 ml te salca sipas burimit",
+        "Numri i porcioneve (8) është supozim"
+      ]
+    },
+    {
+      "id": "pule-me-oriz",
+      "name": {
+        "sq": "Pulë me oriz",
+        "en": "Chicken with rice"
+      },
+      "note": {
+        "sq": "Copa pule të skuqura shkurt dhe të pjekura në furrë mbi oriz me qepë.",
+        "en": "Chicken pieces lightly browned and baked on a bed of rice with onion."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-171447",
+          "as_in_source": "1 pulë mesatare (pjesa e ngrënshme: 2 × 460 g pa kocka)",
+          "grams": 920
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri: 2 lugë gjelle për pulën dhe 1 lugë për qepën",
+          "grams": 40.5
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lugë gjelle gjalp (për qepën)",
+          "grams": 14.2
+        },
+        {
+          "catalog_id": "usda-fdc-2512381",
+          "as_in_source": "2 gota oriz (1 gotë = 200 ml, vlerësim)",
+          "grams": 330
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "6 gota lëng pule ose ujë; rreth 700 g mbeten në gjellë (vlerësim)",
+          "grams": 700
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 442
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), 22.5.2020",
+        "title": "Tavë me pulë, qepë dhe oriz nga zonja Vjollca",
+        "url": "https://shqiptarja.com/lajm/tave-me-pule-qepe-dhe-oriz-nga-zonja-vjollca",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Pesha e pulës nuk jepet: 1 pulë mesatare, 920 g pa kocka sipas rreshtit të listës",
+        "1 gotë = 200 ml, supozim (2 gota oriz = 330 g)",
+        "Vaji: 3 lugë gjelle (2 për pulën, 1 për qepën)",
+        "Uji/lëngu: 6 gota, rreth 700 g mbeten në gjellë, vlerësim",
+        "Numri i porcioneve (5) është supozim"
+      ]
+    },
+    {
+      "id": "qengj-me-patate",
+      "name": {
+        "sq": "Mish qengji në furrë me patate",
+        "en": "Roast lamb with potatoes"
+      },
+      "note": {
+        "sq": "Shpatull ose kofshë qengji e pjekur ngadalë me hudhër, limon dhe qepë, me patate në tavë.",
+        "en": "Lamb shoulder or leg slow-roasted with garlic, lemon and onion, with potatoes in the tray."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-172496",
+          "as_in_source": "2 – 2.5 kg mish qengji (shpatull ose kofshë); zbritur 17% për kockat",
+          "grams": 1868
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "5 – 6 thelpinj hudhre",
+          "grams": 17
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "3 lugë vaj ulliri",
+          "grams": 40.5
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lugë gjelle gjalpë",
+          "grams": 14.2
+        },
+        {
+          "catalog_id": "usda-fdc-167747",
+          "as_in_source": "lëngu i 1 limoni",
+          "grams": 48
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "200 ml verë e bardhë ose ujë (marrë ujë)",
+          "grams": 200
+        },
+        {
+          "catalog_id": "usda-fdc-170026",
+          "as_in_source": "1 kg patate",
+          "grams": 1000
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë të mëdha (vlerësim 150 g)",
+          "grams": 300
+        }
+      ],
+      "cooked_weight_g": 2400,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 300
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Telegrafi, pa autor",
+        "title": "Qengj i pjekur ngadalë në furrë me hudhër dhe rozmarinë: Receta që mban aromë feste",
+        "url": "https://telegrafi.com/qengj-i-pjekur-ngadale-ne-furre-me-hudher-dhe-rozmarine-receta-qe-mban-arome-feste/",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Burimi nuk thotë nëse mishi ka kocka: marrë me kocka, 17% e zbritur (nga rreshti i listës)",
+        "Pas 3 orësh pjekje pesha e gatshme vlerësohet 2400 g (mishi rreth 65%, patatet rreth 85%, ujë i avulluar)",
+        "Marrë ujë, jo verë, 200 g",
+        "Qepë të mëdha 150 g secila; trumza dhe rozmarina jashtë",
+        "Numri i porcioneve (8) është supozim"
+      ]
+    },
+    {
+      "id": "japrak",
+      "name": {
+        "sq": "Japrak me gjethe hardhie",
+        "en": "Vine-leaf rolls"
+      },
+      "note": {
+        "sq": "Gjethe hardhie të mbushura me oriz, qepë të njoma dhe barishte, të zjera ngadalë në vaj ulliri dhe ujë; pa mish.",
+        "en": "Vine leaves stuffed with rice, spring onions and herbs, simmered slowly in olive oil and water; meat-free."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-168575",
+          "as_in_source": "gjethe rrushi (pa sasi; vlerësim 45 gjethe)",
+          "grams": 135
+        },
+        {
+          "catalog_id": "usda-fdc-170005",
+          "as_in_source": "1 kg qepë të njoma",
+          "grams": 1000
+        },
+        {
+          "catalog_id": "usda-fdc-2512381",
+          "as_in_source": "100 gr oriz",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "250 ml ujë",
+          "grams": 250
+        },
+        {
+          "catalog_id": "usda-fdc-172233",
+          "as_in_source": "100 gr kopër",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-173475",
+          "as_in_source": "150 gr nenexhik",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-169949",
+          "as_in_source": "100 gr kumbulla shahine (jeshile)",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-168462",
+          "as_in_source": "300 gr jeshillëqe (marrë spinaq)",
+          "grams": 300
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri (pa sasi; vlerësim 80 g)",
+          "grams": 80
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "6 japrak",
+          "en": "6 rolls"
+        },
+        "grams": 295
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com (Redaksia), zonja Albana, 13.5.2022",
+        "title": "Japrak me gjethe rrushi nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/japrak-me-gjethe-rrushi-nga-zonja-albana",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Gjethet e rrushit pa sasi në burim: vlerësim 45 gjethe, 3 g secila",
+        "Vaji i ullirit pa sasi: vlerësim 80 g",
+        "\"Jeshillëqe\" marrë si spinaq",
+        "Rreth 45 japrak, 6 për porcion, vlerësim",
+        "Burimi nuk jep mish: japrak pa mish",
+        "Uji 250 ml për zierjen e orizit: burimi nuk thotë nëse kullohet; numërohet si i mbetur në gjellë (pa të, rreth 89 kcal/100 g)."
+      ]
+    }
+  ]
+}

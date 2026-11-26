@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "total": 21268,
+  "total": 21298,
   "common": {
-    "count": 913,
-    "bytes": 168133,
-    "gzipBytes": 55480
+    "count": 943,
+    "bytes": 208302,
+    "gzipBytes": 66382
   },
   "rest": {
     "count": 20355,
-    "bytes": 2298258,
-    "gzipBytes": 522083
+    "bytes": 2298339,
+    "gzipBytes": 522112
   },
   "bySource": {
     "usda_foundation": 345,
@@ -17,7 +17,8 @@
     "usda_fndds": 5169,
     "ciqual": 3049,
     "cofid": 2611,
-    "livsmedelsverket": 2409
+    "livsmedelsverket": 2409,
+    "vrull_recipe": 30
   },
   "sourceVersions": {
     "usda_foundation": "2026-04-30",

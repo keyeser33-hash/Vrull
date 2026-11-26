@@ -48,6 +48,7 @@ describe('dekodimi i skedarit të app-it', () => {
       portions: [{ label: '1 large', grams: 50 }],
       alsoIn: ['ciqual-22000'],
       commonRank: 3,
+      dish: null,
     })
   })
 
@@ -64,6 +65,30 @@ describe('dekodimi i skedarit të app-it', () => {
   it('një skedar me fusha në radhë tjetër nuk dekodohet në heshtje', () => {
     const wrong = { ...(built.common as CatalogFile), fields: [...(built.common as CatalogFile).fields].reverse() }
     expect(() => decodeFile(wrong)).toThrow(/Fushat/)
+  })
+
+  it('koka e ruajtur nga një version më i vjetër (pa fushën `dish`) dekodohet; fushat e tepërta ose në radhë tjetër jo', () => {
+    const { rows: tuples, ...header } = built.common as CatalogFile
+    const old = { ...header, fields: header.fields.slice(0, -1) }
+    expect(decodeRows(old, tuples)).toEqual(decodeFile(built.common as CatalogFile))
+    expect(() => decodeRows({ ...header, fields: [...header.fields, 'tjeter'] }, tuples)).toThrow(/Fushat/)
+    expect(() => decodeRows({ ...header, fields: [] }, tuples)).toThrow(/Fushat/)
+  })
+
+  it('pjata shqiptare: fusha `dish` bëhet recetë me përbërës {text, grams, id}, burim, vlerësim dhe porcion në dy gjuhë', () => {
+    const dish = {
+      ingredients: [['500 gr miell', 500, 'usda-fdc-168894'], ['1 vezë', 50, 'usda-fdc-171287']],
+      source: { label: 'Shqiptarja.com', title: 'Byrek me spinaq', url: 'https://shqiptarja.com/x' },
+      estimates: ['Vaj për tiganin: 30 g'],
+      estimate: true,
+      readers: false,
+      note: { sq: 'Byrek në tigan.', en: 'Pan byrek.' },
+      portion: { sq: '1 copë', en: '1 piece' },
+    }
+    const built2 = buildAppFiles([{ ...base, id: 'vrull-dish-byrek', source: 'vrull_recipe', source_id: 'byrek', license: 'Vrull-recipe', name_en: 'Spinach byrek', name_sq: 'Byrek me spinaq', name_sq_checked: true, common_rank: 1, dish }])
+    const [byrek] = decodeFile(built2.common as CatalogFile)
+    expect(byrek).toMatchObject({ id: 'vrull-dish-byrek', source: 'vrull_recipe', nameSq: 'Byrek me spinaq', nameSqChecked: true })
+    expect(byrek.dish).toEqual({ ...dish, ingredients: [{ text: '500 gr miell', grams: 500, id: 'usda-fdc-168894' }, { text: '1 vezë', grams: 50, id: 'usda-fdc-171287' }] })
   })
 
   it('rreshtat e ruajtur (pa kokë të rreshtave) dekodohen me kokën e ruajtur', () => {

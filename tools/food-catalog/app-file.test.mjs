@@ -28,7 +28,8 @@ describe('skedari i app-it', () => {
     expect(encodeRow(row({ portions: [], fiber_g: undefined }), groups)).toEqual(['171287', 'Egg, whole, raw, fresh', SOURCES.indexOf('usda_sr_legacy'), 0, 143, 12.6, 0.7, 9.5])
     expect(groups).toEqual(['Dairy and Egg Products'])
     const full = encodeRow(common(), groups)
-    expect(full).toHaveLength(FIELDS.length)
+    // Fusha e fundit (`dish`, vetëm pjatat shqiptare) është null te çdo ushqim tjetër dhe shkurtohet.
+    expect(full).toHaveLength(FIELDS.length - 1)
     expect(full.slice(9)).toEqual([[['1 large', 50]], 'Vezë', 0, ['ciqual-22000'], 3])
   })
 

@@ -5,12 +5,14 @@
 //   foods-meta.json    versioni, numrat dhe madhësitë (faqja "Burimet", raporti).
 // Dekoduesi te telefoni: `src/catalog/decode.ts`; testi i rrethit (kodim → dekodim) është te `src/catalog/decode.test.ts`.
 //
-// Përdorimi: node tools/food-catalog/app-file.mjs <catalog.jsonl> <dosja e daljes>   (p.sh. src/catalog/data)
+// Përdorimi: node tools/food-catalog/app-file.mjs <catalog.jsonl> <dosja e daljes> [--dishes <dosja>] [--no-dishes]   (p.sh. src/catalog/data)
+// Pjatat shqiptare (V65) vijnë nga `tools/food-catalog/dishes/` dhe hyjnë te të zakonshmet (`dishes.mjs`).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 import { SOURCE_LICENSES } from './check.mjs'
+import { DISH_ID_PREFIX, dishLookup, dishRows, loadDishFiles, validateDishes } from './dishes.mjs'
 
 /** Radha e fushave të çdo rreshti; të rrallat (vetëm të zakonshmet) në fund, që rreshtat pa to ta shkurtojnë bishtin. */
 export const FIELDS = [
@@ -28,6 +30,8 @@ export const FIELDS = [
   'name_sq_checked',
   'also_in',
   'common_rank',
+  // Pjatat shqiptare (V65): receta, burimi dhe shenjat; null (bishti shkurtohet) për çdo rresht tjetër.
+  'dish',
 ]
 
 /** Parashtesa e ID-së sipas burimit (ID e rreshtit = parashtesa + source_id, e kontrolluar gjatë kodimit). */
@@ -38,6 +42,7 @@ export const ID_PREFIX = {
   ciqual: 'ciqual-',
   cofid: 'cofid-',
   livsmedelsverket: 'livsmedelsverket-',
+  vrull_recipe: DISH_ID_PREFIX,
 }
 
 /** Burimet sipas radhës së preferencës (SPEC §0.3h); indeksi i tyre vendoset te rreshti. */
@@ -68,6 +73,7 @@ export function encodeRow(row, groups) {
     row.name_sq === undefined ? null : row.name_sq_checked ? 1 : 0,
     row.also_in ?? null,
     row.common_rank ?? null,
+    row.dish ?? null,
   ]
   // Bishti bosh (null ose []) shkurtohet; dekoduesi e plotëson.
   let end = values.length
@@ -128,16 +134,38 @@ export function writeAppFiles(rows, outDir, summaryPath) {
   return meta
 }
 
+/** Dosja e pjatave shqiptare (V65) pranë këtij skedari. */
+export const DEFAULT_DISHES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'dishes')
+
+/**
+ * Rreshtat e Listës plus pjatat shqiptare nga `dir` (V65): makrot nga përbërësit e rreshtave, `common_rank` pas më të zakonshmit, versioni
+ * i listës i njëjti. Pjatat e rreshtave të mëparshëm hiqen, që një ndërtim i dytë mbi të njëjtin skedar të mos i dyfishojë.
+ */
+export function withDishes(rows, dir = DEFAULT_DISHES_DIR) {
+  const base = rows.filter((row) => row.source !== 'vrull_recipe')
+  const lookup = dishLookup(base)
+  const dishes = loadDishFiles(dir)
+  const errors = validateDishes(dishes, lookup)
+  if (errors.length) throw new Error(`Pjatat nuk kalojnë kontrollin:\n${errors.join('\n')}`)
+  const firstRank = Math.max(0, ...base.map((row) => row.common_rank ?? 0)) + 1
+  return [...base, ...dishRows(dishes, lookup, { listVersion: base[0].list_version, firstRank })]
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const [input, outDir] = process.argv.slice(2)
+  const args = process.argv.slice(2)
+  const flag = args.indexOf('--dishes')
+  const dishesDir = flag >= 0 ? args.splice(flag, 2)[1] : DEFAULT_DISHES_DIR
+  const noDishes = args.includes('--no-dishes')
+  const [input, outDir] = args.filter((arg) => arg !== '--no-dishes')
   if (!input || !outDir) {
-    console.error('Përdorimi: node tools/food-catalog/app-file.mjs <catalog.jsonl> <dosja e daljes>')
+    console.error('Përdorimi: node tools/food-catalog/app-file.mjs <catalog.jsonl> <dosja e daljes> [--dishes <dosja>] [--no-dishes]')
     process.exit(2)
   }
-  const rows = readFileSync(input, 'utf8').trim().split('\n').map((line) => JSON.parse(line))
+  const parsed = readFileSync(input, 'utf8').trim().split('\n').map((line) => JSON.parse(line))
+  const rows = noDishes ? parsed : withDishes(parsed, dishesDir)
   const meta = writeAppFiles(rows, outDir, join(dirname(input), 'summary.json'))
   const kb = (bytes) => `${(bytes / 1024).toFixed(0)} kB`
-  console.log(`Versioni ${meta.version}, ${meta.total} rreshta`)
+  console.log(`Versioni ${meta.version}, ${meta.total} rreshta${noDishes ? '' : ` (me ${meta.bySource.vrull_recipe} pjata shqiptare)`}`)
   console.log(`  të zakonshmet: ${meta.common.count} rreshta, ${kb(meta.common.bytes)} (gzip ${kb(meta.common.gzipBytes)})`)
   console.log(`  pjesa tjetër:  ${meta.rest.count} rreshta, ${kb(meta.rest.bytes)} (gzip ${kb(meta.rest.gzipBytes)})`)
 }

@@ -1,0 +1,752 @@
+{
+  "group": "perime",
+  "dishes": [
+    {
+      "id": "fasule",
+      "name": {
+        "sq": "Gjellë me fasule",
+        "en": "White bean stew"
+      },
+      "note": {
+        "sq": "Fasule të bardha të thata të zjera me qepë, spec të kuq, gjalpë dhe vaj, me nenexhik e piper të kuq.",
+        "en": "Dried white beans simmered with onion, red pepper, butter and oil, seasoned with mint and paprika."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-175202",
+          "as_in_source": "500 g fasule të bardha",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë e thatë",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-170005",
+          "as_in_source": "2–3 qepë të njoma",
+          "grams": 40
+        },
+        {
+          "catalog_id": "usda-fdc-170108",
+          "as_in_source": "1 spec i kuq",
+          "grams": 119
+        },
+        {
+          "catalog_id": "usda-fdc-173430",
+          "as_in_source": "1 lugë gjalpë",
+          "grams": 14.2
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "4 lugë vaj",
+          "grams": 54
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë (pa sasi në burim; vl. 3 herë fasulja e thatë)",
+          "grams": 1500
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 470
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Balkanweb, Recetat e ditës, 29.06.2026",
+        "title": "Fasule verore",
+        "url": "https://www.balkanweb.com/makarona-ne-furre-fasule-verore-dhe-akullore-me-pjeper-dhe-pana-recetat-e-dites/",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Uji 1500 g: burimi nuk e jep; vlerësim, rreth 3 herë fasulja e thatë.",
+        "Vaji: burimi thotë vetëm 'vaj'; llogaritur si vaj ulliri.",
+        "Porcioni 470 g: burimi nuk jep numër porcionesh; vlerësim, 5 porcione."
+      ]
+    },
+    {
+      "id": "jani-me-bishtaja",
+      "name": {
+        "sq": "Jani me bishtaja",
+        "en": "Green bean stew"
+      },
+      "note": {
+        "sq": "Bishtaja të gjelbra të zjera me qepë, speca, domate dhe sallam.",
+        "en": "Green beans stewed with onion, peppers, tomatoes and salami."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2346400",
+          "as_in_source": "500 g bishtaja",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-172938",
+          "as_in_source": "150 g sallam ose proshutë",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë mesatare",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "3–4 speca të gjelbër e të kuq (gjelbër)",
+          "grams": 208
+        },
+        {
+          "catalog_id": "usda-fdc-170108",
+          "as_in_source": "3–4 speca të gjelbër e të kuq (kuq)",
+          "grams": 208
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "3–4 domate",
+          "grams": 430
+        },
+        {
+          "catalog_id": "usda-fdc-169655",
+          "as_in_source": "1 lugë çaji sheqer",
+          "grams": 4.2
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri (pa sasi në burim)",
+          "grams": 27
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë sa për të mbuluar (vlerësim)",
+          "grams": 400
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 350
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Alfapress, Receta Alfa, 12.07.2025 (Znj. Albana, ReportTV)",
+        "title": "Gjellë me bishtaja, speca e domate",
+        "url": "https://alfapress.al/english/receta-alfa/gjelle-me-bishtaja-speca-e-domate-i165638",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Uji 400 g: burimi thotë 'sa për të mbuluar'; vlerësim.",
+        "Vaji ulliri 27 g: burimi nuk jep sasi; vlerësim.",
+        "Speca (3–4) dhe domate (3–4): marrë mesatarja; porcioni 350 g: vlerësim, 5 porcione."
+      ]
+    },
+    {
+      "id": "imam-bajalldi",
+      "name": {
+        "sq": "Imam bajalldi",
+        "en": "Imam bayildi"
+      },
+      "note": {
+        "sq": "Patëllxhanë të skuqur lehtë dhe të pjekur, të mbushur me qepë të ngadalta, domate, hudhër dhe majdanoz.",
+        "en": "Lightly fried and baked aubergines stuffed with slow-cooked onion, tomato, garlic and parsley."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2685577",
+          "as_in_source": "4 patëllxhanë mesatarë",
+          "grams": 1100
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "4-5 qepë të mëdha",
+          "grams": 675
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "4 thelpinj hudhër",
+          "grams": 12
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "4 domate të pjekura",
+          "grams": 492
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "1 tufë majdanoz i freskët",
+          "grams": 30
+        },
+        {
+          "catalog_id": "usda-fdc-169655",
+          "as_in_source": "1 lugë çaji sheqer",
+          "grams": 4.2
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "Vaj ulliri (rreth ½ filxhan)",
+          "grams": 108
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "pak ujë në enë",
+          "grams": 100
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 patëllxhan i mbushur",
+          "en": "1 stuffed aubergine"
+        },
+        "grams": 630
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com, Redaksia (znj. Albana), 02.05.2025",
+        "title": "Imam bajalldi - Patëllxhanë të mbushur nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/imam-bajalldi-patellxhane-te-mbushur-nga-zonja-albana",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Patëllxhanët 1100 g: 4 mesatarë × 300 g, pa lëkurën e hequr pjesërisht; vlerësim.",
+        "Qepë 4,5 të mëdha x 150 g; ujë 100 g: burimi thotë 'pak ujë', vlerësim.",
+        "Porcioni 630 g: 1 patëllxhan i mbushur, burimi nuk jep numër porcionesh; vlerësim, 4 porcione.",
+        "Vaji \"rreth ½ filxhan\" = 108 g (filxhan 240 ml); me filxhan çaji 200 ml do ishin 91 g; vlerësim.",
+        "Domatet 123 g secila, hudhra 3 g për thelpi, majdanozi 30 g për tufë: vlerësime."
+      ]
+    },
+    {
+      "id": "turli",
+      "name": {
+        "sq": "Turli perimesh",
+        "en": "Mixed vegetable stew"
+      },
+      "note": {
+        "sq": "Perime të stinës të gatuara bashkë me pure domate dhe vaj ulliri.",
+        "en": "Seasonal vegetables cooked together with tomato purée and olive oil."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë mesatare",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "4-6 thelpinj hudhër",
+          "grams": 15
+        },
+        {
+          "catalog_id": "usda-fdc-170026",
+          "as_in_source": "2 patate mesatare",
+          "grams": 426
+        },
+        {
+          "catalog_id": "usda-fdc-2685573",
+          "as_in_source": "1 lulelakër",
+          "grams": 450
+        },
+        {
+          "catalog_id": "usda-fdc-168448",
+          "as_in_source": "1 kungull",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "2 speca",
+          "grams": 238
+        },
+        {
+          "catalog_id": "usda-fdc-2685577",
+          "as_in_source": "2 patëllxhanë",
+          "grams": 550
+        },
+        {
+          "catalog_id": "usda-fdc-170393",
+          "as_in_source": "1 karotë",
+          "grams": 61
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "2 domate",
+          "grams": 246
+        },
+        {
+          "catalog_id": "usda-fdc-170460",
+          "as_in_source": "½ filxhan pure domate",
+          "grams": 125
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "vaj ulliri (pa sasi në burim)",
+          "grams": 40
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "majdanoz (pa sasi në burim)",
+          "grams": 10
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "pure domate e holluar me ujë (vlerësim)",
+          "grams": 150
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 480
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Alfapress, Receta Alfa, 27.04.2024",
+        "title": "Turli me perime të stinës",
+        "url": "https://alfapress.al/english/receta-alfa/turli-me-perime-te-stines-i106343",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Vaji ulliri 40 g: burimi nuk jep sasi; vlerësim.",
+        "Uji 150 g: burimi thotë 'holle pureja me ujë'; vlerësim.",
+        "Lulelakër 450 g, kungull 500 g, patëllxhanë 550 g: burimi jep numër, jo peshë; vlerësim.",
+        "Porcioni 480 g: vlerësim, 6 porcione."
+      ]
+    },
+    {
+      "id": "bamje",
+      "name": {
+        "sq": "Bamje me mish qengji",
+        "en": "Lamb with okra"
+      },
+      "note": {
+        "sq": "Mish qengji i zier me bamje, qepë, domate dhe majdanoz.",
+        "en": "Lamb stewed with okra, onion, tomato and parsley."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-174464",
+          "as_in_source": "800 g mish qengji (me kocka)",
+          "grams": 600
+        },
+        {
+          "catalog_id": "usda-fdc-169260",
+          "as_in_source": "1 kg bamje",
+          "grams": 1000
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1–2 qepë mesatare",
+          "grams": 165
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "1–2 thelpinj hudhre",
+          "grams": 4.5
+        },
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "2–3 domate",
+          "grams": 307
+        },
+        {
+          "catalog_id": "ciqual-20268",
+          "as_in_source": "1 lugë çaji salcë domateje",
+          "grams": 5
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "1 tufë majdanoz",
+          "grams": 30
+        },
+        {
+          "catalog_id": "usda-fdc-171538",
+          "as_in_source": "1 filxhan çaji lëng mishi ose lëng perimesh",
+          "grams": 150
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë (pa sasi në burim; vl.)",
+          "grams": 200
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 380
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Balkanweb, Recetat e ditës (Zonja Katerina), 24.07.2026",
+        "title": "Mish qengji me bamje",
+        "url": "https://www.balkanweb.com/mish-qengji-me-bamje-buke-me-kungulleshka-e-kos-dhe-omelete-me-patate-recetat-e-dites/",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Qengji 600 g pjesë e ngrënshme nga 800 g me kocka: vlerësim (rreth 75%).",
+        "Lëngu 150 g: 'filxhan çaji' vlerësim; vaj nuk ka te burimi.",
+        "Porcioni 380 g: vlerësim, rreth 5 porcione."
+      ]
+    },
+    {
+      "id": "tarator",
+      "name": {
+        "sq": "Tarator me kos dhe kastravec",
+        "en": "Tarator (cucumber and yoghurt)"
+      },
+      "note": {
+        "sq": "Kos natyral i ftohtë me kastravec të grirë, hudhër, vaj ulliri, nenexhik ose kopër.",
+        "en": "Chilled natural yoghurt with grated cucumber, garlic, olive oil, and mint or dill."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-2259793",
+          "as_in_source": "500 ml kos natyral",
+          "grams": 515
+        },
+        {
+          "catalog_id": "usda-fdc-169225",
+          "as_in_source": "1 kastravec i madh",
+          "grams": 280
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "1-2 thelpinj hudhër",
+          "grams": 4.5
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "1 lugë gjelle vaj ulliri",
+          "grams": 13.5
+        },
+        {
+          "catalog_id": "usda-fdc-173475",
+          "as_in_source": "3-4 gjethe menteje ose pak kopër",
+          "grams": 1
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "100 ml ujë i ftohtë",
+          "grams": 100
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 tas",
+          "en": "1 bowl"
+        },
+        "grams": 300
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com, Redaksia (znj. Albana), 16.06.2025",
+        "title": "Tarator me kastravec dhe kos nga zonja Albana",
+        "url": "https://shqiptarja.com/lajm/tarator-me-kastravec-dhe-kos-nga-zonja-albana",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Kosi 515 g: 500 ml x 1,03; vlerësim i dendësisë.",
+        "Kastraveci i madh 280 g (i qëruar, i shtrydhur pak); hudhra 4,5 g (1,5 thelpi); nenexhiku 1 g: vlerësime.",
+        "Porcioni 300 g: burimi nuk jep numër porcionesh; vlerësim, 3 porcione."
+      ]
+    },
+    {
+      "id": "sallate-shqiptare",
+      "name": {
+        "sq": "Sallatë shqiptare me domate, kastravec, qepë, djathë dhe ullinj",
+        "en": "Albanian salad with tomato, cucumber, onion, cheese and olives"
+      },
+      "note": {
+        "sq": "Domate, kastravec, qepë dhe spec me djathë të bardhë, ullinj, vaj ulliri dhe uthull.",
+        "en": "Tomato, cucumber, onion and pepper with white cheese, olives, olive oil and vinegar."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-170457",
+          "as_in_source": "2 domate të pjekura",
+          "grams": 246
+        },
+        {
+          "catalog_id": "usda-fdc-2346406",
+          "as_in_source": "1 kastravec i madh",
+          "grams": 280
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "1 qepë e kuqe ose e bardhë",
+          "grams": 110
+        },
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "1 spec i gjelbër ose i kuq",
+          "grams": 119
+        },
+        {
+          "catalog_id": "usda-fdc-173420",
+          "as_in_source": "100 g djathë i bardhë",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-169094",
+          "as_in_source": "10–15 ullinj të zinj pa bërthamë",
+          "grams": 55
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "2 lugë vaj ulliri",
+          "grams": 27
+        },
+        {
+          "catalog_id": "usda-fdc-173469",
+          "as_in_source": "1 lugë uthull molle ose limoni",
+          "grams": 15
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 tas",
+          "en": "1 bowl"
+        },
+        "grams": 320
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Alfapress, Receta Alfa, 09.08.2025 (Znj. Albana, ReportTV)",
+        "title": "Sallatë verore me perime të freskëta dhe djathë të bardhë",
+        "url": "https://alfapress.al/english/receta-alfa/sallate-verore-me-perime-te-fresketa-dhe-djathe-te-bardhe-i168183",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Kastraveci i madh 280 g; ullinjtë 55 g (12,5 copë): vlerësim.",
+        "Porcioni 320 g: burimi nuk jep numër porcionesh; vlerësim, 3 porcione."
+      ]
+    },
+    {
+      "id": "supe-pule",
+      "name": {
+        "sq": "Supë pule me vezë dhe limon",
+        "en": "Chicken soup with egg and lemon"
+      },
+      "note": {
+        "sq": "Lëng pule me copëza pule, oriz dhe karotë, i lidhur me të verdha veze e limon.",
+        "en": "Chicken broth with chicken pieces, rice and carrot, finished with egg yolks and lemon."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-171052",
+          "as_in_source": "1 filxhan çaj copëza pule",
+          "grams": 140
+        },
+        {
+          "catalog_id": "usda-fdc-2512381",
+          "as_in_source": "1 filxhan kafe oriz",
+          "grams": 55
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "1,5 (litër) lëng pule, nga zierja e pulës në ujë",
+          "grams": 1500
+        },
+        {
+          "catalog_id": "usda-fdc-170393",
+          "as_in_source": "1 karrotë",
+          "grams": 61
+        },
+        {
+          "catalog_id": "usda-fdc-167747",
+          "as_in_source": "½ limon (lëngu)",
+          "grams": 24
+        },
+        {
+          "catalog_id": "usda-fdc-172184",
+          "as_in_source": "2 të verdha veze",
+          "grams": 34
+        },
+        {
+          "catalog_id": "usda-fdc-170416",
+          "as_in_source": "½ tufë majdanoz",
+          "grams": 15
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 tas",
+          "en": "1 bowl"
+        },
+        "grams": 300
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com, Redaksia, 21.01.2019",
+        "title": "Supë me pulë, vezë e limon",
+        "url": "https://shqiptarja.com/lajm/tw-gatuajmw-me-zonjwn-vjollca-pite-e-shpejte-me-presh-dhe-supe-me-pule-veze-e-limon",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Uji 1500 g: burimi thotë '1,5 lëng pule' pa njësi; marrë 1,5 litër ujë ku zihet pula, jo lëng i gatshëm.",
+        "Filxhani i kafesë me oriz ~70 ml, 55 g oriz i papërpunuar; copëza pule 140 g: vlerësim.",
+        "Porcioni 300 g: vlerësim, rreth 6 porcione."
+      ]
+    },
+    {
+      "id": "gjelle-me-patate",
+      "name": {
+        "sq": "Gjellë me patate dhe mish pule",
+        "en": "Chicken and potato stew"
+      },
+      "note": {
+        "sq": "Mish pule i zier me patate, speca me ngjyra, qepë dhe domate.",
+        "en": "Chicken stewed with potatoes, mixed peppers, onion and tomato."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-172378",
+          "as_in_source": "1 kg mish pule",
+          "grams": 700
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë mesatare",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "3 thelpinj hudhra",
+          "grams": 9
+        },
+        {
+          "catalog_id": "usda-fdc-170108",
+          "as_in_source": "3 speca me ngjyrë miks (të kuq)",
+          "grams": 238
+        },
+        {
+          "catalog_id": "usda-fdc-170427",
+          "as_in_source": "3 speca me ngjyrë miks (të gjelbër)",
+          "grams": 119
+        },
+        {
+          "catalog_id": "usda-fdc-170138",
+          "as_in_source": "1 kuti domate",
+          "grams": 400
+        },
+        {
+          "catalog_id": "usda-fdc-170026",
+          "as_in_source": "4 patate mesatare",
+          "grams": 852
+        },
+        {
+          "catalog_id": "usda-fdc-172888",
+          "as_in_source": "500 ml lëng pule",
+          "grams": 500
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "3 lugë gjelle vaj",
+          "grams": 40.5
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 430
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com, Redaksia (Zonja Vjollca), 21.11.2019",
+        "title": "Mish pule me speca dhe patate",
+        "url": "https://shqiptarja.com/lajm/te-gatuajme-me-zonjen-vjollca-buke-per-mengjes-dhe-mish-pule-me-speca-dhe-patate",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Pula 700 g pjesë e ngrënshme nga 1 kg me kocka: vlerësim.",
+        "Vaji 40,5 g: te hapat e burimit ('3 lugë'), jo te lista; llogaritur si vaj ulliri.",
+        "Kutia e domateve 400 g; porcioni 430 g: vlerësim, rreth 6 porcione. Uji nuk shtohet: burimi jep vetëm 500 ml lëng pule."
+      ]
+    },
+    {
+      "id": "groshe",
+      "name": {
+        "sq": "Groshë me mish të thatë",
+        "en": "Dried bean stew with cured beef"
+      },
+      "note": {
+        "sq": "Fasule të thata të zjera ngadalë me qepë, hudhër, salcë domateje dhe pastërma.",
+        "en": "Dried beans simmered slowly with onion, garlic, tomato paste and pastirma (air-dried beef)."
+      },
+      "ingredients": [
+        {
+          "catalog_id": "usda-fdc-175202",
+          "as_in_source": "400 gr fasule",
+          "grams": 400
+        },
+        {
+          "catalog_id": "usda-fdc-170604",
+          "as_in_source": "4 copa mish të thatë (pastërma)",
+          "grams": 100
+        },
+        {
+          "catalog_id": "usda-fdc-171413",
+          "as_in_source": "Pak vaj ulliri",
+          "grams": 20
+        },
+        {
+          "catalog_id": "usda-fdc-170000",
+          "as_in_source": "2 qepë mesatare",
+          "grams": 220
+        },
+        {
+          "catalog_id": "usda-fdc-1104647",
+          "as_in_source": "1-2 thelpi hudhra",
+          "grams": 4.5
+        },
+        {
+          "catalog_id": "ciqual-20268",
+          "as_in_source": "1 lugë gjelle salcë koncentrat",
+          "grams": 16
+        },
+        {
+          "catalog_id": "usda-fdc-2710707",
+          "as_in_source": "ujë (pa sasi te burimi)",
+          "grams": 1200
+        }
+      ],
+      "cooked_weight_g": null,
+      "portion": {
+        "label": {
+          "sq": "1 pjatë",
+          "en": "1 plate"
+        },
+        "grams": 380
+      },
+      "source": {
+        "kind": "publication",
+        "label": "Shqiptarja.com, Redaksia (znj. Vjollca), 25.01.2021",
+        "title": "Fasule me mish të thatë nga zonja Vjollca",
+        "url": "https://shqiptarja.com/lajm/fasule-me-mish-te-thate-nga-zonja-vjollca",
+        "checked": "2026-11-16"
+      },
+      "estimates": [
+        "Uji 1200 g: burimi nuk jep sasi; vlerësim, 3 herë fasulja e thatë.",
+        "Vaji 'pak' = 20 g; pastërma 4 copa = 100 g: vlerësim. Rreshti 'Beef, cured, dried' është më i afërti me pastërmanë e thatë shqiptare.",
+        "Fasulja e llojit të pa specifikuar: marrë e bardhë. Porcioni 380 g: vlerësim, 5 porcione."
+      ]
+    }
+  ]
+}
