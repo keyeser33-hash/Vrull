@@ -10,6 +10,7 @@ import { buttonVariants } from '@/components/ui/button-variants'
 import { InsightCard } from '@/components/ui/insight-card'
 import { store, useLocalQuery } from '@/data/app-data'
 import { currentFoodDate, type NutritionDay, nutritionDay, removeDiaryEntry } from '@/data/nutrition'
+import { readSchedule } from '@/data/schedule-settings'
 import { mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { shiftDate } from '@/lib/calendar'
@@ -19,8 +20,8 @@ import { JIM_RANGE_KG } from '@/nutrition/targets'
 import { FoodFactCard } from './learn-cards'
 import { useFoodFact } from './learn-hooks'
 
-// Ushqimi (V59, SPEC §0.3h, bordet "0.42 · Ushqimi i ri"): kreu me ditën (‹ ›) dhe llojin e ditës; kaloritë që mbeten,
-// makrot, uji dhe "Plotëso makrot"; rripi i suplementeve; vija e kohës "Dita" me vaktin e radhës të hapur; lidhjet
+// Ushqimi (V59, SPEC §0.3h, bordet "0.42 · Ushqimi i ri"): kreu me ditën (‹ ›) dhe llojin e ditës; proteina e ditës me
+// vargun (V72), kaloritë dhe makrot, uji dhe "Plotëso makrot"; karta e nisjes dhe "Mbyll ditën" (V68–V70); rripi i suplementeve; vija e kohës "Dita" me vaktin e radhës të hapur; lidhjet
 // (Objektivat, Plani im, Oraret); fusha "Çfarë hëngre?" poshtë. Një vakt hapet në fletë (`?vakti=`) dhe lista e plotë e
 // suplementeve në tjetër (`?suplementet=1`), që butoni mbrapa i Android-it t'i mbyllë; dita tjetër është `?data=`.
 // Tekstet nga katalogu ('foodday.*', 'food.*'); emrat e shabllonit dhe të suplementeve nga `@/i18n/domain`.
@@ -48,7 +49,7 @@ export function NutritionPage() {
     const today = await currentFoodDate(store, now)
     const last = shiftDate(today, 1)
     const date = asked && /^\d{4}-\d{2}-\d{2}$/.test(asked) ? (asked > last ? last : asked) : today
-    return { today, day: await nutritionDay(store, date, now) }
+    return { today, day: await nutritionDay(store, date, now), logging: (await readSchedule(store)).plan.logging }
   }, [now.getTime(), asked])
   // Pas shtimit nga shporta (Shto ushqim) vjen `location.state.added`: njoftimi "U shtua te <vakti>" me "Zhbëj", që heq regjistrimet.
   useEffect(() => {
@@ -80,7 +81,9 @@ export function NutritionPage() {
       </div>
     )
   }
-  const { day, today } = view
+  const { day, today, logging } = view
+  // Kush shënon në mbrëmje (V69) e ka "Mbyll ditën" në krye; të tjerët poshtë ditës.
+  const closeLink = day.isToday ? <CloseDayLink day={day} /> : null
   const meal = day.meals.find((entry) => entry.meal === opened)
   const factMeal = fact ? day.meals.filter((entry) => entry.entries.some((line) => line.sourceId === `jim:${fact.food}`)).at(-1)?.meal : undefined
 
@@ -88,9 +91,11 @@ export function NutritionPage() {
     <div className="flex flex-col gap-5">
       <FoodHeader day={day} today={today} onGo={(date) => go(date, today)} />
       <DayHero day={day} onToast={show} />
+      {logging === null && day.isToday ? <SetupCard /> : null}
+      {logging === 'evening' ? closeLink : null}
       <SupplementStrip day={day} onOpenList={() => open({ suplementet: '1' })} onToast={show} />
       <DayTimeline day={day} now={now} onOpen={(next) => open({ vakti: next })} onToast={show} after={fact && factMeal ? { meal: factMeal, node: <FoodFactCard entry={fact} /> } : null} />
-      {day.isToday ? <CloseDayLink day={day} /> : null}
+      {logging === 'evening' ? null : closeLink}
       <PlanLinks day={day} />
       {/* Vendi i fushës "Çfarë hëngre?" mbi tab-bar-in, që pjesa e fundit të mos mbetet poshtë saj. */}
       <div aria-hidden className="h-[76px] shrink-0" />
@@ -98,6 +103,25 @@ export function NutritionPage() {
       {meal ? <MealSheet day={day} meal={meal} onClose={() => navigate(-1)} onToast={show} /> : null}
       {params.get('suplementet') === '1' ? <SupplementsSheet day={day} onClose={() => navigate(-1)} /> : null}
     </div>
+  )
+}
+
+/** Nisja e Ushqimit (V68, V69): del derisa përdoruesi t'u përgjigjet dy pyetjeve. */
+function SetupCard() {
+  const { t } = useI18n()
+  return (
+    <InsightCard
+      icon={null}
+      actions={
+        <Link to="/ushqimi/nisja" className={buttonVariants({ variant: 'secondary', ground: 'card' })}>
+          {t('foodday.setup.cardAction')}
+        </Link>
+      }
+    >
+      <b className="font-semibold">{t('foodday.setup.card')}</b>
+      <br />
+      {t('foodday.setup.cardText')}
+    </InsightCard>
   )
 }
 

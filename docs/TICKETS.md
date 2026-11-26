@@ -285,13 +285,13 @@ Vendimet e miratuara më 26.11.2026 pas bordeve 1–3, 7, 13 dhe 22 të kanavac�
 |---|---|---|
 | Vakti i kapërcyer | V71 | Ndërtuar: `setMealSkipped`, gjendja `skipped` te `nutritionDay`, rreshti te Dita, butoni te fleta e vaktit, rikujtuesit dhe ritmi i Sot-it |
 | Mbyll ditën | V70 | Ndërtuar për ditën e sotme: `/ushqimi/mbyll`, lidhja te Ushqimi. Mbetet: hapja nga rikujtuesi i mbrëmjes dhe ditët e kaluara |
-| Plani yt si pikënisje | V68 | Pa nisur |
-| Dy mënyra regjistrimi | V69 | Pa nisur |
-| Proteina në krye | V72 | Pa nisur |
+| Plani yt si pikënisje | V68 | Ndërtuar si ekran i Ushqimit, jo si hap i hapave të parë: `/ushqimi/nisja` ("Si ha ti") me 3, 4 ose 5 vakte (`MEAL_SETS`, vlen nga nesër) dhe hapja e Planit tim pas ruajtjes; karta "Bëje Ushqimin tëndin" del te Ushqimi derisa të përgjigjet. Mbetet: vendimi nëse pyetjet hyjnë edhe te hapat e parë (prek skriptin e provës së Android-it), dhe Plani i Jimit si zgjedhje e jo parazgjedhje te Objektivat |
+| Dy mënyra regjistrimi | V69 | Ndërtuar pjesërisht: përgjigjja ruhet te `meal_plan.logging`; me "në mbrëmje" lidhja "Mbyll ditën" del në krye të Ushqimit. Mbetet: rikujtuesi kryesor sipas përgjigjes (vala 3) |
+| Proteina në krye | V72 | Ndërtuar: proteina si numri i madh me shiritin, vargu i ditëve të shënuara (`foodStreak`: çdo vakt i mbyllur dhe të paktën një i ngrënë), kaloritë te rreshti i makrove |
 | Zhvendosja e një vakti | V73 | Pa nisur |
 | Porcionet shqip te Lista | (pika 1 e listës së përdoruesit) | Pa nisur |
 
-**Gjendja (26.11.2026):** V70 dhe V71 me prova (`schedule-settings.test.ts`, `close-day.test.tsx`); lint, 2 271 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px në OLED dhe Ditë. Pa SQL: ruhet te `user_settings.meal_plan`. Pa ndryshim versioni.
+**Gjendja (26.11.2026, mbrëmje):** V68–V72 me prova (`schedule-settings.test.ts`, `close-day.test.tsx`, `food-streak.test.ts`, `food-setup.test.tsx`, `nutrition.test.tsx`); lint, 2 280 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px: Ushqimi në OLED dhe Ditë, "Si ha ti" në OLED dhe Natë, "Mbyll ditën" në OLED, Natë dhe Ditë. Pa SQL: ruhet te `user_settings.meal_plan`. Pa ndryshim versioni.
 
 ## V2-E3-31 · Ikonat e ushqimeve (V30, V67)
 

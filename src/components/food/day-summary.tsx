@@ -5,6 +5,7 @@ import { ProgressTrack } from '@/components/ui/progress-bar'
 import { RollingNumber } from '@/components/ui/rolling-number'
 import { surfaceClass } from '@/components/ui/surface'
 import { store, useLocalQuery } from '@/data/app-data'
+import { foodStreak } from '@/data/food-streak'
 import type { NutritionDay } from '@/data/nutrition'
 import { setDayType } from '@/data/nutrition'
 import { addWater, undoWater, waterDay } from '@/data/water'
@@ -15,7 +16,8 @@ import { GLASS_ML } from '@/nutrition/water'
 import type { ShowToast } from './meal-sheet'
 
 // Kreu dhe rreshti i ditës te Ushqimi (SPEC §0.3h, bordi "Ushqimi · Dita"): "Ushqimi", dita me ‹ › dhe llojin e ditës si çip;
-// kaloritë që mbeten si numri i ekranit, tre makrot me shiritat, dhe dy pllaka: uji (+250 ml me një prekje) dhe "Plotëso makrot".
+// proteina e ditës si numri i ekranit me vargun e ditëve të shënuara (V72), kaloritë dhe dy makrot e tjera me shiritat, dhe dy pllaka:
+// uji (+250 ml me një prekje) dhe "Plotëso makrot".
 
 const atNoon = (date: string) => new Date(`${date}T12:00:00`)
 
@@ -69,7 +71,10 @@ function shift(date: string, days: number) {
 
 const litres = (fmt: { number: (value: number, options?: { minDigits?: number; maxDigits?: number }) => string }, ml: number) => fmt.number(ml / 1000, { minDigits: 1, maxDigits: 2 })
 
-/** Kaloritë që mbeten (numri i madh), pastaj proteina, karbohidratet dhe yndyrat me shiritat kundrejt objektivave; poshtë ujin dhe "Plotëso makrot". */
+/**
+ * Proteina e ditës (numri i madh) me vargun e ditëve të shënuara (V72); poshtë kaloritë, karbohidratet dhe yndyrat me
+ * shiritat kundrejt objektivave, pastaj uji dhe "Plotëso makrot".
+ */
 export function DayHero({ day, onToast }: { day: NutritionDay; onToast: ShowToast }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
@@ -83,41 +88,66 @@ export function DayHero({ day, onToast }: { day: NutritionDay; onToast: ShowToas
       : left >= 0
         ? t(day.isToday ? 'food.hero.left' : 'foodday.hero.otherLeft', { eaten, target, left, date })
         : t(day.isToday ? 'food.hero.over' : 'foodday.hero.otherOver', { eaten, target, over: -left, date })
-  const macros = day.targets
+  const protein = Math.round(day.totals.proteinG)
+  const proteinTarget = day.targets ? Math.round(day.targets.proteinG) : null
+  const rows = day.targets
     ? [
-        { key: 'protein', label: t('food.protein'), value: Math.round(day.totals.proteinG), target: Math.round(day.targets.proteinG) },
-        { key: 'carbs', label: t('food.carbs'), value: Math.round(day.totals.carbsG), target: Math.round(day.targets.carbsG) },
-        { key: 'fat', label: t('food.fat'), value: Math.round(day.totals.fatG), target: Math.round(day.targets.fatG) },
+        { key: 'kcal', label: t('foodday.hero.kcal'), value: eaten, target: Math.round(day.targets.kcal), unit: '', unitName: t('foodday.hero.kcalName') },
+        { key: 'carbs', label: t('food.carbs'), value: Math.round(day.totals.carbsG), target: Math.round(day.targets.carbsG), unit: 'g', unitName: t('food.gramsName') },
+        { key: 'fat', label: t('food.fat'), value: Math.round(day.totals.fatG), target: Math.round(day.targets.fatG), unit: 'g', unitName: t('food.gramsName') },
       ]
     : []
   const proteinLeft = day.targets ? Math.max(0, Math.round(day.targets.proteinG - day.totals.proteinG)) : null
+  // Vargu vlen për ditën e sotme; në ditët e tjera fshihet.
+  const streak = useLocalQuery(() => (day.isToday ? foodStreak(store, day.date, store.now()) : Promise.resolve(0)), [day.date, day.isToday])
   return (
     <div className="flex flex-col gap-3.5">
       <section aria-label={spoken} className="flex flex-col gap-3.5">
-        <div className="flex items-end gap-3">
-          <RollingNumber value={left === null ? eaten : Math.abs(left)} format={(value) => kcalText(i18n, value)} className="type-display-xl" />
-          <span className="flex min-w-0 flex-col gap-0.5 pb-0.5">
-            <span className="type-body-strong">{t(left === null ? 'food.eatenKcal' : left >= 0 ? 'food.left' : 'food.overTarget')}</span>
-            {target === null ? null : <span className="type-caption text-muted-foreground tabular-nums">{t('food.eatenOf', { eaten, target })}</span>}
-          </span>
+        <div className="flex items-end justify-between gap-3">
+          <div
+            role="group"
+            aria-label={
+              proteinTarget === null
+                ? t('foodday.hero.proteinOnly', { value: protein })
+                : t(protein > proteinTarget ? 'ui.progress.spokenOver' : 'ui.progress.spoken', { label: t('food.protein'), value: protein, target: proteinTarget, unit: t('food.gramsName') })
+            }
+            className="flex min-w-0 items-end gap-3"
+          >
+            <RollingNumber aria-hidden value={protein} className="type-display-xl" />
+            <span aria-hidden className="flex min-w-0 flex-col gap-0.5 pb-0.5">
+              <span className="type-body-strong">{t(day.isToday ? 'foodday.hero.protein' : 'food.protein')}</span>
+              <span className="type-caption text-muted-foreground tabular-nums">{proteinTarget === null ? t('foodday.hero.grams') : t('foodday.hero.proteinOf', { target: proteinTarget })}</span>
+            </span>
+          </div>
+          {streak ? (
+            <p aria-label={t('foodday.hero.streakLabel', { count: streak })} className="flex shrink-0 flex-col items-end gap-0.5 pb-0.5">
+              <span aria-hidden className="type-display-s text-data tabular-nums">
+                {streak}
+              </span>
+              <span aria-hidden className="type-caption text-muted-foreground">
+                {t('foodday.hero.streak', { count: streak })}
+              </span>
+            </p>
+          ) : null}
         </div>
+        {proteinTarget ? <ProgressTrack ratio={protein / proteinTarget} ground="page" /> : null}
         {day.targets ? (
           <div className="grid grid-cols-3 gap-3">
-            {macros.map((row) => {
+            {rows.map((row) => {
               const over = row.value > row.target
               return (
                 <div
                   key={row.key}
                   role="group"
-                  aria-label={t(over ? 'ui.progress.spokenOver' : 'ui.progress.spoken', { label: row.label, value: row.value, target: row.target, unit: t('food.gramsName') })}
+                  aria-label={t(over ? 'ui.progress.spokenOver' : 'ui.progress.spoken', { label: row.label, value: row.value, target: row.target, unit: row.unitName })}
                   className="flex min-w-0 flex-col gap-1.5"
                 >
                   <span aria-hidden className="truncate text-[13px] leading-[1.35] text-muted-foreground">
                     {row.label}
                   </span>
                   <span aria-hidden className="font-display text-[22px] leading-none font-extrabold whitespace-nowrap tabular-nums">
-                    <RollingNumber value={row.value} />
-                    <span className="font-text text-[13px] font-normal text-muted-foreground"> / {fmt.unit(row.target, 'g')}</span>
+                    <RollingNumber value={row.value} format={row.key === 'kcal' ? (value) => kcalText(i18n, value) : undefined} />
+                    <span className="font-text text-[13px] font-normal text-muted-foreground"> / {row.unit ? fmt.unit(row.target, 'g') : kcalText(i18n, row.target)}</span>
                   </span>
                   <ProgressTrack ratio={row.target > 0 ? row.value / row.target : 0} ground="page" />
                   {over ? (

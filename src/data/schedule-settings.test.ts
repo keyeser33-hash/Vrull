@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
-import { mealPlanOn, moveMealTimes, readSchedule, saveSchedule, setMealSkipped, SKIPPED_DAYS_KEPT, skippedOn, trainingTimeOn } from './schedule-settings'
+import { mealPlanOn, moveMealTimes, readSchedule, saveFoodSetup, saveSchedule, setMealSkipped, SKIPPED_DAYS_KEPT, skippedOn, trainingTimeOn } from './schedule-settings'
 import { createLocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06).
@@ -150,5 +150,39 @@ describe('vaktet e kapërcyera', () => {
     const kept = Object.keys((await readSchedule(store)).plan.skipped)
     expect(kept).toHaveLength(SKIPPED_DAYS_KEPT)
     expect(kept[0]).toBe(day(3))
+  })
+})
+
+// Nisja e Ushqimit (V68, V69).
+describe('nisja e Ushqimit', () => {
+  it('pa përgjigje, mënyra e regjistrimit është null', async () => {
+    const store = await setup()
+    expect((await readSchedule(store)).plan.logging).toBeNull()
+  })
+
+  it('katër vakte dhe "në mbrëmje": nga nesër dita ka katër vakte, sot mbetet si ishte', async () => {
+    const store = await setup()
+    const before = await nutritionDay(store, '2026-12-08', at('2026-12-08', '10:00'))
+    await setMealSkipped(store, '2026-12-08', 'lunch', true)
+    await saveFoodSetup(store, { meals: 4, logging: 'evening' }, '2026-12-08')
+    const schedule = await readSchedule(store)
+    expect(schedule.plan.logging).toBe('evening')
+    expect(skippedOn(schedule.plan, '2026-12-08')).toEqual(['lunch'])
+    const today = await nutritionDay(store, '2026-12-08', at('2026-12-08', '10:00'))
+    expect(today.meals.map((meal) => meal.meal)).toEqual(before.meals.map((meal) => meal.meal))
+    const tomorrow = await nutritionDay(store, '2026-12-09', at('2026-12-09', '10:00'))
+    expect(tomorrow.meals.map((meal) => meal.meal)).toEqual(['breakfast_1', 'lunch', 'snack_pm', 'dinner'])
+    // Ditë stërvitjeje: të njëjtat katër, pa vaktet rreth stërvitjes.
+    const thursday = await nutritionDay(store, '2026-12-10', at('2026-12-10', '10:00'))
+    expect(thursday.meals.map((meal) => meal.meal).sort()).toEqual(['breakfast_1', 'dinner', 'lunch', 'snack_pm'])
+  })
+
+  it('tre dhe pesë vakte', async () => {
+    const store = await setup()
+    await saveFoodSetup(store, { meals: 3, logging: 'day' }, '2026-12-08')
+    expect((await nutritionDay(store, '2026-12-09', at('2026-12-09', '10:00'))).meals.map((meal) => meal.meal)).toEqual(['breakfast_1', 'lunch', 'dinner'])
+    await saveFoodSetup(store, { meals: 5, logging: 'day' }, '2026-12-09')
+    expect((await nutritionDay(store, '2026-12-10', at('2026-12-10', '10:00'))).meals).toHaveLength(5)
+    expect((await readSchedule(store)).plan.logging).toBe('day')
   })
 })
