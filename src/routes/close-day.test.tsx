@@ -37,7 +37,7 @@ describe('Mbyll ditën', () => {
   afterAll(() => vi.useRealTimers())
   afterEach(() => language.set('sq'))
 
-  async function renderPage() {
+  async function renderPage(entry = '/ushqimi/mbyll') {
     const { CloseDayPage } = await import('./close-day')
     const router = createMemoryRouter(
       [
@@ -45,7 +45,7 @@ describe('Mbyll ditën', () => {
         { path: '/ushqimi', element: <Probe /> },
         { path: '/ushqimi/shto/:meal', element: <Probe /> },
       ],
-      { initialEntries: ['/ushqimi/mbyll'] },
+      { initialEntries: [entry] },
     )
     render(<RouterProvider router={router} />)
     // Kreu del që te skeleti: prit vaktet.
@@ -103,5 +103,22 @@ describe('Mbyll ditën', () => {
     expect(await screen.findByRole('button', { name: 'Skipped it: Dinner' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Done' }))
     expect(await screen.findByTestId('where')).toHaveTextContent('/ushqimi')
+  })
+
+  it('me ?data= të djeshme mbyll ditën e djeshme, pa "Tjetër"; një datë më e vjetër bie te sot', async () => {
+    const user = userEvent.setup()
+    await renderPage('/ushqimi/mbyll?data=2026-12-08')
+    expect(screen.getByRole('heading', { name: 'Mbyll dje' })).toBeInTheDocument()
+    const lunch = within(card('Dreka'))
+    expect(lunch.queryByRole('link', { name: 'Tjetër: Dreka' })).not.toBeInTheDocument()
+    await user.click(lunch.getByRole('button', { name: 'E kapërceva: Dreka' }))
+    await waitFor(() => expect(within(card('Dreka')).getByRole('button', { name: 'Hape sërish: Dreka' })).toBeInTheDocument())
+    const { readSchedule, skippedOn } = await import('@/data/schedule-settings')
+    expect(skippedOn((await readSchedule(data.store)).plan, '2026-12-08')).toContain('lunch')
+  })
+
+  it('një datë më e vjetër se dje bie te sot', async () => {
+    await renderPage('/ushqimi/mbyll?data=2026-12-01')
+    expect(screen.getByRole('heading', { name: 'Mbyll ditën' })).toBeInTheDocument()
   })
 })

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { logWithUndo } from '@/components/food/meal-actions'
 import { BackHeader } from '@/components/layout/page'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { copyYesterdayMeal, yesterdayMeal } from '@/data/quick-food'
 import { setMealSkipped } from '@/data/schedule-settings'
 import { foodName, mealName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
+import { shiftDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
 import type { MealKey } from '@/nutrition/meals'
 import { kcalText } from './nutrition-format'
@@ -19,7 +20,7 @@ import { kcalText } from './nutrition-format'
 // ushqimit në një ekran, për kë e shënon ushqimin një herë në mbrëmje. Çdo vakt i hapur ka katër veprime me një
 // prekje: Si në plan, Si dje, Tjetër (hap Shto ushqim) dhe E kapërceva. Vakti i mbyllur tregon çfarë u shënua dhe
 // hapet sërish. Poshtë: proteina e ditës kundrejt objektivit dhe sa vakte janë mbyllur. Vlen për ditën e ushqimit të
-// sotme (V46): Shto ushqim regjistron vetëm te ajo.
+// sotme (V46) dhe, me `?data=`, për të djeshmen (edhe aty "Si dje" kopjon ditën para saj): aty "Tjetër" mungon, sepse Shto ushqim regjistron vetëm te sot.
 
 /** Vakti është i mbyllur: i ngrënë ose i kapërcyer. */
 const closed = (meal: MealSlot) => meal.status === 'done' || meal.status === 'skipped'
@@ -27,15 +28,19 @@ const closed = (meal: MealSlot) => meal.status === 'done' || meal.status === 'sk
 export function CloseDayPage() {
   const { t } = useI18n()
   const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const asked = params.get('data')
   const view = useLocalQuery(async () => {
     const now = store.now()
-    const date = await currentFoodDate(store, now)
+    const today = await currentFoodDate(store, now)
+    // Vetëm sot ose dje: ditët më të vjetra ndryshohen vakt pas vakti te Ushqimi.
+    const date = asked === shiftDate(today, -1) ? asked : today
     const day = await nutritionDay(store, date, now)
     const yesterday: Partial<Record<MealKey, boolean>> = {}
     for (const meal of day.meals) yesterday[meal.meal] = (await yesterdayMeal(store, date, meal.meal)) !== null
     return { day, yesterday }
-  }, [])
-  const back = '/ushqimi'
+  }, [asked])
+  const back = view && !view.day.isToday ? `/ushqimi?data=${view.day.date}` : '/ushqimi'
 
   if (!view) {
     return (
@@ -54,7 +59,7 @@ export function CloseDayPage() {
 
   return (
     <div className="flex min-h-full flex-col gap-4">
-      <BackHeader title={t('foodday.close.title')} subtitle={t('foodday.close.intro')} fallback={back} back={t('foodday.close.back')} />
+      <BackHeader title={day.isToday ? t('foodday.close.title') : t('foodday.close.titleYesterday')} subtitle={t('foodday.close.intro')} fallback={back} back={t('foodday.close.back')} />
       <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
         {day.meals.map((meal) => (
           <MealCard key={meal.meal} day={day} meal={meal} hasYesterday={yesterday[meal.meal] === true} />
@@ -112,7 +117,7 @@ function MealCard({ day, meal, hasYesterday }: { day: NutritionDay; meal: MealSl
         {meal.status === 'done' ? meal.entries.map((entry) => foodName(t, entry)).join(', ') : plan || t('foodday.close.noPlan')}
       </p>
       {meal.status === 'done' ? (
-        <Link to={`/ushqimi?vakti=${meal.meal}`} aria-label={t('foodday.close.editFor', { meal: name })} className={cn(buttonVariants({ variant: 'secondary' }), action, 'self-start px-4')}>
+        <Link to={`/ushqimi?${day.isToday ? '' : `data=${day.date}&`}vakti=${meal.meal}`} aria-label={t('foodday.close.editFor', { meal: name })} className={cn(buttonVariants({ variant: 'secondary' }), action, 'self-start px-4')}>
           {t('food.edit')}
         </Link>
       ) : meal.status === 'skipped' ? (
@@ -120,16 +125,18 @@ function MealCard({ day, meal, hasYesterday }: { day: NutritionDay; meal: MealSl
           {t('foodday.unskip')}
         </Button>
       ) : (
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className={cn('grid gap-1.5', day.isToday ? 'grid-cols-4' : 'grid-cols-3')}>
           <Button variant="secondary" aria-label={t('foodday.asPlanFor', { meal: name })} disabled={busy || meal.template.length === 0} className={action} onClick={() => run(() => logWithUndo(store, day.date, meal.meal, () => logTemplateMeal(store, day.date, meal.meal)))}>
             {t('food.quick.plan')}
           </Button>
           <Button variant="secondary" aria-label={t('foodday.close.yesterdayFor', { meal: name })} disabled={busy || !hasYesterday} className={action} onClick={() => run(() => copyYesterdayMeal(store, day.date, meal.meal))}>
             {t('food.quick.yesterday')}
           </Button>
-          <Link to={`/ushqimi/shto/${meal.meal}`} aria-label={t('foodday.close.otherFor', { meal: name })} className={cn(buttonVariants({ variant: 'secondary' }), action)}>
-            {t('foodday.close.other')}
-          </Link>
+          {day.isToday ? (
+            <Link to={`/ushqimi/shto/${meal.meal}`} aria-label={t('foodday.close.otherFor', { meal: name })} className={cn(buttonVariants({ variant: 'secondary' }), action)}>
+              {t('foodday.close.other')}
+            </Link>
+          ) : null}
           <Button variant="secondary" aria-label={t('foodday.skipFor', { meal: name })} disabled={busy} className={action} onClick={() => run(() => setMealSkipped(store, day.date, meal.meal, true))}>
             {t('foodday.skip')}
           </Button>

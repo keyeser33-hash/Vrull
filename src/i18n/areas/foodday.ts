@@ -129,6 +129,7 @@ export const sq = {
   'foodday.row.skipped': '{meal}, {time}, e kapërceva',
   // "Mbyll ditën" (V70): të gjitha vaktet e ditës në një ekran, një prekje për secilin.
   'foodday.close.title': 'Mbyll ditën',
+  'foodday.close.titleYesterday': 'Mbyll dje',
   'foodday.close.intro': 'Një prekje për çdo vakt. Përafërsisht është më mirë se asgjë.',
   'foodday.close.back': 'Kthehu te Ushqimi',
   'foodday.close.link': 'Mbyll ditën',
@@ -279,6 +280,7 @@ export const en: TranslationOf<typeof sq> = {
   'foodday.unskipFor': 'Reopen: {meal}',
   'foodday.row.skipped': '{meal}, {time}, skipped',
   'foodday.close.title': 'Close the day',
+  'foodday.close.titleYesterday': 'Close yesterday',
   'foodday.close.intro': 'One tap per meal. Roughly right beats nothing.',
   'foodday.close.back': 'Back to Food',
   'foodday.close.link': 'Close the day',

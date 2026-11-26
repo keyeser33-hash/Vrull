@@ -83,7 +83,8 @@ export function NutritionPage() {
   }
   const { day, today, logging } = view
   // Kush shënon në mbrëmje (V69) e ka "Mbyll ditën" në krye; të tjerët poshtë ditës.
-  const closeLink = day.isToday ? <CloseDayLink day={day} /> : null
+  // "Mbyll ditën" del sot dhe, kur mbetën vakte pa shënuar, edhe dje (V70).
+  const closeLink = day.isToday || (day.date === shiftDate(today, -1) && day.meals.some((meal) => meal.status !== 'done' && meal.status !== 'skipped')) ? <CloseDayLink day={day} /> : null
   const meal = day.meals.find((entry) => entry.meal === opened)
   const factMeal = fact ? day.meals.filter((entry) => entry.entries.some((line) => line.sourceId === `jim:${fact.food}`)).at(-1)?.meal : undefined
 
@@ -130,7 +131,7 @@ function CloseDayLink({ day }: { day: NutritionDay }) {
   const { t } = useI18n()
   const left = day.meals.filter((meal) => meal.status !== 'done' && meal.status !== 'skipped').length
   return (
-    <Link to="/ushqimi/mbyll" className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'h-auto min-h-button w-full flex-col gap-0.5 py-2.5')}>
+    <Link to={day.isToday ? '/ushqimi/mbyll' : `/ushqimi/mbyll?data=${day.date}`} className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'h-auto min-h-button w-full flex-col gap-0.5 py-2.5')}>
       <span>{t('foodday.close.link')}</span>
       <span className="font-text text-[13px] leading-4 font-medium tracking-normal text-muted-foreground normal-case tabular-nums">{left === 0 ? t('foodday.close.linkDone') : t('foodday.close.linkLeft', { count: left })}</span>
     </Link>
