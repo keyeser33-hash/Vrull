@@ -43,7 +43,7 @@ const dish = (overrides: Partial<CatalogFood> = {}) =>
     nameEn: 'Spinach byrek',
     nameSq: 'Byrek me spinaq',
     nameSqChecked: true,
-    commonRank: 914,
+    commonRank: 100,
     portions: [{ label: '1 piece', grams: 136 }],
     dish: { ingredients: [], source: { label: 'x', title: 'y', url: null }, estimates: [], estimate: true, readers: false, note: { sq: 'a', en: 'b' }, portion: { sq: '1 copë', en: '1 piece' } },
     ...overrides,
@@ -52,9 +52,9 @@ const dish = (overrides: Partial<CatalogFood> = {}) =>
 describe('pjatat shqiptare te kërkimi', () => {
   const dishes = [
     dish(),
-    dish({ id: 'vrull-dish-tave-kosi', nameEn: 'Baked lamb with yoghurt', nameSq: 'Tavë kosi', commonRank: 915 }),
-    dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Fasule', commonRank: 916 }),
-    dish({ id: 'vrull-dish-flija', nameEn: 'Flija', nameSq: 'Flija', commonRank: 917 }),
+    dish({ id: 'vrull-dish-tave-kosi', nameEn: 'Baked lamb with yoghurt', nameSq: 'Tavë kosi', commonRank: 100 }),
+    dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Gjellë me fasule', commonRank: 100 }),
+    dish({ id: 'vrull-dish-flija', nameEn: 'Flija', nameSq: 'Flija', commonRank: 100 }),
     egg,
     cheese,
   ]
@@ -69,17 +69,16 @@ describe('pjatat shqiptare te kërkimi', () => {
     expect(found('lamb yoghurt')).toEqual(['vrull-dish-tave-kosi'])
   })
 
-  it('emri që është saktësisht kërkesa del i pari, para ushqimeve më të zakonshme që e kanë fjalën', () => {
+  it('pjata rri mes të zakonshmeve: "fasule" jep fasulet e ziera (#20) para gjellës (100)', () => {
     const beans = food({ id: 'usda-fdc-90', nameEn: 'Beans, white, cooked', nameSq: 'Fasule të bardha, të ziera', commonRank: 20 })
-    const list = buildIndex([beans, dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Fasule', commonRank: 916 })])
-    expect(searchCatalog(list, 'fasule').map((item) => item.id)).toEqual(['vrull-dish-fasule', 'usda-fdc-90'])
-    expect(searchCatalog(list, 'Fasulë').map((item) => item.id)).toEqual(['vrull-dish-fasule', 'usda-fdc-90'])
+    const list = buildIndex([beans, dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Gjellë me fasule', commonRank: 100 })])
+    expect(searchCatalog(list, 'fasule').map((item) => item.id)).toEqual(['usda-fdc-90', 'vrull-dish-fasule'])
     expect(searchCatalog(list, 'white bean stew').map((item) => item.id)).toEqual(['vrull-dish-fasule'])
   })
 
-  it('pjata që fillon me kërkesën del para përbërësit me të njëjtën fjalë: "byrek" jep byrekët para petës', () => {
+  it('"byrek" jep byrekët (100) para petës (#300)', () => {
     const pastry = food({ id: 'usda-fdc-91', nameEn: 'Phyllo dough', nameSq: 'Petë byreku (filo)', commonRank: 300 })
-    const list = buildIndex([pastry, dish(), dish({ id: 'vrull-dish-byrek-me-mish', nameEn: 'Minced meat byrek', nameSq: 'Byrek me mish', commonRank: 920 })])
+    const list = buildIndex([pastry, dish(), dish({ id: 'vrull-dish-byrek-me-mish', nameEn: 'Minced meat byrek', nameSq: 'Byrek me mish', commonRank: 100 })])
     expect(searchCatalog(list, 'byrek').map((item) => item.id)).toEqual(['vrull-dish-byrek-me-spinaq', 'vrull-dish-byrek-me-mish', 'usda-fdc-91'])
     expect(searchCatalog(list, 'pete').map((item) => item.id)).toEqual(['usda-fdc-91'])
   })
@@ -87,8 +86,8 @@ describe('pjatat shqiptare te kërkimi', () => {
   it('porcioni i pjatës ndjek gjuhën, edhe kur etiketa nuk fillon me "1 njësi" të shkurtër', () => {
     expect(commonPortion(dish(), 'sq')).toEqual({ label: '1 copë', grams: 136 })
     expect(commonPortion(dish(), 'en')).toEqual({ label: '1 piece', grams: 136 })
-    const japrak = dish({ portions: [{ label: '1 serving (6 rolls)', grams: 295 }], dish: { ...dish().dish!, portion: { sq: '1 porcion (6 japrak)', en: '1 serving (6 rolls)' } } })
-    expect(commonPortion(japrak, 'sq')).toEqual({ label: '1 porcion (6 japrak)', grams: 295 })
+    const japrak = dish({ portions: [{ label: '1 serving', grams: 295 }], dish: { ...dish().dish!, portion: { sq: '1 porcion', en: '1 serving' } } })
+    expect(commonPortion(japrak, 'sq')).toEqual({ label: '1 porcion', grams: 295 })
   })
 })
 
@@ -166,5 +165,21 @@ describe('porcioni i zakonshëm', () => {
     const skipped = portions(['2 tablespoon', 33.9], ['1 cup (4.86 large eggs)', 243], ['1 bad', 0], ['1 tub', 5000], ['1 slice', 30])
     expect(commonPortion(food({ id: 'usda-fdc-32', nameEn: 'x', portions: skipped }))).toEqual({ label: '1 slice', grams: 30 })
     expect(commonPortion(food({ id: 'usda-fdc-33', nameEn: 'x', portions: portions(['2 tablespoon', 33.9]) }))).toEqual({ label: null, grams: 100 })
+  })
+})
+
+describe('kërkimi te Lista e vërtetë me pjatat (rishikimi i valës 4)', async () => {
+  const { decodeFile } = await import('./decode')
+  const common = (await import('./data/foods-common.json')).default as unknown as Parameters<typeof decodeFile>[0]
+  const index = buildIndex(decodeFile(common))
+  const first = (query: string) => searchCatalog(index, query)[0]
+
+  it('fjalët e zakonshme nuk i jep një pjatë ose një rresht i rrallë: "sugar", "pule", "mish", "sallate", "p"', () => {
+    expect(first('sugar')?.nameSq).toBe('Sheqer')
+    for (const query of ['pule', 'mish', 'sallate', 'p', 'q']) expect(first(query)?.dish ?? null, query).toBeNull()
+  })
+
+  it('"byrek", "tave kosi" dhe "flija" japin pjatën e parë', () => {
+    for (const query of ['byrek', 'tave kosi', 'flija']) expect(first(query)?.source, query).toBe('vrull_recipe')
   })
 })

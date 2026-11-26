@@ -2,7 +2,7 @@ import { CATALOG_SOURCES, type CatalogFood, type CatalogPortion } from './types'
 
 // Kërkimi pa internet te Lista e Vrullit (SPEC §0.3h): shqip dhe anglisht, pa diakritika, me fjalë të pjesshme.
 // Logjikë pa UI. Çdo fjalë e kërkesës duhet të jetë në emër (shqip ose anglisht); rendi: të zakonshmet të parat,
-// sipas radhës së tyre (por emri që është saktësisht kërkesa del i pari, pastaj pjata që fillon me kërkesën), pastaj ata që e kanë kërkesën në fillim të një fjale, pastaj emrat më të shkurtër.
+// sipas radhës së tyre (pjatat shqiptare kanë radhën 100), pastaj ata që e kanë kërkesën në fillim të një fjale, pastaj emrat më të shkurtër.
 
 /** Tekst pa shenja dhe pa dallim shkronjash: "Vezë" → "veze", "Çedar" → "cedar"; pikësimi bëhet hapësirë. */
 export function normalize(value: string): string {
@@ -44,17 +44,12 @@ interface Hit {
   score: number
   /** 1 kur një fjalë e kërkesës gjendet vetëm brenda një fjale tjetër. */
   inside: number
-  /** 0 kur kërkesa është saktësisht emri i ushqimit (shqip ose anglisht): "fasule" gjen pjatën Fasule para "Fasule të bardha, të ziera". */
-  notExact: number
-  /** 0 kur pjata shqiptare e ka emrin që fillon me kërkesën: "byrek" jep byrekët para "Petë byreku". */
-  notDish: number
 }
 
 export function searchCatalog(index: CatalogIndex, query: string, options: SearchOptions = {}): CatalogFood[] {
   const words = normalize(query).split(' ').filter(Boolean)
   if (words.length === 0) return []
   const limit = options.limit ?? 40
-  const whole = words.join(' ')
   const hits: Hit[] = []
   for (let i = 0; i < index.foods.length; i++) {
     const text = index.haystack[i]
@@ -72,14 +67,12 @@ export function searchCatalog(index: CatalogIndex, query: string, options: Searc
     if (score < 0) continue
     const food = index.foods[i]
     if (options.exclude?.has(food.id)) continue
-    const exact = normalize(food.nameEn) === whole || (food.nameSq !== null && normalize(food.nameSq) === whole)
-    const leadingDish = food.dish !== undefined && food.dish !== null && food.nameSq !== null && normalize(food.nameSq).startsWith(whole)
-    hits.push({ food, score, inside, notExact: exact ? 0 : 1, notDish: leadingDish ? 0 : 1 })
+    hits.push({ food, score, inside })
   }
   const rank = (hit: Hit) => hit.food.commonRank ?? Number.POSITIVE_INFINITY
   hits.sort((a, b) => {
     // Një fjalë që është vetëm brenda një fjale tjetër ("ausage" te "sausage") shkon pas atyre me fillim fjale, edhe pas të zakonshmeve.
-    return a.inside - b.inside || a.notExact - b.notExact || a.notDish - b.notDish || rank(a) - rank(b) || a.score - b.score || a.food.nameEn.length - b.food.nameEn.length || (SOURCE_ORDER.get(a.food.source) ?? 9) - (SOURCE_ORDER.get(b.food.source) ?? 9) || a.food.nameEn.localeCompare(b.food.nameEn)
+    return a.inside - b.inside || rank(a) - rank(b) || a.score - b.score || a.food.nameEn.length - b.food.nameEn.length || (SOURCE_ORDER.get(a.food.source) ?? 9) - (SOURCE_ORDER.get(b.food.source) ?? 9) || a.food.nameEn.localeCompare(b.food.nameEn)
   })
   return hits.slice(0, limit).map((hit) => hit.food)
 }

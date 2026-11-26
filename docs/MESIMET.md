@@ -138,6 +138,8 @@ Një mësim ngjitet sa herë përsëritet, sepse rregulli që ekzistonte nuk mja
 
 - Prova me AI-në e vërtetë e "Shpjegoje më shumë" (17.11.2026): provat me të rreme kalonin, por Haiku 5.5 shkruante në shqip fjalë të gabuara ("pëllumbat" për "pëllëmbët"), kalonte nga "ti" te "ju" dhe fliste për veten ("do të mbetem në parime të përgjithshme") → çdo veçori që shkruan tekst shqip provohet me AI-në e vërtetë dhe teksti lexohet i plotë, jo vetëm forma e JSON-it; udhëzimi thotë regjistrin ("ti") dhe fjalët e app-it ("udhëzuesi"); shqipja e gjatë shkon te Sonnet (V66).
 
+- Pjatat shqiptare dolën fillimisht pas të gjitha të zakonshmeve ("byrek" jepte "Petë byreku" të parën); dy rregulla të veçanta kërkimi ("emri i saktë", "pjata që fillon me kërkesën") e ndreqën byrekun, por nxorën "Sugar" (Livsmedelsverket) para "Sheqer" dhe "Pulë me oriz" para "Gjoks pule" → një rresht i ri i Listës merr vendin me `common_rank` (pjatat 100), jo me rregull në renditje; provat e kërkimit kontrollojnë edhe skedarin e vërtetë (`search.test.ts`, "kërkimi te Lista e vërtetë").
+
 ## Mëso (faktet me burim)
 
 - PubMed e refuzon WebFetch-in me reCAPTCHA, dhe një URL e ndërtuar me dorë (API-ja e Europe PMC) kërkon miratimin e përdoruesit, që natën nuk vjen → abstrakti kontrollohet te rezultati i kërkimit (copëza e PubMed-it), te PMC ose te faqja e botuesit që del në kërkim; një fakt që nuk kontrollohet kështu pret ditën, nuk hyn në paketë.

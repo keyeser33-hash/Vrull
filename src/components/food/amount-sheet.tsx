@@ -128,7 +128,7 @@ export function AmountSheet({ item, mode, left, dish, onClose, onSubmit }: { ite
       {unit === 'serving' ? (
         <div role="group" aria-label={t('foodsearch.amount.times')} className="grid shrink-0 grid-cols-5 gap-2">
           {TIMES.map((entry) => (
-            <button key={entry.text} type="button" aria-pressed={count === entry.count} onClick={() => set(entry.count)} className={cn('min-h-11 rounded-md border text-[15px] font-semibold tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground', count === entry.count ? 'border-foreground bg-surface-2 font-bold' : 'border-subtle')}>
+            <button key={entry.text} type="button" aria-pressed={count === entry.count} disabled={!limit(entry.count)} onClick={() => set(entry.count)} className={cn('disabled:opacity-40', 'min-h-11 rounded-md border text-[15px] font-semibold tabular-nums focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground', count === entry.count ? 'border-foreground bg-surface-2 font-bold' : 'border-subtle')}>
               {entry.text}
             </button>
           ))}

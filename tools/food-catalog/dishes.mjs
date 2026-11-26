@@ -49,8 +49,8 @@ function totals(dish, lookup) {
   return sum
 }
 
-/** "6 japrak" → "1 porcion (6 japrak)": etiketa e porcionit duhet të jetë një njësi ("1 copë"), që numri i porcioneve të mos gënjejë. */
-const oneServing = (label, word) => (ONE_UNIT.test(label) ? label : `1 ${word} (${label})`)
+/** "6 japrak" → "1 porcion": etiketa e porcionit është një njësi ("1 copë"); me "(6 japrak)" brenda, "2 porcion (6 japrak)" gënjente numrin. */
+const oneServing = (label, word) => (ONE_UNIT.test(label) ? label : `1 ${word}`)
 
 /** Një pjatë si rresht i `catalog.jsonl`; `rank` është `common_rank` (pjatat vijnë pas të zakonshmeve). */
 export function dishRow(dish, lookup, { listVersion, rank }) {
@@ -90,9 +90,12 @@ export function dishRow(dish, lookup, { listVersion, rank }) {
   }
 }
 
-/** Të gjitha pjatat si rreshta, me `common_rank` që nis te `firstRank` (pas të zakonshmeve). */
+/**
+ * Të gjitha pjatat si rreshta, të gjitha me `common_rank` `firstRank` (numër i plotë, si roja kërkon): brenda të zakonshmeve (rishikimi: pas të gjithave, "byrek" jepte
+ * "Petë byreku" të parën; me një rregull të veçantë, "pule" jepte "Pulë me oriz" para "Gjoks pule" #28).
+ */
 export function dishRows(dishes, lookup, { listVersion, firstRank }) {
-  return dishes.map((dish, index) => dishRow(dish, lookup, { listVersion, rank: firstRank + index }))
+  return dishes.map((dish) => dishRow(dish, lookup, { listVersion, rank: firstRank }))
 }
 
 /** Gabimet e të dhënave të pjatave (lista bosh = në rregull); përbërësit kontrollohen kundrejt Listës. */

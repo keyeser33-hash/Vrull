@@ -78,3 +78,9 @@ Para instalimit: `vrull-0.28-lista.sql` te Supabase › SQL Editor (pa të, ushq
 - [ ] Të dielën, kur java e re ka pesha të reja: rreshti "N pesha të reja presin vendimin" hap Peshat e javës; pas "Prano" ose "Më vonë" rreshti ikën.
 - [ ] Cilësimet › Burimet dhe licencat: USDA, Ciqual, CoFID, Livsmedelsverket dhe Open Food Facts me licencat.
 
+## 9. Pjatat shqiptare (0.29.0, 2 min)
+
+- [ ] Ushqimi › Shto, pa internet: "byrek" jep byrekët e parët, "tave kosi" dhe "flija" pjatën; "pule" jep gjoksin e pulës para pjatës.
+- [ ] Prekja e "Tavë kosi": receta me përbërësit, "vlerësim" dhe burimi me lidhje; çipi "4" i fikur.
+- [ ] "+" te "Byrek me spinaq": te dita del "1 copë", 264 kcal.
+

@@ -138,16 +138,19 @@ export function writeAppFiles(rows, outDir, summaryPath) {
 export const DEFAULT_DISHES_DIR = join(dirname(fileURLToPath(import.meta.url)), 'dishes')
 
 /**
- * Rreshtat e Listës plus pjatat shqiptare nga `dir` (V65): makrot nga përbërësit e rreshtave, `common_rank` pas më të zakonshmit, versioni
+ * Rreshtat e Listës plus pjatat shqiptare nga `dir` (V65): makrot nga përbërësit e rreshtave, `common_rank` 100 (mes të zakonshmeve), versioni
  * i listës i njëjti. Pjatat e rreshtave të mëparshëm hiqen, që një ndërtim i dytë mbi të njëjtin skedar të mos i dyfishojë.
  */
+export const DISH_RANK = 100
+
 export function withDishes(rows, dir = DEFAULT_DISHES_DIR) {
   const base = rows.filter((row) => row.source !== 'vrull_recipe')
   const lookup = dishLookup(base)
   const dishes = loadDishFiles(dir)
   const errors = validateDishes(dishes, lookup)
   if (errors.length) throw new Error(`Pjatat nuk kalojnë kontrollin:\n${errors.join('\n')}`)
-  const firstRank = Math.max(0, ...base.map((row) => row.common_rank ?? 0)) + 1
+  // Pjatat rrinë mes të zakonshmeve, pas 100 të parave (bukë, vezë, pulë): të gjitha me radhën 100.
+  const firstRank = DISH_RANK
   return [...base, ...dishRows(dishes, lookup, { listVersion: base[0].list_version, firstRank })]
 }
 

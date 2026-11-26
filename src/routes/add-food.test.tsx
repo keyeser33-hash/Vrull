@@ -373,6 +373,17 @@ describe('Shto ushqim', () => {
     expect(saved[0]).toMatchObject({ source_id: 'vrull-dish-byrek-me-spinaq', name: 'Byrek me spinaq', serving_g: 136, serving_label: '1 copë' })
   })
 
+  it('pjata e madhe: çipi "4" fiket kur kalon 2 kg (tavë kosi 554 g), "3" mbetet', async () => {
+    const user = userEvent.setup()
+    await renderPage()
+    await user.type(await screen.findByLabelText('Kërko ushqimin'), 'tave kosi')
+    const list = await screen.findByRole('region', { name: 'Lista e Vrullit' })
+    await user.click(within(list).getAllByRole('button', { name: /Tavë kosi/ })[0])
+    const sheet = within(await screen.findByRole('dialog', { name: 'Tavë kosi' }))
+    expect(sheet.getByRole('button', { name: '4' })).toBeDisabled()
+    expect(sheet.getByRole('button', { name: '3' })).toBeEnabled()
+  })
+
   it('pjata shqiptare në anglisht: emri anglisht me emrin shqip krahas, porcioni "1 piece", faqja e recetës në anglisht', async () => {
     const user = userEvent.setup()
     language.set('en')

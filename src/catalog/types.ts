@@ -25,7 +25,7 @@ export interface CatalogDish {
   /** true kur burimi është recetë e lexuesve (flija, V65). */
   readers: boolean
   note: { sq: string; en: string }
-  /** Etiketa e porcionit në të dy gjuhët ("1 copë", "1 porcion (6 japrak)"). */
+  /** Etiketa e porcionit në të dy gjuhët ("1 copë", "1 porcion"). */
   portion: { sq: string; en: string }
 }
 

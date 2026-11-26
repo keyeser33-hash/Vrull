@@ -35,7 +35,7 @@ function appCatalogRows() {
 
 const dishes = loadDishFiles(dishDir)
 const lookup = dishLookup(appCatalogRows())
-const rows = dishRows(dishes, lookup, { listVersion: 1, firstRank: 914 })
+const rows = dishRows(dishes, lookup, { listVersion: 1, firstRank: 100 })
 const byId = (id) => rows.find((row) => row.source_id === id)
 
 describe('pjatat shqiptare te Lista e Vrullit', () => {
@@ -77,10 +77,10 @@ describe('pjatat shqiptare te Lista e Vrullit', () => {
       name_sq: 'Byrek me spinaq',
       name_en: 'Spinach byrek',
       name_sq_checked: true,
-      common_rank: 914,
+      common_rank: 100,
       list_version: 1,
     })
-    expect(rows.map((item) => item.common_rank)).toEqual(Array.from({ length: 30 }, (_, index) => 914 + index))
+    expect(rows.map((item) => item.common_rank)).toEqual(Array.from({ length: 30 }, () => 100))
     expect(rows[0].id.startsWith(DISH_ID_PREFIX)).toBe(true)
   })
 
@@ -102,9 +102,9 @@ describe('pjatat shqiptare te Lista e Vrullit', () => {
     expect(byId('byrek-me-spinaq').dish.readers).toBe(false)
   })
 
-  it('porcioni që nuk fillon me "1" merr formën "1 porcion (6 japrak)", ai me "1" mbetet', () => {
-    expect(byId('japrak').dish.portion).toEqual({ sq: '1 porcion (6 japrak)', en: '1 serving (6 rolls)' })
-    expect(byId('japrak').portions).toEqual([{ label_en: '1 serving (6 rolls)', grams: 295 }])
+  it('porcioni që nuk fillon me "1" merr formën "1 porcion", ai me "1" mbetet', () => {
+    expect(byId('japrak').dish.portion).toEqual({ sq: '1 porcion', en: '1 serving' })
+    expect(byId('japrak').portions).toEqual([{ label_en: '1 serving', grams: 295 }])
     expect(byId('byrek-me-spinaq').dish.portion).toEqual({ sq: '1 copë', en: '1 piece' })
     expect(byId('byrek-me-spinaq').portions).toEqual([{ label_en: '1 piece', grams: 136 }])
   })

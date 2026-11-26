@@ -3,13 +3,13 @@
   "total": 21298,
   "common": {
     "count": 943,
-    "bytes": 208302,
-    "gzipBytes": 66382
+    "bytes": 208241,
+    "gzipBytes": 67334
   },
   "rest": {
     "count": 20355,
     "bytes": 2298339,
-    "gzipBytes": 522112
+    "gzipBytes": 522128
   },
   "bySource": {
     "usda_foundation": 345,
