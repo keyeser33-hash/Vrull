@@ -238,14 +238,18 @@ export function AddFoodPage() {
 
   /** Një rresht i Listës së Vrullit: porcioni i zakonshëm i burimit; ruhet te ushqimet e tua kur shtohet ose hapet. */
   const catalogRow = (food: CatalogFood) => {
-    const portion = commonPortion(food)
+    const portion = commonPortion(food, lang)
     const macros = macrosFor({ kcal: food.kcal, proteinG: food.proteinG, carbsG: food.carbsG, fatG: food.fatG }, portion.grams)
     const names = catalogNames(lang, food)
+    // Pjatat shqiptare (V65): "vlerësim" dhe "recetë e lexuesve" poshtë porcionit.
+    const marks = food.dish ? [food.dish.readers ? t('foodsearch.dish.readers') : null, food.dish.estimate ? t('foodsearch.dish.estimate') : null].filter(Boolean).join(' · ') : ''
     return (
       <PickRow
         key={food.id}
         name={names.name}
         aside={names.aside ?? undefined}
+        asideLang={names.asideLang}
+        note={marks || undefined}
         tag={t(catalogSourceKey(sourceLabelOf(food.source)))}
         detail={rowDetail(portion.label ?? gramsText(i18n, portion.grams), macros.kcal, macros.proteinG)}
         size="lg"
@@ -492,6 +496,10 @@ function AmountEntry({ foodId, edit, basket, left, onClose }: { foodId: string; 
   const food = useLocalQuery(() => foodById(store, foodId), [foodId])
   const existing = basket.items.find((item) => item.foodId === foodId)
   const item = useMemo(() => (edit ? existing : food ? basketItemFromFood(food) : null), [edit, existing, food])
+  // Pjata shqiptare (V65): receta del nga Lista në telefon (pjatat janë te të zakonshmet, ndaj gjenden sa hapet kërkimi).
+  const catalog = useCatalog()
+  const dishId = item?.source === 'catalog' && item.sourceId?.startsWith('vrull-dish-') ? item.sourceId : null
+  const dish = useMemo(() => (dishId ? (catalog.index?.foods.find((entry) => entry.id === dishId)?.dish ?? null) : null), [catalog.index, dishId])
   if (edit ? !existing : food === undefined) return null
   if (!item) {
     return (
@@ -505,6 +513,7 @@ function AmountEntry({ foodId, edit, basket, left, onClose }: { foodId: string; 
       item={item}
       mode={edit ? 'edit' : 'add'}
       left={left}
+      dish={dish}
       onClose={onClose}
       onSubmit={(result) => {
         if (edit) basket.setAmount(foodId, result.grams !== null ? { grams: result.grams } : { servings: result.servings ?? 1 })

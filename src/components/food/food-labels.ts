@@ -15,9 +15,10 @@ const CATALOG_SOURCE_KEYS = {
   ciqual: 'foodsearch.source.ciqual',
   cofid: 'foodsearch.source.cofid',
   livsmedelsverket: 'foodsearch.source.livsmedelsverket',
+  dish: 'foodsearch.source.dish',
 } as const
 
-/** Burimi i shkurtër i një rreshti të Listës së Vrullit ("USDA", "Ciqual", "CoFID", "Livsmedelsverket"). */
+/** Burimi i shkurtër i një rreshti të Listës së Vrullit ("USDA", "Ciqual", "CoFID", "Livsmedelsverket", "Vrull, recetë"). */
 export const catalogSourceKey = (label: keyof typeof CATALOG_SOURCE_KEYS): MessageKey => CATALOG_SOURCE_KEYS[label]
 
 /** Burimi i shkurtër pranë emrit: Plani im, USDA, Produkt (Open Food Facts), Makro, suplementi, ose "I yti". */

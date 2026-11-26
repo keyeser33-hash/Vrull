@@ -3,15 +3,17 @@ import type { CatalogMeta, CatalogSource } from './types'
 // Burimet e ushqimeve që kërkon secila licencë (SPEC §0.3h; docs/research/food-sources.md; tools/food-catalog/README.md › Licenca dhe atribuimi).
 // Teksti i atribuimit mbetet siç e kërkon licenca (anglisht); përshkrimi dhe emri i licencës përkthehen te katalogu `sources.<id>.*`.
 
-export type FoodSourceId = 'usda' | 'ciqual' | 'cofid' | 'livsmedelsverket' | 'off'
+export type FoodSourceId = 'usda' | 'ciqual' | 'cofid' | 'livsmedelsverket' | 'off' | 'dishes'
 
 export interface FoodSourceInfo {
   id: FoodSourceId
-  name: string
+  /** Emri i burimit; pa të (pjatat shqiptare) vjen nga katalogu `sources.<id>.name`. */
+  name?: string
   /** Burimet e Listës që hyjnë te kjo pjesë (Open Food Facts nuk është te lista, vetëm te produktet). */
   datasets: readonly CatalogSource[]
-  url: string
-  licenseUrl: string
+  /** Pa lidhje te burimi dhe licenca (pjatat shqiptare: burimi i secilës pjatë është te faqja e saj) dhe pa atribuim në anglisht. */
+  url?: string
+  licenseUrl?: string
 }
 
 export const FOOD_SOURCES: readonly FoodSourceInfo[] = [
@@ -26,6 +28,8 @@ export const FOOD_SOURCES: readonly FoodSourceInfo[] = [
   },
   { id: 'livsmedelsverket', name: 'Livsmedelsverket', datasets: ['livsmedelsverket'], url: 'https://www.livsmedelsverket.se/en/about-us/open-data/food-composition-data/', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/' },
   { id: 'off', name: 'Open Food Facts', datasets: [], url: 'https://world.openfoodfacts.org/', licenseUrl: 'https://opendatacommons.org/licenses/odbl/1-0/' },
+  // V65: receta nga burimet e shënuara te çdo pjatë; lidhjet jepen te faqja e pjatës, jo këtu.
+  { id: 'dishes', datasets: ['vrull_recipe'] },
 ]
 
 export interface SourceFacts {

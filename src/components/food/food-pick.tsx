@@ -33,6 +33,8 @@ export function PickSection({ title, onAddAll, addAllLabel, children }: { title:
 export function PickRow({
   name,
   aside,
+  asideLang = 'en',
+  note,
   tag,
   detail,
   size = 'md',
@@ -47,6 +49,10 @@ export function PickRow({
   name: string
   /** Emri anglisht krahas emrit shqip të pakontrolluar (Lista e Vrullit, SPEC §0.3h). */
   aside?: string
+  /** Gjuha e `aside` (parazgjedhje anglisht; pjatat shqiptare në anglisht kanë emrin shqip krahas). */
+  asideLang?: 'sq' | 'en'
+  /** Rreshti i shenjave poshtë porcionit ("vlerësim", "recetë e lexuesve"; pjatat shqiptare, V65). */
+  note?: string
   tag?: string
   detail: string
   size?: 'md' | 'lg'
@@ -83,8 +89,9 @@ export function PickRow({
           <span className="truncate type-body-strong">{name}</span>
           {tag ? <span className="shrink-0 text-xs font-semibold text-muted-foreground">{tag}</span> : null}
         </span>
-        {aside ? <span lang="en" className="truncate text-[13px] leading-[18px] text-muted-foreground">{aside}</span> : null}
+        {aside ? <span lang={asideLang} className="truncate text-[13px] leading-[18px] text-muted-foreground">{aside}</span> : null}
         <span className="text-[13px] leading-[18px] text-muted-foreground tabular-nums">{detail}</span>
+        {note ? <span className="text-[13px] leading-[18px] font-semibold text-muted-foreground">{note}</span> : null}
       </span>
     </>
   )

@@ -32,9 +32,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function FoodSource({ source }: { source: FoodSourceInfo }) {
   const { t } = useI18n()
   const facts = sourceFacts(catalogMeta, source)
+  const id = source.id
   return (
     <li className="flex flex-col gap-1 border-t border-border py-3 first:border-t-0">
-      <span className="type-body-strong">{source.name}</span>
+      <span className="type-body-strong">{source.name ?? t('sources.dishes.name')}</span>
       <span className="type-body">{t(`sources.${source.id}.use`)}</span>
       {source.datasets.length > 0 ? (
         <span className="type-caption text-muted-foreground tabular-nums">
@@ -42,17 +43,21 @@ function FoodSource({ source }: { source: FoodSourceInfo }) {
         </span>
       ) : null}
       <span className="type-caption text-muted-foreground">{t(`sources.${source.id}.license`)}</span>
-      <span lang="en" className="type-caption text-muted-foreground">
-        {t(`sources.${source.id}.attribution`)}
-      </span>
-      <span className="flex flex-wrap gap-x-4">
-        <a href={source.url} target="_blank" rel="noreferrer" className={link}>
-          {t('sources.food.source')}
-        </a>
-        <a href={source.licenseUrl} target="_blank" rel="noreferrer" className={link}>
-          {t('sources.food.license')}
-        </a>
-      </span>
+      {id !== 'dishes' ? (
+        <span lang="en" className="type-caption text-muted-foreground">
+          {t(`sources.${id}.attribution`)}
+        </span>
+      ) : null}
+      {source.url && source.licenseUrl ? (
+        <span className="flex flex-wrap gap-x-4">
+          <a href={source.url} target="_blank" rel="noreferrer" className={link}>
+            {t('sources.food.source')}
+          </a>
+          <a href={source.licenseUrl} target="_blank" rel="noreferrer" className={link}>
+            {t('sources.food.license')}
+          </a>
+        </span>
+      ) : null}
     </li>
   )
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CatalogDish } from '@/catalog/types'
 import { ValueStepper } from '@/components/forms/value-stepper'
 import { Sheet } from '@/components/layout/sheet'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,7 @@ import { foodName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { kcalText, parseGrams } from '@/routes/nutrition-format'
+import { DishRecipe } from './dish-recipe'
 import { servingCount, sourceKey, unitNoun } from './food-labels'
 
 // Sasia e një ushqimi (bordi "Ushqimi · Sasia"; SPEC §0.3h): njësitë si çipa (porcioni i ushqimit dhe gramët), ± dhe numri
@@ -41,7 +43,7 @@ function startOf(item: BasketItem): { unit: Unit; count: number } {
   return count !== null ? { unit: 'serving', count } : { unit: 'gram', count: grams }
 }
 
-export function AmountSheet({ item, mode, left, onClose, onSubmit }: { item: BasketItem; mode: 'add' | 'edit'; left: LeftToday | null; onClose: () => void; onSubmit: (item: BasketItem) => void }) {
+export function AmountSheet({ item, mode, left, dish, onClose, onSubmit }: { item: BasketItem; mode: 'add' | 'edit'; left: LeftToday | null; /** Receta kur ushqimi është pjatë shqiptare (V65). */ dish?: CatalogDish | null; onClose: () => void; onSubmit: (item: BasketItem) => void }) {
   const i18n = useI18n()
   const { t, fmt } = i18n
   const quick = item.servings !== null
@@ -71,7 +73,7 @@ export function AmountSheet({ item, mode, left, onClose, onSubmit }: { item: Bas
     ...(hasServing ? [{ unit: 'serving' as const, text: quick ? noun : t('foodsearch.amount.servingChip', { unit: noun, grams: fmt.unit(servingG, 'g', { maxDigits: 1 }) }) }] : []),
     ...(quick ? [] : [{ unit: 'gram' as const, text: t('foodsearch.amount.gram') }]),
   ]
-  const description = quick ? t(sourceKey(item)) : [t(sourceKey(item)), t('foodsearch.per100', { kcal: kcalText(i18n, item.per100.kcal) })].join(' · ')
+  const description = quick ? t(sourceKey(item)) : [t(sourceKey(item)), ...(dish?.estimate ? [t('foodsearch.dish.estimate')] : []), t('foodsearch.per100', { kcal: kcalText(i18n, item.per100.kcal) })].join(' · ')
   const chip = 'min-h-11 rounded-pill border px-3.5 text-sm font-semibold whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground'
 
   return (
@@ -158,6 +160,7 @@ export function AmountSheet({ item, mode, left, onClose, onSubmit }: { item: Bas
           </div>
         </section>
       ) : null}
+      {dish ? <DishRecipe dish={dish} /> : null}
       {item.source === 'off' ? <p className="shrink-0 type-caption text-muted-foreground">{t('foodsearch.attribution')}</p> : null}
     </Sheet>
   )
