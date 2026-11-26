@@ -297,6 +297,8 @@ Vendimet e miratuara më 26.11.2026 pas bordeve 1–3, 7, 13 dhe 22 të kanavac�
 
 **Gjendja (26.11.2026, 19:45):** "Mbyll ditën" për dje me prova (`close-day.test.tsx`), parë live në 390 px në tri temat. Prova e Android-it nuk u nis: `actions-usage.mjs --month --check 20` doli me kodin 1 (rreth 2 327 nga 2 000 minutat e vlerësuara të muajit); vendimi i takon përdoruesit (ORKESTRIMI › Kostot).
 
+**Gjendja (26.11.2026, 20:10), lëshimi 0.30.0:** "po" e përdoruesit; ikonat (V67) dhe vala 1 (V68–V73, porcionet shqip) te `main` me fast-forward. Prova e plotë e Android-it 45876981343 e gjelbër te `04354bc`; pa migrim (`user_settings.meal_plan`). Minutat: repo-ja është publike, ndaj vlerësimi i `actions-usage.mjs` nuk vlen si ndalesë (fjala e përdoruesit).
+
 ## V2-E3-31 · Ikonat e ushqimeve (V30, V67)
 
 **Gjendja (26.11.2026), vala 1, dega `feat/ikonat-ushqimit`:** 58 ilustrime me ngjyra dhe rregullat ushqim → ikonë (V67), të lidhura me `FoodTile` te kërkimi, shporta, fleta e vaktit, dita dhe Plotëso makrot. Provat: `food-icon-map.test.ts` (rastet shqip dhe anglisht; çdo ushqim i Listës merr ikonë të vizatuar, të zakonshmet pa pjatën e përgjithshme); lint, 2 265 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px (kërkimi "vez", Ushqimi). Mbetet: prova e pamjes në Natë dhe Ditë, prova e Android-it, fotot e pjatave (V30), ndarja e ikonave shumë të gjera (mishi, pjeshka) dhe gabimet e rregullave te emrat e përbërë. Pa ndryshim versioni; nuk është te `main`.

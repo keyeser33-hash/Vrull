@@ -1,0 +1,8 @@
+Ikona me ngjyra për ushqimet te kërkimi, dita dhe vaktet
+"Si ha ti": zgjidh 3, 4 ose 5 vakte dhe hap Planin tim
+"Mbyll ditën": çdo vakt i ditës me një prekje, edhe për dje
+"E kapërceva": një vakt mbyllet pa ushqim
+Proteina në krye të Ushqimit, me vargun e ditëve të shënuara
+"Zhvendos": një vakt i shënuar gabim shkon te një vakt tjetër ose te dje
+"Ruaje te Plani im": vakti i sotëm bëhet plani i atij vakti
+Porcionet e Listës së Vrullit në shqip (1 filxhan, 1 copë e madhe)
