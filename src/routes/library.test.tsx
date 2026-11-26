@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect, useState } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -102,8 +102,8 @@ describe('Biblioteka', () => {
     const user = userEvent.setup()
     await renderLibrary()
     await user.type(await screen.findByLabelText('Kërko ushtrim'), 'landmine pr')
-    const [landmine] = rows()
-    expect(landmine).toHaveTextContent('Landmine PressShpatullat · gjoksi, tricepsiI yti')
+    // Ushtrimi i përdoruesit vjen nga një lexim i telefonit: lista pas shkrimit mund të mos e ketë ende (CI, 26.11.2026).
+    await waitFor(() => expect(rows()[0]).toHaveTextContent('Landmine PressShpatullat · gjoksi, tricepsiI yti'))
     await user.type(screen.getByLabelText('Kërko ushtrim'), 'zzz')
     expect(screen.getByText('Asnjë ushtrim me këtë kërkim dhe këta filtra.')).toBeInTheDocument()
   })
