@@ -77,6 +77,13 @@ describe('pjatat shqiptare te kërkimi', () => {
     expect(searchCatalog(list, 'white bean stew').map((item) => item.id)).toEqual(['vrull-dish-fasule'])
   })
 
+  it('pjata që fillon me kërkesën del para përbërësit me të njëjtën fjalë: "byrek" jep byrekët para petës', () => {
+    const pastry = food({ id: 'usda-fdc-91', nameEn: 'Phyllo dough', nameSq: 'Petë byreku (filo)', commonRank: 300 })
+    const list = buildIndex([pastry, dish(), dish({ id: 'vrull-dish-byrek-me-mish', nameEn: 'Minced meat byrek', nameSq: 'Byrek me mish', commonRank: 920 })])
+    expect(searchCatalog(list, 'byrek').map((item) => item.id)).toEqual(['vrull-dish-byrek-me-spinaq', 'vrull-dish-byrek-me-mish', 'usda-fdc-91'])
+    expect(searchCatalog(list, 'pete').map((item) => item.id)).toEqual(['usda-fdc-91'])
+  })
+
   it('porcioni i pjatës ndjek gjuhën, edhe kur etiketa nuk fillon me "1 njësi" të shkurtër', () => {
     expect(commonPortion(dish(), 'sq')).toEqual({ label: '1 copë', grams: 136 })
     expect(commonPortion(dish(), 'en')).toEqual({ label: '1 piece', grams: 136 })
