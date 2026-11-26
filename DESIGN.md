@@ -136,7 +136,7 @@ Tekstet e komponentëve vijnë nga katalogu (`ui.*`); numrat i formatojnë vetë
 
 ## Ikonat
 
-Vijë 2 px në rrjetë 24 px, cepa dhe nyje të rrumbullakëta, pa mbushje (përveç pikës së një shenje, që merr `currentColor`). Aktive te tab-bar-i në `ember-text`. Ikona pa tekst ka gjithnjë `aria-label`. Ikonat e ushqimit (V30): njëngjyrëshe, kurrë prush.
+Vijë 2 px në rrjetë 24 px, cepa dhe nyje të rrumbullakëta, pa mbushje (përveç pikës së një shenje, që merr `currentColor`). Aktive te tab-bar-i në `ember-text`. Ikona pa tekst ka gjithnjë `aria-label`. Ikonat e ushqimit (V67, zëvendëson "njëngjyrëshe" të V30): ilustrime me ngjyra në rrjetën 32 (`FoodIcon`, të dhënat te `src/catalog/food-icons.ts`), me ngjyra të zbutura dhe kurrë afër prushit; të njëjta në tri temat, mbi pllakën `surface-2` (`FoodTile`). Janë vizatime, jo tokena: hex-et lejohen vetëm te ai skedar.
 
 ## Lëvizja
 

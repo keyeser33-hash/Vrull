@@ -78,7 +78,7 @@ export function BasketSheet({
           const macros = basketTotals([item])
           return (
             <li key={item.foodId} className="flex min-h-[72px] items-center gap-3 border-t border-border">
-              <FoodTile size="md" />
+              <FoodTile size="md" names={[item.name, name]} />
               <button type="button" aria-label={t('foodsearch.review.quantity', { food: name, quantity })} onClick={() => onEdit(item.foodId)} className="flex min-h-16 min-w-0 flex-1 flex-col justify-center gap-0.5 text-left focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground">
                 <span className="flex items-center gap-2">
                   <span className="truncate type-body-strong">{name}</span>

@@ -277,6 +277,10 @@ Faktet e bordeve janë të vërteta, me burim të kontrolluar. Shënimi "Si ta k
 
 **Gjendja (15.11.2026, 22:30), lëshimi 0.26.0:** përdoruesi e bëri repo-n publike (Actions falas për repo-t publike) dhe tha "Kontrolloje tani". 0.25.0 nuk u publikua kurrë; 0.26.0 mban 0.25.0 plus V62 (programi dhe ushqimi si te PDF-ja). Para publikimit: pa çelësa në histori [V, kërkim me modele çelësash]; shembujt me 185 cm/88 kg te SPEC-u nuk thonë më "përdoruesi". Email-i i autorit mbetet te 30 commit-e të vjetra (rishkrimi i historisë vetëm me fjalën e përdoruesit). **Doli** [V]: nisja 43764491916 (prova e Android-it e gjelbër, APK-ja e nënshkruar, Release v0.26.0 me `TrainingHub-0.26.0.apk`, përditësimi brenda app-it i publikuar); CI 43764491901 e gjelbër.
 
+## V2-E3-31 · Ikonat e ushqimeve (V30, V67)
+
+**Gjendja (26.11.2026), vala 1, dega `feat/ikonat-ushqimit`:** 58 ilustrime me ngjyra dhe rregullat ushqim → ikonë (V67), të lidhura me `FoodTile` te kërkimi, shporta, fleta e vaktit, dita dhe Plotëso makrot. Provat: `food-icon-map.test.ts` (rastet shqip dhe anglisht; çdo ushqim i Listës merr ikonë të vizatuar, të zakonshmet pa pjatën e përgjithshme); lint, 2 265 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px (kërkimi "vez", Ushqimi). Mbetet: prova e pamjes në Natë dhe Ditë, prova e Android-it, fotot e pjatave (V30), ndarja e ikonave shumë të gjera (mishi, pjeshka) dhe gabimet e rregullave te emrat e përbërë. Pa ndryshim versioni; nuk është te `main`.
+
 ## V2-E3-34 · Sot i ri, Mëso dhe seanca e re (ndërtimi i bordeve 0.40 dhe 0.41)
 
 Përdoruesi i miratoi bordet "0.40 · Final: Sot dhe Mëso" dhe "0.41 · Seanca e re" siç janë (V63, 15.11.2026) dhe zgjodhi Sot-in së pari. Valët: 34a Sot i ri (matësit, ritmi, karta, java me pika, fleta e ditës); 34b story-t; 34c Mëso (faktet, `learn_events`, kuizi, faqja Mëso, "A e dije?"); 34d seanca e re. Dalin bashkë në një version.

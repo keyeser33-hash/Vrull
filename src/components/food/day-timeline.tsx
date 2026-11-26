@@ -122,7 +122,7 @@ function MealRow({ day, meal, now, onOpen, onToast }: { day: NutritionDay; meal:
             <span className="text-[15px] leading-5 font-semibold">{name}</span>
             <span aria-hidden className="flex gap-1">
               {meal.entries.slice(0, MAX_TILES).map((entry) => (
-                <FoodTile key={entry.id} size="xs" />
+                <FoodTile key={entry.id} size="xs" names={[entry.name]} />
               ))}
             </span>
           </span>
@@ -197,7 +197,7 @@ function NextMeal({ day, meal, now, onOpen, onToast }: { day: NutritionDay; meal
           <ul className="m-0 flex list-none flex-col p-0">
             {meal.template.map((line, index) => (
               <li key={`${line.food}-${index}`} className="flex min-h-10 items-center gap-2.5">
-                <FoodTile size="sm" />
+                <FoodTile size="sm" names={[line.name]} />
                 <span className="min-w-0 flex-1 text-[15px] leading-5">{foodName(t, { name: line.name, sourceId: line.sourceId })}</span>
                 <span className="shrink-0 text-sm leading-5 whitespace-nowrap text-muted-foreground">{portionText(t, fmt, line.portion)}</span>
               </li>

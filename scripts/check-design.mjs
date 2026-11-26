@@ -7,7 +7,8 @@ import { join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const ALLOWED = new Set(['src/styles/globals.css'])
+// `food-icons.ts`: ilustrimet me ngjyra të ushqimeve (SPEC V67) janë vizatime, jo ngjyra të temës.
+const ALLOWED = new Set(['src/styles/globals.css', 'src/catalog/food-icons.ts'])
 
 // Emrat e v1 që globals.css i mban si alias drejt tokenave të Vrullit, që ekranet e v1 të hapen
 // deri sa të rishikohen (E1-05 … E1-15). Kod i ri nuk i përdor.

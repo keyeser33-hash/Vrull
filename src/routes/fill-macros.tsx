@@ -129,7 +129,7 @@ export function FillMacrosPage() {
                 <ul className="flex flex-col">
                   {proposal.items.map((item) => (
                     <li key={item.food.foodId} className="flex min-h-10 items-center gap-2.5">
-                      <FoodTile size="sm" />
+                      <FoodTile size="sm" names={[item.food.name, itemName(item)]} />
                       <span className="min-w-0 flex-1 text-[15px]">{itemName(item)}</span>
                       <span className="text-sm whitespace-nowrap text-muted-foreground tabular-nums">{itemAmount(item)}</span>
                     </li>

@@ -77,7 +77,7 @@ export function MealSheet({ day, meal, onClose, onToast }: { day: NutritionDay; 
             const name = foodName(t, entry)
             return (
               <li key={entry.id} className="flex min-h-14 items-center gap-3 border-t border-border first:border-t-0">
-                <FoodTile size="md" />
+                <FoodTile size="md" names={[entry.name, name]} />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate text-base leading-6">{name}</span>
                   <span className="text-xs leading-4 text-muted-foreground">
@@ -100,7 +100,7 @@ export function MealSheet({ day, meal, onClose, onToast }: { day: NutritionDay; 
             const portion = portionText(t, fmt, line.portion)
             return (
               <li key={`${line.food}-${index}`} className="flex min-h-16 items-center gap-3 border-t border-border">
-                <FoodTile size="md" />
+                <FoodTile size="md" names={[line.name, name]} />
                 <Link to={planLink()} aria-label={t('foodday.sheet.quantity', { food: name, portion })} className="flex min-h-[60px] min-w-0 flex-1 flex-col justify-center gap-0.5 text-left">
                   <span className="truncate text-base leading-6 font-semibold">{name}</span>
                   <span className="text-sm leading-5">

@@ -83,7 +83,7 @@ export function PickRow({
   const body = 'flex min-w-0 flex-1 items-center gap-3 text-left'
   const content = (
     <>
-      <FoodTile size={size === 'lg' ? 'lg' : 'md'} />
+      <FoodTile size={size === 'lg' ? 'lg' : 'md'} names={[aside, name]} />
       <span className="flex min-w-0 flex-col gap-0.5">
         <span className="flex items-center gap-2">
           <span className="truncate type-body-strong">{name}</span>
