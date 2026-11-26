@@ -136,7 +136,7 @@ export async function saveExternalFood(store: LocalStore, food: ExternalFood): P
  */
 export async function saveCatalogFood(store: LocalStore, food: CatalogFood, language: CatalogLanguage): Promise<string> {
   const [existing] = await store.where('foods', '[source+source_id]', ['catalog', food.id])
-  const portion = commonPortion(food)
+  const portion = commonPortion(food, language)
   const row = await store.put('foods', {
     id: existing?.id,
     source: 'catalog',

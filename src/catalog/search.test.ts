@@ -15,6 +15,7 @@ const food = (overrides: Partial<CatalogFood> & { id: string; nameEn: string }):
   portions: [],
   alsoIn: [],
   commonRank: null,
+  dish: null,
   ...overrides,
 })
 
@@ -33,6 +34,56 @@ const oatsFndds = food({ id: 'usda-fdc-11', source: 'usda_fndds', nameEn: 'Oatme
 const all = [eggnog, eggWhiteFrench, kosher, chickpeas, oatsFndds, cheddar, cheese, egg, eggBoiled, chicken, yoghurt, oats]
 const index = buildIndex(all)
 const ids = (query: string, options?: Parameters<typeof searchCatalog>[2]) => searchCatalog(index, query, options).map((item) => item.id)
+
+const dish = (overrides: Partial<CatalogFood> = {}) =>
+  food({
+    id: 'vrull-dish-byrek-me-spinaq',
+    source: 'vrull_recipe',
+    license: 'Vrull-recipe',
+    nameEn: 'Spinach byrek',
+    nameSq: 'Byrek me spinaq',
+    nameSqChecked: true,
+    commonRank: 914,
+    portions: [{ label: '1 piece', grams: 136 }],
+    dish: { ingredients: [], source: { label: 'x', title: 'y', url: null }, estimates: [], estimate: true, readers: false, note: { sq: 'a', en: 'b' }, portion: { sq: '1 copë', en: '1 piece' } },
+    ...overrides,
+  })
+
+describe('pjatat shqiptare te kërkimi', () => {
+  const dishes = [
+    dish(),
+    dish({ id: 'vrull-dish-tave-kosi', nameEn: 'Baked lamb with yoghurt', nameSq: 'Tavë kosi', commonRank: 915 }),
+    dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Fasule', commonRank: 916 }),
+    dish({ id: 'vrull-dish-flija', nameEn: 'Flija', nameSq: 'Flija', commonRank: 917 }),
+    egg,
+    cheese,
+  ]
+  const dishIndex = buildIndex(dishes)
+  const found = (query: string) => searchCatalog(dishIndex, query).map((item) => item.id)
+
+  it('"byrek", "tave kosi" (pa ë), "fasule" dhe "flija" i gjejnë pjatat, edhe me emrin anglisht', () => {
+    expect(found('byrek')).toEqual(['vrull-dish-byrek-me-spinaq'])
+    expect(found('tave kosi')).toEqual(['vrull-dish-tave-kosi'])
+    expect(found('FASULE')).toEqual(['vrull-dish-fasule'])
+    expect(found('flija')).toEqual(['vrull-dish-flija'])
+    expect(found('lamb yoghurt')).toEqual(['vrull-dish-tave-kosi'])
+  })
+
+  it('emri që është saktësisht kërkesa del i pari, para ushqimeve më të zakonshme që e kanë fjalën', () => {
+    const beans = food({ id: 'usda-fdc-90', nameEn: 'Beans, white, cooked', nameSq: 'Fasule të bardha, të ziera', commonRank: 20 })
+    const list = buildIndex([beans, dish({ id: 'vrull-dish-fasule', nameEn: 'White bean stew', nameSq: 'Fasule', commonRank: 916 })])
+    expect(searchCatalog(list, 'fasule').map((item) => item.id)).toEqual(['vrull-dish-fasule', 'usda-fdc-90'])
+    expect(searchCatalog(list, 'Fasulë').map((item) => item.id)).toEqual(['vrull-dish-fasule', 'usda-fdc-90'])
+    expect(searchCatalog(list, 'white bean stew').map((item) => item.id)).toEqual(['vrull-dish-fasule'])
+  })
+
+  it('porcioni i pjatës ndjek gjuhën, edhe kur etiketa nuk fillon me "1 njësi" të shkurtër', () => {
+    expect(commonPortion(dish(), 'sq')).toEqual({ label: '1 copë', grams: 136 })
+    expect(commonPortion(dish(), 'en')).toEqual({ label: '1 piece', grams: 136 })
+    const japrak = dish({ portions: [{ label: '1 serving (6 rolls)', grams: 295 }], dish: { ...dish().dish!, portion: { sq: '1 porcion (6 japrak)', en: '1 serving (6 rolls)' } } })
+    expect(commonPortion(japrak, 'sq')).toEqual({ label: '1 porcion (6 japrak)', grams: 295 })
+  })
+})
 
 describe('normalizimi', () => {
   it('heq diakritikat dhe shkronjat e mëdha: ë, ç, é', () => {

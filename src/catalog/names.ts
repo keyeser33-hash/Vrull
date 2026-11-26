@@ -5,7 +5,9 @@ import type { CatalogFood, CatalogSource } from './types'
 
 export type CatalogLanguage = 'sq' | 'en'
 
-export function catalogNames(language: CatalogLanguage, food: Pick<CatalogFood, 'nameEn' | 'nameSq' | 'nameSqChecked'>): { name: string; aside: string | null } {
+export function catalogNames(language: CatalogLanguage, food: Pick<CatalogFood, 'nameEn' | 'nameSq' | 'nameSqChecked'> & { dish?: unknown }): { name: string; aside: string | null; asideLang?: CatalogLanguage } {
+  // Pjata shqiptare (V65): emri shqip dhe anglishti dalin gjithmonë krahas, në cilëndo gjuhë (byrek ka kuptim edhe për një lexues anglisht).
+  if (food.dish && food.nameSq && food.nameSq !== food.nameEn) return language === 'sq' ? { name: food.nameSq, aside: food.nameEn, asideLang: 'en' } : { name: food.nameEn, aside: food.nameSq, asideLang: 'sq' }
   if (language === 'en' || !food.nameSq) return { name: food.nameEn, aside: null }
   return { name: food.nameSq, aside: food.nameSqChecked ? null : food.nameEn }
 }
@@ -13,10 +15,10 @@ export function catalogNames(language: CatalogLanguage, food: Pick<CatalogFood, 
 /** Emri që ruhet te ushqimet e përdoruesit kur ushqimi shtohet (një emër, në gjuhën e atij çasti). */
 export const catalogSavedName = (language: CatalogLanguage, food: Pick<CatalogFood, 'nameEn' | 'nameSq'>) => (language === 'sq' && food.nameSq ? food.nameSq : food.nameEn)
 
-/** Burimi i shkurtër i etiketës: tre datasetet e USDA-së janë një "USDA". */
-export type SourceLabel = 'usda' | 'ciqual' | 'cofid' | 'livsmedelsverket'
+/** Burimi i shkurtër i etiketës: tre datasetet e USDA-së janë një "USDA"; pjatat shqiptare "Vrull, recetë". */
+export type SourceLabel = 'usda' | 'ciqual' | 'cofid' | 'livsmedelsverket' | 'dish'
 
-export const sourceLabelOf = (source: CatalogSource): SourceLabel => (source.startsWith('usda') ? 'usda' : (source as SourceLabel))
+export const sourceLabelOf = (source: CatalogSource): SourceLabel => (source.startsWith('usda') ? 'usda' : source === 'vrull_recipe' ? 'dish' : (source as SourceLabel))
 
 /** Burimi nga ID e ushqimit të listës ("ciqual-22000" → ciqual); null kur ID nuk është e listës. */
 export function sourceLabelOfId(id: string): SourceLabel | null {
@@ -24,5 +26,6 @@ export function sourceLabelOfId(id: string): SourceLabel | null {
   if (id.startsWith('ciqual-')) return 'ciqual'
   if (id.startsWith('cofid-')) return 'cofid'
   if (id.startsWith('livsmedelsverket-')) return 'livsmedelsverket'
+  if (id.startsWith('vrull-dish-')) return 'dish'
   return null
 }

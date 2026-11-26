@@ -2,7 +2,7 @@ import { CATALOG_SOURCES, type CatalogFood, type CatalogPortion } from './types'
 
 // Kërkimi pa internet te Lista e Vrullit (SPEC §0.3h): shqip dhe anglisht, pa diakritika, me fjalë të pjesshme.
 // Logjikë pa UI. Çdo fjalë e kërkesës duhet të jetë në emër (shqip ose anglisht); rendi: të zakonshmet të parat,
-// sipas radhës së tyre, pastaj ata që e kanë kërkesën në fillim të një fjale, pastaj emrat më të shkurtër.
+// sipas radhës së tyre (por emri që është saktësisht kërkesa del i pari), pastaj ata që e kanë kërkesën në fillim të një fjale, pastaj emrat më të shkurtër.
 
 /** Tekst pa shenja dhe pa dallim shkronjash: "Vezë" → "veze", "Çedar" → "cedar"; pikësimi bëhet hapësirë. */
 export function normalize(value: string): string {
@@ -44,12 +44,15 @@ interface Hit {
   score: number
   /** 1 kur një fjalë e kërkesës gjendet vetëm brenda një fjale tjetër. */
   inside: number
+  /** 0 kur kërkesa është saktësisht emri i ushqimit (shqip ose anglisht): "fasule" gjen pjatën Fasule para "Fasule të bardha, të ziera". */
+  notExact: number
 }
 
 export function searchCatalog(index: CatalogIndex, query: string, options: SearchOptions = {}): CatalogFood[] {
   const words = normalize(query).split(' ').filter(Boolean)
   if (words.length === 0) return []
   const limit = options.limit ?? 40
+  const whole = words.join(' ')
   const hits: Hit[] = []
   for (let i = 0; i < index.foods.length; i++) {
     const text = index.haystack[i]
@@ -67,12 +70,13 @@ export function searchCatalog(index: CatalogIndex, query: string, options: Searc
     if (score < 0) continue
     const food = index.foods[i]
     if (options.exclude?.has(food.id)) continue
-    hits.push({ food, score, inside })
+    const exact = normalize(food.nameEn) === whole || (food.nameSq !== null && normalize(food.nameSq) === whole)
+    hits.push({ food, score, inside, notExact: exact ? 0 : 1 })
   }
   const rank = (hit: Hit) => hit.food.commonRank ?? Number.POSITIVE_INFINITY
   hits.sort((a, b) => {
     // Një fjalë që është vetëm brenda një fjale tjetër ("ausage" te "sausage") shkon pas atyre me fillim fjale, edhe pas të zakonshmeve.
-    return a.inside - b.inside || rank(a) - rank(b) || a.score - b.score || a.food.nameEn.length - b.food.nameEn.length || (SOURCE_ORDER.get(a.food.source) ?? 9) - (SOURCE_ORDER.get(b.food.source) ?? 9) || a.food.nameEn.localeCompare(b.food.nameEn)
+    return a.inside - b.inside || a.notExact - b.notExact || rank(a) - rank(b) || a.score - b.score || a.food.nameEn.length - b.food.nameEn.length || (SOURCE_ORDER.get(a.food.source) ?? 9) - (SOURCE_ORDER.get(b.food.source) ?? 9) || a.food.nameEn.localeCompare(b.food.nameEn)
   })
   return hits.slice(0, limit).map((hit) => hit.food)
 }
@@ -81,7 +85,9 @@ export function searchCatalog(index: CatalogIndex, query: string, options: Searc
  * Porcioni i zakonshëm i rreshtit: i pari që fillon me "1 " (një njësi, p.sh. "1 large", "1 cup"), me etiketë të shkurtër dhe gramë të
  * arsyeshme; "2 tablespoon" ose "1 cup (4.86 large eggs)" nuk hyjnë, sepse etiketa do të gënjente për njësinë. Pa të: 100 g pa etiketë.
  */
-export function commonPortion(food: CatalogFood): { label: string | null; grams: number } {
+export function commonPortion(food: CatalogFood, language: 'sq' | 'en' = 'en'): { label: string | null; grams: number } {
+  // Pjata shqiptare (V65): porcioni është një i vetëm, i recetës, me etiketën në gjuhën e kërkuar ("1 copë" / "1 piece").
+  if (food.dish && food.portions[0]?.grams > 0) return { label: food.dish.portion[language], grams: food.portions[0].grams }
   const portion: CatalogPortion | undefined = food.portions.find((item) => /^1 \S/.test(item.label) && item.label.length <= 20 && item.grams > 0 && item.grams <= 1000)
   return portion ? { label: portion.label, grams: portion.grams } : { label: null, grams: 100 }
 }

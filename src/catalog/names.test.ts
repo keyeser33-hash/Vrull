@@ -25,7 +25,19 @@ describe('emrat e listës', () => {
     expect(catalogSavedName('sq', { ...common, nameSq: null })).toBe('Egg, whole, raw, fresh')
   })
 
+  it('pjata shqiptare: emri shqip dhe anglishti krahas në të dyja gjuhët (emri i pjatës është shqip)', () => {
+    const dish = { nameEn: 'Spinach byrek', nameSq: 'Byrek me spinaq', nameSqChecked: true, dish: {} as never }
+    expect(catalogNames('sq', dish)).toEqual({ name: 'Byrek me spinaq', aside: 'Spinach byrek', asideLang: 'en' })
+    expect(catalogNames('en', dish)).toEqual({ name: 'Spinach byrek', aside: 'Byrek me spinaq', asideLang: 'sq' })
+    expect(catalogSavedName('sq', dish)).toBe('Byrek me spinaq')
+    expect(catalogSavedName('en', dish)).toBe('Spinach byrek')
+    // Emri i njëjtë në të dyja gjuhët (Flija): pa emër krahas.
+    expect(catalogNames('sq', { ...dish, nameEn: 'Flija', nameSq: 'Flija' })).toEqual({ name: 'Flija', aside: null })
+  })
+
   it('burimi i shkurtër nga burimi dhe nga ID', () => {
+    expect(sourceLabelOf('vrull_recipe')).toBe('dish')
+    expect(sourceLabelOfId('vrull-dish-tave-kosi')).toBe('dish')
     expect(sourceLabelOf('usda_fndds')).toBe('usda')
     expect(sourceLabelOf('cofid')).toBe('cofid')
     expect(sourceLabelOfId('usda-fdc-171287')).toBe('usda')

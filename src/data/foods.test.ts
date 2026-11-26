@@ -102,12 +102,28 @@ describe('ushqimet', () => {
       portions: [{ label: '2 tablespoon', grams: 30 }, { label: '1 large', grams: 50 }],
       alsoIn: [],
       commonRank: 3,
+      dish: null,
     }
     const id = await saveCatalogFood(store, egg, 'sq')
     expect(await saveCatalogFood(store, egg, 'en')).toBe(id)
     const rows = (await store.all('foods')).filter((row) => row.source === 'catalog')
     expect(rows).toHaveLength(1)
     expect(await foodById(store, id)).toMatchObject({ source: 'catalog', sourceId: 'usda-fdc-171287', name: 'Egg, whole, raw, fresh', kcal: 143, proteinG: 12.6, servingG: 50, servingLabel: '1 large' })
+    const byrek: CatalogFood = {
+      ...egg,
+      id: 'vrull-dish-byrek-me-spinaq',
+      source: 'vrull_recipe',
+      license: 'Vrull-recipe',
+      nameEn: 'Spinach byrek',
+      nameSq: 'Byrek me spinaq',
+      nameSqChecked: true,
+      portions: [{ label: '1 piece', grams: 136 }],
+      dish: { ingredients: [], source: { label: 'x', title: 'y', url: null }, estimates: [], estimate: true, readers: false, note: { sq: 'a', en: 'b' }, portion: { sq: '1 copë', en: '1 piece' } },
+    }
+    const dishId = await saveCatalogFood(store, byrek, 'sq')
+    expect(await foodById(store, dishId)).toMatchObject({ source: 'catalog', sourceId: 'vrull-dish-byrek-me-spinaq', name: 'Byrek me spinaq', servingG: 136, servingLabel: '1 copë' })
+    await saveCatalogFood(store, byrek, 'en')
+    expect(await foodById(store, dishId)).toMatchObject({ name: 'Spinach byrek', servingG: 136, servingLabel: '1 piece' })
     const noPortion = await saveCatalogFood(store, { ...egg, id: 'ciqual-22000', portions: [], nameSq: null }, 'sq')
     expect(await foodById(store, noPortion)).toMatchObject({ name: 'Egg, whole, raw, fresh', servingG: null, servingLabel: null })
   })
