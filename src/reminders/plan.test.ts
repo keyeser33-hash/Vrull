@@ -36,6 +36,15 @@ describe('rikujtuesit (§13)', () => {
     ])
   })
 
+  it('ora e stërvitjes vetëm për sot (V76): rikujtuesi dhe vaktet e stërvitjes e ndjekin', () => {
+    const plan = { removed: [], times: {}, from: null, previous: null, day: null, skipped: {}, logging: null, training: { date: '2026-12-07', time: '20:30' } }
+    const items = lines(base({ from: new Date('2026-12-07T06:00:00'), mealPlan: plan }))
+    expect(items.some((line) => line.endsWith('Stërvitja 20:30'))).toBe(true)
+    expect(items.some((line) => line.startsWith('20:15 Para stërvitjes'))).toBe(true)
+    // Të martën (ditë tjetër stërvitjeje) vlen ora e zakonshme.
+    expect(lines(base({ from: new Date('2026-12-08T06:00:00'), mealPlan: plan })).some((line) => line.endsWith('Stërvitja 18:00'))).toBe(true)
+  })
+
   it('ditë stërvitjeje: në mëngjes stërvitja e radhës; vaktet para dhe pas', () => {
     const items = lines(base({ from: new Date('2026-12-07T06:00:00') }))
     expect(items).toContain('07:30 Sot: Faza 1 · Java 2 · Stërvitja 3: Stërvitja 18:00')

@@ -17,6 +17,7 @@ import { programBlockName, programDayName } from '@/i18n/domain'
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { useStartWorkout } from './start-workout'
+import { TrainingTimeButton } from './training-time'
 import { editorPath } from './editor-nav'
 import { capitalize, dayShort, dotted, setsText, techniqueName, weekLabel, weekShort } from './programme-format'
 
@@ -215,9 +216,17 @@ function NextWorkout({ home, day, now }: { home: ActiveProgramHome; day: Program
           ) : null}
         </div>
       ) : null}
+      {/* Ora e sotme ndryshohet nga këtu (V76); një ditë tjetër e ka orën te Oraret. */}
+      {day.date && sameDay(day.date, now) ? <TrainingTimeButton /> : null}
       <Button variant="primary" size="lg" className="w-full" disabled={!first} {...starter.buttonProps}>
         {starter.label(next.inProgress ? t('programme.resume') : t('programme.start'))}
       </Button>
+      {/* "E bëra, po e shënoj" (V74): e gjithë stërvitja në një tabelë, pas palestrës. */}
+      {first ? (
+        <Link to="/programi/shenoje" className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'w-full normal-case')}>
+          {t('after.open')}
+        </Link>
+      ) : null}
       {starter.sheet}
     </article>
   )

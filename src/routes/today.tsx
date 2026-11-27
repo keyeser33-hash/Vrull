@@ -29,6 +29,7 @@ import { cn } from '@/lib/cn'
 import { webglAvailable } from '@/lib/webgl'
 import { UpdateNotice } from './app-update'
 import { useStartWorkout } from './start-workout'
+import { TrainingTimeButton } from './training-time'
 import { repsText, targetLine } from './today-format'
 import { atNoon, capitalize } from './week-format'
 import { DayRhythm } from './day-rhythm'
@@ -198,6 +199,8 @@ function WorkoutCard({ view }: { view: TodayView }) {
           </p>
         ) : null}
         {strength && !upcoming ? <p className="relative type-caption text-muted-foreground tabular-nums">{strengthLine(i18n, strength.percent, strength.strengths)}</p> : null}
+        {/* Ora e sotme ndryshohet nga karta (V76), vetëm para se të nisë stërvitja. */}
+        {mode === 'train' ? <TrainingTimeButton className="relative" /> : null}
         <Button variant={upcoming || quiet ? 'secondary' : 'primary'} size="lg" className="relative mt-auto w-full" disabled={workout.exercises === 0} {...starter.buttonProps}>
           {starter.label(action)}
         </Button>

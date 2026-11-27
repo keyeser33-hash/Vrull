@@ -51,6 +51,7 @@ const appScreens: RouteObject[] = [
       { path: 'ushqimi', ...screen(() => import('@/routes/nutrition'), (m) => m.NutritionPage), ...tab('food') },
       { path: 'ushqimi/nisja', ...screen(() => import('@/routes/food-setup'), (m) => m.FoodSetupPage), ...tab(null) },
       { path: 'ushqimi/mbyll', ...screen(() => import('@/routes/close-day'), (m) => m.CloseDayPage), ...tab(null) },
+      { path: 'programi/shenoje', ...screen(() => import('@/routes/workout-after'), (m) => m.WorkoutAfterPage), ...tab(null) },
       { path: 'ushqimi/shto/:meal', ...screen(() => import('@/routes/add-food'), (m) => m.AddFoodPage), ...tab(null) },
       { path: 'ushqimi/plotesomakrot', ...screen(() => import('@/routes/fill-macros'), (m) => m.FillMacrosPage), ...tab(null) },
       { path: 'ushqimi/objektivat', ...screen(() => import('@/routes/nutrition-targets'), (m) => m.TargetsPage), ...tab(null) },

@@ -23,6 +23,7 @@ import * as today from './areas/today'
 import * as sot from './areas/sot'
 import * as videos from './areas/videos'
 import * as week from './areas/week'
+import * as after from './areas/after'
 import * as foodday from './areas/foodday'
 import * as foodsearch from './areas/foodsearch'
 import * as learn from './areas/learn'
@@ -308,6 +309,7 @@ export const en: Translation = {
   ...lighter.en,
   ...daymode.en,
   ...foodday.en,
+  ...after.en,
   ...foodsearch.en,
   ...learn.en,
 }

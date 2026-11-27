@@ -152,6 +152,8 @@ describe('Sot', () => {
     expect(within(card).getByText('9 ushtrime · ~65 min')).toBeInTheDocument()
     expect(within(card).getByText(paragraph('Bench Press: synim 62,5 × 9–⁠11.'))).toBeInTheDocument()
     expect(within(card).getByText('Gjoksi: gati')).toBeInTheDocument()
+    // Ora e sotme ndryshohet nga karta (V76).
+    expect(await within(card).findByRole('button', { name: /^Ora e stërvitjes \d\d:\d\d\. Ndryshoje$/ })).toBeInTheDocument()
     expect(emberButtons().map((button) => button.textContent)).toEqual(['Fillo stërvitjen'])
     expect(screen.getByRole('button', { name: 'Kapërce këtë stërvitje' })).toHaveAttribute('aria-haspopup', 'dialog')
 

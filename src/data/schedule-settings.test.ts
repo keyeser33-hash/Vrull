@@ -1,7 +1,7 @@
 import { createDatabase } from './db'
 import { nutritionDay } from './nutrition'
 import { completeOnboarding } from './profile'
-import { mealPlanOn, moveMealTimes, readSchedule, saveFoodSetup, saveSchedule, setMealSkipped, SKIPPED_DAYS_KEPT, skippedOn, trainingTimeOn } from './schedule-settings'
+import { mealPlanOn, moveMealTimes, readSchedule, saveFoodSetup, saveSchedule, setMealSkipped, SKIPPED_DAYS_KEPT, setTrainingTime, skippedOn, trainingTimeOn } from './schedule-settings'
 import { createLocalStore } from './store'
 
 // Oraret e përdoruesit (V35, V2-E2-06).
@@ -28,6 +28,35 @@ describe('oraret e përdoruesit', () => {
     // E enjtja në 20:30: darka bie te stërvitja dhe kalon pas saj (rregulli i PDF-së).
     const thursday = await nutritionDay(store, '2026-12-10', at('2026-12-10', '09:00'))
     expect(thursday.meals.map((meal) => `${meal.time} ${meal.meal}`).slice(-4)).toEqual(['20:15 pre_workout', '21:30 post_workout', '22:30 dinner', '00:30 bedtime'])
+  })
+
+  it('ora "vetëm sot" (V76): vlen për atë datë, vaktet e stërvitjes lëvizin, java tjetër mbetet', async () => {
+    const store = await setup()
+    await setTrainingTime(store, '2026-12-10', '07:00', 'day')
+    const saved = await readSchedule(store)
+    expect(trainingTimeOn(saved, '2026-12-10')).toBe('07:00')
+    expect(trainingTimeOn(saved, '2026-12-17')).toBe('21:00')
+    expect(saved.trainingTimes[4]).toBe('21:00')
+    const thursday = await nutritionDay(store, '2026-12-10', at('2026-12-10', '06:00'))
+    expect(thursday.meals.find((meal) => meal.meal === 'post_workout')?.time).toBe('08:00')
+    // E njëjta orë me të zakonshmen e heq ndryshimin.
+    await setTrainingTime(store, '2026-12-10', '21:00', 'day')
+    expect((await readSchedule(store)).plan.training).toBeNull()
+  })
+
+  it('ora "çdo të enjte" (V76): ndryshon ditën e javës dhe heq orën vetëm-sot të asaj date', async () => {
+    const store = await setup()
+    await setTrainingTime(store, '2026-12-10', '07:00', 'day')
+    await setTrainingTime(store, '2026-12-10', '20:30', 'weekday')
+    const saved = await readSchedule(store)
+    expect(saved.plan.training).toBeNull()
+    expect(saved.trainingTimes).toEqual({ 1: '21:00', 2: '21:00', 4: '20:30', 5: '21:00' })
+    expect(trainingTimeOn(saved, '2026-12-17')).toBe('20:30')
+    // E mërkura nuk është ditë stërvitjeje: ora vlen vetëm për atë datë.
+    await setTrainingTime(store, '2026-12-09', '19:00', 'weekday')
+    const next = await readSchedule(store)
+    expect(next.plan.training).toEqual({ date: '2026-12-09', time: '19:00' })
+    expect(Object.keys(next.trainingTimes)).toEqual(['1', '2', '4', '5'])
   })
 
   it('plani i vakteve vlen nga nesër; sot mbetet si ishte', async () => {

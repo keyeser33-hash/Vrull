@@ -15,9 +15,10 @@ import { muscleName, programBlockName, programDayName, programWeekLabel } from '
 import { useI18n } from '@/i18n/use-i18n'
 import { cn } from '@/lib/cn'
 import { isTiredDay } from '@/lib/day-mode'
-import { shiftDate } from '@/lib/calendar'
+import { localDate, shiftDate } from '@/lib/calendar'
 import { achievementName } from './achievement-format'
 import { AchievementBadge } from './achievement-parts'
+import { PostWorkoutMeal } from './post-workout-meal'
 import { spokenDuration } from './session-format'
 import { recordPulse, useRecordBurst } from './session-motion'
 
@@ -100,6 +101,9 @@ function SummaryView({ summary }: { summary: SessionSummary }) {
               </ul>
             </section>
           ) : null}
+
+          {/* Hapi i radhës (V78): vakti pas stërvitjes, vetëm për një seancë të mbyllur sot. */}
+          {summary.endedAt && localDate(new Date(summary.endedAt)) === localDate(store.now()) ? <PostWorkoutMeal /> : null}
 
           {week ? <CloseWeekSection week={week} summary={summary} /> : null}
           {achievements ? <CloseAchievements achievements={achievements} /> : null}

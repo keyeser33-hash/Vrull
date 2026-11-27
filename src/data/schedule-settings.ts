@@ -20,6 +20,8 @@ export interface StoredMealPlan extends MealPlan {
   skipped: Record<string, MealKey[]>
   /** Kur e shënon përdoruesi ushqimin (V69): gjatë ditës ose në mbrëmje; null = nuk është pyetur ende. */
   logging: FoodLogging | null
+  /** Ora e stërvitjes vetëm për një datë (V76); ditët e tjera mbajnë orën e ditës së javës. */
+  training: { date: string; time: string } | null
 }
 
 export type FoodLogging = 'day' | 'evening'
@@ -83,6 +85,12 @@ function cleanSkipped(value: unknown): Record<string, MealKey[]> {
   return result
 }
 
+function cleanTraining(value: unknown): { date: string; time: string } | null {
+  if (typeof value !== 'object' || value === null) return null
+  const raw = value as { date?: unknown; time?: unknown }
+  return typeof raw.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(raw.date) && typeof raw.time === 'string' && TIME.test(raw.time) ? { date: raw.date, time: raw.time } : null
+}
+
 const isoWeekday = (date: string) => {
   const [year, month, day] = date.split('-').map(Number)
   return ((new Date(year, month - 1, day).getDay() + 6) % 7) + 1
@@ -100,19 +108,20 @@ export async function readSchedule(store: LocalStore): Promise<ScheduleSettings>
   const first = saved[String(days[0])] ?? DEFAULT_PROFILE.trainingTime
   const trainingTimes: Record<number, string> = {}
   for (const day of days) trainingTimes[day] = TIME.test(saved[String(day)] ?? '') ? saved[String(day)] : first
-  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown; day?: unknown; skipped?: unknown; logging?: unknown } | null
+  const stored = (row?.meal_plan ?? null) as { from?: unknown; previous?: unknown; day?: unknown; skipped?: unknown; logging?: unknown; training?: unknown } | null
   const current = cleanPlan(stored) ?? EMPTY_MEAL_PLAN
   return {
     wakeTime: (row?.wake_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.wakeTime,
     sleepTime: (row?.sleep_time as string | undefined)?.slice(0, 5) ?? DEFAULT_PROFILE.sleepTime,
     trainingDays: days,
     trainingTimes,
-    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous), day: cleanDay(stored?.day), skipped: cleanSkipped(stored?.skipped), logging: stored?.logging === 'day' || stored?.logging === 'evening' ? stored.logging : null },
+    plan: { ...current, from: typeof stored?.from === 'string' ? stored.from : null, previous: cleanPlan(stored?.previous), day: cleanDay(stored?.day), skipped: cleanSkipped(stored?.skipped), logging: stored?.logging === 'day' || stored?.logging === 'evening' ? stored.logging : null, training: cleanTraining(stored?.training) },
   }
 }
 
-/** Ora e stërvitjes së një date (dita e saj ISO), ose e ditës së parë të stërvitjes. */
-export function trainingTimeOn(schedule: Pick<ScheduleSettings, 'trainingDays' | 'trainingTimes'>, date: string): string {
+/** Ora e stërvitjes së një date: ajo e vendosur vetëm për atë datë (V76), pastaj e ditës së saj ISO, pastaj e ditës së parë të stërvitjes. */
+export function trainingTimeOn(schedule: Pick<ScheduleSettings, 'trainingDays' | 'trainingTimes'> & { plan?: Pick<StoredMealPlan, 'training'> }, date: string): string {
+  if (schedule.plan?.training?.date === date) return schedule.plan.training.time
   return schedule.trainingTimes[isoWeekday(date)] ?? schedule.trainingTimes[schedule.trainingDays[0]] ?? DEFAULT_PROFILE.trainingTime
 }
 
@@ -137,7 +146,7 @@ export async function saveSchedule(
   const current = await readSchedule(store)
   const wanted: MealPlan = { removed: [...next.plan.removed], times: { ...next.plan.times } }
   const unchanged = JSON.stringify(mealPlanOn(current.plan, nextDate(today))) === JSON.stringify(wanted)
-  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn({ ...current.plan, day: null }, today), day: current.plan.day, skipped: current.plan.skipped, logging: current.plan.logging }
+  const plan: StoredMealPlan = unchanged ? current.plan : { ...wanted, from: nextDate(today), previous: mealPlanOn({ ...current.plan, day: null }, today), day: current.plan.day, skipped: current.plan.skipped, logging: current.plan.logging, training: current.plan.training }
   const times: Record<string, string> = {}
   for (const day of current.trainingDays) times[String(day)] = next.trainingTimes[day] ?? current.trainingTimes[day]
   await store.put('user_settings', {
@@ -206,4 +215,25 @@ export async function saveFoodSetup(store: LocalStore, setup: { meals: 3 | 4 | 5
   await saveSchedule(store, { wakeTime: current.wakeTime, sleepTime: current.sleepTime, trainingTimes: current.trainingTimes, plan: { removed: MEALS.filter((meal) => !kept.includes(meal)), times } }, today)
   const saved = await readSchedule(store)
   await store.put('user_settings', { id: row.id, meal_plan: { ...saved.plan, logging: setup.logging } })
+}
+
+/**
+ * Ora e stërvitjes (V76). `scope: 'day'`: vetëm për `date` (ruhet te `meal_plan.training`, pa migrim; një datë
+ * tjetër e zëvendëson). `scope: 'weekday'`: për çdo javë në atë ditë, dhe ora "vetëm sot" e asaj date hiqet.
+ * Vaktet para dhe pas stërvitjes dhe rikujtuesit e lexojnë nga `trainingTimeOn`, ndaj lëvizin bashkë me të.
+ */
+export async function setTrainingTime(store: LocalStore, date: string, time: string, scope: 'day' | 'weekday') {
+  const row = await settingsRow(store)
+  if (!row || !TIME.test(time) || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return
+  const current = await readSchedule(store)
+  // Një ditë jashtë ditëve të stërvitjes (p.sh. e shtyrë) nuk ka orë jave: vlen vetëm për datën.
+  if (scope === 'day' || !current.trainingDays.includes(isoWeekday(date))) {
+    const usual = trainingTimeOn({ trainingDays: current.trainingDays, trainingTimes: current.trainingTimes }, date)
+    await store.put('user_settings', { id: row.id, meal_plan: { ...current.plan, training: time === usual ? null : { date, time } } })
+    return
+  }
+  const times: Record<string, string> = {}
+  for (const day of current.trainingDays) times[String(day)] = current.trainingTimes[day]
+  times[String(isoWeekday(date))] = time
+  await store.put('user_settings', { id: row.id, training_times: times, meal_plan: { ...current.plan, training: current.plan.training?.date === date ? null : current.plan.training } })
 }

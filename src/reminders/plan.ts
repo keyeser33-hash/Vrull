@@ -157,7 +157,8 @@ export function planReminders(input: ReminderInput, { t, fmt, lang }: Pick<I18n,
     const date = isoDate(day)
     const weekday = day.getDay() || 7
     const training = isTraining(date, weekday)
-    const trainingTime = input.trainingTimes?.[weekday] ?? input.trainingTime
+    // Ora "vetëm sot" (V76) fiton mbi orën e ditës së javës.
+    const trainingTime = (input.mealPlan?.training?.date === date ? input.mealPlan.training.time : undefined) ?? input.trainingTimes?.[weekday] ?? input.trainingTime
     const plan = input.mealPlan && input.mealPlan.from !== null && date < input.mealPlan.from ? (input.mealPlan.previous ?? undefined) : input.mealPlan
     const idBase = REMINDER_IDS.first + (offset + 1) * 20
     const dayItems: Omit<Reminder, 'id'>[] = []

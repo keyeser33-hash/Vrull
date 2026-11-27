@@ -721,7 +721,7 @@ export interface SessionSummary {
   dayName: string
   startedAt: string | null
   endedAt: string | null
-  /** Nga fillimi te mbyllja; null kur seanca s'ka të dyja. */
+  /** Nga fillimi te mbyllja; null kur seanca s'ka të dyja ose u shënua më pas (V74). */
   durationSeconds: number | null
   /** Setet e regjistruara pa ngrohjet; segmentet janë pjesë e setit të tyre. */
   workSets: number
@@ -775,7 +775,8 @@ export async function sessionSummary(store: LocalStore, sessionId: string): Prom
     dayName: String(ordered[dayIndex]?.name ?? ''),
     startedAt,
     endedAt,
-    durationSeconds: startedAt && endedAt ? Math.max(0, Math.round((Date.parse(endedAt) - Date.parse(startedAt)) / 1000)) : null,
+    // Fillim dhe mbyllje në të njëjtën orë: stërvitje e shënuar më pas (V74), pa kohëzgjatje të matur.
+    durationSeconds: startedAt && endedAt && startedAt !== endedAt ? Math.max(0, Math.round((Date.parse(endedAt) - Date.parse(startedAt)) / 1000)) : null,
     workSets: sets.filter((set) => !set.is_warmup).length,
     records: sessionBests(history.sets, sessionId).map((record) => {
       const set = byId.get(record.setId)

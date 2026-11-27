@@ -299,6 +299,19 @@ Vendimet e miratuara më 26.11.2026 pas bordeve 1–3, 7, 13 dhe 22 të kanavac�
 
 **Gjendja (26.11.2026, 20:10), lëshimi 0.30.0:** "po" e përdoruesit; ikonat (V67) dhe vala 1 (V68–V73, porcionet shqip) te `main` me fast-forward. Prova e plotë e Android-it 45876981343 e gjelbër te `04354bc`; pa migrim (`user_settings.meal_plan`). Minutat: repo-ja është publike, ndaj vlerësimi i `actions-usage.mjs` nuk vlen si ndalesë (fjala e përdoruesit).
 
+## Vala 2 · Stërvitja (V74–V78)
+
+Dega `feat/vala-2-stervitja`. Bordet 10 (Seanca), 11 (Pushimi) dhe 5 (Faqja e ushtrimit) ekzistonin që nga 0.41 (V58, V63) dhe nuk u prekën.
+
+| Pjesa | Vendimi | Gjendja |
+|---|---|---|
+| "E bëra, po e shënoj" | V74, V75 | Ndërtuar: `src/data/workout-after.ts` (`workoutAfter`, `saveWorkoutAfter`), ekrani `/programi/shenoje` (`workout-after.tsx`), butoni te karta e stërvitjes së radhës te Programi |
+| Ora e stërvitjes vetëm për sot | V76 | Ndërtuar: `setTrainingTime` dhe `trainingTimeOn` te `schedule-settings.ts`, rikujtuesit te `reminders/plan.ts`, butoni dhe fleta `training-time.tsx` te Sot dhe te Programi (adresa `?ora=1`) |
+| "Nuk shkoj sot, shtyje për nesër" | V77 | Ndërtuar te fleta e orës, me `postponeWorkout` ekzistues; kthimi "Ktheje për sot" mbetet te karta e gatishmërisë |
+| Vakti pas stërvitjes te mbyllja | V78 | Ndërtuar: `post-workout-meal.tsx` te `session-summary.tsx` |
+
+**Gjendja (27.11.2026):** prova te `workout-after.test.ts`, `workout-after.test.tsx`, `schedule-settings.test.ts`, `reminders/plan.test.ts`, `today.test.tsx`. Parë live në 390 px: Programi, tabela, fleta e orës dhe mbyllja me vaktin, në OLED, Natë dhe Ditë. Pa parë live: butoni i orës te Sot dhe shtyrja nga fleta (të dhënat e provës kishin një seancë me sete). Pa migrim.
+
 ## V2-E3-31 · Ikonat e ushqimeve (V30, V67)
 
 **Gjendja (26.11.2026), vala 1, dega `feat/ikonat-ushqimit`:** 58 ilustrime me ngjyra dhe rregullat ushqim → ikonë (V67), të lidhura me `FoodTile` te kërkimi, shporta, fleta e vaktit, dita dhe Plotëso makrot. Provat: `food-icon-map.test.ts` (rastet shqip dhe anglisht; çdo ushqim i Listës merr ikonë të vizatuar, të zakonshmet pa pjatën e përgjithshme); lint, 2 265 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px (kërkimi "vez", Ushqimi). Mbetet: prova e pamjes në Natë dhe Ditë, prova e Android-it, fotot e pjatave (V30), ndarja e ikonave shumë të gjera (mishi, pjeshka) dhe gabimet e rregullave te emrat e përbërë. Pa ndryshim versioni; nuk është te `main`.

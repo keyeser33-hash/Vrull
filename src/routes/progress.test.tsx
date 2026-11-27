@@ -49,10 +49,14 @@ async function renderAt(path: string) {
 
 describe('Progresi', () => {
   beforeAll(async () => {
+    // Ora e ngrirë: matja "e sotme" e testit të parë nuk bie mbi datat e ngurta më poshtë (27.11.2026 dështonte).
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-10T10:00:00'))
     await import('@/data/app-data')
     URL.createObjectURL = () => 'blob:foto'
     URL.revokeObjectURL = () => {}
   })
+  afterAll(() => vi.useRealTimers())
   afterEach(() => language.set('sq'))
 
   it('pa asgjë: gjendja bosh; matja hapet nga lista, gabimi tregohet te fusha; pas perimetrit del pamja e plotë', async () => {
