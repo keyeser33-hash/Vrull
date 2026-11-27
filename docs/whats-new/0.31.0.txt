@@ -1,0 +1,7 @@
+"E bëra, po e shënoj": e gjithë stërvitja në një tabelë, pas palestrës
+Tabela vjen e mbushur me peshën dhe përsëritjet e herës së kaluar
+Stërvitja shënohet për sot ose për dje
+Ora e stërvitjes ndryshohet vetëm për sot, te Sot dhe te Programi
+Vaktet para dhe pas stërvitjes dhe rikujtuesi lëvizin bashkë me orën
+"Nuk shkoj sot, shtyje për nesër" te ora e stërvitjes
+Vakti pas stërvitjes me një prekje te mbyllja e seancës

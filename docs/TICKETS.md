@@ -312,6 +312,8 @@ Dega `feat/vala-2-stervitja`. Bordet 10 (Seanca), 11 (Pushimi) dhe 5 (Faqja e us
 
 **Gjendja (27.11.2026):** prova te `workout-after.test.ts`, `workout-after.test.tsx`, `schedule-settings.test.ts`, `reminders/plan.test.ts`, `today.test.tsx`. Parë live në 390 px: Programi, tabela, fleta e orës dhe mbyllja me vaktin, në OLED, Natë dhe Ditë. Pa parë live: butoni i orës te Sot dhe shtyrja nga fleta (të dhënat e provës kishin një seancë me sete). Pa migrim.
 
+**Lëshimi 0.31.0 (27.11.2026, 03:00):** "po" e përdoruesit; vala 2 te `main` me fast-forward. Prova e plotë e Android-it 45921804370 e gjelbër te `0694821`; pa migrim.
+
 ## V2-E3-31 · Ikonat e ushqimeve (V30, V67)
 
 **Gjendja (26.11.2026), vala 1, dega `feat/ikonat-ushqimit`:** 58 ilustrime me ngjyra dhe rregullat ushqim → ikonë (V67), të lidhura me `FoodTile` te kërkimi, shporta, fleta e vaktit, dita dhe Plotëso makrot. Provat: `food-icon-map.test.ts` (rastet shqip dhe anglisht; çdo ushqim i Listës merr ikonë të vizatuar, të zakonshmet pa pjatën e përgjithshme); lint, 2 265 prova dhe build të gjelbra në hapësirën e punës; parë live në 390 px (kërkimi "vez", Ushqimi). Mbetet: prova e pamjes në Natë dhe Ditë, prova e Android-it, fotot e pjatave (V30), ndarja e ikonave shumë të gjera (mishi, pjeshka) dhe gabimet e rregullave te emrat e përbërë. Pa ndryshim versioni; nuk është te `main`.
