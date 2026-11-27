@@ -73,8 +73,8 @@ export interface ReminderInput {
   workoutMinutes?: number | null
   /** Ora e stërvitjes sipas ditës ISO (V35); pa të, `trainingTime` për çdo ditë. */
   trainingTimes?: Record<number, string>
-  /** Plani i vakteve (V35): vlen nga `from`, para saj `previous`. */
-  mealPlan?: MealPlan & { from: string | null; previous: MealPlan | null }
+  /** Plani i vakteve (V35): vlen nga `from`, para saj `previous`; `training`: ora e stërvitjes vetëm për një datë (V76). */
+  mealPlan?: MealPlan & { from: string | null; previous: MealPlan | null; training?: { date: string; time: string } | null }
   /** Dita e humbur (V38): dita e parë që numërohet dhe datat me seancë; pa to, pa njoftimin. */
   startedOn?: string | null
   sessionDates?: readonly string[]
