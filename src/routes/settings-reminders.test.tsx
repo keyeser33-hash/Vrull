@@ -58,10 +58,24 @@ describe('Rikujtuesit', () => {
     expect((await data.store.all('user_settings'))[0].measurement_day).toBe(1)
   })
 
+  it('vala 3 (V79, V81): "Sa më parë" dhe "Uji vjen" tregojnë parazgjedhjet dhe ruajnë zgjedhjen', async () => {
+    const user = userEvent.setup()
+    await renderReminders()
+    await user.click(await screen.findByRole('button', { name: /^Sa më parë, 30 min/ }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Sa më parë' })).getByRole('radio', { name: '1 orë' }))
+    expect(await screen.findByRole('button', { name: /^Sa më parë, 1 orë/ })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /^Uji vjen, Me çdo vakt/ }))
+    await user.click(within(screen.getByRole('dialog', { name: 'Uji vjen' })).getByRole('radio', { name: 'Çdo 2 orë' }))
+    expect(await screen.findByRole('button', { name: /^Uji vjen, Çdo 2 orë/ })).toBeInTheDocument()
+    expect((await data.store.all('user_settings'))[0].reminders).toMatchObject({ lead: 60, waterMode: 'hours' })
+    // Ora e "Mbyll ditën" del te hollësia e vakteve: 90 minuta para gjumit (23:00).
+    expect(screen.getByRole('switch', { name: /Mbyll ditën: 21:30, vetëm kur ka vakte pa shënuar/ })).toBeInTheDocument()
+  })
+
   it('orët e qeta (V37): intervali ruhet dhe hiqet; teksti i rikujtuesve të zgjuar', async () => {
     const user = userEvent.setup()
     await renderReminders()
-    expect(await screen.findByText(/^Vjen vetëm kur vakti, uji ose suplementi nuk është regjistruar\. Rreth 4 në ditë, jo nga gjumi deri te zgjimi \(23:00–07:00\)/)).toBeInTheDocument()
+    expect(await screen.findByText(/^Vjen vetëm kur vakti, uji ose suplementi nuk është regjistruar\. Rreth 5 në ditë, jo nga gjumi deri te zgjimi \(23:00–07:00\)/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Orët e qeta, Pa interval' }))
     const sheet = screen.getByRole('dialog', { name: 'Orët e qeta' })
     // Ora vizatohet e plotë me 24 orë mbi input-in e padukshëm (F1).

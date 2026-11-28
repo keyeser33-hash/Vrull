@@ -299,6 +299,20 @@ Vendimet e miratuara më 26.11.2026 pas bordeve 1–3, 7, 13 dhe 22 të kanavac�
 
 **Gjendja (26.11.2026, 20:10), lëshimi 0.30.0:** "po" e përdoruesit; ikonat (V67) dhe vala 1 (V68–V73, porcionet shqip) te `main` me fast-forward. Prova e plotë e Android-it 45876981343 e gjelbër te `04354bc`; pa migrim (`user_settings.meal_plan`). Minutat: repo-ja është publike, ndaj vlerësimi i `actions-usage.mjs` nuk vlen si ndalesë (fjala e përdoruesit).
 
+## Vala 3 · Rikujtuesit dhe progresi (V79–V83)
+
+Dega `feat/vala-3-rikujtuesit`. Rikujtuesit e zgjuar (V37) ekzistonin: vala shton kohën përpara, mënyrat e ujit, "Mbyll ditën" dhe njoftimin e dytë të stërvitjes.
+
+| Pjesa | Vendimi | Gjendja |
+|---|---|---|
+| Koha përpara për vaktet; kufiri 5 | V79 | Ndërtuar: `SmartInput.lead` te `reminders/plan.ts`, `setReminderLead` te `data/reminders.ts`, fleta `?ndrysho=para` te `settings-reminders.tsx` |
+| Njoftimi i dytë i stërvitjes | V80 | Ndërtuar te `reminders/plan.ts` |
+| Mënyrat e ujit | V81 | Ndërtuar: `SmartInput.water`, `setWaterMode`, fleta `?ndrysho=uji` |
+| "Mbyll ditën" si njoftim | V82 | Ndërtuar: lloji `close`, çelësi `close|<data>|`, `reminderRoute` → `/ushqimi/mbyll?data=` |
+| Progresi, "Kjo javë" | V83 | Ndërtuar: `src/data/week-now.ts`, karta `ThisWeek` te `progress.tsx` |
+
+**Gjendja (28.11.2026):** prova te `reminders/plan.test.ts`, `data/reminders.test.ts`, `settings-reminders.test.tsx`, `week-now.test.ts`. Parë live në 390 px, OLED / Natë / Ditë: Rikujtuesit dhe Progresi. Njoftimet vetë (ora, butonat, prekja e "Mbyll ditën") provohen vetëm në telefon. Pa migrim: cilësimet rrinë te `user_settings.reminders`.
+
 ## Vala 2 · Stërvitja (V74–V78)
 
 Dega `feat/vala-2-stervitja`. Bordet 10 (Seanca), 11 (Pushimi) dhe 5 (Faqja e ushtrimit) ekzistonin që nga 0.41 (V58, V63) dhe nuk u prekën.

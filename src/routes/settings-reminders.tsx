@@ -7,18 +7,32 @@ import { TimeField } from '@/components/forms/time-field'
 import { WEEK_DAYS } from '@/components/forms/week-days'
 import { planRemindersNow, store, useLocalQuery } from '@/data/app-data'
 import { readProfile } from '@/data/profile'
-import { MAX_DAILY_REMINDERS, reminderSettings, type ReminderSettings, setMeasurementDay, setQuietHours, setReminderToggle, unmuteReminders } from '@/data/reminders'
+import {
+  MAX_DAILY_REMINDERS,
+  REMINDER_LEADS,
+  type ReminderLead,
+  reminderSettings,
+  type ReminderSettings,
+  setMeasurementDay,
+  setQuietHours,
+  setReminderLead,
+  setReminderToggle,
+  setWaterMode,
+  unmuteReminders,
+  WATER_MODES,
+} from '@/data/reminders'
 import { Button } from '@/components/ui/button'
 import { inputClass } from '@/components/ui/field-styles'
 import { localDate } from '@/lib/calendar'
 import { cn } from '@/lib/cn'
 import { useI18n } from '@/i18n/use-i18n'
 import { reminderPermission, type ReminderPermission, requestReminderPermission } from '@/lib/reminders-native'
-import type { MutableKind } from '@/reminders/plan'
+import { CLOSE_BEFORE_SLEEP, type MutableKind } from '@/reminders/plan'
 
 // Rikujtuesit (SPEC §13), nga Cilësimet › Njoftimet: leja e njoftimeve kur mungon, çfarë njofton
 // telefoni, dita e matjes javore (në fletë, ?ndrysho=matja) dhe, me rikujtuesit e zgjuar (V37), uji,
-// orët e qeta (?ndrysho=qete) dhe llojet e heshtura vetë me "Ndize përsëri".
+// orët e qeta (?ndrysho=qete) dhe llojet e heshtura vetë me "Ndize përsëri". Vala 3 (V79–V82): sa më parë vjen
+// njoftimi (?ndrysho=para), si vjen uji (?ndrysho=uji) dhe ora e "Mbyll ditën" te hollësia e vakteve.
 
 const TOGGLES = ['training', 'meals', 'supplements', 'water', 'measurements', 'week'] as const satisfies readonly (keyof ReminderSettings['toggles'])[]
 const MUTED_ORDER: readonly MutableKind[] = ['meal', 'supplements', 'water']
@@ -37,6 +51,9 @@ export function RemindersPage() {
     return () => document.removeEventListener('visibilitychange', check)
   }, [])
   const day = settings ? t(`day.${settings.measurementDay}` as 'day.7') : ''
+  const leadText = (lead: ReminderLead) => (lead === 0 ? t('reminders.lead.none') : lead === 60 ? t('reminders.lead.hour') : t('reminders.lead.minutes', { minutes: lead }))
+  // "Mbyll ditën" (V82) vjen para gjumit; ora del nga gjumi i profilit.
+  const closeAt = profile ? minutesBefore(profile.sleepTime, CLOSE_BEFORE_SLEEP) : ''
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -61,7 +78,7 @@ export function RemindersPage() {
               <SwitchRow
                 key={key}
                 label={t(`reminders.${key}`)}
-                detail={t(`reminders.${key}Detail`)}
+                detail={key === 'meals' && closeAt ? `${t('reminders.mealsDetail')}. ${t('reminders.closeDay')}: ${t('reminders.closeDayDetail', { time: closeAt })}` : t(`reminders.${key}Detail`)}
                 checked={settings.toggles[key]}
                 onChange={(on) => void setReminderToggle(store, key, on)}
               />
@@ -82,6 +99,10 @@ export function RemindersPage() {
               ))}
             </Group>
           ) : null}
+          <Group>
+            <Row label={t('reminders.lead')} detail={t('reminders.leadHint')} value={leadText(settings.lead)} onClick={() => setParams({ ndrysho: 'para' })} />
+            <Row label={t('reminders.waterMode')} detail={t(`reminders.waterMode.${settings.water}Detail`)} value={t(`reminders.waterMode.${settings.water}`)} onClick={() => setParams({ ndrysho: 'uji' })} />
+          </Group>
           <Group>
             <Row
               label={t('reminders.quiet')}
@@ -115,9 +136,36 @@ export function RemindersPage() {
           </fieldset>
         </Sheet>
       ) : null}
+      {params.get('ndrysho') === 'para' && settings ? (
+        <Sheet title={t('reminders.lead')} description={t('reminders.leadHint')} onClose={() => navigate(-1)}>
+          <fieldset className="flex flex-col overflow-hidden rounded-lg border border-border">
+            <legend className="sr-only">{t('reminders.lead')}</legend>
+            {REMINDER_LEADS.map((lead) => (
+              <ChoiceRow key={lead} name="reminder-lead" value={String(lead)} label={leadText(lead)} checked={settings.lead === lead} onChange={() => void setReminderLead(store, lead).then(() => navigate(-1))} />
+            ))}
+          </fieldset>
+        </Sheet>
+      ) : null}
+      {params.get('ndrysho') === 'uji' && settings ? (
+        <Sheet title={t('reminders.waterMode')} description={t(`reminders.waterMode.${settings.water}Detail`)} onClose={() => navigate(-1)}>
+          <fieldset className="flex flex-col overflow-hidden rounded-lg border border-border">
+            <legend className="sr-only">{t('reminders.waterMode')}</legend>
+            {WATER_MODES.map((mode) => (
+              <ChoiceRow key={mode} name="water-mode" value={mode} label={t(`reminders.waterMode.${mode}`)} checked={settings.water === mode} onChange={() => void setWaterMode(store, mode).then(() => navigate(-1))} />
+            ))}
+          </fieldset>
+        </Sheet>
+      ) : null}
       {params.get('ndrysho') === 'qete' && settings ? <QuietSheet current={settings.quiet} onClose={() => navigate(-1)} /> : null}
     </div>
   )
+}
+
+/** "23:00" − 90 min → "21:30". */
+function minutesBefore(time: string, minutes: number): string {
+  const [hours, mins] = time.split(':').map(Number)
+  const total = (((hours * 60 + mins - minutes) % 1440) + 1440) % 1440
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
 }
 
 /** Intervali i qetë (V37): njoftimet që bien brenda tij vijnë në fund të tij. */

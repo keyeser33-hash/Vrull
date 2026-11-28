@@ -19,6 +19,7 @@ import { useStartWorkout } from './start-workout'
 import type { StrengthRow, VolumeRow } from '@/progress/strength'
 import { METRICS, type Metric, metricByKey, movingAverage } from '@/progress/metrics'
 import { cn } from '@/lib/cn'
+import { weekNow } from '@/data/week-now'
 import { weekSummary } from '@/data/weekly-goals'
 import { mondayOf, weekCardMonday } from '@/progress/weekly-goals'
 import { ProgressHeader } from '@/components/layout/progress-tabs'
@@ -78,6 +79,7 @@ export function ProgressPage() {
   return (
     <div className="flex flex-col gap-3.5">
       <ProgressHeader active="summary" />
+      <ThisWeek />
       <WeekLink />
       <TrainingSections />
       <WeightSection view={view} />
@@ -86,6 +88,43 @@ export function ProgressPage() {
         <LinkRow to="/progresi/meso" label={t('learn.link')} detail={t('learn.linkDetail')} />
       </Group>
     </div>
+  )
+}
+
+/**
+ * "Kjo javë" (V83; bordi "15 · Progresi" te kanavaca "Vrull - Propozimi UX"): java e tanishme në tre rreshta dhe
+ * hapi i radhës drejt "Javës së plotë". Prekja hap faqen e javës me qëllimet e plota.
+ */
+function ThisWeek() {
+  const { t } = useI18n()
+  const week = useLocalQuery(() => weekNow(store), [])
+  if (!week) return null
+  const rows: [string, number, number][] = [[t('progress.now.training'), week.training.done, week.training.target]]
+  if (week.food) rows.push([t('progress.now.food'), week.food.counted, 7])
+  if (week.proteinDays !== null) rows.push([t('progress.now.protein'), week.proteinDays, 7])
+  const left = [
+    week.left.training > 0 ? t('progress.now.leftTraining', { count: week.left.training }) : null,
+    week.left.food > 0 ? t('progress.now.leftFood', { count: week.left.food }) : null,
+    week.left.water > 0 ? t('progress.now.leftWater', { count: week.left.water }) : null,
+  ].filter((part): part is string => part !== null)
+  const next = week.complete || left.length === 0 ? t('progress.now.complete') : t('progress.now.next', { parts: left.length > 1 ? t('progress.now.and', { first: left.slice(0, -1).join(', '), last: left[left.length - 1] }) : left[0] })
+  return (
+    <Link
+      to="/sot/java"
+      aria-label={t('progress.now.open')}
+      className={cn(surfaceClass, 'flex flex-col gap-2.5 rounded-xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground')}
+    >
+      <span className="type-label text-muted-foreground">{t('progress.now.title')}</span>
+      <span className="flex flex-col">
+        {rows.map(([label, value, total]) => (
+          <span key={label} className="flex items-baseline justify-between gap-3 border-b border-subtle py-2 last:border-b-0">
+            <span className="type-body">{label}</span>
+            <span className="type-body-strong tabular-nums">{t('progress.now.of', { value, total })}</span>
+          </span>
+        ))}
+      </span>
+      <span className="type-body text-muted-foreground">{next}</span>
+    </Link>
   )
 }
 

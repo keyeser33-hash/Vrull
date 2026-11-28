@@ -293,6 +293,60 @@ describe('rikujtuesit e zgjuar (V37)', () => {
     const logged = { meals: ['2026-12-09|lunch'], supplements: ['2026-12-09|bedtime|s9'], water: { '2026-12-09': [{ ml: 1500, at: new Date('2026-12-09T11:00:00').getTime() }], '2026-12-10': [] } }
     const input = smart({ logged, waterTargets: { '2026-12-09': 3000 } })
     const reminders = planReminders(base({ from: new Date('2026-12-09T13:10:00'), smart: input }), sq)
-    expect(staleKeys(input, reminders).sort()).toEqual(['meal|2026-12-09|lunch', 'supplements|2026-12-09|bedtime'].sort())
+    // Çelësi i "Mbyll ditën" (V82) hiqet bashkë me të, sepse plani i ri nuk e ka.
+    expect(staleKeys(input, reminders).sort()).toEqual(['close|2026-12-09|', 'meal|2026-12-09|lunch', 'supplements|2026-12-09|bedtime'].sort())
+  })
+})
+
+describe('vala 3: koha përpara, uji, mbyllja e ditës (V79–V82)', () => {
+  const smart = (overrides: Partial<NonNullable<ReminderInput['smart']>> = {}): NonNullable<ReminderInput['smart']> => ({ maxDaily: 5, logged: { meals: [], supplements: [], water: {} }, quiet: null, muted: {}, waterTargets: {}, plan: {}, ...overrides })
+  // E mërkurë 09.12.2026, ditë pushimi: dreka në 13:00, gjumi 23:00.
+  const day = (overrides: Partial<NonNullable<ReminderInput['smart']>>, input: Partial<ReminderInput> = {}) => planReminders(base({ ...input, smart: smart(overrides) }), sq)
+  const line = (item: ReturnType<typeof planReminders>[number]) => `${hhmm(item.at)} ${item.title}`
+
+  it('V79: njoftimi i vaktit vjen 30 minuta më parë dhe titulli mban orën e vaktit', () => {
+    const items = day({ lead: 30 })
+    expect(items.filter((item) => item.kind === 'meal').map(line)).toContain('12:30 Dreka në 13:00')
+    expect(day({}).filter((item) => item.kind === 'meal').map(line)).toContain('13:00 Dreka')
+  })
+
+  it('V80: stërvitja ka një njoftim të dytë para orës, edhe kur ora është vetëm për sot; pa të kur dita ka seancë', () => {
+    const monday = { from: new Date('2026-12-07T06:00:00') }
+    expect(day({ lead: 30 }, monday).filter((item) => item.kind === 'training').map(line).slice(1)).toEqual(['17:30 Stërvitja pas 30 min'])
+    const plan = { removed: [], times: {}, from: null, previous: null, training: { date: '2026-12-07', time: '20:30' } }
+    expect(day({ lead: 15 }, { ...monday, mealPlan: plan }).filter((item) => item.kind === 'training').map(line)).toContain('20:15 Stërvitja pas 15 min')
+    expect(day({ lead: 30 }, { ...monday, sessionDates: ['2026-12-07'], startedOn: '2026-12-01' }).filter((item) => item.kind === 'training')).toHaveLength(1)
+    expect(day({}, monday).filter((item) => item.kind === 'training')).toHaveLength(1)
+  })
+
+  it('V81: "me çdo vakt" e shton ujin te njoftimi i vaktit, pa zile më vete, derisa mbyllet objektivi', () => {
+    const waterTargets = { '2026-12-09': 2800 }
+    const meals = day({ water: 'meals', waterTargets })
+    expect(meals.filter((item) => item.kind === 'water')).toHaveLength(0)
+    expect(meals.filter((item) => item.kind === 'meal').every((item) => item.body.endsWith(' · dhe një gotë ujë'))).toBe(true)
+    const full = day({ water: 'meals', waterTargets, logged: { meals: [], supplements: [], water: { '2026-12-09': [{ ml: 2800, at: Date.parse('2026-12-09T05:00:00') }] } } })
+    expect(full.filter((item) => item.kind === 'meal').some((item) => item.body.includes('gotë ujë'))).toBe(false)
+  })
+
+  it('V81: "çdo 2 orë" nga zgjimi deri një orë para gjumit; hesht kur objektivi mbyllet', () => {
+    const waterTargets = { '2026-12-09': 2800 }
+    const water = day({ water: 'hours', waterTargets }).filter((item) => item.kind === 'water')
+    expect(water.map((item) => hhmm(item.at))).toEqual(['09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00'])
+    expect(water.every((item) => item.key === 'water|2026-12-09|' && item.actions?.[0].id === 'drank')).toBe(true)
+    const full = day({ water: 'hours', waterTargets, logged: { meals: [], supplements: [], water: { '2026-12-09': [{ ml: 2800, at: Date.parse('2026-12-09T05:00:00') }] } } })
+    expect(full.filter((item) => item.kind === 'water')).toHaveLength(0)
+  })
+
+  it('V82: "Mbyll ditën" 90 minuta para gjumit kur ka vakte pa shënuar; prekja hap ekranin e asaj dite', () => {
+    const close = day({ closeDay: { only: false } }).filter((item) => item.kind === 'close')
+    expect(close.map((item) => `${line(item)}: ${item.body}`)).toEqual(['21:30 Mbyll ditën: 7 vakte pa shënuar. Mbylli me nga një prekje.'])
+    expect(reminderRoute(close[0].key ?? null)).toBe('/ushqimi/mbyll?data=2026-12-09')
+    // Të gjitha të shënuara ose të kapërcyera: pa njoftim.
+    const all = ['breakfast_1', 'breakfast_2', 'snack_am', 'lunch', 'snack_pm', 'dinner', 'bedtime'].map((meal) => `2026-12-09|${meal}`)
+    expect(day({ closeDay: { only: false }, logged: { meals: all, supplements: [], water: {} } }).filter((item) => item.kind === 'close')).toHaveLength(0)
+    // "Në mbrëmje" (V69): vaktet e ditës heshtin, mbetet vetëm mbyllja.
+    const evening = day({ closeDay: { only: true } })
+    expect(evening.filter((item) => item.kind === 'meal')).toHaveLength(0)
+    expect(evening.filter((item) => item.kind === 'close')).toHaveLength(1)
   })
 })
