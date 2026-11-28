@@ -17,7 +17,7 @@ async function setup() {
 describe('cilësimet e rikujtuesve', () => {
   it('parazgjedhja: të gjitha ndezur, matja të dielën; ndryshimet ruhen', async () => {
     const store = await setup()
-    const empty = { quiet: null, muted: {}, resumed: {} }
+    const empty = { quiet: null, muted: {}, resumed: {}, lead: 30, water: 'meals' }
     expect(await reminderSettings(store)).toEqual({ toggles: { meals: true, supplements: true, training: true, measurements: true, water: true, week: true }, measurementDay: 7, ...empty })
     await setReminderToggle(store, 'meals', false)
     await setMeasurementDay(store, 1)
@@ -68,7 +68,7 @@ describe('rikujtuesit e zgjuar: të dhënat', () => {
     await store.put('water_logs', { date: '2026-12-07', ml: 250, logged_at: '2026-12-07T09:00:00.000Z' })
     await store.put('water_logs', { date: '2026-12-07', ml: 250, logged_at: '2026-12-07T10:00:00.000Z' })
     const { smart } = await reminderInput(store, new Date('2026-12-07T13:00:00'))
-    expect(smart).toMatchObject({ maxDaily: 4, quiet: null, muted: {} })
+    expect(smart).toMatchObject({ maxDaily: 5, quiet: null, muted: {}, lead: 30, water: 'meals', closeDay: { only: false } })
     expect(smart!.logged.meals).toEqual(['2026-12-07|lunch'])
     expect(smart!.logged.water['2026-12-07']).toEqual([
       { ml: 250, at: Date.parse('2026-12-07T09:00:00.000Z') },

@@ -1,7 +1,7 @@
 import { localDate, shiftDate } from '@/lib/calendar'
 import { waterTargetMl } from '@/nutrition/water'
 import { ignoredStreaks, MUTE_AFTER_DAYS, type ReminderLogEntry } from '@/reminders/ignored'
-import type { MutableKind, ReminderInput, ReminderToggles, SmartInput } from '@/reminders/plan'
+import type { MutableKind, ReminderInput, ReminderToggles, SmartInput, WaterMode } from '@/reminders/plan'
 import type { DayType } from '@/nutrition/targets'
 import { dailyStates } from './daily-state'
 import { readMissedInput } from './missed-day'
@@ -27,7 +27,16 @@ export interface ReminderSettings {
   muted: Partial<Record<MutableKind, string>>
   /** Dita kur një lloj u ndez përsëri: ditët e injoruara para saj nuk numërohen. */
   resumed: Partial<Record<MutableKind, string>>
+  /** Sa minuta para vaktit dhe stërvitjes vjen njoftimi (V79, V80); pa zgjedhje, 30. */
+  lead: ReminderLead
+  /** Si vjen uji (V81); pa zgjedhje, brenda njoftimit të çdo vakti. */
+  water: WaterMode
 }
+
+/** Zgjedhjet e "Sa më parë" (V79); 0 = në orën e vaktit. */
+export const REMINDER_LEADS = [0, 15, 30, 60] as const
+export type ReminderLead = (typeof REMINDER_LEADS)[number]
+export const WATER_MODES: readonly WaterMode[] = ['meals', 'behind', 'hours']
 
 const DEFAULT_TOGGLES = { meals: true, supplements: true, training: true, measurements: true, water: true, week: true }
 const TOGGLE_KEYS = Object.keys(DEFAULT_TOGGLES) as (keyof typeof DEFAULT_TOGGLES)[]
@@ -57,6 +66,8 @@ export async function reminderSettings(store: LocalStore): Promise<ReminderSetti
     quiet: quiet && typeof quiet.from === 'string' && typeof quiet.to === 'string' && TIME.test(quiet.from) && TIME.test(quiet.to) && quiet.from !== quiet.to ? { from: quiet.from, to: quiet.to } : null,
     muted: dates(raw.muted),
     resumed: dates(raw.resumed),
+    lead: REMINDER_LEADS.find((value) => value === raw.lead) ?? 30,
+    water: WATER_MODES.find((value) => value === raw.waterMode) ?? 'meals',
   }
 }
 
@@ -67,6 +78,14 @@ async function patchReminders(store: LocalStore, patch: Record<string, unknown>)
 
 export async function setReminderToggle(store: LocalStore, key: keyof ReminderSettings['toggles'], on: boolean) {
   await patchReminders(store, { [key]: on })
+}
+
+export async function setReminderLead(store: LocalStore, lead: ReminderLead) {
+  await patchReminders(store, { lead })
+}
+
+export async function setWaterMode(store: LocalStore, waterMode: WaterMode) {
+  await patchReminders(store, { waterMode })
 }
 
 export async function setQuietHours(store: LocalStore, quiet: { from: string; to: string } | null) {
@@ -137,12 +156,15 @@ export async function reminderInput(store: LocalStore, now: Date): Promise<Remin
     startedOn: missed.startedOn,
     sessionDates: missed.sessionDates,
     checkedIn,
-    smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes, schedule.plan.skipped),
+    smart: await smartInput(store, now, settings, profile.trainingDays, dayTypes, schedule.plan.skipped, schedule.plan.logging === 'evening'),
   }
 }
 
-/** Rikujtuesit në ditë për vaktet dhe suplementet bashkë (V37); uji ka të vetin, një në ditë. */
-export const MAX_DAILY_REMINDERS = 4
+/**
+ * Rikujtuesit në ditë për vaktet dhe suplementet bashkë (V37): 5 që nga vala 3 (28.11.2026), sa vaktet më të
+ * shumta të "Si ha ti" (V68), që çdo vakt të ketë njoftimin e vet. Uji, stërvitja dhe "Mbyll ditën" nuk numërohen.
+ */
+export const MAX_DAILY_REMINDERS = 5
 
 async function smartInput(
   store: LocalStore,
@@ -151,6 +173,7 @@ async function smartInput(
   trainingDays: readonly number[],
   dayTypes: Record<string, DayType>,
   skipped: Readonly<Record<string, readonly string[]>>,
+  evening: boolean,
 ): Promise<SmartInput> {
   // Nga dita e djeshme: vaktet pas mesnate i përkasin asaj.
   const dates = Array.from({ length: 8 }, (_, index) => localDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() + index - 1)))
@@ -194,6 +217,9 @@ async function smartInput(
         ]),
       ),
     },
+    lead: settings.lead,
+    water: settings.water,
+    closeDay: { only: evening },
     quiet: settings.quiet,
     muted: Object.fromEntries(Object.keys(settings.muted).map((kind) => [kind, true])),
     waterTargets: weightKg === null ? {} : Object.fromEntries(dates.map((date) => [date, waterTargetMl(weightKg, typeOf(date))])),
